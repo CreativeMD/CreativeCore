@@ -8,6 +8,7 @@ import com.creativemd.creativecore.common.packet.PacketReciever;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -15,6 +16,9 @@ import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore")
 public class CreativeCore {
+	
+	@Instance(CreativeCore.modid)
+	public static CreativeCore instance = new CreativeCore();
 	
 	public static final String modid = "creativecore";
 	public static final String version = "1.0";

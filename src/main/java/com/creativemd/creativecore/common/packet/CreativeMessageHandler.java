@@ -25,7 +25,7 @@ public class CreativeMessageHandler implements IMessage{
 	public void fromBytes(ByteBuf buf) {
 		String id = ByteBufUtils.readUTF8String(buf);
 		Class PacketClass = CreativeCorePacket.getClassByID(id);
-		CreativeCorePacket packet = null;
+		packet = null;
 		try {
 			packet = (CreativeCorePacket) PacketClass.getConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException
