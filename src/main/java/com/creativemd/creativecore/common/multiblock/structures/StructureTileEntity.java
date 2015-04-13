@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 import com.creativemd.creativecore.common.multiblock.ConnectionStructure;
 import com.creativemd.creativecore.common.multiblock.MultiBlockStructure;
 
-public abstract class StructureTileEntity extends MultiBlockStructure{
+public class StructureTileEntity extends MultiBlockStructure{
 	
 	public Class<? extends TileEntity> tileEntityClass;
 	
