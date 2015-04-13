@@ -6,4 +6,6 @@ public interface IMultiBlock {
 	
 	public void setStructure(MultiBlockStructure structure);
 	
+	public void setMaster(boolean isMaster);
+	
 }
