@@ -1,11 +1,13 @@
 package com.creativemd.creativecore.core;
 
 import com.creativemd.creativecore.client.gui.GuiHandler;
+import com.creativemd.creativecore.common.event.TickHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
 import com.creativemd.creativecore.common.packet.GuiPacket;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -35,5 +37,7 @@ public class CreativeCore {
 		
 		//Init Packets
 		CreativeCorePacket.registerPacket(GuiPacket.class, "guipacket");
+		
+		FMLCommonHandler.instance().bus().register(new TickHandler());
     }
 }
