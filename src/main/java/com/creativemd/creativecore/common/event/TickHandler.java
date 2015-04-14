@@ -8,9 +8,11 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class TickHandler {
 	
+	@SideOnly(Side.SERVER)
 	@SubscribeEvent
 	public void onTick(TickEvent tick) //Remove all Structures which doesn't have any connections
 	{

@@ -18,10 +18,16 @@ public class GuiButtonControl extends GuiControl{
 	public static final ResourceLocation buttonTextures = new ResourceLocation("textures/gui/widgets.png");
 	
 	public String caption;
+	public int id;
 	
 	public GuiButtonControl(String caption, int x, int y, int width, int height) {
+		this(caption, x, y, width, height, 0);
+	}
+	
+	public GuiButtonControl(String caption, int x, int y, int width, int height, int id) {
 		super(x, y, width, height);
 		this.caption = caption;
+		this.id = id;
 	}
 	
 	@Override

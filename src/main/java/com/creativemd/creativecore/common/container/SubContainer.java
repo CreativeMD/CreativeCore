@@ -27,6 +27,11 @@ public abstract class SubContainer{
 		
 	}
 	
+	public ArrayList<Slot> getPlayerSlots(EntityPlayer player)
+	{
+		return getPlayerSlots(player, 8, 84);
+	}
+	
 	public ArrayList<Slot> getPlayerSlots(EntityPlayer player, int x, int y)
 	{
 		ArrayList<Slot> slots = new ArrayList<Slot>();
