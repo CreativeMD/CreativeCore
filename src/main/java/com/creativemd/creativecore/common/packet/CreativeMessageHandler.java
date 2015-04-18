@@ -28,9 +28,7 @@ public class CreativeMessageHandler implements IMessage{
 		packet = null;
 		try {
 			packet = (CreativeCorePacket) PacketClass.getConstructor().newInstance();
-		} catch (InstantiationException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
+		} catch (Exception e) {
 			System.out.println("Invalid packet id=" + id);
 		}
 		if(packet != null)
