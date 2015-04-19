@@ -79,6 +79,13 @@ public class ContainerSub extends Container{
 		subContainer.onUpdate();
     }
 	
+	@Override
+	public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        subContainer.onGuiClosed(player);
+    }
+	
 	/**Vanilla method fixed not took care of getSlotStockLimit**/
 	@Override
 	protected boolean mergeItemStack(ItemStack p_75135_1_, int p_75135_2_, int p_75135_3_, boolean p_75135_4_)

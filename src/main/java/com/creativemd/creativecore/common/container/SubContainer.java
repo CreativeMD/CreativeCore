@@ -21,6 +21,11 @@ public abstract class SubContainer{
 	
 	public abstract boolean doesGuiNeedUpdate();
 	
+	public void onGuiClosed(EntityPlayer player)
+	{
+		
+	}
+	
 	/**Can be used to update the gui per Tick**/	
 	public void onUpdate()
 	{
