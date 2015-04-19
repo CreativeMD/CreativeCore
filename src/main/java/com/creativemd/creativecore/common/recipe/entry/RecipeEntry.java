@@ -9,6 +9,8 @@ public abstract class RecipeEntry {
 	
 	public abstract boolean isEntry(ItemStack stack);
 	
+	public abstract int getNumberofUses(ItemStack stack);
+	
 	public static boolean isObject(ItemStack stack, Object object)
 	{
 		if(stack == null)
