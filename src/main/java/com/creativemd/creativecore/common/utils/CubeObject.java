@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.utils;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -31,6 +32,11 @@ public class CubeObject {
 		this.maxX = maxX;
 		this.maxY = maxY;
 		this.maxZ = maxZ;
+	}
+	
+	public CubeObject(AxisAlignedBB box)
+	{
+		this(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
 	}
 	
 	public CubeObject()
