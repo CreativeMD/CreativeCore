@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.recipe.entry;
 
 import net.minecraft.block.Block;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -9,7 +10,15 @@ public abstract class RecipeEntry {
 	
 	public abstract boolean isEntry(ItemStack stack);
 	
-	public abstract int getNumberofUses(ItemStack stack);
+	public abstract int getStackSize(ItemStack stack);
+	
+	public void consumeItemStack(int amount, int index, IInventory inventory)
+	{
+		ItemStack stack = inventory.getStackInSlot(index);
+		stack.stackSize -= amount*getStackSize(stack);
+		if(stack.stackSize == 0)
+			inventory.setInventorySlotContents(index, null);
+	}
 	
 	public static boolean isObject(ItemStack stack, Object object)
 	{

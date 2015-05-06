@@ -21,6 +21,43 @@ public class CreativeRecipe {
 		this.height = height;
 	}
 	
+	public void consumeRecipe(IInventory inventory, int width, int heigt)
+	{
+		consumeRecipe(inventory, width, heigt, 1);
+	}
+	
+	public void consumeRecipe(IInventory inventory, int width, int heigt, int amount)
+	{
+		ItemStack[] inv = getObjectInValidOrder(inventory, width, heigt);
+		
+		for (int i = 0; i < inv.length; i++) {
+			if(inv[i] != null)
+			{
+				ItemStack stack = inv[i];
+				
+				int index = getIndexInInventory(inventory, stack);
+				if(index != -1)
+				{
+					if(input[i] instanceof RecipeEntry)
+					{
+						int decrease = ((RecipeEntry) input[i]).getStackSize(inv[i]);
+						((RecipeEntry) input[i]).consumeItemStack(decrease, index, inventory);
+					}else{
+						int decrease = 1;
+						if(input[i] instanceof ItemStack){
+							decrease = ((ItemStack)input[i]).stackSize;			
+						}
+						
+						stack.stackSize -= decrease*amount;
+						if(stack.stackSize == 0)
+							inventory.setInventorySlotContents(index, null);
+					}
+				}
+				
+			}
+		}
+	}
+	
 	public ItemStack getCraftingResult(IInventory inventory, int width, int heigt)
 	{
 		if(isValidRecipe(inventory, width, heigt))
@@ -39,7 +76,7 @@ public class CreativeRecipe {
 				int uses = 0;
 				if(input[i] instanceof RecipeEntry)
 				{
-					uses = ((RecipeEntry) input[i]).getNumberofUses(inv[i]);
+					uses = ((RecipeEntry) input[i]).getStackSize(inv[i]);
 					
 				}else if(input[i] instanceof ItemStack){
 					uses = inv[i].stackSize/((ItemStack)input[i]).stackSize;			
@@ -142,4 +179,12 @@ public class CreativeRecipe {
 		return true;
 	}
 	
+	public static int getIndexInInventory(IInventory inventory, ItemStack stack)
+	{
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			if(inventory.getStackInSlot(i) == stack)
+				return i;
+		}
+		return -1;
+	}
 }

@@ -41,7 +41,7 @@ public class StackedEntry extends RecipeEntry{
 	}
 
 	@Override
-	public int getNumberofUses(ItemStack stack) {
+	public int getStackSize(ItemStack stack) {
 		if(minStackSize == 0)
 			return Integer.MAX_VALUE;
 		return stack.stackSize/minStackSize;
