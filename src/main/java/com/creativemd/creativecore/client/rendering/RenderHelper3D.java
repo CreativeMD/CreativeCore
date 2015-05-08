@@ -464,6 +464,66 @@ public class RenderHelper3D {
         GL11.glPopMatrix();
     }
 	
+	public static void renderLightning(double x, double y, double z, Vec3 start, Vec3 end, double thickness, int amountOfHalf, int maxDifference)
+	{
+		int editablePoints = (int)(Math.pow(2, amountOfHalf)-1);
+		Vec3[] points = new Vec3[editablePoints + 2];
+		Vec3 way = start.subtract(end);
+		way.xCoord /= points.length;
+		way.yCoord /= points.length;
+		way.zCoord /= points.length;
+		points[0] = start;
+		points[points.length-1] = start.subtract(end);
+		
+		for (int i = 1; i <= amountOfHalf; i++) {
+			int numberOfTiles = (int) Math.pow(2, i);
+			int numberOfPoints = numberOfTiles-1;
+			for (int j = 1; j <= numberOfPoints; j++) {
+				if(j/2 != j/2D)
+				{
+					int index = (int) (points.length/(double)numberOfTiles*j);
+					int preIndex = (int) ((points.length-1)/(double)numberOfTiles*(j-1));
+					int postIndex = (int) ((points.length-1)/(double)numberOfTiles*(j+1));
+					points[index] = points[preIndex].addVector(points[postIndex].xCoord, points[postIndex].yCoord, points[postIndex].zCoord);
+					points[index].xCoord /= 2;
+					points[index].yCoord /= 2;
+					points[index].zCoord /= 2;
+					double rotation = Math.random()*360;
+					double length = maxDifference/(Math.pow(i, 2));
+					Vec3 sideVec = Vec3.createVectorHelper(Math.random()*length-length/2, Math.random()*length-length/2, Math.random()*length-length/2);
+					points[index] = points[index].addVector(sideVec.xCoord, sideVec.yCoord, sideVec.zCoord);
+				}
+			}
+		}
+		
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        
+		GL11.glPushMatrix();
+		GL11.glTranslated(x, y, z);
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		GL11.glColor4d(0.6, 0.6, 1, 0.8);
+		for (int i = 1; i < points.length; i++) {
+			Vec3 vec = points[i];
+			Vec3 vec2 = points[i-1];
+			Vec3 player = Minecraft.getMinecraft().thePlayer.getLookVec();
+			Vec3 nvec = vec.subtract(vec2).crossProduct(player);
+			nvec.normalize();
+			nvec.xCoord *= thickness;
+			nvec.yCoord *= thickness;
+			nvec.zCoord *= thickness;
+			GL11.glBegin(GL11.GL_POLYGON);
+			GL11.glVertex3d(vec.xCoord+nvec.xCoord, vec.yCoord+nvec.yCoord, vec.zCoord+nvec.zCoord);
+			GL11.glVertex3d(vec.xCoord-nvec.xCoord, vec.yCoord-nvec.yCoord, vec.zCoord-nvec.zCoord);
+			GL11.glVertex3d(vec2.xCoord-nvec.xCoord, vec2.yCoord-nvec.yCoord, vec2.zCoord-nvec.zCoord);
+			GL11.glVertex3d(vec2.xCoord+nvec.xCoord, vec2.yCoord+nvec.yCoord, vec2.zCoord+nvec.zCoord);
+			GL11.glEnd();
+		}
+		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_LIGHTING);
+	}
+	
 	public static void renderTag(String text, double x, double y, double z, int distance)
     {
         double d3 = Math.sqrt(RenderManager.instance.getDistanceToCamera(x, y, z));

@@ -17,6 +17,8 @@ public abstract class SubContainer{
 	
 	public abstract void onGuiPacket(int control, String value, EntityPlayer player);
 	
+	public abstract void sendUpdate();
+	
 	public abstract ArrayList<Slot> getSlots(EntityPlayer player);
 	
 	public abstract boolean doesGuiNeedUpdate();
@@ -29,7 +31,10 @@ public abstract class SubContainer{
 	/**Can be used to update the gui per Tick**/	
 	public void onUpdate()
 	{
-		
+		if(doesGuiNeedUpdate())
+		{
+			sendUpdate();
+		}
 	}
 	
 	public ArrayList<Slot> getPlayerSlots(EntityPlayer player)
