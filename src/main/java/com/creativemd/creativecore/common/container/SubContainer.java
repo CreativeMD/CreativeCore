@@ -2,6 +2,8 @@ package com.creativemd.creativecore.common.container;
 
 import java.util.ArrayList;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -31,7 +33,7 @@ public abstract class SubContainer{
 	/**Can be used to update the gui per Tick**/	
 	public void onUpdate()
 	{
-		if(doesGuiNeedUpdate())
+		if(doesGuiNeedUpdate() && FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{
 			sendUpdate();
 		}

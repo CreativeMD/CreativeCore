@@ -81,6 +81,11 @@ public class CubeObject {
 		this.normalBlock = normalBlock;
 	}
 	
+	public AxisAlignedBB getAxis()
+	{
+		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+	}
+	
 	public static CubeObject rotateCube(CubeObject cube, ForgeDirection direction)
 	{
 		CubeObject rotateCube = new CubeObject(cube);

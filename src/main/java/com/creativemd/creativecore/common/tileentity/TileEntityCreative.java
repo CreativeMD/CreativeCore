@@ -25,7 +25,8 @@ public abstract class TileEntityCreative extends TileEntity{
 	
 	public void updateBlock()
 	{
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		if(!worldObj.isRemote)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 	
 }
