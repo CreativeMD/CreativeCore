@@ -1,5 +1,7 @@
 package com.creativemd.creativecore.client.rendering;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -23,6 +25,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.creativecore.common.utils.RotationUtils;
 
 import cpw.mods.fml.relauncher.Side;
@@ -572,4 +575,32 @@ public class RenderHelper3D {
         GL11.glPopMatrix();
         //}
     }
+	
+	public static void renderWorldCubes(RenderBlocks renderer, Block block, int meta, ArrayList<CubeObject> cubes, int x, int y, int z)
+	{
+		for (int i = 0; i < cubes.size(); i++) {
+			renderer.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
+			//renderer.partialRenderBounds = true;
+			if(cubes.get(i).icon != null)
+				renderer.setOverrideBlockTexture(cubes.get(i).icon);
+			
+			if(cubes.get(i).block != null)
+				if(cubes.get(i).meta != -1)
+				{
+					
+					RenderHelper3D.renderBlocks.clearOverrideBlockTexture();
+					RenderHelper3D.renderBlocks.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
+					RenderHelper3D.renderBlocks.meta = cubes.get(i).meta;
+					RenderHelper3D.renderBlocks.renderBlockAllFaces(cubes.get(i).block, x, y, z);
+					return ;
+				}
+				else
+					renderer.setOverrideBlockTexture(cubes.get(i).block.getBlockTextureFromSide(0));
+			
+			renderer.renderStandardBlock(block, x, y, z);
+			
+			if(cubes.get(i).icon != null || cubes.get(i).block != null)
+				renderer.clearOverrideBlockTexture();
+		}
+	}
 }

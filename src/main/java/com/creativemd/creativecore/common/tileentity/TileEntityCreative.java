@@ -12,6 +12,19 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class TileEntityCreative extends TileEntity{
 	
+	public void getDescriptionNBT(NBTTagCompound nbt)
+	{
+		
+	}
+	
+	@Override
+	public Packet getDescriptionPacket()
+    {
+		NBTTagCompound nbt = new NBTTagCompound();
+		getDescriptionNBT(nbt);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, blockMetadata, nbt);
+    }
+	
 	public double getDistance(ChunkCoordinates coord)
 	{
 		return Math.sqrt(Math.pow(xCoord+coord.posX, 2) + Math.pow(yCoord+coord.posY, 2) + Math.pow(zCoord+coord.posZ, 2));
