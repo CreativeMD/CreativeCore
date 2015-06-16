@@ -87,6 +87,8 @@ public abstract class GuiControl {
 		return false;
 	}
 	
+	public void onLoseFocus(){}
+	
 	public void onKeyPressed(int key){}
 	public void onKeyDown(int key){}
 	public void onKeyUp(int key){}

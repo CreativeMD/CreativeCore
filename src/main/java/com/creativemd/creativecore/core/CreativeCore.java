@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.core;
 
 import com.creativemd.creativecore.client.gui.GuiHandler;
+import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.TickHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
@@ -14,6 +15,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore")
@@ -34,6 +36,8 @@ public class CreativeCore {
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.CLIENT);
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+		
+		EntityRegistry.registerModEntity(EntitySit.class, "Sit", 0, this, 250, 250, true);
 		
 		//Init Packets
 		CreativeCorePacket.registerPacket(GuiPacket.class, "guipacket");
