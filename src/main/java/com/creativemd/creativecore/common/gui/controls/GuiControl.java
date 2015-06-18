@@ -68,9 +68,9 @@ public abstract class GuiControl {
 	
 	public boolean isMouseOver(int posX, int posY)
 	{
-		Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
-		if(mousePos.x >= this.posX-this.width/2 && mousePos.x <= this.posX+this.width/2 &&
-				mousePos.y >= this.posY-this.height/2 && mousePos.y <= this.posY+this.height/2)
+		//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
+		if(posX >= this.posX-this.width/2 && posX <= this.posX+this.width/2 &&
+				posY >= this.posY-this.height/2 && posY <= this.posY+this.height/2)
 		{
 			return true;
 		}
@@ -89,9 +89,12 @@ public abstract class GuiControl {
 	
 	public void onLoseFocus(){}
 	
-	public void onKeyPressed(int key){}
-	public void onKeyDown(int key){}
-	public void onKeyUp(int key){}
+	public boolean onKeyPressed(char character, int key)
+	{
+		return false;
+	}
+	//public void onKeyDown(int key){}
+	//public void onKeyUp(int key){}
 	
 	public ArrayList<String> getTooltip()
 	{

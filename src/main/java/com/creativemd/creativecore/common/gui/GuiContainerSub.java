@@ -46,7 +46,8 @@ public class GuiContainerSub extends GuiContainer{
 		
 		Vector2d mouse = GuiControl.getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			if(controls.get(i).isMouseOver((int)mouse.x, (int)mouse.y))
+			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
+			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
 			{
 				RenderHelper2D.drawHoveringText(controls.get(i).getTooltip(), (int)mouse.x, (int)mouse.y, fontRendererObj);
 			}
@@ -54,14 +55,29 @@ public class GuiContainerSub extends GuiContainer{
 	}
 	
 	@Override
+	public void keyTyped(char character, int key)
+    {
+		for (int i = 0; i < controls.size(); i++) {
+			if(controls.get(i).onKeyPressed(character, key))
+				return ;
+		}
+    }
+	
+	@Override
 	public void mouseClicked(int x, int y, int button)
 	{
 		super.mouseClicked(x, y, button);
-		for (int i = 0; i < controls.size(); i++) {
+		for (int i = controls.size()-1; i >= 0; i--) {
 			Vector2d mouse = GuiControl.getMousePos();
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
+			//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
+			{
 				gui.onControlClicked(controls.get(i));
+				return ;
+			}else{
+				controls.get(i).onLoseFocus();
+			}
 		}
 	}
 	

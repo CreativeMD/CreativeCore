@@ -15,7 +15,7 @@ public abstract class GuiFocusControl extends GuiControl{
 	@Override
 	public void onLoseFocus()
 	{
-		focused = true;
+		focused = false;
 	}
 	
 	@Override
