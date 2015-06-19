@@ -25,6 +25,8 @@ public abstract class SubContainer{
 	
 	public abstract boolean doesGuiNeedUpdate();
 	
+	public void onSlotChange() {}
+	
 	public void onGuiClosed(EntityPlayer player)
 	{
 		

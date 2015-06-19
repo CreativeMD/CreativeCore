@@ -1,9 +1,12 @@
 package com.creativemd.creativecore.common.container;
+import com.creativemd.creativecore.common.container.slot.SlotImage;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -21,6 +24,13 @@ public class ContainerSub extends Container{
 			addSlotToContainer(subContainer.slots.get(i));
 		}
 	}
+	
+	@Override
+	public void onCraftMatrixChanged(IInventory inventory)
+    {
+        super.onCraftMatrixChanged(inventory);
+        subContainer.onSlotChange();
+    }
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index)
@@ -111,7 +121,7 @@ public class ContainerSub extends Container{
                 if(slot.getSlotStackLimit() < stackSize)
                 	stackSize = slot.getSlotStackLimit();
                 
-                if (itemstack1 != null && itemstack1.getItem() == p_75135_1_.getItem() && (!p_75135_1_.getHasSubtypes() || p_75135_1_.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(p_75135_1_, itemstack1))
+                if (!(slot instanceof SlotImage) && itemstack1 != null && itemstack1.getItem() == p_75135_1_.getItem() && (!p_75135_1_.getHasSubtypes() || p_75135_1_.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(p_75135_1_, itemstack1) && slot.isItemValid(itemstack1))
                 {
                     int l = itemstack1.stackSize + p_75135_1_.stackSize;
                     
@@ -158,7 +168,7 @@ public class ContainerSub extends Container{
                 slot = (Slot)this.inventorySlots.get(k);
                 itemstack1 = slot.getStack();
 
-                if (itemstack1 == null && slot.isItemValid(p_75135_1_))
+                if (!(slot instanceof SlotImage) && itemstack1 == null && slot.isItemValid(p_75135_1_))
                 {
                 	ItemStack newStack = p_75135_1_.copy();
                 	int rest = 0;

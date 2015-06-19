@@ -61,6 +61,7 @@ public class GuiContainerSub extends GuiContainer{
 			if(controls.get(i).onKeyPressed(character, key))
 				return ;
 		}
+		super.keyTyped(character, key);
     }
 	
 	@Override

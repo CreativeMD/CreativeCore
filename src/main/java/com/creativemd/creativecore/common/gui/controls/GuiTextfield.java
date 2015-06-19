@@ -258,7 +258,7 @@ public class GuiTextfield extends GuiFocusControl{
             }
 
             int k = this.getWidth();
-            String s = this.fontRenderer.trimStringToWidth(this.text.substring(this.selEnd), k);
+            String s = this.fontRenderer.trimStringToWidth(this.text.substring(this.scrollOffset), k);
             int l = s.length() + this.scrollOffset;
 
             if (p_146199_1_ == this.scrollOffset)
