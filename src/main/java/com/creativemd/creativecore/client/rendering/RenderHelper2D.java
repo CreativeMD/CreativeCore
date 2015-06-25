@@ -60,9 +60,14 @@ public class RenderHelper2D {
 	public static void renderIcon(IIcon icon, int x, int y, double alpha, boolean isBlock, double rotation, double sizeX, double sizeY)
 	{
 		GL11.glPushMatrix();
-		GL11.glTranslated(x+8, y+8, 0);
-        GL11.glRotated(rotation, 0, 0, 1);
-        GL11.glTranslated(-x-8, -y-8, 0);
+		//GL11.glTranslated(x, y, 0);
+		
+		GL11.glTranslated(x+sizeX/2, y+sizeY/2, 0);
+		GL11.glRotated(rotation, 0, 0, 1);
+		GL11.glTranslated(-x-sizeX/2, -y-sizeY/2, 0);
+        
+        //GL11.glTranslated(x, y, 0);
+        
 		GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         OpenGlHelper.glBlendFunc(770, 771, 1, 0);

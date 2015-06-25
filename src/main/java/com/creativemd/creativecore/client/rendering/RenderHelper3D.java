@@ -110,12 +110,21 @@ public class RenderHelper3D {
 	
 	public static void renderBlock(Block block, double x, double y, double z, double width, double height, double length, double rotateX, double rotateY, double rotateZ)
 	{
+		renderBlock(block, x, y, z, width, height, length, rotateX, rotateY, rotateZ, ForgeDirection.EAST);
+	}
+	
+	public static void renderBlock(Block block, double x, double y, double z, double width, double height, double length, double rotateX, double rotateY, double rotateZ, ForgeDirection direction)
+	{
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
+		applyDirection(direction);
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		GL11.glRotated(rotateX, 1, 0, 0);
 		GL11.glRotated(rotateY, 0, 1, 0);
 		GL11.glRotated(rotateZ, 0, 0, 1);
+		
+		
+		
 		GL11.glScaled(width, height, length);
 		RenderHelper3D.renderBlock(block);
         GL11.glPopMatrix();
@@ -274,6 +283,11 @@ public class RenderHelper3D {
 	
 	public static void renderItem(ItemStack stack, double x, double y, double z, double rotationX, double rotationY, double rotationZ, double size, ForgeDirection direction, double moveX, double moveY, double moveZ)
 	{
+		renderItem(stack, x, y, z, rotationX, rotationY, rotationZ, size, direction, moveX, moveY, moveZ, null);
+	}
+	
+	public static void renderItem(ItemStack stack, double x, double y, double z, double rotationX, double rotationY, double rotationZ, double size, ForgeDirection direction, double moveX, double moveY, double moveZ, IIcon icon)
+	{
 		if (stack.getItem() != null)
         {
 			ResourceLocation resourcelocation = mc.renderEngine.getResourceLocation(stack.getItemSpriteNumber());
@@ -349,6 +363,8 @@ public class RenderHelper3D {
 						f6 = (float)(k >> 8 & 255) / 255.0F;
 						f7 = (float)(k & 255) / 255.0F;
 						GL11.glColor4f(f5, f6, f7, 1.0F);
+						if(icon != null)
+							iicon1 = icon;
 						renderDroppedItem(stack, iicon1, b0, f5, f6, f7, j);
                     }
                 }
@@ -369,6 +385,8 @@ public class RenderHelper3D {
                     float f4 = (float)(i >> 16 & 255) / 255.0F;
                     f5 = (float)(i >> 8 & 255) / 255.0F;
                     f6 = (float)(i & 255) / 255.0F;
+                    if(icon != null)
+                    	iicon = icon;
                     renderDroppedItem(stack, iicon, b0, f4, f5, f6, 0);
 
                     if (stack != null && stack.getItem() instanceof ItemCloth)
@@ -387,14 +405,18 @@ public class RenderHelper3D {
 	
 	public static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
 	
-	public static void renderDroppedItem(ItemStack stack, IIcon p_77020_2_, int p_77020_3_, float p_77020_5_, float p_77020_6_, float p_77020_7_, int pass)
+	public static void renderIcon(IIcon p_77020_2_, int p_77020_3_, float p_77020_5_, float p_77020_6_, float p_77020_7_, int pass, boolean hasEffect, int stackSize, boolean isBlock)
     {
-        Tessellator tessellator = Tessellator.instance;
-
+		Tessellator tessellator = Tessellator.instance;
+		int spritenumber = 0;
+        if(!isBlock)
+        	spritenumber = 1;
+        
         if (p_77020_2_ == null)
         {
             TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-            ResourceLocation resourcelocation = texturemanager.getResourceLocation(stack.getItemSpriteNumber());
+            
+            ResourceLocation resourcelocation = texturemanager.getResourceLocation(spritenumber);
             p_77020_2_ = ((TextureMap)texturemanager.getTexture(resourcelocation)).getAtlasSprite("missingno");
         }
 
@@ -411,7 +433,7 @@ public class RenderHelper3D {
 
         float f9 = 0.0625F;
         f10 = 0.021875F;
-        int j = stack.stackSize;
+        int j = stackSize;
         byte b0 = 1;
 
         GL11.glTranslatef(-f7, -f8, -0.05F);
@@ -420,7 +442,7 @@ public class RenderHelper3D {
         {
             GL11.glTranslatef(0f, 0f, f9 + f10);
 
-            if (stack.getItemSpriteNumber() == 0)
+            if (spritenumber == 0)
             {
             	mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
             }
@@ -432,7 +454,7 @@ public class RenderHelper3D {
             GL11.glColor4f(p_77020_5_, p_77020_6_, p_77020_7_, 1.0F);
             ItemRenderer.renderItemIn2D(tessellator, f15, f4, f14, f5, ((IIcon)p_77020_2_).getIconWidth(), ((IIcon)p_77020_2_).getIconHeight(), f9);
 
-            if (stack.hasEffect(pass))
+            if (hasEffect)
             {
                 GL11.glDepthFunc(GL11.GL_EQUAL);
                 GL11.glDisable(GL11.GL_LIGHTING);
@@ -465,6 +487,11 @@ public class RenderHelper3D {
         }
 
         GL11.glPopMatrix();
+    }
+	
+	public static void renderDroppedItem(ItemStack stack, IIcon p_77020_2_, int p_77020_3_, float p_77020_5_, float p_77020_6_, float p_77020_7_, int pass)
+    {
+        renderIcon(p_77020_2_, p_77020_3_, p_77020_5_, p_77020_6_, p_77020_7_, pass, stack.hasEffect(pass), stack.stackSize, stack.getItemSpriteNumber() == 0);
     }
 	
 	public static void renderLightning(double x, double y, double z, Vec3 start, Vec3 end, double thickness, int amountOfHalf, int maxDifference)

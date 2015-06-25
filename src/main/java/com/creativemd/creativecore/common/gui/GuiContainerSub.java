@@ -13,6 +13,7 @@ import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
 import com.creativemd.creativecore.core.CreativeCore;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -53,6 +54,12 @@ public class GuiContainerSub extends GuiContainer{
 			}
 		}
 	}
+	
+	@Override
+	public void setWorldAndResolution(Minecraft mc, int width, int height)
+    {
+		super.setWorldAndResolution(mc, width, height);
+    }
 	
 	@Override
 	public void keyTyped(char character, int key)

@@ -26,13 +26,6 @@ public class ContainerSub extends Container{
 	}
 	
 	@Override
-	public void onCraftMatrixChanged(IInventory inventory)
-    {
-        super.onCraftMatrixChanged(inventory);
-        subContainer.onSlotChange();
-    }
-	
-	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
 		ItemStack itemstack = null;
@@ -86,6 +79,7 @@ public class ContainerSub extends Container{
 	public void detectAndSendChanges()
     {
 		super.detectAndSendChanges();
+		subContainer.onSlotChange();
 		subContainer.onUpdate();
     }
 	

@@ -11,6 +11,13 @@ import net.minecraft.tileentity.TileEntity;
 
 public abstract class SubContainer{
 	
+	public EntityPlayer player;
+	
+	public SubContainer(EntityPlayer player)
+	{
+		this.player = player;
+	}
+	
 	public ContainerSub container;
 	
 	public ArrayList<IInventory> inventories = new ArrayList<IInventory>();

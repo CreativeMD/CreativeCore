@@ -1,7 +1,8 @@
-package com.creativemd.creativecore.client.gui;
+package com.creativemd.creativecore.common.gui;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -9,6 +10,8 @@ import net.minecraft.world.World;
 import com.creativemd.creativecore.common.container.ContainerSub;
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
 import com.creativemd.creativecore.common.gui.IGuiCreator;
+import com.creativemd.creativecore.common.packet.PacketHandler;
+import com.creativemd.creativecore.common.packet.TEContainerPacket;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 
@@ -21,8 +24,7 @@ public class GuiHandler implements IGuiHandler {
 		{
 		case 0: //It's a block
 			Block block = world.getBlock(x, y, z);
-			if(block instanceof IGuiCreator)
-				return new ContainerSub(player, ((IGuiCreator) block).getContainer(player, null, world, x, y, z));
+			return new ContainerSub(player, ((IGuiCreator) block).getContainer(player, null, world, x, y, z));
 		case 1: //It's an item
 			ItemStack stack = player.getHeldItem();
 			if(stack != null && stack.getItem() instanceof IGuiCreator)
