@@ -23,10 +23,11 @@ public abstract class SubGui {
 	
 	public abstract void drawBackground(FontRenderer fontRenderer);
 	
-	public void onControlClicked(GuiControl control)
-	{
-		
-	}
+	public void onControlClicked(GuiControl control){}
+	
+	public void onMouseDragged(GuiControl control){}
+	
+	public void onMouseReleased(GuiControl control){}
 	
 	public void sendGuiPacket(int control, String value)
 	{
