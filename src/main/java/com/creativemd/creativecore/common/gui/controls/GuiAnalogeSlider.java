@@ -116,8 +116,14 @@ public class GuiAnalogeSlider extends GuiControl
 	public boolean mousePressed(int posX, int posY, int button)
 	{
 		Vector2d mouse = getMousePos();
-		if(button == 0 && isMouseOver((int)mouse.x, (int)mouse.x))
-			return (grabbedSlider = true);
+		if(enabled)
+		{
+			if(button == 0 && isMouseOver((int)mouse.x, (int)mouse.x))
+			{
+				mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+				return (grabbedSlider = true);
+			}
+		}
 		return false;
 	}
 	
