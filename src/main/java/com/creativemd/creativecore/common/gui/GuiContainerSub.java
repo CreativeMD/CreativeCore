@@ -90,6 +90,47 @@ public class GuiContainerSub extends GuiContainer{
 	}
 	
 	@Override
+	public void mouseClickMove(int x, int y, int button, long time)
+	{
+		super.mouseClickMove(x, y, button, time);
+		for(int i = controls.size()-1; i >= 0; i--)
+		{
+			Vector2d mouse = GuiControl.getMousePos();
+			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
+			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseDragged((int)pos.x, (int)pos.y, button))
+			{
+				gui.onMouseDragged(controls.get(i));
+				return;
+			}
+		}
+	}
+	
+	@Override
+	protected void mouseMovedOrUp(int x, int y, int button)
+	{
+		super.mouseMovedOrUp(x, y, button);
+		if(button > 0)
+			onMouseMove();
+		else onMouseReleased(x, y, button);
+	}
+	
+	public void onMouseMove(){} //unused for right now
+	
+	public void onMouseReleased(int x, int y, int button)
+	{
+		for(int i = controls.size()-1; i >= 0; i--)
+		{
+			Vector2d mouse = GuiControl.getMousePos();
+			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
+			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseReleased((int)pos.x, (int)pos.y, button))
+			{
+				gui.onMouseReleased(controls.get(i));
+				return;
+			}
+		}
+	}
+	
+	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_,
 			int p_146976_2_, int p_146976_3_) {
 		int k = (this.width - this.xSize) / 2;
