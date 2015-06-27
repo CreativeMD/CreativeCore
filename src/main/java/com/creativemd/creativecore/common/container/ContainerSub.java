@@ -1,8 +1,10 @@
 package com.creativemd.creativecore.common.container;
 import com.creativemd.creativecore.common.container.slot.SlotImage;
+import com.creativemd.creativecore.common.gui.GuiContainerSub;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -13,6 +15,9 @@ import net.minecraft.item.ItemStack;
 public class ContainerSub extends Container{
 	
 	public SubContainer subContainer;
+	
+	@SideOnly(Side.CLIENT)
+	public GuiContainerSub gui;
 	
 	public ContainerSub(EntityPlayer player, SubContainer subContainer)
 	{

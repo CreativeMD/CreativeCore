@@ -9,6 +9,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
+import com.creativemd.creativecore.common.gui.SubGui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,6 +30,8 @@ public abstract class GuiControl {
 	public int rotation;
 	public boolean visible;
 	public boolean enabled;
+	
+	public SubGui parent;
 	
 	/**0: around center, 1: around left & top corner**/
 	public int rotateMode = 0;
@@ -101,15 +104,15 @@ public abstract class GuiControl {
 		return new ArrayList<String>();
 	}
 	
-	public static Vector2d getMousePos()
+	public static Vector2d getMousePos(int width, int height)
 	{
 		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 		int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
 		int x = Mouse.getEventX() * i / mc.displayWidth;
         int y = j - Mouse.getEventY() * j / mc.displayHeight - 1;
-        int movex = (i - GuiContainerSub.xSize)/2;
-        int movey = (j - GuiContainerSub.ySize)/2;
+        int movex = (i - width)/2;
+        int movey = (j - height)/2;
         x -= movex;
         y -= movey;
         //System.out.println("Mouse X:" + x + ", Y:" + y);

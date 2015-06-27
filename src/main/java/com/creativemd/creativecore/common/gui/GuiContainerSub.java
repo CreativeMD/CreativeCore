@@ -15,6 +15,8 @@ import com.creativemd.creativecore.core.CreativeCore;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -23,9 +25,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiContainerSub extends GuiContainer{
 	
-	public static final int xSize = 176;
+	//public static final int xSize = 176;
 	
-    public static final int ySize = 166;
+    //public static final int ySize = 166;
     
 	public static final ResourceLocation background = new ResourceLocation(CreativeCore.modid + ":textures/gui/GUI.png");
 	
@@ -35,8 +37,42 @@ public class GuiContainerSub extends GuiContainer{
 	
 	public GuiContainerSub(EntityPlayer player, SubGui gui, SubContainer container) {
 		super(new ContainerSub(player, container));
+		((ContainerSub)inventorySlots).gui = this;
 		this.gui = gui;
 		controls = gui.getControls();
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).parent = gui;
+		this.xSize = gui.width;
+		this.ySize = gui.height;
+		
+	}
+	
+	public int getWidth()
+	{
+		return xSize;
+	}
+	
+	public int getHeight()
+	{
+		return ySize;
+	}
+	
+	public int getMaxScale(Minecraft mc)
+	{
+		int k = 1000;
+		int scaleFactor = 1;
+
+
+        while (scaleFactor < k && xSize * (scaleFactor + 1) <= mc.displayWidth && ySize * (scaleFactor + 1) <= mc.displayHeight)
+        {
+            ++scaleFactor;
+        }
+
+        /*if (flag && this.scaleFactor % 2 != 0 && this.scaleFactor != 1)
+        {
+            --this.scaleFactor;
+        }*/
+		return scaleFactor;
 	}
 	
 	@Override                                   
@@ -45,12 +81,12 @@ public class GuiContainerSub extends GuiContainer{
 		GuiControl.renderControls(controls, fontRendererObj, 0);
 		gui.drawForeground(fontRendererObj);
 		
-		Vector2d mouse = GuiControl.getMousePos();
+		Vector2d mouse = GuiControl.getMousePos(xSize, ySize);
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
 			{
-				RenderHelper2D.drawHoveringText(controls.get(i).getTooltip(), (int)mouse.x, (int)mouse.y, fontRendererObj);
+				RenderHelper2D.drawHoveringText(controls.get(i).getTooltip(), (int)mouse.x, (int)mouse.y, fontRendererObj, this);
 			}
 		}
 	}
@@ -76,7 +112,7 @@ public class GuiContainerSub extends GuiContainer{
 	{
 		super.mouseClicked(x, y, button);
 		for (int i = controls.size()-1; i >= 0; i--) {
-			Vector2d mouse = GuiControl.getMousePos();
+			Vector2d mouse = GuiControl.getMousePos(xSize, ySize);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
@@ -138,12 +174,60 @@ public class GuiContainerSub extends GuiContainer{
 		
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.mc.getTextureManager().bindTexture(background);
-		this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
+		int frameSX = 176;
+		int frameSY = 166;
+		this.drawTexturedModalRect(k, l, 0, 0, 6, 6);
+		this.drawTexturedModalRect(k+this.xSize-6, l, frameSX-6, 0, 6, 6);
+		this.drawTexturedModalRect(k, l+this.ySize-6, 0, frameSY-6, 6, 6);
+		this.drawTexturedModalRect(k+this.xSize-6, l+this.ySize-6, frameSX-6, frameSY-6, 6, 6);
+		
+		float sizeX = (frameSX-12);
+		float amountX = (float)(xSize-12)/sizeX;
+		
+		int i = 0;
+		while(amountX > 0)
+		{
+			float percent = 1;
+			if(amountX < 1)
+				percent = amountX;
+			this.drawTexturedModalRect(k+6+(int)(i*sizeX), l, 6, 0, (int)Math.ceil(sizeX*percent), 6);
+			this.drawTexturedModalRect(k+6+(int)(i*sizeX), l+this.ySize-6, 6, frameSY-6, (int)Math.ceil(sizeX*percent), 6);
+			amountX--;
+			i++;
+		}
+		
+		float sizeY = (frameSY-12);
+		float amountY = (float)(ySize-12)/sizeY;
+		i = 0;
+		while(amountY > 0)
+		{
+			float percent = 1;
+			if(amountY < 1)
+				percent = amountY;
+			this.drawTexturedModalRect(k, l+6+(int)(i*sizeY), 0, 6, 6, (int)Math.ceil(sizeY*percent));
+			this.drawTexturedModalRect(k+this.xSize-6, l+6+(int)(i*sizeY), frameSX-6, 6, 6, (int)Math.ceil(sizeY*percent));
+			//this.drawTexturedModalRect(k+6+(int)(i*sizeY), l+this.ySize-6, 6, frameSY-6, (int)Math.ceil(sizeX*percent), 6);
+			amountY--;
+			i++;
+		}
+		
+		//this.drawRect(k+6, l+6, k+this.xSize-6, l+this.ySize-6, 0);
+		
+		Tessellator tessellator = Tessellator.instance;
+		GL11.glColor4d(1, 1, 1, 1);
+        tessellator.startDrawingQuads();
+        tessellator.addVertex((double)k+6, (double)l+this.ySize-6, 0.0D);
+        tessellator.addVertex((double)k+this.xSize-6, (double)l+this.ySize-6, 0.0D);
+        tessellator.addVertex((double)k+this.xSize-6, (double)l+6, 0.0D);
+        tessellator.addVertex((double)k+6, (double)l+6, 0.0D);
+        tessellator.draw();
+        //GL11.glColor4f(f, f1, f2, f3);
+		//this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
 		
 		for (int i1 = 0; i1 < this.inventorySlots.inventorySlots.size(); ++i1)
         {
             Slot slot = (Slot)this.inventorySlots.inventorySlots.get(i1);
-            this.drawTexturedModalRect(k+slot.xDisplayPosition-1, l+slot.yDisplayPosition-1, xSize, 0, 18, 18);
+            this.drawTexturedModalRect(k+slot.xDisplayPosition-1, l+slot.yDisplayPosition-1, 176, 0, 18, 18);
         }
 		gui.drawBackground(fontRendererObj);
 	}

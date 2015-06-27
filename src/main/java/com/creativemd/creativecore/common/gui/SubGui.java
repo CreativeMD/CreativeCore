@@ -15,6 +15,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class SubGui {
 	
+	public int width;
+	
+    public int height;
+    
+    public SubGui() {
+		this(176, 166);
+	}
+    
+    public SubGui(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+	
 	public String title;
 	
 	public abstract ArrayList<GuiControl> getControls();
