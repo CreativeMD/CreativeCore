@@ -25,6 +25,13 @@ import net.minecraft.client.renderer.Tessellator;
 @SideOnly(Side.CLIENT)
 public abstract class GuiControl{
 	
+	private int id = -1;
+	
+	public void setID(int id)
+	{
+		if(this.id != -1)
+			this.id = id;
+	}
 	
 	public int posX;
 	public int posY;

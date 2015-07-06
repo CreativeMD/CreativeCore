@@ -39,7 +39,10 @@ public class GuiContainerSub extends GuiContainer{
 		this.gui = gui;
 		controls = gui.getControls();
 		for (int i = 0; i < controls.size(); i++)
+		{
 			controls.get(i).parent = gui;
+			controls.get(i).setID(i);
+		}
 		this.xSize = gui.width;
 		this.ySize = gui.height;
 		

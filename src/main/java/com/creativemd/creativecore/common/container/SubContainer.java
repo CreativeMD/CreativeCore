@@ -2,6 +2,8 @@ package com.creativemd.creativecore.common.container;
 
 import java.util.ArrayList;
 
+import com.creativemd.creativecore.common.container.slot.ContainerControl;
+import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 
@@ -37,6 +39,8 @@ public abstract class SubContainer{
 	
 	public ArrayList<Slot> slots = new ArrayList<Slot>();
 	
+	public abstract ArrayList<ContainerControl> getControls();
+	
 	public abstract void onGuiPacket(int controlID, NBTTagCompound nbt, EntityPlayer player);
 	
 	public abstract ArrayList<Slot> getSlots(EntityPlayer player);
@@ -56,9 +60,12 @@ public abstract class SubContainer{
 	
 	public void onGuiOpened()
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
-		writeOpeningNBT(nbt);
-		PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, true), (EntityPlayerMP) player);
+		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			NBTTagCompound nbt = new NBTTagCompound();
+			writeOpeningNBT(nbt);
+			PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, true), (EntityPlayerMP) player);
+		}
 	}
 	
 	/**Can be used to update the gui per Tick**/	

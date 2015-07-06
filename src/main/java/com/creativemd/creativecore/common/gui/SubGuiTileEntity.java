@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.gui;
 import java.util.ArrayList;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 import com.creativemd.creativecore.common.gui.SubGui;
@@ -15,6 +16,11 @@ public abstract class SubGuiTileEntity extends SubGui{
 	public SubGuiTileEntity(TileEntity tileEntity)
 	{
 		this.tileEntity = tileEntity;
+	}
+	
+	public void readFromOpeningNBT(NBTTagCompound nbt)
+	{
+		tileEntity.readFromNBT(nbt);
 	}
 
 }
