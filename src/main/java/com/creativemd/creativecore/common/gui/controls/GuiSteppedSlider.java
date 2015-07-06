@@ -13,64 +13,35 @@ import org.lwjgl.opengl.GL11;
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import com.creativemd.creativecore.core.CreativeCore;
 
-public class GuiAnalogeSlider extends GuiControl
+public class GuiSteppedSlider extends GuiControl
 {
 	public static final ResourceLocation buttonTextures = new ResourceLocation("textures/gui/widgets.png");
 	public static final ResourceLocation SliderRailTexture = new ResourceLocation(CreativeCore.modid, "textures/gui/SliderRail.png");
 	public static final ResourceLocation SliderTexture = new ResourceLocation(CreativeCore.modid, "textures/gui/Slider.png");
+	public String[] representativeObjects;
 	public int id;
-	public float maxValue;
-	public float minValue;
-	public float value;
+	public int stepsCount;
+	public int value;
 	public boolean grabbedSlider;
 
 	/**
-	 * The Default minimumValue is 0.
-	 * @param x         - The x-coordinate of the topLeft corner of the Slider.
-	 * @param y         - The y-coordinate of the topLeft corner of the Slider.
-	 * @param width     - The Width of the Slider.
-	 * @param height    - The height of the Slider.
-	 * @param rotation  - The rotation of the Slider.
-	 * @param id		- The id of the Slider, used to get its values.
-	 * @param minValue  - The minimum Value this Slider can reach.
-	 * @param maxValue  - The maximum Value this Slider can reach.
+	 * @param x         			- The x-coordinate of the topLeft corner of the Slider.
+	 * @param y         			- The y-coordinate of the topLeft corner of the Slider.
+	 * @param width     			- The Width of the Slider.
+	 * @param height   			 	- The height of the Slider.
+	 * @param rotation 			 	- The rotation of the Slider.
+	 * @param id					- The id of the Slider, used to get its values.
+	 * @param stepsCount  			- The StepsCount this Slider should have. (This can't be lower than 2, It will throw an exception!)
+	 * @param representativeObjects - The String each Step should represent.
 	 */
-	public GuiAnalogeSlider(int x, int y, int width, int height, int rotation, int id, float minValue, float maxValue)
+	public GuiSteppedSlider(int x, int y, int width, int height, int rotation, int id, int stepsCount, String[] representativeObjects)
 	{
 		super(x, y, width, height, rotation);
 		this.id = id;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
-	}
-	
-	/**
-	 * The Default minimumValue is 0.
-	 * @param x         - The x-coordinate of the topLeft corner of the Slider.
-	 * @param y         - The y-coordinate of the topLeft corner of the Slider.
-	 * @param width     - The Width of the Slider.
-	 * @param height    - The height of the Slider.
-	 * @param rotation  - The rotation of the Slider.
-	 * @param id		- The id of the Slider, used to get its values.
-	 * @param maxValue  - The max Value this Slider can reach.
-	 */
-	public GuiAnalogeSlider(int x, int y, int width, int height, int rotation, int id, float maxValue)
-	{
-		this(x, y, width, height, rotation, id, 0, maxValue);
-	}
-	
-	/**
-	 * Default Slider Constructor, use this only if you use only 1 Slider!
-	 * The Default minimumValue is 0;
-	 * The Default maximumValue is 100;
-	 * @param x         - The x-coordinate of the topLeft corner of the Slider.
-	 * @param y         - The y-coordinate of the topLeft corner of the Slider.
-	 * @param width     - The Width of the Slider.
-	 * @param height    - The height of the Slider.
-	 * @param rotation  - The rotation of the Slider.
-	 */
-	public GuiAnalogeSlider(int x, int y, int width, int height, int rotation)
-	{
-		this(x, y, width, height, rotation, 0, 0, 100);
+		if(stepsCount > 1)
+			this.stepsCount = stepsCount;
+		else throw new IllegalArgumentException("StepCount can't be lower than 2!");
+		this.representativeObjects = representativeObjects;
 	}
 
 	@Override
@@ -98,10 +69,13 @@ public class GuiAnalogeSlider extends GuiControl
          * - this.width
          * - this.height
          * - this.value
-         * - this.maxValue
-         * - this.minValue
+         * - this.stepCount
+         * offset = (this.posX + (this.value * (this.width/(stepCount - 1)))
+         * representativeObjects = representativeObjects[Value]
          */
+       
         /*
+         * These methods are the same as the AnalogeSlider, alternative offset is added by the parameters
         GL11.glPushMatrix();
         mc.getTextureManager().bindTexture(SliderRailTexture);
         RenderHelper2D.drawTexturedModalRect(0, this.posX + this.width, this.posY, 0, 0, this.width, this.height);
@@ -138,10 +112,10 @@ public class GuiAnalogeSlider extends GuiControl
 		if(grabbedSlider)
 		{
 			if(mouse.x < this.posX)
-				this.value = this.minValue;
+				this.value = 0;
 			else if(mouse.x > this.posX + this.width)
-				this.value = this.maxValue;
-			else this.value = (float)((this.maxValue - this.minValue) * ((float)(mouse.x - this.posX) / (float)this.width));
+				this.value = this.stepsCount - 1;
+			else this.value = (int)(((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))) - (int)((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))) > 0.5 ? (int)((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))) + 1 : (int)((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))));
 			return true;
 		}
 		return false;

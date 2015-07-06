@@ -32,6 +32,7 @@ public class GuiButtonControl extends GuiControl{
 	
 	@Override
 	public void drawControl(FontRenderer renderer) {
+		Minecraft mc = Minecraft.getMinecraft();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(buttonTextures);
 		int k = 1;
@@ -70,6 +71,7 @@ public class GuiButtonControl extends GuiControl{
 	{
 		if(enabled)
 		{
+			Minecraft mc = Minecraft.getMinecraft();
 			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 			return true;
 		}

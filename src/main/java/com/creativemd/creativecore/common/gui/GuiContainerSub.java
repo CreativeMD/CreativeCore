@@ -9,9 +9,11 @@ import org.lwjgl.opengl.GL11;
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import com.creativemd.creativecore.common.container.ContainerSub;
 import com.creativemd.creativecore.common.container.SubContainer;
+import com.creativemd.creativecore.common.gui.SubGui.ControlEvent;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
 import com.creativemd.creativecore.core.CreativeCore;
+import com.mojang.realmsclient.dto.Subscription.SubscriptionType;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -25,10 +27,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiContainerSub extends GuiContainer{
 	
-	//public static final int xSize = 176;
-	
-    //public static final int ySize = 166;
-    
 	public static final ResourceLocation background = new ResourceLocation(CreativeCore.modid + ":textures/gui/GUI.png");
 	
 	public SubGui gui;
@@ -117,7 +115,8 @@ public class GuiContainerSub extends GuiContainer{
 			//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
 			{
-				gui.onControlClicked(controls.get(i));
+				gui.onControlEvent(controls.get(i), ControlEvent.Clicked);
+				//gui.onControlClicked(controls.get(i));
 				return ;
 			}else{
 				controls.get(i).onLoseFocus();
@@ -131,11 +130,11 @@ public class GuiContainerSub extends GuiContainer{
 		super.mouseClickMove(x, y, button, time);
 		for(int i = controls.size()-1; i >= 0; i--)
 		{
-			Vector2d mouse = GuiControl.getMousePos();
+			Vector2d mouse = GuiControl.getMousePos(xSize, ySize);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseDragged((int)pos.x, (int)pos.y, button))
 			{
-				gui.onMouseDragged(controls.get(i));
+				//gui.onMouseDragged(controls.get(i));
 				return;
 			}
 		}
@@ -156,11 +155,11 @@ public class GuiContainerSub extends GuiContainer{
 	{
 		for(int i = controls.size()-1; i >= 0; i--)
 		{
-			Vector2d mouse = GuiControl.getMousePos();
+			Vector2d mouse = GuiControl.getMousePos(xSize, ySize);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseReleased((int)pos.x, (int)pos.y, button))
 			{
-				gui.onMouseReleased(controls.get(i));
+				//gui.onMouseReleased(controls.get(i));
 				return;
 			}
 		}

@@ -28,6 +28,7 @@ public class ContainerSub extends Container{
 		for (int i = 0; i < subContainer.slots.size(); i++) {
 			addSlotToContainer(subContainer.slots.get(i));
 		}
+		subContainer.onGuiOpened();
 	}
 	
 	@Override
@@ -92,7 +93,7 @@ public class ContainerSub extends Container{
 	public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        subContainer.onGuiClosed(player);
+        subContainer.onGuiClosed();
     }
 	
 	/**Vanilla method fixed not took care of getSlotStockLimit**/

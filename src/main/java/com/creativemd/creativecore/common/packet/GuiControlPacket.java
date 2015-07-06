@@ -5,33 +5,33 @@ import com.creativemd.creativecore.common.container.ContainerSub;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 
-public class GuiPacket extends CreativeCorePacket{
+public class GuiControlPacket extends GuiUpdatePacket{
 	
 	public int control;
-	public String value;
 	
-	public GuiPacket()
+	public GuiControlPacket()
 	{
-		
+		super();
 	}
 	
-	public GuiPacket(int control, String value)
+	public GuiControlPacket(int control, NBTTagCompound value)
 	{
+		super(value, false);
 		this.control = control;
-		this.value = value;
 	}
 	
 	@Override
 	public void writeBytes(ByteBuf bytes) {
+		super.writeBytes(bytes);
 		bytes.writeInt(control);
-		ByteBufUtils.writeUTF8String(bytes, value);
 	}
 
 	@Override
 	public void readBytes(ByteBuf bytes) {
+		super.readBytes(bytes);
 		control = bytes.readInt();
-		value = ByteBufUtils.readUTF8String(bytes);
 	}
 
 	@Override
