@@ -45,8 +45,6 @@ public abstract class SubContainer{
 	
 	public abstract void onGuiPacket(int controlID, NBTTagCompound nbt, EntityPlayer player);
 	
-	public abstract ArrayList<Slot> getSlots(EntityPlayer player);
-	
 	/**0: no update, standard: 10->0.5 secs*/
 	public int getUpdateTick(){
 		return 10;
@@ -101,6 +99,16 @@ public abstract class SubContainer{
 	public void writeToNBT(NBTTagCompound nbt){}
 		
 	/*=============================Helper Methods=============================*/
+	
+	public ArrayList<Slot> getSlots()
+	{
+		ArrayList<Slot> slots = new ArrayList<Slot>();
+		for (int i = 0; i < controls.size(); i++) {
+			if(controls.get(i) instanceof SlotControl)
+				slots.add(((SlotControl)controls.get(i)).slot);
+		}
+		return slots;
+	}
 	
 	public void addSlotToContainer(Slot slot)
 	{

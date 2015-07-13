@@ -43,7 +43,7 @@ public abstract class SubGui {
 	
 	public abstract void drawForeground(FontRenderer fontRenderer);
 	
-	public abstract void drawBackground(FontRenderer fontRenderer);
+	public void drawBackground(){}
 	
 	public void onControlEvent(GuiControl control, ControlEvent event){}
 	

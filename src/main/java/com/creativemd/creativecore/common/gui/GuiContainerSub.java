@@ -215,7 +215,7 @@ public class GuiContainerSub extends GuiContainer{
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_,
 			int p_146976_2_, int p_146976_3_) {
-		gui.drawBackground(fontRendererObj);
+		gui.drawBackground();
 		
 		
 		int k = (this.width - this.xSize) / 2;
