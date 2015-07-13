@@ -27,4 +27,10 @@ public abstract class SubContainerTileEntity extends SubContainer {
 	{
 		tileEntity.writeToNBT(nbt);
 	}
+	
+	@Override
+	public void writeToNBT(NBTTagCompound nbt)
+	{
+		tileEntity.writeToNBT(nbt);
+	}
 }

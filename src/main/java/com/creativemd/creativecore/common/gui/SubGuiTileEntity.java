@@ -18,7 +18,14 @@ public abstract class SubGuiTileEntity extends SubGui{
 		this.tileEntity = tileEntity;
 	}
 	
+	@Override
 	public void readFromOpeningNBT(NBTTagCompound nbt)
+	{
+		tileEntity.readFromNBT(nbt);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt)
 	{
 		tileEntity.readFromNBT(nbt);
 	}
