@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.gui;
 import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.container.SubContainer;
+import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.packet.GuiControlPacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
@@ -10,12 +11,15 @@ import com.creativemd.creativecore.common.packet.PacketHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiControls;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class SubGui {
+	
+	public static RenderItem itemRender;
 	
 	public SubContainer container;
 	
@@ -30,10 +34,12 @@ public abstract class SubGui {
 		this.width = width;
 		this.height = height;
 	}
-	
+    
 	//public String title;
+    
+    public ArrayList<GuiControl> controls = new ArrayList<GuiControl>();
 	
-	public abstract ArrayList<GuiControl> getControls();
+	public abstract void createControls();
 	
 	public abstract void drawForeground(FontRenderer fontRenderer);
 	
@@ -55,7 +61,9 @@ public abstract class SubGui {
 	}
 	
 	public static enum ControlEvent{
-		Clicked,
+		Click,
+		DblClick,
+		KeyPressed,
 		Update;
 	}
 }

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.vecmath.Color4b;
+import javax.vecmath.Vector4d;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -331,6 +334,31 @@ public class RenderHelper2D {
         tessellator.addVertex((double)p_73733_3_, (double)p_73733_2_, (double)zLevel);
         tessellator.addVertex((double)p_73733_1_, (double)p_73733_2_, (double)zLevel);
         tessellator.setColorRGBA_F(f5, f6, f7, f4);
+        tessellator.addVertex((double)p_73733_1_, (double)p_73733_4_, (double)zLevel);
+        tessellator.addVertex((double)p_73733_3_, (double)p_73733_4_, (double)zLevel);
+        tessellator.draw();
+        GL11.glShadeModel(GL11.GL_FLAT);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+    }
+    
+    /**
+     * Draws a rectangle with a vertical gradient between the specified colors.
+     */
+    public static void drawGradientRect(int p_73733_1_, int p_73733_2_, int p_73733_3_, int p_73733_4_, Vector4d color1, Vector4d color2)
+    {
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.setColorRGBA((int)color1.x, (int)color1.y, (int)color1.z, (int)color1.w);
+        tessellator.addVertex((double)p_73733_3_, (double)p_73733_2_, (double)zLevel);
+        tessellator.addVertex((double)p_73733_1_, (double)p_73733_2_, (double)zLevel);
+        tessellator.setColorRGBA((int)color2.x, (int)color2.y, (int)color2.z, (int)color2.w);
         tessellator.addVertex((double)p_73733_1_, (double)p_73733_4_, (double)zLevel);
         tessellator.addVertex((double)p_73733_3_, (double)p_73733_4_, (double)zLevel);
         tessellator.draw();

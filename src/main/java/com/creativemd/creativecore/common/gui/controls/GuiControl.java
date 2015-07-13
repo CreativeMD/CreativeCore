@@ -25,11 +25,13 @@ import net.minecraft.client.renderer.Tessellator;
 @SideOnly(Side.CLIENT)
 public abstract class GuiControl{
 	
+	public static Minecraft mc = Minecraft.getMinecraft();
+	
 	private int id = -1;
 	
 	public void setID(int id)
 	{
-		if(this.id != -1)
+		if(this.id == -1)
 			this.id = id;
 	}
 	
@@ -86,14 +88,25 @@ public abstract class GuiControl{
 		GL11.glPopMatrix();
 	}
 	
+	public boolean isMouseOver()
+	{
+		Vector2d mouse = GuiControl.getMousePos(parent.width, parent.height);
+		Vector2d pos = getValidPos((int)mouse.x, (int)mouse.y);
+		return isMouseOver((int)pos.x, (int)pos.y);
+	}
+	
 	public boolean isMouseOver(int posX, int posY)
 	{
 		//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
-		if(posX >= this.posX-this.width/2 && posX <= this.posX+this.width/2 &&
-				posY >= this.posY-this.height/2 && posY <= this.posY+this.height/2)
+		if(posX >= this.posX-this.width/2 && posX < this.posX+this.width/2 &&
+				posY >= this.posY-this.height/2 && posY < this.posY+this.height/2)
 		{
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean mouseScrolled(int posX, int posY, int scrolled){
 		return false;
 	}
 	
@@ -105,8 +118,12 @@ public abstract class GuiControl{
 		return false;
 	}	
 	
-	public boolean mouseReleased(int posX, int posY, int button){
-		return false;
+	public void mouseReleased(int posX, int posY, int button){
+		
+	}
+	
+	public void mouseMove(int posX, int posY, int button){
+		
 	}
 	
 	public void onLoseFocus(){}

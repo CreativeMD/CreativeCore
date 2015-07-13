@@ -2,7 +2,6 @@ package com.creativemd.creativecore.common.gui.controls;
 
 import javax.vecmath.Vector2d;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -47,7 +46,6 @@ public class GuiSteppedSlider extends GuiControl
 	@Override
 	public void drawControl(FontRenderer renderer)
 	{
-		Minecraft mc = Minecraft.getMinecraft();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(buttonTextures);
 		int mouseEvent = 1;
@@ -70,7 +68,7 @@ public class GuiSteppedSlider extends GuiControl
          * - this.height
          * - this.value
          * - this.stepCount
-         * offset = (this.posX + (this.value * (this.width/(stepCount - 1)))
+         * offset = (this.posX + (this.value * (this.width/stepCount)))
          * representativeObjects = representativeObjects[Value]
          */
        
@@ -97,7 +95,6 @@ public class GuiSteppedSlider extends GuiControl
 		{
 			if(button == 0 && isMouseOver((int)mouse.x, (int)mouse.x))
 			{
-				Minecraft mc = Minecraft.getMinecraft();
 				mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 				return (grabbedSlider = true);
 			}
@@ -115,17 +112,16 @@ public class GuiSteppedSlider extends GuiControl
 				this.value = 0;
 			else if(mouse.x > this.posX + this.width)
 				this.value = this.stepsCount - 1;
-			else this.value = (int)(((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))) - (int)((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))) > 0.5 ? (int)((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))) + 1 : (int)((mouse.x - this.posX) / (this.width / (this.stepsCount - 1))));
+			else this.value = (int)(((float)(mouse.x - this.posX) / ((float)this.width / (float)(this.stepsCount - 1))) - (int)((float)(mouse.x - this.posX) / ((float)this.width / (float)(this.stepsCount - 1))) > 0.5 ? (int)((float)(mouse.x - this.posX) / ((float)this.width / (float)(this.stepsCount - 1))) + 1 : (int)((float)(mouse.x - this.posX) / ((float)this.width / (float)(this.stepsCount - 1))));
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean mouseReleased(int posX, int posY, int button)
+	public void mouseReleased(int posX, int posY, int button)
 	{
 		if(this.grabbedSlider)
-			return !(grabbedSlider = false);
-		return false;
+			grabbedSlider = false;
 	}
 }

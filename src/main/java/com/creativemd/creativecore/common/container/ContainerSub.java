@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.container.slot.SlotImage;
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
+import com.creativemd.creativecore.common.gui.GuiHandler;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -16,6 +17,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChunkCoordinates;
 
 public class ContainerSub extends Container{
 	
@@ -24,14 +26,17 @@ public class ContainerSub extends Container{
 	@SideOnly(Side.CLIENT)
 	public GuiContainerSub gui;
 	
+	public ChunkCoordinates coord = null;
+	
 	public ArrayList<ContainerControl> controls;
 	
 	public ContainerSub(EntityPlayer player, SubContainer subContainer)
 	{
 		this.subContainer = subContainer;
 		subContainer.container = this;
+		subContainer.createControls();
 		
-		controls = subContainer.getControls();
+		controls = subContainer.controls;
 		for (int i = 0; i < controls.size(); i++)
 		{
 			controls.get(i).parent = subContainer;
@@ -109,6 +114,7 @@ public class ContainerSub extends Container{
     {
         super.onContainerClosed(player);
         subContainer.onGuiClosed();
+        GuiHandler.openContainers.remove(this);
     }
 	
 	/**Vanilla method fixed not took care of getSlotStockLimit**/

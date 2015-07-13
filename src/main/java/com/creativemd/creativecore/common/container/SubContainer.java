@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.container;
 import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.container.slot.ContainerControl;
+import com.creativemd.creativecore.common.container.slot.SlotControl;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
@@ -15,13 +16,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class SubContainer{
 	
 	/**TickCount for sending UpdatePacket*/
-	@SideOnly(Side.SERVER)
+	//@SideOnly(Side.SERVER)
 	public int tick;
 	
 	public EntityPlayer player;
@@ -29,17 +31,17 @@ public abstract class SubContainer{
 	public SubContainer(EntityPlayer player)
 	{
 		this.player = player;
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
-			this.tick = 0;
+		this.tick = 0;
 	}
 	
 	public ContainerSub container;
 	
-	public ArrayList<IInventory> inventories = new ArrayList<IInventory>();
+	//public ArrayList<IInventory> inventories = new ArrayList<IInventory>();
 	
-	public ArrayList<Slot> slots = new ArrayList<Slot>();
+	public ArrayList<ContainerControl> controls = new ArrayList<ContainerControl>();
 	
-	public abstract ArrayList<ContainerControl> getControls();
+	/**Primary use to add slots*/
+	public abstract void createControls();
 	
 	public abstract void onGuiPacket(int controlID, NBTTagCompound nbt, EntityPlayer player);
 	
@@ -80,6 +82,9 @@ public abstract class SubContainer{
 				sendUpdate();
 			}
 		}
+		for (int i = 0; i < controls.size(); i++) {
+			controls.get(i).detectChange();
+		}
 	}
 	
 	public void sendUpdate()
@@ -97,27 +102,34 @@ public abstract class SubContainer{
 		
 	/*=============================Helper Methods=============================*/
 	
-	public ArrayList<Slot> getPlayerSlots(EntityPlayer player)
+	public void addSlotToContainer(Slot slot)
 	{
-		return getPlayerSlots(player, 8, 84);
+		slot.xDisplayPosition += 8;
+		slot.yDisplayPosition += 8;
+		//if(!inventories.contains(slot.inventory))
+			//inventories.add(slot.inventory);
+		controls.add(new SlotControl(slot));
 	}
 	
-	public ArrayList<Slot> getPlayerSlots(EntityPlayer player, int x, int y)
+	public void addPlayerSlotsToContainer(EntityPlayer player)
 	{
-		ArrayList<Slot> slots = new ArrayList<Slot>();
+		addPlayerSlotsToContainer(player, 8, 84);
+	}
+	
+	public void addPlayerSlotsToContainer(EntityPlayer player, int x, int y)
+	{
 		int l;
         for (l = 0; l < 3; ++l)
         {
             for (int i1 = 0; i1 < 9; ++i1)
             {
-            	slots.add(new Slot(player.inventory, i1 + l * 9 + 9, i1 * 18 + x, l * 18+y));
+            	addSlotToContainer(new Slot(player.inventory, i1 + l * 9 + 9, i1 * 18 + x, l * 18+y));
             }
         }
 
         for (l = 0; l < 9; ++l)
         {
-        	slots.add(new Slot(player.inventory, l, l * 18+x, 58+y));
+        	addSlotToContainer(new Slot(player.inventory, l, l * 18+x, 58+y));
         }
-        return slots;
 	}
 }

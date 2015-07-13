@@ -148,10 +148,9 @@ public class GuiAnalogeSlider extends GuiControl
 	}
 	
 	@Override
-	public boolean mouseReleased(int posX, int posY, int button)
+	public void mouseReleased(int posX, int posY, int button)
 	{
 		if(this.grabbedSlider)
-			return !(grabbedSlider = false);
-		return false;
+			grabbedSlider = false;
 	}
 }

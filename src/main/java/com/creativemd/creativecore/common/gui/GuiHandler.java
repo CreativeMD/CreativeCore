@@ -1,10 +1,13 @@
 package com.creativemd.creativecore.common.gui;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 import com.creativemd.creativecore.common.container.ContainerSub;
@@ -16,7 +19,9 @@ import com.creativemd.creativecore.common.packet.TEContainerPacket;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {
-
+	
+	public static ArrayList<ContainerSub> openContainers = new ArrayList<ContainerSub>();
+	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
@@ -24,7 +29,10 @@ public class GuiHandler implements IGuiHandler {
 		{
 		case 0: //It's a block
 			Block block = world.getBlock(x, y, z);
-			return new ContainerSub(player, ((IGuiCreator) block).getContainer(player, null, world, x, y, z));
+			ContainerSub container = new ContainerSub(player, ((IGuiCreator) block).getContainer(player, null, world, x, y, z));
+			container.coord = new ChunkCoordinates(x, y, z);
+			openContainers.add(container);
+			return container;
 		case 1: //It's an item
 			ItemStack stack = player.getHeldItem();
 			if(stack != null && stack.getItem() instanceof IGuiCreator)

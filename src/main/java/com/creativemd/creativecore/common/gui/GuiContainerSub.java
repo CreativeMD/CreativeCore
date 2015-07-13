@@ -2,8 +2,11 @@ package com.creativemd.creativecore.common.gui;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Color4b;
 import javax.vecmath.Vector2d;
+import javax.vecmath.Vector4d;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
@@ -16,6 +19,7 @@ import com.creativemd.creativecore.core.CreativeCore;
 import com.mojang.realmsclient.dto.Subscription.SubscriptionType;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -37,15 +41,22 @@ public class GuiContainerSub extends GuiContainer{
 		super(new ContainerSub(player, container));
 		((ContainerSub)inventorySlots).gui = this;
 		this.gui = gui;
-		controls = gui.getControls();
+		this.gui.container = container;
+		gui.createControls();
+		controls = gui.controls;
 		for (int i = 0; i < controls.size(); i++)
 		{
 			controls.get(i).parent = gui;
 			controls.get(i).setID(i);
 		}
+		for (int i = 0; i < ((ContainerSub)inventorySlots).controls.size(); i++) {
+			((ContainerSub)inventorySlots).controls.get(i).init();
+			controls.add(((ContainerSub)inventorySlots).controls.get(i).guiControl);
+			controls.get(controls.size()-1).parent = gui;
+		}
 		this.xSize = gui.width;
 		this.ySize = gui.height;
-		
+		SubGui.itemRender = GuiScreen.itemRender;
 	}
 	
 	public int getWidth()
@@ -109,6 +120,33 @@ public class GuiContainerSub extends GuiContainer{
     }
 	
 	@Override
+	public void handleInput()
+    {
+		if(Mouse.isCreated())
+		{
+			handleScrolling();
+		}
+		super.handleInput();
+    }
+	
+	public void handleScrolling()
+	{
+		int j = Mouse.getDWheel();
+        if (j != 0)
+        {
+        	Vector2d mouse = GuiControl.getMousePos(xSize, ySize);
+        	for(int i = controls.size()-1; i >= 0; i--)
+    		{
+				Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
+				//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
+				if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseScrolled((int)pos.x, (int)pos.y, j > 0 ? 1 : -1))
+					return ;
+    		}
+        	//Mouse.setGrabbed(true);
+        }
+	}
+	
+	@Override
 	public void mouseClicked(int x, int y, int button)
 	{
 		super.mouseClicked(x, y, button);
@@ -118,7 +156,7 @@ public class GuiContainerSub extends GuiContainer{
 			//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
 			{
-				gui.onControlEvent(controls.get(i), ControlEvent.Clicked);
+				gui.onControlEvent(controls.get(i), ControlEvent.Click);
 				//gui.onControlClicked(controls.get(i));
 				return ;
 			}else{
@@ -147,12 +185,22 @@ public class GuiContainerSub extends GuiContainer{
 	protected void mouseMovedOrUp(int x, int y, int button)
 	{
 		super.mouseMovedOrUp(x, y, button);
-		if(button > 0)
-			onMouseMove();
-		else onMouseReleased(x, y, button);
+		//if(button > 0)
+			//onMouseMove(x, y, button);
+		//else
+		onMouseReleased(x, y, button);
 	}
 	
-	public void onMouseMove(){} //unused for right now
+	public void onMouseMove(int x, int y, int button)
+	{
+		for(int i = controls.size()-1; i >= 0; i--)
+		{
+			Vector2d mouse = GuiControl.getMousePos(xSize, ySize);
+			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
+			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
+				controls.get(i).mouseMove((int)pos.x, (int)pos.y, button);
+		}
+	}
 	
 	public void onMouseReleased(int x, int y, int button)
 	{
@@ -160,17 +208,16 @@ public class GuiContainerSub extends GuiContainer{
 		{
 			Vector2d mouse = GuiControl.getMousePos(xSize, ySize);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseReleased((int)pos.x, (int)pos.y, button))
-			{
-				//gui.onMouseReleased(controls.get(i));
-				return;
-			}
+			controls.get(i).mouseReleased((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_,
 			int p_146976_2_, int p_146976_3_) {
+		gui.drawBackground(fontRendererObj);
+		
+		
 		int k = (this.width - this.xSize) / 2;
 		int l = (this.height - this.ySize) / 2;
 		
@@ -214,24 +261,33 @@ public class GuiContainerSub extends GuiContainer{
 		}
 		
 		//this.drawRect(k+6, l+6, k+this.xSize-6, l+this.ySize-6, 0);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glColorMask(true, true, true, false);
+		Vector4d color = new Vector4d(198, 198, 198, 255);
+		RenderHelper2D.drawGradientRect(k+6, l+6, k+this.xSize-6, l+this.ySize-6, color, color);
+		GL11.glColorMask(true, true, true, true);
 		
-		Tessellator tessellator = Tessellator.instance;
+		/*Tessellator tessellator = Tessellator.instance;
 		GL11.glColor4d(1, 1, 1, 1);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glColorMask(true, true, true, false);
         tessellator.startDrawingQuads();
         tessellator.addVertex((double)k+6, (double)l+this.ySize-6, 0.0D);
         tessellator.addVertex((double)k+this.xSize-6, (double)l+this.ySize-6, 0.0D);
         tessellator.addVertex((double)k+this.xSize-6, (double)l+6, 0.0D);
         tessellator.addVertex((double)k+6, (double)l+6, 0.0D);
-        tessellator.draw();
+        tessellator.draw();*/
+        //tessellator.
         //GL11.glColor4f(f, f1, f2, f3);
 		//this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
 		
-		for (int i1 = 0; i1 < this.inventorySlots.inventorySlots.size(); ++i1)
+		/*for (int i1 = 0; i1 < this.inventorySlots.inventorySlots.size(); ++i1)
         {
             Slot slot = (Slot)this.inventorySlots.inventorySlots.get(i1);
             this.drawTexturedModalRect(k+slot.xDisplayPosition-1, l+slot.yDisplayPosition-1, 176, 0, 18, 18);
-        }
-		gui.drawBackground(fontRendererObj);
+        }*/
 	}
 
 }
