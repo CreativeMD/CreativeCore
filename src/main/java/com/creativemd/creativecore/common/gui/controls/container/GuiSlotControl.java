@@ -202,7 +202,9 @@ public class GuiSlotControl extends GuiControl{
 			int stackSize = Math.min(slot.slot.getSlotStackLimit(), dragged.getMaxStackSize());
 			if(slot.slot.getHasStack())
 				stackSize -= slot.slot.getStack().stackSize;
-			if(stackSize > 0)
+			if(!slot.slot.isItemValid(dragged))
+				stackSize = 0;
+			if(stackSize > 0 && canStack)
 			{
 				this.stackSize = new int[1];
 				this.stackSize[0] = stackSize;
@@ -231,7 +233,9 @@ public class GuiSlotControl extends GuiControl{
 					int stackSize = Math.min(slot.slot.getSlotStackLimit(), startSlot.dragged.getMaxStackSize());
 					if(slot.slot.getHasStack())
 						stackSize -= slot.slot.getStack().stackSize;
-					if(stackSize > 0)
+					if(!slot.slot.isItemValid(dragged))
+						stackSize = 0;
+					if(stackSize > 0 && canStack)
 					{
 						int[] newStackSize = new int[startSlot.stackSize.length+1];
 						for (int j = 0; j < startSlot.stackSize.length; j++)
