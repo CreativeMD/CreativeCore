@@ -1,14 +1,8 @@
-/**
- * This Class contains mainly methods to link through the mouseInput in Minecraft.
- * Because the given ForgeEvents aren't usable outside of an loaded world,
- * the MouseInput is monitored twice a tick, and linked to a custom MouseInputEventHandler.
- * Which is decent enough for guiControl, but isn't recommended for in-game use.
- * For in-game mouseEventHandling, use the ForgeEvents instead!
- */
 package com.creativemd.creativecore.common.gui.events;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -28,7 +22,33 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MouseEvents
 {
 	public static final MouseEvents instance = new MouseEvents();
-	private static List<GuiControl> mouseControlClassListnerList = new ArrayList<GuiControl>();
+	private static HashMap<Class, List> methodList;
+	static
+	{
+		methodList  = new HashMap<Class, List>();
+		methodList.put(MouseEvents.onLeftClickEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onLeftMouseButtonPressEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onLeftMouseButtonReleaseEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onleftClickDragEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onDoubleLeftClickEvent.class, new ArrayList<Method>());
+
+		methodList.put(MouseEvents.onRightClickEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onRightMouseButtonPressEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onRightMouseButtonReleaseEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onRightClickDragEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onDoubleRightClickEvent.class, new ArrayList<Method>());
+		
+		methodList.put(MouseEvents.onMouseButtonPressEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onMouseButtonReleaseEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onDoubleButtonClickEvent.class, new ArrayList<Method>());
+		
+		methodList.put(MouseEvents.onWheelClickEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onWheelPressEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onWheelReleaseEvent.class, new ArrayList<Method>());
+		methodList.put(MouseEvents.onScrollEvent.class, new ArrayList<Method>());
+		
+		methodList.put(MouseEvents.onMouseMoveEvent.class, new ArrayList<Method>());
+	};
 	private static GuiContainerSub mainGuiContainer;
 	private static Logger log = CreativeCore.logger;
 	private static Mouse mouse;
@@ -43,7 +63,27 @@ public class MouseEvents
 	
 	public void addMouseListner(GuiControl guiControl)
 	{
-		mouseControlClassListnerList.add(guiControl);
+		Method[] method = guiControl.getClass().getMethods();
+
+		for (int j = 0; j < method.length; j++)
+		{
+			Method currentMethod = method[j];
+
+			if (currentMethod.isAnnotationPresent(SubscribeGuiInputEvent.class))
+			{
+				if (currentMethod.getParameterTypes().length != 1 || !(currentMethod.getGenericParameterTypes()[0] instanceof GuiEventHandler.DummyEventClass))
+					log.catching(new IllegalArgumentException("Couldn't resolve parameters of:" + currentMethod.getDeclaringClass() + ";" + currentMethod.getName()));
+				try
+				{
+					Class parameterType = currentMethod.getGenericParameterTypes()[0].getClass();
+					methodList.get(parameterType).add(currentMethod);
+				}
+				catch (Exception e)
+				{
+					log.catching(e);
+				}
+			}
+		}
 	}
 	
 	public void addGuiContainerMouseListner(GuiContainerSub guiContainer)
@@ -68,32 +108,17 @@ public class MouseEvents
 		superIsScrollingUp = superWheelScroll > 0 ? true : false;
 		superIsScrollingUp = superWheelScroll < 0 ? true : false;
 		
-		for(int i = 0; i < mouseControlClassListnerList.size(); i++)
+		List eventMethodList = methodList.get(eventType.getClass());
+		for(int i = 0; i < eventMethodList.size(); i++)
 		{
-			Class clazz = mouseControlClassListnerList.get(i).getClass();
-			Method[] method = clazz.getMethods();
-			
-			for(int j = 0; j < method.length; i++)
+			try
 			{
-				Method currentMethod = method[j];
-				
-				if(currentMethod.isAnnotationPresent(SubscribeGuiInputEvent.class))
-				{
-					if(currentMethod.getParameterTypes().length != 1 || !(currentMethod.getGenericParameterTypes()[0] instanceof MouseEvents))
-						throw new IllegalArgumentException("Couldn't resolve parameters of:" + currentMethod.getDeclaringClass() + ";" + currentMethod.getName());
-					
-					if(currentMethod.getGenericParameterTypes()[0].getClass() == eventType.getClass())
-					{
-						try
-						{
-							currentMethod.invoke(mouseControlClassListnerList.get(i), eventType.getClass());
-						}
-						catch(Exception e)
-						{
-							log.catching(e);
-						}
-					}
-				}
+				Method method = (Method)eventMethodList.get(i);
+				method.invoke(((Method)eventMethodList.get(i)).getDeclaringClass() , eventType.getClass().newInstance());
+			}
+			catch(Exception e)
+			{
+				log.catching(e);
 			}
 		}
 		
@@ -136,33 +161,6 @@ public class MouseEvents
 		protected static void callActionEvents()
 		{
 			callEvents(new onLeftMouseButtonPressEvent());
-		}
-		
-		/**
-		 * Returns true if either shift key is down
-		 */
-		public boolean isShiftPressed()
-		{
-			return isShiftKeyDown();
-		}
-		
-		/**
-		 * Returns true if either windows ctrl key is down or if either mac meta key is down
-		 */
-		public boolean isCtrlPressed()
-		{
-			return isCtrlKeyDown();
-		}
-	}
-	
-	public static class onLeftMouseButtonDownEvent
-	{
-		public static int mousePosX = superMousePosX;
-		public static int mousePosY = superMousePosY;
-		
-		protected static void callActionEvents()
-		{
-			callEvents(new onLeftMouseButtonDownEvent());
 		}
 		
 		/**
@@ -290,33 +288,6 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onRightMouseButtonDownEvent
-	{
-		public static int mousePosX = superMousePosX;
-		public static int mousePosY = superMousePosY;
-		
-		protected static void callActionEvents()
-		{
-			callEvents(new onRightMouseButtonDownEvent());
-		}
-		
-		/**
-		 * Returns true if either shift key is down
-		 */
-		public boolean isShiftPressed()
-		{
-			return isShiftKeyDown();
-		}
-		
-		/**
-		 * Returns true if either windows ctrl key is down or if either mac meta key is down
-		 */
-		public boolean isCtrlPressed()
-		{
-			return isCtrlKeyDown();
-		}
-	}
-	
 	public static class onRightMouseButtonReleaseEvent
 	{
 		public static int mousePosX = superMousePosX;
@@ -381,35 +352,6 @@ public class MouseEvents
 		{
 			mouseButtonID = mousebuttonID;
 			callEvents(new onMouseButtonPressEvent());
-		}
-		
-		/**
-		 * Returns true if either shift key is down
-		 */
-		public boolean isShiftPressed()
-		{
-			return isShiftKeyDown();
-		}
-		
-		/**
-		 * Returns true if either windows ctrl key is down or if either mac meta key is down
-		 */
-		public boolean isCtrlPressed()
-		{
-			return isCtrlKeyDown();
-		}
-	}
-	
-	public static class onMouseButtonDownEvent
-	{
-		public static int mousePosX = superMousePosX;
-		public static int mousePosY = superMousePosY;
-		public static int mouseButtonID;
-		
-		protected static void callActionEvents(int mousebuttonID)
-		{
-			mouseButtonID = mousebuttonID;
-			callEvents(new onMouseButtonDownEvent());
 		}
 		
 		/**
@@ -522,33 +464,6 @@ public class MouseEvents
 		protected static void callActionEvents()
 		{
 			callEvents(new onWheelPressEvent());
-		}
-		
-		/**
-		 * Returns true if either shift key is down
-		 */
-		public boolean isShiftPressed()
-		{
-			return isShiftKeyDown();
-		}
-		
-		/**
-		 * Returns true if either windows ctrl key is down or if either mac meta key is down
-		 */
-		public boolean isCtrlPressed()
-		{
-			return isCtrlKeyDown();
-		}
-	}
-	
-	public static class onWheelDownEvent
-	{
-		public static int mousePosX = superMousePosX;
-		public static int mousePosY = superMousePosY;
-		
-		protected static void callActionEvents()
-		{
-			callEvents(new onWheelDownEvent());
 		}
 		
 		/**

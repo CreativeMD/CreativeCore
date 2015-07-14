@@ -10,7 +10,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import com.creativemd.creativecore.common.gui.events.MouseEvents;
 import com.creativemd.creativecore.common.gui.events.SubscribeGuiInputEvent;
 import com.creativemd.creativecore.core.CreativeCore;
@@ -137,7 +136,7 @@ public class GuiAnalogeSlider extends GuiControl
 	*/
 	
 	@SubscribeGuiInputEvent
-	public void onleftMouseButtonDown(MouseEvents.onLeftMouseButtonDownEvent event)
+	public void onleftMouseButtonDown(MouseEvents.onLeftMouseButtonPressEvent event)
 	{
 		Vector2d mouse = getMousePos(parent.width, parent.height);
 		if(enabled)

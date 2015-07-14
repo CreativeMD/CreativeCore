@@ -5,8 +5,6 @@ import java.awt.Toolkit;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -71,19 +69,7 @@ public class GuiEventHandler
 						mouseButtonTimer[i] = 0;
 					mouseButtonReleased[i] = false;
 				}
-				switch (i)
-				{
-				case 0:
-					MouseEvents.onLeftMouseButtonDownEvent.callActionEvents();
-					break;
-				case 1:
-					MouseEvents.onRightMouseButtonDownEvent.callActionEvents();
-					break;
-				case 2:
-					MouseEvents.onWheelDownEvent.callActionEvents();
-				}
 				
-				MouseEvents.onMouseButtonDownEvent.callActionEvents(i);
 				if (mouseButtonTimer[i] != -1)
 					mouseButtonTimer[i] += 1;
 				if (mouseButtonTimer[i] > timerInterval)
@@ -156,7 +142,6 @@ public class GuiEventHandler
 						KeyBoardEvents.onKeyPress.callActionEvents(i);
 						isKeyReleased[i] = false;
 					}
-					KeyBoardEvents.onKeyDown.callActionEvents(i);
 				}
 				else
 				{
@@ -170,4 +155,6 @@ public class GuiEventHandler
 		}
 	}
 
+	/**used to Check whether an parameterType is an EventType */
+	public static class DummyEventClass{}
 }

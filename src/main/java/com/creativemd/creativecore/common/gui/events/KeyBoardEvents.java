@@ -9,6 +9,7 @@ package com.creativemd.creativecore.common.gui.events;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
@@ -25,13 +26,39 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class KeyBoardEvents
 {
 	public static final KeyBoardEvents instance = new KeyBoardEvents();
-	private static List<GuiControl> KeyBoardEventListnersList = new ArrayList<GuiControl>();
+	private static HashMap<Class, List> methodList;
+	static
+	{
+		methodList  = new HashMap<Class, List>();
+		methodList.put(KeyBoardEvents.onKeyPress.class, new ArrayList<Method>());
+		methodList.put(KeyBoardEvents.onKeyRelease.class, new ArrayList<Method>());
+	};
 	private static GuiContainerSub mainGuiContainer;
 	public static Logger log = CreativeCore.logger;
 	
 	public void addKeyboardListner(GuiControl guiControl)
 	{
-		KeyBoardEventListnersList.add(guiControl);
+		Method[] method = guiControl.getClass().getMethods();
+
+		for (int j = 0; j < method.length; j++)
+		{
+			Method currentMethod = method[j];
+
+			if (currentMethod.isAnnotationPresent(SubscribeGuiInputEvent.class))
+			{
+				if (currentMethod.getParameterTypes().length != 1 || !(currentMethod.getGenericParameterTypes()[0] instanceof GuiEventHandler.DummyEventClass))
+					log.catching(new IllegalArgumentException("Couldn't resolve parameters of:" + currentMethod.getDeclaringClass() + ";" + currentMethod.getName()));
+				try
+				{
+					Class parameterType = currentMethod.getGenericParameterTypes()[0].getClass();
+					methodList.get(parameterType).add(currentMethod);
+				}
+				catch (Exception e)
+				{
+					log.catching(e);
+				}
+			}
+		}
 	}
 	
 	public void addMainGuiContianerKeyboardListner(GuiContainerSub guiContainer)
@@ -41,37 +68,22 @@ public class KeyBoardEvents
 	
 	private static void callEvents(Object eventType)
 	{
-		for(int i = 0; i < KeyBoardEventListnersList.size(); i++)
+		List eventMethodList = methodList.get(eventType.getClass());
+		for(int i = 0; i < eventMethodList.size(); i++)
 		{
-			Class clazz = KeyBoardEventListnersList.get(i).getClass();
-			Method[] method = clazz.getMethods();
-			
-			for(int j = 0; j < method.length; i++)
+			try
 			{
-				Method currentMethod = method[j];
-				
-				if(currentMethod.isAnnotationPresent(SubscribeGuiInputEvent.class))
-				{
-					if(currentMethod.getParameterTypes().length != 1 || !(currentMethod.getGenericParameterTypes()[0] instanceof KeyBoardEvents))
-						throw new IllegalArgumentException("Couldn't resolve parameters of:" + currentMethod.getDeclaringClass() + ";" + currentMethod.getName());
-					
-					if(currentMethod.getGenericParameterTypes()[0].getClass() == eventType.getClass())
-					{
-						try
-						{
-							currentMethod.invoke(KeyBoardEventListnersList.get(i), eventType.getClass());
-						}
-						catch(Exception e)
-						{
-							log.catching(e);
-						}
-					}
-				}
+				Method method = (Method)eventMethodList.get(i);
+				method.invoke(((Method)eventMethodList.get(i)).getDeclaringClass() , eventType.getClass().newInstance());
+			}
+			catch(Exception e)
+			{
+				log.catching(e);
 			}
 		}
 	}
 	
-	public static class onKeyPress
+	public static class onKeyPress extends GuiEventHandler.DummyEventClass
 	{
 		public static int keyNumber;
 		public static String keyName;
@@ -84,20 +96,7 @@ public class KeyBoardEvents
 		}
 	}
 	
-	public static class onKeyDown
-	{
-		public static int keyNumber;
-		public static String keyName;
-		
-		protected static void callActionEvents(int key)
-		{
-			keyNumber = key;
-			keyName = Keyboard.getKeyName(key);
-			callEvents(new onKeyDown());
-		}
-	}
-	
-	public static class onKeyRelease
+	public static class onKeyRelease extends GuiEventHandler.DummyEventClass
 	{
 		public static int keyNumber;
 		public static String keyName;

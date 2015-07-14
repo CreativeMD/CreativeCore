@@ -1,5 +1,7 @@
 package com.creativemd.creativecore.core;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +37,7 @@ public class CreativeCore {
 	public static final Logger logger = LogManager.getLogger(modid);
 	
 	public static SimpleNetworkWrapper network;
+	public static TickHandler tickHandler = new TickHandler();
 	
 	@EventHandler
     public void Init(FMLInitializationEvent event)
@@ -52,6 +55,6 @@ public class CreativeCore {
 		CreativeCorePacket.registerPacket(ContainerControlUpdatePacket.class, "containercontrolpacket");
 		CreativeCorePacket.registerPacket(TEContainerPacket.class, "TEContainer");
 		
-		FMLCommonHandler.instance().bus().register(new TickHandler());
+		FMLCommonHandler.instance().bus().register(tickHandler);
     }
 }
