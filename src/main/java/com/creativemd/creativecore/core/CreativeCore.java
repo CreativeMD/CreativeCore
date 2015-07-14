@@ -1,5 +1,8 @@
 package com.creativemd.creativecore.core;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.TickHandler;
 import com.creativemd.creativecore.common.gui.GuiHandler;
@@ -29,6 +32,7 @@ public class CreativeCore {
 	
 	public static final String modid = "creativecore";
 	public static final String version = "1.2.0";
+	public static final Logger logger = LogManager.getLogger(modid);
 	
 	public static SimpleNetworkWrapper network;
 	

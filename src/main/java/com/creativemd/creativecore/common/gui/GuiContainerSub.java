@@ -14,6 +14,9 @@ import com.creativemd.creativecore.common.container.ContainerSub;
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.SubGui.ControlEvent;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
+import com.creativemd.creativecore.common.gui.events.GuiEventHandler;
+import com.creativemd.creativecore.common.gui.events.KeyBoardEvents;
+import com.creativemd.creativecore.common.gui.events.MouseEvents;
 import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
 import com.creativemd.creativecore.core.CreativeCore;
 import com.mojang.realmsclient.dto.Subscription.SubscriptionType;
@@ -57,6 +60,18 @@ public class GuiContainerSub extends GuiContainer{
 		this.xSize = gui.width;
 		this.ySize = gui.height;
 		SubGui.itemRender = GuiScreen.itemRender;
+		
+		MouseEvents.instance.addGuiContainerMouseListner(this);
+		for(int i = 0; i < this.controls.size(); i++)
+		{
+			MouseEvents.instance.addMouseListner(this.controls.get(i));
+		}
+		
+		KeyBoardEvents.instance.addMainGuiContianerKeyboardListner(this);
+		for(int i = 0; i < this.controls.size(); i++)
+		{
+			KeyBoardEvents.instance.addKeyboardListner(this.controls.get(i));
+		}
 	}
 	
 	public int getWidth()
@@ -119,6 +134,9 @@ public class GuiContainerSub extends GuiContainer{
 		super.keyTyped(character, key);
     }
 	
+	/**
+	 * This method is only used to separate the MouseEvents form the KeyBoardEvents.
+	 * use the handleMouseInput() & handleKeyboardInput() methods instead.
 	@Override
 	public void handleInput()
     {
@@ -128,6 +146,19 @@ public class GuiContainerSub extends GuiContainer{
 		}
 		super.handleInput();
     }
+    */
+	
+	@Override
+	public void handleMouseInput()
+	{
+		GuiEventHandler.handleMouseEvent();
+	}
+	
+	@Override
+	public void handleKeyboardInput()
+	{
+		GuiEventHandler.handleKeyboardEvents();
+	}
 	
 	public void handleScrolling()
 	{
