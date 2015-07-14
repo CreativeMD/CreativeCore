@@ -2,6 +2,8 @@ package com.creativemd.creativecore.common.gui.controls;
 
 import javax.vecmath.Vector2d;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
@@ -9,6 +11,8 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
+import com.creativemd.creativecore.common.gui.events.MouseEvents;
+import com.creativemd.creativecore.common.gui.events.SubscribeGuiInputEvent;
 import com.creativemd.creativecore.core.CreativeCore;
 
 public class GuiAnalogeSlider extends GuiControl
@@ -74,10 +78,11 @@ public class GuiAnalogeSlider extends GuiControl
 	@Override
 	public void drawControl(FontRenderer renderer)
 	{
+		Minecraft mc = Minecraft.getMinecraft();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(buttonTextures);
 		int mouseEvent = 1;
-		Vector2d mouse = getMousePos();
+		Vector2d mouse = getMousePos(parent.width, parent.height);
 		
 		if(isMouseOver((int)mouse.x, (int)mouse.y))
 			mouseEvent = 2;
@@ -112,25 +117,46 @@ public class GuiAnalogeSlider extends GuiControl
         
 	}
 	
+	/**
+	 * new Method onLeftMouseButtonDown (this method name can be any name!)
 	@Override
 	public boolean mousePressed(int posX, int posY, int button)
 	{
-		Vector2d mouse = getMousePos();
+		Vector2d mouse = getMousePos(parent.width, parent.height);
 		if(enabled)
 		{
 			if(button == 0 && isMouseOver((int)mouse.x, (int)mouse.x))
 			{
+				Minecraft mc = Minecraft.getMinecraft();
 				mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
 				return (grabbedSlider = true);
 			}
 		}
 		return false;
 	}
+	*/
 	
+	@SubscribeGuiInputEvent
+	public void onleftMouseButtonDown(MouseEvents.onLeftMouseButtonDownEvent event)
+	{
+		Vector2d mouse = getMousePos(parent.width, parent.height);
+		if(enabled)
+		{
+			if(isMouseOver(event.mousePosX, event.mousePosY))
+			{
+				Minecraft mc = Minecraft.getMinecraft();
+				mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+				grabbedSlider = true;
+			}
+		}
+	}
+	
+	/**
+	 * new Method onMouseDragged (this method name can be any name!)
 	@Override
 	public boolean mouseDragged(int posX, int posY, int button)
 	{
-		Vector2d mouse = getMousePos();
+		Vector2d mouse = getMousePos(parent.width, parent.height);
 		if(grabbedSlider)
 		{
 			if(mouse.x < this.posX)
@@ -142,12 +168,37 @@ public class GuiAnalogeSlider extends GuiControl
 		}
 		return false;
 	}
+	*/
 	
+	@SubscribeGuiInputEvent
+	public void onLeftClickDrag(MouseEvents.onleftClickDragEvent event)
+	{
+		Vector2d mouse = getMousePos(parent.width, parent.height);
+		if(grabbedSlider)
+		{
+			if(event.mousePosX < this.posX)
+				this.value = this.minValue;
+			else if(event.mousePosX > this.posX + this.width)
+				this.value = this.maxValue;
+			else this.value = (float)((this.maxValue - this.minValue) * ((float)(event.mousePosX - this.posX) / (float)this.width));
+		}
+	}
+	
+	
+	/**
+	 * new Method onLeftMouseButtonRelease (this method name can be any name!)
 	@Override
-	public boolean mouseReleased(int posX, int posY, int button)
+	public void mouseReleased(int posX, int posY, int button)
 	{
 		if(this.grabbedSlider)
-			return !(grabbedSlider = false);
-		return false;
+			grabbedSlider = false;
+	}
+	*/
+	
+	@SubscribeGuiInputEvent
+	public void onLeftMouseButtonRelease(MouseEvents.onLeftMouseButtonReleaseEvent event)
+	{
+		if(this.grabbedSlider)
+			grabbedSlider = false;
 	}
 }

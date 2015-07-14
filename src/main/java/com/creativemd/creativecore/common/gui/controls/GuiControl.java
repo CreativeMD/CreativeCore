@@ -1,15 +1,20 @@
 package com.creativemd.creativecore.common.gui.controls;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 
 import javax.vecmath.Tuple2d;
 import javax.vecmath.Vector2d;
+import javax.xml.ws.FaultAction;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
+import com.creativemd.creativecore.common.gui.SubGui;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -17,10 +22,18 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 
-public abstract class GuiControl {
+@SideOnly(Side.CLIENT)
+public abstract class GuiControl{
 	
-	@SideOnly(Side.CLIENT)
 	public static Minecraft mc = Minecraft.getMinecraft();
+	
+	private int id = -1;
+	
+	public void setID(int id)
+	{
+		if(this.id == -1)
+			this.id = id;
+	}
 	
 	public int posX;
 	public int posY;
@@ -29,6 +42,8 @@ public abstract class GuiControl {
 	public int rotation;
 	public boolean visible;
 	public boolean enabled;
+	
+	public SubGui parent;
 	
 	/**0: around center, 1: around left & top corner**/
 	public int rotateMode = 0;
@@ -49,10 +64,17 @@ public abstract class GuiControl {
 		this(x, y, width, height, 0);
 	}
 	
+	/*public boolean doesControlSupportSync()
+	{
+		return getContainerControl() != null;
+	}*/
+	
+	//public abstract ContainerControl getContainerControl();
+	
 	public abstract void drawControl(FontRenderer renderer);
 	
 	public void renderControl(FontRenderer renderer, int zLevel)
-	{		
+	{
 		GL11.glPushMatrix();
 		//GL11.glTranslated(-posX, -posY, 0);
 		//GL11.glTranslated(width/2, height/2, zLevel);
@@ -66,25 +88,42 @@ public abstract class GuiControl {
 		GL11.glPopMatrix();
 	}
 	
+	public boolean isMouseOver()
+	{
+		Vector2d mouse = GuiControl.getMousePos(parent.width, parent.height);
+		Vector2d pos = getValidPos((int)mouse.x, (int)mouse.y);
+		return isMouseOver((int)pos.x, (int)pos.y);
+	}
+	
 	public boolean isMouseOver(int posX, int posY)
 	{
 		//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
-		if(posX >= this.posX-this.width/2 && posX <= this.posX+this.width/2 &&
-				posY >= this.posY-this.height/2 && posY <= this.posY+this.height/2)
+		if(posX >= this.posX-this.width/2 && posX < this.posX+this.width/2 &&
+				posY >= this.posY-this.height/2 && posY < this.posY+this.height/2)
 		{
 			return true;
 		}
 		return false;
 	}
 	
+	public boolean mouseScrolled(int posX, int posY, int scrolled){
+		return false;
+	}
+	
 	public boolean mousePressed(int posX, int posY, int button){
 		return false;
 	}
+	
 	public boolean mouseDragged(int posX, int posY, int button){
 		return false;
 	}	
-	public boolean mouseReleased(int posX, int posY, int button){
-		return false;
+	
+	public void mouseReleased(int posX, int posY, int button){
+		
+	}
+	
+	public void mouseMove(int posX, int posY, int button){
+		
 	}
 	
 	public void onLoseFocus(){}
@@ -96,25 +135,29 @@ public abstract class GuiControl {
 	//public void onKeyDown(int key){}
 	//public void onKeyUp(int key){}
 	
+	
 	public ArrayList<String> getTooltip()
 	{
 		return new ArrayList<String>();
 	}
 	
-	public static Vector2d getMousePos()
+	
+	public static Vector2d getMousePos(int width, int height)
 	{
-		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+		Minecraft mc = Minecraft.getMinecraft();
+		ScaledResolution scaledresolution = new ScaledResolution(mc , mc.displayWidth, mc.displayHeight);
 		int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
 		int x = Mouse.getEventX() * i / mc.displayWidth;
         int y = j - Mouse.getEventY() * j / mc.displayHeight - 1;
-        int movex = (i - GuiContainerSub.xSize)/2;
-        int movey = (j - GuiContainerSub.ySize)/2;
+        int movex = (i - width)/2;
+        int movey = (j - height)/2;
         x -= movex;
         y -= movey;
         //System.out.println("Mouse X:" + x + ", Y:" + y);
 		return new Vector2d(x, y);
 	}
+	
 	
 	public Vector2d getValidPos(int x, int y)
 	{
@@ -122,6 +165,7 @@ public abstract class GuiControl {
 		//pos.sub(new Vector2d(mc.displayWidth/2-GuiContainerSub.xSize/2, mc.displayHeight/2-GuiContainerSub.ySize/2));
 		return getRotationAround(-rotation, pos, new Vector2d(posX, posY));
 	}
+	
 	
 	public static Vector2d getRotationAround(double angle, Vector2d pos, Vector2d center)
 	{
@@ -133,6 +177,7 @@ public abstract class GuiControl {
 		result.add(center);
 		return result;
 	}
+	
 	
 	public static void renderControls(ArrayList<GuiControl> controls, FontRenderer renderer, int zLevel)
 	{

@@ -1,28 +1,54 @@
 package com.creativemd.creativecore.common.container;
+
+import java.util.ArrayList;
+
+import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.container.slot.SlotImage;
+import com.creativemd.creativecore.common.gui.GuiContainerSub;
+import com.creativemd.creativecore.common.gui.GuiHandler;
+import com.creativemd.creativecore.common.gui.controls.GuiControl;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChunkCoordinates;
 
 public class ContainerSub extends Container{
 	
 	public SubContainer subContainer;
 	
+	@SideOnly(Side.CLIENT)
+	public GuiContainerSub gui;
+	
+	public ChunkCoordinates coord = null;
+	
+	public ArrayList<ContainerControl> controls;
+	
 	public ContainerSub(EntityPlayer player, SubContainer subContainer)
 	{
 		this.subContainer = subContainer;
 		subContainer.container = this;
-		subContainer.slots.addAll(subContainer.getSlots(player));
+		subContainer.createControls();
+		
+		controls = subContainer.controls;
+		for (int i = 0; i < controls.size(); i++)
+		{
+			controls.get(i).parent = subContainer;
+			controls.get(i).setID(i);
+		}
+		
+		/*subContainer.slots.addAll(subContainer.getSlots(player));
 		inventorySlots.clear();
 		for (int i = 0; i < subContainer.slots.size(); i++) {
 			addSlotToContainer(subContainer.slots.get(i));
-		}
+		}*/
+		subContainer.onGuiOpened();
 	}
 	
 	@Override
@@ -79,7 +105,7 @@ public class ContainerSub extends Container{
 	public void detectAndSendChanges()
     {
 		super.detectAndSendChanges();
-		subContainer.onSlotChange();
+		//subContainer.onSlotChange();
 		subContainer.onUpdate();
     }
 	
@@ -87,12 +113,13 @@ public class ContainerSub extends Container{
 	public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        subContainer.onGuiClosed(player);
+        subContainer.onGuiClosed();
+        GuiHandler.openContainers.remove(this);
     }
 	
 	/**Vanilla method fixed not took care of getSlotStockLimit**/
 	@Override
-	protected boolean mergeItemStack(ItemStack p_75135_1_, int p_75135_2_, int p_75135_3_, boolean p_75135_4_)
+	protected boolean mergeItemStack(ItemStack stack, int p_75135_2_, int p_75135_3_, boolean p_75135_4_)
     {
         boolean flag1 = false;
         int k = p_75135_2_;
@@ -104,31 +131,31 @@ public class ContainerSub extends Container{
 
         Slot slot;
         ItemStack itemstack1;
-        if (p_75135_1_.isStackable())
+        if (stack.isStackable())
         {
-            while (p_75135_1_.stackSize > 0 && (!p_75135_4_ && k < p_75135_3_ || p_75135_4_ && k >= p_75135_2_))
+            while (stack.stackSize > 0 && (!p_75135_4_ && k < p_75135_3_ || p_75135_4_ && k >= p_75135_2_))
             {
                 slot = (Slot)this.inventorySlots.get(k);
                 itemstack1 = slot.getStack();
                 
-                int stackSize = p_75135_1_.getMaxStackSize();
+                int stackSize = stack.getMaxStackSize();
                 if(slot.getSlotStackLimit() < stackSize)
                 	stackSize = slot.getSlotStackLimit();
                 
-                if (!(slot instanceof SlotImage) && itemstack1 != null && itemstack1.getItem() == p_75135_1_.getItem() && (!p_75135_1_.getHasSubtypes() || p_75135_1_.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(p_75135_1_, itemstack1) && slot.isItemValid(itemstack1))
+                if (!(slot instanceof SlotImage) && itemstack1 != null && itemstack1.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == itemstack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, itemstack1) && slot.isItemValid(itemstack1))
                 {
-                    int l = itemstack1.stackSize + p_75135_1_.stackSize;
+                    int l = itemstack1.stackSize + stack.stackSize;
                     
                     if (l <= stackSize)
                     {
-                        p_75135_1_.stackSize = 0;
+                        stack.stackSize = 0;
                         itemstack1.stackSize = l;
                         slot.onSlotChanged();
                         flag1 = true;
                     }
                     else if (itemstack1.stackSize < stackSize)
                     {
-                        p_75135_1_.stackSize -= stackSize - itemstack1.stackSize;
+                        stack.stackSize -= stackSize - itemstack1.stackSize;
                         itemstack1.stackSize = stackSize;
                         slot.onSlotChanged();
                         flag1 = true;
@@ -146,7 +173,7 @@ public class ContainerSub extends Container{
             }
         }
 
-        if (p_75135_1_.stackSize > 0)
+        if (stack.stackSize > 0)
         {
             if (p_75135_4_)
             {
@@ -162,9 +189,9 @@ public class ContainerSub extends Container{
                 slot = (Slot)this.inventorySlots.get(k);
                 itemstack1 = slot.getStack();
 
-                if (!(slot instanceof SlotImage) && itemstack1 == null && slot.isItemValid(p_75135_1_))
+                if (!(slot instanceof SlotImage) && itemstack1 == null && slot.isItemValid(stack))
                 {
-                	ItemStack newStack = p_75135_1_.copy();
+                	ItemStack newStack = stack.copy();
                 	int rest = 0;
                 	if(slot.getSlotStackLimit() < newStack.stackSize)
                 	{
@@ -173,7 +200,7 @@ public class ContainerSub extends Container{
                 	}
                     slot.putStack(newStack);                    
                     slot.onSlotChanged();
-                    p_75135_1_.stackSize = rest;
+                    stack.stackSize = rest;
                     flag1 = true;
                     break;
                 }

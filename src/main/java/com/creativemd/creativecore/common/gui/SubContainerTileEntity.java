@@ -2,6 +2,7 @@ package com.creativemd.creativecore.common.gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 import com.creativemd.creativecore.common.container.SubContainer;
@@ -21,22 +22,15 @@ public abstract class SubContainerTileEntity extends SubContainer {
 		this.tileEntity = tileEntity;
 	}
 	
-	public void onUpdate()
+	@Override
+	public void writeOpeningNBT(NBTTagCompound nbt)
 	{
-		if(!started)
-		{
-			if(container.subContainer instanceof SubContainerTileEntity && player instanceof EntityPlayerMP)
-				PacketHandler.sendPacketToPlayer(new TEContainerPacket(((SubContainerTileEntity)container.subContainer).tileEntity), (EntityPlayerMP)player);
-			started = true;
-		}
-		super.onUpdate();		
+		tileEntity.writeToNBT(nbt);
 	}
 	
-	public void sendUpdate()
+	@Override
+	public void writeToNBT(NBTTagCompound nbt)
 	{
-		if(tileEntity instanceof TileEntityCreative)
-			((TileEntityCreative)tileEntity).updateBlock();
-		else
-			tileEntity.getWorldObj().markBlockForUpdate(tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+		tileEntity.writeToNBT(nbt);
 	}
 }

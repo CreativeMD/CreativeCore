@@ -37,7 +37,7 @@ public class GuiTextfield extends GuiFocusControl{
 	}
 	
 	public GuiTextfield(String text, int x, int y, int width, int height, int rotation) {
-		super(x, y, width, height);
+		super(x, y, width, height, rotation);
 		this.text = text;
 		
 	}

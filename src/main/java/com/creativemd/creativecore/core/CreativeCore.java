@@ -1,11 +1,16 @@
 package com.creativemd.creativecore.core;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.TickHandler;
 import com.creativemd.creativecore.common.gui.GuiHandler;
+import com.creativemd.creativecore.common.packet.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
-import com.creativemd.creativecore.common.packet.GuiPacket;
+import com.creativemd.creativecore.common.packet.GuiControlPacket;
+import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.TEContainerPacket;
 
@@ -26,7 +31,8 @@ public class CreativeCore {
 	public static CreativeCore instance = new CreativeCore();
 	
 	public static final String modid = "creativecore";
-	public static final String version = "1.0";
+	public static final String version = "1.2.0";
+	public static final Logger logger = LogManager.getLogger(modid);
 	
 	public static SimpleNetworkWrapper network;
 	
@@ -41,7 +47,9 @@ public class CreativeCore {
 		EntityRegistry.registerModEntity(EntitySit.class, "Sit", 0, this, 250, 250, true);
 		
 		//Init Packets
-		CreativeCorePacket.registerPacket(GuiPacket.class, "guipacket");
+		CreativeCorePacket.registerPacket(GuiUpdatePacket.class, "guiupdatepacket");
+		CreativeCorePacket.registerPacket(GuiControlPacket.class, "guicontrolpacket");
+		CreativeCorePacket.registerPacket(ContainerControlUpdatePacket.class, "containercontrolpacket");
 		CreativeCorePacket.registerPacket(TEContainerPacket.class, "TEContainer");
 		
 		FMLCommonHandler.instance().bus().register(new TickHandler());
