@@ -106,7 +106,7 @@ public class MouseEvents
 		superMousePosX = mouse.getEventX();
 		superMousePosY = mouse.getEventY();
 		superIsScrollingUp = superWheelScroll > 0 ? true : false;
-		superIsScrollingUp = superWheelScroll < 0 ? true : false;
+		superIsScrollingDown = superWheelScroll < 0 ? true : false;
 		
 		List eventMethodList = methodList.get(eventType.getClass());
 		for(int i = 0; i < eventMethodList.size(); i++)
@@ -126,7 +126,7 @@ public class MouseEvents
 		superLastMousePosY = superMousePosY;
 	}
 
-	public static class onLeftClickEvent
+	public static class onLeftClickEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -153,7 +153,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onLeftMouseButtonPressEvent
+	public static class onLeftMouseButtonPressEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -180,7 +180,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onLeftMouseButtonReleaseEvent
+	public static class onLeftMouseButtonReleaseEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -207,7 +207,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onDoubleLeftClickEvent
+	public static class onDoubleLeftClickEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -234,7 +234,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onRightClickEvent
+	public static class onRightClickEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -261,7 +261,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onRightMouseButtonPressEvent
+	public static class onRightMouseButtonPressEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -288,7 +288,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onRightMouseButtonReleaseEvent
+	public static class onRightMouseButtonReleaseEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -315,7 +315,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onDoubleRightClickEvent
+	public static class onDoubleRightClickEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -342,7 +342,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onMouseButtonPressEvent
+	public static class onMouseButtonPressEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -371,7 +371,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onMouseButtonReleaseEvent
+	public static class onMouseButtonReleaseEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -400,7 +400,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onDoubleButtonClickEvent
+	public static class onDoubleButtonClickEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -429,7 +429,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onWheelClickEvent
+	public static class onWheelClickEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -456,7 +456,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onWheelPressEvent
+	public static class onWheelPressEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -483,7 +483,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onWheelReleaseEvent
+	public static class onWheelReleaseEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -510,7 +510,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onScrollEvent
+	public static class onScrollEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -539,7 +539,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onMouseMoveEvent
+	public static class onMouseMoveEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -570,7 +570,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onleftClickDragEvent
+	public static class onleftClickDragEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
@@ -602,7 +602,7 @@ public class MouseEvents
 		}
 	}
 	
-	public static class onRightClickDragEvent
+	public static class onRightClickDragEvent extends GuiEventHandler.DummyEventClass
 	{
 		public static int mousePosX = superMousePosX;
 		public static int mousePosY = superMousePosY;
