@@ -8,9 +8,8 @@
 package com.creativemd.creativecore.common.gui.events;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
@@ -26,13 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class KeyBoardEvents
 {
 	public static final KeyBoardEvents instance = new KeyBoardEvents();
-	private static HashMap<Class, List> methodList;
-	static
-	{
-		methodList  = new HashMap<Class, List>();
-		methodList.put(KeyBoardEvents.onKeyPress.class, new ArrayList<Method>());
-		methodList.put(KeyBoardEvents.onKeyRelease.class, new ArrayList<Method>());
-	};
+	private static HashMap<Class, HashMap> methodList;
 	private static GuiContainerSub mainGuiContainer;
 	public static Logger log = CreativeCore.logger;
 	
@@ -50,8 +43,7 @@ public class KeyBoardEvents
 					log.catching(new IllegalArgumentException("Couldn't resolve parameters of:" + currentMethod.getDeclaringClass() + ";" + currentMethod.getName()));
 				try
 				{
-					Class parameterType = currentMethod.getGenericParameterTypes()[0].getClass();
-					methodList.get(parameterType).add(currentMethod);
+					methodList.get(currentMethod.getGenericParameterTypes()[0].getClass()).put(guiControl, currentMethod);
 				}
 				catch (Exception e)
 				{
@@ -64,23 +56,34 @@ public class KeyBoardEvents
 	public void addMainGuiContianerKeyboardListner(GuiContainerSub guiContainer)
 	{
 		this.mainGuiContainer = guiContainer;
+		refreshInstances();
 	}
 	
 	private static void callEvents(Object eventType)
 	{
-		List eventMethodList = methodList.get(eventType.getClass());
-		for(int i = 0; i < eventMethodList.size(); i++)
+		HashMap methodMap = methodList.get(eventType.getClass());
+		Iterator iterator = methodMap.keySet().iterator();
+		while(iterator.hasNext())
 		{
 			try
 			{
-				Method method = (Method)eventMethodList.get(i);
-				method.invoke(((Method)eventMethodList.get(i)).getDeclaringClass() , eventType.getClass().newInstance());
+				GuiControl currentMethodClass = (GuiControl) iterator.next();
+				Method currentMethod = (Method) methodMap.get(currentMethodClass);
+				
+				currentMethod.invoke(currentMethodClass , eventType.getClass().newInstance());
 			}
 			catch(Exception e)
 			{
 				log.catching(e);
 			}
 		}
+	}
+	
+	public static void refreshInstances()
+	{
+		methodList  = new HashMap<Class, HashMap>();
+		methodList.put(KeyBoardEvents.onKeyPress.class, new HashMap<GuiControl, Method>());
+		methodList.put(KeyBoardEvents.onKeyRelease.class, new HashMap<GuiControl, Method>());
 	}
 	
 	public static class onKeyPress extends GuiEventHandler.DummyEventClass
