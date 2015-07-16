@@ -1,9 +1,8 @@
 package com.creativemd.creativecore.common.gui.events;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 
 import net.minecraft.client.Minecraft;
 
@@ -22,33 +21,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class MouseEvents
 {
 	public static final MouseEvents instance = new MouseEvents();
-	private static HashMap<Class, List> methodList;
-	static
-	{
-		methodList  = new HashMap<Class, List>();
-		methodList.put(MouseEvents.onLeftClickEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onLeftMouseButtonPressEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onLeftMouseButtonReleaseEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onleftClickDragEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onDoubleLeftClickEvent.class, new ArrayList<Method>());
+	private static HashMap<Class, HashMap> methodList;
 
-		methodList.put(MouseEvents.onRightClickEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onRightMouseButtonPressEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onRightMouseButtonReleaseEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onRightClickDragEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onDoubleRightClickEvent.class, new ArrayList<Method>());
-		
-		methodList.put(MouseEvents.onMouseButtonPressEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onMouseButtonReleaseEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onDoubleButtonClickEvent.class, new ArrayList<Method>());
-		
-		methodList.put(MouseEvents.onWheelClickEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onWheelPressEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onWheelReleaseEvent.class, new ArrayList<Method>());
-		methodList.put(MouseEvents.onScrollEvent.class, new ArrayList<Method>());
-		
-		methodList.put(MouseEvents.onMouseMoveEvent.class, new ArrayList<Method>());
-	};
 	private static GuiContainerSub mainGuiContainer;
 	private static Logger log = CreativeCore.logger;
 	private static Mouse mouse;
@@ -75,8 +49,7 @@ public class MouseEvents
 					log.catching(new IllegalArgumentException("Couldn't resolve parameters of:" + currentMethod.getDeclaringClass() + ";" + currentMethod.getName()));
 				try
 				{
-					Class parameterType = currentMethod.getGenericParameterTypes()[0].getClass();
-					methodList.get(parameterType).add(currentMethod);
+					methodList.get(currentMethod.getGenericParameterTypes()[0].getClass()).put(guiControl, currentMethod);
 				}
 				catch (Exception e)
 				{
@@ -89,6 +62,7 @@ public class MouseEvents
 	public void addGuiContainerMouseListner(GuiContainerSub guiContainer)
 	{
 		this.mainGuiContainer = guiContainer;
+		refreshInstanceList();
 	}
 	
     private static boolean isCtrlKeyDown()
@@ -108,13 +82,16 @@ public class MouseEvents
 		superIsScrollingUp = superWheelScroll > 0 ? true : false;
 		superIsScrollingDown = superWheelScroll < 0 ? true : false;
 		
-		List eventMethodList = methodList.get(eventType.getClass());
-		for(int i = 0; i < eventMethodList.size(); i++)
+		HashMap methodMap = methodList.get(eventType.getClass());
+		Iterator iterator = methodMap.keySet().iterator();
+		while(iterator.hasNext())
 		{
 			try
 			{
-				Method method = (Method)eventMethodList.get(i);
-				method.invoke(((Method)eventMethodList.get(i)).getDeclaringClass() , eventType.getClass().newInstance());
+				GuiControl currentMethodClass = (GuiControl) iterator.next();
+				Method currentMethod = (Method) methodMap.get(currentMethodClass);
+			
+				currentMethod.invoke(currentMethodClass , eventType.getClass().newInstance());
 			}
 			catch(Exception e)
 			{
@@ -124,6 +101,33 @@ public class MouseEvents
 		
 		superLastMousePosX = superMousePosX;
 		superLastMousePosY = superMousePosY;
+	}
+	
+	public static void refreshInstanceList()
+	{
+		methodList = new HashMap<Class, HashMap>();
+		methodList.put(MouseEvents.onLeftClickEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onLeftMouseButtonPressEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onLeftMouseButtonReleaseEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onleftClickDragEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onDoubleLeftClickEvent.class, new HashMap<GuiControl, Method>());
+
+		methodList.put(MouseEvents.onRightClickEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onRightMouseButtonPressEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onRightMouseButtonReleaseEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onRightClickDragEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onDoubleRightClickEvent.class, new HashMap<GuiControl, Method>());
+
+		methodList.put(MouseEvents.onMouseButtonPressEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onMouseButtonReleaseEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onDoubleButtonClickEvent.class, new HashMap<GuiControl, Method>());
+
+		methodList.put(MouseEvents.onWheelClickEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onWheelPressEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onWheelReleaseEvent.class, new HashMap<GuiControl, Method>());
+		methodList.put(MouseEvents.onScrollEvent.class, new HashMap<GuiControl, Method>());
+
+		methodList.put(MouseEvents.onMouseMoveEvent.class, new HashMap<GuiControl, Method>());
 	}
 
 	public static class onLeftClickEvent extends GuiEventHandler.DummyEventClass
