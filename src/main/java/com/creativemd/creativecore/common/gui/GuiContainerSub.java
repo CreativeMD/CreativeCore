@@ -2,9 +2,14 @@ package com.creativemd.creativecore.common.gui;
 
 import java.util.ArrayList;
 
-import javax.vecmath.Color4b;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector4d;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -17,26 +22,18 @@ import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.gui.events.GuiEventHandler;
 import com.creativemd.creativecore.common.gui.events.KeyBoardEvents;
 import com.creativemd.creativecore.common.gui.events.MouseEvents;
-import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
+import com.creativemd.creativecore.common.gui.events.CallHandlers.DefaultSubContainerGuiEventCallHandler;
+import com.creativemd.creativecore.common.gui.events.CallHandlers.GuiEventCallHandler;
 import com.creativemd.creativecore.core.CreativeCore;
-import com.mojang.realmsclient.dto.Subscription.SubscriptionType;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiContainerSub extends GuiContainer{
 	
 	public static final ResourceLocation background = new ResourceLocation(CreativeCore.modid + ":textures/gui/GUI.png");
 	
 	public SubGui gui;
+	
+	/** By default the current Handler is used, though creating a new Handler gives the opportunity to change Calling behavior rather Quickly!*/
+	public static GuiEventCallHandler callHandler = new DefaultSubContainerGuiEventCallHandler();
 	
 	public ArrayList<GuiControl> controls;
 	
@@ -61,17 +58,9 @@ public class GuiContainerSub extends GuiContainer{
 		this.ySize = gui.height;
 		SubGui.itemRender = GuiScreen.itemRender;
 		
+		// Currently still registering the thisClass in both Listners.if there will be an other way of getting the instance of this Class, its better to use that!
 		MouseEvents.instance.addGuiContainerMouseListner(this);
-		for(int i = 0; i < this.controls.size(); i++)
-		{
-			MouseEvents.instance.addMouseListner(this.controls.get(i));
-		}
-		
 		KeyBoardEvents.instance.addMainGuiContianerKeyboardListner(this);
-		for(int i = 0; i < this.controls.size(); i++)
-		{
-			KeyBoardEvents.instance.addKeyboardListner(this.controls.get(i));
-		}
 	}
 	
 	public int getWidth()

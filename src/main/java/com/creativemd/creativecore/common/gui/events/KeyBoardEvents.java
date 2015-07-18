@@ -25,65 +25,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class KeyBoardEvents
 {
 	public static final KeyBoardEvents instance = new KeyBoardEvents();
-	private static HashMap<Class, HashMap> methodList;
 	private static GuiContainerSub mainGuiContainer;
 	public static Logger log = CreativeCore.logger;
-	
-	public void addKeyboardListner(GuiControl guiControl)
-	{
-		Method[] method = guiControl.getClass().getMethods();
-
-		for (int j = 0; j < method.length; j++)
-		{
-			Method currentMethod = method[j];
-
-			if (currentMethod.isAnnotationPresent(SubscribeGuiInputEvent.class))
-			{
-				if (currentMethod.getParameterTypes().length != 1 || !(currentMethod.getGenericParameterTypes()[0] instanceof GuiEventHandler.DummyEventClass))
-					log.catching(new IllegalArgumentException("Couldn't resolve parameters of:" + currentMethod.getDeclaringClass() + ";" + currentMethod.getName()));
-				try
-				{
-					methodList.get(currentMethod.getGenericParameterTypes()[0].getClass()).put(guiControl, currentMethod);
-				}
-				catch (Exception e)
-				{
-					log.catching(e);
-				}
-			}
-		}
-	}
 	
 	public void addMainGuiContianerKeyboardListner(GuiContainerSub guiContainer)
 	{
 		this.mainGuiContainer = guiContainer;
-		refreshInstances();
 	}
 	
-	private static void callEvents(Object eventType)
+	private static void callEvents(Class<? extends GuiEventHandler.DummyEventClass> eventType)
 	{
-		HashMap methodMap = methodList.get(eventType.getClass());
-		Iterator iterator = methodMap.keySet().iterator();
-		while(iterator.hasNext())
-		{
-			try
-			{
-				GuiControl currentMethodClass = (GuiControl) iterator.next();
-				Method currentMethod = (Method) methodMap.get(currentMethodClass);
-				
-				currentMethod.invoke(currentMethodClass , eventType.getClass().newInstance());
-			}
-			catch(Exception e)
-			{
-				log.catching(e);
-			}
-		}
-	}
-	
-	public static void refreshInstances()
-	{
-		methodList  = new HashMap<Class, HashMap>();
-		methodList.put(KeyBoardEvents.onKeyPress.class, new HashMap<GuiControl, Method>());
-		methodList.put(KeyBoardEvents.onKeyRelease.class, new HashMap<GuiControl, Method>());
+		if(mainGuiContainer != null)
+			mainGuiContainer.callHandler.callEvents(eventType);
+		else log.catching(new NullPointerException("mainGuiContainerGuiClass isn't registered!"));
 	}
 	
 	public static class onKeyPress extends GuiEventHandler.DummyEventClass
@@ -95,7 +49,7 @@ public class KeyBoardEvents
 		{
 			keyNumber = key;
 			keyName = Keyboard.getKeyName(key);
-			callEvents(new onKeyPress());
+			callEvents(onKeyPress.class);
 		}
 	}
 	
@@ -108,7 +62,20 @@ public class KeyBoardEvents
 		{
 			keyNumber = key;
 			keyName = Keyboard.getKeyName(key);
-			callEvents(new onKeyRelease());
+			callEvents(onKeyRelease.class);
+		}
+	}
+	
+	public static class onDoubleKeyPress extends GuiEventHandler.DummyEventClass
+	{
+		public static int keyNumber;
+		public static String keyName;
+		
+		protected static void callActionEvents(int key)
+		{
+			keyNumber = key;
+			keyName = Keyboard.getKeyName(key);
+			callEvents(onKeyRelease.class);
 		}
 	}
 }
