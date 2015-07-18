@@ -16,7 +16,7 @@ public class GuiEventHandler
 	 * MouseEvents
 	 */
 	// ////////////////////////////
-	public static final Integer timerInterval = (Integer) Toolkit .getDefaultToolkit().getDesktopProperty("awt.multiClickInterval") / 50;
+	public static final Integer timerInterval = (Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval") / 50;
 	public static boolean EnableMouseHandling;
 	private static boolean isMoving;
 	private static boolean[] mouseButtonReleased = new boolean[9];
@@ -70,6 +70,15 @@ public class GuiEventHandler
 					mouseButtonReleased[i] = false;
 				}
 				
+				if(isSignificantMoving)
+				{
+					if(i == 0)
+						MouseEvents.onRightClickDragEvent.callActionEvents();
+					else if(i == 1)
+						MouseEvents.onleftClickDragEvent.callActionEvents();
+					MouseEvents.onMouseButtonPressDragEvent.callActionEvents();
+				}
+				
 				if (mouseButtonTimer[i] != -1)
 					mouseButtonTimer[i] += 1;
 				if (mouseButtonTimer[i] > timerInterval)
@@ -81,7 +90,7 @@ public class GuiEventHandler
 				{
 					if (mouseButtonTimer[i] < timerInterval)
 					{
-						if (Clicked[i])
+						if (Clicked[i] && !isSignificantMoving)
 						{
 							if (i == 0)
 								MouseEvents.onDoubleLeftClickEvent.callActionEvents();
@@ -122,6 +131,8 @@ public class GuiEventHandler
 	public static boolean enableKeyboardHandling;
 	private static Keyboard keyboard;
 	private static boolean[] isKeyReleased = new boolean[keyboard.getKeyCount()];
+	private static boolean[] keyPressed = new boolean[keyboard.getKeyCount()];
+	private static int[] keyTimer = new int[keyboard.getKeyCount()];
 	private static int keyboardCount = 0;
 
 	public static void handleKeyboardEvents()
@@ -132,6 +143,8 @@ public class GuiEventHandler
 			{
 				keyboardCount = keyboard.getKeyCount();
 				isKeyReleased = new boolean[keyboard.getKeyCount()];
+				keyPressed = new boolean[keyboard.getKeyCount()];
+				keyTimer = new int[keyboard.getKeyCount()];
 			}
 			int i = keyboard.getEventKey();
 			{
@@ -140,16 +153,33 @@ public class GuiEventHandler
 					if (isKeyReleased[i])
 					{
 						KeyBoardEvents.onKeyPress.callActionEvents(i);
+						
+						if (keyTimer[i] == -1)
+							keyTimer[i] = 0;
 						isKeyReleased[i] = false;
 					}
+					
+					if (keyTimer[i] != -1)
+						keyTimer[i] += 1;
+					if (keyTimer[i] > timerInterval)
+						keyTimer[i] = -1;
 				}
 				else
 				{
 					if (!isKeyReleased[i])
 					{
+						if(keyTimer[i] < timerInterval)
+						{
+							if(keyPressed[i])
+							{
+								KeyBoardEvents.onDoubleKeyPress.callActionEvents(i);
+							}
+						}
 						KeyBoardEvents.onKeyRelease.callActionEvents(i);
 						isKeyReleased[i] = true;
 					}
+					if (keyTimer[i] > timerInterval)
+						keyTimer[i] = -1;
 				}
 			}
 		}
