@@ -19,11 +19,6 @@ import com.creativemd.creativecore.common.container.ContainerSub;
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.SubGui.ControlEvent;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
-import com.creativemd.creativecore.common.gui.events.GuiEventHandler;
-import com.creativemd.creativecore.common.gui.events.KeyBoardEvents;
-import com.creativemd.creativecore.common.gui.events.MouseEvents;
-import com.creativemd.creativecore.common.gui.events.CallHandlers.DefaultSubContainerGuiEventCallHandler;
-import com.creativemd.creativecore.common.gui.events.CallHandlers.GuiEventCallHandler;
 import com.creativemd.creativecore.core.CreativeCore;
 
 public class GuiContainerSub extends GuiContainer{
@@ -31,9 +26,6 @@ public class GuiContainerSub extends GuiContainer{
 	public static final ResourceLocation background = new ResourceLocation(CreativeCore.modid + ":textures/gui/GUI.png");
 	
 	public SubGui gui;
-	
-	/** By default the current Handler is used, though creating a new Handler gives the opportunity to change Calling behavior rather Quickly!*/
-	public static GuiEventCallHandler callHandler = new DefaultSubContainerGuiEventCallHandler();
 	
 	public ArrayList<GuiControl> controls;
 	
@@ -57,10 +49,6 @@ public class GuiContainerSub extends GuiContainer{
 		this.xSize = gui.width;
 		this.ySize = gui.height;
 		SubGui.itemRender = GuiScreen.itemRender;
-		
-		// Currently still registering the thisClass in both Listners.if there will be an other way of getting the instance of this Class, its better to use that!
-		MouseEvents.instance.addGuiContainerMouseListner(this);
-		KeyBoardEvents.instance.addMainGuiContianerKeyboardListner(this);
 	}
 	
 	public int getWidth()
@@ -123,9 +111,6 @@ public class GuiContainerSub extends GuiContainer{
 		super.keyTyped(character, key);
     }
 	
-	/**
-	 * This method is only used to separate the MouseEvents form the KeyBoardEvents.
-	 * use the handleMouseInput() & handleKeyboardInput() methods instead.
 	@Override
 	public void handleInput()
     {
@@ -135,20 +120,7 @@ public class GuiContainerSub extends GuiContainer{
 		}
 		super.handleInput();
     }
-    */
-	
-	@Override
-	public void handleMouseInput()
-	{
-		GuiEventHandler.handleMouseEvent();
-	}
-	
-	@Override
-	public void handleKeyboardInput()
-	{
-		GuiEventHandler.handleKeyboardEvents();
-	}
-	
+    
 	public void handleScrolling()
 	{
 		int j = Mouse.getDWheel();

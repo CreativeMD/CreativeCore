@@ -10,8 +10,6 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.creativemd.creativecore.common.gui.events.MouseEvents;
-import com.creativemd.creativecore.common.gui.events.SubscribeGuiInputEvent;
 import com.creativemd.creativecore.core.CreativeCore;
 
 public class GuiAnalogeSlider extends GuiControl
@@ -116,8 +114,6 @@ public class GuiAnalogeSlider extends GuiControl
         
 	}
 	
-	/**
-	 * new Method onLeftMouseButtonDown (this method name can be any name!)
 	@Override
 	public boolean mousePressed(int posX, int posY, int button)
 	{
@@ -133,25 +129,7 @@ public class GuiAnalogeSlider extends GuiControl
 		}
 		return false;
 	}
-	*/
 	
-	@SubscribeGuiInputEvent
-	public void onleftMouseButtonDown(MouseEvents.onLeftMouseButtonPressEvent event)
-	{
-		Vector2d mouse = getMousePos(parent.width, parent.height);
-		if(enabled)
-		{
-			if(isMouseOver(event.mousePosX, event.mousePosY))
-			{
-				Minecraft mc = Minecraft.getMinecraft();
-				mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-				grabbedSlider = true;
-			}
-		}
-	}
-	
-	/**
-	 * new Method onMouseDragged (this method name can be any name!)
 	@Override
 	public boolean mouseDragged(int posX, int posY, int button)
 	{
@@ -167,35 +145,9 @@ public class GuiAnalogeSlider extends GuiControl
 		}
 		return false;
 	}
-	*/
 	
-	@SubscribeGuiInputEvent
-	public void onLeftClickDrag(MouseEvents.onleftClickDragEvent event)
-	{
-		Vector2d mouse = getMousePos(parent.width, parent.height);
-		if(grabbedSlider)
-		{
-			if(event.mousePosX < this.posX)
-				this.value = this.minValue;
-			else if(event.mousePosX > this.posX + this.width)
-				this.value = this.maxValue;
-			else this.value = (float)((this.maxValue - this.minValue) * ((float)(event.mousePosX - this.posX) / (float)this.width));
-		}
-	}
-	
-	
-	/**
-	 * new Method onLeftMouseButtonRelease (this method name can be any name!)
 	@Override
 	public void mouseReleased(int posX, int posY, int button)
-	{
-		if(this.grabbedSlider)
-			grabbedSlider = false;
-	}
-	*/
-	
-	@SubscribeGuiInputEvent
-	public void onLeftMouseButtonRelease(MouseEvents.onLeftMouseButtonReleaseEvent event)
 	{
 		if(this.grabbedSlider)
 			grabbedSlider = false;
