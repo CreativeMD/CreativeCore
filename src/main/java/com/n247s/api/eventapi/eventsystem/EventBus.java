@@ -27,9 +27,9 @@ public class EventBus
 	 */
 	public boolean raiseEvent(Class<? extends EventType> eventType)
 	{
-		if(!EventList.containsKey(eventType))
-			EventList.put(eventType, new EventApiCallHandler(eventType));
-		return ((CallHandler)EventList.get(eventType)).CallInstances();
+		if(!this.EventList.containsKey(eventType))
+			this.EventList.put(eventType, new EventApiCallHandler(eventType));
+		return ((CallHandler)this.EventList.get(eventType)).CallInstances();
 	}
 	
 	/**
@@ -39,13 +39,13 @@ public class EventBus
 	 */
 	public void bindCallHandler(CallHandler callHandler)
 	{
-		if(EventList.containsKey(callHandler.eventType))
-			EventList.remove(callHandler.eventType);
-		EventList.put(callHandler.eventType, callHandler);
+		if(this.EventList.containsKey(callHandler.eventType))
+			this.EventList.remove(callHandler.eventType);
+		this.EventList.put(callHandler.eventType, callHandler);
 	}
 	
 	/**
-	 * With this method you can add an EventListner(Class object/Class instance) which should be Called on eventRaise.
+	 * With this method you can add an this.EventListner(Class object/Class instance) which should be Called on eventRaise.
 	 * 
 	 * @param listner
 	 * @throws IllegalArgumentException - If a CustomEventSubscribed Method contains more than one parameter,
@@ -87,10 +87,10 @@ public class EventBus
 	}
 	
 	/**
-	 * With this method you can remove an EventListner(Class object/Class instance).
+	 * With this method you can remove an this.EventListner(Class object/Class instance).
 	 * 
 	 * @param Listner
-	 * @throws NullPointerException - if the EventListner isn't registered.
+	 * @throws NullPointerException - if the this.EventListner isn't registered.
 	 */
 	public void removeEventListner(Object Listner)
 	{
@@ -137,8 +137,8 @@ public class EventBus
 	 */
 	public CallHandler getCallHandlerFromEventType(Class<? extends EventType> eventTypeClass)
 	{
-		if(!EventList.containsKey(eventTypeClass))
-			EventList.put(eventTypeClass, new EventApiCallHandler(eventTypeClass));
-		return EventList.get(eventTypeClass);
+		if(!this.EventList.containsKey(eventTypeClass))
+			this.EventList.put(eventTypeClass, new EventApiCallHandler(eventTypeClass));
+		return this.EventList.get(eventTypeClass);
 	}
 }
