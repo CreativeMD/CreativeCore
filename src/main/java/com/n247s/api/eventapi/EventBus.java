@@ -16,7 +16,6 @@ public class EventBus
 		
 	}
 	
-	public static final Logger logger = LogManager.getLogger("EventApi");
 	protected final HashMap<Class<? extends EventType>, CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
 	
 	/**
@@ -64,9 +63,9 @@ public class EventBus
 			if (currentMethod.isAnnotationPresent(CustomEventSubscribe.class))
 			{
 				if (currentMethod.getParameterTypes().length > 1)
-					logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
+					EventApi.logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
 				if(!(EventType.class.isAssignableFrom(currentMethod.getParameterTypes()[0])))
-					logger.catching(new IllegalArgumentException("The Parameter isn't an EventType!"));
+					EventApi.logger.catching(new IllegalArgumentException("The Parameter isn't an EventType!"));
 				
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
@@ -106,11 +105,11 @@ public class EventBus
 			if(currentMethod.isAnnotationPresent(CustomEventSubscribe.class))
 			{
 				if (currentMethod.getParameterTypes().length > 1)
-					logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
+					EventApi.logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
 				if (Listner instanceof Class && !Modifier.isStatic(currentMethod.getModifiers()))
-					logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't be non-static if you register an Class Object!"));
+					EventApi.logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't be non-static if you register an Class Object!"));
 				if(!(EventType.class.isAssignableFrom(currentMethod.getParameterTypes()[0])))
-					logger.catching(new IllegalArgumentException("The Parameter of a CustomEventSubscribed method isn't an EventType!"));
+					EventApi.logger.catching(new IllegalArgumentException("The Parameter of a CustomEventSubscribed method isn't an EventType!"));
 				
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
