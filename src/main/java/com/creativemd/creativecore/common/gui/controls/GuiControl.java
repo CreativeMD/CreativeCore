@@ -13,6 +13,8 @@ import org.lwjgl.opengl.GL11;
 import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
 import com.creativemd.creativecore.common.gui.SubGui;
+import com.creativemd.creativecore.common.gui.event.GuiControlEvent;
+import com.n247s.api.eventapi.EventApiCallHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -24,6 +26,8 @@ import net.minecraft.client.renderer.Tessellator;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiControl{
+	
+	public static final EventApiCallHandler eventBus = new EventApiCallHandler(GuiControlEvent.class);
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
 	

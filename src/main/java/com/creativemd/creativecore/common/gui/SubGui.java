@@ -33,6 +33,7 @@ public abstract class SubGui {
     public SubGui(int width, int height) {
 		this.width = width;
 		this.height = height;
+		
 	}
     
 	//public String title;
