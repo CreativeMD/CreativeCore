@@ -1,9 +1,11 @@
-package com.n247s.api.eventapi;
+package com.n247s.api.eventapi.eventsystem;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.n247s.api.eventapi.EventApi;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
@@ -32,12 +34,12 @@ public @interface CustomEventSubscribe
 		{
 			switch(i)
 			{
-				case 0: return Highest;
-				case 1: return High;
-				case 2: return Normal;
-				case 3: return Low;
-				case 4: return Lowest;
-				default: EventApi.logger.catching(new IllegalArgumentException("Priority Number Can't be lower than 0, or higher than 4!"));
+			case 0: return Highest;
+			case 1: return High;
+			case 2: return Normal;
+			case 3: return Low;
+			case 4: return Lowest;
+			default: EventApi.logger.catching(new IllegalArgumentException("Priority Number Can't be lower than 0, or higher than 4!"));
 			}
 			return null;
 		}

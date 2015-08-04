@@ -7,6 +7,7 @@ import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.packet.GuiControlPacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
+import com.n247s.api.eventapi.eventsystem.EventBus;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -21,6 +22,8 @@ public abstract class SubGui {
 	
 	public static RenderItem itemRender;
 	
+	public EventBus eventBus;
+	
 	public SubContainer container;
 	
 	public int width;
@@ -33,7 +36,7 @@ public abstract class SubGui {
     public SubGui(int width, int height) {
 		this.width = width;
 		this.height = height;
-		
+		eventBus = new EventBus();
 	}
     
 	//public String title;

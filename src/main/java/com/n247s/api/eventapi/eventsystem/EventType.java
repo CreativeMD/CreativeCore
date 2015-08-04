@@ -1,4 +1,4 @@
-package com.n247s.api.eventapi;
+package com.n247s.api.eventapi.eventsystem;
 
 public abstract class EventType
 {

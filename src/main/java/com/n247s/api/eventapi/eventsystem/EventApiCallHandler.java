@@ -1,4 +1,4 @@
-package com.n247s.api.eventapi;
+package com.n247s.api.eventapi.eventsystem;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
+
+import com.n247s.api.eventapi.EventApi;
 
 
 /**

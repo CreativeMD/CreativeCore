@@ -1,4 +1,4 @@
-package com.n247s.api.eventapi;
+package com.n247s.api.eventapi.eventsystem;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
+
+import com.n247s.api.eventapi.EventApi;
 
 public abstract class CallHandler
 {
@@ -33,7 +35,7 @@ public abstract class CallHandler
 	
 	/**
 	 * This method is used to add an instance of a Class which should be called on eventRaise.
-	 * Its called from {@link EventApi#RegisterEventClassInstance(Object)}.
+	 * Its called from {@link EventBus#RegisterEventClassInstance(Object)}.
 	 * 
 	 * @param priority
 	 * @param classInstance
@@ -47,19 +49,19 @@ public abstract class CallHandler
 	
 	/**
 	 * This method is used to remove an EventListner (Class object / Class instance).
-	 * Its called from {@link EventApi#removeEventListner(Object)}.
+	 * Its called from {@link EventBus#removeEventListner(Object)}.
 	 * 
 	 * @param Listner
 	 */
 	protected final void removeListner(CustomEventSubscribe.Priority priority, Object Listner)
 	{
-		LinkedHashMap currenInstanceMap = this.instanceMap.get(priority);
-		
-		if(currenInstanceMap == null)
-			log.catching(new NullPointerException("There is no Listner registered for this priority level " + priority.toString() + "!"));
-		
-		if(currenInstanceMap.containsKey(Listner))
-			currenInstanceMap.remove(Listner);
-		else log.catching(new NullPointerException("Current Listner has either changed its annotation value's or is not registered!"));
+			LinkedHashMap currenInstanceMap = this.instanceMap.get(priority);
+			
+			if(currenInstanceMap == null)
+				log.catching(new NullPointerException("There is no Listner registered for this priority level " + priority.toString() + "!"));
+			
+			if(currenInstanceMap.containsKey(Listner))
+				currenInstanceMap.remove(Listner);
+			else log.catching(new NullPointerException("Current Listner has either changed its annotation value's or is not registered!"));
 	}
 }

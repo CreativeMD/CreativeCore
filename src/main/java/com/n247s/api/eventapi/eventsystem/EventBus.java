@@ -1,4 +1,4 @@
-package com.n247s.api.eventapi;
+package com.n247s.api.eventapi.eventsystem;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -8,15 +8,18 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.n247s.api.eventapi.EventApi;
+
 public class EventBus
 {
-	
-	public EventBus()
-	{
-		
-	}
-	
+	private static final Logger log = EventApi.logger;
 	protected final HashMap<Class<? extends EventType>, CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
+	
+	/**
+	 * Be very careful when creating your own EventBus! Only create one when you really need to, since this is the most sensitive part of the CustomEventSystem,
+	 * messing up the system is rather easy achievable.
+	 */
+	public EventBus(){}
 	
 	/**
 	 * @param eventType
@@ -63,9 +66,9 @@ public class EventBus
 			if (currentMethod.isAnnotationPresent(CustomEventSubscribe.class))
 			{
 				if (currentMethod.getParameterTypes().length > 1)
-					EventApi.logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
+					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
 				if(!(EventType.class.isAssignableFrom(currentMethod.getParameterTypes()[0])))
-					EventApi.logger.catching(new IllegalArgumentException("The Parameter isn't an EventType!"));
+					log.catching(new IllegalArgumentException("The Parameter isn't an EventType!"));
 				
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
@@ -105,11 +108,11 @@ public class EventBus
 			if(currentMethod.isAnnotationPresent(CustomEventSubscribe.class))
 			{
 				if (currentMethod.getParameterTypes().length > 1)
-					EventApi.logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
+					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
 				if (Listner instanceof Class && !Modifier.isStatic(currentMethod.getModifiers()))
-					EventApi.logger.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't be non-static if you register an Class Object!"));
+					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't be non-static if you register an Class Object!"));
 				if(!(EventType.class.isAssignableFrom(currentMethod.getParameterTypes()[0])))
-					EventApi.logger.catching(new IllegalArgumentException("The Parameter of a CustomEventSubscribed method isn't an EventType!"));
+					log.catching(new IllegalArgumentException("The Parameter of a CustomEventSubscribed method isn't an EventType!"));
 				
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
