@@ -25,11 +25,11 @@ public class EventBus
 	 * @param eventType
 	 * @return - true if EventType is Canceled.
 	 */
-	public boolean raiseEvent(Class<? extends EventType> eventType)
+	public boolean raiseEvent(EventType event)
 	{
-		if(!this.EventList.containsKey(eventType))
-			this.EventList.put(eventType, new EventApiCallHandler(eventType));
-		return ((CallHandler)this.EventList.get(eventType)).CallInstances();
+		if(!this.EventList.containsKey(event.getClass()))
+			this.EventList.put(event.getClass(), new EventApiCallHandler(event.getClass()));
+		return ((CallHandler)this.EventList.get(event.getClass())).CallInstances(event);
 	}
 	
 	/**

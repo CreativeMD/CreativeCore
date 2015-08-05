@@ -31,7 +31,7 @@ public abstract class CallHandler
 
 	/** Used to raise the bound event
 	 * @return */
-	protected abstract boolean CallInstances();
+	protected abstract boolean CallInstances(EventType event);
 	
 	/**
 	 * This method is used to add an instance of a Class which should be called on eventRaise.

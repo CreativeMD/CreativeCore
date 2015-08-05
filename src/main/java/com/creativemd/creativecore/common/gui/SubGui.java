@@ -37,6 +37,7 @@ public abstract class SubGui {
 		this.width = width;
 		this.height = height;
 		eventBus = new EventBus();
+		eventBus.RegisterEventListner(this);
 	}
     
 	//public String title;
@@ -49,7 +50,35 @@ public abstract class SubGui {
 	
 	public void drawBackground(){}
 	
-	public void onControlEvent(GuiControl control, ControlEvent event){}
+	public void onGuiClose(){
+		eventBus.removeEventListner(this);
+	}
+	
+	public void moveControlAbove(GuiControl control, GuiControl controlInBack)
+	{
+		if(controls.contains(controlInBack) && controls.remove(control) && controls.indexOf(controlInBack)+1 < controls.size())
+			controls.add(controls.indexOf(controlInBack)+1, control);
+		else
+			moveControlToTop(control);			
+	}
+	
+	public void moveControlBehind(GuiControl control, GuiControl controlInFront)
+	{
+		if(controls.contains(controlInFront) && controls.remove(control))
+			controls.add(controls.indexOf(controlInFront), control);
+	}
+	
+	public void moveControlToBottom(GuiControl control)
+	{
+		if(controls.remove(control))
+			controls.add(1, control);
+	}
+	
+	public void moveControlToTop(GuiControl control)
+	{
+		if(controls.remove(control))
+			controls.add(control);
+	}
 	
 	//public void onMouseDragged(GuiControl control){}
 	
@@ -62,12 +91,5 @@ public abstract class SubGui {
 	public void sendPacketToServer(int controlID, NBTTagCompound nbt)
 	{
 		PacketHandler.sendPacketToServer(new GuiControlPacket(controlID, nbt));
-	}
-	
-	public static enum ControlEvent{
-		Click,
-		DblClick,
-		KeyPressed,
-		Update;
 	}
 }

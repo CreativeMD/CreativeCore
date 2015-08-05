@@ -127,6 +127,26 @@ public abstract class GuiControl{
 		
 	}
 	
+	public void moveControlAbove(GuiControl controlInBack)
+	{
+		parent.moveControlAbove(this, controlInBack);
+	}
+	
+	public void moveControlBehind(GuiControl controlInFront)
+	{
+		parent.moveControlBehind(this, controlInFront);
+	}
+	
+	public void moveControlToBottom()
+	{
+		parent.moveControlToBottom(this);
+	}
+	
+	public void moveControlToTop()
+	{
+		parent.moveControlToTop(this);
+	}
+	
 	public void onLoseFocus(){}
 	
 	public boolean onKeyPressed(char character, int key)
@@ -142,6 +162,10 @@ public abstract class GuiControl{
 		return new ArrayList<String>();
 	}
 	
+	public void raiseEvent(GuiControlEvent event)
+	{
+		parent.eventBus.raiseEvent(event);
+	}
 	
 	public static Vector2d getMousePos(int width, int height)
 	{
@@ -157,8 +181,7 @@ public abstract class GuiControl{
         y -= movey;
         //System.out.println("Mouse X:" + x + ", Y:" + y);
 		return new Vector2d(x, y);
-	}
-	
+	}	
 	
 	public Vector2d getValidPos(int x, int y)
 	{
@@ -186,7 +209,5 @@ public abstract class GuiControl{
 			controls.get(i).renderControl(renderer, zLevel);
 		}
 	}
-	
-	
 	
 }

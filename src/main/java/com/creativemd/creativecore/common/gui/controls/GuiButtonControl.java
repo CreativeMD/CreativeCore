@@ -5,7 +5,6 @@ import javax.vecmath.Vector2d;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
-import com.creativemd.creativecore.common.gui.SubGui.ControlEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -74,7 +73,6 @@ public class GuiButtonControl extends GuiControl{
 		{
 			Minecraft mc = Minecraft.getMinecraft();
 			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-			//parent.onControlEvent(this, ControlEvent.Click);
 			return true;
 		}
 		return false;

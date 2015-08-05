@@ -17,8 +17,8 @@ import org.lwjgl.opengl.GL11;
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import com.creativemd.creativecore.common.container.ContainerSub;
 import com.creativemd.creativecore.common.container.SubContainer;
-import com.creativemd.creativecore.common.gui.SubGui.ControlEvent;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
+import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
 import com.creativemd.creativecore.core.CreativeCore;
 
 public class GuiContainerSub extends GuiContainer{
@@ -148,7 +148,7 @@ public class GuiContainerSub extends GuiContainer{
 			//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
 			{
-				gui.onControlEvent(controls.get(i), ControlEvent.Click);
+				controls.get(i).raiseEvent(new ControlClickEvent(controls.get(i), (int)pos.x, (int)pos.y));
 				//gui.onControlClicked(controls.get(i));
 				return ;
 			}else{
