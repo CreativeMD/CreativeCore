@@ -10,15 +10,16 @@ import net.minecraft.nbt.NBTTagCompound;
 public class GuiControlPacket extends GuiUpdatePacket{
 	
 	public int control;
+	public int layer;
 	
 	public GuiControlPacket()
 	{
 		super();
 	}
 	
-	public GuiControlPacket(int control, NBTTagCompound value)
+	public GuiControlPacket(int layer, int control, NBTTagCompound value)
 	{
-		super(value, false);
+		super(value, false, layer);
 		this.control = control;
 	}
 	
@@ -42,7 +43,7 @@ public class GuiControlPacket extends GuiUpdatePacket{
 	@Override
 	public void executeServer(EntityPlayer player) {
 		if(player.openContainer instanceof ContainerSub)
-			((ContainerSub) player.openContainer).subContainer.onGuiPacket(control, value, player);
+			((ContainerSub) player.openContainer).layers.get(layer).onGuiPacket(control, value, player);
 	}
 
 }

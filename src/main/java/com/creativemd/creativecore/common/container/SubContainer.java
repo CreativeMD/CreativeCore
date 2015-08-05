@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.container.slot.SlotControl;
+import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
+import com.creativemd.creativecore.common.packet.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 
@@ -19,14 +21,16 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public abstract class SubContainer{
 	
 	/**TickCount for sending UpdatePacket*/
-	//@SideOnly(Side.SERVER)
 	public int tick;
 	
 	public EntityPlayer player;
+	
+	public ContainerSub container;
 	
 	public SubContainer(EntityPlayer player)
 	{
@@ -34,14 +38,55 @@ public abstract class SubContainer{
 		this.tick = 0;
 	}
 	
-	public ContainerSub container;
+	//================LAYERS================
 	
-	//public ArrayList<IInventory> inventories = new ArrayList<IInventory>();
+	public int getLayerID()
+	{
+		return container.layers.indexOf(this);
+	}
+	
+	public SubContainer createLayerFromPacket(World world, EntityPlayer player, NBTTagCompound nbt)
+    {
+    	return null;
+    }
+	
+	public void openNewLayer(NBTTagCompound nbt)
+    {
+		openNewLayer(nbt, false);
+    }
+	
+	public void openNewLayer(NBTTagCompound nbt, boolean isPacket)
+    {
+    	container.layers.add(createLayerFromPacket(player.worldObj, player, nbt));
+    	if(!isPacket)
+    	{
+    		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID()));
+    	}
+    }
+	
+	//================CONTROLS================
 	
 	public ArrayList<ContainerControl> controls = new ArrayList<ContainerControl>();
 	
+	public void initContainer()
+    {
+    	createControls();
+		refreshControls();
+    }
+    
+    public void refreshControls()
+    {
+    	for (int i = 0; i < controls.size(); i++)
+		{
+			controls.get(i).parent = this;
+			controls.get(i).setID(i);
+		}
+    }
+	
 	/**Primary use to add slots*/
 	public abstract void createControls();
+	
+	//================NETWORK================
 	
 	public abstract void onGuiPacket(int controlID, NBTTagCompound nbt, EntityPlayer player);
 	
@@ -49,6 +94,21 @@ public abstract class SubContainer{
 	public int getUpdateTick(){
 		return 10;
 	}
+	
+	public void sendUpdate()
+	{
+		NBTTagCompound nbt = new NBTTagCompound();
+		writeToNBT(nbt);
+		PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, false, getLayerID()), (EntityPlayerMP) player);
+	}
+	
+	/**Called once a player connects*/
+	public void writeOpeningNBT(NBTTagCompound nbt){}
+	
+	/**Called for every Tick-Update*/
+	public void writeToNBT(NBTTagCompound nbt){}
+	
+	//================CUSTOM EVENTS================
 	
 	/**Called once a slot changes*/
 	public void onSlotChange() {}
@@ -64,7 +124,7 @@ public abstract class SubContainer{
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			writeOpeningNBT(nbt);
-			PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, true), (EntityPlayerMP) player);
+			PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, true, getLayerID()), (EntityPlayerMP) player);
 		}
 	}
 	
@@ -84,19 +144,6 @@ public abstract class SubContainer{
 			controls.get(i).detectChange();
 		}
 	}
-	
-	public void sendUpdate()
-	{
-		NBTTagCompound nbt = new NBTTagCompound();
-		writeToNBT(nbt);
-		PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, false), (EntityPlayerMP) player);
-	}
-	
-	/**Called once a player connects*/
-	public void writeOpeningNBT(NBTTagCompound nbt){}
-	
-	/**Called for every Tick-Update*/
-	public void writeToNBT(NBTTagCompound nbt){}
 		
 	/*=============================Helper Methods=============================*/
 	

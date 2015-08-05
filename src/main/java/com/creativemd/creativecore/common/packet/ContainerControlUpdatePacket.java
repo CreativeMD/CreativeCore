@@ -14,29 +14,33 @@ public class ContainerControlUpdatePacket extends CreativeCorePacket{
 	
 	public NBTTagCompound value;
 	public int id;
+	public int layer;
 	
 	public ContainerControlUpdatePacket()
 	{
 		super();
 	}
 	
-	public ContainerControlUpdatePacket(int id, NBTTagCompound value)
+	public ContainerControlUpdatePacket(int layer, int id, NBTTagCompound value)
 	{
 		super();
 		this.value = value;
 		this.id = id;
+		this.layer = layer;
 	}
 	
 	@Override
 	public void writeBytes(ByteBuf bytes) {
 		ByteBufUtils.writeTag(bytes, value);
 		bytes.writeInt(id);
+		bytes.writeInt(layer);
 	}
 	
 	@Override
 	public void readBytes(ByteBuf bytes) {
 		value = ByteBufUtils.readTag(bytes);
 		id = bytes.readInt();
+		layer = bytes.readInt();
 	}
 
 	@Override
@@ -44,8 +48,8 @@ public class ContainerControlUpdatePacket extends CreativeCorePacket{
 	public void executeClient(EntityPlayer player) {
 		if(player.openContainer instanceof ContainerSub)
 		{
-			if(((ContainerSub) player.openContainer).controls.size() > id)
-				((ContainerSub) player.openContainer).controls.get(id).readFromNBT(value);
+			if(((ContainerSub) player.openContainer).layers.get(layer).controls.size() > id)
+				((ContainerSub) player.openContainer).layers.get(layer).controls.get(id).readFromNBT(value);
 		}
 	}
 
@@ -53,8 +57,8 @@ public class ContainerControlUpdatePacket extends CreativeCorePacket{
 	public void executeServer(EntityPlayer player) {
 		if(player.openContainer instanceof ContainerSub)
 		{
-			if(((ContainerSub) player.openContainer).controls.size() > id)
-				((ContainerSub) player.openContainer).controls.get(id).readFromNBT(value);
+			if(((ContainerSub) player.openContainer).layers.get(layer).controls.size() > id)
+				((ContainerSub) player.openContainer).layers.get(layer).controls.get(id).readFromNBT(value);
 		}
 	}
 

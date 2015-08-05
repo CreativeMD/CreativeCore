@@ -43,7 +43,10 @@ public abstract class ContainerControl {
 	public void init()
 	{ 
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
 			guiControl = createGuiControl();
+			guiControl.isContainerControl = true;
+		}
 	}
 	
 	public void detectChange() {}
@@ -54,7 +57,9 @@ public abstract class ContainerControl {
 	{
 		for (int i = 0; i < GuiHandler.openContainers.size(); i++) {
 			if(GuiHandler.openContainers.get(i).coord.equals(parent.container.coord))
-				GuiHandler.openContainers.get(i).subContainer.onGuiOpened();
+				for (int j = 0; j < GuiHandler.openContainers.get(i).layers.size(); j++) {
+					GuiHandler.openContainers.get(i).layers.get(j).onGuiOpened();
+				}
 		}
 	}
 	
@@ -62,9 +67,9 @@ public abstract class ContainerControl {
 	{	
 		nbt.setInteger("type", type);
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-			PacketHandler.sendPacketToServer(new ContainerControlUpdatePacket(id, nbt));
+			PacketHandler.sendPacketToServer(new ContainerControlUpdatePacket(parent.getLayerID(), id, nbt));
 		else
-			PacketHandler.sendPacketToPlayer(new ContainerControlUpdatePacket(id, nbt), (EntityPlayerMP) parent.player);
+			PacketHandler.sendPacketToPlayer(new ContainerControlUpdatePacket(parent.getLayerID(), id, nbt), (EntityPlayerMP) parent.player);
 	}
 	
 	public void sendUpdate()

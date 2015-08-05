@@ -394,7 +394,7 @@ public class RenderHelper2D {
         tessellator.draw();
     }
     
-    public static void drawHoveringText(List strings, int x, int y, FontRenderer font, GuiContainerSub gui)
+    public static void drawHoveringText(List strings, int x, int y, FontRenderer font, int width, int height)
     {
         if (!strings.isEmpty())
         {
@@ -425,14 +425,14 @@ public class RenderHelper2D {
                 i1 += 2 + (strings.size() - 1) * 10;
             }
 
-            if (j2 + k > gui.getWidth())
+            if (j2 + k > width)
             {
                 j2 -= 28 + k;
             }
 
-            if (k2 + i1 + 6 > gui.getHeight())
+            if (k2 + i1 + 6 > height)
             {
-                k2 = gui.getHeight() - i1 - 6;
+                k2 = height - i1 - 6;
             }
 
             zLevel = 300;

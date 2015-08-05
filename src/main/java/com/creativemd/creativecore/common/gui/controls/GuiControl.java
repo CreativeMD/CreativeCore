@@ -30,12 +30,18 @@ public abstract class GuiControl{
 	
 	private int id = -1;
 	
+	public void resetID()
+	{
+		this.id = -1;
+	}
+	
 	public void setID(int id)
 	{
 		if(this.id == -1)
 			this.id = id;
 	}
 	
+	public boolean isContainerControl = false;
 	public int posX;
 	public int posY;
 	public int height;
@@ -63,6 +69,12 @@ public abstract class GuiControl{
 	public GuiControl(int x, int y, int width, int height)
 	{
 		this(x, y, width, height, 0);
+	}
+	
+	public GuiControl setContainerControl()
+	{
+		isContainerControl = true;
+		return this;
 	}
 	
 	/*public boolean doesControlSupportSync()

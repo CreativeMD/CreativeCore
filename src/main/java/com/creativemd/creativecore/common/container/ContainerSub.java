@@ -21,33 +21,21 @@ import net.minecraft.util.ChunkCoordinates;
 
 public class ContainerSub extends Container{
 	
-	public SubContainer subContainer;
+	public ArrayList<SubContainer> layers;
 	
 	@SideOnly(Side.CLIENT)
 	public GuiContainerSub gui;
 	
 	public ChunkCoordinates coord = null;
 	
-	public ArrayList<ContainerControl> controls;
-	
 	public ContainerSub(EntityPlayer player, SubContainer subContainer)
 	{
-		this.subContainer = subContainer;
+		layers = new ArrayList<SubContainer>();
+		
 		subContainer.container = this;
-		subContainer.createControls();
+		subContainer.initContainer();
 		
-		controls = subContainer.controls;
-		for (int i = 0; i < controls.size(); i++)
-		{
-			controls.get(i).parent = subContainer;
-			controls.get(i).setID(i);
-		}
-		
-		/*subContainer.slots.addAll(subContainer.getSlots(player));
-		inventorySlots.clear();
-		for (int i = 0; i < subContainer.slots.size(); i++) {
-			addSlotToContainer(subContainer.slots.get(i));
-		}*/
+		layers.add(subContainer);
 		subContainer.onGuiOpened();
 	}
 	
@@ -105,15 +93,18 @@ public class ContainerSub extends Container{
 	public void detectAndSendChanges()
     {
 		super.detectAndSendChanges();
-		//subContainer.onSlotChange();
-		subContainer.onUpdate();
+		for (int i = 0; i < layers.size(); i++) {
+			layers.get(i).onUpdate();
+		}
     }
 	
 	@Override
 	public void onContainerClosed(EntityPlayer player)
     {
         super.onContainerClosed(player);
-        subContainer.onGuiClosed();
+        for (int i = 0; i < layers.size(); i++) {
+			layers.get(i).onGuiClosed();
+		}
         GuiHandler.openContainers.remove(this);
     }
 	
