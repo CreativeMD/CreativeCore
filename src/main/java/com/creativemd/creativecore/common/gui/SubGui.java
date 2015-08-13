@@ -14,6 +14,7 @@ import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
+import com.creativemd.creativecore.common.gui.event.GuiControlEvent;
 import com.creativemd.creativecore.common.packet.GuiControlPacket;
 import com.creativemd.creativecore.common.packet.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
@@ -39,7 +40,7 @@ public abstract class SubGui {
 	
 	public static RenderItem itemRender;
 	
-	public EventBus eventBus;
+	private EventBus eventBus;
 	
 	public GuiContainerSub gui;
 	public SubContainer container;
@@ -118,6 +119,13 @@ public abstract class SubGui {
 		eventBus.removeEventListner(this);
 	}
 	
+	//================EVENTS================
+	
+	public boolean raiseEvent(GuiControlEvent event)
+	{
+		return eventBus.raiseEvent(event);
+	}
+	
 	//================SORTING================
 	
 	public void moveControlAbove(GuiControl control, GuiControl controlInBack)
@@ -163,31 +171,28 @@ public abstract class SubGui {
 	
 	//================MOUSE/KEYBOARD================
 	
-	public void onMouseMove(int x, int y, int button)
-	{
+	public void mouseMove(int posX, int posY, int button){
+		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vector2d mouse = GuiControl.getMousePos(width, height);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
 				controls.get(i).mouseMove((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
-	public void onMouseReleased(int x, int y, int button)
-	{
+	public void mouseReleased(int posX, int posY, int button){
+		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vector2d mouse = GuiControl.getMousePos(width, height);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			controls.get(i).mouseReleased((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
-	public void mouseClicked(int x, int y, int button)
-	{
+	public void mousePressed(int posX, int posY, int button){
+		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vector2d mouse = GuiControl.getMousePos(width, height);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
+			//Vector2d mousePos = getRotationAround(-rotation, getMousePos(), new Vector2d(this.posX, this.posY));
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
 			{
 				controls.get(i).raiseEvent(new ControlClickEvent(controls.get(i), (int)pos.x, (int)pos.y));
@@ -199,12 +204,11 @@ public abstract class SubGui {
 		}
 	}
 	
-	public void mouseClickMove(int x, int y, int button, long time)
-	{
+	public void mouseDragged(int posX, int posY, int button, long time){
+		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vector2d mouse = GuiControl.getMousePos(width, height);
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseDragged((int)pos.x, (int)pos.y, button))
+			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseDragged((int)pos.x, (int)pos.y, button, time))
 			{
 				//gui.onMouseDragged(controls.get(i));
 				return;
@@ -212,24 +216,26 @@ public abstract class SubGui {
 		}
 	}
 	
-	public void handleScrolling()
-	{
-		int j = Mouse.getDWheel();
-        if (j != 0)
-        {
-        	Vector2d mouse = GuiControl.getMousePos(width, height);
-        	for (int i = 0; i < controls.size(); i++) {
-				Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-				//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
-				if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseScrolled((int)pos.x, (int)pos.y, j > 0 ? 1 : -1))
-					return ;
-    		}
-        	//Mouse.setGrabbed(true);
-        }
+	public boolean mouseScrolled(int posX, int posY, int scrolled){
+		Vector2d mouse = getMousePos();
+		for (int i = 0; i < controls.size(); i++) {
+			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
+			//Vector2d mousePos = getRotationAround(-rotation, getMousePos(), new Vector2d(this.posX, this.posY));
+			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseScrolled((int)pos.x, (int)pos.y, scrolled > 0 ? 1 : -1))
+				return true;
+		}
+		return false;
 	}
 	
 	public boolean keyTyped(char character, int key)
     {
+		if (key == 1 || key == this.mc.gameSettings.keyBindInventory.getKeyCode())
+        {
+			gui.removeLayer(this);
+			if(gui.layers.size() == 0)
+				mc.thePlayer.closeScreen();
+            return true;
+        }
 		for (int i = 0; i < controls.size(); i++) {
 			if(controls.get(i).onKeyPressed(character, key))
 				return true;
@@ -239,17 +245,22 @@ public abstract class SubGui {
 	
 	//================RENDER================
 	
+	public Vector2d getMousePos()
+	{
+		return GuiControl.getMousePos(width, height);
+	}
+	
 	public abstract void drawOverlay(FontRenderer fontRenderer);
 	
 	public void drawForeground(FontRenderer fontRenderer)
 	{
-		for (int i = controls.size(); i >= 0; --i) {
+		for (int i = controls.size()-1; i >= 0; i--) {
 			controls.get(i).renderControl(fontRenderer, 0);
 		}
 		
 		this.drawOverlay(fontRenderer);
 		
-		Vector2d mouse = GuiControl.getMousePos(width, height);
+		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y))

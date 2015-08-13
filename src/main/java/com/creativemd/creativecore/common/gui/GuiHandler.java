@@ -22,6 +22,14 @@ public class GuiHandler implements IGuiHandler {
 	
 	public static ArrayList<ContainerSub> openContainers = new ArrayList<ContainerSub>();
 	
+	private static ArrayList<IGuiCreator> guihandlers = new ArrayList<IGuiCreator>();
+	
+	public static int registerGuiHandler(IGuiCreator creator)
+	{
+		guihandlers.add(creator);
+		return guihandlers.size()+1;
+	}
+	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
@@ -37,6 +45,12 @@ public class GuiHandler implements IGuiHandler {
 			ItemStack stack = player.getHeldItem();
 			if(stack != null && stack.getItem() instanceof IGuiCreator)
 				return new ContainerSub(player, ((IGuiCreator) stack.getItem()).getContainer(player, stack, null, 0, 0, 0));
+		}
+		if(ID >= 2)
+		{
+			ID -= 2;
+			if(guihandlers.size() > ID)
+				return new ContainerSub(player, guihandlers.get(ID).getContainer(player, null, world, x, y, z));
 		}
 		return null;
 	}
@@ -54,6 +68,12 @@ public class GuiHandler implements IGuiHandler {
 			ItemStack stack = player.getHeldItem();
 			if(stack != null && stack.getItem() instanceof IGuiCreator)
 				return new GuiContainerSub(player, ((IGuiCreator) stack.getItem()).getGui(player, stack, null, 0, 0, 0), ((IGuiCreator) stack.getItem()).getContainer(player, stack, null, 0, 0, 0));
+		}
+		if(ID >= 2)
+		{
+			ID -= 2;
+			if(guihandlers.size() > ID)
+				return new GuiContainerSub(player, guihandlers.get(ID).getGui(player, null, null, 0, 0, 0), guihandlers.get(ID).getContainer(player, null, world, x, y, z));
 		}
 		return null;
 	}

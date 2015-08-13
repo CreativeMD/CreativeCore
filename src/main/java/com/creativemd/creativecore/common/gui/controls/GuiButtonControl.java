@@ -36,7 +36,7 @@ public class GuiButtonControl extends GuiControl{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(buttonTextures);
 		int k = 1;
-		Vector2d mouse = getMousePos(parent.width, parent.height);
+		Vector2d mouse = parent.getMousePos();
 		int l = 14737632;
 		
 		if(isMouseOver((int)mouse.x, (int)mouse.y))
@@ -63,7 +63,13 @@ public class GuiButtonControl extends GuiControl{
         {
             l = packedFGColour;
         }*/
-        renderer.drawStringWithShadow(caption, width / 2 - renderer.getStringWidth(caption) / 2, (this.height - 8) / 2, l);
+        if(shouldDrawCaption())
+        	renderer.drawStringWithShadow(caption, width / 2 - renderer.getStringWidth(caption) / 2, (this.height - 8) / 2, l);
+	}
+	
+	public boolean shouldDrawCaption()
+	{
+		return true;
 	}
 	
 	@Override

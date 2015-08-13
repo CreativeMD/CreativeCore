@@ -103,7 +103,7 @@ public abstract class GuiControl{
 	
 	public boolean isMouseOver()
 	{
-		Vector2d mouse = GuiControl.getMousePos(parent.width, parent.height);
+		Vector2d mouse = parent.getMousePos();
 		Vector2d pos = getValidPos((int)mouse.x, (int)mouse.y);
 		return isMouseOver((int)pos.x, (int)pos.y);
 	}
@@ -127,7 +127,7 @@ public abstract class GuiControl{
 		return false;
 	}
 	
-	public boolean mouseDragged(int posX, int posY, int button){
+	public boolean mouseDragged(int posX, int posY, int button, long time){
 		return false;
 	}	
 	
@@ -174,9 +174,9 @@ public abstract class GuiControl{
 		return new ArrayList<String>();
 	}
 	
-	public void raiseEvent(GuiControlEvent event)
+	public boolean raiseEvent(GuiControlEvent event)
 	{
-		parent.eventBus.raiseEvent(event);
+		return parent.raiseEvent(event);
 	}
 	
 	public static Vector2d getMousePos(int width, int height)

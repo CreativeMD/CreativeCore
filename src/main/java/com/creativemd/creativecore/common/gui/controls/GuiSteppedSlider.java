@@ -49,7 +49,7 @@ public class GuiSteppedSlider extends GuiControl
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(buttonTextures);
 		int mouseEvent = 1;
-		Vector2d mouse = getMousePos(parent.width, parent.height);
+		Vector2d mouse = parent.getMousePos();
 		
 		if(isMouseOver((int)mouse.x, (int)mouse.y))
 			mouseEvent = 2;
@@ -90,7 +90,7 @@ public class GuiSteppedSlider extends GuiControl
 	@Override
 	public boolean mousePressed(int posX, int posY, int button)
 	{
-		Vector2d mouse = getMousePos(parent.width, parent.height);
+		Vector2d mouse = parent.getMousePos();
 		if(enabled)
 		{
 			if(button == 0 && isMouseOver((int)mouse.x, (int)mouse.x))
@@ -103,9 +103,9 @@ public class GuiSteppedSlider extends GuiControl
 	}
 	
 	@Override
-	public boolean mouseDragged(int posX, int posY, int button)
+	public boolean mouseDragged(int posX, int posY, int button, long time)
 	{
-		Vector2d mouse = getMousePos(parent.width, parent.height);
+		Vector2d mouse = parent.getMousePos();
 		if(grabbedSlider)
 		{
 			if(mouse.x < this.posX)

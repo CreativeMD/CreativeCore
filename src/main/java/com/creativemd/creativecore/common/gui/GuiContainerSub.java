@@ -38,6 +38,8 @@ public class GuiContainerSub extends GuiContainer{
 		gui.gui = this;
 		this.layers.add(gui);
 		
+		gui.initGui();
+		
 		resize();
 		SubGui.itemRender = GuiScreen.itemRender;
 	}
@@ -111,8 +113,13 @@ public class GuiContainerSub extends GuiContainer{
 	@Override                                   
 	public void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		for (int i = layers.size(); i >= 0; --i) {
-			drawWorldBackground(0);
+		for (int i = layers.size()-1; i >= 0; i--) {
+			int k = this.guiLeft;
+	        int l = this.guiTop;
+	        GL11.glTranslatef((float)-k, (float)-l, 0.0F);
+			drawWorldBackground(0);		
+			
+			GL11.glTranslatef((float)k, (float)l, 0.0F);
 			layers.get(i).drawBackground();
 			RenderHelper.enableGUIStandardItemLighting();
 			short short1 = 240;
@@ -120,6 +127,8 @@ public class GuiContainerSub extends GuiContainer{
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)short1 / 1.0F, (float)short2 / 1.0F);
 	        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glDisable(GL11.GL_LIGHTING);
+			
+			//GL11.glTranslatef((float)par1, (float)par2, 0.0F);
 			layers.get(i).drawForeground(fontRendererObj);
 	        GL11.glEnable(GL11.GL_LIGHTING);
 		}
@@ -150,21 +159,27 @@ public class GuiContainerSub extends GuiContainer{
     
 	public void handleScrolling()
 	{
-		getTopLayer().handleScrolling();
+		int j = Mouse.getDWheel();
+        if (j != 0)
+        {
+        	Vector2d mouse = GuiControl.getMousePos(width, height);
+        	getTopLayer().mouseScrolled((int)mouse.x, (int)mouse.y, j);
+        	//Mouse.setGrabbed(true);
+        }
 	}
 	
 	@Override
 	public void mouseClicked(int x, int y, int button)
 	{
 		super.mouseClicked(x, y, button);
-		getTopLayer().mouseClicked(x, y, button);
+		getTopLayer().mousePressed(x, y, button);
 	}
 	
 	@Override
 	public void mouseClickMove(int x, int y, int button, long time)
 	{
 		super.mouseClickMove(x, y, button, time);
-		getTopLayer().mouseClickMove(x, y, button, time);
+		getTopLayer().mouseDragged(x, y, button, time);
 	}
 	
 	@Override
@@ -179,12 +194,12 @@ public class GuiContainerSub extends GuiContainer{
 	
 	public void onMouseMove(int x, int y, int button)
 	{
-		getTopLayer().onMouseMove(x, y, button);
+		getTopLayer().mouseMove(x, y, button);
 	}
 	
 	public void onMouseReleased(int x, int y, int button)
 	{
-		getTopLayer().onMouseReleased(x, y, button);
+		getTopLayer().mouseReleased(x, y, button);
 	}
 	
 	@Override

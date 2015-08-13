@@ -221,7 +221,7 @@ public class GuiSlotControl extends GuiControl{
 	}
 	
 	@Override
-	public boolean mouseDragged(int posX, int posY, int button){
+	public boolean mouseDragged(int posX, int posY, int button, long time){
 		if(startSlot == null && !isDragged())
 		{
 			for (int i = 0; i < parent.controls.size(); i++) {
