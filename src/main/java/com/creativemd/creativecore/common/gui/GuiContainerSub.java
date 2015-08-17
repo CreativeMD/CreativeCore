@@ -144,7 +144,8 @@ public class GuiContainerSub extends GuiContainer{
 	@Override
 	public void keyTyped(char character, int key)
     {
-		getTopLayer().keyTyped(character, key);
+		if(!getTopLayer().keyTyped(character, key))
+			super.keyTyped(character, key);
     }
 	
 	@Override
@@ -153,6 +154,8 @@ public class GuiContainerSub extends GuiContainer{
 		if(Mouse.isCreated())
 		{
 			handleScrolling();
+			Vector2d mouse = GuiControl.getMousePos(width, height);
+        	getTopLayer().mouseMove((int)mouse.x, (int)mouse.y, 0);
 		}
 		super.handleInput();
     }
@@ -189,7 +192,7 @@ public class GuiContainerSub extends GuiContainer{
 		//if(button > 0)
 			//onMouseMove(x, y, button);
 		//else
-		onMouseReleased(x, y, button);
+			onMouseReleased(x, y, button);
 	}
 	
 	public void onMouseMove(int x, int y, int button)

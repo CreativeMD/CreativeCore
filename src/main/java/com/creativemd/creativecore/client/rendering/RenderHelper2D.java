@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL12;
 
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
 import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.creativecore.core.CreativeCore;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -38,6 +39,9 @@ public class RenderHelper2D {
 	public static RenderItem renderer = RenderItem.getInstance();
 	public static Minecraft mc = Minecraft.getMinecraft();
 	public static int zLevel = 0;
+	
+	public static final ResourceLocation tabs = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
+	public static final ResourceLocation tab_item_search = new ResourceLocation("textures/gui/container/creative_inventory/tab_item_search.png");
 	
 	public static void renderItem(ItemStack stack, int x, int y)
 	{
@@ -430,10 +434,10 @@ public class RenderHelper2D {
                 j2 -= 28 + k;
             }
 
-            if (k2 + i1 + 6 > height)
+            /*if (k2 + i1 + 6 > height)
             {
                 k2 = height - i1 - 6;
-            }
+            }*/
 
             zLevel = 300;
             int j1 = -267386864;
@@ -539,5 +543,30 @@ public class RenderHelper2D {
 	            GL11.glTranslatef(0.5F, 0.5F, 0.5F);
             }
         }
+    }
+    
+    public static void renderScrollBar(int posX, int posY, double percent, int height, boolean isDisabled)
+    {
+    	 GL11.glEnable(GL11.GL_BLEND);
+         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        
+        mc.getTextureManager().bindTexture(tab_item_search);
+    	drawTexturedModalRect(posX, posY, 174, 17, 14, 15);
+    	
+    	int maxSize = 110;
+    	int amount = (int) Math.ceil((double)(height-2D)/110D);
+    	for (int i = 0; i < amount; i++) {
+    		int tempHeight = Math.min(maxSize, (height-17)-i*maxSize);
+    		drawTexturedModalRect(posX, posY+15+i*maxSize, 174, 18, 14, tempHeight);
+		}
+    	
+    	
+    	drawTexturedModalRect(posX, posY+height-15, 174, 114, 14, 15);
+    	
+    	mc.getTextureManager().bindTexture(tabs);
+    	drawTexturedModalRect(posX+1, posY+1+(height-2-15)*percent, isDisabled ? 232+12 : 232, 0, 12, 15);
     }
 }

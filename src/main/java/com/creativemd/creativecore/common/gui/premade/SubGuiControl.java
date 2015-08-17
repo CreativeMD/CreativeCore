@@ -15,6 +15,8 @@ import com.n247s.api.eventapi.eventsystem.EventType;
 
 public class SubGuiControl extends SubGui{
 	
+	public int scrolled;
+	
 	public SubGuiControl(GuiControl parent)
 	{
 		this.parent = parent;
@@ -34,6 +36,7 @@ public class SubGuiControl extends SubGui{
 		Vector2d mouse = parent.parent.getMousePos();
 		mouse.x -= parent.posX-parent.width/2;
 		mouse.y -= parent.posY-parent.height/2;
+		mouse.y += scrolled;
 		return mouse;
 	}
 	

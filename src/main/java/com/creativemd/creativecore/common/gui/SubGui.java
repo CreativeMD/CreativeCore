@@ -175,8 +175,7 @@ public abstract class SubGui {
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
-				controls.get(i).mouseMove((int)pos.x, (int)pos.y, button);
+			controls.get(i).mouseMove((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
@@ -252,14 +251,15 @@ public abstract class SubGui {
 	
 	public abstract void drawOverlay(FontRenderer fontRenderer);
 	
-	public void drawForeground(FontRenderer fontRenderer)
+	public void renderControls(FontRenderer fontRenderer)
 	{
 		for (int i = controls.size()-1; i >= 0; i--) {
 			controls.get(i).renderControl(fontRenderer, 0);
 		}
-		
-		this.drawOverlay(fontRenderer);
-		
+	}
+	
+	public void renderTooltip(FontRenderer fontRenderer)
+	{
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
@@ -268,6 +268,15 @@ public abstract class SubGui {
 				RenderHelper2D.drawHoveringText(controls.get(i).getTooltip(), (int)mouse.x, (int)mouse.y, fontRenderer, width, height);
 			}
 		}
+	}
+	
+	public void drawForeground(FontRenderer fontRenderer)
+	{
+		renderControls(fontRenderer);
+		
+		this.drawOverlay(fontRenderer);
+		
+		renderTooltip(fontRenderer);
 	}
 	
 	public void drawBackground()
