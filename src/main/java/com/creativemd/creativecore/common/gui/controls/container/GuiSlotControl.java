@@ -34,7 +34,7 @@ public class GuiSlotControl extends GuiControl{
 	public SlotControl slot;
 	
 	public GuiSlotControl(int x, int y, SlotControl slot) {
-		super(x, y, 18, 18);
+		super(slot.slot.inventory.getInventoryName() + slot.slot.slotNumber, x, y, 18, 18);
 		this.slot = slot;
 	}
 	

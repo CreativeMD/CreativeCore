@@ -34,10 +34,12 @@ public class SubGuiControl extends SubGui{
 	public Vector2d getMousePos()
 	{
 		Vector2d mouse = parent.parent.getMousePos();
-		mouse.x -= parent.posX-parent.width/2;
-		mouse.y -= parent.posY-parent.height/2;
-		mouse.y += scrolled;
-		return mouse;
+		Vector2d pos = parent.getValidPos((int)mouse.x, (int)mouse.y);
+		pos.x -= parent.posX;
+		pos.y -= parent.posY;
+		pos.y += scrolled;
+		
+		return pos;
 	}
 	
 	@Override

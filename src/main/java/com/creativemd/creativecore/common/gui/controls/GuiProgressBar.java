@@ -15,12 +15,12 @@ import com.creativemd.creativecore.common.gui.GuiContainerSub;
 
 public class GuiProgressBar extends GuiControl{
 	
-	public GuiProgressBar(int x, int y, int width, int height) {
-		super(x, y, width, height);
+	public GuiProgressBar(String name, int x, int y, int width, int height) {
+		super(name, x, y, width, height);
 	}
 	
-	public GuiProgressBar(int x, int y, int width, int height, int rotation) {
-		super(x, y, width, height, rotation);
+	public GuiProgressBar(String name, int x, int y, int width, int height, int rotation) {
+		super(name, x, y, width, height, rotation);
 	}
 	
 	public double pos;

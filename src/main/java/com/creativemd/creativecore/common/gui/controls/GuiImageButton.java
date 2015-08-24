@@ -9,9 +9,9 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.util.IIcon;
 
-public abstract class GuiImageButtonControl extends GuiButtonControl{
+public abstract class GuiImageButton extends GuiButton{
 
-	public GuiImageButtonControl(String caption, int x, int y, int width, int height, int id) {
+	public GuiImageButton(String caption, int x, int y, int width, int height, int id) {
 		super(caption, x, y, width, height, id);
 	}
 	

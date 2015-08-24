@@ -32,12 +32,12 @@ public class GuiTextfield extends GuiFocusControl{
 	 private int enabledColor = 14737632;
     private int disabledColor = 7368816;
 	
-	public GuiTextfield(String text, int x, int y, int width, int height) {
-		this(text, x, y, width, height, 0);
+	public GuiTextfield(String name, String text, int x, int y, int width, int height) {
+		this(name, text, x, y, width, height, 0);
 	}
 	
-	public GuiTextfield(String text, int x, int y, int width, int height, int rotation) {
-		super(x, y, width, height, rotation);
+	public GuiTextfield(String name, String text, int x, int y, int width, int height, int rotation) {
+		super(name, x, y, width, height, rotation);
 		this.text = text;
 		
 	}
@@ -190,7 +190,7 @@ public class GuiTextfield extends GuiFocusControl{
 	public ArrayList<String> getTooltip()
 	{
 		ArrayList<String> strings = new ArrayList<String>();
-		strings.add("Test");
+		
 		return strings;
 	}
 	

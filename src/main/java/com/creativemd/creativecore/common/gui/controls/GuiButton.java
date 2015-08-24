@@ -9,25 +9,24 @@ import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiButtonControl extends GuiControl{
+public class GuiButton extends GuiControl{
 	
 	public static final ResourceLocation buttonTextures = new ResourceLocation("textures/gui/widgets.png");
 	
 	public String caption;
 	public int id;
 	
-	public GuiButtonControl(String caption, int x, int y, int width, int height) {
-		this(caption, x, y, width, height, 0);
-	}
-	
-	public GuiButtonControl(String caption, int x, int y, int width, int height, int id) {
-		super(x, y, width, height);
+	public GuiButton(String caption, int x, int y, int width, int height, int id) {
+		super(caption, x, y, width, height);
 		this.caption = caption;
 		this.id = id;
+	}
+	
+	public GuiButton(String caption, int x, int y, int width, int height) {
+		this(caption, x, y, width, height, 0);
 	}
 	
 	@Override

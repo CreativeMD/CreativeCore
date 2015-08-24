@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import io.netty.buffer.ByteBuf;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -47,6 +49,26 @@ public static final HashMap<String, Class<? extends CreativeCorePacket>> packets
 	public abstract void executeClient(EntityPlayer player);
 	
 	public abstract void executeServer(EntityPlayer player);
+	
+	public static void writeString(String input, ByteBuf buf)
+	{
+		ByteBufUtils.writeUTF8String(buf, input);
+	}
+	
+	public static String readString(ByteBuf buf)
+	{
+		return ByteBufUtils.readUTF8String(buf);
+	}
+		
+	public static void writeNBT(NBTTagCompound nbt, ByteBuf buf)
+	{
+		ByteBufUtils.writeTag(buf, nbt);
+	}
+	
+	public static NBTTagCompound readNBT(ByteBuf buf)
+	{
+		return ByteBufUtils.readTag(buf);
+	}
 	
 	public static void writeVec3(Vec3 vec, ByteBuf buf)
 	{

@@ -52,11 +52,14 @@ public abstract class GuiControl{
 	
 	public SubGui parent;
 	
-	/**0: around center, 1: around left & top corner**/
-	public int rotateMode = 0;
+	///**0: around center, 1: around left & top corner**/
+	//public int rotateMode = 0;
 	
-	public GuiControl(int x, int y, int width, int height, int rotation)
+	public String name;
+	
+	public GuiControl(String name, int x, int y, int width, int height, int rotation)
 	{
+		this.name = name;
 		this.posX = x;
 		this.posY = y;
 		this.width = width;
@@ -66,10 +69,12 @@ public abstract class GuiControl{
 		this.visible = true;
 	}
 	
-	public GuiControl(int x, int y, int width, int height)
+	public GuiControl(String name, int x, int y, int width, int height)
 	{
-		this(x, y, width, height, 0);
+		this(name, x, y, width, height, 0);
 	}
+	
+	//================Container Management================
 	
 	public GuiControl setContainerControl()
 	{
@@ -77,28 +82,33 @@ public abstract class GuiControl{
 		return this;
 	}
 	
-	/*public boolean doesControlSupportSync()
-	{
-		return getContainerControl() != null;
-	}*/
+	//================INIT================
 	
-	//public abstract ContainerControl getContainerControl();
+	public void init()
+	{
+		
+	}
+	
+	//================Render================
 	
 	public abstract void drawControl(FontRenderer renderer);
 	
 	public void renderControl(FontRenderer renderer, int zLevel)
 	{
+		Vector2d centerOffset = getCenterOffset();
 		GL11.glPushMatrix();
-		//GL11.glTranslated(-posX, -posY, 0);
-		//GL11.glTranslated(width/2, height/2, zLevel);
-		GL11.glTranslated(posX, posY, 0);
+		GL11.glTranslated(posX+centerOffset.x, posY+centerOffset.y, 0);
 		GL11.glRotated(rotation, 0, 0, 1);
-		GL11.glTranslated(-width/2, -height/2, 0);
-		//GL11.glTranslated(-posX, -posY, zLevel);
+		GL11.glTranslated(-centerOffset.x, -centerOffset.y, 0);
 		drawControl(renderer);
-		//GL11.glTranslated(posX, posY, -zLevel);
-		//GL11.glRotated(-rotation, 0, 0, 1);
 		GL11.glPopMatrix();
+	}
+	
+	//================Interaction================
+	
+	public boolean isInteractable()
+	{
+		return visible && enabled;
 	}
 	
 	public boolean isMouseOver()
@@ -110,9 +120,8 @@ public abstract class GuiControl{
 	
 	public boolean isMouseOver(int posX, int posY)
 	{
-		//Vector2d mousePos = getRotationAround(-rotation, new Vector2d(posX, posY), new Vector2d(this.posX, this.posY));
-		if(posX >= this.posX-this.width/2 && posX < this.posX+this.width/2 &&
-				posY >= this.posY-this.height/2 && posY < this.posY+this.height/2)
+		if(posX >= this.posX && posX < this.posX+this.width &&
+				posY >= this.posY && posY < this.posY+this.height)
 		{
 			return true;
 		}
@@ -139,6 +148,8 @@ public abstract class GuiControl{
 		
 	}
 	
+	//================SORTING================
+	
 	public void moveControlAbove(GuiControl controlInBack)
 	{
 		parent.moveControlAbove(this, controlInBack);
@@ -159,25 +170,49 @@ public abstract class GuiControl{
 		parent.moveControlToTop(this);
 	}
 	
+	public boolean is(String name)
+	{
+		return this.name.equalsIgnoreCase(name);
+	}
+	
+	//================CUSTOM EVENTS================
+	
 	public void onLoseFocus(){}
 	
 	public boolean onKeyPressed(char character, int key)
 	{
 		return false;
 	}
-	//public void onKeyDown(int key){}
-	//public void onKeyUp(int key){}
 	
+	//================Tooltip================
 	
 	public ArrayList<String> getTooltip()
 	{
 		return new ArrayList<String>();
 	}
 	
+	//================Event================
+	
 	public boolean raiseEvent(GuiControlEvent event)
 	{
 		return parent.raiseEvent(event);
 	}
+	
+	//================Rotation-Center================
+	
+	public Vector2d getCenterOffset()
+	{
+		return new Vector2d(width/2, height/2);
+	}
+	
+	public Vector2d getValidPos(int x, int y)
+	{
+		Vector2d pos = new Vector2d(x, y);
+		Vector2d centerOffset = getCenterOffset();
+		return getRotationAround(-rotation, pos, new Vector2d(posX+centerOffset.x, posY+centerOffset.y));
+	}
+	
+	//================STATIC HELPERS================
 	
 	public static Vector2d getMousePos(int width, int height)
 	{
@@ -191,17 +226,8 @@ public abstract class GuiControl{
         int movey = (j - height)/2;
         x -= movex;
         y -= movey;
-        //System.out.println("Mouse X:" + x + ", Y:" + y);
 		return new Vector2d(x, y);
-	}	
-	
-	public Vector2d getValidPos(int x, int y)
-	{
-		Vector2d pos = new Vector2d(x, y);
-		//pos.sub(new Vector2d(mc.displayWidth/2-GuiContainerSub.xSize/2, mc.displayHeight/2-GuiContainerSub.ySize/2));
-		return getRotationAround(-rotation, pos, new Vector2d(posX, posY));
 	}
-	
 	
 	public static Vector2d getRotationAround(double angle, Vector2d pos, Vector2d center)
 	{

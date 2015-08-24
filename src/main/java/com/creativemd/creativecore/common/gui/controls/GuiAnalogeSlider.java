@@ -34,9 +34,9 @@ public class GuiAnalogeSlider extends GuiControl
 	 * @param minValue  - The minimum Value this Slider can reach.
 	 * @param maxValue  - The maximum Value this Slider can reach.
 	 */
-	public GuiAnalogeSlider(int x, int y, int width, int height, int rotation, int id, float minValue, float maxValue)
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, int id, float minValue, float maxValue)
 	{
-		super(x, y, width, height, rotation);
+		super(name, x, y, width, height, rotation);
 		this.id = id;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
@@ -52,9 +52,9 @@ public class GuiAnalogeSlider extends GuiControl
 	 * @param id		- The id of the Slider, used to get its values.
 	 * @param maxValue  - The max Value this Slider can reach.
 	 */
-	public GuiAnalogeSlider(int x, int y, int width, int height, int rotation, int id, float maxValue)
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, int id, float maxValue)
 	{
-		this(x, y, width, height, rotation, id, 0, maxValue);
+		this(name, x, y, width, height, rotation, id, 0, maxValue);
 	}
 	
 	/**
@@ -67,9 +67,9 @@ public class GuiAnalogeSlider extends GuiControl
 	 * @param height    - The height of the Slider.
 	 * @param rotation  - The rotation of the Slider.
 	 */
-	public GuiAnalogeSlider(int x, int y, int width, int height, int rotation)
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation)
 	{
-		this(x, y, width, height, rotation, 0, 0, 100);
+		this(name, x, y, width, height, rotation, 0, 0, 100);
 	}
 
 	@Override

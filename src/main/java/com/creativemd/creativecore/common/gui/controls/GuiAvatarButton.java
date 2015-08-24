@@ -12,7 +12,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.util.IIcon;
 
-public class GuiAvatarButton extends GuiButtonControl{
+public class GuiAvatarButton extends GuiButton{
 	
 	public Avatar avatar;
 	

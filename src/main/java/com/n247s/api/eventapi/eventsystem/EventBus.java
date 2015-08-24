@@ -51,12 +51,12 @@ public class EventBus
 	 * @throws IllegalArgumentException - If a CustomEventSubscribed Method contains more than one parameter,
 	 * 		or if the parameter is not an instance of EventType.class.
 	 */
-	public void RegisterEventListner(Object listner)
+	public void RegisterEventListener(Object listener)
 	{
 		Class clazz;
-		if(!(listner instanceof Class))
-			clazz = listner.getClass();
-		else clazz = (Class) listner;
+		if(!(listener instanceof Class))
+			clazz = listener.getClass();
+		else clazz = (Class) listener;
 		
 		Method[] methods = clazz.getMethods();
 		
@@ -73,16 +73,16 @@ public class EventBus
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
 				
-				getCallHandlerFromEventType(methodEventType).RegisterEventListner(annotation.eventPriority(), listner, currentMethod);
+				getCallHandlerFromEventType(methodEventType).RegisterEventListner(annotation.eventPriority(), listener, currentMethod);
 			}
 		}
 	}
 	
-	public void RegisterEventListners(List<Object> listnersList)
+	public void RegisterEventListeners(List<Object> listenersList)
 	{
-		for(int i = 0; i < listnersList.size(); i++)
+		for(int i = 0; i < listenersList.size(); i++)
 		{
-			RegisterEventListner(listnersList.get(i));
+			RegisterEventListener(listenersList.get(i));
 		}
 	}
 	
@@ -92,12 +92,12 @@ public class EventBus
 	 * @param Listner
 	 * @throws NullPointerException - if the this.EventListner isn't registered.
 	 */
-	public void removeEventListner(Object Listner)
+	public void removeEventListener(Object Listener)
 	{
 		Class clazz;
-		if(!(Listner instanceof Class))
-			clazz = Listner.getClass();
-		else clazz = (Class)Listner;
+		if(!(Listener instanceof Class))
+			clazz = Listener.getClass();
+		else clazz = (Class)Listener;
 		
 		Method[] methodArray = clazz.getMethods();
 		
@@ -109,7 +109,7 @@ public class EventBus
 			{
 				if (currentMethod.getParameterTypes().length > 1)
 					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
-				if (Listner instanceof Class && !Modifier.isStatic(currentMethod.getModifiers()))
+				if (Listener instanceof Class && !Modifier.isStatic(currentMethod.getModifiers()))
 					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't be non-static if you register an Class Object!"));
 				if(!(EventType.class.isAssignableFrom(currentMethod.getParameterTypes()[0])))
 					log.catching(new IllegalArgumentException("The Parameter of a CustomEventSubscribed method isn't an EventType!"));
@@ -117,17 +117,25 @@ public class EventBus
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
 				
-				getCallHandlerFromEventType(methodEventType).removeListner(annotation.eventPriority(), Listner);
+				getCallHandlerFromEventType(methodEventType).removeListner(annotation.eventPriority(), Listener);
 			}
 		}
 	}
 	
-	public void removeEventListners(List<Object> listnersList)
+	public void removeEventListeners(List<Object> listenersList)
 	{
-		for(int i = 0; i < listnersList.size(); i++)
+		for(int i = 0; i < listenersList.size(); i++)
 		{
-			removeEventListner(listnersList.get(i));
+			removeEventListener(listenersList.get(i));
 		}
+	}
+	
+	public void removeAllEventListeners()
+	{
+		for (CallHandler value : EventList.values()) {
+		    value.instanceMap.clear();
+		}
+		EventList.clear();
 	}
 	
 	/**

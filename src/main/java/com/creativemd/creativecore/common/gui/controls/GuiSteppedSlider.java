@@ -33,9 +33,9 @@ public class GuiSteppedSlider extends GuiControl
 	 * @param stepsCount  			- The StepsCount this Slider should have. (This can't be lower than 2, It will throw an exception!)
 	 * @param representativeObjects - The String each Step should represent.
 	 */
-	public GuiSteppedSlider(int x, int y, int width, int height, int rotation, int id, int stepsCount, String[] representativeObjects)
+	public GuiSteppedSlider(String name, int x, int y, int width, int height, int rotation, int id, int stepsCount, String[] representativeObjects)
 	{
-		super(x, y, width, height, rotation);
+		super(name, x, y, width, height, rotation);
 		this.id = id;
 		if(stepsCount > 1)
 			this.stepsCount = stepsCount;

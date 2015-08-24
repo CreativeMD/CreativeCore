@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.gui.controls;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
+import java.util.ArrayList;
 
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector4d;
@@ -12,26 +13,40 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
+import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.gui.SubGui;
+import com.creativemd.creativecore.common.gui.premade.SubContainerControl;
 import com.creativemd.creativecore.common.gui.premade.SubGuiControl;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.ForgeHooksClient;
 
 public class GuiScrollBox extends GuiControl{
 	
 	public SubGuiControl gui;
+	public SubContainerControl container;
 	
 	public int maxScroll = 0;
 	public int scrolled = 0;
 	public boolean dragged;
 
-	public GuiScrollBox(int x, int y, int width, int height) {
-		super(x, y, width, height);
+	public GuiScrollBox(String name, EntityPlayer player, int x, int y, int width, int height) {
+		super(name, x, y, width, height);
 		gui = new SubGuiControl(this);
 		gui.initGui();
+		container = new SubContainerControl(player);
+		container.initContainer();
+		gui.container = container;
+	}
+	
+	public void addControl(ContainerControl control)
+	{
+		container.controls.add(control);
+		container.refreshControls();
+		control.init();
+		addControl(control.guiControl);
 	}
 	
 	public void addControl(GuiControl control)
@@ -54,14 +69,14 @@ public class GuiScrollBox extends GuiControl{
 		ScaledResolution scaledresolution = new ScaledResolution(mc , mc.displayWidth, mc.displayHeight);
 		int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
-        int movex = i/2-parent.width/2+(posX-width/2)+1;
-        int movey = j/2-parent.height/2+(parent.height-(height/2+posY));
+        int movex = i/2-parent.width/2+(posX)+1;
+        int movey = j/2-parent.height/2+(parent.height-(height+posY))+1;
         int scale = scaledresolution.getScaleFactor();
         movex *= scale;
         movey *= scale;
 		
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-		GL11.glScissor(movex,movey,(this.width-2) *scale,(this.height-2) * scale);
+		GL11.glScissor(movex,movey,(this.width-2) * scale,(this.height-2) * scale);
 		
 		GL11.glPushMatrix();
 		
@@ -83,7 +98,7 @@ public class GuiScrollBox extends GuiControl{
 		color = new Vector4d(130, 130, 130, 255);
 		RenderHelper2D.drawGradientRect(this.width-15, 1, this.width-1, this.height-1, color, color);
 		
-		RenderHelper2D.renderScrollBar(this.width-15, 1, (double)scrolled/(double)maxScroll, this.height-2, maxScroll <= 0);
+		RenderHelper2D.renderScrollBar(this.width-15, 1, maxScroll == 0 ? 0 : (double)scrolled/(double)maxScroll, this.height-2, maxScroll <= 0);
 		
 	}
 	
@@ -131,7 +146,7 @@ public class GuiScrollBox extends GuiControl{
 		gui.mouseMove(posX, posY, button);
 		if(dragged)
 		{
-			double percent = (double)(posY-(this.posY-this.height/2))/(double)(height);
+			double percent = (double)(posY-(this.posY))/(double)(height);
 			scrolled = (int) (percent*maxScroll);
 			onScrolled();
 		}

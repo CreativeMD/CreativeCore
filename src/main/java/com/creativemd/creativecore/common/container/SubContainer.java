@@ -159,8 +159,8 @@ public abstract class SubContainer{
 	
 	public void addSlotToContainer(Slot slot)
 	{
-		slot.xDisplayPosition += 8;
-		slot.yDisplayPosition += 8;
+		//slot.xDisplayPosition += 8;
+		//slot.yDisplayPosition += 8;
 		//if(!inventories.contains(slot.inventory))
 			//inventories.add(slot.inventory);
 		controls.add(new SlotControl(slot));

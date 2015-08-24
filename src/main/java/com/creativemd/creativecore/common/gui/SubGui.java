@@ -56,7 +56,7 @@ public abstract class SubGui {
 		this.width = width;
 		this.height = height;
 		eventBus = new EventBus();
-		eventBus.RegisterEventListner(this);
+		eventBus.RegisterEventListener(this);
 	}
     
     //================LAYERS================
@@ -91,6 +91,11 @@ public abstract class SubGui {
     public void initGui()
     {
     	createControls();
+    	for (int i = 0; i < controls.size(); i++) {
+    		controls.get(i).parent = this;
+    		controls.get(i).init();
+    	}
+    	
     	if(container != null)
     	{
     		for (int i = 0; i < container.controls.size(); i++) {
@@ -99,6 +104,13 @@ public abstract class SubGui {
     		}
     	}
 		refreshControls();
+    }
+    
+    private ArrayList<GuiControl> controlsToRemove = new ArrayList<GuiControl>();
+    
+    public void removeControl(GuiControl control)
+    {
+    	controlsToRemove.add(control);		
     }
     
     public void refreshControls()
@@ -110,13 +122,23 @@ public abstract class SubGui {
 			controls.get(i).setID(i);
 		}
     }
+    
+    public GuiControl getControl(String name)
+    {
+    	for (int i = 0; i < controls.size(); i++) {
+			if(controls.get(i).name.equalsIgnoreCase(name))
+				return controls.get(i);
+		}
+    	return null;
+    }
 	
 	public abstract void createControls();
 	
 	//================CUSTOM EVENTS================
 	
-	public void onGuiClose(){
-		eventBus.removeEventListner(this);
+	public void onGuiClose()
+	{
+		eventBus.removeAllEventListeners();
 	}
 	
 	//================EVENTS================
@@ -126,32 +148,37 @@ public abstract class SubGui {
 		return eventBus.raiseEvent(event);
 	}
 	
+	public void addListener(Object listener)
+	{
+		eventBus.RegisterEventListener(listener);
+	}
+	
 	//================SORTING================
 	
-	public void moveControlAbove(GuiControl control, GuiControl controlInBack)
+	public void moveControlBehind(GuiControl control, GuiControl controlInBack)
 	{
 		if(controls.contains(controlInBack) && controls.remove(control) && controls.indexOf(controlInBack)+1 < controls.size())
 			controls.add(controls.indexOf(controlInBack)+1, control);
 		else
-			moveControlToTop(control);		
+			moveControlToBottom(control);		
 		refreshControls();
 	}
 	
-	public void moveControlBehind(GuiControl control, GuiControl controlInFront)
+	public void moveControlAbove(GuiControl control, GuiControl controlInFront)
 	{
 		if(controls.contains(controlInFront) && controls.remove(control))
 			controls.add(controls.indexOf(controlInFront), control);
 		refreshControls();
 	}
 	
-	public void moveControlToBottom(GuiControl control)
+	public void moveControlToTop(GuiControl control)
 	{
 		if(controls.remove(control))
 			controls.add(1, control);
 		refreshControls();
 	}
 	
-	public void moveControlToTop(GuiControl control)
+	public void moveControlToBottom(GuiControl control)
 	{
 		if(controls.remove(control))
 			controls.add(control);
@@ -175,7 +202,8 @@ public abstract class SubGui {
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			controls.get(i).mouseMove((int)pos.x, (int)pos.y, button);
+			if(controls.get(i).isInteractable())
+				controls.get(i).mouseMove((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
@@ -183,7 +211,8 @@ public abstract class SubGui {
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			controls.get(i).mouseReleased((int)pos.x, (int)pos.y, button);
+			if(controls.get(i).isInteractable())
+				controls.get(i).mouseReleased((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
@@ -191,14 +220,15 @@ public abstract class SubGui {
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			//Vector2d mousePos = getRotationAround(-rotation, getMousePos(), new Vector2d(this.posX, this.posY));
-			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
+			if(controls.get(i).isInteractable())
 			{
-				controls.get(i).raiseEvent(new ControlClickEvent(controls.get(i), (int)pos.x, (int)pos.y));
-				//gui.onControlClicked(controls.get(i));
-				return ;
-			}else{
-				controls.get(i).onLoseFocus();
+				if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
+				{
+					controls.get(i).raiseEvent(new ControlClickEvent(controls.get(i), (int)pos.x, (int)pos.y));
+					return ;
+				}else{
+					controls.get(i).onLoseFocus();
+				}
 			}
 		}
 	}
@@ -207,9 +237,8 @@ public abstract class SubGui {
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseDragged((int)pos.x, (int)pos.y, button, time))
+			if(controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseDragged((int)pos.x, (int)pos.y, button, time))
 			{
-				//gui.onMouseDragged(controls.get(i));
 				return;
 			}
 		}
@@ -218,9 +247,8 @@ public abstract class SubGui {
 	public boolean mouseScrolled(int posX, int posY, int scrolled){
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			//Vector2d mousePos = getRotationAround(-rotation, getMousePos(), new Vector2d(this.posX, this.posY));
-			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseScrolled((int)pos.x, (int)pos.y, scrolled > 0 ? 1 : -1))
+			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);			
+			if(controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mouseScrolled((int)pos.x, (int)pos.y, scrolled > 0 ? 1 : -1))
 				return true;
 		}
 		return false;
@@ -236,7 +264,7 @@ public abstract class SubGui {
             return true;
         }
 		for (int i = 0; i < controls.size(); i++) {
-			if(controls.get(i).onKeyPressed(character, key))
+			if(controls.get(i).isInteractable() && controls.get(i).onKeyPressed(character, key))
 				return true;
 		}
 		return false;
@@ -254,7 +282,8 @@ public abstract class SubGui {
 	public void renderControls(FontRenderer fontRenderer)
 	{
 		for (int i = controls.size()-1; i >= 0; i--) {
-			controls.get(i).renderControl(fontRenderer, 0);
+			if(controls.get(i).visible)
+				controls.get(i).renderControl(fontRenderer, 0);
 		}
 	}
 	
@@ -263,7 +292,7 @@ public abstract class SubGui {
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
+			if(controls.get(i).visible && controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
 			{
 				RenderHelper2D.drawHoveringText(controls.get(i).getTooltip(), (int)mouse.x, (int)mouse.y, fontRenderer, width, height);
 			}
@@ -272,6 +301,14 @@ public abstract class SubGui {
 	
 	public void drawForeground(FontRenderer fontRenderer)
 	{
+		for (int i = 0; i < controlsToRemove.size(); i++) {
+			controls.remove(controlsToRemove.get(i));
+			
+		}
+		if(controlsToRemove.size() > 0)
+			refreshControls();
+		controlsToRemove.clear();
+		
 		renderControls(fontRenderer);
 		
 		this.drawOverlay(fontRenderer);
@@ -318,12 +355,10 @@ public abstract class SubGui {
 				percent = amountY;
 			this.drawTexturedModalRect(k, l+6+(int)(i*sizeY), 0, 6, 6, (int)Math.ceil(sizeY*percent));
 			this.drawTexturedModalRect(k+this.width-6, l+6+(int)(i*sizeY), frameSX-6, 6, 6, (int)Math.ceil(sizeY*percent));
-			//this.drawTexturedModalRect(k+6+(int)(i*sizeY), l+this.height-6, 6, frameSY-6, (int)Math.ceil(sizeX*percent), 6);
 			amountY--;
 			i++;
 		}
 		
-		//this.drawRect(k+6, l+6, k+this.width-6, l+this.height-6, 0);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
 		GL11.glColorMask(true, true, true, false);
