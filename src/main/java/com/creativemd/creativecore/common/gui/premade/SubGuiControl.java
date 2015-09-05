@@ -25,9 +25,20 @@ public class SubGuiControl extends SubGui{
 	public GuiControl parent;
 	
 	@Override
+	public void addListener(Object listener)
+	{
+		parent.parent.addListener(listener);
+	}
+	
+	@Override
 	public boolean raiseEvent(GuiControlEvent event)
 	{
 		return parent.raiseEvent(event);
+	}
+	
+	public Vector2d getOffset()
+	{
+		return new Vector2d(parent.posX, parent.posY);
 	}
 	
 	@Override
@@ -40,6 +51,16 @@ public class SubGuiControl extends SubGui{
 		pos.y += scrolled;
 		
 		return pos;
+	}
+	
+	@Override
+	public void renderControls(FontRenderer fontRenderer)
+	{
+		for (int i = controls.size()-1; i >= 0; i--) {
+			GuiControl control = controls.get(i);
+			if(control.visible && control.posY+control.height >= scrolled && control.posY <= height+scrolled)
+				control.renderControl(fontRenderer, 0);
+		}
 	}
 	
 	@Override

@@ -26,6 +26,8 @@ import net.minecraft.client.renderer.Tessellator;
 @SideOnly(Side.CLIENT)
 public abstract class GuiControl{
 	
+	public static final int White = 14737632;
+	
 	public static Minecraft mc = Minecraft.getMinecraft();
 	
 	private int id = -1;
@@ -183,6 +185,8 @@ public abstract class GuiControl{
 	{
 		return false;
 	}
+	
+	public void onGuiClose() {}
 	
 	//================Tooltip================
 	

@@ -15,6 +15,8 @@ import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
 import com.creativemd.creativecore.common.gui.event.GuiControlEvent;
+import com.creativemd.creativecore.common.gui.event.GuiToolTipEvent;
+import com.creativemd.creativecore.common.gui.premade.SubGuiDialog;
 import com.creativemd.creativecore.common.packet.GuiControlPacket;
 import com.creativemd.creativecore.common.packet.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
@@ -68,20 +70,97 @@ public abstract class SubGui {
     
     public void openNewLayer(NBTTagCompound nbt)
     {
+    	openNewLayer(nbt, false);
+    }
+    
+    public void openNewLayer(NBTTagCompound nbt, boolean isPacket)
+    {
     	gui.addLayer(createLayer(mc.theWorld, mc.thePlayer, nbt));
-    	PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID()));
+    	if(!isPacket)
+    		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), false));
+    }
+    
+    public void closeLayer(NBTTagCompound nbt)
+    {
+    	closeLayer(nbt, false);
+    }
+    
+    public void closeLayer(NBTTagCompound nbt, boolean isPacket)
+    {
+    	onGuiClose();
+    	if(!isPacket)
+    		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), true));
+    	gui.removeLayer(this);
+    	if(gui.hasTopLayer())
+    		gui.getTopLayer().onLayerClosed(this, nbt);
+    }
+    
+    public void onLayerClosed(SubGui gui, NBTTagCompound nbt)
+    {
+    	if(nbt.getBoolean("dialog"))
+    	{
+    		String[] buttons = new String[nbt.getInteger("count")];
+    		for (int i = 0; i < buttons.length; i++) {
+				buttons[i] = nbt.getString("b" + i);
+			}
+    		onDialogClosed(nbt.getString("text"), buttons, nbt.getString("clicked"));
+    	}
     }
     
     public SubGui createLayer(World world, EntityPlayer player, NBTTagCompound nbt)
     {
-    	SubGui layer = createLayer(world, player, nbt);
+    	SubGui layer = createLayerFromPacket(world, player, nbt);
     	layer.container = container.createLayerFromPacket(world, player, nbt);
+    	layer.gui = gui; 
+    	layer.initGui();
     	return layer;
     }
     
     public SubGui createLayerFromPacket(World world, EntityPlayer player, NBTTagCompound nbt)
     {
+    	if(nbt.getBoolean("dialog"))
+    	{
+    		String[] buttons = new String[nbt.getInteger("count")];
+    		for (int i = 0; i < buttons.length; i++) {
+				buttons[i] = nbt.getString("b" + i);
+			}
+    		return new SubGuiDialog(nbt.getString("text"), buttons);
+    	}
     	return null;
+    }
+    
+    //================DIALOGS================
+    
+    public void openYesNoDialog(String text)
+    {
+    	openButtonDialogDialog(text, "Yes", "No");
+    }
+    
+    public void openButtonDialogDialog(String text, String... buttons)
+    {
+    	NBTTagCompound nbt = new NBTTagCompound();
+    	nbt.setBoolean("dialog", true);
+    	nbt.setString("text", text);
+    	nbt.setInteger("count", buttons.length);
+    	for (int i = 0; i < buttons.length; i++) {
+			nbt.setString("b" + i, buttons[i]);
+		}
+    	openNewLayer(nbt);
+    }
+    
+    public void openSaveDialog(String text)
+    {
+    	openButtonDialogDialog(text, "Yes", "No", "Cancel");
+    }
+    
+    /*public void openSelectItemInfo()
+    {
+    	WIP
+    }*/
+    
+    public void onDialogClosed(String text, String[] buttons, String clicked)
+    {
+    	
     }
     
     //================CONTROLS================
@@ -106,11 +185,9 @@ public abstract class SubGui {
 		refreshControls();
     }
     
-    private ArrayList<GuiControl> controlsToRemove = new ArrayList<GuiControl>();
-    
     public void removeControl(GuiControl control)
     {
-    	controlsToRemove.add(control);		
+    	controls.remove(control);		
     }
     
     public void refreshControls()
@@ -138,6 +215,9 @@ public abstract class SubGui {
 	
 	public void onGuiClose()
 	{
+		for (int i = 0; i < controls.size(); i++) {
+			controls.get(i).onGuiClose();
+		}
 		eventBus.removeAllEventListeners();
 	}
 	
@@ -145,7 +225,7 @@ public abstract class SubGui {
 	
 	public boolean raiseEvent(GuiControlEvent event)
 	{
-		return eventBus.raiseEvent(event);
+		return !eventBus.raiseEvent(event);
 	}
 	
 	public void addListener(Object listener)
@@ -258,7 +338,9 @@ public abstract class SubGui {
     {
 		if (key == 1 || key == this.mc.gameSettings.keyBindInventory.getKeyCode())
         {
-			gui.removeLayer(this);
+			NBTTagCompound nbt = new NBTTagCompound();
+			nbt.setBoolean("exit", true);
+			closeLayer(nbt);
 			if(gui.layers.size() == 0)
 				mc.thePlayer.closeScreen();
             return true;
@@ -282,8 +364,9 @@ public abstract class SubGui {
 	public void renderControls(FontRenderer fontRenderer)
 	{
 		for (int i = controls.size()-1; i >= 0; i--) {
-			if(controls.get(i).visible)
-				controls.get(i).renderControl(fontRenderer, 0);
+			GuiControl control = controls.get(i);
+			if(control.visible && control.posY+control.height >= 0 && control.posY <= height)
+				control.renderControl(fontRenderer, 0);
 		}
 	}
 	
@@ -294,20 +377,18 @@ public abstract class SubGui {
 			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
 			if(controls.get(i).visible && controls.get(i).isMouseOver((int)pos.x, (int)pos.y))
 			{
-				RenderHelper2D.drawHoveringText(controls.get(i).getTooltip(), (int)mouse.x, (int)mouse.y, fontRenderer, width, height);
+				ArrayList<String> tooltip = controls.get(i).getTooltip();
+				if(raiseEvent(new GuiToolTipEvent(tooltip, controls.get(i))))
+						RenderHelper2D.drawHoveringText(tooltip, (int)mouse.x, (int)mouse.y, fontRenderer, width, height);
 			}
 		}
 	}
 	
+	public void onTick() {}
+	
 	public void drawForeground(FontRenderer fontRenderer)
 	{
-		for (int i = 0; i < controlsToRemove.size(); i++) {
-			controls.remove(controlsToRemove.get(i));
-			
-		}
-		if(controlsToRemove.size() > 0)
-			refreshControls();
-		controlsToRemove.clear();
+		onTick();
 		
 		renderControls(fontRenderer);
 		

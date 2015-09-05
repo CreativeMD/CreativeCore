@@ -1,8 +1,16 @@
 package com.creativemd.creativecore.common.gui.controls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import javax.swing.text.ChangedCharSetException;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
+
+import scala.Char;
+
+import com.creativemd.creativecore.common.gui.event.ControlChangedEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -27,9 +35,11 @@ public class GuiTextfield extends GuiFocusControl{
 	
 	public int selEnd = 0;
 	
+	public char[] allowedChars;
+	
 	private int cursorCounter;
 
-	 private int enabledColor = 14737632;
+	private int enabledColor = 14737632;
     private int disabledColor = 7368816;
 	
 	public GuiTextfield(String name, String text, int x, int y, int width, int height) {
@@ -40,6 +50,12 @@ public class GuiTextfield extends GuiFocusControl{
 		super(name, x, y, width, height, rotation);
 		this.text = text;
 		
+	}
+	
+	public GuiTextfield setNumbersOnly()
+	{
+		this.allowedChars = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+		return this;
 	}
 	
 	public int getScrollOffset()
@@ -82,6 +98,16 @@ public class GuiTextfield extends GuiFocusControl{
     {
         String s1 = "";
         String s2 = ChatAllowedCharacters.filerAllowedCharacters(text);
+        String s3 = "";
+        char[] chars = s2.toCharArray();
+        if(allowedChars != null)
+        {
+	        for (int i = 0; i < chars.length; i++) {
+				if(ArrayUtils.contains(allowedChars, chars[i]))
+					s3 += chars[i];
+			}
+        }
+        s2 = s3;
         int i = this.cursorPosition < this.selEnd ? this.cursorPosition : this.selEnd;
         int j = this.cursorPosition < this.selEnd ? this.selEnd : this.cursorPosition;
         int k = this.maxLength - this.text.length() - (i - this.selEnd);
@@ -112,6 +138,8 @@ public class GuiTextfield extends GuiFocusControl{
 
         this.text = s1;
         this.moveCursorBy(i - this.selEnd + l);
+        
+        raiseEvent(new ControlChangedEvent(this));
     }
 	
 	public void moveCursorBy(int offset)
@@ -184,6 +212,7 @@ public class GuiTextfield extends GuiFocusControl{
                 this.deleteFromCursor(this.getNthWordFromCursor(pos) - this.cursorPosition);
             }
         }
+        raiseEvent(new ControlChangedEvent(this));
     }
 	
 	@Override
@@ -227,6 +256,7 @@ public class GuiTextfield extends GuiFocusControl{
                 }
             }
         }
+        raiseEvent(new ControlChangedEvent(this));
     }
 	
 	public int getWidth()
@@ -359,7 +389,7 @@ public class GuiTextfield extends GuiFocusControl{
                         {
                             this.deleteFromCursor(-1);
                         }
-
+                        
                         return true;
                     case 199:
                         if (GuiScreen.isShiftKeyDown())

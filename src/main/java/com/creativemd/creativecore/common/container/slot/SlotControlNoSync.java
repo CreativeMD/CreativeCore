@@ -11,6 +11,12 @@ public class SlotControlNoSync extends SlotControl{
 	}
 	
 	@Override
+	public void sendNBTUpdate(int type, NBTTagCompound nbt)
+	{	
+		
+	}
+	
+	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		
 	}

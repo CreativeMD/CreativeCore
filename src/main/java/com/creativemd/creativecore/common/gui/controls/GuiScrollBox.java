@@ -20,6 +20,7 @@ import com.creativemd.creativecore.common.gui.premade.SubGuiControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.ForgeHooksClient;
 
@@ -36,6 +37,8 @@ public class GuiScrollBox extends GuiControl{
 		super(name, x, y, width, height);
 		gui = new SubGuiControl(this);
 		gui.initGui();
+		gui.width = width;
+		gui.height = height;
 		container = new SubContainerControl(player);
 		container.initContainer();
 		gui.container = container;
@@ -60,6 +63,8 @@ public class GuiScrollBox extends GuiControl{
 
 	@Override
 	public void drawControl(FontRenderer renderer) {
+		gui.onTick();
+		
 		Vector4d black = new Vector4d(0, 0, 0, 255);
 		RenderHelper2D.drawGradientRect(0, 0, this.width, this.height, black, black);
 		
@@ -115,7 +120,7 @@ public class GuiScrollBox extends GuiControl{
 	public boolean mouseScrolled(int posX, int posY, int scrolled){
 		if(!gui.mouseScrolled(posX, posY, scrolled))
 		{
-			this.scrolled -= scrolled*10;
+			this.scrolled -= scrolled*30;
 		}
 		onScrolled();
 		return true;
@@ -151,6 +156,12 @@ public class GuiScrollBox extends GuiControl{
 			onScrolled();
 		}
 		
+	}
+	
+	@Override
+	public void onGuiClose()
+	{
+		gui.onGuiClose();
 	}
 	
 	@Override

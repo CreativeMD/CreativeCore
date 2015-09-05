@@ -18,7 +18,6 @@ public class GuiListBox extends GuiScrollBox{
 		super(name, player, x, y, width, height);
 		this.lines = lines;
 		refreshControls();
-		
 	}
 	
 	@Override

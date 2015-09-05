@@ -113,13 +113,21 @@ public class GuiContainerSub extends GuiContainer{
 	@Override                                   
 	public void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		for (int i = layers.size()-1; i >= 0; i--) {
-			int k = this.guiLeft;
-	        int l = this.guiTop;
+		for (int i = 0; i < layers.size(); i++){
+			int k = guiLeft;
+			int l = guiTop;
 	        GL11.glTranslatef((float)-k, (float)-l, 0.0F);
-			drawWorldBackground(0);		
+			drawWorldBackground(0);	
 			
+			int offX = (this.width - layers.get(i).width) / 2 - k;
+	        int offY = (this.height - layers.get(i).height) / 2 - l;
+			//GL11.glTranslatef((float)k+offX, (float)l+offY, 0.0F);
 			GL11.glTranslatef((float)k, (float)l, 0.0F);
+			
+			GL11.glTranslatef((float)offX, (float)offY, 0.0F);
+			
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			
 			layers.get(i).drawBackground();
 			RenderHelper.enableGUIStandardItemLighting();
 			short short1 = 240;
@@ -130,13 +138,20 @@ public class GuiContainerSub extends GuiContainer{
 			
 			//GL11.glTranslatef((float)par1, (float)par2, 0.0F);
 			layers.get(i).drawForeground(fontRendererObj);
+			
+			GL11.glTranslatef((float)-offX, (float)-offY, 0.0F);
 	        GL11.glEnable(GL11.GL_LIGHTING);
 		}
 	}
 	
+	public boolean hasTopLayer()
+	{
+		return layers.size() > 0;
+	}
+	
 	public SubGui getTopLayer()
 	{
-		if(layers.size() > 0)
+		if(hasTopLayer())
 			return layers.get(layers.size()-1);
 		return null;
 	}
@@ -203,6 +218,14 @@ public class GuiContainerSub extends GuiContainer{
 	public void onMouseReleased(int x, int y, int button)
 	{
 		getTopLayer().mouseReleased(x, y, button);
+	}
+	
+	@Override
+	public void onGuiClosed()
+	{
+		for (int i = 0; i < layers.size(); i++) {
+			layers.get(i).onGuiClose();
+		}
 	}
 	
 	@Override

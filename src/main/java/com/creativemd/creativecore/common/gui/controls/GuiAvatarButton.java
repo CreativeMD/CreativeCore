@@ -35,8 +35,8 @@ public class GuiAvatarButton extends GuiButton{
 		GL11.glTranslated(width/2, 0, 0);
 		GL11.glTranslated(-size/2, height/2-8, 0);
 		this.avatar.handleRendering(mc, renderer, 16, 16);
-		
-		GL11.glTranslated(16-(size/2)+renderer.getStringWidth(caption)/2, -1, 0);
+		GL11.glTranslated(0, 8, 0);
+		//GL11.glTranslated(16-(size/2)+renderer.getStringWidth(caption)/2, -1, 0);
 		
 		int l = 14737632;
 		
@@ -49,7 +49,8 @@ public class GuiAvatarButton extends GuiButton{
         {
             l = 10526880;
         }
-		renderer.drawStringWithShadow(caption, width / 2 - renderer.getStringWidth(caption) / 2, (this.height - 8) / 2, l);
+		GL11.glTranslated(16+4, -renderer.FONT_HEIGHT/2, 0);
+		renderer.drawStringWithShadow(caption, 0, 0, l);
 		GL11.glPopMatrix();
 		
 	}

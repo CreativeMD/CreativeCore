@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.vecmath.Vector4d;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
+import com.creativemd.creativecore.common.gui.event.ControlChangedEvent;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
@@ -51,7 +52,7 @@ public class GuiComboBox extends GuiControl{
 		parent.controls.add(extension);
 		
 		extension.parent = parent;
-		extension.moveControlToBottom();
+		extension.moveControlToTop();
 		extension.init();
 		parent.refreshControls();
 		extension.rotation = rotation;

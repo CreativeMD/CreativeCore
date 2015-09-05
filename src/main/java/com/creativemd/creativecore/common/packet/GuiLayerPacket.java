@@ -13,36 +13,56 @@ public class GuiLayerPacket extends CreativeCorePacket{
 	
 	public NBTTagCompound nbt;
 	public int layer;
+	public boolean closed;
 	
-	public GuiLayerPacket(NBTTagCompound nbt, int layer)
+	public GuiLayerPacket()
+	{
+		
+	}
+	
+	public GuiLayerPacket(NBTTagCompound nbt, int layer, boolean closed)
 	{
 		this.nbt = nbt;
 		this.layer = layer;
+		this.closed = closed;
 	}
 
 	@Override
 	public void writeBytes(ByteBuf buf) {
 		ByteBufUtils.writeTag(buf, nbt);
 		buf.writeInt(layer);
+		buf.writeBoolean(closed);
 	}
 
 	@Override
 	public void readBytes(ByteBuf buf) {
 		nbt = ByteBufUtils.readTag(buf);
 		layer = buf.readInt();
+		closed = buf.readBoolean();
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
 		if(player.openContainer instanceof ContainerSub)
-			((ContainerSub) player.openContainer).gui.getLayers().get(layer).openNewLayer(nbt);
+		{
+			if(closed)
+				((ContainerSub) player.openContainer).gui.getLayers().get(layer).closeLayer(nbt, true);
+			else
+				((ContainerSub) player.openContainer).gui.getLayers().get(layer).openNewLayer(nbt, true);
+			
+		}
 	}
 
 	@Override
 	public void executeServer(EntityPlayer player) {
 		if(player.openContainer instanceof ContainerSub)
-			((ContainerSub) player.openContainer).layers.get(layer).openNewLayer(nbt, true);		
+		{
+			if(closed)
+				((ContainerSub) player.openContainer).layers.get(layer).closeLayer(nbt, true);	
+			else
+				((ContainerSub) player.openContainer).layers.get(layer).openNewLayer(nbt, true);	
+		}
 	}
 
 }

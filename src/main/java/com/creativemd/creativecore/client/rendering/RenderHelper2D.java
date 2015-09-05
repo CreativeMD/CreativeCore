@@ -125,8 +125,8 @@ public class RenderHelper2D {
             GL11.glEnable(GL11.GL_ALPHA_TEST);
             GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
             GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-            /*if (block.getRenderBlockPass() != 0)
+            //OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            if (block.getRenderBlockPass() != 0)
             {
                 GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
                 GL11.glEnable(GL11.GL_BLEND);
@@ -136,7 +136,7 @@ public class RenderHelper2D {
             {
                 GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
                 GL11.glDisable(GL11.GL_BLEND);
-            }*/
+            }
             
             GL11.glPushMatrix();
             GL11.glTranslatef((float)(x - 2), (float)(y + 3), -3.0F + renderer.zLevel);
@@ -159,14 +159,14 @@ public class RenderHelper2D {
             
             GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
             GL11.glEnable(GL11.GL_LIGHTING);
-            RenderBlocks.getInstance().useInventoryTint = false;
+            RenderBlocks.getInstance().useInventoryTint = true;
             RenderBlocks.getInstance().renderBlockAsItem(block, k, 1.0F);
             RenderBlocks.getInstance().useInventoryTint = true;
             GL11.glDisable(GL11.GL_LIGHTING);
-            /*if (block.getRenderBlockPass() == 0)
+            if (block.getRenderBlockPass() == 0)
             {
                 GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-            }*/
+            }
             
             GL11.glPopMatrix();
         }
@@ -249,6 +249,7 @@ public class RenderHelper2D {
             }
             
             GL11.glDisable(GL11.GL_LIGHTING); //Forge: Make sure that render states are reset, a renderEffect can derp them up.
+            //GL11.glAlphaFunc(0, 1);
             GL11.glEnable(GL11.GL_ALPHA_TEST);
             GL11.glEnable(GL11.GL_BLEND);
             

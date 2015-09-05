@@ -4,9 +4,14 @@ public class GuiStateButton extends GuiButton{
 	
 	public String[] states;
 	
-	public GuiStateButton(String caption, int x, int y, int width, int height, String... states) {
-		super(caption, x, y, width, height);
+	public GuiStateButton(String name, String caption, int x, int y, int width, int height, String... states) {
+		super(name, x, y, width, height);
+		this.caption = caption;
 		this.states = states;
+	}
+	
+	public GuiStateButton(String name, int index, int x, int y, int width, int height, String... states) {
+		this(name, states[index], x, y, width, height, states);
 	}
 	
 	public void setState(int index)

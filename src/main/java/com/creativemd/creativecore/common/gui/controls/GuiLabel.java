@@ -27,7 +27,13 @@ public class GuiLabel extends GuiControl{
 	
 	@Override
 	public void drawControl(FontRenderer renderer) {
-		renderer.drawStringWithShadow(title, 0, height/4, getColor());
+		if(shouldDrawTitle())
+			renderer.drawStringWithShadow(title, 0, height/4, getColor());
+	}
+	
+	public boolean shouldDrawTitle()
+	{
+		return true;
 	}
 	
 	public int getColor()

@@ -1,5 +1,8 @@
 package com.creativemd.creativecore.common.event;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 
@@ -7,6 +10,7 @@ import com.creativemd.creativecore.common.container.ContainerSub;
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
 import com.creativemd.creativecore.common.multiblock.IMultiBlock;
 import com.creativemd.creativecore.common.multiblock.MultiBlockStructure;
+import com.n247s.api.eventapi.eventsystem.EventBus;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -43,13 +47,31 @@ public class TickHandler {
 	@SideOnly(Side.CLIENT)
 	public static int defaultScale;
 	@SideOnly(Side.CLIENT)
-	public boolean changed;
+	public static boolean changed;
+	
+	@SideOnly(Side.CLIENT)
+	public static ArrayList<EventBus> Events;
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onTick(RenderTickEvent tick) //Remove all Structures which doesn't have any connections
+	public void onTick(RenderTickEvent tick)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
+		if(tick.phase == Phase.START)
+		{
+			if(Events == null)
+				Events = new ArrayList<EventBus>();
+			try{
+				for (int i = 0; i < Events.size(); i++) {
+					for (int j = 0; j < Events.get(i).eventsToRaise.size(); j++) {
+						Events.get(i).raiseEvent(Events.get(i).eventsToRaise.get(j), true);
+					}
+					Events.get(i).eventsToRaise.clear();
+				}
+			}catch(Exception e){
+				//It is ready to crash
+			}
+		}
 		
 		if(mc.thePlayer != null && mc.thePlayer.openContainer instanceof ContainerSub && ((ContainerSub)mc.thePlayer.openContainer).gui != null)
 		{

@@ -50,7 +50,7 @@ public static final HashMap<String, Class<? extends CreativeCorePacket>> packets
 	
 	public abstract void executeServer(EntityPlayer player);
 	
-	public static void writeString(String input, ByteBuf buf)
+	public static void writeString(ByteBuf buf, String input)
 	{
 		ByteBufUtils.writeUTF8String(buf, input);
 	}
@@ -60,7 +60,7 @@ public static final HashMap<String, Class<? extends CreativeCorePacket>> packets
 		return ByteBufUtils.readUTF8String(buf);
 	}
 		
-	public static void writeNBT(NBTTagCompound nbt, ByteBuf buf)
+	public static void writeNBT(ByteBuf buf, NBTTagCompound nbt)
 	{
 		ByteBufUtils.writeTag(buf, nbt);
 	}

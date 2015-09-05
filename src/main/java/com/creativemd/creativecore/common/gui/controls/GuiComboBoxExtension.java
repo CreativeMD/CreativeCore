@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector2d;
 
+import com.creativemd.creativecore.common.gui.event.ControlChangedEvent;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -25,13 +27,17 @@ public class GuiComboBoxExtension extends GuiListBox{
 	
 	public void onLoseFocus()
 	{
-		comboBox.closeBox();
+		if(!comboBox.isMouseOver())
+			comboBox.closeBox();
 	}
 	
 	public void onSelectionChange()
 	{
 		if(selected != -1 && selected < lines.size())
+		{
 			comboBox.caption = lines.get(selected);
+			comboBox.raiseEvent(new ControlChangedEvent(comboBox));
+		}
 		comboBox.closeBox();
 	}
 

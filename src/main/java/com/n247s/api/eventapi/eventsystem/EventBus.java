@@ -2,12 +2,14 @@ package com.n247s.api.eventapi.eventsystem;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.creativemd.creativecore.common.event.TickHandler;
 import com.n247s.api.eventapi.EventApi;
 
 public class EventBus
@@ -15,11 +17,33 @@ public class EventBus
 	private static final Logger log = EventApi.logger;
 	protected final HashMap<Class<? extends EventType>, CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
 	
+	public ArrayList<EventType> eventsToRaise = new ArrayList<EventType>();
 	/**
 	 * Be very careful when creating your own EventBus! Only create one when you really need to, since this is the most sensitive part of the CustomEventSystem,
 	 * messing up the system is rather easy achievable.
 	 */
-	public EventBus(){}
+	public EventBus()
+	{
+		TickHandler.Events.add(this);
+	}
+	
+	
+	/**
+	 * @param eventType
+	 * @param force
+	 * @return - true if EventType is Canceled.
+	 */
+	public boolean raiseEvent(EventType event, boolean force)
+	{
+		if(event.isCancelable() || force)
+		{
+			if(!this.EventList.containsKey(event.getClass()))
+				this.EventList.put(event.getClass(), new EventApiCallHandler(event.getClass()));
+			return ((CallHandler)this.EventList.get(event.getClass())).CallInstances(event);
+		}
+		eventsToRaise.add(event);
+		return false;
+	}
 	
 	/**
 	 * @param eventType
@@ -27,9 +51,7 @@ public class EventBus
 	 */
 	public boolean raiseEvent(EventType event)
 	{
-		if(!this.EventList.containsKey(event.getClass()))
-			this.EventList.put(event.getClass(), new EventApiCallHandler(event.getClass()));
-		return ((CallHandler)this.EventList.get(event.getClass())).CallInstances(event);
+		return raiseEvent(event, false);
 	}
 	
 	/**
@@ -130,12 +152,16 @@ public class EventBus
 		}
 	}
 	
+	/**
+	 * Destroy the eventbus
+	 */
 	public void removeAllEventListeners()
 	{
 		for (CallHandler value : EventList.values()) {
 		    value.instanceMap.clear();
 		}
 		EventList.clear();
+		TickHandler.Events.remove(this);
 	}
 	
 	/**

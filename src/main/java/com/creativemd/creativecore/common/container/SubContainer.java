@@ -6,6 +6,7 @@ import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.container.slot.SlotControl;
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
+import com.creativemd.creativecore.common.gui.premade.SubContainerDialog;
 import com.creativemd.creativecore.common.packet.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
@@ -47,8 +48,29 @@ public abstract class SubContainer{
 	
 	public SubContainer createLayerFromPacket(World world, EntityPlayer player, NBTTagCompound nbt)
     {
+		if(nbt.getBoolean("dialog"))
+		{
+			return new SubContainerDialog(player);
+		}
     	return null;
     }
+	
+	public void closeLayer(NBTTagCompound nbt)
+	{
+		closeLayer(nbt, false);
+	}
+	
+	public void closeLayer(NBTTagCompound nbt, boolean isPacket)
+	{
+		if(!isPacket)
+		{
+    		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), true));
+    	}
+		onLayerClosed(nbt, this);
+		container.layers.remove(this);
+	}
+	
+	public void onLayerClosed(NBTTagCompound nbt, SubContainer container) {}
 	
 	public void openNewLayer(NBTTagCompound nbt)
     {
@@ -57,10 +79,12 @@ public abstract class SubContainer{
 	
 	public void openNewLayer(NBTTagCompound nbt, boolean isPacket)
     {
-    	container.layers.add(createLayerFromPacket(player.worldObj, player, nbt));
+		SubContainer Subcontainer = createLayerFromPacket(player.worldObj, player, nbt);
+		Subcontainer.container = container;
+    	container.layers.add(Subcontainer);
     	if(!isPacket)
     	{
-    		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID()));
+    		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), false));
     	}
     }
 	
@@ -92,7 +116,7 @@ public abstract class SubContainer{
 	
 	/**0: no update, standard: 10->0.5 secs*/
 	public int getUpdateTick(){
-		return 10;
+		return 0;
 	}
 	
 	public void sendUpdate()

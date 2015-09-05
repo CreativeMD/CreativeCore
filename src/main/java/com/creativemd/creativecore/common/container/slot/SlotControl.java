@@ -252,16 +252,19 @@ public class SlotControl extends ContainerControl{
 		boolean isWheel = false;
 		if(mouseButton == 0)
 		{
-			if(shift){
-				transferIntoOtherInventory(false, 64);
-			}else{
-				if(hand != null)
-				{
-					switchItems();
-				}else if(slot.getHasStack()) {
-					inventoryplayer.setItemStack(slotItem.copy());
-					slot.putStack(null);
-					slot.onPickupFromSlot(parent.player, inventoryplayer.getItemStack());
+			if(slot.canTakeStack(parent.player))
+			{
+				if(shift){
+					transferIntoOtherInventory(false, 64);
+				}else{
+					if(hand != null)
+					{
+						switchItems();
+					}else if(slot.getHasStack()) {
+						inventoryplayer.setItemStack(slotItem.copy());
+						slot.putStack(null);
+						slot.onPickupFromSlot(parent.player, inventoryplayer.getItemStack());
+					}
 				}
 			}
 		}else if(mouseButton == 1){
@@ -308,7 +311,8 @@ public class SlotControl extends ContainerControl{
 				inventoryplayer.setItemStack(stack);
 			}
 		}else if(mouseButton == 3){
-			transferIntoOtherInventory(scrolled == -1, 1);
+			if(slot.canTakeStack(parent.player))
+				transferIntoOtherInventory(scrolled == -1, 1);
 		}
 	}
 	
