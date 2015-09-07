@@ -7,7 +7,7 @@ import com.creativemd.creativecore.common.recipe.entry.RecipeEntry;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public class CreativeShapelessRecipe extends CreativeRecipe{
+public class CreativeShapelessRecipe {/*extends CreativeRecipe{
 
 	public CreativeShapelessRecipe(ItemStack output, Object... input) {
 		super(output, 0, 0, input);
@@ -61,5 +61,5 @@ public class CreativeShapelessRecipe extends CreativeRecipe{
 		if(tempInput.size() > 0)
 			return null;
 		return inv;
-	}
+	}*/
 }

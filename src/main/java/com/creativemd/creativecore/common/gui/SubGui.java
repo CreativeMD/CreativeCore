@@ -380,6 +380,7 @@ public abstract class SubGui {
 				ArrayList<String> tooltip = controls.get(i).getTooltip();
 				if(raiseEvent(new GuiToolTipEvent(tooltip, controls.get(i))))
 						RenderHelper2D.drawHoveringText(tooltip, (int)mouse.x, (int)mouse.y, fontRenderer, width, height);
+				return ;
 			}
 		}
 	}

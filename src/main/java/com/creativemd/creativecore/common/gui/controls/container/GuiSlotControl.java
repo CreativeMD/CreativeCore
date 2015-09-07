@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
@@ -131,20 +132,28 @@ public class GuiSlotControl extends GuiControl{
 		ArrayList<String> tips = new ArrayList<String>();
 		if(slot.slot.getHasStack() && parent.container.player.inventory.getItemStack() == null)
 		{
-			List list = slot.slot.getStack().getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
-	
-	        for (int k = 0; k < list.size(); ++k)
-	        {
-	            if (k == 0)
-	            {
-	                list.set(k, slot.slot.getStack().getRarity().rarityColor + (String)list.get(k));
-	            }
-	            else
-	            {
-	                list.set(k, EnumChatFormatting.GRAY + (String)list.get(k));
-	            }
-	            tips.add((String) list.get(k));
-	        }
+			List list = null;
+			try{
+				list = slot.slot.getStack().getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+		
+		        for (int k = 0; k < list.size(); ++k)
+		        {
+		            if (k == 0)
+		            {
+		                list.set(k, slot.slot.getStack().getRarity().rarityColor + (String)list.get(k));
+		            }
+		            else
+		            {
+		                list.set(k, EnumChatFormatting.GRAY + (String)list.get(k));
+		            }
+		            tips.add((String) list.get(k));
+		        }
+			}catch (Exception e){
+				ItemStack stack = slot.slot.getStack();
+				tips.add(Item.itemRegistry.getNameForObject(stack.getItem()));
+				tips.add("Damage: " + stack.getItemDamage());
+				tips.add("NBT: " + (stack.stackTagCompound == null ? "null" : stack.stackTagCompound.toString()));
+			}
 		}
 		return tips;
 	}

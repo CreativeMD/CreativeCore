@@ -35,15 +35,17 @@ public abstract class StackInfo{
 		if(stack == null)
 			return null;
 		
-		try{
-			for (int i = 0; i < loaders.size(); i++) {
-				StackInfo temp = loaders.get(i).getStackInfo(stack);
-				if(temp != null)
-					return temp;
+		for (int i = 0; i < loaders.size(); i++) {
+			StackInfo temp = null;
+			try{
+				temp = loaders.get(i).getStackInfo(stack);
+			}catch(Exception e){
+				temp = null;
 			}
-		}catch(Exception e){
-			return null;
+			if(temp != null)
+				return temp;
 		}
+		
 		return null;
 	}
 	
@@ -80,6 +82,13 @@ public abstract class StackInfo{
 	public boolean isInstanceIgnoreSize(ItemStack stack)
 	{
 		return isStackInstanceIgnoreSize(stack);
+	}
+	
+	public int getAmount(ItemStack stack)
+	{
+		if(this.stackSize == 0)
+			return Integer.MAX_VALUE;
+		return stack.stackSize/stackSize;
 	}
 	
 	public boolean isInstance(ItemStack stack)

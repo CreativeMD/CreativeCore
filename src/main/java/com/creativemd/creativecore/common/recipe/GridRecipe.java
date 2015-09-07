@@ -6,15 +6,16 @@ import com.ibm.icu.impl.UBiDiProps;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public class CreativeRecipe {
+public class GridRecipe extends Recipe{
 	
 	public ItemStack output;
 	public Object[] input;
 	public int width;
 	public int height;
 	
-	public CreativeRecipe(ItemStack output, int width, int height, Object... input)
+	public GridRecipe(ItemStack output, int width, int height, Object... input)
 	{
+		super(output, input);
 		this.output = output;
 		this.input = input;
 		this.width = width;
@@ -35,7 +36,7 @@ public class CreativeRecipe {
 			{
 				ItemStack stack = inv[i];
 				
-				int index = getIndexInInventory(inventory, stack);
+				int index = indexOf(inventory, stack);
 				if(index != -1)
 				{
 					if(input[i] instanceof RecipeEntry)
@@ -56,13 +57,6 @@ public class CreativeRecipe {
 				
 			}
 		}
-	}
-	
-	public ItemStack getCraftingResult(IInventory inventory, int width, int heigt)
-	{
-		if(isValidRecipe(inventory, width, heigt))
-			return output;
-		return null;
 	}
 	
 	public int getNumberofResults(IInventory inventory, int InvWidth, int InvHeigt)
@@ -177,14 +171,5 @@ public class CreativeRecipe {
 				return false;
 		}
 		return true;
-	}
-	
-	public static int getIndexInInventory(IInventory inventory, ItemStack stack)
-	{
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			if(inventory.getStackInSlot(i) == stack)
-				return i;
-		}
-		return -1;
 	}
 }

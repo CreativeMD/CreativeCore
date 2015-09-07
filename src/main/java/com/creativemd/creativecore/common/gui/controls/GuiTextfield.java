@@ -52,6 +52,12 @@ public class GuiTextfield extends GuiFocusControl{
 		
 	}
 	
+	public GuiTextfield setFloatOnly()
+	{
+		this.allowedChars = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'};
+		return this;
+	}
+	
 	public GuiTextfield setNumbersOnly()
 	{
 		this.allowedChars = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
@@ -106,8 +112,9 @@ public class GuiTextfield extends GuiFocusControl{
 				if(ArrayUtils.contains(allowedChars, chars[i]))
 					s3 += chars[i];
 			}
+	        s2 = s3;
         }
-        s2 = s3;
+        
         int i = this.cursorPosition < this.selEnd ? this.cursorPosition : this.selEnd;
         int j = this.cursorPosition < this.selEnd ? this.selEnd : this.cursorPosition;
         int k = this.maxLength - this.text.length() - (i - this.selEnd);

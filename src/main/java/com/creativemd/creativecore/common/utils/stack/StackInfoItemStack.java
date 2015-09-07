@@ -31,7 +31,7 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	@Override
 	public StackInfo getStackInfo(Object item) {
 		if(item instanceof ItemStack)
-			return new StackInfoItemStack(stack);
+			return new StackInfoItemStack((ItemStack) item);
 		return null;
 	}
 

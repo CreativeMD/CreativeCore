@@ -26,7 +26,7 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 	public StackInfo getStackInfo(Object item) {
 		if(item instanceof Material)
 		{
-			return new StackInfoMaterial(material);
+			return new StackInfoMaterial((Material) item);
 		}
 		return null;
 	}

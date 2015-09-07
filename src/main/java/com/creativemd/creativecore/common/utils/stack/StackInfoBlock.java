@@ -22,8 +22,10 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 
 	@Override
 	public StackInfo getStackInfo(Object item) {
-		Block block = (Block) Block.blockRegistry.getObject(item);
-		if(block == null && item instanceof Item)
+		Block block = null;
+		if(item instanceof Block)
+			block = (Block) item;
+		if(item instanceof Item)
 			block = Block.getBlockFromItem((Item) item);
 		if(block != null)
 			return new StackInfoBlock(block);
