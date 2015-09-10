@@ -15,7 +15,7 @@ public class StringUtils {
 		
 		StringConverter.registerConverter(new ConvertBlock());
 		StringConverter.registerConverter(new ConvertByte());
-		StringConverter.registerConverter(new ConvertByteArray());
+		//StringConverter.registerConverter(new ConvertByteArray());
 		StringConverter.registerConverter(new ConvertDouble());
 		StringConverter.registerConverter(new ConvertFloat());
 		StringConverter.registerConverter(new ConvertInfo());
