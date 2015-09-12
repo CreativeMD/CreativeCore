@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class CreativeCorePacket {
 	
-public static final HashMap<String, Class<? extends CreativeCorePacket>> packets = new HashMap<String, Class<? extends CreativeCorePacket>>();
+	public static final HashMap<String, Class<? extends CreativeCorePacket>> packets = new HashMap<String, Class<? extends CreativeCorePacket>>();
 	
 	public static void registerPacket(Class<? extends CreativeCorePacket> PacketClass, String id)
 	{
