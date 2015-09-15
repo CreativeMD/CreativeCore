@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.core;
 
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.TEContainerPacket;
 import com.creativemd.creativecore.common.utils.stack.StackInfo;
+import com.creativemd.creativecore.common.utils.string.StringUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;

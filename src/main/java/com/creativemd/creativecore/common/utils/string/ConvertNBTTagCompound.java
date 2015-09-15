@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -94,28 +96,36 @@ public class ConvertNBTTagCompound extends StringConverter{
 			int index = i*2;
 			String name = (String)objects[index];
 			Object object = objects[index+1];
-			if(object instanceof Byte)
+			if(object instanceof Byte[])
+				nbt.setByteArray(name, ArrayUtils.toPrimitive((Byte[])object));
+			else if(object instanceof byte[])
+				nbt.setByteArray(name, (byte[]) object);
+			else if(object instanceof Integer[])
+				nbt.setIntArray(name, ArrayUtils.toPrimitive((Integer[])object));
+			else if(object instanceof int[])
+				nbt.setIntArray(name, (int[]) object);
+			else if(object instanceof Byte)
 				nbt.setByte(name, (Byte)object);
-			if(object instanceof Short)
+			else if(object instanceof Short)
 				nbt.setShort(name, (Short)object);
-			if(object instanceof Integer)
+			else if(object instanceof Integer)
 				nbt.setInteger(name, (Integer)object);
-			if(object instanceof Long)
+			else if(object instanceof Long)
 				nbt.setLong(name, (Long)object);
-			if(object instanceof Float)
+			else if(object instanceof Float)
 				nbt.setFloat(name, (Float)object);
-			if(object instanceof Double)
+			else if(object instanceof Double)
 				nbt.setDouble(name, (Double)object);
-			if(object instanceof byte[])
-				nbt.setByteArray(name, (byte[])object);
-			if(object instanceof String)
+			else if(object instanceof String)
 				nbt.setString(name, (String)object);
-			if(object instanceof NBTTagCompound)
+			else if(object instanceof NBTTagCompound)
 				nbt.setTag(name, (NBTTagCompound)object);
-			if(object instanceof NBTTagList)
+			else if(object instanceof NBTTagList)
 				nbt.setTag(name, (NBTTagList) object);
-			if(object instanceof int[])
-				nbt.setIntArray(name, (int[])object);
+			else
+			{
+				System.out.println("Couldn't add object to nbttag name=" + name + " class=" + object.getClass().getName());
+			}
 		}
 		return nbt;
 	}
