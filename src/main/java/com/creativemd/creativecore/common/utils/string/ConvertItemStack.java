@@ -20,7 +20,7 @@ public class ConvertItemStack extends StringConverter{
 	@Override
 	public String toString(Object object) {
 		ItemStack stack = (ItemStack) object;
-		if(stack == null)
+		if(stack == null || stack.getItem() == null)
 			return "null";
 		String item = "";
 		if(Block.getBlockFromItem(stack.getItem()) instanceof BlockAir)

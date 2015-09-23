@@ -38,8 +38,10 @@ public class BlockRenderHelper {
 					IBlockAccessFake fake = new IBlockAccessFake(renderer.blockAccess);
 					RenderHelper3D.renderBlocks.blockAccess = fake;
 					fake.overrideMeta = cubes.get(i).meta;
+					RenderHelper3D.renderBlocks.lockBlockBounds = true;
 					RenderHelper3D.renderBlocks.renderBlockAllFaces(cubes.get(i).block, x, y, z);
-					return ;
+					RenderHelper3D.renderBlocks.lockBlockBounds = false;
+					continue;
 				}
 				else
 					renderer.setOverrideBlockTexture(cubes.get(i).block.getBlockTextureFromSide(0));

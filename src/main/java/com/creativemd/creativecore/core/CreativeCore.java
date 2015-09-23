@@ -36,6 +36,8 @@ public class CreativeCore {
 	@Instance(CreativeCore.modid)
 	public static CreativeCore instance = new CreativeCore();
 	
+	public static final CreativeCorePacket loaderPacket = null;
+	
 	public static final String modid = "creativecore";
 	public static final String version = "1.2.0";
 	public static final Logger logger = LogManager.getLogger(modid);
