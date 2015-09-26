@@ -8,6 +8,8 @@ import javax.annotation.PostConstruct;
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.gui.GuiHandler;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
+import com.creativemd.creativecore.common.gui.event.GuiControlEvent;
+import com.creativemd.creativecore.common.gui.event.container.ContainerControlEvent;
 import com.creativemd.creativecore.common.packet.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 
@@ -106,6 +108,13 @@ public abstract class ContainerControl {
 	public abstract void writeToNBT(NBTTagCompound nbt);
 	
 	public abstract void readFromNBT(NBTTagCompound nbt);
+	
+	//================Event================
+	
+	public boolean raiseEvent(ContainerControlEvent event)
+	{
+		return parent.raiseEvent(event);
+	}
 	
 	/*public boolean doesControlSupportSync()
 	{

@@ -47,7 +47,9 @@ public class GuiScrollBox extends GuiControl{
 	public void addControl(ContainerControl control)
 	{
 		container.controls.add(control);
-		container.refreshControls();
+		control.parent = container;
+		control.setID(container.controls.size());
+		//container.refreshControls();
 		control.init();
 		addControl(control.guiControl);
 	}
@@ -55,7 +57,10 @@ public class GuiScrollBox extends GuiControl{
 	public void addControl(GuiControl control)
 	{
 		gui.controls.add(control);
-		gui.refreshControls();
+		control.parent = gui;
+		control.resetID();
+		control.setID(gui.controls.size());
+		//gui.refreshControls();
 		int tempHeight = control.posY + control.height/2 + 10 - this.height;
 		if(tempHeight > maxScroll)
 			maxScroll = tempHeight;

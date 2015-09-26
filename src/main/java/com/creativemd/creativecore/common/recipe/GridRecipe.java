@@ -1,23 +1,26 @@
 package com.creativemd.creativecore.common.recipe;
 
 import com.creativemd.creativecore.common.recipe.entry.RecipeEntry;
+import com.creativemd.creativecore.common.utils.stack.StackInfo;
 import com.ibm.icu.impl.UBiDiProps;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class GridRecipe extends Recipe{
-	
-	public ItemStack output;
-	public Object[] input;
 	public int width;
 	public int height;
 	
-	public GridRecipe(ItemStack output, int width, int height, Object... input)
+	public GridRecipe(ItemStack[] output, int width, int height, Object... input)
 	{
 		super(output, input);
-		this.output = output;
-		this.input = input;
+		this.width = width;
+		this.height = height;
+	}
+	
+	public GridRecipe(ItemStack[] output, int width, int height, StackInfo... input)
+	{
+		super(output, input);
 		this.width = width;
 		this.height = height;
 	}
@@ -39,19 +42,12 @@ public class GridRecipe extends Recipe{
 				int index = indexOf(inventory, stack);
 				if(index != -1)
 				{
-					if(input[i] instanceof RecipeEntry)
+					if(input[i].isInstance(stack))
 					{
-						int decrease = ((RecipeEntry) input[i]).getStackSize(inv[i]);
-						((RecipeEntry) input[i]).consumeItemStack(decrease, index, inventory);
-					}else{
-						int decrease = 1;
-						if(input[i] instanceof ItemStack){
-							decrease = ((ItemStack)input[i]).stackSize;			
-						}
-						
-						stack.stackSize -= decrease*amount;
-						if(stack.stackSize == 0)
-							inventory.setInventorySlotContents(index, null);
+						stack.stackSize -= input[i].stackSize*amount;
+						if(stack.stackSize <= 0)
+							inventory.setInventorySlotContents(i, null);
+						break;
 					}
 				}
 				
@@ -67,16 +63,7 @@ public class GridRecipe extends Recipe{
 		{
 			int number = Integer.MAX_VALUE;
 			for (int i = 0; i < input.length; i++) {
-				int uses = 0;
-				if(input[i] instanceof RecipeEntry)
-				{
-					uses = ((RecipeEntry) input[i]).getStackSize(inv[i]);
-					
-				}else if(input[i] instanceof ItemStack){
-					uses = inv[i].stackSize/((ItemStack)input[i]).stackSize;			
-				}else{
-					uses = inv[i].stackSize;
-				}
+				int uses = inv[i].stackSize/input[i].stackSize;
 				number = Math.min(uses, number);
 			}
 			return number;

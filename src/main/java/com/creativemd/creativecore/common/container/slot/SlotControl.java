@@ -14,6 +14,7 @@ import net.minecraft.util.MathHelper;
 
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.gui.controls.container.GuiSlotControl;
+import com.creativemd.creativecore.common.gui.event.container.SlotChangeEvent;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -42,7 +43,10 @@ public class SlotControl extends ContainerControl{
 	public void detectChange()
 	{
 		if(!ItemStack.areItemStacksEqual(lastSended, slot.getStack())) // || (lastSended != null && slot.getHasStack() && lastSended.stackSize != slot.getStack().stackSize))
+		{
+			raiseEvent(new SlotChangeEvent(this));
 			sendUpdate();
+		}
 	}
 
 	@Override

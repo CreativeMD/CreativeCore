@@ -19,6 +19,12 @@ public class Recipe {
 		this(new ItemStack[]{output}, input);
 	}
 	
+	public Recipe(ItemStack[] output, StackInfo[] info)
+	{
+		this.output = output;
+		this.input = info;
+	}
+	
 	public Recipe(ItemStack[] output, Object... input)
 	{
 		ArrayList<StackInfo> info = new ArrayList<StackInfo>();
@@ -53,7 +59,7 @@ public class Recipe {
 				for (int j = 0; j < info.size(); j++) {
 					if(info.get(j).isInstance(stack))
 					{
-						stack.stackSize -= info.get(j).stackSize;
+						stack.stackSize -= info.get(j).stackSize*amount;
 						if(stack.stackSize <= 0)
 							inventory.setInventorySlotContents(i, null);
 						info.remove(j);

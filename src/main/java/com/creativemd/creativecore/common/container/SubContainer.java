@@ -6,10 +6,13 @@ import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.container.slot.SlotControl;
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
+import com.creativemd.creativecore.common.gui.event.GuiControlEvent;
+import com.creativemd.creativecore.common.gui.event.container.ContainerControlEvent;
 import com.creativemd.creativecore.common.gui.premade.SubContainerDialog;
 import com.creativemd.creativecore.common.packet.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
+import com.n247s.api.eventapi.eventsystem.EventBus;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -33,10 +36,14 @@ public abstract class SubContainer{
 	
 	public ContainerSub container;
 	
+	private EventBus eventBus;
+	
 	public SubContainer(EntityPlayer player)
 	{
 		this.player = player;
 		this.tick = 0;
+		eventBus = new EventBus();
+		eventBus.RegisterEventListener(this);
 	}
 	
 	//================LAYERS================
@@ -87,6 +94,18 @@ public abstract class SubContainer{
     		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), false));
     	}
     }
+	
+	//================EVENTS================
+	
+	public boolean raiseEvent(ContainerControlEvent event)
+	{
+		return !eventBus.raiseEvent(event);
+	}
+	
+	public void addListener(Object listener)
+	{
+		eventBus.RegisterEventListener(listener);
+	}
 	
 	//================CONTROLS================
 	
