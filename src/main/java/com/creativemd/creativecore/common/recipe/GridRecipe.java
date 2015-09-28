@@ -46,8 +46,7 @@ public class GridRecipe extends Recipe{
 					{
 						stack.stackSize -= input[i].stackSize*amount;
 						if(stack.stackSize <= 0)
-							inventory.setInventorySlotContents(i, null);
-						break;
+							inventory.setInventorySlotContents(index, null);
 					}
 				}
 				
@@ -137,20 +136,16 @@ public class GridRecipe extends Recipe{
 		return isValidRecipe(inv);
 	}
 	
-	public boolean isStackValid(ItemStack stack, Object input)
+	protected boolean isStackValid(ItemStack stack, StackInfo input)
 	{
-		if(input instanceof RecipeEntry)
-		{
-			if(!((RecipeEntry) input).isEntry(stack))
-				return false;
-		}else{
-			if(!RecipeEntry.isObject(stack, input))
-				return false;
-		}
-		return true;
+		if(stack == null && input == null)
+			return true;
+		if(input != null)
+			return input.isInstance(stack);
+		return false;
 	}
 	
-	public boolean isValidRecipe(ItemStack[] inv)
+	protected boolean isValidRecipe(ItemStack[] inv)
 	{
 		//Check if it's valid
 		for (int i = 0; i < input.length; i++) {

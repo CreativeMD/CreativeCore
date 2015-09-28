@@ -35,6 +35,8 @@ public class GuiAvatarButton extends GuiButton{
 		GL11.glTranslated(width/2, 0, 0);
 		GL11.glTranslated(-size/2, height/2-8, 0);
 		this.avatar.handleRendering(mc, renderer, 16, 16);
+		
+		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glTranslated(0, 8, 0);
 		//GL11.glTranslated(16-(size/2)+renderer.getStringWidth(caption)/2, -1, 0);
 		

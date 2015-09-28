@@ -89,6 +89,8 @@ public abstract class ContainerControl {
 	@SideOnly(Side.CLIENT)
 	public abstract GuiControl createGuiControl();
 	
+	public void onGuiClose() {}
+	
 	//private SyncControl sync = SyncControl.NONE;
 	
 	/*public void onControlChanged()

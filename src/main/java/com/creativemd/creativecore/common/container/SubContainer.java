@@ -73,6 +73,7 @@ public abstract class SubContainer{
 		{
     		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), true));
     	}
+		onGuiClosed();
 		onLayerClosed(nbt, this);
 		container.layers.remove(this);
 	}
@@ -158,7 +159,10 @@ public abstract class SubContainer{
 	
 	public void onGuiClosed()
 	{
-		
+		for (int i = 0; i < controls.size(); i++) {
+			controls.get(i).onGuiClose();
+		}
+		eventBus.removeAllEventListeners();
 	}
 	
 	public void onGuiOpened()
