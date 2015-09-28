@@ -22,6 +22,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
 
 public class GuiScrollBox extends GuiControl{
@@ -81,11 +82,19 @@ public class GuiScrollBox extends GuiControl{
         int j = scaledresolution.getScaledHeight();
         int movex = i/2-parent.width/2+(posX)+1;
         int movey = j/2-parent.height/2+(parent.height-(height+posY))+1;
+        if(parent instanceof SubGuiControl)
+        {
+        	movey = j/2-((SubGuiControl) parent).parent.parent.height/2+(((SubGuiControl) parent).parent.parent.height-(height+posY))+1;
+	        //Vector2d offset = ((SubGuiControl) parent).parent.getCenterOffset();
+	       // movex -= offset.x;
+	        //movey += offset.y;
+        }
         int scale = scaledresolution.getScaleFactor();
         movex *= scale;
         movey *= scale;
 		
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+		
 		GL11.glScissor(movex,movey,(this.width-2) * scale,(this.height-2) * scale);
 		
 		GL11.glPushMatrix();
