@@ -113,10 +113,7 @@ public abstract class StackInfo{
 	
 	public abstract boolean isInstanceIgnoreSize(StackInfo info);
 	
-	public StackInfo copy()
-	{
-		return StackInfo.parseString(this.toString());
-	}
+	public abstract StackInfo copy();
 	
 	public ItemStack getItemStack()
 	{

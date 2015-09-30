@@ -60,7 +60,10 @@ public class GuiComboBox extends GuiControl{
 	
 	public void closeBox()
 	{
-		parent.removeControl(extension);
-		extension = null;
+		if(extension != null)
+		{
+			parent.removeControl(extension);
+			extension = null;
+		}
 	}
 }

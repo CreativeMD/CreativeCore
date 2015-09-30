@@ -22,7 +22,7 @@ public class ConvertInfo extends StringConverter{
 	@Override
 	public String toString(Object object) {
 		StackInfo info = (StackInfo) object;
-		return StringUtils.ObjectsToString(info.getClass().getName(), info.toString(), info.stackSize);
+		return StringUtils.ObjectsToString(info.getClass().getName().replace("com.creativemd.creativecore.common.utils.stack", "$d$"), info.toString(), info.stackSize);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class ConvertInfo extends StringConverter{
 		Object[] objects = StringUtils.StringToObjects(input);
 		if(objects.length == 3)
 		{
-			String className = (String) objects[0];
+			String className = ((String) objects[0]).replace("$d$", "com.creativemd.creativecore.common.utils.stack");
 			IStackLoader loader = null;
 			for (int i = 0; i < StackInfo.loaders.size(); i++) {
 				if(StackInfo.loaders.get(i).getClass().getName().equals(className))

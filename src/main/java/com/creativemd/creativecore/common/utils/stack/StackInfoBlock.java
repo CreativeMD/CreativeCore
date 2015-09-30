@@ -58,10 +58,21 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 			return block == Block.getBlockFromItem(((StackInfoItemStack) info).stack.getItem());
 		return false;
 	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		return object instanceof StackInfoBlock && ((StackInfoBlock) object).block == this.block && ((StackInfoBlock) object).stackSize == stackSize;
+	}
 
 	@Override
 	public ItemStack getItemStack(int stacksize) {
 		return new ItemStack(block, stacksize);
+	}
+
+	@Override
+	public StackInfo copy() {
+		return new StackInfoBlock(block, stackSize);
 	}
 
 }

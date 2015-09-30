@@ -85,5 +85,16 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 		}
 		return null;
 	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		return object instanceof StackInfoMaterial && ((StackInfoMaterial) object).material == this.material && ((StackInfoMaterial) object).stackSize == stackSize;
+	}
+
+	@Override
+	public StackInfo copy() {
+		return new StackInfoMaterial(material, stackSize);
+	}
 
 }

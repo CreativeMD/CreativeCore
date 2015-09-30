@@ -37,5 +37,15 @@ public class StackInfoFuel extends StackInfo{
 	public ItemStack getItemStack(int stacksize) {
 		return new ItemStack(Items.coal);
 	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		return object instanceof StackInfoFuel;
+	}
 
+	@Override
+	public StackInfo copy() {
+		return new StackInfoFuel(stackSize);
+	}
 }

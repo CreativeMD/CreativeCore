@@ -59,5 +59,15 @@ public class StackInfoItem extends StackInfo implements IStackLoader{
 		return new ItemStack(item, stacksize);
 	}
 	
+	@Override
+	public boolean equals(Object object)
+	{
+		return object instanceof StackInfoItem && ((StackInfoItem) object).item == this.item && ((StackInfoItem) object).stackSize == stackSize;
+	}
 
+	@Override
+	public StackInfo copy() {
+		return new StackInfoItem(item, stackSize);
+	}
+	
 }

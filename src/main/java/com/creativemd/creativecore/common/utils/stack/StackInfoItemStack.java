@@ -110,5 +110,16 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 			stack.stackTagCompound = (NBTTagCompound) this.stack.stackTagCompound.copy();
 		return stack;
 	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		return object instanceof StackInfoItemStack && ((StackInfoItemStack) object).isInstance(stack) && ((StackInfoItemStack) object).stackSize == stackSize;
+	}
+
+	@Override
+	public StackInfo copy() {
+		return new StackInfoItemStack(stack.copy(), needNBT, stackSize);
+	}
 
 }

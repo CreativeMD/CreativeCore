@@ -64,5 +64,16 @@ public class StackInfoOre extends StackInfo implements IStackLoader{
 		}
 		return null;
 	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		return object instanceof StackInfoOre && ((StackInfoOre) object).ore.equals(ore) && ((StackInfoOre) object).stackSize == stackSize;
+	}
+
+	@Override
+	public StackInfo copy() {
+		return new StackInfoOre(ore.substring(0), stackSize);
+	}
 
 }

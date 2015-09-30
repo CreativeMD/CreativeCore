@@ -19,7 +19,7 @@ public class StringUtils {
 		StringConverter.registerConverter(new ConvertDouble());
 		StringConverter.registerConverter(new ConvertFloat());
 		StringConverter.registerConverter(new ConvertInfo());
-		StringConverter.registerConverter(new ConvertIntArray());
+		//StringConverter.registerConverter(new ConvertIntArray());
 		StringConverter.registerConverter(new ConvertInteger());
 		StringConverter.registerConverter(new ConvertItem());
 		StringConverter.registerConverter(new ConvertItemStack());
