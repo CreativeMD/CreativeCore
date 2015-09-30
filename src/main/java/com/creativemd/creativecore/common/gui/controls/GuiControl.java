@@ -117,7 +117,7 @@ public abstract class GuiControl{
 	{
 		Vector2d mouse = parent.getMousePos();
 		Vector2d pos = getValidPos((int)mouse.x, (int)mouse.y);
-		return isMouseOver((int)pos.x, (int)pos.y);
+		return enabled && parent.isTopLayer() && visible && isMouseOver((int)pos.x, (int)pos.y);
 	}
 	
 	public boolean isMouseOver(int posX, int posY)

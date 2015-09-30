@@ -35,10 +35,9 @@ public class GuiButton extends GuiControl{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(buttonTextures);
 		int k = 1;
-		Vector2d mouse = parent.getMousePos();
 		int l = 14737632;
 		
-		if(isMouseOver((int)mouse.x, (int)mouse.y))
+		if(isMouseOver())
 		{
 			k = 2;
 			l = 16777120;

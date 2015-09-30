@@ -63,6 +63,13 @@ public abstract class SubGui {
     
     //================LAYERS================
     
+    public boolean isTopLayer()
+    {
+    	if(gui == null)
+    		return false;
+    	return gui.getTopLayer() == this;
+    }
+    
     public int getLayerID()
 	{
 		return gui.layers.indexOf(this);

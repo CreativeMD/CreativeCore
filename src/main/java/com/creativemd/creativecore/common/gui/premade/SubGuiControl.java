@@ -25,6 +25,12 @@ public class SubGuiControl extends SubGui{
 	public GuiControl parent;
 	
 	@Override
+	public boolean isTopLayer()
+    {
+    	return parent.parent.isTopLayer();
+    }
+	
+	@Override
 	public void addListener(Object listener)
 	{
 		parent.parent.addListener(listener);
