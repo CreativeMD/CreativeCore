@@ -112,14 +112,14 @@ public class GridRecipe extends Recipe{
 		
 		int gridWidth = posX2 - posX + 1;
 		int gridHeight = posY2 - posY + 1;
-		if(gridWidth != this.width || gridWidth != this.height)
+		if(gridWidth != this.width || gridHeight != this.height)
 			return null;
 		
 		//Convert stacks to the same format as the input
 		ItemStack[] inv = new ItemStack[input.length];
 		for (int y = 0; y < this.height; y++) {
 			for (int x = 0; x < this.width; x++) {
-				inv[y*this.height+x] = inventory.getStackInSlot(x+y*InvHeigt);
+				inv[y*this.width+x] = inventory.getStackInSlot(x+y*InvWidth);
 			}
 		}
 		
