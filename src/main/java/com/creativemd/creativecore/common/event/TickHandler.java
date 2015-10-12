@@ -16,6 +16,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Type;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -44,13 +45,35 @@ public class TickHandler {
 		}
 	}
 	
+	public static ArrayList<EventBus> ServerEvents = new ArrayList<EventBus>();
+	
+	@SubscribeEvent
+	public void onEventTick(TickEvent tick) //Remove all Structures which doesn't have any connections
+	{
+		if(tick.phase == Phase.START && tick.type == Type.SERVER)
+		{
+			if(ServerEvents == null)
+				ServerEvents = new ArrayList<EventBus>();
+			try{
+				for (int i = 0; i < ServerEvents.size(); i++) {
+					for (int j = 0; j < ServerEvents.get(i).eventsToRaise.size(); j++) {
+						ServerEvents.get(i).raiseEvent(ServerEvents.get(i).eventsToRaise.get(j), true);
+					}
+					ServerEvents.get(i).eventsToRaise.clear();
+				}
+			}catch(Exception e){
+				//It is ready to crash
+			}
+		}
+	}
+	
 	@SideOnly(Side.CLIENT)
 	public static int defaultScale;
 	@SideOnly(Side.CLIENT)
 	public static boolean changed;
 	
 	@SideOnly(Side.CLIENT)
-	public static ArrayList<EventBus> Events;
+	public static ArrayList<EventBus> ClientEvents;
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
@@ -59,14 +82,14 @@ public class TickHandler {
 		Minecraft mc = Minecraft.getMinecraft();
 		if(tick.phase == Phase.START)
 		{
-			if(Events == null)
-				Events = new ArrayList<EventBus>();
+			if(ClientEvents == null)
+				ClientEvents = new ArrayList<EventBus>();
 			try{
-				for (int i = 0; i < Events.size(); i++) {
-					for (int j = 0; j < Events.get(i).eventsToRaise.size(); j++) {
-						Events.get(i).raiseEvent(Events.get(i).eventsToRaise.get(j), true);
+				for (int i = 0; i < ClientEvents.size(); i++) {
+					for (int j = 0; j < ClientEvents.get(i).eventsToRaise.size(); j++) {
+						ClientEvents.get(i).raiseEvent(ClientEvents.get(i).eventsToRaise.get(j), true);
 					}
-					Events.get(i).eventsToRaise.clear();
+					ClientEvents.get(i).eventsToRaise.clear();
 				}
 			}catch(Exception e){
 				//It is ready to crash

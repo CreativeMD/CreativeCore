@@ -12,6 +12,10 @@ import org.apache.logging.log4j.Logger;
 import com.creativemd.creativecore.common.event.TickHandler;
 import com.n247s.api.eventapi.EventApi;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class EventBus
 {
 	private static final Logger log = EventApi.logger;
@@ -24,7 +28,21 @@ public class EventBus
 	 */
 	public EventBus()
 	{
-		TickHandler.Events.add(this);
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			initClient();
+		else
+			initServer();
+	}
+	
+	public void initServer()
+	{
+		TickHandler.ServerEvents.add(this);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void initClient()
+	{
+		TickHandler.ClientEvents.add(this);
 	}
 	
 	
@@ -161,7 +179,21 @@ public class EventBus
 		    value.instanceMap.clear();
 		}
 		EventList.clear();
-		TickHandler.Events.remove(this);
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			removeTickEventClient();
+		else
+			removeTickEventServer();
+	}
+	
+	public void removeTickEventServer()
+	{
+		TickHandler.ServerEvents.remove(this);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void removeTickEventClient()
+	{
+		TickHandler.ClientEvents.remove(this);
 	}
 	
 	/**
