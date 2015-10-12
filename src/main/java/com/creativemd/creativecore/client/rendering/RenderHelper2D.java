@@ -30,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.client.ForgeHooksClient;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -56,7 +57,8 @@ public class RenderHelper2D {
 	public static void renderItem(ItemStack stack, int x, int y, double alpha, double rotation, double sizeX, double sizeY)
 	{
 		if(stack != null)
-			renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, stack, x, y, true, alpha, rotation, sizeX, sizeY);
+			if (!ForgeHooksClient.renderInventoryItem(RenderHelper3D.renderer, mc.renderEngine, stack, true, zLevel, (float)x, (float)y))
+				renderItemIntoGUI(mc.fontRenderer, mc.renderEngine, stack, x, y, true, alpha, rotation, sizeX, sizeY);
 	}
 	
 	public static void renderItem(ItemStack stack, int x, int y, double alpha)
@@ -412,10 +414,13 @@ public class RenderHelper2D {
     {
         if (!strings.isEmpty())
         {
+        	int layer = 1000;
+        	GL11.glPushMatrix();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.disableStandardItemLighting();
+            //RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glTranslated(0, 0, layer);
             int k = 0;
             Iterator iterator = strings.iterator();
 
@@ -449,7 +454,7 @@ public class RenderHelper2D {
                 k2 = height - i1 - 6;
             }*/
 
-            zLevel = 300;
+            //zLevel = layer;
             int j1 = -267386864;
             drawGradientRect(j2 - 3, k2 - 4, j2 + k + 3, k2 - 3, j1, j1);
             drawGradientRect(j2 - 3, k2 + i1 + 3, j2 + k + 3, k2 + i1 + 4, j1, j1);
@@ -466,6 +471,7 @@ public class RenderHelper2D {
             for (int i2 = 0; i2 < strings.size(); ++i2)
             {
                 String s1 = (String)strings.get(i2);
+                //GL11.glDisable(GL11.GL_DEPTH_TEST);
                 font.drawStringWithShadow(s1, j2, k2, -1);
 
                 if (i2 == 0)
@@ -476,19 +482,25 @@ public class RenderHelper2D {
                 k2 += 10;
             }
 
-            zLevel = 0;
+            
             GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            RenderHelper.enableGUIStandardItemLighting();
+           
+            //RenderHelper.enableGUIStandardItemLighting();
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glPopMatrix();
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+           // zLevel = 0;
+            GL11.glTranslated(0, 0, -layer);
         }
     }
     
     public static void renderScrollBar(int posX, int posY, double percent, int height, boolean isDisabled)
     {
-    	 GL11.glEnable(GL11.GL_BLEND);
-         OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    	GL11.glEnable(GL11.GL_DEPTH_TEST);
+    	zLevel = 0;
+    	GL11.glEnable(GL11.GL_BLEND);
+    	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+    	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         
@@ -507,5 +519,6 @@ public class RenderHelper2D {
     	
     	mc.getTextureManager().bindTexture(tabs);
     	drawTexturedModalRect(posX+1, posY+1+(height-2-15)*percent, isDisabled ? 232+12 : 232, 0, 12, 15);
+    	GL11.glDisable(GL11.GL_DEPTH_TEST);
     }
 }
