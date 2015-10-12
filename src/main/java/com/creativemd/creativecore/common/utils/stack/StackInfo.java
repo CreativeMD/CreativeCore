@@ -34,6 +34,8 @@ public abstract class StackInfo{
 	{
 		if(stack == null)
 			return null;
+		if(stack instanceof StackInfo)
+			return (StackInfo) stack;
 		
 		for (int i = 0; i < loaders.size(); i++) {
 			StackInfo temp = null;
@@ -48,6 +50,23 @@ public abstract class StackInfo{
 		
 		return null;
 	}
+	
+	public int indexOf(ArrayList<StackInfo> infos)
+	{
+		for (int i = 0; i < infos.size(); i++) {
+			if(infos.get(i).equalsIgnoreSize(this))
+				return i;
+		}
+		return -1;
+	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		return object instanceof StackInfo && ((StackInfo)object).stackSize == this.stackSize && equalsIgnoreSize(object);
+	}
+	
+	public abstract boolean equalsIgnoreSize(Object object);
 	
 	/**stacksize=0->stacksize ignored**/
 	public int stackSize;
@@ -76,6 +95,8 @@ public abstract class StackInfo{
 	}
 	
 	public abstract String toString();
+	
+	public abstract String toTitle();
 	
 	protected abstract boolean isStackInstanceIgnoreSize(ItemStack stack);
 	
