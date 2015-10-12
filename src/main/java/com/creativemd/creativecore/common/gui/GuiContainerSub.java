@@ -159,7 +159,7 @@ public class GuiContainerSub extends GuiContainer{
 	@Override
 	public void keyTyped(char character, int key)
     {
-		if(!getTopLayer().keyTyped(character, key))
+		if(getTopLayer() != null && !getTopLayer().keyTyped(character, key))
 			super.keyTyped(character, key);
     }
 	
