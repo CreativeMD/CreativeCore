@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.creativemd.creativecore.common.utils.stack.StackInfo;
+import com.creativemd.creativecore.common.utils.string.StringUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import io.netty.buffer.ByteBuf;
@@ -83,5 +89,56 @@ public abstract class CreativeCorePacket {
 		double y = buf.readDouble();
 		double z = buf.readDouble();
 		return Vec3.createVectorHelper(x, y, z);
+	}
+	
+	public static void writeStackInfo(ByteBuf buf, StackInfo info)
+	{
+		writeString(buf, StringUtils.ObjectsToString(info));
+	}
+	
+	public static StackInfo readStackInfo(ByteBuf buf)
+	{
+		Object[] objects = StringUtils.StringToObjects(readString(buf));
+		if(objects.length == 1 && objects[0] instanceof StackInfo)
+			return (StackInfo) objects[0];
+		return null;
+	}
+	
+	public void writeStackInfos(ByteBuf buf, ArrayList<StackInfo> infos) {
+		buf.writeInt(infos.size());
+		for (int i = 0; i < infos.size(); i++) {
+			writeStackInfo(buf, infos.get(i));
+		}
+	}
+
+	public ArrayList<StackInfo> readStackInfos(ByteBuf buf) {
+		int count = buf.readInt();
+		ArrayList<StackInfo> infos = new ArrayList<StackInfo>();
+		for (int i = 0; i < count; i++) {
+			StackInfo info = readStackInfo(buf);
+			if(info != null)
+				infos.add(info);
+		}
+		return infos;
+	}
+	
+	public static void writeItemStack(ByteBuf buf, ItemStack stack)
+	{
+		ByteBufUtils.writeItemStack(buf, stack);
+	}
+	
+	public static ItemStack readItemStack(ByteBuf buf)
+	{
+		return ByteBufUtils.readItemStack(buf);
+	}
+	
+	public static void openContainerOnServer(EntityPlayerMP entityPlayerMP, Container container)
+	{
+		entityPlayerMP.getNextWindowId();
+        entityPlayerMP.closeContainer();
+        int windowId = entityPlayerMP.currentWindowId;
+        entityPlayerMP.openContainer = container;
+        entityPlayerMP.openContainer.windowId = windowId;
+        entityPlayerMP.openContainer.addCraftingToCrafters(entityPlayerMP);
 	}
 }

@@ -15,6 +15,7 @@ import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
 import com.creativemd.creativecore.common.packet.GuiControlPacket;
 import com.creativemd.creativecore.common.packet.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.GuiUpdatePacket;
+import com.creativemd.creativecore.common.packet.OpenGuiPacket;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.TEContainerPacket;
 import com.creativemd.creativecore.common.utils.stack.StackInfo;
@@ -61,6 +62,7 @@ public class CreativeCore {
 		CreativeCorePacket.registerPacket(ContainerControlUpdatePacket.class, "containercontrolpacket");
 		CreativeCorePacket.registerPacket(TEContainerPacket.class, "TEContainer");
 		CreativeCorePacket.registerPacket(GuiLayerPacket.class, "guilayerpacket");
+		CreativeCorePacket.registerPacket(OpenGuiPacket.class, "opengui");
 		
 		FMLCommonHandler.instance().bus().register(tickHandler);
 		
