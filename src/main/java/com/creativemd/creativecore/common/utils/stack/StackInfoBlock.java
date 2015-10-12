@@ -60,9 +60,9 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 	}
 	
 	@Override
-	public boolean equals(Object object)
+	public boolean equalsIgnoreSize(Object object)
 	{
-		return object instanceof StackInfoBlock && ((StackInfoBlock) object).block == this.block && ((StackInfoBlock) object).stackSize == stackSize;
+		return object instanceof StackInfoBlock && ((StackInfoBlock) object).block == this.block;
 	}
 
 	@Override
@@ -73,6 +73,11 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 	@Override
 	public StackInfo copy() {
 		return new StackInfoBlock(block, stackSize);
+	}
+
+	@Override
+	public String toTitle() {
+		return block.getLocalizedName();
 	}
 
 }

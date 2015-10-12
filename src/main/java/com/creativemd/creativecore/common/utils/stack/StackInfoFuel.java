@@ -39,7 +39,7 @@ public class StackInfoFuel extends StackInfo{
 	}
 	
 	@Override
-	public boolean equals(Object object)
+	public boolean equalsIgnoreSize(Object object)
 	{
 		return object instanceof StackInfoFuel;
 	}
@@ -47,5 +47,10 @@ public class StackInfoFuel extends StackInfo{
 	@Override
 	public StackInfo copy() {
 		return new StackInfoFuel(stackSize);
+	}
+
+	@Override
+	public String toTitle() {
+		return "Fuel";
 	}
 }

@@ -2,9 +2,12 @@ package com.creativemd.creativecore.common.utils.stack;
 
 import com.creativemd.creativecore.common.utils.string.StringUtils;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	
@@ -31,7 +34,16 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	@Override
 	public StackInfo getStackInfo(Object item) {
 		if(item instanceof ItemStack)
+		{
+			if(((ItemStack) item).getItemDamage() == OreDictionary.WILDCARD_VALUE)
+			{
+				if(((ItemStack) item).getItem() instanceof ItemBlock)
+					return new StackInfoBlock(Block.getBlockFromItem(((ItemStack) item).getItem()));
+				else
+					return new StackInfoItem(((ItemStack) item).getItem());
+			}
 			return new StackInfoItemStack((ItemStack) item);
+		}
 		return null;
 	}
 
@@ -112,14 +124,19 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	}
 	
 	@Override
-	public boolean equals(Object object)
+	public boolean equalsIgnoreSize(Object object)
 	{
-		return object instanceof StackInfoItemStack && ((StackInfoItemStack) object).isInstance(stack) && ((StackInfoItemStack) object).stackSize == stackSize;
+		return object instanceof StackInfoItemStack && ((StackInfoItemStack) object).isInstanceIgnoreSize(stack);
 	}
 
 	@Override
 	public StackInfo copy() {
 		return new StackInfoItemStack(stack.copy(), needNBT, stackSize);
+	}
+
+	@Override
+	public String toTitle() {
+		return stack.getDisplayName();
 	}
 
 }
