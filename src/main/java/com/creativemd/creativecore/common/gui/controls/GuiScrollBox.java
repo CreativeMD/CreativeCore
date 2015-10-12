@@ -104,8 +104,23 @@ public class GuiScrollBox extends GuiControl{
 		gui.drawOverlay(renderer);		
 		
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
+		
 		if(isMouseOver())
-			gui.renderTooltip(renderer);
+		{
+			boolean oneTop = true;
+			for (int k = 0; k < parent.controls.size(); k++) {
+				if(parent.controls.get(k) == this)
+					break;
+				if(parent.controls.get(k).isMouseOver())
+				{
+					oneTop = false;
+					break;
+				}
+			}
+			
+			if(oneTop)
+				gui.renderTooltip(renderer);
+		}
 		//GL11.glTranslated(0, scrolled, 0);
 		
 		GL11.glPopMatrix();
