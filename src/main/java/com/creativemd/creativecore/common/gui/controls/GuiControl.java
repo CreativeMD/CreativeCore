@@ -19,9 +19,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiControl{
@@ -214,6 +216,13 @@ public abstract class GuiControl{
 		Vector2d pos = new Vector2d(x, y);
 		Vector2d centerOffset = getCenterOffset();
 		return getRotationAround(-rotation, pos, new Vector2d(posX+centerOffset.x, posY+centerOffset.y));
+	}
+	
+	//================Sound================
+	
+	public static void playSound(String soundID)
+	{
+		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation(soundID), 1.0F));
 	}
 	
 	//================STATIC HELPERS================

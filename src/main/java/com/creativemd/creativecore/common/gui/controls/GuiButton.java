@@ -75,8 +75,7 @@ public class GuiButton extends GuiControl{
 	{
 		if(enabled)
 		{
-			Minecraft mc = Minecraft.getMinecraft();
-			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+			playSound("gui.button.press");
 			return true;
 		}
 		return false;
