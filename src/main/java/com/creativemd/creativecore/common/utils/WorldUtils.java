@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -25,6 +26,18 @@ public class WorldUtils {
         EntityItem entityitem = new EntityItem(world, (double)x + d0, (double)y + d1, (double)z + d2, stack);
         entityitem.delayBeforeCanPickup = 10;
 		world.spawnEntityInWorld(entityitem);
+	}
+	
+	public static void dropItem(EntityPlayer player, ItemStack stack)
+	{
+		dropItem(player.worldObj, stack, (int)player.posX, (int)player.posY, (int)player.posZ);
+	}
+	
+	public static void dropItem(EntityPlayer player, ArrayList<ItemStack> stacks)
+	{
+		for (int i = 0; i < stacks.size(); i++) {
+			dropItem(player, stacks.get(i));
+		}
 	}
 	
 }
