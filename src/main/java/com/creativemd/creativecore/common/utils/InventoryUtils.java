@@ -1,8 +1,15 @@
 package com.creativemd.creativecore.common.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import com.creativemd.creativecore.common.utils.stack.StackInfo;
+
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import scala.collection.immutable.Stack;
 
 public class InventoryUtils {
 	
@@ -65,15 +72,40 @@ public class InventoryUtils {
 		return false;
 	}
 	
+	public static boolean addItemStackToInventory(ItemStack[] inventory, ItemStack stack)
+	{
+		if(stack.stackSize <= 0)
+			return true;
+		for (int i = 0; i < inventory.length; i++) {
+			if(isItemStackEqual(inventory[i], stack)){
+				int amount = Math.min(64-inventory[i].stackSize, stack.stackSize);
+				if(amount > 0)
+				{
+					ItemStack newStack = stack.copy();
+					newStack.stackSize = inventory[i].stackSize+amount;
+					inventory[i] = newStack;
+					
+					stack.stackSize -= amount;
+					if(stack.stackSize <= 0)
+						return true;
+				}
+			}
+			
+		}
+		for (int i = 0; i < inventory.length; i++) {
+			if(inventory[i] == null)
+			{
+				inventory[i] = stack;
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static boolean addItemStackToInventory(IInventory inventory, ItemStack stack)
 	{
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			if(inventory.getStackInSlot(i) == null)
-			{
-				inventory.setInventorySlotContents(i, stack);
-				return true;
-			}
-			else if(isItemStackEqual(inventory.getStackInSlot(i), stack)){
+			if(isItemStackEqual(inventory.getStackInSlot(i), stack)){
 				int amount = Math.min(64-inventory.getStackInSlot(i).stackSize, stack.stackSize);
 				if(amount > 0)
 				{
@@ -88,6 +120,13 @@ public class InventoryUtils {
 			}
 			
 		}
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			if(inventory.getStackInSlot(i) == null)
+			{
+				inventory.setInventorySlotContents(i, stack);
+				return true;
+			}
+		}
 		return false;
 	}
 	
@@ -100,6 +139,44 @@ public class InventoryUtils {
 			}
 		}
 		return amount;
+	}
+	
+	public static void cleanInventory(IInventory inventory)
+	{
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if(stack != null && stack.stackSize == 0)
+				inventory.setInventorySlotContents(i, null);
+		}
+	}
+
+	public static int consumeStackInfo(StackInfo info, IInventory inventory)
+	{
+		return consumeStackInfo(info, inventory, null);
+	}
+	
+	public static int consumeStackInfo(StackInfo info, IInventory inventory, ArrayList<ItemStack> consumed)
+	{
+		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+		int stackSize = info.stackSize;
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if(stack != null && info.isInstanceIgnoreSize(stack))
+			{
+				
+				int used = Math.min(stackSize, stack.stackSize);
+				stack.stackSize -= used;
+				stackSize -= used;
+				ItemStack stackCopy = stack.copy();
+				stackCopy.stackSize = used;
+				stacks.add(stackCopy);
+				if(stackSize <= 0)
+					break;
+			}
+		}
+		if(consumed != null)
+			consumed.addAll(stacks);
+		return stackSize;
 	}
 	
 }
