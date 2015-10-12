@@ -343,6 +343,10 @@ public abstract class SubGui {
 	
 	public boolean keyTyped(char character, int key)
     {
+		for (int i = 0; i < controls.size(); i++) {
+			if(controls.get(i).isInteractable() && controls.get(i).onKeyPressed(character, key))
+				return true;
+		}
 		if (key == 1 || key == this.mc.gameSettings.keyBindInventory.getKeyCode())
         {
 			NBTTagCompound nbt = new NBTTagCompound();
@@ -352,10 +356,6 @@ public abstract class SubGui {
 				mc.thePlayer.closeScreen();
             return true;
         }
-		for (int i = 0; i < controls.size(); i++) {
-			if(controls.get(i).isInteractable() && controls.get(i).onKeyPressed(character, key))
-				return true;
-		}
 		return false;
     }
 	

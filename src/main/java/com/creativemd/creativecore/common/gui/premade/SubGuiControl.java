@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.vecmath.Vector2d;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.nbt.NBTTagCompound;
 
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
@@ -68,6 +69,16 @@ public class SubGuiControl extends SubGui{
 				control.renderControl(fontRenderer, 0);
 		}
 	}
+	
+	@Override
+	public boolean keyTyped(char character, int key)
+    {
+		for (int i = 0; i < controls.size(); i++) {
+			if(controls.get(i).isInteractable() && controls.get(i).onKeyPressed(character, key))
+				return true;
+		}
+		return false;
+    }
 	
 	@Override
 	public void drawOverlay(FontRenderer fontRenderer) {
