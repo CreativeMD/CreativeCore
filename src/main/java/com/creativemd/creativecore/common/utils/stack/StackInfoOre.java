@@ -24,6 +24,21 @@ public class StackInfoOre extends StackInfo implements IStackLoader{
 	public StackInfo getStackInfo(Object item) {
 		if(item instanceof String)
 			return new StackInfoOre((String) item);
+		if(item instanceof ArrayList)
+		{
+			ArrayList<Integer> oresIDs = new ArrayList<Integer>();
+			ArrayList ores = (ArrayList) item;
+			for (int i = 0; i < ores.size(); i++) {
+				ArrayList<Integer> neworesIDs = new ArrayList<Integer>();
+				int[] oreIDsofStack = OreDictionary.getOreIDs((ItemStack) ores.get(i));
+				for (int j = 0; j < oreIDsofStack.length; j++)
+					if(i == 0 || oresIDs.contains(oreIDsofStack[j]))
+						neworesIDs.add(oreIDsofStack[j]);
+				oresIDs = neworesIDs;
+			}
+			if(oresIDs.size() == 1)
+				return new StackInfoOre(OreDictionary.getOreName(oresIDs.get(0)));
+		}
 		return null;
 	}
 
@@ -66,14 +81,19 @@ public class StackInfoOre extends StackInfo implements IStackLoader{
 	}
 	
 	@Override
-	public boolean equals(Object object)
+	public boolean equalsIgnoreSize(Object object)
 	{
-		return object instanceof StackInfoOre && ((StackInfoOre) object).ore.equals(ore) && ((StackInfoOre) object).stackSize == stackSize;
+		return object instanceof StackInfoOre && ((StackInfoOre) object).ore.equals(ore);
 	}
 
 	@Override
 	public StackInfo copy() {
 		return new StackInfoOre(ore.substring(0), stackSize);
+	}
+
+	@Override
+	public String toTitle() {
+		return "\"" + ore + "\"";
 	}
 
 }
