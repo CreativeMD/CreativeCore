@@ -6,6 +6,7 @@ import java.util.Arrays;
 import com.creativemd.creativecore.common.utils.stack.StackInfo;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,9 +14,18 @@ import scala.collection.immutable.Stack;
 
 public class InventoryUtils {
 	
-	public static void saveInventory(ItemStack[] inventory, NBTTagCompound nbt)
+	public static NBTTagCompound saveInventoryBasic(InventoryBasic basic)
 	{
-		NBTTagCompound nbtInv = nbt.getCompoundTag("inventory");
+		ItemStack[] stacks = new ItemStack[basic.getSizeInventory()];
+		for (int i = 0; i < stacks.length; i++) {
+			stacks[i] = basic.getStackInSlot(i);
+		}
+		return saveInventory(stacks);
+	}
+	
+	public static NBTTagCompound saveInventory(ItemStack[] inventory)
+	{
+		NBTTagCompound nbtInv = new NBTTagCompound();
 		for (int i = 0; i < inventory.length; i++) {
 			NBTTagCompound newNBT = new NBTTagCompound();
 			if(inventory[i] != null)
@@ -23,16 +33,31 @@ public class InventoryUtils {
 			nbtInv.setTag("slot" + i, newNBT);
 		}
 		nbtInv.setInteger("size", inventory.length);
-		nbt.setTag("inventory", nbtInv);
+		return nbtInv;
 	}
 	
 	public static ItemStack[] loadInventory(NBTTagCompound nbt)
 	{
-		ItemStack[]  inventory = new ItemStack[nbt.getCompoundTag("inventory").getInteger("size")];
+		ItemStack[] inventory = new ItemStack[nbt.getInteger("size")];
 		for (int i = 0; i < inventory.length; i++) {
-			inventory[i] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("inventory").getCompoundTag("slot" + i));
+			inventory[i] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("slot" + i));
 		}
 		return inventory;
+	}
+	
+	public static InventoryBasic loadInventoryBasic(NBTTagCompound nbt, int length)
+	{
+		
+		InventoryBasic basic = new InventoryBasic("basic", false, length);
+		if(nbt != null)
+		{
+			ItemStack[] stacks = loadInventory(nbt);
+			for (int i = 0; i < stacks.length; i++) {
+				if(length > i)
+					basic.setInventorySlotContents(i, stacks[i]);
+			}
+		}
+		return basic;
 	}
 	
 	public static boolean isItemStackEqual(ItemStack stack, ItemStack stack2)
