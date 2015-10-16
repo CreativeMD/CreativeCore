@@ -110,6 +110,11 @@ public abstract class GuiControl{
 	
 	//================Interaction================
 	
+	public GuiControl setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+	
 	public boolean isInteractable()
 	{
 		return visible && enabled;
