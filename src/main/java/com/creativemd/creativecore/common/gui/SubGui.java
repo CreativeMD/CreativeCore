@@ -306,15 +306,16 @@ public abstract class SubGui {
 	public void mousePressed(int posX, int posY, int button){
 		Vector2d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vector2d pos = controls.get(i).getValidPos((int)mouse.x, (int)mouse.y);
-			if(controls.get(i).isInteractable())
+			GuiControl control = controls.get(i);
+			Vector2d pos = control.getValidPos((int)mouse.x, (int)mouse.y);
+			if(control.isInteractable())
 			{
-				if(controls.get(i).isMouseOver((int)pos.x, (int)pos.y) && controls.get(i).mousePressed((int)pos.x, (int)pos.y, button))
+				if(control.isMouseOver((int)pos.x, (int)pos.y) && control.mousePressed((int)pos.x, (int)pos.y, button))
 				{
-					controls.get(i).raiseEvent(new ControlClickEvent(controls.get(i), (int)pos.x, (int)pos.y));
+					control.raiseEvent(new ControlClickEvent(control, (int)pos.x, (int)pos.y));
 					return ;
 				}else{
-					controls.get(i).onLoseFocus();
+					control.onLoseFocus();
 				}
 			}
 		}
