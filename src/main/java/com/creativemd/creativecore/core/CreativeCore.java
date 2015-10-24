@@ -6,6 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.creativemd.creativecore.api.nei.NEIRecipeInfoHandler;
 import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.TickHandler;
 import com.creativemd.creativecore.common.gui.GuiHandler;
@@ -22,6 +23,7 @@ import com.creativemd.creativecore.common.utils.stack.StackInfo;
 import com.creativemd.creativecore.common.utils.string.StringUtils;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -37,10 +39,8 @@ public class CreativeCore {
 	@Instance(CreativeCore.modid)
 	public static CreativeCore instance = new CreativeCore();
 	
-	public static final CreativeCorePacket loaderPacket = null;
-	
 	public static final String modid = "creativecore";
-	public static final String version = "1.2.0";
+	public static final String version = "1.3.14";
 	public static final Logger logger = LogManager.getLogger(modid);
 	
 	public static SimpleNetworkWrapper network;
@@ -67,5 +67,8 @@ public class CreativeCore {
 		FMLCommonHandler.instance().bus().register(tickHandler);
 		
 		StackInfo.registerDefaultLoaders();
+		
+		if(Loader.isModLoaded("NotEnoughItems") && FMLCommonHandler.instance().getEffectiveSide().isClient())
+			NEIRecipeInfoHandler.load();
     }
 }
