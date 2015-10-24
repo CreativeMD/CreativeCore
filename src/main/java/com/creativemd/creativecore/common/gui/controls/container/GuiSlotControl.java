@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import com.creativemd.creativecore.common.container.slot.SlotControl;
+import com.creativemd.creativecore.common.container.slot.SlotInput;
 import com.creativemd.creativecore.common.container.slot.SlotOutput;
 import com.creativemd.creativecore.common.gui.GuiContainerSub;
 import com.creativemd.creativecore.common.gui.SubGui;
@@ -63,51 +64,36 @@ public class GuiSlotControl extends GuiControl{
 			stack = newStack;
 		}
 		
+		if(slot.slot instanceof SlotInput)
+		{
+			ItemStack backgroundStack = null;
+			if(((SlotInput)slot.slot).input != null)
+				backgroundStack = ((SlotInput)slot.slot).input.getItemStack(1);
+			
+			if(backgroundStack != null)
+			{
+				//GL11.glPushMatrix();
+				//GL11.glColor4d(1, 1, 1, 0.2);
+				//GL11.glEnable(GL11.GL_BLEND);
+				//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				//GL11.glPushMatrix();
+				GL11.glPushClientAttrib(GL11.GL_COLOR_BUFFER_BIT);
+				GL11.glColor4d(1, 1, 1, 0.2);
+				SubGui.itemRender.renderWithColor = false;
+				drawItemStack(backgroundStack, renderer);
+				SubGui.itemRender.renderWithColor = true;
+				GL11.glPopClientAttrib();
+				//GL11.glPopMatrix();
+				//GL11.glDisable(GL11.GL_BLEND);
+				//GL11.glPopMatrix();
+			}
+		}
+		
 		if(stack != null)
 		{
-			try
-			{
-				GL11.glTranslated(8, 8, 0);
-				GL11.glRotated(-rotation, 0, 0, 1);
-				GL11.glTranslated(-8, -8, 0);
-				GL11.glEnable(GL11.GL_ALPHA_TEST);
-	            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
-	            GL11.glEnable(GL11.GL_BLEND);
-	            GL11.glEnable(GL11.GL_DEPTH_TEST);
-	            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-	            RenderHelper.enableGUIStandardItemLighting();
-				//GL11.glPushMatrix();
-				GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		        
-				GL11.glEnable(GL11.GL_LIGHTING);
-				//GL11.glEnable(GL11.GL_LIGHTING);
-				//RenderHelper.enableStandardItemLighting();
-				//GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-				SubGui.itemRender.zLevel = 200.0F;
-				FontRenderer font = null;
-				if (slot.slot.getStack() != null)
-					font = slot.slot.getStack().getItem().getFontRenderer(stack);
-				if(font == null)
-					font = renderer;
-				SubGui.itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, 1, 1);
-				String textStack = null;
-				if (stack.stackSize == 0)
-				{
-					textStack = "" + EnumChatFormatting.YELLOW + "0";
-				}
-				SubGui.itemRender.renderItemOverlayIntoGUI(font, mc.getTextureManager(), stack, 1, 1, textStack);
-				SubGui.itemRender.zLevel = 0.0F;
-			}catch(Exception e){
-				SubGui.itemRender.zLevel = 100.0F;
-	            
-	        	ResourceLocation resourcelocation = mc.renderEngine.getResourceLocation(1);
-	            IIcon icon = ((TextureMap)mc.getTextureManager().getTexture(resourcelocation)).getAtlasSprite("missingno");
-	            Minecraft.getMinecraft().renderEngine.bindTexture(resourcelocation);
-	            
-	        	SubGui.itemRender.renderIcon(1, 1, icon, 16, 16);
-
-	        	SubGui.itemRender.zLevel = 0.0F;
-			}
+			GL11.glPushMatrix();
+			drawItemStack(stack, renderer);
+			GL11.glPopMatrix();
 		}
 		
 		if(isMouseOver() || startSlot != null || isDragged())
@@ -124,6 +110,53 @@ public class GuiSlotControl extends GuiControl{
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
         //RenderHelper.enableStandardItemLighting();
+	}
+	
+	public void drawItemStack(ItemStack stack, FontRenderer renderer)
+	{
+		try
+		{
+			GL11.glTranslated(8, 8, 0);
+			GL11.glRotated(-rotation, 0, 0, 1);
+			GL11.glTranslated(-8, -8, 0);
+			GL11.glEnable(GL11.GL_ALPHA_TEST);
+            GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            RenderHelper.enableGUIStandardItemLighting();
+			//GL11.glPushMatrix();
+			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+	        
+			GL11.glEnable(GL11.GL_LIGHTING);
+			//GL11.glEnable(GL11.GL_LIGHTING);
+			//RenderHelper.enableStandardItemLighting();
+			//GL11.glTranslatef(0.0F, 0.0F, 32.0F);
+			SubGui.itemRender.zLevel = 200.0F;
+			FontRenderer font = null;
+			if (slot.slot.getStack() != null)
+				font = slot.slot.getStack().getItem().getFontRenderer(stack);
+			if(font == null)
+				font = renderer;
+			SubGui.itemRender.renderItemAndEffectIntoGUI(font, mc.getTextureManager(), stack, 1, 1);
+			String textStack = null;
+			if (stack.stackSize == 0)
+			{
+				textStack = "" + EnumChatFormatting.YELLOW + "0";
+			}
+			SubGui.itemRender.renderItemOverlayIntoGUI(font, mc.getTextureManager(), stack, 1, 1, textStack);
+			SubGui.itemRender.zLevel = 0.0F;
+		}catch(Exception e){
+			SubGui.itemRender.zLevel = 100.0F;
+            
+        	ResourceLocation resourcelocation = mc.renderEngine.getResourceLocation(1);
+            IIcon icon = ((TextureMap)mc.getTextureManager().getTexture(resourcelocation)).getAtlasSprite("missingno");
+            Minecraft.getMinecraft().renderEngine.bindTexture(resourcelocation);
+            
+        	SubGui.itemRender.renderIcon(1, 1, icon, 16, 16);
+
+        	SubGui.itemRender.zLevel = 0.0F;
+		}
 	}
 	
 	@Override
