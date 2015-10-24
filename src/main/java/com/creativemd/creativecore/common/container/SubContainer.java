@@ -54,13 +54,13 @@ public abstract class SubContainer{
 	}
 	
 	public SubContainer createLayerFromPacket(World world, EntityPlayer player, NBTTagCompound nbt)
-    {
+	{
 		if(nbt.getBoolean("dialog"))
 		{
 			return new SubContainerDialog(player);
 		}
     	return null;
-    }
+	}
 	
 	public void closeLayer(NBTTagCompound nbt)
 	{
