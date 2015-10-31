@@ -13,7 +13,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class RecipeLoader {
 	
-	public static Object[] getInput(IRecipe recipe)
+	public static Object[] getInput(IRecipe recipe, boolean vanillaOnly)
 	{
 		if(recipe instanceof IRecipeInfo)
 			return ((IRecipeInfo) recipe).getInput();
@@ -26,38 +26,45 @@ public class RecipeLoader {
 		if(recipe instanceof ShapelessOreRecipe)
 			return ((ShapelessOreRecipe) recipe).getInput().toArray();
 		
-		try {
-			Method m = recipe.getClass().getMethod("getInput");
-			if(m != null)
-				return (Object[]) m.invoke(recipe);
-		} catch(Exception e){
-			
-		}
-		
-		try{
-			Object[] input = (Object[]) ReflectionHelper.getPrivateValue((Class<? super IRecipe>)recipe.getClass(), recipe, "input");
-			Class classRecipeInput = Class.forName("ic2.api.recipe.IRecipeInput");
-			if(classRecipeInput != null)
-			{
+		if(!vanillaOnly)
+		{
+			try {
+				Method m = recipe.getClass().getMethod("getInput");
+				if(m != null)
+					return (Object[]) m.invoke(recipe);
+			} catch(Exception e){
 				
-				for (int i = 0; i < input.length; i++) {
-					if(classRecipeInput.isAssignableFrom(input[i].getClass()))
-					{
-						List<ItemStack> stacks = (List<ItemStack>) ReflectionHelper.findMethod((Class<? super Object>)input[i].getClass(), input[i], new String[]{"getInputs"}).invoke(input[i]);
-						if(stacks.size() > 0)
-							input[i] = stacks.get(0);
-						else
-							input[i] = null;
+			}
+			
+			try{
+				Object[] input = (Object[]) ReflectionHelper.getPrivateValue((Class<? super IRecipe>)recipe.getClass(), recipe, "input");
+				Class classRecipeInput = Class.forName("ic2.api.recipe.IRecipeInput");
+				if(classRecipeInput != null)
+				{
+					
+					for (int i = 0; i < input.length; i++) {
+						if(classRecipeInput.isAssignableFrom(input[i].getClass()))
+						{
+							List<ItemStack> stacks = (List<ItemStack>) ReflectionHelper.findMethod((Class<? super Object>)input[i].getClass(), input[i], new String[]{"getInputs"}).invoke(input[i]);
+							if(stacks.size() > 0)
+								input[i] = stacks.get(0);
+							else
+								input[i] = null;
+						}
 					}
 				}
+				return input;
+			} catch(Exception e){
+				
 			}
-			return input;
-		} catch(Exception e){
-			
 		}
 		
-		
 		return null;
+	}
+	
+	public static Object[] getInput(IRecipe recipe)
+	{
+		return getInput(recipe, false);
 	}
 	
 	public static int getWidth(IRecipe recipe)

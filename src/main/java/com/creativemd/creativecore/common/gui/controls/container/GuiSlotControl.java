@@ -77,12 +77,12 @@ public class GuiSlotControl extends GuiControl{
 				//GL11.glEnable(GL11.GL_BLEND);
 				//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 				//GL11.glPushMatrix();
-				GL11.glPushClientAttrib(GL11.GL_COLOR_BUFFER_BIT);
-				GL11.glColor4d(1, 1, 1, 0.2);
+				//GL11.glPushClientAttrib(GL11.GL_COLOR_BUFFER_BIT);
+				GL11.glColor4d(1, 1, 1, 0.5);
 				SubGui.itemRender.renderWithColor = false;
 				drawItemStack(backgroundStack, renderer);
 				SubGui.itemRender.renderWithColor = true;
-				GL11.glPopClientAttrib();
+				//GL11.glPopClientAttrib();
 				//GL11.glPopMatrix();
 				//GL11.glDisable(GL11.GL_BLEND);
 				//GL11.glPopMatrix();

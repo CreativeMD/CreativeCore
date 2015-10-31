@@ -114,10 +114,14 @@ public class GuiContainerSub extends GuiContainer{
 	public void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
 		for (int i = 0; i < layers.size(); i++){
+			GL11.glPushMatrix();
 			int k = guiLeft;
 			int l = guiTop;
-	        GL11.glTranslatef((float)-k, (float)-l, 0.0F);
+			
+	        GL11.glTranslatef((float)-k, (float)-l, 0);
+	        
 			drawWorldBackground(0);	
+			
 			
 			int offX = (this.width - layers.get(i).width) / 2 - k;
 	        int offY = (this.height - layers.get(i).height) / 2 - l;
@@ -127,6 +131,7 @@ public class GuiContainerSub extends GuiContainer{
 			GL11.glTranslatef((float)offX, (float)offY, 0.0F);
 			
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			//GL11.glDisable(GL11.GL_DEPTH_TEST);
 			
 			layers.get(i).drawBackground();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -141,6 +146,7 @@ public class GuiContainerSub extends GuiContainer{
 			
 			GL11.glTranslatef((float)-offX, (float)-offY, 0.0F);
 	        GL11.glEnable(GL11.GL_LIGHTING);
+	        GL11.glPopMatrix();
 		}
 	}
 	

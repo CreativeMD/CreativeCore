@@ -10,6 +10,7 @@ import com.creativemd.creativecore.api.nei.NEIRecipeInfoHandler;
 import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.TickHandler;
 import com.creativemd.creativecore.common.gui.GuiHandler;
+import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
@@ -63,6 +64,7 @@ public class CreativeCore {
 		CreativeCorePacket.registerPacket(TEContainerPacket.class, "TEContainer");
 		CreativeCorePacket.registerPacket(GuiLayerPacket.class, "guilayerpacket");
 		CreativeCorePacket.registerPacket(OpenGuiPacket.class, "opengui");
+		CreativeCorePacket.registerPacket(BlockUpdatePacket.class, "blockupdatepacket");
 		
 		FMLCommonHandler.instance().bus().register(tickHandler);
 		

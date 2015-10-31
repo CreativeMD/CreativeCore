@@ -1,5 +1,7 @@
 package com.creativemd.creativecore.common.gui.controls;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.gui.FontRenderer;
 
 public class GuiLabel extends GuiControl{
@@ -28,7 +30,10 @@ public class GuiLabel extends GuiControl{
 	@Override
 	public void drawControl(FontRenderer renderer) {
 		if(shouldDrawTitle())
+		{
+			GL11.glDisable(GL11.GL_LIGHTING);
 			renderer.drawStringWithShadow(title, 0, height/4, getColor());
+		}
 	}
 	
 	public boolean shouldDrawTitle()

@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.utils.stack;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 	@Override
 	public StackInfo getStackInfoFromString(String input) {
 		Block block = (Block) Block.blockRegistry.getObject(input);
-		if(block != null)
+		if(block != null && !(block instanceof BlockAir))
 			return new StackInfoBlock(block);
 		return null;
 	}

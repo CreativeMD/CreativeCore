@@ -403,7 +403,8 @@ public abstract class SubGui {
 		
 		this.drawOverlay(fontRenderer);
 		
-		renderTooltip(fontRenderer);
+		if(isTopLayer())
+			renderTooltip(fontRenderer);
 	}
 	
 	public void drawBackground()

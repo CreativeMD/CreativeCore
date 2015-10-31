@@ -42,4 +42,9 @@ public abstract class TileEntityCreative extends TileEntity{
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 	}
 	
+	public void receiveUpdatePacket(NBTTagCompound nbt)
+	{
+		
+	}
+	
 }

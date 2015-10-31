@@ -45,6 +45,11 @@ public abstract class GuiControl{
 			this.id = id;
 	}
 	
+	public int getID()
+	{
+		return this.id;
+	}
+	
 	public boolean isContainerControl = false;
 	public int posX;
 	public int posY;
