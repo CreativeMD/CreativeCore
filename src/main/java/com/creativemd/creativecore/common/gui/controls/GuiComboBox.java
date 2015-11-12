@@ -16,13 +16,19 @@ public class GuiComboBox extends GuiControl{
 	public GuiComboBoxExtension extension;
 	public ArrayList<String> lines;
 	public String caption;
+	public int index;
 	
 	public GuiComboBox(String name, int x, int y, int width, ArrayList<String> lines) {
 		super(name, x, y, width, 20);
 		if(lines.size() > 0)
+		{
 			this.caption = lines.get(0);
-		else
+			this.index = 0;
+		}
+		else{
 			this.caption = "";
+			this.index = -1;
+		}
 		this.lines = lines;
 	}
 

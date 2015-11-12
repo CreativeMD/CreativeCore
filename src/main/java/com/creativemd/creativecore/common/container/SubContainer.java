@@ -139,11 +139,16 @@ public abstract class SubContainer{
 		return 0;
 	}
 	
+	public void sendUpdate(NBTTagCompound nbt)
+	{
+		PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, false, getLayerID()), (EntityPlayerMP) player);
+	}
+	
 	public void sendUpdate()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		writeToNBT(nbt);
-		PacketHandler.sendPacketToPlayer(new GuiUpdatePacket(nbt, false, getLayerID()), (EntityPlayerMP) player);
+		sendUpdate(nbt);
 	}
 	
 	/**Called once a player connects*/

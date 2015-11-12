@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.recipe.entry;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import net.minecraft.client.gui.inventory.GuiCrafting;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -29,7 +30,7 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 	public boolean matches(InventoryCrafting inv, World world)
     {
         ArrayList<StackInfo> list = new ArrayList(this.info);
-
+        
         for (int i = 0; i < 3; ++i)
         {
             for (int j = 0; j < 3; ++j)
@@ -65,7 +66,7 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
     }
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inventory) {
-		return output;
+		return output.copy();
 	}
 
 	@Override
@@ -75,7 +76,7 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return output;
+		return output.copy();
 	}
 
 	@Override

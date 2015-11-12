@@ -36,6 +36,7 @@ public class GuiComboBoxExtension extends GuiListBox{
 		if(selected != -1 && selected < lines.size())
 		{
 			comboBox.caption = lines.get(selected);
+			comboBox.index = selected;
 			comboBox.raiseEvent(new ControlChangedEvent(comboBox));
 		}
 		comboBox.closeBox();
