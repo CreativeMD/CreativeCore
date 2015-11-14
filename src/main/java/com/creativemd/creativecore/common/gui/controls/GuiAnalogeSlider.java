@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.gui.controls;
 
 import javax.vecmath.Vector2d;
+import javax.vecmath.Vector4d;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -10,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import com.creativemd.creativecore.core.CreativeCore;
 
 public class GuiAnalogeSlider extends GuiControl
@@ -34,10 +36,11 @@ public class GuiAnalogeSlider extends GuiControl
 	 * @param minValue  - The minimum Value this Slider can reach.
 	 * @param maxValue  - The maximum Value this Slider can reach.
 	 */
-	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, int id, float minValue, float maxValue)
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, int id, float value, float minValue, float maxValue)
 	{
 		super(name, x, y, width, height, rotation);
 		this.id = id;
+		this.value = value;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 	}
@@ -54,7 +57,7 @@ public class GuiAnalogeSlider extends GuiControl
 	 */
 	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, int id, float maxValue)
 	{
-		this(name, x, y, width, height, rotation, id, 0, maxValue);
+		this(name, x, y, width, height, rotation, id, 0, 0, maxValue);
 	}
 	
 	/**
@@ -69,7 +72,7 @@ public class GuiAnalogeSlider extends GuiControl
 	 */
 	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation)
 	{
-		this(name, x, y, width, height, rotation, 0, 0, 100);
+		this(name, x, y, width, height, rotation, 0, 0, 0, 100);
 	}
 
 	@Override
@@ -100,16 +103,32 @@ public class GuiAnalogeSlider extends GuiControl
          * - this.maxValue
          * - this.minValue
          */
-        /*
-        GL11.glPushMatrix();
-        mc.getTextureManager().bindTexture(SliderRailTexture);
+        
+        Vector4d black = new Vector4d(0, 0, 0, 255);
+		RenderHelper2D.drawGradientRect(0, 0, this.width, this.height, black, black);
+		
+		Vector4d color = new Vector4d(60, 60, 60, 255);
+		RenderHelper2D.drawGradientRect(1, 1, this.width-1, this.height-1, color, color);
+		
+		int sliderWidth = 4;
+		float percent = (this.maxValue + this.value) / (this.maxValue - this.minValue);
+		
+		int posX = 1+(int)((this.width - (1+sliderWidth)) * percent);
+		
+		Vector4d white = new Vector4d(255, 255, 255, 255);
+		RenderHelper2D.drawGradientRect(posX, 1, posX+4, this.height-1, white, white);
+		
+		renderer.drawStringWithShadow("" + value, width / 2 - renderer.getStringWidth("" + value) / 2, (this.height - 8) / 2, White);
+        
+       /* GL11.glPushMatrix();
+        mc.getTextureManager().bindTexture(buttonTextures);
         RenderHelper2D.drawTexturedModalRect(0, this.posX + this.width, this.posY, 0, 0, this.width, this.height);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        mc.getTextureManager().bindTexture(SliderTexture);
+        mc.getTextureManager().bindTexture(buttonTextures);
         RenderHelper2D.drawTexturedModalRect(0, (int)((float)this.posX + ((float)this.width * (((this.value - this.minValue) / (this.maxValue - this.minValue))))), this.posY, 0, 0, (int)((float)this.width * (5F/85F)) , this.height);
-        GL11.glPopMatrix();
-        */
+        GL11.glPopMatrix();*/
+        
         
         
 	}
@@ -118,21 +137,17 @@ public class GuiAnalogeSlider extends GuiControl
 	public boolean mousePressed(int posX, int posY, int button)
 	{
 		Vector2d mouse = parent.getMousePos();
-		if(enabled)
+		if(button == 0)
 		{
-			if(button == 0 && isMouseOver((int)mouse.x, (int)mouse.x))
-			{
-				Minecraft mc = Minecraft.getMinecraft();
-				mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
-				return (grabbedSlider = true);
-			}
+			Minecraft mc = Minecraft.getMinecraft();
+			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+			return (grabbedSlider = true);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean mouseDragged(int posX, int posY, int button, long time)
-	{
+	public void mouseMove(int posX, int posY, int button){
 		Vector2d mouse = parent.getMousePos();
 		if(grabbedSlider)
 		{
@@ -140,10 +155,13 @@ public class GuiAnalogeSlider extends GuiControl
 				this.value = this.minValue;
 			else if(mouse.x > this.posX + this.width)
 				this.value = this.maxValue;
-			else this.value = (float)((this.maxValue - this.minValue) * ((float)(mouse.x - this.posX) / (float)this.width));
-			return true;
+			else
+				this.value = this.minValue+(float)((this.maxValue - this.minValue) * ((float)(mouse.x - this.posX) / (float)this.width));
+			value = Math.max(minValue, value);
+			value = Math.min(maxValue, value);
+			//return true;
 		}
-		return false;
+		//return false;
 	}
 	
 	@Override
