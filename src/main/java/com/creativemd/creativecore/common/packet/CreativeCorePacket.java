@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.creativemd.creativecore.common.utils.RotationUtils;
 import com.creativemd.creativecore.common.utils.stack.StackInfo;
 import com.creativemd.creativecore.common.utils.string.StringUtils;
 
@@ -13,6 +14,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.common.util.ForgeDirection;
 import io.netty.buffer.ByteBuf;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -130,6 +132,16 @@ public abstract class CreativeCorePacket {
 	public static ItemStack readItemStack(ByteBuf buf)
 	{
 		return ByteBufUtils.readItemStack(buf);
+	}
+	
+	public static void writeDirection(ByteBuf buf, ForgeDirection direction)
+	{
+		buf.writeInt(RotationUtils.getIndex(direction));
+	}
+	
+	public static ForgeDirection readDirection(ByteBuf buf)
+	{
+		return ForgeDirection.getOrientation(buf.readInt());
 	}
 	
 	public static void openContainerOnServer(EntityPlayerMP entityPlayerMP, Container container)
