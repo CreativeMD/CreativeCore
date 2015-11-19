@@ -55,10 +55,13 @@ public class BlockRenderHelper {
 	
 	public static void renderInventoryCubes(RenderBlocks renderer, ArrayList<CubeObject> cubes, Block parBlock, int meta)
 	{
-		
 		Tessellator tesselator = Tessellator.instance;
 		for (int i = 0; i < cubes.size(); i++)
 		{
+            
+			int metadata = 0;
+			if(cubes.get(i).meta != -1)
+				metadata = cubes.get(i).meta;
 			Block block = parBlock;
 			renderer.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
 			if(cubes.get(i).block != null)
@@ -94,30 +97,43 @@ public class BlockRenderHelper {
 				tesselator.draw();
 				GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 			}else{
+				int j = cubes.get(i).block.getRenderColor(metadata);
+				boolean defaultColor = false;
+	            if (defaultColor)
+	            {
+	                j = 16777215;
+	            }
+
+	            float f1 = (float)(j >> 16 & 255) / 255.0F;
+	            float f2 = (float)(j >> 8 & 255) / 255.0F;
+	            float f3 = (float)(j & 255) / 255.0F;
+	            float brightness = 1.0F;
+	            GL11.glColor4f(f1 * brightness, f2 * brightness, f3 * brightness, 1.0F);
+	            
 				GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 				tesselator.startDrawingQuads();
 				tesselator.setNormal(0.0F, -1.0F, 0.0F);
-				renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, meta));
+				renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(0, metadata));
 				tesselator.draw();
 				tesselator.startDrawingQuads();
 				tesselator.setNormal(0.0F, 1.0F, 0.0F);
-				renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, meta));
+				renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, metadata));
 				tesselator.draw();
 				tesselator.startDrawingQuads();
 				tesselator.setNormal(0.0F, 0.0F, -1.0F);
-				renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, meta));
+				renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
 				tesselator.draw();
 				tesselator.startDrawingQuads();
 				tesselator.setNormal(0.0F, 0.0F, 1.0F);
-				renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, meta));
+				renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(3, metadata));
 				tesselator.draw();
 				tesselator.startDrawingQuads();
 				tesselator.setNormal(-1.0F, 0.0F, 0.0F);
-				renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, meta));
+				renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
 				tesselator.draw();
 				tesselator.startDrawingQuads();
 				tesselator.setNormal(1.0F, 0.0F, 0.0F);
-				renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, meta));
+				renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
 				tesselator.draw();
 				GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 			}
