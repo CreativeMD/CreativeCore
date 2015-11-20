@@ -97,7 +97,7 @@ public class BlockRenderHelper {
 				tesselator.draw();
 				GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 			}else{
-				int j = cubes.get(i).block.getRenderColor(metadata);
+				int j = block.getRenderColor(metadata);
 				boolean defaultColor = false;
 	            if (defaultColor)
 	            {
