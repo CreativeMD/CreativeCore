@@ -24,6 +24,13 @@ public class GuiItemListBox extends GuiListBox{
 		refreshControls();
 	}
 	
+	public ItemStack getSelectedStack()
+	{
+		if(selected >= 0 && selected < stacks.size())
+			return stacks.get(selected);
+		return null;
+	}
+	
 	@Override
 	public void refreshControls()
 	{
