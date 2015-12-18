@@ -83,6 +83,14 @@ public abstract class GuiControl{
 		this(name, x, y, width, height, 0);
 	}
 	
+	//================Construction================
+	
+	public GuiControl setRotation(int rotation)
+	{
+		this.rotation = rotation;
+		return this;
+	}
+	
 	//================Container Management================
 	
 	public GuiControl setContainerControl()
