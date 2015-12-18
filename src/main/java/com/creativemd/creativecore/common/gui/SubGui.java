@@ -114,6 +114,15 @@ public abstract class SubGui {
     	}
     }
     
+    public void closeGui()
+    {
+    	NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setBoolean("exit", true);
+		closeLayer(nbt);
+		if(gui.layers.size() == 0)
+			mc.thePlayer.closeScreen();
+    }
+    
     public SubGui createLayer(World world, EntityPlayer player, NBTTagCompound nbt)
     {
     	SubGui layer = createLayerFromPacket(world, player, nbt);
@@ -215,6 +224,39 @@ public abstract class SubGui {
 		}
     	return null;
     }
+    
+    public boolean hasControl(String name)
+    {
+    	for (int i = 0; i < controls.size(); i++) {
+			if(controls.get(i).name.equalsIgnoreCase(name))
+				return true;
+		}
+    	return false;
+    }
+    
+    public void removeControls(String... except)
+    {
+    	int i = 0;
+    	while(i < controls.size())
+    	{
+    		boolean isException = false;
+    		for (int j = 0; j < except.length; j++)
+    			if(controls.get(i).is(except[j]))
+    			{
+    				isException = true;
+    				break;
+    			}
+    		if(!isException)
+    			controls.remove(i);
+    		else
+    			i++;
+    	}
+    }
+    
+    public void removeControls()
+    {
+    	controls.clear();
+    }
 	
 	public abstract void createControls();
 	
@@ -238,6 +280,11 @@ public abstract class SubGui {
 	public void addListener(Object listener)
 	{
 		eventBus.RegisterEventListener(listener);
+	}
+	
+	public void removeListener(Object listener)
+	{
+		eventBus.removeEventListener(listener);
 	}
 	
 	//================SORTING================
@@ -350,11 +397,7 @@ public abstract class SubGui {
 		}
 		if (key == 1 || key == this.mc.gameSettings.keyBindInventory.getKeyCode())
         {
-			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setBoolean("exit", true);
-			closeLayer(nbt);
-			if(gui.layers.size() == 0)
-				mc.thePlayer.closeScreen();
+			closeGui();
             return true;
         }
 		return false;
