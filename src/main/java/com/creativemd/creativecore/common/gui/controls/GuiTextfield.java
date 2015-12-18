@@ -23,7 +23,7 @@ public class GuiTextfield extends GuiFocusControl{
 	
 	public static FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 	
-	public String text;
+	public String text = "";
 	
 	/**also selStart**/
 	public int cursorPosition;
