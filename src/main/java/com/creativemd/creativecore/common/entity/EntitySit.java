@@ -36,7 +36,7 @@ public class EntitySit extends Entity{
 	public void onUpdate()
     {
 		super.onUpdate();
-		if(riddenByEntity == null)
+		if(!worldObj.isRemote && riddenByEntity == null)
 			this.setDead();
     }
 	
