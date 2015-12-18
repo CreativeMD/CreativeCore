@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class CubeObject {
@@ -88,8 +89,18 @@ public class CubeObject {
 	
 	public static CubeObject rotateCube(CubeObject cube, ForgeDirection direction)
 	{
+		return rotateCube(cube, direction, Vec3.createVectorHelper(0.5, 0.5, 0.5));
+	}
+	
+	public static CubeObject rotateCube(CubeObject cube, ForgeDirection direction, Vec3 center)
+	{
+		return rotateCube(cube, Rotation.getRotationByDirection(direction), center);
+	}
+	
+	public static CubeObject rotateCube(CubeObject cube, Rotation direction, Vec3 center)
+	{
 		CubeObject rotateCube = new CubeObject(cube);
-		RotationUtils.applyCubeRotation(rotateCube, direction);
+		RotationUtils.applyCubeRotation(rotateCube, direction, center);
 		return rotateCube;
 	}
 	
