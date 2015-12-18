@@ -10,8 +10,11 @@ import com.creativemd.creativecore.common.utils.CubeObject;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -58,13 +61,25 @@ public class BlockRenderHelper {
 		Tessellator tesselator = Tessellator.instance;
 		for (int i = 0; i < cubes.size(); i++)
 		{
-            
+			/* if (block.getRenderBlockPass() != 0)
+            {
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
+                GL11.glEnable(GL11.GL_BLEND);
+                OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+            }
+            else
+            {
+                GL11.glAlphaFunc(GL11.GL_GREATER, 0.5F);
+                GL11.glDisable(GL11.GL_BLEND);
+            }*/
 			int metadata = 0;
 			if(cubes.get(i).meta != -1)
 				metadata = cubes.get(i).meta;
 			Block block = parBlock;
+			if(block instanceof BlockAir)
+				block = Blocks.stone;
 			renderer.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
-			if(cubes.get(i).block != null)
+			if(cubes.get(i).block != null && !(cubes.get(i).block instanceof BlockAir))
 			{
 				block = cubes.get(i).block;
 				meta = 0;
