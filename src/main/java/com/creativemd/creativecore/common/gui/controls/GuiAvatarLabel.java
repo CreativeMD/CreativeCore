@@ -25,7 +25,7 @@ public class GuiAvatarLabel extends GuiLabelClickable{
 	@Override
 	public void drawControl(FontRenderer renderer) {
 		super.drawControl(renderer);
-		avatar.handleRendering(mc, renderer, 18, 18);
+		avatar.handleRendering(mc, renderer, height-2, height-2);
 		renderer.drawStringWithShadow(title, 20, height/4, getColor());
 	}
 }
