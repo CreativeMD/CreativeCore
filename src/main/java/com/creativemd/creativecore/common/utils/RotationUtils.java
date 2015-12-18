@@ -7,6 +7,80 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 public class RotationUtils {
 	
+	public static enum Axis {
+		
+		Xaxis, Yaxis, Zaxis;
+		
+		public boolean isAxis(ForgeDirection direction)
+		{
+			switch (this) {
+			case Xaxis:
+				return direction == ForgeDirection.EAST || direction == ForgeDirection.WEST;
+			case Yaxis:
+				return direction == ForgeDirection.UP || direction == ForgeDirection.DOWN;
+			case Zaxis:
+				return direction == ForgeDirection.SOUTH || direction == ForgeDirection.NORTH;
+			default:
+				return false;
+			}
+		}
+		
+		public int toInt()
+		{
+			switch (this) {
+			case Xaxis:
+				return 0;
+			case Yaxis:
+				return 1;
+			case Zaxis:
+				return 2;
+			default:
+				return 0;
+			}
+		}
+		
+		public ForgeDirection getDirection()
+		{
+			switch (this) {
+			case Xaxis:
+				return ForgeDirection.EAST;
+			case Yaxis:
+				return ForgeDirection.UP;
+			case Zaxis:
+				return ForgeDirection.SOUTH;
+			default:
+				return ForgeDirection.UNKNOWN;
+			}
+		}
+		
+		public static Axis getAxis(ForgeDirection direction)
+		{
+			if(direction == ForgeDirection.EAST || direction == ForgeDirection.WEST)
+				return Axis.Xaxis;
+			if(direction == ForgeDirection.UP || direction == ForgeDirection.DOWN)
+				return Axis.Yaxis;
+			if(direction == ForgeDirection.SOUTH || direction == ForgeDirection.NORTH)
+				return Axis.Zaxis;
+			return null;
+		}
+		
+		public static Axis getAxis(int id)
+		{
+			if(id == 0)
+				return Xaxis;
+			if(id == 1)
+				return Yaxis;
+			if(id == 2)
+				return Zaxis;
+			return null;
+		}
+	}
+	
+	public static boolean isNegative(ForgeDirection direction)
+	{
+		return direction == ForgeDirection.WEST || direction == ForgeDirection.DOWN || direction == ForgeDirection.NORTH;
+	}
+	
 	public static void applyDirection(ForgeDirection direction, ChunkCoordinates coord)
 	{
 		switch(direction)
@@ -45,6 +119,11 @@ public class RotationUtils {
 	
 	public static Vec3 applyVectorRotation(Vec3 vector, ForgeDirection direction)
 	{
+		return applyVectorRotation(vector, Rotation.getRotationByDirection(direction));
+	}
+	
+	public static Vec3 applyVectorRotation(Vec3 vector, Rotation direction)
+	{
 		double tempX = vector.xCoord;
 		double tempY = vector.yCoord;
 		double tempZ = vector.zCoord;
@@ -58,6 +137,14 @@ public class RotationUtils {
 		case DOWN:
 			vector.xCoord = tempY;
 			vector.yCoord = -tempX;
+			break;
+		case UPX:
+			vector.zCoord = -tempY;
+			vector.yCoord = tempZ;
+			break;
+		case DOWNX:
+			vector.zCoord = tempY;
+			vector.yCoord = -tempZ;
 			break;
 		case SOUTH:
 			vector.xCoord = -tempZ;
@@ -79,17 +166,34 @@ public class RotationUtils {
 	
 	public static void applyCubeRotation(CubeObject cube, ForgeDirection direction)
 	{
-		double minX = cube.minX-0.5D;
-		double minY = cube.minY-0.5D;
-		double minZ = cube.minZ-0.5D;
-		double maxX = cube.maxX-0.5D;
-		double maxY = cube.maxY-0.5D;
-		double maxZ = cube.maxZ-0.5D;
+		applyCubeRotation(cube, Rotation.getRotationByDirection(direction), Vec3.createVectorHelper(0.5, 0.5, 0.5));
+	}
+	
+	public static void applyCubeRotation(CubeObject cube, Rotation direction, Vec3 center)
+	{
+		double minX = cube.minX;
+		double minY = cube.minY;
+		double minZ = cube.minZ;
+		double maxX = cube.maxX;
+		double maxY = cube.maxY;
+		double maxZ = cube.maxZ;
+		if(center != null)
+		{
+			minX -= center.xCoord;
+			minY -= center.yCoord;
+			minZ -= center.zCoord;
+			maxX -= center.xCoord;
+			maxY -= center.yCoord;
+			maxZ -= center.zCoord;
+		}
 		Vec3 min = applyVectorRotation(Vec3.createVectorHelper(minX, minY, minZ), direction);
 		Vec3 max = applyVectorRotation(Vec3.createVectorHelper(maxX, maxY, maxZ), direction);
 		
-		min = min.addVector(0.5, 0.5, 0.5);
-		max = max.addVector(0.5, 0.5, 0.5);
+		if(center != null)
+		{
+			min = min.addVector(center.xCoord, center.yCoord, center.zCoord);
+			max = max.addVector(center.xCoord, center.yCoord, center.zCoord);
+		}
 		
 		if(min.xCoord < max.xCoord)
 		{
@@ -121,6 +225,28 @@ public class RotationUtils {
 			cube.minZ = max.zCoord;
 			cube.maxZ = min.zCoord;
 		}
+	}
+	
+	public static ForgeDirection getDirectionFromVec(Vec3 vec)
+	{
+		if(vec.xCoord == 1 && vec.yCoord == 0 && vec.zCoord == 0)
+			return ForgeDirection.EAST;
+		if(vec.xCoord == -1 && vec.yCoord == 0 && vec.zCoord == 0)
+			return ForgeDirection.WEST;
+		if(vec.xCoord == 0 && vec.yCoord == 1 && vec.zCoord == 0)
+			return ForgeDirection.UP;
+		if(vec.xCoord == 0 && vec.yCoord == -1 && vec.zCoord == 0)
+			return ForgeDirection.DOWN;
+		if(vec.xCoord == 0 && vec.yCoord == 0 && vec.zCoord == 1)
+			return ForgeDirection.SOUTH;
+		if(vec.xCoord == 0 && vec.yCoord == 0 && vec.zCoord == -1)
+			return ForgeDirection.NORTH;
+		return ForgeDirection.UNKNOWN;
+	}
+
+	public static ForgeDirection rotateForgeDirection(ForgeDirection direction, ForgeDirection direction2) {
+		Vec3 vec = Vec3.createVectorHelper(direction.offsetX, direction.offsetY, direction.offsetZ);
+		return getDirectionFromVec(applyVectorRotation(vec, direction2));
 	}
 	
 }
