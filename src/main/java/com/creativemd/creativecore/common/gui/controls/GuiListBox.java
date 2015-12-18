@@ -26,6 +26,15 @@ public class GuiListBox extends GuiScrollBox{
 		parent.addListener(this);
 	}
 	
+	public void clear()
+	{
+		lines.clear();
+		selected = -1;
+		maxScroll = 0;
+		scrolled = 0;
+		refreshControls();
+	}
+	
 	public int size()
 	{
 		return lines.size();

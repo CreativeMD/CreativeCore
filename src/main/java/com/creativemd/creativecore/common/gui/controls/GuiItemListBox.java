@@ -17,6 +17,14 @@ public class GuiItemListBox extends GuiListBox{
 		refreshControls();
 	}
 	
+	@Override
+	public void clear()
+	{
+		stacks.clear();
+		super.clear();
+		refreshControls();
+	}
+	
 	public void add(String input, ItemStack stack)
 	{
 		stacks.add(stack);
