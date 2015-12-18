@@ -19,14 +19,26 @@ public class GuiButton extends GuiControl{
 	public String caption;
 	public int id;
 	
-	public GuiButton(String caption, int x, int y, int width, int height, int id) {
-		super(caption, x, y, width, height);
+	public GuiButton(String name, String caption, int x, int y, int width, int height, int id) {
+		super(name, x, y, width, height);
 		this.caption = caption;
 		this.id = id;
 	}
 	
+	public GuiButton(String caption, int x, int y, int width, int height, int id) {
+		this(caption, caption, x, y, width, 20, id);
+	}
+	
 	public GuiButton(String caption, int x, int y, int width, int height) {
 		this(caption, x, y, width, height, 0);
+	}
+	
+	public GuiButton(String name, String caption, int x, int y, int width) {
+		this(name, caption, x, y, width, 20, 0);
+	}
+	
+	public GuiButton(String caption, int x, int y, int width) {
+		this(caption, x, y, width, 20, 0);
 	}
 	
 	@Override
