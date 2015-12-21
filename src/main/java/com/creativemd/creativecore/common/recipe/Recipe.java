@@ -44,6 +44,16 @@ public class Recipe {
 		this.input = info.toArray(new StackInfo[0]);
 	}
 	
+	public ItemStack[] getInputStacks()
+	{
+		ItemStack[] stacks = new ItemStack[input.length];
+		for (int i = 0; i < stacks.length; i++) {
+			if(input[i] != null)
+				stacks[i] = input[i].getItemStack();
+		}
+		return stacks;
+	}
+	
 	public void consumeRecipe(IInventory inventory)
 	{
 		consumeRecipe(inventory, 1);
