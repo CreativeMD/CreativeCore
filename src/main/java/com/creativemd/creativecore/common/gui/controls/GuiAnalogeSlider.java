@@ -12,73 +12,38 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper2D;
+import com.creativemd.creativecore.common.gui.event.ControlChangedEvent;
 import com.creativemd.creativecore.core.CreativeCore;
 
 public class GuiAnalogeSlider extends GuiControl
 {
 	public static final ResourceLocation buttonTextures = new ResourceLocation("textures/gui/widgets.png");
-	public static final ResourceLocation SliderRailTexture = new ResourceLocation(CreativeCore.modid, "textures/gui/SliderRail.png");
-	public static final ResourceLocation SliderTexture = new ResourceLocation(CreativeCore.modid, "textures/gui/Slider.png");
-	public int id;
 	public float maxValue;
 	public float minValue;
 	public float value;
 	public boolean grabbedSlider;
-
-	/**
-	 * The Default minimumValue is 0.
-	 * @param x         - The x-coordinate of the topLeft corner of the Slider.
-	 * @param y         - The y-coordinate of the topLeft corner of the Slider.
-	 * @param width     - The Width of the Slider.
-	 * @param height    - The height of the Slider.
-	 * @param rotation  - The rotation of the Slider.
-	 * @param id		- The id of the Slider, used to get its values.
-	 * @param minValue  - The minimum Value this Slider can reach.
-	 * @param maxValue  - The maximum Value this Slider can reach.
-	 */
-	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, int id, float value, float minValue, float maxValue)
+	
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, float value, float minValue, float maxValue)
 	{
 		super(name, x, y, width, height, rotation);
-		this.id = id;
 		this.value = value;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 	}
 	
-	/**
-	 * The Default minimumValue is 0.
-	 * @param x         - The x-coordinate of the topLeft corner of the Slider.
-	 * @param y         - The y-coordinate of the topLeft corner of the Slider.
-	 * @param width     - The Width of the Slider.
-	 * @param height    - The height of the Slider.
-	 * @param rotation  - The rotation of the Slider.
-	 * @param id		- The id of the Slider, used to get its values.
-	 * @param maxValue  - The max Value this Slider can reach.
-	 */
-	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation, int id, float maxValue)
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, float value, float minValue, float maxValue)
 	{
-		this(name, x, y, width, height, rotation, id, 0, 0, maxValue);
+		this(name, x, y, width, height, 0, value, minValue, maxValue);
 	}
 	
-	/**
-	 * Default Slider Constructor, use this only if you use only 1 Slider!
-	 * The Default minimumValue is 0;
-	 * The Default maximumValue is 100;
-	 * @param x         - The x-coordinate of the topLeft corner of the Slider.
-	 * @param y         - The y-coordinate of the topLeft corner of the Slider.
-	 * @param width     - The Width of the Slider.
-	 * @param height    - The height of the Slider.
-	 * @param rotation  - The rotation of the Slider.
-	 */
-	public GuiAnalogeSlider(String name, int x, int y, int width, int height, int rotation)
+	public String getTextByValue()
 	{
-		this(name, x, y, width, height, rotation, 0, 0, 0, 100);
+		return value + "";
 	}
 
 	@Override
 	public void drawControl(FontRenderer renderer)
 	{
-		Minecraft mc = Minecraft.getMinecraft();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.getTextureManager().bindTexture(buttonTextures);
 		int mouseEvent = 1;
@@ -111,14 +76,15 @@ public class GuiAnalogeSlider extends GuiControl
 		RenderHelper2D.drawGradientRect(1, 1, this.width-1, this.height-1, color, color);
 		
 		int sliderWidth = 4;
-		float percent = (this.maxValue + this.value) / (this.maxValue - this.minValue);
+		float percent = (this.value - this.minValue) / (this.maxValue - this.minValue);
 		
 		int posX = 1+(int)((this.width - (1+sliderWidth)) * percent);
 		
 		Vector4d white = new Vector4d(255, 255, 255, 255);
 		RenderHelper2D.drawGradientRect(posX, 1, posX+4, this.height-1, white, white);
 		
-		renderer.drawStringWithShadow("" + value, width / 2 - renderer.getStringWidth("" + value) / 2, (this.height - 8) / 2, White);
+		String text = getTextByValue();
+		renderer.drawStringWithShadow(text, width / 2 - renderer.getStringWidth(text) / 2, (this.height - 8) / 2, White);
         
        /* GL11.glPushMatrix();
         mc.getTextureManager().bindTexture(buttonTextures);
@@ -146,6 +112,14 @@ public class GuiAnalogeSlider extends GuiControl
 		return false;
 	}
 	
+	public void setValue(float value)
+	{
+		this.value = Math.max(minValue, value);
+		this.value = Math.min(maxValue, this.value);
+		
+		raiseEvent(new ControlChangedEvent(this));
+	}
+	
 	@Override
 	public void mouseMove(int posX, int posY, int button){
 		Vector2d mouse = parent.getMousePos();
@@ -157,8 +131,7 @@ public class GuiAnalogeSlider extends GuiControl
 				this.value = this.maxValue;
 			else
 				this.value = this.minValue+(float)((this.maxValue - this.minValue) * ((float)(mouse.x - this.posX) / (float)this.width));
-			value = Math.max(minValue, value);
-			value = Math.min(maxValue, value);
+			setValue(value);
 			//return true;
 		}
 		//return false;
