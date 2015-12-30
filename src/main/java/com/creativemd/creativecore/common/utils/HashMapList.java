@@ -128,6 +128,15 @@ public class HashMapList<K, V> {
 		return keys.indexOf(key);
 	}
 	
+	public int sizeOfValues()
+	{
+		int size = 0;
+		for (int i = 0; i < values.size(); i++) {
+			size += values.get(i).size();
+		}
+		return size;
+	}
+	
 	public int size()
 	{
 		return keys.size();
