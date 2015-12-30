@@ -183,9 +183,13 @@ public class GuiSlotControl extends GuiControl{
 		        }
 			}catch (Exception e){
 				ItemStack stack = slot.slot.getStack();
-				tips.add(Item.itemRegistry.getNameForObject(stack.getItem()));
-				tips.add("Damage: " + stack.getItemDamage());
-				tips.add("NBT: " + (stack.stackTagCompound == null ? "null" : stack.stackTagCompound.toString()));
+				try{
+					tips.add(Item.itemRegistry.getNameForObject(stack.getItem()));
+					tips.add("Damage: " + stack.getItemDamage());
+					tips.add("NBT: " + (stack.stackTagCompound == null ? "null" : stack.stackTagCompound.toString()));
+				}catch(Exception e2){
+					tips.add("<ERRORED>");
+				}
 			}
 		}
 		return tips;
