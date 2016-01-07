@@ -3,8 +3,10 @@ package com.creativemd.creativecore.client.block;
 import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.Color;
 
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
+import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
 
 import cpw.mods.fml.relauncher.Side;
@@ -41,9 +43,11 @@ public class BlockRenderHelper {
 					IBlockAccessFake fake = new IBlockAccessFake(renderer.blockAccess);
 					RenderHelper3D.renderBlocks.blockAccess = fake;
 					fake.overrideMeta = cubes.get(i).meta;
+					RenderHelper3D.renderBlocks.color = cubes.get(i).color;
 					RenderHelper3D.renderBlocks.lockBlockBounds = true;
 					RenderHelper3D.renderBlocks.renderBlockAllFaces(cubes.get(i).block, x, y, z);
 					RenderHelper3D.renderBlocks.lockBlockBounds = false;
+					RenderHelper3D.renderBlocks.color = ColorUtils.WHITE;
 					continue;
 				}
 				else
@@ -113,11 +117,13 @@ public class BlockRenderHelper {
 				GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 			}else{
 				int j = block.getRenderColor(metadata);
-				boolean defaultColor = false;
+				if(cubes.get(i).color != ColorUtils.WHITE)
+					j = cubes.get(i).color;
+				/*boolean defaultColor = cubes.get(i).;
 	            if (defaultColor)
 	            {
 	                j = 16777215;
-	            }
+	            }*/
 
 	            float f1 = (float)(j >> 16 & 255) / 255.0F;
 	            float f2 = (float)(j >> 8 & 255) / 255.0F;

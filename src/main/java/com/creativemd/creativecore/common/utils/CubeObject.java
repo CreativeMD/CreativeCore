@@ -2,6 +2,8 @@ package com.creativemd.creativecore.common.utils;
 
 import java.util.ArrayList;
 
+import org.lwjgl.util.Color;
+
 import net.minecraft.block.Block;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
@@ -15,6 +17,7 @@ public class CubeObject {
 	public IIcon icon;
 	public Block block;
 	public int meta = -1;
+	public int color = ColorUtils.WHITE;
 	
 	public boolean normalBlock = true;
 	
@@ -80,6 +83,18 @@ public class CubeObject {
 	{
 		this(minX, minY, minZ, maxX, maxY, maxZ);
 		this.normalBlock = normalBlock;
+	}
+	
+	public CubeObject setColor(Vec3 color)
+	{
+		this.setColor(ColorUtils.RGBToInt(color));
+		return this;
+	}
+	
+	public CubeObject setColor(int color)
+	{
+		this.color = color;
+		return this;
 	}
 	
 	public AxisAlignedBB getAxis()
