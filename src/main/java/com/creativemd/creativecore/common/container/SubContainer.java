@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.container.slot.ContainerControl;
 import com.creativemd.creativecore.common.container.slot.SlotControl;
+import com.creativemd.creativecore.common.event.CreativeCoreEventBus;
 import com.creativemd.creativecore.common.gui.SubGui;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.gui.event.GuiControlEvent;
@@ -17,7 +18,6 @@ import com.n247s.api.eventapi.eventsystem.EventBus;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -36,13 +36,13 @@ public abstract class SubContainer{
 	
 	public ContainerSub container;
 	
-	private EventBus eventBus;
+	private CreativeCoreEventBus eventBus;
 	
 	public SubContainer(EntityPlayer player)
 	{
 		this.player = player;
 		this.tick = 0;
-		eventBus = new EventBus();
+		eventBus = new CreativeCoreEventBus();
 		eventBus.RegisterEventListener(this);
 	}
 	

@@ -2,74 +2,43 @@ package com.n247s.api.eventapi.eventsystem;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.creativemd.creativecore.common.event.TickHandler;
 import com.n247s.api.eventapi.EventApi;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventBus
 {
 	private static final Logger log = EventApi.logger;
-	protected final HashMap<Class<? extends EventType>, CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
+	protected HashMap<Class<? extends EventType>, ? super CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
 	
-	public ArrayList<EventType> eventsToRaise = new ArrayList<EventType>();
 	/**
 	 * Be very careful when creating your own EventBus! Only create one when you really need to, since this is the most sensitive part of the CustomEventSystem,
 	 * messing up the system is rather easy achievable.
 	 */
-	public EventBus()
-	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-			initClient();
-		else
-			initServer();
-	}
-	
-	public void initServer()
-	{
-		TickHandler.ServerEvents.add(this);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void initClient()
-	{
-		TickHandler.ClientEvents.add(this);
-	}
-	
+	public EventBus(){}
 	
 	/**
 	 * @param eventType
-	 * @param force
 	 * @return - true if EventType is Canceled.
 	 */
-	public boolean raiseEvent(EventType event, boolean force)
+	public boolean raiseEvent(EventType eventType)
 	{
-		if(event.isCancelable() || force)
+		try
 		{
-			if(!this.EventList.containsKey(event.getClass()))
-				this.EventList.put(event.getClass(), new EventApiCallHandler(event.getClass()));
-			return ((CallHandler)this.EventList.get(event.getClass())).CallInstances(event);
+			Class eventClass =  eventType.getClass();
+			if(!this.EventList.containsKey(eventClass))
+				this.EventList.put(eventClass, new EventApiCallHandler(eventClass));
+			return ((CallHandler)this.EventList.get(eventClass)).CallInstances(eventType);
 		}
-		eventsToRaise.add(event);
+		catch(Exception e)
+		{
+			log.catching(e);
+		}
 		return false;
-	}
-	
-	/**
-	 * @param eventType
-	 * @return - true if EventType is Canceled.
-	 */
-	public boolean raiseEvent(EventType event)
-	{
-		return raiseEvent(event, false);
 	}
 	
 	/**
@@ -85,11 +54,16 @@ public class EventBus
 	}
 	
 	/**
-	 * With this method you can add an this.EventListner(Class object/Class instance) which should be Called on eventRaise.
+	 * With this method you can add an EventListner(Class object/Class instance)
+	 * which CustomEventSubscribed methods should be Called on eventRaise.
 	 * 
-	 * @param listner
-	 * @throws IllegalArgumentException - If a CustomEventSubscribed Method contains more than one parameter,
-	 * 		or if the parameter is not an instance of EventType.class.
+	 * @param listener
+	 *            a Class object or instance that contains CustomEventSubscribe
+	 *            methods.
+	 * @throws IllegalArgumentException
+	 *             - If a CustomEventSubscribed Method contains more than one
+	 *             parameter, or if the parameter of that method is not an
+	 *             instance of EventType.class.
 	 */
 	public void RegisterEventListener(Object listener)
 	{
@@ -113,12 +87,12 @@ public class EventBus
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
 				
-				getCallHandlerFromEventType(methodEventType).RegisterEventListner(annotation.eventPriority(), listener, currentMethod);
+				getCallHandlerFromEventType(methodEventType).RegisterEventListener(annotation.eventPriority(), listener, currentMethod);
 			}
 		}
 	}
 	
-	public void RegisterEventListeners(List<Object> listenersList)
+	public void RegisterEventListners(List<Object> listenersList)
 	{
 		for(int i = 0; i < listenersList.size(); i++)
 		{
@@ -127,10 +101,10 @@ public class EventBus
 	}
 	
 	/**
-	 * With this method you can remove an this.EventListner(Class object/Class instance).
+	 * With this method you can remove an EventListner(Class object/Class instance).
 	 * 
-	 * @param Listner
-	 * @throws NullPointerException - if the this.EventListner isn't registered.
+	 * @param Listener
+	 * @throws NullPointerException - if the EventListner isn't registered.
 	 */
 	public void removeEventListener(Object Listener)
 	{
@@ -157,7 +131,7 @@ public class EventBus
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
 				
-				getCallHandlerFromEventType(methodEventType).removeListner(annotation.eventPriority(), Listener);
+				getCallHandlerFromEventType(methodEventType).removeListener(annotation.eventPriority(), Listener);
 			}
 		}
 	}
@@ -171,32 +145,6 @@ public class EventBus
 	}
 	
 	/**
-	 * Destroy the eventbus
-	 */
-	public void removeAllEventListeners()
-	{
-		for (CallHandler value : EventList.values()) {
-		    value.instanceMap.clear();
-		}
-		EventList.clear();
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-			removeTickEventClient();
-		else
-			removeTickEventServer();
-	}
-	
-	public void removeTickEventServer()
-	{
-		TickHandler.ServerEvents.remove(this);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void removeTickEventClient()
-	{
-		TickHandler.ClientEvents.remove(this);
-	}
-	
-	/**
 	 * @param eventTypeClass
 	 * @return The instance of the CallHandler of this specific EventType.
 	 * 		Note that if no CallHanlder is assigned, a default instance is returned!
@@ -205,6 +153,6 @@ public class EventBus
 	{
 		if(!this.EventList.containsKey(eventTypeClass))
 			this.EventList.put(eventTypeClass, new EventApiCallHandler(eventTypeClass));
-		return this.EventList.get(eventTypeClass);
+		return (CallHandler) this.EventList.get(eventTypeClass);
 	}
 }
