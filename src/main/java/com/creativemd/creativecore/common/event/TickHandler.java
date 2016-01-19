@@ -45,7 +45,7 @@ public class TickHandler {
 		}
 	}
 	
-	public static ArrayList<EventBus> ServerEvents = new ArrayList<EventBus>();
+	public static ArrayList<CreativeCoreEventBus> ServerEvents = new ArrayList<CreativeCoreEventBus>();
 	
 	@SubscribeEvent
 	public void onEventTick(TickEvent tick) //Remove all Structures which doesn't have any connections
@@ -53,7 +53,7 @@ public class TickHandler {
 		if(tick.phase == Phase.START && tick.type == Type.SERVER)
 		{
 			if(ServerEvents == null)
-				ServerEvents = new ArrayList<EventBus>();
+				ServerEvents = new ArrayList<CreativeCoreEventBus>();
 			try{
 				for (int i = 0; i < ServerEvents.size(); i++) {
 					for (int j = 0; j < ServerEvents.get(i).eventsToRaise.size(); j++) {
@@ -73,7 +73,7 @@ public class TickHandler {
 	public static boolean changed;
 	
 	@SideOnly(Side.CLIENT)
-	public static ArrayList<EventBus> ClientEvents;
+	public static ArrayList<CreativeCoreEventBus> ClientEvents;
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
@@ -83,7 +83,7 @@ public class TickHandler {
 		if(tick.phase == Phase.START)
 		{
 			if(ClientEvents == null)
-				ClientEvents = new ArrayList<EventBus>();
+				ClientEvents = new ArrayList<CreativeCoreEventBus>();
 			try{
 				for (int i = 0; i < ClientEvents.size(); i++) {
 					for (int j = 0; j < ClientEvents.get(i).eventsToRaise.size(); j++) {

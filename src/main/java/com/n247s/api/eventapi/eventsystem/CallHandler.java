@@ -29,9 +29,8 @@ public abstract class CallHandler
 		instanceMap.put(CustomEventSubscribe.Priority.Lowest, new LinkedHashMap());
 	}
 
-	/** Used to raise the bound event
-	 * @return */
-	protected abstract boolean CallInstances(EventType event);
+	/** Used to raise the bound event */
+	protected abstract boolean CallInstances(EventType eventType);
 	
 	/**
 	 * This method is used to add an instance of a Class which should be called on eventRaise.
@@ -41,27 +40,27 @@ public abstract class CallHandler
 	 * @param classInstance
 	 * @param method
 	 */
-	protected final void RegisterEventListner(CustomEventSubscribe.Priority priority, Object Listner, Method method)
+	public void RegisterEventListener(CustomEventSubscribe.Priority priority, Object Listener, Method method)
 	{
-		this.instanceMap.get(priority).put(Listner, method);
-		this.entryCheckList.add(Listner);
+		this.instanceMap.get(priority).put(Listener, method);
+		this.entryCheckList.add(Listener);
 	}
 	
 	/**
 	 * This method is used to remove an EventListner (Class object / Class instance).
-	 * Its called from {@link EventBus#removeEventListner(Object)}.
+	 * Its called from {@link EventBus#removeEventListener(Object)}.
 	 * 
-	 * @param Listner
+	 * @param Listener
 	 */
-	protected final void removeListner(CustomEventSubscribe.Priority priority, Object Listner)
+	public void removeListener(CustomEventSubscribe.Priority priority, Object Listener)
 	{
 			LinkedHashMap currenInstanceMap = this.instanceMap.get(priority);
 			
 			if(currenInstanceMap == null)
 				log.catching(new NullPointerException("There is no Listner registered for this priority level " + priority.toString() + "!"));
 			
-			if(currenInstanceMap.containsKey(Listner))
-				currenInstanceMap.remove(Listner);
+			if(currenInstanceMap.containsKey(Listener))
+				currenInstanceMap.remove(Listener);
 			else log.catching(new NullPointerException("Current Listner has either changed its annotation value's or is not registered!"));
 	}
 }

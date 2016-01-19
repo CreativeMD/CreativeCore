@@ -12,6 +12,7 @@ import com.creativemd.creativecore.client.rendering.RenderHelper2D;
 import com.creativemd.creativecore.common.container.ContainerSub;
 import com.creativemd.creativecore.common.container.SubContainer;
 import com.creativemd.creativecore.common.container.slot.ContainerControl;
+import com.creativemd.creativecore.common.event.CreativeCoreEventBus;
 import com.creativemd.creativecore.common.gui.controls.GuiControl;
 import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
 import com.creativemd.creativecore.common.gui.event.GuiControlEvent;
@@ -42,7 +43,7 @@ public abstract class SubGui {
 	
 	public static RenderItem itemRender;
 	
-	private EventBus eventBus;
+	private CreativeCoreEventBus eventBus;
 	
 	public GuiContainerSub gui;
 	public SubContainer container;
@@ -57,7 +58,7 @@ public abstract class SubGui {
     public SubGui(int width, int height) {
 		this.width = width;
 		this.height = height;
-		eventBus = new EventBus();
+		eventBus = new CreativeCoreEventBus();
 		eventBus.RegisterEventListener(this);
 	}
     

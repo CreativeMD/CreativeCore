@@ -17,7 +17,8 @@ public abstract class EventType
 	
 	public final void CancelEvent()
 	{
-		this.isCanceled = true;
+		if(isCancelable)
+			this.isCanceled = true;
 	}
 	
 	public final boolean isCanceled()

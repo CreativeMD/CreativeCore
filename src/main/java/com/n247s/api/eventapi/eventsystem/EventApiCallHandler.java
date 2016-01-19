@@ -20,7 +20,7 @@ import com.n247s.api.eventapi.EventApi;
 public class EventApiCallHandler extends CallHandler
 {
 	private static final Logger log = EventApi.logger;
-	//private EventType eventTypeInstance = null;
+	private EventType eventTypeInstance = null;
 	
 	public EventApiCallHandler(Class<? extends EventType> eventType)
 	{
@@ -32,14 +32,13 @@ public class EventApiCallHandler extends CallHandler
 	 * you can Extend this Class to use the other preMade Methods.
 	 */
 	@Override
-	protected boolean CallInstances(EventType event)
+	protected boolean CallInstances(EventType eventType)
 	{
 		boolean isCanceled = false;
 		try
 		{
-			//this.eventTypeInstance = this.eventType.newInstance();
-			isCanceled = CallInstancesInOrder(event);
-			//this.eventTypeInstance = null;
+			this.eventTypeInstance = eventType;
+			isCanceled = CallInstancesInOrder(this.eventTypeInstance);
 		}
 		catch(Exception e)
 		{
@@ -103,7 +102,6 @@ public class EventApiCallHandler extends CallHandler
 						((Method) linkedHashMap.get(originalEntry)).invoke(originalEntry, eventTypeInstance);
 				}
 			}
-			
 		}
 		catch(Exception e)
 		{
