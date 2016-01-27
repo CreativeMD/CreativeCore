@@ -21,13 +21,16 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+
 @SideOnly(Side.CLIENT)
 public class BlockRenderHelper {
+	
+	public static IBlockAccessFake fake = null;
 	
 	public static void renderCubes(IBlockAccess world, ArrayList<CubeObject> cubes, int x, int y, int z, Block block, RenderBlocks renderer, ForgeDirection direction)
 	{
 		for (int i = 0; i < cubes.size(); i++) {
-			renderer.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
+			
 			if(direction != null && direction != ForgeDirection.EAST && direction != ForgeDirection.UNKNOWN)
 				RenderHelper3D.applyBlockRotation(renderer, direction);
 			if(cubes.get(i).icon != null)
@@ -36,12 +39,18 @@ public class BlockRenderHelper {
 			if(cubes.get(i).block != null)
 				if(cubes.get(i).meta != -1)
 				{
+					if(fake == null)
+					{
+						fake = new IBlockAccessFake(renderer.blockAccess);
+						RenderHelper3D.renderBlocks.blockAccess = fake;
+					}
+					
+					if(fake.world != renderer.blockAccess)
+						fake.world = renderer.blockAccess;
 					
 					RenderHelper3D.renderBlocks.clearOverrideBlockTexture();
 					RenderHelper3D.renderBlocks.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
-					RenderHelper3D.renderBlocks.meta = cubes.get(i).meta;
-					IBlockAccessFake fake = new IBlockAccessFake(renderer.blockAccess);
-					RenderHelper3D.renderBlocks.blockAccess = fake;
+					RenderHelper3D.renderBlocks.meta = cubes.get(i).meta;					
 					fake.overrideMeta = cubes.get(i).meta;
 					RenderHelper3D.renderBlocks.color = cubes.get(i).color;
 					RenderHelper3D.renderBlocks.lockBlockBounds = true;
@@ -53,6 +62,7 @@ public class BlockRenderHelper {
 				else
 					renderer.setOverrideBlockTexture(cubes.get(i).block.getBlockTextureFromSide(0));
 			
+			renderer.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
 			renderer.renderStandardBlock(block, x, y, z);
 			
 			if(cubes.get(i).icon != null || cubes.get(i).block != null)
