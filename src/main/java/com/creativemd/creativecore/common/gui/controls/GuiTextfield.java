@@ -76,7 +76,7 @@ public class GuiTextfield extends GuiFocusControl{
 	
 	public String getSelectedText()
 	{
-		if(hasSelectedText())
+		if(hasSelectedText() && text != null)
 			return text.substring(cursorPosition, selEnd);
 		else
 			return "";

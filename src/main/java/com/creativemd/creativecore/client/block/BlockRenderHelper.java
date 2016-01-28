@@ -31,8 +31,7 @@ public class BlockRenderHelper {
 	{
 		for (int i = 0; i < cubes.size(); i++) {
 			
-			if(direction != null && direction != ForgeDirection.EAST && direction != ForgeDirection.UNKNOWN)
-				RenderHelper3D.applyBlockRotation(renderer, direction);
+			
 			if(cubes.get(i).icon != null)
 				renderer.setOverrideBlockTexture(cubes.get(i).icon);
 			
@@ -63,6 +62,10 @@ public class BlockRenderHelper {
 					renderer.setOverrideBlockTexture(cubes.get(i).block.getBlockTextureFromSide(0));
 			
 			renderer.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
+			
+			if(direction != null && direction != ForgeDirection.EAST && direction != ForgeDirection.UNKNOWN)
+				RenderHelper3D.applyBlockRotation(renderer, direction);
+			
 			renderer.renderStandardBlock(block, x, y, z);
 			
 			if(cubes.get(i).icon != null || cubes.get(i).block != null)
