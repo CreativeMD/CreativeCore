@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Color;
 
+import com.creativemd.creativecore.client.rendering.ExtendedRenderBlocks;
 import com.creativemd.creativecore.client.rendering.RenderHelper3D;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
@@ -29,6 +30,11 @@ public class BlockRenderHelper {
 	
 	public static void renderCubes(IBlockAccess world, ArrayList<CubeObject> cubes, int x, int y, int z, Block block, RenderBlocks renderer, ForgeDirection direction)
 	{
+		renderCubes(world, cubes, x, y, z, block, renderer, direction, RenderHelper3D.renderBlocks);
+	}
+	
+	public static void renderCubes(IBlockAccess world, ArrayList<CubeObject> cubes, int x, int y, int z, Block block, RenderBlocks renderer, ForgeDirection direction, ExtendedRenderBlocks extraRenderer)
+	{
 		for (int i = 0; i < cubes.size(); i++) {
 			
 			
@@ -41,21 +47,21 @@ public class BlockRenderHelper {
 					if(fake == null)
 					{
 						fake = new IBlockAccessFake(renderer.blockAccess);
-						RenderHelper3D.renderBlocks.blockAccess = fake;
+						extraRenderer.blockAccess = fake;
 					}
 					
 					if(fake.world != renderer.blockAccess)
 						fake.world = renderer.blockAccess;
 					
-					RenderHelper3D.renderBlocks.clearOverrideBlockTexture();
-					RenderHelper3D.renderBlocks.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
-					RenderHelper3D.renderBlocks.meta = cubes.get(i).meta;					
+					extraRenderer.clearOverrideBlockTexture();
+					extraRenderer.setRenderBounds(cubes.get(i).minX, cubes.get(i).minY, cubes.get(i).minZ, cubes.get(i).maxX, cubes.get(i).maxY, cubes.get(i).maxZ);
+					extraRenderer.meta = cubes.get(i).meta;					
 					fake.overrideMeta = cubes.get(i).meta;
-					RenderHelper3D.renderBlocks.color = cubes.get(i).color;
-					RenderHelper3D.renderBlocks.lockBlockBounds = true;
-					RenderHelper3D.renderBlocks.renderBlockAllFaces(cubes.get(i).block, x, y, z);
-					RenderHelper3D.renderBlocks.lockBlockBounds = false;
-					RenderHelper3D.renderBlocks.color = ColorUtils.WHITE;
+					extraRenderer.color = cubes.get(i).color;
+					extraRenderer.lockBlockBounds = true;
+					extraRenderer.renderBlockAllFaces(cubes.get(i).block, x, y, z);
+					extraRenderer.lockBlockBounds = false;
+					extraRenderer.color = ColorUtils.WHITE;
 					continue;
 				}
 				else
