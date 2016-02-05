@@ -77,7 +77,7 @@ public class GuiTextfield extends GuiFocusControl{
 	public String getSelectedText()
 	{
 		if(hasSelectedText() && text != null)
-			return text.substring(cursorPosition, selEnd);
+			return text.substring(Math.min(cursorPosition, selEnd), Math.max(cursorPosition, selEnd));
 		else
 			return "";
 	}
