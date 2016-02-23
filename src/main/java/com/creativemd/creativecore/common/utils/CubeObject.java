@@ -97,9 +97,47 @@ public class CubeObject {
 		return this;
 	}
 	
+	public Vec3 getSize()
+	{
+		return Vec3.createVectorHelper(maxX-minX, maxY-minY, maxZ-minZ);
+	}
+	
 	public AxisAlignedBB getAxis()
 	{
 		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+	}
+	
+	public static Vec3 getSizeOfCubes(ArrayList<CubeObject> cubes)
+	{
+		if(cubes.size() == 0)
+			return Vec3.createVectorHelper(0, 0, 0);
+		CubeObject cube = new CubeObject(cubes.get(0));
+		for (int i = 1; i < cubes.size(); i++) {
+			cube.minX = Math.min(cube.minX, cubes.get(i).minX);
+			cube.minY = Math.min(cube.minY, cubes.get(i).minY);
+			cube.minZ = Math.min(cube.minZ, cubes.get(i).minZ);
+			cube.maxX = Math.max(cube.maxX, cubes.get(i).maxX);
+			cube.maxY = Math.max(cube.maxY, cubes.get(i).maxY);
+			cube.maxZ = Math.max(cube.maxZ, cubes.get(i).maxZ);
+		}
+		return cube.getSize();
+	}
+	
+	public static Vec3 getBigestCubeSize(ArrayList<CubeObject> cubes)
+	{
+		Vec3 size = null;
+		for (int i = 0; i < cubes.size(); i++) {
+			Vec3 newSize = cubes.get(i).getSize();
+			if(size == null)
+				size = newSize;
+			else
+			{
+				size.xCoord = Math.max(size.xCoord, newSize.xCoord);
+				size.yCoord = Math.max(size.yCoord, newSize.yCoord);
+				size.zCoord = Math.max(size.zCoord, newSize.zCoord);
+			}
+		}
+		return size;
 	}
 	
 	public static CubeObject rotateCube(CubeObject cube, ForgeDirection direction)
