@@ -39,7 +39,10 @@ public abstract class TileEntityCreative extends TileEntity{
 	public void updateBlock()
 	{
 		if(!worldObj.isRemote)
+		{
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			markDirty();
+		}
 	}
 	
 	public void receiveUpdatePacket(NBTTagCompound nbt)
