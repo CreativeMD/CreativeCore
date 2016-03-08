@@ -102,6 +102,12 @@ public class CubeObject {
 		return Vec3.createVectorHelper(maxX-minX, maxY-minY, maxZ-minZ);
 	}
 	
+	@Override
+	public String toString()
+    {
+        return "cube[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
+    }
+	
 	public AxisAlignedBB getAxis()
 	{
 		return AxisAlignedBB.getBoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
