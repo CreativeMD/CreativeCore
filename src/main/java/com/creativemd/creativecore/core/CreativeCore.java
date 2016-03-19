@@ -32,7 +32,7 @@ public class CreativeCore {
 	@EventHandler
     public void Init(FMLInitializationEvent event)
     {
-		network = NetworkRegistry.INSTANCE.newSimpleChannel("CreativeMDPacket");
+		network = NetworkRegistry.INSTANCE.newSimpleChannel("creativemd");
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.CLIENT);
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
 		//NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
