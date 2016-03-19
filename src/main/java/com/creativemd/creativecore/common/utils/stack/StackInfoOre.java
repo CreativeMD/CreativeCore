@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.utils.stack;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -70,7 +71,7 @@ public class StackInfoOre extends StackInfo implements IStackLoader{
 
 	@Override
 	public ItemStack getItemStack(int stacksize) {
-		ArrayList<ItemStack> stacks = OreDictionary.getOres(ore);
+		List<ItemStack> stacks = OreDictionary.getOres(ore);
 		if(stacks.size() > 0)
 		{
 			ItemStack stack = stacks.get(0).copy();

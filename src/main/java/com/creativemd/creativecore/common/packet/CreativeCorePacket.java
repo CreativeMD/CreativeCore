@@ -4,22 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.creativemd.creativecore.common.utils.RotationUtils;
 import com.creativemd.creativecore.common.utils.stack.StackInfo;
 import com.creativemd.creativecore.common.utils.string.StringUtils;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
-import io.netty.buffer.ByteBuf;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class CreativeCorePacket {
 	
@@ -67,7 +65,19 @@ public abstract class CreativeCorePacket {
 	{
 		return ByteBufUtils.readUTF8String(buf);
 	}
-		
+	
+	public static void writePos(ByteBuf buf, BlockPos pos)
+	{
+		buf.writeInt(pos.getX());
+		buf.writeInt(pos.getY());
+		buf.writeInt(pos.getZ());
+	}
+	
+	public static BlockPos readPos(ByteBuf buf)
+	{
+		return new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+	}
+	
 	public static void writeNBT(ByteBuf buf, NBTTagCompound nbt)
 	{
 		ByteBufUtils.writeTag(buf, nbt);
@@ -78,19 +88,19 @@ public abstract class CreativeCorePacket {
 		return ByteBufUtils.readTag(buf);
 	}
 	
-	public static void writeVec3(Vec3 vec, ByteBuf buf)
+	public static void writeVec3(Vec3d vec, ByteBuf buf)
 	{
 		buf.writeDouble(vec.xCoord);
 		buf.writeDouble(vec.yCoord);
 		buf.writeDouble(vec.zCoord);
 	}
 	
-	public static Vec3 readVec3(ByteBuf buf)
+	public static Vec3d readVec3(ByteBuf buf)
 	{
 		double x = buf.readDouble();
 		double y = buf.readDouble();
 		double z = buf.readDouble();
-		return Vec3.createVectorHelper(x, y, z);
+		return new Vec3d(x, y, z);
 	}
 	
 	public static void writeStackInfo(ByteBuf buf, StackInfo info)
@@ -134,7 +144,7 @@ public abstract class CreativeCorePacket {
 		return ByteBufUtils.readItemStack(buf);
 	}
 	
-	public static void writeDirection(ByteBuf buf, ForgeDirection direction)
+	/*public static void writeDirection(ByteBuf buf, ForgeDirection direction)
 	{
 		buf.writeInt(RotationUtils.getIndex(direction));
 	}
@@ -142,15 +152,16 @@ public abstract class CreativeCorePacket {
 	public static ForgeDirection readDirection(ByteBuf buf)
 	{
 		return ForgeDirection.getOrientation(buf.readInt());
-	}
+	}*/
 	
-	public static void openContainerOnServer(EntityPlayerMP entityPlayerMP, Container container)
+	/*public static void openContainerOnServer(EntityPlayerMP entityPlayerMP, Container container)
 	{
+		TODO Add Open Container on Server method
 		entityPlayerMP.getNextWindowId();
         entityPlayerMP.closeContainer();
         int windowId = entityPlayerMP.currentWindowId;
         entityPlayerMP.openContainer = container;
         entityPlayerMP.openContainer.windowId = windowId;
         entityPlayerMP.openContainer.addCraftingToCrafters(entityPlayerMP);
-	}
+	}*/
 }

@@ -35,7 +35,7 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 	public StackInfo getStackInfoFromString(String input) {
 		Block block = Block.getBlockFromName(input);
 		if(block != null)
-			return new StackInfoMaterial(block.getMaterial());
+			return new StackInfoMaterial(block.getMaterial(null));
 		return null;
 	}
 
@@ -43,7 +43,7 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 	public String toString() {
 		for (Object name : Block.blockRegistry.getKeys()) {
 			Block block = Block.getBlockFromName((String) name);
-			if(block != null && block.getMaterial() == material)
+			if(block != null && block.getMaterial(null) == material)
 				return (String) name;				
 		}
 		return null;
@@ -54,7 +54,7 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 		Block block = Block.getBlockFromItem(stack.getItem());
 		if(block != null)
 		{
-			return block.getMaterial() == material;
+			return block.getMaterial(null) == material;
 		}
 		return false;
 	}
@@ -64,12 +64,12 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 		if(info instanceof StackInfoMaterial)
 			return ((StackInfoMaterial) info).material == material;
 		if(info instanceof StackInfoBlock)
-			return ((StackInfoBlock) info).block.getMaterial() == material;
+			return ((StackInfoBlock) info).block.getMaterial(null) == material;
 		if(info instanceof StackInfoItemStack)
 		{
 			Block block = Block.getBlockFromItem(((StackInfoItemStack) info).stack.getItem());
 			if(block != null)
-				return block.getMaterial() == material;
+				return block.getMaterial(null) == material;
 		}
 		return false;
 	}
@@ -78,7 +78,7 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 	public ItemStack getItemStack(int stacksize) {
 		for (Object name : Block.blockRegistry.getKeys()) {
 			Block block = Block.getBlockFromName((String) name);
-			if(block != null && block.getMaterial() == material)
+			if(block != null && block.getMaterial(null) == material)
 			{
 				return new ItemStack(block, stacksize);
 			}

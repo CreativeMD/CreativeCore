@@ -7,6 +7,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class BlockUpdatePacket extends CreativeCorePacket{
 	
@@ -14,35 +15,27 @@ public class BlockUpdatePacket extends CreativeCorePacket{
 		
 	}
 	
-	public int x;
-	public int y;
-	public int z;
+	public BlockPos pos;
 	public NBTTagCompound nbt;
 	
 	public BlockUpdatePacket(TileEntity te, NBTTagCompound nbt) {
-		this(te.xCoord, te.yCoord, te.zCoord, nbt);
+		this(te.getPos(), nbt);
 	}
 	
-	public BlockUpdatePacket(int x, int y, int z, NBTTagCompound nbt) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public BlockUpdatePacket(BlockPos pos, NBTTagCompound nbt) {
+		this.pos = pos;
 		this.nbt = nbt;
 	}
 
 	@Override
 	public void writeBytes(ByteBuf buf) {
-		buf.writeInt(x);
-		buf.writeInt(y);
-		buf.writeInt(z);
+		writePos(buf, pos);
 		writeNBT(buf, nbt);
 	}
 
 	@Override
 	public void readBytes(ByteBuf buf) {
-		x = buf.readInt();
-		y = buf.readInt();
-		z = buf.readInt();
+		pos = readPos(buf);
 		nbt = readNBT(buf);
 	}
 
@@ -53,7 +46,7 @@ public class BlockUpdatePacket extends CreativeCorePacket{
 
 	@Override
 	public void executeServer(EntityPlayer player) {
-		TileEntity te = player.worldObj.getTileEntity(x, y, z);
+		TileEntity te = player.worldObj.getTileEntity(pos);
 		if(te instanceof TileEntityCreative)
 		{
 			((TileEntityCreative) te).receiveUpdatePacket(nbt);

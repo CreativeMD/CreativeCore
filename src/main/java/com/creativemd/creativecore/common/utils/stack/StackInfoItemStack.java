@@ -23,7 +23,7 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	
 	public StackInfoItemStack(ItemStack stack, int stackSize)
 	{
-		this(stack, stack.stackTagCompound != null, stackSize);
+		this(stack, stack.hasTagCompound(), stackSize);
 	}
 	
 	public StackInfoItemStack(ItemStack stack)
@@ -57,7 +57,7 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 			StackInfoItemStack result = new StackInfoItemStack(new ItemStack((Item)objects[0], 1, (Integer)objects[1]));
 			result.needNBT = true;
 			if(objects[2] instanceof NBTTagCompound){
-				result.stack.stackTagCompound = (NBTTagCompound) objects[2];
+				result.stack.setTagCompound((NBTTagCompound) objects[2]);
 			}
 			return result;
 		}
@@ -68,10 +68,10 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	public String toString() {
 		if(needNBT)
 		{
-			if(stack.stackTagCompound == null)
+			if(!stack.hasTagCompound())
 				return StringUtils.ObjectsToString(stack.getItem(), stack.getItemDamage(), true);
 			else
-				return StringUtils.ObjectsToString(stack.getItem(), stack.getItemDamage(), stack.stackTagCompound);
+				return StringUtils.ObjectsToString(stack.getItem(), stack.getItemDamage(), stack.getTagCompound());
 		}else{
 			return StringUtils.ObjectsToString(stack.getItem(), stack.getItemDamage());
 		}
@@ -85,10 +85,10 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 			return false;
 		if(needNBT)
 		{
-			if(stack.stackTagCompound == this.stack.stackTagCompound)
+			if(stack.getTagCompound() == this.stack.getTagCompound())
 				return true;
-			if(stack.stackTagCompound != null && this.stack.stackTagCompound != null)
-				return stack.stackTagCompound.equals(this.stack.stackTagCompound);
+			if(stack.getTagCompound() != null && this.stack.getTagCompound() != null)
+				return stack.getTagCompound().equals(this.stack.getTagCompound());
 			return false;
 		}
 		return true;
@@ -104,11 +104,11 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 				return false;
 			if(((StackInfoItemStack) info).needNBT || this.needNBT)
 			{
-				if(((StackInfoItemStack) info).stack.stackTagCompound == null && stack.stackTagCompound == null)
+				if(((StackInfoItemStack) info).stack.getTagCompound() == null && stack.getTagCompound() == null)
 					return true;
-				if(((StackInfoItemStack) info).stack.stackTagCompound == null || stack.stackTagCompound == null)
+				if(((StackInfoItemStack) info).stack.getTagCompound() == null || stack.getTagCompound() == null)
 					return false;
-				return ((StackInfoItemStack) info).stack.stackTagCompound.equals(stack.stackTagCompound);
+				return ((StackInfoItemStack) info).stack.getTagCompound().equals(stack.getTagCompound());
 			}
 			return true;
 		}
@@ -119,7 +119,7 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	public ItemStack getItemStack(int stacksize) {
 		ItemStack stack = new ItemStack(this.stack.getItem(), stacksize, this.stack.getItemDamage());
 		if(needNBT)
-			stack.stackTagCompound = (NBTTagCompound) this.stack.stackTagCompound.copy();
+			stack.setTagCompound((NBTTagCompound) this.stack.getTagCompound().copy());
 		return stack;
 	}
 	
