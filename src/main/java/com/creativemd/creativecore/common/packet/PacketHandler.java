@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import com.creativemd.creativecore.core.CreativeCore;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class PacketHandler {	
 	public static void sendPacketToAllPlayers(CreativeCorePacket packet)

@@ -1,0 +1,16 @@
+[
+{
+  "modid": "creativecore",
+  "name": "CreativeCore",
+  "description": "A core mod required by the most mods of CreativeMD. Contains a packets system, gui-api and other utils.",
+  "version": "1.4",
+  "mcversion": "${mcversion}",
+  "url": "http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2408667-creativecore-v1-3-24-required-by-randomadditions",
+  "updateUrl": "",
+  "authorList": ["CreativeMD", "N247S"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

@@ -35,34 +35,34 @@ public class ConvertNBTTagCompound extends StringConverter{
 	public static Object getObject(NBTBase base)
 	{
 		if(base instanceof NBTTagByte)
-			return ((NBTTagByte)base).func_150290_f();
+			return ((NBTTagByte)base).getByte();
 		if(base instanceof NBTTagShort)
-			return ((NBTTagShort)base).func_150289_e();
+			return ((NBTTagShort)base).getShort();
 		if(base instanceof NBTTagInt)
-			return ((NBTTagInt)base).func_150287_d();
+			return ((NBTTagInt)base).getInt();
 		if(base instanceof NBTTagLong)
-			return ((NBTTagLong)base).func_150291_c();
+			return ((NBTTagLong)base).getLong();
 		if(base instanceof NBTTagFloat)
-			return ((NBTTagFloat)base).func_150288_h();
+			return ((NBTTagFloat)base).getFloat();
 		if(base instanceof NBTTagDouble)
-			return ((NBTTagDouble)base).func_150286_g();
+			return ((NBTTagDouble)base).getDouble();
 		if(base instanceof NBTTagByteArray)
-			return ((NBTTagByteArray)base).func_150292_c();
+			return ((NBTTagByteArray)base).getByteArray();
 		if(base instanceof NBTTagString)
-			return ((NBTTagString)base).func_150285_a_();
+			return ((NBTTagString)base).getString();
 		if(base instanceof NBTTagList)
 			return base;
 		if(base instanceof NBTTagCompound)
 			return ((NBTTagCompound)base);
 		if(base instanceof NBTTagIntArray)
-			return ((NBTTagIntArray)base).func_150302_c();
+			return ((NBTTagIntArray)base).getIntArray();
 		return null;
 	}
 	
 	@Override
 	public String toString(Object object) {
 		NBTTagCompound nbt = (NBTTagCompound) object;
-		Set tags = nbt.func_150296_c();
+		Set tags = nbt.getKeySet();
 		Iterator iterator = tags.iterator();
 		ArrayList objects = new ArrayList();
 		int i = 0;

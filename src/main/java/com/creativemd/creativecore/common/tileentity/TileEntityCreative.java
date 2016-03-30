@@ -1,14 +1,13 @@
 package com.creativemd.creativecore.common.tileentity;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class TileEntityCreative extends TileEntity{
 	
@@ -22,25 +21,26 @@ public abstract class TileEntityCreative extends TileEntity{
     {
 		NBTTagCompound nbt = new NBTTagCompound();
 		getDescriptionNBT(nbt);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, blockMetadata, nbt);
+        return new S35PacketUpdateTileEntity(pos, getBlockMetadata(), nbt);
     }
 	
-	public double getDistance(ChunkCoordinates coord)
+	public double getDistance(BlockPos coord)
 	{
-		return Math.sqrt(Math.pow(xCoord+coord.posX, 2) + Math.pow(yCoord+coord.posY, 2) + Math.pow(zCoord+coord.posZ, 2));
+		return pos.distanceSq(coord);
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public void updateRender()
 	{
-		worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
+		worldObj.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	public void updateBlock()
 	{
 		if(!worldObj.isRemote)
 		{
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			IBlockState state = worldObj.getBlockState(pos);
+			worldObj.markBlockForUpdate(pos);
 			markDirty();
 		}
 	}

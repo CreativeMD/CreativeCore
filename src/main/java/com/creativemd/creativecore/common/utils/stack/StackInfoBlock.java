@@ -5,6 +5,7 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class StackInfoBlock extends StackInfo implements IStackLoader{
 	
@@ -35,7 +36,7 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 
 	@Override
 	public StackInfo getStackInfoFromString(String input) {
-		Block block = (Block) Block.blockRegistry.getObject(input);
+		Block block = (Block) Block.blockRegistry.getObject(new ResourceLocation(input));
 		if(block != null && !(block instanceof BlockAir))
 			return new StackInfoBlock(block);
 		return null;
@@ -43,7 +44,7 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 
 	@Override
 	public String toString() {
-		return Block.blockRegistry.getNameForObject(block);
+		return Block.blockRegistry.getNameForObject(block).toString();
 	}
 
 	@Override

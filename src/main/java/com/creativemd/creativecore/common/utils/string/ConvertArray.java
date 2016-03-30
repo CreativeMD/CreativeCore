@@ -44,33 +44,29 @@ public class ConvertArray extends StringConverter{
 				try{
 					classArray = Class.forName(className);
 				}catch(Exception e){
-					switch (className) {
-					case "byte":
+					if(className.equals("byte")){
 						classArray = Byte.class;
-						break;
-					case "short":
+					}
+					if(className.equals("short")){
 						classArray = Short.class;
-						break;
-					case "int":
+					}
+					if(className.equals("int")){
 						classArray = Integer.class;
-						break;
-					case "long":
+					}
+					if(className.equals("long")){
 						classArray = Long.class;
-						break;
-					case "float":
+					}
+					if(className.equals("float")){
 						classArray = Float.class;
-						break;
-					case "double":
+					}
+					if(className.equals("double")){
 						classArray = Double.class;
-						break;
-					case "boolean":
+					}
+					if(className.equals("boolean")){
 						classArray = Boolean.class;
-						break;
-					case "char":
+					}
+					if(className.equals("char")){
 						classArray = Character.class;
-						break;
-					default:
-						break;
 					}
 				}
 				parseObjects = (Object[]) Array.newInstance(classArray, objects.length-1);

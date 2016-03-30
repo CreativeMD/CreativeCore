@@ -24,7 +24,7 @@ public class WorldUtils {
         double d1 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
         double d2 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
         EntityItem entityitem = new EntityItem(world, (double)x + d0, (double)y + d1, (double)z + d2, stack);
-        entityitem.delayBeforeCanPickup = 10;
+        entityitem.setPickupDelay(10);
 		world.spawnEntityInWorld(entityitem);
 	}
 	

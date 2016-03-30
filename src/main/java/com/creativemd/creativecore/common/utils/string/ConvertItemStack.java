@@ -5,6 +5,7 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
 public class ConvertItemStack extends StringConverter{
 
@@ -24,13 +25,13 @@ public class ConvertItemStack extends StringConverter{
 			return "null";
 		String item = "";
 		if(Block.getBlockFromItem(stack.getItem()) instanceof BlockAir)
-			item = Item.itemRegistry.getNameForObject(stack.getItem());
+			item = Item.itemRegistry.getNameForObject(stack.getItem()).toString();
 		else
-			item = Block.blockRegistry.getNameForObject(Block.getBlockFromItem(stack.getItem()));
-		if(stack.stackTagCompound == null)
+			item = Block.blockRegistry.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString();
+		if(!stack.hasTagCompound())
 			return StringUtils.ObjectsToString(item, stack.stackSize, stack.getItemDamage(), "null");
 		else
-			return StringUtils.ObjectsToString(item, stack.stackSize, stack.getItemDamage(), stack.stackTagCompound);
+			return StringUtils.ObjectsToString(item, stack.stackSize, stack.getItemDamage(), stack.getTagCompound());
 	}
 
 	@Override
@@ -39,16 +40,17 @@ public class ConvertItemStack extends StringConverter{
 		if(objects.length == 4 && objects[0] instanceof String && objects[1] instanceof Integer && objects[2] instanceof Integer && (objects[3] instanceof NBTTagCompound || objects[3] instanceof String))
 		{
 			ItemStack stack = null;
-			if(Item.itemRegistry.getObject((String)objects[0]) != null)
-				stack = new ItemStack((Item)Item.itemRegistry.getObject((String)objects[0]));
-			else if(!(Block.blockRegistry.getObject((String)objects[0]) instanceof BlockAir))
-				stack = new ItemStack((Block)Block.blockRegistry.getObject((String)objects[0]));
+			ResourceLocation location = new ResourceLocation((String)objects[0]);
+			if(Item.itemRegistry.getObject(location) != null)
+				stack = new ItemStack((Item)Item.itemRegistry.getObject(location));
+			else if(!(Block.blockRegistry.getObject(location) instanceof BlockAir))
+				stack = new ItemStack((Block)Block.blockRegistry.getObject(location));
 			else
 				return null;
 			stack.stackSize = (Integer)objects[1];
 			stack.setItemDamage((Integer)objects[2]);
 			if(objects[3] instanceof NBTTagCompound)
-				stack.stackTagCompound = (NBTTagCompound)objects[3];
+				stack.setTagCompound((NBTTagCompound)objects[3]);
 			return stack;
 		}
 		return null;

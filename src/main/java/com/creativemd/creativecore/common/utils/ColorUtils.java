@@ -16,6 +16,6 @@ public class ColorUtils {
 		float r = (float)(color >> 16 & 255);
         float g = (float)(color >> 8 & 255);
         float b = (float)(color & 255);
-        return Vec3.createVectorHelper(r, g, b);
+        return new Vec3(r, g, b);
 	}
 }
