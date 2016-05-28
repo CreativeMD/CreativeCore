@@ -35,7 +35,7 @@ public class StackInfoFuel extends StackInfo{
 
 	@Override
 	public ItemStack getItemStack(int stacksize) {
-		return new ItemStack(Items.coal);
+		return new ItemStack(Items.COAL);
 	}
 	
 	@Override

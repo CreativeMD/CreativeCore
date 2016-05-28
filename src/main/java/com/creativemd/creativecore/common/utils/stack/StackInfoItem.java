@@ -30,7 +30,7 @@ public class StackInfoItem extends StackInfo implements IStackLoader{
 
 	@Override
 	public StackInfo getStackInfoFromString(String input) {
-		Item item = (Item) Item.itemRegistry.getObject(new ResourceLocation(input));
+		Item item = (Item) Item.REGISTRY.getObject(new ResourceLocation(input));
 		if(item != null)
 			return new StackInfoItem(item);
 		return null;
@@ -38,7 +38,7 @@ public class StackInfoItem extends StackInfo implements IStackLoader{
 
 	@Override
 	public String toString() {
-		return Item.itemRegistry.getNameForObject(item).toString();
+		return Item.REGISTRY.getNameForObject(item).toString();
 	}
 
 	@Override

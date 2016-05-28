@@ -26,9 +26,9 @@ public class GuiParent extends GuiControl implements IControlParent {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
-	protected void renderContent(GuiRenderHelper helper, Style style) {
+	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		// TODO Auto-generated method stub
 		
 	}

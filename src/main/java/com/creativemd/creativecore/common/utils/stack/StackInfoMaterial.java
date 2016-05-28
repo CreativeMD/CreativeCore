@@ -41,7 +41,7 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 
 	@Override
 	public String toString() {
-		for (Object name : Block.blockRegistry.getKeys()) {
+		for (Object name : Block.REGISTRY.getKeys()) {
 			Block block = Block.getBlockFromName((String) name);
 			if(block != null && block.getMaterial(null) == material)
 				return (String) name;				
@@ -76,7 +76,7 @@ public class StackInfoMaterial extends StackInfo implements IStackLoader{
 
 	@Override
 	public ItemStack getItemStack(int stacksize) {
-		for (Object name : Block.blockRegistry.getKeys()) {
+		for (Object name : Block.REGISTRY.getKeys()) {
 			Block block = Block.getBlockFromName((String) name);
 			if(block != null && block.getMaterial(null) == material)
 			{

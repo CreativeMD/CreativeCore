@@ -2,6 +2,7 @@ package com.creativemd.creativecore.common.tileentity;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -17,7 +18,7 @@ public abstract class TileEntityCreative extends TileEntity{
 	}
 	
 	@Override
-	public Packet getDescriptionPacket()
+	public SPacketUpdateTileEntity getUpdatePacket()
     {
 		NBTTagCompound nbt = new NBTTagCompound();
 		getDescriptionNBT(nbt);
@@ -45,6 +46,13 @@ public abstract class TileEntityCreative extends TileEntity{
 			markDirty();
 		}
 	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
+    {
+		receiveUpdatePacket(pkt.getNbtCompound());
+    }
 	
 	public void receiveUpdatePacket(NBTTagCompound nbt)
 	{

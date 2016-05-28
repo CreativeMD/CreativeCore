@@ -36,7 +36,7 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 
 	@Override
 	public StackInfo getStackInfoFromString(String input) {
-		Block block = (Block) Block.blockRegistry.getObject(new ResourceLocation(input));
+		Block block = (Block) Block.REGISTRY.getObject(new ResourceLocation(input));
 		if(block != null && !(block instanceof BlockAir))
 			return new StackInfoBlock(block);
 		return null;
@@ -44,7 +44,7 @@ public class StackInfoBlock extends StackInfo implements IStackLoader{
 
 	@Override
 	public String toString() {
-		return Block.blockRegistry.getNameForObject(block).toString();
+		return Block.REGISTRY.getNameForObject(block).toString();
 	}
 
 	@Override

@@ -16,12 +16,12 @@ public class ConvertItem extends StringConverter{
 
 	@Override
 	public String toString(Object object) {
-		return Item.itemRegistry.getNameForObject((Item) object).toString();
+		return Item.REGISTRY.getNameForObject((Item) object).toString();
 	}
 
 	@Override
 	public Object parseObject(String input) {
-		return Item.itemRegistry.getObject(new ResourceLocation(input));
+		return Item.REGISTRY.getObject(new ResourceLocation(input));
 	}
 
 	@Override

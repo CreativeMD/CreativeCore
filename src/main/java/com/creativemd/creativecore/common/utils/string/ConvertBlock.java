@@ -16,12 +16,12 @@ public class ConvertBlock extends StringConverter{
 
 	@Override
 	public String toString(Object object) {
-		return Block.blockRegistry.getNameForObject((Block)object).toString();
+		return Block.REGISTRY.getNameForObject((Block)object).toString();
 	}
 
 	@Override
 	public Object parseObject(String input) {
-		return Block.blockRegistry.getObject(new ResourceLocation(input));
+		return Block.REGISTRY.getObject(new ResourceLocation(input));
 	}
 
 	@Override
