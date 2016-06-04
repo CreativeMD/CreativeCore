@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.gui.client.style;
 
-import com.creativemd.creativecore.gui.core.GuiRenderHelper;
+import com.creativemd.creativecore.gui.GuiRenderHelper;
 
 import net.minecraft.client.gui.FontRenderer;
 

@@ -1,15 +1,29 @@
-package com.creativemd.creativecore.gui.core.container;
+package com.creativemd.creativecore.gui.container;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.creativemd.creativecore.gui.core.CoreControl;
+import com.creativemd.creativecore.gui.CoreControl;
+import com.creativemd.creativecore.gui.event.ControlEvent;
+import net.minecraft.entity.player.EntityPlayer;
 
 public interface IControlParent {
 	
 	public List getControls();
 	
 	public void refreshControls();
+	
+	public CoreControl get(String name);
+	
+	public boolean has(String name);
+	
+	public EntityPlayer getPlayer();
+	
+	public boolean raiseEvent(ControlEvent event);
+	
+	public void addListener(Object listener);
+	
+	public void removeListener(Object listener);
 	
 	public default void moveControlBehind(CoreControl control, CoreControl controlInBack)
 	{

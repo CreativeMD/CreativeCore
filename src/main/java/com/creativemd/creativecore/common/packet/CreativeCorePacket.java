@@ -8,6 +8,7 @@ import com.creativemd.creativecore.common.utils.stack.StackInfo;
 import com.creativemd.creativecore.common.utils.string.StringUtils;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.embedded.EmbeddedChannel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -16,6 +17,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler.OutboundTarget;
+import net.minecraftforge.fml.common.network.internal.FMLMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -154,14 +158,13 @@ public abstract class CreativeCorePacket {
 		return ForgeDirection.getOrientation(buf.readInt());
 	}*/
 	
-	/*public static void openContainerOnServer(EntityPlayerMP entityPlayerMP, Container container)
+	public static void openContainerOnServer(EntityPlayerMP entityPlayerMP, Container container)
 	{
-		TODO Add Open Container on Server method
 		entityPlayerMP.getNextWindowId();
         entityPlayerMP.closeContainer();
         int windowId = entityPlayerMP.currentWindowId;
         entityPlayerMP.openContainer = container;
         entityPlayerMP.openContainer.windowId = windowId;
-        entityPlayerMP.openContainer.addCraftingToCrafters(entityPlayerMP);
-	}*/
+        entityPlayerMP.openContainer.addListener(entityPlayerMP);
+	}
 }

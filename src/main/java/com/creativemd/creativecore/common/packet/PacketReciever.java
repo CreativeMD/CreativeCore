@@ -14,7 +14,16 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	public void executeClient(IMessage message)
 	{
 		if(message instanceof CreativeMessageHandler && ((CreativeMessageHandler)message).packet != null)
-			((CreativeMessageHandler)message).packet.executeClient(Minecraft.getMinecraft().thePlayer);
+		{
+			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+				
+				@Override
+				public void run() {
+					((CreativeMessageHandler)message).packet.executeClient(Minecraft.getMinecraft().thePlayer);
+				}
+			});
+			
+		}
 	}
 	
     @Override
@@ -25,7 +34,14 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
     	}else{
     		if(message instanceof CreativeMessageHandler && ((CreativeMessageHandler)message).packet != null)
     		{
-    			((CreativeMessageHandler)message).packet.executeServer(ctx.getServerHandler().playerEntity);
+    			ctx.getServerHandler().playerEntity.getServer().addScheduledTask(new Runnable() {
+					
+					@Override
+					public void run() {
+						((CreativeMessageHandler)message).packet.executeServer(ctx.getServerHandler().playerEntity);
+					}
+				});
+    			
     		}
     	}
         return null;

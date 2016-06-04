@@ -1,11 +1,11 @@
 package com.creativemd.creativecore.gui.client.style;
 
-import com.creativemd.creativecore.gui.core.GuiControl;
+import com.creativemd.creativecore.gui.GuiControl;
 
 public class Style {
 	
 	public static Style liteStyle = new Style("default", new ColoredDisplayStyle(0, 0, 0), new ColoredDisplayStyle(155, 155, 155), new ColoredDisplayStyle(180, 180, 180),
-			new ColoredDisplayStyle(200, 200, 200), new ColoredDisplayStyle(100, 100, 100, 100));
+			new ColoredDisplayStyle(198, 198, 198), new ColoredDisplayStyle(100, 100, 100, 100));
 	
 	public final String name;
 	
@@ -28,13 +28,13 @@ public class Style {
 	
 	public DisplayStyle getBorder(GuiControl control)
 	{
-		if(control.isMouseOver())
-			return mouseOverBackground;
 		return border;
 	}
 	
 	public DisplayStyle getBackground(GuiControl control)
 	{
+		if(control.isMouseOver())
+			return mouseOverBackground;
 		return background;
 	}
 	

@@ -1,10 +1,12 @@
-package com.creativemd.creativecore.gui.core;
+package com.creativemd.creativecore.gui;
 
-import com.creativemd.creativecore.gui.core.container.IControlParent;
+import com.creativemd.creativecore.gui.container.IControlParent;
+
+import net.minecraft.entity.player.EntityPlayer;
 
 public abstract class CoreControl {
 	
-	public CoreControl parent;
+	public IControlParent parent;
 	public String name;
 	
 	public boolean enabled;
@@ -33,6 +35,12 @@ public abstract class CoreControl {
 		return this;
 	}
 	
+	//================Events================
+	
+	public void onOpened() {}
+	
+	public void onClosed() {}
+	
 	//================Various Helper Methods================
 	
 	public boolean is(String name)
@@ -40,15 +48,15 @@ public abstract class CoreControl {
 		return this.name.equalsIgnoreCase(name);
 	}
 	
-	public boolean isParentContainer()
+	public boolean hasParent()
 	{
-		return parent instanceof IControlParent;
+		return parent != null;
 	}
 	
-	public IControlParent getParentContainer()
+	public EntityPlayer getPlayer()
 	{
-		if(isParentContainer())
-			return (IControlParent) parent;
+		if(hasParent())
+			return parent.getPlayer();
 		return null;
 	}
 	
@@ -56,33 +64,33 @@ public abstract class CoreControl {
 	
 	public boolean isInteractable()
 	{
-		return enabled;
+		return enabled && hasParent() ? ((CoreControl) parent).isInteractable() : true;
 	}
 	
 	//================SORTING================
 	
 	public void moveControlAbove(GuiControl controlInBack)
 	{
-		if(isParentContainer())
-			getParentContainer().moveControlAbove(this, controlInBack);
+		if(hasParent())
+			parent.moveControlAbove(this, controlInBack);
 	}
 	
 	public void moveControlBehind(GuiControl controlInFront)
 	{
-		if(isParentContainer())
-			getParentContainer().moveControlBehind(this, controlInFront);
+		if(hasParent())
+			parent.moveControlBehind(this, controlInFront);
 	}
 	
 	public void moveControlToBottom()
 	{
-		if(isParentContainer())
-			getParentContainer().moveControlToBottom(this);
+		if(hasParent())
+			parent.moveControlToBottom(this);
 	}
 	
 	public void moveControlToTop()
 	{
-		if(isParentContainer())
-			getParentContainer().moveControlToTop(this);
+		if(hasParent())
+			parent.moveControlToTop(this);
 	}
 	
 }
