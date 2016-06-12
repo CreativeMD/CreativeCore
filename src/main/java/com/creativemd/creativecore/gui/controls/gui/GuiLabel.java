@@ -6,21 +6,8 @@ import com.creativemd.creativecore.gui.client.style.Style;
 
 public class GuiLabel extends GuiControl{
 	
-	private String caption;
-	private int captionWidth;
+	public String caption;
 	public int color;
-	
-	
-	public String getCaption()
-	{
-		return caption;
-	}
-	
-	public void setCaption(String caption)
-	{
-		this.caption = caption;
-		this.captionWidth = GuiRenderHelper.instance.getStringWidth(caption);
-	}
 	
 	public GuiLabel(String caption, int x, int y)
 	{
@@ -35,15 +22,20 @@ public class GuiLabel extends GuiControl{
 	public GuiLabel(String caption, int x, int y, int width, int height, int color)
 	{
 		super(caption, x, y, width, height);
+		this.width += getAdditionalSize();
 		this.color = color;
-		setCaption(caption);
+		this.caption = caption;
 	}
 	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		if(shouldDrawTitle())
-			helper.font.drawStringWithShadow(caption, width/2-captionWidth/2, height/2-helper.getFontHeight()/2, getColor());
-			//helper.font.drawStringWithShadow(title, 0, height/4, getColor());
+			helper.drawStringWithShadow(caption, 0, 0, width, height, getColor(), getAdditionalSize());
+	}
+	
+	protected int getAdditionalSize()
+	{
+		return 0;
 	}
 	
 	@Override

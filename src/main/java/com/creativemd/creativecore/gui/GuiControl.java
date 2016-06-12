@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.gui;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import javax.vecmath.Vector2d;
@@ -16,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -85,6 +87,11 @@ public abstract class GuiControl extends CoreControl{
 		return getRotationAround(-rotation, mouse, new Vec3d(posX+centerOffset.xCoord, posY+centerOffset.yCoord, 0));
 	}
 	
+	public boolean hasMouseOverEffect()
+	{
+		return true;
+	}
+	
 	public boolean isMouseOver()
 	{
 		Vec3d mouse = getParent().getMousePos();
@@ -148,6 +155,11 @@ public abstract class GuiControl extends CoreControl{
 		return borderWidth + marginWidth;
 	}
 	
+	public boolean isVisibleInsideRect(int x, int y, int width, int height, float scale)
+	{
+		return (this.posX+this.width)*scale >= x*scale && this.posX*scale <= x*scale+width && (this.posY+this.height)*scale >= y*scale && this.posY*scale <= y*scale+height;
+	}
+	
 	//================Render================
 	
 	protected abstract void renderContent(GuiRenderHelper helper, Style style, int width, int height);
@@ -167,53 +179,71 @@ public abstract class GuiControl extends CoreControl{
 			style.getDisableEffect(this).renderStyle(helper, width, height);
 	}
 	
-	protected void resetStencil(GuiRenderHelper helper)
+	protected void prepareStencil(int x, int y, float scale, GuiRenderHelper helper, int maxWidth, int maxHeight)
 	{
 		int spaceUsed = borderWidth+marginWidth;
 		
-		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); 
-		GL11.glStencilFunc(GL11.GL_ALWAYS, 0x1, 0x1);
-		GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
+		//GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+		//GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
+		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); 		
 		
-		GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
 		GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
+		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+		
+		System.out.println("Stencil at: " + x + " " + y + " " + maxWidth + " " + maxHeight + " name=" + this.name);
+		//maxWidth += x;
+		//maxHeight += y;
+		int minX = 0;
+		if(x < 0)
+			minX = -x;
+		int minY = 0;
+		if(y < 0)
+			minY = -y;
+		int maxX = Math.min(maxWidth, width-spaceUsed*2);
+		int maxY = Math.min(maxHeight, height-spaceUsed*2);
+		System.out.println("Rendering at: " + minX + " " + minY + " " + maxX + " " + maxY + " name=" + this.name);
 		
 		GL11.glColorMask(false, false, false, false);
-		helper.renderColorPlate(new Color(0, 0, 0), width-spaceUsed*2, height-spaceUsed*2);
+		helper.renderColorPlate(minX, minY, new Color(0, 0, 0, 255), maxX, maxY);
 		GL11.glColorMask(true, true, true, true);
 	}
 	
-	public void renderControl(GuiRenderHelper helper)
+	public void renderControl(GuiRenderHelper helper, int maxWidth, int maxHeight)
+	{
+		renderControl(helper, 0, 0, 1, maxWidth, maxHeight);
+	}
+	
+	public void renderControl(GuiRenderHelper helper, int x, int y, float scale, int maxWidth, int maxHeight)
 	{
 		if(!visible)
 			return ;
 		Style style = getStyle();
 		Vec3d centerOffset = getCenterOffset();
 		
-		GlStateManager.pushMatrix();		
+		GlStateManager.pushMatrix();
 		GlStateManager.translate(posX+centerOffset.xCoord, posY+centerOffset.yCoord, 0);
 		GlStateManager.rotate(rotation, 0, 0, 1);
 		GlStateManager.translate(-centerOffset.xCoord, -centerOffset.yCoord, 0);
 		
-		
+		GlStateManager.translate(x, y, 0);
+		GlStateManager.scale(scale, scale, 0);
 		
 		renderBackground(helper, style);
 		
-		int spaceUsed = borderWidth+marginWidth;
+		int spaceUsed = getContentOffset();
 		
 		GlStateManager.translate(marginWidth, marginWidth, 0);
 		
 		GL11.glEnable(GL11.GL_STENCIL_TEST);
 		
-		resetStencil(helper);
+		prepareStencil(x, y, scale, helper, maxWidth, maxHeight);
 		
 		GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
 		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
 		
-		renderContent(helper, style, width-spaceUsed*2, height-spaceUsed*2);
+		renderContent(helper, style, Math.min(maxWidth, width-spaceUsed*2), Math.min(maxHeight, height-spaceUsed*2));
 		
 		GL11.glDisable(GL11.GL_STENCIL_TEST);
-		
 		
 		GlStateManager.translate(-spaceUsed, -spaceUsed, 0);
 		renderForeground(helper, style);
@@ -248,11 +278,9 @@ public abstract class GuiControl extends CoreControl{
 	
 	//================STATIC HELPERS================
 	
-	public static final String buttonClicked = "gui.button.press";
-	
-	public static void playSound(String sound)
+	public static void playSound(SoundEvent event)
 	{
-		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(new SoundEvent(new ResourceLocation(sound)), 1.0F));
+		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(event, 1.0F));
 	}
 	
 	public static Vec3d getRotationAround(double angle, Vec3d pos, Vec3d center)

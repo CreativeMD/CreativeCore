@@ -35,7 +35,7 @@ public class SubGuiDialog extends SubGui{
 				public void onClicked(int x, int y, int button)
 				{
 					NBTTagCompound nbt = new NBTTagCompound();
-					nbt.setString("clicked", this.getCaption());
+					nbt.setString("clicked", this.caption);
 			    	closeLayer(nbt);
 				}
 			});

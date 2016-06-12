@@ -18,10 +18,17 @@ import com.creativemd.creativecore.event.GuiTickHandler;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.controls.gui.GuiButton;
+import com.creativemd.creativecore.gui.controls.gui.GuiCheckBox;
 import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.gui.controls.gui.GuiProgressBar;
+import com.creativemd.creativecore.gui.controls.gui.GuiScrollBox;
+import com.creativemd.creativecore.gui.controls.gui.GuiStateButton;
+import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
+import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.creativecore.gui.premade.SubContainerEmpty;
+import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -83,14 +90,31 @@ public class CreativeCore {
 					
 					@Override
 					public void createControls() {
-						controls.add(new GuiLabel("Test", 0, 0, 194, 20, ColorUtils.WHITE));
-						controls.add(new GuiButton("dialog", 0, 20) {
+						GuiScrollBox box = new GuiScrollBox("box", 0, 0, 150, 30);
+						box.controls.add(new GuiLabel("Test", 0, 0, 194, 20, ColorUtils.WHITE));
+						box.controls.add(new GuiButton("dialog", 0, 20) {
 							
 							@Override
 							public void onClicked(int x, int y, int button) {
 								openYesNoDialog("Really?");
 							}
 						});
+						box.controls.add(new GuiCheckBox("bad?", 0, 40, false));
+						box.controls.add(new GuiTextfield("example", 0, 60, 140, 14));
+						box.controls.add(new GuiProgressBar("progress", 0, 80, 120, 14, 100, 30.45));
+						box.controls.add(new GuiStateButton("states", 0, 0, 100, "first entry", "second", "third"));
+						controls.add(box);
+					}
+					
+					@CustomEventSubscribe
+					public void clicked(GuiControlClickEvent event)
+					{
+						if(event.source.is("bad?"))
+						{
+							((GuiProgressBar) get("progress")).pos += 1;
+							if(((GuiProgressBar) get("progress")).pos < ((GuiProgressBar) get("progress")).max)
+								((GuiProgressBar) get("progress")).pos = 0;
+						}
 					}
 				};
 			}

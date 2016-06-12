@@ -2,6 +2,8 @@ package com.creativemd.creativecore.gui.controls.gui;
 
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 
+import net.minecraft.init.SoundEvents;
+
 public abstract class GuiClickableLabel extends GuiLabel{
 
 	public GuiClickableLabel(String caption, int x, int y)
@@ -22,7 +24,7 @@ public abstract class GuiClickableLabel extends GuiLabel{
 	@Override
 	public boolean mousePressed(int x, int y, int button)
 	{
-		playSound(buttonClicked);
+		playSound(SoundEvents.UI_BUTTON_CLICK);
 		onClicked(x, y, button);
 		return true;
 	}

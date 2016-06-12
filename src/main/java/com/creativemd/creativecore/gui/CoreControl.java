@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.gui;
 
 import com.creativemd.creativecore.gui.container.IControlParent;
+import com.creativemd.creativecore.gui.event.ControlEvent;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -58,6 +59,27 @@ public abstract class CoreControl {
 		if(hasParent())
 			return parent.getPlayer();
 		return null;
+	}
+	
+	//================Internal Events================
+	
+	public boolean raiseEvent(ControlEvent event)
+	{
+		if(parent != null)
+			return ((CoreControl) parent).raiseEvent(event);
+		return false;
+	}
+	
+	public void addListener(Object listener)
+	{
+		if(parent != null)
+			((CoreControl) parent).addListener(listener);
+	}
+	
+	public void removeListener(Object listener)
+	{
+		if(parent != null)
+			((CoreControl) parent).removeListener(listener);
 	}
 	
 	//================Interaction================

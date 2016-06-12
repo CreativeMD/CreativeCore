@@ -13,7 +13,7 @@ import com.n247s.api.eventapi.EventApi;
 public class EventBus
 {
 	private static final Logger log = EventApi.logger;
-	protected HashMap<Class<? extends EventType>, ? super CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
+	protected final HashMap<Class<? extends EventType>, CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
 	
 	/**
 	 * Be very careful when creating your own EventBus! Only create one when you really need to, since this is the most sensitive part of the CustomEventSystem,
@@ -153,6 +153,6 @@ public class EventBus
 	{
 		if(!this.EventList.containsKey(eventTypeClass))
 			this.EventList.put(eventTypeClass, new EventApiCallHandler(eventTypeClass));
-		return (CallHandler) this.EventList.get(eventTypeClass);
+		return this.EventList.get(eventTypeClass);
 	}
 }

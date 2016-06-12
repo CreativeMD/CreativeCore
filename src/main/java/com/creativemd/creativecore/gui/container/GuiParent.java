@@ -11,8 +11,10 @@ import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.event.ControlEvent;
+import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class GuiParent extends GuiControl implements IControlParent {
@@ -36,23 +38,57 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			controls.get(i).setID(i);
 		}
 	}
-
+	
+	//================Rendering================
+	
+	protected int lastRenderedHeight = 0;
+	
+	public float getScaleFactor()
+	{
+		return 1F;
+	}
+	
+	protected int getOffsetY()
+	{
+		return 0;
+	}
+	
+	protected int getOffsetX()
+	{
+		return 0;
+	}
+	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
+		float scale = getScaleFactor();
+		int xOffset = getOffsetX();
+		int yOffset = getOffsetY();
+		
+		lastRenderedHeight = 0;
+		
 		for (int i = controls.size()-1; i >= 0; i--) {
 			GuiControl control = controls.get(i);
 			
-			GL11.glEnable(GL11.GL_STENCIL_TEST);
+			if(control.visible && control.isVisibleInsideRect(-xOffset, -yOffset, width, height, scale))
+			{
+				GL11.glEnable(GL11.GL_STENCIL_TEST);
+				
+				prepareStencil(0, 0, scale, helper, width, height);
+				
+				GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
+				GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(xOffset-control.posX, yOffset-control.posY, 0);
+				System.out.println("Rendering subcontrol with offset=" + yOffset + " pos=" + control.posY + " maxheight=" + height + " resulting=" + (height-(yOffset+control.posY)));
+				int realX = xOffset+control.posX;
+				int realY = yOffset+control.posY;
+				control.renderControl(helper, realX, realY, scale, width-realX, height-realY);
+				GlStateManager.popMatrix();
+				
+				GL11.glDisable(GL11.GL_STENCIL_TEST);
+			}
 			
-			resetStencil(helper);
-			
-			GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
-			GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
-			
-			if(control.visible && control.posY+control.height >= 0 && control.posY <= height)
-				control.renderControl(helper);
-			
-			GL11.glDisable(GL11.GL_STENCIL_TEST);
+			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.posY+control.height)*scale);
 			
 		}
 	}
@@ -155,9 +191,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		Vec3d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
 			Vec3d pos = controls.get(i).rotateMouseVec(mouse);			
-			if(!result && controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord) && controls.get(i).mousePressed((int)pos.xCoord, (int)pos.yCoord, button))
+			if(!result && controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord) && controls.get(i).mousePressed((int)pos.xCoord, (int)pos.yCoord, button)){
+				raiseEvent(new GuiControlClickEvent(controls.get(i), x, y));
 				result = true;
-			else
+			}else
 				controls.get(i).onLoseFocus();
 		}
 		return result;
@@ -213,27 +250,6 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		}
 		
 		return new ArrayList<String>();
-	}
-	
-	//================Internal Events================
-	
-	public boolean raiseEvent(ControlEvent event)
-	{
-		if(parent != null)
-			return getParent().raiseEvent(event);
-		return false;
-	}
-	
-	public void addListener(Object listener)
-	{
-		if(parent != null)
-			getParent().addListener(listener);
-	}
-	
-	public void removeListener(Object listener)
-	{
-		if(parent != null)
-			getParent().removeListener(listener);
 	}
 
 }

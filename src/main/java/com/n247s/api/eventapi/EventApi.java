@@ -3,7 +3,10 @@ package com.n247s.api.eventapi;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+//import com.forgedevelopment.lib.classloading.SubApiAnnotations.SubApi;
 import com.n247s.api.eventapi.eventsystem.EventBus;
+
+//import cpw.mods.fml.common.Mod.Instance;
 
 //@SubApi(APIID="EventApi", APIVersion="1.0.0")
 public class EventApi
@@ -13,5 +16,5 @@ public class EventApi
 	public static final EventBus defaultEventBusInstance = new EventBus();
 	
 //	@Instance
-	public static EventApi instance;
+//	public static EventApi instance;
 }

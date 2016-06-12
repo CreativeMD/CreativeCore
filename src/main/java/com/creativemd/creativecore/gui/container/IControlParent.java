@@ -19,12 +19,6 @@ public interface IControlParent {
 	
 	public EntityPlayer getPlayer();
 	
-	public boolean raiseEvent(ControlEvent event);
-	
-	public void addListener(Object listener);
-	
-	public void removeListener(Object listener);
-	
 	public default void moveControlBehind(CoreControl control, CoreControl controlInBack)
 	{
 		List controls = getControls();

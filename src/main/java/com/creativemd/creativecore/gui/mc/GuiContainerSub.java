@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.container.SubContainer;
@@ -131,7 +132,12 @@ public class GuiContainerSub extends GuiContainer {
 	@Override                                   
 	public void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
+		System.out.println("===============================================");
 		for (int i = 0; i < layers.size(); i++){
+			
+			GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); 
+			GL11.glStencilFunc(GL11.GL_ALWAYS, 0x1, 0x1);
+			GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 			
 			layers.get(i).onTick();
 			
@@ -154,7 +160,7 @@ public class GuiContainerSub extends GuiContainer {
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			//GL11.glDisable(GL11.GL_DEPTH_TEST);
 	        
-	        layers.get(i).renderControl(GuiRenderHelper.instance);
+	        layers.get(i).renderControl(GuiRenderHelper.instance, mc.displayWidth, mc.displayHeight);
 			
 			/*layers.get(i).drawBackground();
 			RenderHelper.enableGUIStandardItemLighting();
@@ -206,7 +212,7 @@ public class GuiContainerSub extends GuiContainer {
         if (j != 0)
         {
         	Vec3d mouse = getTopLayer().getMousePos();
-        	getTopLayer().mouseScrolled((int)mouse.xCoord, (int)mouse.yCoord, j);
+        	getTopLayer().mouseScrolled((int)mouse.xCoord, (int)mouse.yCoord, j > 0 ? 1 : -1);
         	//Mouse.setGrabbed(true);
         }
 	}

@@ -15,7 +15,7 @@ public abstract class CallHandler
 {
 	private static final Logger log = EventApi.logger;
 	
-	public final List<Object> entryCheckList = new ArrayList<Object>();
+	protected final List<Object> entryCheckList = new ArrayList<Object>();
 	protected final HashMap<CustomEventSubscribe.Priority, LinkedHashMap> instanceMap = new HashMap<CustomEventSubscribe.Priority, LinkedHashMap>();
 	protected final Class<? extends EventType> eventType;
 	
@@ -40,7 +40,7 @@ public abstract class CallHandler
 	 * @param classInstance
 	 * @param method
 	 */
-	public void RegisterEventListener(CustomEventSubscribe.Priority priority, Object Listener, Method method)
+	protected final void RegisterEventListener(CustomEventSubscribe.Priority priority, Object Listener, Method method)
 	{
 		this.instanceMap.get(priority).put(Listener, method);
 		this.entryCheckList.add(Listener);
@@ -52,7 +52,7 @@ public abstract class CallHandler
 	 * 
 	 * @param Listener
 	 */
-	public void removeListener(CustomEventSubscribe.Priority priority, Object Listener)
+	protected final void removeListener(CustomEventSubscribe.Priority priority, Object Listener)
 	{
 			LinkedHashMap currenInstanceMap = this.instanceMap.get(priority);
 			
