@@ -20,7 +20,7 @@ public class GuiComboBox extends GuiLabel{
 	public int index;
 	
 	public GuiComboBox(String name, int x, int y, int width, ArrayList<String> lines) {
-		super(name, x, y, width, 20, ColorUtils.WHITE);
+		super(name, x, y, width, 14, ColorUtils.WHITE);
 		if(lines.size() > 0)
 		{
 			this.caption = lines.get(0);

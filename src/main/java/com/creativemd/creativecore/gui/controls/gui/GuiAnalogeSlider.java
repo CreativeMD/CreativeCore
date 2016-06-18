@@ -29,6 +29,7 @@ public class GuiAnalogeSlider extends GuiControl
 	public GuiAnalogeSlider(String name, int x, int y, int width, int height, float value, float minValue, float maxValue)
 	{
 		super(name, x, y, width, height);
+		this.marginWidth = 0;
 		this.value = value;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
@@ -46,7 +47,7 @@ public class GuiAnalogeSlider extends GuiControl
 		float percent = getPercentage();
 		
 		int posX = 1+(int)((this.width - (1+sliderWidth)) * percent);
-		style.getFace(this).renderStyle(posX, 1, helper, posX+4, this.height-1);
+		style.getFace(this).renderStyle(posX, 0, helper, 4, height);
 		
 		String text = getTextByValue();
 		helper.drawStringWithShadow(text, width, height, ColorUtils.WHITE);
