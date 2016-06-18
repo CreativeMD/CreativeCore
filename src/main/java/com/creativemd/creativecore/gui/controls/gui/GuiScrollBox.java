@@ -13,6 +13,7 @@ import com.creativemd.creativecore.gui.container.GuiParent;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 
 public class GuiScrollBox extends GuiParent{
 	
@@ -62,16 +63,38 @@ public class GuiScrollBox extends GuiParent{
 	}
 	
 	@Override
-	public void mouseDragged(int x, int y, int button, long time){
-		super.mouseDragged(x, y, button, time);
-		if(width-posX <= scrollbarWidth)
+	public boolean mousePressed(int x, int y, int button)
+	{
+		if(button == 0 && width-x <= scrollbarWidth && needsScrollbar())
+		{
+			playSound(SoundEvents.UI_BUTTON_CLICK);
 			dragged = true;
-	}	
+			return true;
+		}
+		return super.mousePressed(x, y, button);
+	}
+	
+	@Override
+	public void mouseMove(int x, int y, int button){
+		if(dragged)
+		{
+			double percent = (double)(y-this.posY)/(double)(height);
+			scrolled = (int) (percent*maxScroll);
+			//System.out.println("scrolling to " + scrolled + "; percent=" + percent);
+			onScrolled();
+		}
+		super.mouseMove(x, y, button);
+	}
 	
 	@Override
 	public void mouseReleased(int x, int y, int button){
 		super.mouseReleased(x, y, button);
 		dragged = false;
+	}
+	
+	public boolean needsScrollbar()
+	{
+		return lastRenderedHeight > this.height-getContentOffset()*2;
 	}
 	
 	@Override
@@ -87,6 +110,12 @@ public class GuiScrollBox extends GuiParent{
 		style.getBorder(this).renderStyle(width-scrollbarWidth+1, (int) (percent*(height-scrollThingHeight)), helper, scrollbarWidth-1, scrollThingHeight);
 		style.getFace(this).renderStyle(width-scrollbarWidth+2, (int) (percent*(height-scrollThingHeight))+1, helper, scrollbarWidth-3, scrollThingHeight-2);
 		
-		maxScroll = (lastRenderedHeight-height)+10;
+		maxScroll = Math.max(0, (lastRenderedHeight-height)+10);
+	}
+	
+	@Override
+	public boolean hasMouseOverEffect()
+	{
+		return false;
 	}
 }

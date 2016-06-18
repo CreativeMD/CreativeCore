@@ -3,6 +3,7 @@ package com.creativemd.creativecore.core;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.creativemd.creativecore.client.avatar.AvatarItemStack;
 import com.creativemd.creativecore.command.GuiCommand;
 import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
@@ -17,6 +18,7 @@ import com.creativemd.creativecore.common.utils.stack.StackInfo;
 import com.creativemd.creativecore.event.GuiTickHandler;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
+import com.creativemd.creativecore.gui.controls.gui.GuiAvatarLabel;
 import com.creativemd.creativecore.gui.controls.gui.GuiButton;
 import com.creativemd.creativecore.gui.controls.gui.GuiCheckBox;
 import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
@@ -31,6 +33,8 @@ import com.creativemd.creativecore.gui.premade.SubContainerEmpty;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -90,7 +94,7 @@ public class CreativeCore {
 					
 					@Override
 					public void createControls() {
-						GuiScrollBox box = new GuiScrollBox("box", 0, 0, 150, 30);
+						GuiScrollBox box = new GuiScrollBox("box", 0, 0, 150, 150);
 						box.controls.add(new GuiLabel("Test", 0, 0, 194, 20, ColorUtils.WHITE));
 						box.controls.add(new GuiButton("dialog", 0, 20) {
 							
@@ -99,10 +103,16 @@ public class CreativeCore {
 								openYesNoDialog("Really?");
 							}
 						});
-						box.controls.add(new GuiCheckBox("bad?", 0, 40, false));
+						box.controls.add(new GuiCheckBox("bad?", 0, 40, false).setCustomTooltip("Tooltip"));
 						box.controls.add(new GuiTextfield("example", 0, 60, 140, 14));
 						box.controls.add(new GuiProgressBar("progress", 0, 80, 120, 14, 100, 30.45));
 						box.controls.add(new GuiStateButton("states", 0, 0, 100, "first entry", "second", "third"));
+						box.controls.add(new GuiAvatarLabel("avatar", 0, 130, ColorUtils.WHITE, new AvatarItemStack(new ItemStack(Blocks.CRAFTING_TABLE))) {
+							
+							@Override
+							public void onClicked(int x, int y, int button) {
+							}
+						});
 						controls.add(box);
 					}
 					
@@ -112,7 +122,7 @@ public class CreativeCore {
 						if(event.source.is("bad?"))
 						{
 							((GuiProgressBar) get("progress")).pos += 1;
-							if(((GuiProgressBar) get("progress")).pos < ((GuiProgressBar) get("progress")).max)
+							if(((GuiProgressBar) get("progress")).pos > ((GuiProgressBar) get("progress")).max)
 								((GuiProgressBar) get("progress")).pos = 0;
 						}
 					}

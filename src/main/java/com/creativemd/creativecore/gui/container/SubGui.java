@@ -30,6 +30,10 @@ public abstract class SubGui extends GuiParent {
 	
 	private CreativeCoreEventBus eventBus;
 	
+	public SubGui(int width, int height) {
+		this("gui", width, height);
+	}
+	
 	public SubGui(String name, int width, int height) {
 		super(name, 0, 0, width, height);
 		eventBus = new CreativeCoreEventBus();
@@ -190,31 +194,6 @@ public abstract class SubGui extends GuiParent {
 	public abstract void createControls();
 	
 	//================Rendering================
-	
-	public void renderTooltip(GuiRenderHelper helper)
-	{
-		Vec3d mouse = getMousePos();
-		for (int i = 0; i < controls.size(); i++) {
-			Vec3d pos = controls.get(i).rotateMouseVec(mouse);			
-			if(controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord))
-			{
-				ArrayList<String> tooltip = controls.get(i).getTooltip();
-				if(raiseEvent(new GuiToolTipEvent(tooltip, controls.get(i))))
-					helper.drawTooltip(tooltip, (int)mouse.xCoord, (int)mouse.yCoord, this);
-				return ;
-			}
-		}
-	}
-	
-	@Override
-	protected void renderForeground(GuiRenderHelper helper, Style style)
-	{
-		super.renderForeground(helper, style);
-		if(enabled)
-		{
-			renderTooltip(helper);
-		}
-	}
 	
 	@Override
 	protected void renderBackground(GuiRenderHelper helper, Style style)

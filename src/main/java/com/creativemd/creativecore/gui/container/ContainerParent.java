@@ -9,7 +9,10 @@ import java.util.ListIterator;
 import com.creativemd.creativecore.gui.ContainerControl;
 import com.creativemd.creativecore.gui.CoreControl;
 import com.creativemd.creativecore.gui.GuiControl;
+import com.creativemd.creativecore.gui.controls.container.SlotControl;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class ContainerParent extends ContainerControl implements IControlParent {
@@ -84,5 +87,56 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		if(parent != null)
 			getParent().sendNBTUpdate(control, nbt);
 	}
+	
+	@Override
+	public void onTick()
+	{
+		for (int i = 0; i < controls.size(); i++) {
+			controls.get(i).onTick();
+		}
+	}
+	
+	/*=============================Helper Methods=============================*/
+	
+	public ArrayList<Slot> getSlots()
+	{
+		ArrayList<Slot> slots = new ArrayList<Slot>();
+		for (int i = 0; i < controls.size(); i++) {
+			if(controls.get(i) instanceof SlotControl)
+				slots.add(((SlotControl)controls.get(i)).slot);
+		}
+		return slots;
+	}
+	
+	public void addSlotToContainer(Slot slot)
+	{
+		//slot.xDisplayPosition += 8;
+		//slot.yDisplayPosition += 8;
+		//if(!inventories.contains(slot.inventory))
+			//inventories.add(slot.inventory);
+		controls.add(new SlotControl(slot));
+	}
+	
+	public void addPlayerSlotsToContainer(EntityPlayer player)
+	{
+		addPlayerSlotsToContainer(player, 8, 84);
+	}
+	
+	public void addPlayerSlotsToContainer(EntityPlayer player, int x, int y)
+	{
+		int l;
+        for (l = 0; l < 3; ++l)
+        {
+            for (int i1 = 0; i1 < 9; ++i1)
+            {
+            	addSlotToContainer(new Slot(player.inventory, i1 + l * 9 + 9, i1 * 18 + x, l * 18+y));
+            }
+        }
 
+        for (l = 0; l < 9; ++l)
+        {
+        	addSlotToContainer(new Slot(player.inventory, l, l * 18+x, 58+y));
+        }
+	}
+	
 }

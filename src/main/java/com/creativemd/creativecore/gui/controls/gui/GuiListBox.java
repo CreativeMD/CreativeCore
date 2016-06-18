@@ -2,6 +2,7 @@ package com.creativemd.creativecore.gui.controls.gui;
 
 import java.util.ArrayList;
 
+import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
@@ -17,7 +18,7 @@ public class GuiListBox extends GuiScrollBox{
 	public GuiListBox(String name, int x, int y, int width, int height, ArrayList<String> lines) {
 		super(name, x, y, width, height);
 		this.lines = lines;
-		refreshControls();
+		reloadControls();
 	}
 	
 	public void clear()
@@ -51,6 +52,21 @@ public class GuiListBox extends GuiScrollBox{
 		reloadControls();
 	}
 	
+	public void onLineClicked(GuiControl control)
+	{
+		int index = controls.indexOf(control);
+		
+		if(index != -1)
+		{
+			if(selected != -1 && selected < controls.size())
+				((GuiLabel)controls.get(selected)).color = 14737632;
+			selected = index;
+			((GuiLabel)controls.get(selected)).color = 16777000;
+			
+			onSelectionChange();
+		}
+	}
+	
 	public void reloadControls()
 	{
 		controls.clear();
@@ -58,30 +74,20 @@ public class GuiListBox extends GuiScrollBox{
 			int color = 14737632;
 			if(i == selected)
 				color = 16777000;
-			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 3, 1+i*15, width-20, 15, color) {
+			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 3, 1+i*15, width-20-getContentOffset()*2, 15, color) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
-					int index = controls.indexOf(this);
-					
-					if(index != -1)
-					{
-						if(selected != -1 && selected < controls.size())
-							((GuiLabel)controls.get(selected)).color = 14737632;
-						selected = index;
-						((GuiLabel)controls.get(selected)).color = 16777000;
-						
-						raiseEvent(new GuiControlChangedEvent(this));
-						onSelectionChange();
-					}
+					onLineClicked(this);
 				}
 			};
 			controls.add(label);
 		}
+		refreshControls();
 	}
 	
 	public void onSelectionChange()
 	{
-		
+		raiseEvent(new GuiControlChangedEvent(this));
 	}
 }

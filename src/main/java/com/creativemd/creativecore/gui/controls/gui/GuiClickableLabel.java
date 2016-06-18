@@ -13,12 +13,22 @@ public abstract class GuiClickableLabel extends GuiLabel{
 	
 	public GuiClickableLabel(String caption, int x, int y, int color)
 	{
-		super(caption, x, y, GuiRenderHelper.instance.getStringWidth(caption), GuiRenderHelper.instance.getFontHeight(), color);
+		this(caption, caption, x, y, color);
+	}
+	
+	public GuiClickableLabel(String name, String caption, int x, int y, int color)
+	{
+		this(name, caption, x, y, GuiRenderHelper.instance.getStringWidth(caption), GuiRenderHelper.instance.getFontHeight(), color);
 	}
 	
 	public GuiClickableLabel(String caption, int x, int y, int width, int height, int color)
 	{
-		super(caption, x, y, width, height, color);
+		this(caption, caption, x, y, width, height, color);
+	}
+	
+	public GuiClickableLabel(String name, String caption, int x, int y, int width, int height, int color)
+	{
+		super(name, caption, x, y, width, height, color);
 	}
 	
 	@Override

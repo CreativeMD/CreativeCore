@@ -1,25 +1,26 @@
-package com.creativemd.creativecore.common.gui.controls;
+package com.creativemd.creativecore.gui.controls.gui;
 
 import java.util.ArrayList;
 
 import javax.vecmath.Vector4d;
-
-import com.creativemd.creativecore.client.rendering.RenderHelper2D;
-import com.creativemd.creativecore.common.gui.event.ControlChangedEvent;
+import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.gui.GuiControl;
+import com.creativemd.creativecore.gui.GuiRenderHelper;
+import com.creativemd.creativecore.gui.client.style.Style;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiComboBox extends GuiControl{
+public class GuiComboBox extends GuiLabel{
 	
 	public GuiComboBoxExtension extension;
 	public ArrayList<String> lines;
-	public String caption;
 	public int index;
 	
 	public GuiComboBox(String name, int x, int y, int width, ArrayList<String> lines) {
-		super(name, x, y, width, 20);
+		super(name, x, y, width, 20, ColorUtils.WHITE);
 		if(lines.size() > 0)
 		{
 			this.caption = lines.get(0);
@@ -31,35 +32,37 @@ public class GuiComboBox extends GuiControl{
 		}
 		this.lines = lines;
 	}
-
+	
 	@Override
-	public void drawControl(FontRenderer renderer) {
-		Vector4d black = new Vector4d(0, 0, 0, 255);
-		RenderHelper2D.drawGradientRect(0, 0, this.width, this.height, black, black);
-		
-		Vector4d color = new Vector4d(60, 60, 60, 255);
-		RenderHelper2D.drawGradientRect(1, 1, this.width-1, this.height-1, color, color);
-		
-		renderer.drawString(caption, 4, height/2-renderer.FONT_HEIGHT/2, 14737632);
+	public boolean hasBorder()
+	{
+		return true;
 	}
 	
+	@Override
+	public boolean hasBackground()
+	{
+		return true;
+	}
+
+	@Override
 	public boolean mousePressed(int posX, int posY, int button){
 		if(extension == null)
 			openBox();
 		else
 			closeBox();
-		mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("gui.button.press"), 1.0F));
+		playSound(SoundEvents.UI_BUTTON_CLICK);
 		return true;
 	}
 	
 	public void openBox()
 	{
-		extension = new GuiComboBoxExtension(name + "extension", parent.container.player, this, posX, posY+height, width, 100, lines);
-		parent.controls.add(extension);
+		extension = new GuiComboBoxExtension(name + "extension", this, posX, posY+height, width-getContentOffset()*2, 100, lines);
+		getParent().controls.add(extension);
 		
 		extension.parent = parent;
 		extension.moveControlToTop();
-		extension.init();
+		extension.onOpened();
 		parent.refreshControls();
 		extension.rotation = rotation;
 	}
@@ -68,7 +71,7 @@ public class GuiComboBox extends GuiControl{
 	{
 		if(extension != null)
 		{
-			parent.removeControl(extension);
+			getParent().controls.remove(extension);
 			extension = null;
 		}
 	}

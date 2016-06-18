@@ -6,6 +6,7 @@ import com.creativemd.creativecore.gui.client.style.Style;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 
 public abstract class GuiAvatarLabel extends GuiClickableLabel{
 	
@@ -13,15 +14,14 @@ public abstract class GuiAvatarLabel extends GuiClickableLabel{
 	public int spaceBetween = 6;
 	public Avatar avatar;
 	
-	public GuiAvatarLabel(String title, int x, int y, int color, Avatar avatar) {
-		super(title, x, y, color);
+	public GuiAvatarLabel(String name, String title, int x, int y, int color, Avatar avatar) {
+		super(name, title, x, y, GuiRenderHelper.instance.getStringWidth(title), 16, color);
+		this.width += getAdditionalSize();
 		this.avatar = avatar;
 	}
-
-	@Override
-	public boolean shouldDrawTitle()
-	{
-		return false;
+	
+	public GuiAvatarLabel(String title, int x, int y, int color, Avatar avatar) {
+		this(title, title, x, y, color, avatar);
 	}
 	
 	@Override
@@ -33,7 +33,9 @@ public abstract class GuiAvatarLabel extends GuiClickableLabel{
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		super.renderContent(helper, style, width, height);
+		GlStateManager.pushMatrix();
 		GlStateManager.translate(width/2-(helper.getStringWidth(caption)+getAdditionalSize())/2, height/2-avatarSize/2, 0);
 		avatar.handleRendering(helper, avatarSize, avatarSize);
+		GlStateManager.popMatrix();
 	}
 }

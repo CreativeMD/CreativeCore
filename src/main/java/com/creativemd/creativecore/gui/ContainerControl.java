@@ -33,6 +33,11 @@ public abstract class ContainerControl extends CoreControl {
 		
 		NBTTagCompound nbt = new NBTTagCompound();
 		writeToNBTUpdate(nbt);
+		sendPacket(nbt);
+	}
+	
+	public void sendPacket(NBTTagCompound nbt)
+	{
 		if(parent != null)
 			getParent().sendNBTUpdate(this, nbt);
 	}
@@ -60,7 +65,7 @@ public abstract class ContainerControl extends CoreControl {
 	public GuiControl getGuiControl()
 	{
 		if(guiControl == null)
-			createGuiControl();
+			guiControl = createGuiControl();
 		return guiControl;
 	}
 	

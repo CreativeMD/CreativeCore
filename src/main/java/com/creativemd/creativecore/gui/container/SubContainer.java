@@ -28,6 +28,10 @@ public abstract class SubContainer extends ContainerParent{
 	
 	private CreativeCoreEventBus eventBus;
 	
+	public SubContainer(EntityPlayer player) {
+		this("container", player);
+	}
+	
 	public SubContainer(String name, EntityPlayer player) {
 		super(name);
 		this.player = player;
@@ -117,8 +121,6 @@ public abstract class SubContainer extends ContainerParent{
 	}
 	
 	//================CUSTOM EVENTS================
-	
-	public void onTick() {}
 		
 	@Override
 	public void onClosed()
@@ -136,8 +138,9 @@ public abstract class SubContainer extends ContainerParent{
     	for (int i = 0; i < controls.size(); i++) {
     		controls.get(i).parent = this;
     		controls.get(i).onOpened();
+    		controls.get(i).setID(i);
     	}
-		refreshControls();
+		//refreshControls();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
 		{

@@ -11,13 +11,13 @@ public class GuiStackSelector extends GuiInvSelector{
 	@Override
 	public void openBox()
 	{
-		extension = new GuiInvSelectorExtension(name + "extension", parent.container.player, this, posX, posY+height, width, 200, lines, stacks);
+		extension = new GuiInvSelectorExtension(name + "extension", this, posX, posY+height, width-getContentOffset()*2, 80, lines, stacks);
 		//extension = new GuiInvSelectorExtension(name + "extension", parent.container.player, this, posX, posY+height, width, 150, lines, stacks);
-		parent.controls.add(extension);
+		getParent().controls.add(extension);
 		
 		extension.parent = parent;
 		extension.moveControlToTop();
-		extension.init();
+		extension.onOpened();
 		parent.refreshControls();
 		extension.rotation = rotation;
 	}

@@ -7,20 +7,18 @@ import javax.vecmath.Vector4d;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
+import com.creativemd.creativecore.client.avatar.Avatar;
+import com.creativemd.creativecore.client.avatar.AvatarItemStack;
+import com.creativemd.creativecore.gui.GuiRenderHelper;
+import com.creativemd.creativecore.gui.client.style.Style;
+import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
+
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import com.creativemd.creativecore.client.avatar.Avatar;
-import com.creativemd.creativecore.client.avatar.AvatarItemStack;
-import com.creativemd.creativecore.client.rendering.RenderHelper2D;
-import com.creativemd.creativecore.common.gui.controls.GuiComboBox;
-import com.creativemd.creativecore.common.gui.controls.GuiComboBoxExtension;
-import com.creativemd.creativecore.common.gui.controls.GuiControl;
 
 public class GuiInvSelector extends GuiComboBox{
 	
@@ -53,7 +51,7 @@ public class GuiInvSelector extends GuiComboBox{
 			}
 		}
 		
-		Iterator iterator = Item.itemRegistry.iterator();
+		Iterator iterator = Item.REGISTRY.iterator();
 		while (iterator.hasNext())
         {
             Item item = (Item)iterator.next();
@@ -91,14 +89,14 @@ public class GuiInvSelector extends GuiComboBox{
 		try{
 			lines.add(stack.getDisplayName());
 		}catch(Exception e){
-			lines.add(Item.itemRegistry.getNameForObject(stack.getItem()));
+			lines.add(Item.REGISTRY.getNameForObject(stack.getItem()).toString());
 		}
 		stacks.add(stack.copy());
 		caption = lines.get(lines.size()-1);
 		index = lines.size()-1;
 	}
 	
-	@Override
+	/*@Override
 	public void drawControl(FontRenderer renderer) {
 		Vector4d black = new Vector4d(0, 0, 0, 255);
 		RenderHelper2D.drawGradientRect(0, 0, this.width, this.height, black, black);
@@ -113,25 +111,45 @@ public class GuiInvSelector extends GuiComboBox{
 			avatar.handleRendering(mc, renderer, 18, 18);
 		}
 		renderer.drawString(caption, 4+20, height/2-renderer.FONT_HEIGHT/2, 14737632);
+	}*/
+	
+	@Override
+	protected int getAdditionalSize()
+	{
+		return 16+6;
+	}
+	
+	@Override
+	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
+		super.renderContent(helper, style, width, height);
+		
+		ItemStack stack = getStack();
+		if(stack != null)
+		{
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(width/2-(helper.getStringWidth(caption)+getAdditionalSize())/2, height/2-16/2, 0);
+			helper.drawItemStack(stack, 0, 0, 16, 16);
+			GlStateManager.popMatrix();
+		}
 	}
 	
 	@Override
 	public void openBox()
 	{
-		extension = new GuiItemStackSelector(name + "extension", parent.container.player, posX, posY+height, width, 200, this, onlyBlocks, search);
+		extension = new GuiItemStackSelector(name + "extension", getPlayer(), posX, posY+height, width-getContentOffset()*2, 80, this, onlyBlocks, search);
 		//extension = new GuiInvSelectorExtension(name + "extension", parent.container.player, this, posX, posY+height, width, 150, lines, stacks);
-		parent.controls.add(extension);
+		getParent().controls.add(extension);
 		
 		extension.parent = parent;
 		extension.moveControlToTop();
-		extension.init();
+		extension.onOpened();
 		parent.refreshControls();
 		extension.rotation = rotation;
 	}
 	
 	public ItemStack getStack()
 	{
-		if(index != -1)
+		if(index != -1 && index < stacks.size())
 			return stacks.get(index);
 		return null;
 	}

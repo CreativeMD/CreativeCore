@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.utils.string;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 public class ConvertBlock extends StringConverter{
@@ -16,7 +17,10 @@ public class ConvertBlock extends StringConverter{
 
 	@Override
 	public String toString(Object object) {
-		return Block.REGISTRY.getNameForObject((Block)object).toString();
+		ResourceLocation resource = Block.REGISTRY.getNameForObject((Block) object);
+		if(resource != null)
+			return resource.toString();
+		return null;
 	}
 
 	@Override

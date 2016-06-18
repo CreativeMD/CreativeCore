@@ -24,10 +24,16 @@ public class ConvertItemStack extends StringConverter{
 		if(stack == null || stack.getItem() == null)
 			return "null";
 		String item = "";
-		if(Block.getBlockFromItem(stack.getItem()) instanceof BlockAir)
-			item = Item.REGISTRY.getNameForObject(stack.getItem()).toString();
-		else
-			item = Block.REGISTRY.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString();
+		if(Block.getBlockFromItem(stack.getItem()) != null)
+		{
+			ResourceLocation resource = Block.REGISTRY.getNameForObject((Block) Block.getBlockFromItem(stack.getItem()));
+			if(resource != null)
+				item = resource.toString();
+		}else{
+			ResourceLocation resource = Item.REGISTRY.getNameForObject((Item) stack.getItem());
+			if(resource != null)
+				item = resource.toString();
+		}
 		if(!stack.hasTagCompound())
 			return StringUtils.ObjectsToString(item, stack.stackSize, stack.getItemDamage(), "null");
 		else
@@ -43,7 +49,7 @@ public class ConvertItemStack extends StringConverter{
 			ResourceLocation location = new ResourceLocation((String)objects[0]);
 			if(Item.REGISTRY.getObject(location) != null)
 				stack = new ItemStack((Item)Item.REGISTRY.getObject(location));
-			else if(!(Block.REGISTRY.getObject(location) instanceof BlockAir))
+			else if(Block.REGISTRY.getObject(location) != null)
 				stack = new ItemStack((Block)Block.REGISTRY.getObject(location));
 			else
 				return null;

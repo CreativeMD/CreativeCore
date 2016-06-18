@@ -42,6 +42,8 @@ public abstract class CoreControl {
 	
 	public void onClosed() {}
 	
+	public void onTick() {}
+	
 	//================Various Helper Methods================
 	
 	public boolean is(String name)

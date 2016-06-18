@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
+import com.creativemd.creativecore.gui.event.gui.GuiToolTipEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -16,7 +19,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -132,50 +137,56 @@ public class GuiContainerSub extends GuiContainer {
 	@Override                                   
 	public void drawGuiContainerForegroundLayer(int par1, int par2)
 	{
-		System.out.println("===============================================");
 		for (int i = 0; i < layers.size(); i++){
+			
+			layers.get(i).onTick();
 			
 			GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); 
 			GL11.glStencilFunc(GL11.GL_ALWAYS, 0x1, 0x1);
 			GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 			
-			layers.get(i).onTick();
-			
 			GlStateManager.pushMatrix();
+			
 			int k = guiLeft;
 			int l = guiTop;
 			
 			GlStateManager.translate(-k, -l, 0);
 	        
-			//drawWorldBackground(0);	
 			this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 			
 			int offX = (this.width - layers.get(i).width) / 2 - k;
 	        int offY = (this.height - layers.get(i).height) / 2 - l;
-			//GL11.glTranslatef((float)k+offX, (float)l+offY, 0.0F);
 	        GlStateManager.translate(k, l, 0);
 			
 	        GlStateManager.translate(offX, offY, 0);
 			
 	        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			//GL11.glDisable(GL11.GL_DEPTH_TEST);
 	        
-	        layers.get(i).renderControl(GuiRenderHelper.instance, mc.displayWidth, mc.displayHeight);
+	        layers.get(i).renderControl(GuiRenderHelper.instance, 1F, GuiControl.getScreenRect());
+	        
+	        /*GlStateManager.pushMatrix();
+	        GL11.glEnable(GL11.GL_STENCIL_TEST);
+	        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
+			GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
 			
-			/*layers.get(i).drawBackground();
-			RenderHelper.enableGUIStandardItemLighting();
-			short short1 = 240;
-	        short short2 = 240;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)short1 / 1.0F, (float)short2 / 1.0F);
-			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-			GlStateManager.disableLighting();
-			
-			//GL11.glTranslatef((float)par1, (float)par2, 0.0F);
-			layers.get(i).drawForeground(fontRendererObj);
-			
-			GlStateManager.translate(-offX, -offY, 0);
-			GlStateManager.enableLighting();*/
+			GuiControl.defaultStyle.getBorder(layers.get(i)).renderStyle(GuiRenderHelper.instance, 100, 100);
+			GuiControl.defaultStyle.getBackground(layers.get(i)).renderStyle(10, 10, GuiRenderHelper.instance, 85, 85);
+	        GuiRenderHelper.instance.font.drawStringWithShadow("Hey", 20, 20, ColorUtils.WHITE);
+	        
+	        GuiRenderHelper.instance.drawItemStack(new ItemStack(Blocks.REDSTONE_TORCH), 8, 8, 16, 16);
+	        GuiRenderHelper.instance.drawItemStack(new ItemStack(Blocks.CRAFTING_TABLE), 40, 40, (int) (Math.sin(Math.toRadians(System.nanoTime()/10000000D))*16+30), (int) (Math.sin(Math.toRadians(System.nanoTime()/10000000D))*16+30));
+	        GuiRenderHelper.instance.drawItemStack(new ItemStack(Blocks.FURNACE), 8, 48, 16, 16);
+	        
+	        //GuiControl.defaultStyle.getDisableEffect(layers.get(i)).renderStyle(10, 10, GuiRenderHelper.instance, 85, 85);
+	        GL11.glDisable(GL11.GL_STENCIL_TEST);
+	        GlStateManager.popMatrix();*/
+	        
 	        GlStateManager.popMatrix();
+	        
+	        Vec3d mouse = layers.get(i).getMousePos();
+	        GuiToolTipEvent event = layers.get(i).getToolTipEvent();
+	        if(event != null && layers.get(i).raiseEvent(event))
+	        	this.drawHoveringText(event.tooltip, (int)mouse.xCoord, (int)mouse.yCoord, GuiRenderHelper.instance.font);
 		}
 	}
 	

@@ -21,7 +21,12 @@ public class GuiLabel extends GuiControl{
 	
 	public GuiLabel(String caption, int x, int y, int width, int height, int color)
 	{
-		super(caption, x, y, width, height);
+		this(caption, caption, x, y, width, height, color);
+	}
+	
+	public GuiLabel(String name, String caption, int x, int y, int width, int height, int color)
+	{
+		super(name, x, y, width, height);
 		this.width += getAdditionalSize();
 		this.color = color;
 		this.caption = caption;

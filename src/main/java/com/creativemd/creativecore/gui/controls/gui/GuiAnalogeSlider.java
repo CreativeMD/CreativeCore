@@ -58,7 +58,7 @@ public class GuiAnalogeSlider extends GuiControl
 	}
 	
 	@Override
-	public boolean mousePressed(int posX, int posY, int button)
+	public boolean mousePressed(int x, int y, int button)
 	{
 		if(button == 0)
 		{

@@ -9,9 +9,12 @@ import org.lwjgl.opengl.GL11;
 import com.creativemd.creativecore.gui.CoreControl;
 import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
+import com.creativemd.creativecore.gui.Rect;
 import com.creativemd.creativecore.gui.client.style.Style;
+import com.creativemd.creativecore.gui.controls.gui.GuiAvatarButton;
 import com.creativemd.creativecore.gui.event.ControlEvent;
 import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
+import com.creativemd.creativecore.gui.event.gui.GuiToolTipEvent;
 
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,9 +37,19 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	public void refreshControls() {
 		for (int i = 0; i < controls.size(); i++)
 		{
-			controls.get(i).parent = this;
-			controls.get(i).setID(i);
+			updateControl(controls.get(i), i);
 		}
+	}
+	
+	public void updateControl(GuiControl control, int id)
+	{
+		control.parent = this;
+		control.setID(id);
+	}
+	
+	public void addControl(GuiControl control) {
+		updateControl(control, controls.size());
+		controls.add(control);
 	}
 	
 	//================Rendering================
@@ -59,10 +72,16 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	}
 	
 	@Override
-	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
+	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {}
+	
+	@Override
+	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height, Rect relativeMaximumRect)
+	{
 		float scale = getScaleFactor();
 		int xOffset = getOffsetX();
 		int yOffset = getOffsetY();
+		
+		Rect newRect = relativeMaximumRect.mergeRects(getRect());
 		
 		lastRenderedHeight = 0;
 		
@@ -73,16 +92,14 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			{
 				GL11.glEnable(GL11.GL_STENCIL_TEST);
 				
-				prepareStencil(0, 0, scale, helper, width, height);
+				prepareContentStencil(helper, relativeMaximumRect);
 				
 				GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
 				GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+				
 				GlStateManager.pushMatrix();
-				GlStateManager.translate(xOffset-control.posX, yOffset-control.posY, 0);
-				System.out.println("Rendering subcontrol with offset=" + yOffset + " pos=" + control.posY + " maxheight=" + height + " resulting=" + (height-(yOffset+control.posY)));
-				int realX = xOffset+control.posX;
-				int realY = yOffset+control.posY;
-				control.renderControl(helper, realX, realY, scale, width-realX, height-realY);
+				GlStateManager.translate(xOffset, yOffset, 0);				
+				control.renderControl(helper, scale, newRect.getOffsetRect(xOffset, yOffset));
 				GlStateManager.popMatrix();
 				
 				GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -91,6 +108,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.posY+control.height)*scale);
 			
 		}
+		renderContent(helper, style, width, height);
 	}
 	
 	//================Helper================
@@ -99,8 +117,15 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	public CoreControl get(String name)
     {
     	for (int i = 0; i < controls.size(); i++) {
-			if(controls.get(i).name.equalsIgnoreCase(name))
-				return controls.get(i);
+    		GuiControl control = controls.get(i);
+    		if(control.is(name))
+				return control;
+			if(control instanceof IControlParent)
+			{
+				CoreControl tempcontrol = ((IControlParent) control).get(name);
+				if(tempcontrol != null)
+					return tempcontrol;
+			}
 		}
     	return null;
     }
@@ -109,7 +134,8 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
     public boolean has(String name)
     {
     	for (int i = 0; i < controls.size(); i++) {
-			if(controls.get(i).name.equalsIgnoreCase(name))
+    		GuiControl control = controls.get(i);
+			if(control.name.equalsIgnoreCase(name))
 				return true;
 		}
     	return false;
@@ -128,7 +154,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	public Vec3d getMousePos()
 	{
 		if(parent != null)
-			return getParent().getMousePos();
+			return getParent().getMousePos().addVector(-getOffsetX()-this.posX, -getOffsetY()-this.posY, 0);
 		ScaledResolution scaledresolution = new ScaledResolution(mc);
 		int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
@@ -138,7 +164,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
         int movey = (j - height)/2;
         x -= movex;
         y -= movey;
-		return new Vec3d(x-getContentOffset(), y-getContentOffset(), 0);
+		return new Vec3d(x-getContentOffset()-getOffsetX(), y-getContentOffset()-getOffsetY(), 0);
 	}
 	
 	//================Custom Events================
@@ -147,8 +173,9 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	public void onOpened()
     {
     	for (int i = 0; i < controls.size(); i++) {
-    		controls.get(i).parent = this;
-    		controls.get(i).onOpened();
+    		GuiControl control = controls.get(i);
+    		control.parent = this;
+    		control.onOpened();
     	}
 		refreshControls();
     }
@@ -157,9 +184,19 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	public void onClosed()
 	{
 		for (int i = 0; i < controls.size(); i++) {
-			controls.get(i).onClosed();
+			GuiControl control = controls.get(i);
+			control.onClosed();
 		}
 		//eventBus.removeAllEventListeners();
+	}
+	
+	@Override
+	public void onTick()
+	{
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			control.onTick();
+		}
 	}
 	
 	//================Events================
@@ -168,7 +205,8 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	public void onLoseFocus()
 	{
 		for (int i = 0; i < controls.size(); i++) {
-			controls.get(i).onLoseFocus();
+			GuiControl control = controls.get(i);
+			control.onLoseFocus();
 		}
 	}
 	
@@ -176,9 +214,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	public boolean mouseScrolled(int x, int y, int scrolled)
 	{
 		Vec3d mouse = getMousePos();
-		for (int i = 0; i < controls.size(); i++) {
-			Vec3d pos = controls.get(i).rotateMouseVec(mouse);			
-			if(controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord) && controls.get(i).mouseScrolled((int)pos.xCoord, (int)pos.yCoord, scrolled))
+		for(int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			Vec3d pos = control.rotateMouseVec(mouse);			
+			if(control.isInteractable() && control.isMouseOver((int)pos.xCoord, (int)pos.yCoord) && control.mouseScrolled((int)pos.xCoord, (int)pos.yCoord, scrolled))
 				return true;
 		}
 		return false;
@@ -189,13 +228,14 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	{
 		boolean result = false;
 		Vec3d mouse = getMousePos();
-		for (int i = 0; i < controls.size(); i++) {
-			Vec3d pos = controls.get(i).rotateMouseVec(mouse);			
-			if(!result && controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord) && controls.get(i).mousePressed((int)pos.xCoord, (int)pos.yCoord, button)){
-				raiseEvent(new GuiControlClickEvent(controls.get(i), x, y));
+		for(int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			Vec3d pos = control.rotateMouseVec(mouse);			
+			if(!result && control.isInteractable() && control.isMouseOver((int)pos.xCoord, (int)pos.yCoord) && control.mousePressed((int)pos.xCoord, (int)pos.yCoord, button)){
+				raiseEvent(new GuiControlClickEvent(control, x, y));
 				result = true;
 			}else
-				controls.get(i).onLoseFocus();
+				control.onLoseFocus();
 		}
 		return result;
 	}
@@ -205,9 +245,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	{
 		Vec3d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vec3d pos = controls.get(i).rotateMouseVec(mouse);			
-			if(controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord))
-				controls.get(i).mouseMove((int)pos.xCoord, (int)pos.yCoord, button);
+			GuiControl control = controls.get(i);
+			Vec3d pos = control.rotateMouseVec(mouse);			
+			if(control.isInteractable())
+				control.mouseMove((int)pos.xCoord, (int)pos.yCoord, button);
 		}
 	}
 	
@@ -216,17 +257,19 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	{
 		Vec3d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vec3d pos = controls.get(i).rotateMouseVec(mouse);			
-			if(controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord))
-				controls.get(i).mouseReleased((int)pos.xCoord, (int)pos.yCoord, button);
+			GuiControl control = controls.get(i);
+			Vec3d pos = control.rotateMouseVec(mouse);			
+			if(control.isInteractable())
+				control.mouseReleased((int)pos.xCoord, (int)pos.yCoord, button);
 		}
 	}
 	
 	@Override
 	public boolean onKeyPressed(char character, int key)
 	{
-		for (int i = 0; i < controls.size(); i++) {		
-			if(controls.get(i).isInteractable() && controls.get(i).onKeyPressed(character, key))
+		for (int i = 0; i < controls.size(); i++) {	
+			GuiControl control = controls.get(i);
+			if(control.isInteractable() && control.onKeyPressed(character, key))
 				return true;
 		}
 		return false;
@@ -235,21 +278,23 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	
 	//================Tooltip================
 	
-	@Override
-	public ArrayList<String> getTooltip()
+	public GuiToolTipEvent getToolTipEvent()
 	{
+		GuiToolTipEvent event = super.getToolTipEvent();
+		if(event != null)
+			return event;
 		Vec3d mouse = getMousePos();
 		for (int i = 0; i < controls.size(); i++) {
-			Vec3d pos = controls.get(i).rotateMouseVec(mouse);			
-			if(controls.get(i).isInteractable() && controls.get(i).isMouseOver((int)pos.xCoord, (int)pos.yCoord))
+			GuiControl control = controls.get(i);
+			Vec3d pos = control.rotateMouseVec(mouse);			
+			if(control.isInteractable() && control.isMouseOver((int)pos.xCoord, (int)pos.yCoord))
 			{
-				ArrayList<String> tooltip = controls.get(i).getTooltip();
-				if(tooltip.size() > 0)
-					return tooltip;
+				event = control.getToolTipEvent();
+				if(event != null)
+					return event;
 			}
 		}
-		
-		return new ArrayList<String>();
+		return null;
 	}
 
 }

@@ -4,32 +4,30 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class HashMapList<K, V> {
 
-	private ArrayList<K> keys;
-	private ArrayList<ArrayList<V>> values;
+	private HashMap<K, ArrayList<V>> keys;
 	
 	public HashMapList()
 	{
-		this.keys = new ArrayList<K>();
-		this.values = new ArrayList<ArrayList<V>>();
+		this.keys = new HashMap<>();
 	}
 	
-	public ArrayList<V> getValues(int index)
+	/*public ArrayList<V> getValues(int index)
 	{
 		return values.get(index);
-	}
+	}*/
 	
 	public ArrayList<V> getValues(K key)
 	{
-		int index = indexOfKey(key);
-		if(index != -1)
-			return values.get(index);
-		return null;
+		return keys.get(key);
 	}
 	
-	public K getKey(int index)
+	/*public K getKey(int index)
 	{
 		return keys.get(index);
 	}
@@ -39,22 +37,21 @@ public class HashMapList<K, V> {
 		if(keys.size() > 0)
 			return keys.get(keys.size()-1);
 		return null;
-	}
+	}*/
 	
-	public K getKey(V value)
+	public K getKey(V search)
 	{
-		for (int i = 0; i < values.size(); i++) {
-			int index = values.get(i).indexOf(value);
-			if(index != -1)
-				return getKey(index);
+		for (Entry<K, ArrayList<V>> entry : keys.entrySet()) {
+			if(entry.getValue().contains(search))
+				return entry.getKey();
 		}
 		return null;
 	}
 	
 	
-	public ArrayList<K> getKeys()
+	public Set<K> getKeys()
 	{
-		return keys;
+		return keys.keySet();
 	}
 	
 	public void add(K key, V[] values)
@@ -64,46 +61,29 @@ public class HashMapList<K, V> {
 	
 	public void add(K key, ArrayList<V> values)
 	{
-		int index = indexOfKey(key);
-		if(index != -1)
-			this.values.get(index).addAll(values);
+		ArrayList<V> list = getValues(key);
+		if(list == null)
+			keys.put(key, new ArrayList<>(values));
 		else
-		{
-			keys.add(key);
-			ArrayList<V> newList = new ArrayList<V>();
-			newList.addAll(values);
-			this.values.add(newList);
-		}
+			list.addAll(values);
 	}
 	
 	public void add(K key, V value)
 	{
-		int index = indexOfKey(key);
-		if(index != -1)
-			values.get(index).add(value);
+		ArrayList<V> list = getValues(key);
+		if(list == null)
+		{
+			list = new ArrayList<>();
+			list.add(value);
+			keys.put(key, list);
+		}
 		else
-		{
-			keys.add(key);
-			ArrayList<V> newList = new ArrayList<V>();
-			newList.add(value);
-			values.add(newList);
-		}
-	}
-	
-	public boolean removeKey(int key)
-	{
-		if(key != -1)
-		{
-			keys.remove(key);
-			values.remove(key);
-			return true;
-		}
-		return false;
+			list.add(value);
 	}
 	
 	public boolean removeKey(K key)
 	{
-		return removeKey(indexOfKey(key));
+		return keys.remove(key) != null;
 	}
 	
 	public boolean removeValue(K key, V value)
@@ -116,23 +96,18 @@ public class HashMapList<K, V> {
 	
 	public boolean removeValue(V value)
 	{
-		for (int i = 0; i < values.size(); i++) {
-			if(values.get(i).remove(value))
+		for (ArrayList<V> values : keys.values()) {
+			if(values.remove(value))
 				return true;
 		}
 		return false;
 	}
 	
-	public int indexOfKey(K key)
-	{
-		return keys.indexOf(key);
-	}
-	
 	public int sizeOfValues()
 	{
 		int size = 0;
-		for (int i = 0; i < values.size(); i++) {
-			size += values.get(i).size();
+		for (ArrayList<V> values : keys.values()) {
+			size += values.size();
 		}
 		return size;
 	}

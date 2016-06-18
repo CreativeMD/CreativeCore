@@ -2,6 +2,7 @@ package com.creativemd.creativecore.gui;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.vecmath.Vector2d;
 
@@ -12,6 +13,7 @@ import com.creativemd.creativecore.gui.client.style.ColoredDisplayStyle;
 import com.creativemd.creativecore.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.container.GuiParent;
+import com.creativemd.creativecore.gui.event.gui.GuiToolTipEvent;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -44,6 +46,8 @@ public abstract class GuiControl extends CoreControl{
 	protected int borderWidth = 1;
 	protected int marginWidth = 2;
 	
+	protected ArrayList<String> customTooltip = null;
+	
 	public GuiControl(String name, int x, int y, int width, int height) {
 		super(name);
 		this.posX = x;
@@ -68,6 +72,12 @@ public abstract class GuiControl extends CoreControl{
 		return this;
 	}
 	
+	public GuiControl setCustomTooltip(String... lines)
+	{
+		this.customTooltip = new ArrayList<>(Arrays.asList(lines));
+		return this;
+	}
+	
 	//================Interaction================
 	
 	@Override
@@ -85,11 +95,6 @@ public abstract class GuiControl extends CoreControl{
 	{
 		Vec3d centerOffset = getCenterOffset();
 		return getRotationAround(-rotation, mouse, new Vec3d(posX+centerOffset.xCoord, posY+centerOffset.yCoord, 0));
-	}
-	
-	public boolean hasMouseOverEffect()
-	{
-		return true;
 	}
 	
 	public boolean isMouseOver()
@@ -113,13 +118,25 @@ public abstract class GuiControl extends CoreControl{
 	
 	//================Styling================
 	
+	public Style getDefaultStyle()
+	{
+		return defaultStyle;
+	}
+	
+	public boolean hasStyle()
+	{
+		if(parent != null && getParent().hasStyle())
+			return true;
+		return style != null;
+	}
+	
 	public Style getStyle()
 	{
 		if(style != null)
 			return style;
-		if(parent != null)
+		if(parent != null && hasStyle())
 			return getParent().getStyle();
-		return defaultStyle;
+		return getDefaultStyle();
 	}
 	
 	public boolean hasBorder()
@@ -132,11 +149,29 @@ public abstract class GuiControl extends CoreControl{
 		return true;
 	}
 	
+	public boolean hasMouseOverEffect()
+	{
+		return true;
+	}
+	
 	//================Tooltip================
+	
+	public GuiToolTipEvent getToolTipEvent()
+	{
+		ArrayList<String> toolTip = getTooltip();
+		if(customTooltip != null)
+			if(toolTip == null)
+				toolTip = new ArrayList<>(customTooltip);
+			else
+				toolTip.addAll(customTooltip);
+		if(toolTip != null && toolTip.size() > 0)
+			return new GuiToolTipEvent(toolTip, this);
+		return null;
+	}
 	
 	public ArrayList<String> getTooltip()
 	{
-		return new ArrayList<String>();
+		return null;
 	}
 	
 	//================Positioning================
@@ -164,6 +199,11 @@ public abstract class GuiControl extends CoreControl{
 	
 	protected abstract void renderContent(GuiRenderHelper helper, Style style, int width, int height);
 	
+	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height, Rect relativeMaximumRect)
+	{
+		renderContent(helper, style, width, height);
+	}
+	
 	protected void renderBackground(GuiRenderHelper helper, Style style)
 	{
 		if(hasBorder())
@@ -179,41 +219,28 @@ public abstract class GuiControl extends CoreControl{
 			style.getDisableEffect(this).renderStyle(helper, width, height);
 	}
 	
-	protected void prepareStencil(int x, int y, float scale, GuiRenderHelper helper, int maxWidth, int maxHeight)
+	protected Rect getRect()
+	{
+		return new Rect(0, 0, this.width-getContentOffset()*2, this.height-getContentOffset()*2);
+	}
+	
+	protected void prepareContentStencil(GuiRenderHelper helper, Rect maximumRect)
 	{
 		int spaceUsed = borderWidth+marginWidth;
 		
-		//GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
-		//GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 1);
+		Rect contentRect = getRect();
+		
 		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); 		
 		
 		GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
 		
-		System.out.println("Stencil at: " + x + " " + y + " " + maxWidth + " " + maxHeight + " name=" + this.name);
-		//maxWidth += x;
-		//maxHeight += y;
-		int minX = 0;
-		if(x < 0)
-			minX = -x;
-		int minY = 0;
-		if(y < 0)
-			minY = -y;
-		int maxX = Math.min(maxWidth, width-spaceUsed*2);
-		int maxY = Math.min(maxHeight, height-spaceUsed*2);
-		System.out.println("Rendering at: " + minX + " " + minY + " " + maxX + " " + maxY + " name=" + this.name);
-		
 		GL11.glColorMask(false, false, false, false);
-		helper.renderColorPlate(minX, minY, new Color(0, 0, 0, 255), maxX, maxY);
+		contentRect.mergeRects(maximumRect).renderRect(helper, new Color(0, 0, 0, 255));
 		GL11.glColorMask(true, true, true, true);
 	}
 	
-	public void renderControl(GuiRenderHelper helper, int maxWidth, int maxHeight)
-	{
-		renderControl(helper, 0, 0, 1, maxWidth, maxHeight);
-	}
-	
-	public void renderControl(GuiRenderHelper helper, int x, int y, float scale, int maxWidth, int maxHeight)
+	public void renderControl(GuiRenderHelper helper, float scale, Rect relativeMaximumRect)
 	{
 		if(!visible)
 			return ;
@@ -225,8 +252,8 @@ public abstract class GuiControl extends CoreControl{
 		GlStateManager.rotate(rotation, 0, 0, 1);
 		GlStateManager.translate(-centerOffset.xCoord, -centerOffset.yCoord, 0);
 		
-		GlStateManager.translate(x, y, 0);
-		GlStateManager.scale(scale, scale, 0);
+		//GlStateManager.translate(x, y, 0);
+		GlStateManager.scale(scale, scale, 1);
 		
 		renderBackground(helper, style);
 		
@@ -236,12 +263,14 @@ public abstract class GuiControl extends CoreControl{
 		
 		GL11.glEnable(GL11.GL_STENCIL_TEST);
 		
-		prepareStencil(x, y, scale, helper, maxWidth, maxHeight);
+		//prepareContentStencil(helper, relativeMaximumRect); TODO NOT FIXED YET
+		
+		//prepareStencil(x, y, scale, helper, maxWidth, maxHeight);
 		
 		GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
 		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
 		
-		renderContent(helper, style, Math.min(maxWidth, width-spaceUsed*2), Math.min(maxHeight, height-spaceUsed*2));
+		renderContent(helper, style, width-spaceUsed*2, height-spaceUsed*2, relativeMaximumRect);
 		
 		GL11.glDisable(GL11.GL_STENCIL_TEST);
 		
@@ -277,6 +306,13 @@ public abstract class GuiControl extends CoreControl{
 	}
 	
 	//================STATIC HELPERS================
+	
+	private static final Rect screenRect = new Rect(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+	
+	public static Rect getScreenRect()
+	{
+		return screenRect;
+	}
 	
 	public static void playSound(SoundEvent event)
 	{

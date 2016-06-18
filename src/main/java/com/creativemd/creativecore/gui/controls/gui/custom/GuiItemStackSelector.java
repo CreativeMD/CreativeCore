@@ -3,29 +3,23 @@ package com.creativemd.creativecore.gui.controls.gui.custom;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.creativemd.creativecore.client.avatar.AvatarItemStack;
-import com.creativemd.creativecore.common.container.slot.SlotControl;
-import com.creativemd.creativecore.common.container.slot.SlotControlNoSync;
-import com.creativemd.creativecore.common.container.slot.SlotPreview;
-import com.creativemd.creativecore.common.gui.controls.GuiAvatarLabel;
-import com.creativemd.creativecore.common.gui.controls.GuiComboBox;
-import com.creativemd.creativecore.common.gui.controls.GuiComboBoxExtension;
-import com.creativemd.creativecore.common.gui.controls.GuiLabel;
-import com.creativemd.creativecore.common.gui.controls.GuiLabelClickable;
-import com.creativemd.creativecore.common.gui.controls.GuiScrollBox;
-import com.creativemd.creativecore.common.gui.controls.container.GuiSlotControl;
-import com.creativemd.creativecore.common.gui.event.ControlClickEvent;
+import com.creativemd.creativecore.gui.GuiControl;
+import com.creativemd.creativecore.gui.controls.container.SlotControlNoSync;
+import com.creativemd.creativecore.gui.controls.container.client.GuiSlotControl;
+import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
+import com.creativemd.creativecore.gui.controls.gui.GuiComboBoxExtension;
+import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
+import com.creativemd.creativecore.slots.SlotPreview;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
-import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 public class GuiItemStackSelector extends GuiComboBoxExtension{
 	
@@ -37,7 +31,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 	public boolean onlyBlocks;
 	
 	public GuiItemStackSelector(String name, EntityPlayer player, int x, int y, int width, int height, GuiComboBox comboBox, boolean onlyBlocks, String search) {
-		super(name, player, comboBox, x, y, width, height, new ArrayList<String>());
+		super(name, comboBox, x, y, width, height, new ArrayList<String>());
 		this.search = search;
 		this.onlyBlocks = onlyBlocks;
 		//this.extension = extension;
@@ -50,7 +44,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 				inv.add(player.inventory.mainInventory[i]);
 		}
 		//CreativeTabs.tabAllSearch.displayAllReleventItems(stacks);
-		Iterator iterator = Item.itemRegistry.iterator();
+		Iterator iterator = Item.REGISTRY.iterator();
 
         while (iterator.hasNext())
         {
@@ -61,7 +55,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
                 item.getSubItems(item, (CreativeTabs)null, stacks);
             }
         }
-		refreshControls();
+		reloadControls();
 	}
 	
 	public static String getItemName(ItemStack stack)
@@ -71,17 +65,17 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 		{
 			itemName = stack.getDisplayName();
 		}catch(Exception e){
-			if(!(Block.getBlockFromItem(stack.getItem()) instanceof BlockAir))
-				itemName = Block.blockRegistry.getNameForObject(Block.getBlockFromItem(stack.getItem()));
+			if(Block.getBlockFromItem(stack.getItem()) != null)
+				itemName = Block.REGISTRY.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString();
 			else
-				itemName = Item.itemRegistry.getNameForObject(stack.getItem());
+				itemName = Item.REGISTRY.getNameForObject(stack.getItem()).toString();
 		}
 		return itemName;
 	}
 	
 	public static boolean shouldShowItem(boolean onlyBlocks, String search, ItemStack stack)
 	{
-		if(onlyBlocks && Block.getBlockFromItem(stack.getItem()) instanceof BlockAir)
+		if(onlyBlocks && Block.getBlockFromItem(stack.getItem()) == null)
 			return false;
 		if(search.equals(""))
 			return true;
@@ -89,28 +83,33 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 	}
 	
 	@Override
-	public void refreshControls()
+	public void onOpened()
+    {
+    	super.onOpened();
+    	addListener(this);
+    }
+	
+	@Override
+	public void onClosed()
+	{
+		super.onClosed();
+		removeListener(this);
+	}
+	
+	@Override
+	public void reloadControls()
 	{
 		if(stacks != null)
 		{
-			gui.controls.clear();
-			/*for (int i = 0; i < lines.size(); i++) {
-				int color = 14737632;
-				if(i == selected)
-					color = 16777000;
-				GuiLabelClickable label = new GuiAvatarLabel(lines.get(i), 3, 1+i*22, color, new AvatarItemStack(stacks.get(i)));
-				label.width = width-20;
-				label.height = 22;
-				addControl(label);
-			}*/
+			controls.clear();
 			int height = 0;
 			GuiLabel label = new GuiLabel("Inventory", 3, height);
 			label.width = width-20;
 			label.height = 14;
-			addControl(label);
+			controls.add(label);
 			height += label.height;
 			
-			int SlotsPerRow = width/18;
+			int SlotsPerRow = (width-20)/18;
 			int count = 0;
 			for (int i = 0; i < inv.size(); i++) {
 				if(shouldShowItem(onlyBlocks, search, inv.get(i)))
@@ -119,7 +118,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 					basic.setInventorySlotContents(0, inv.get(i));
 					
 					int row = count/SlotsPerRow;
-					addControl(new SlotControlNoSync(new SlotPreview(basic, 0, (count-row*SlotsPerRow)*18, height+row*18)));
+					addControl(new SlotControlNoSync(new SlotPreview(basic, 0, (count-row*SlotsPerRow)*18, height+row*18)).getGuiControl());
 					count++;
 				}
 			}
@@ -137,18 +136,17 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 					InventoryBasic basic = new InventoryBasic("", false, 1);
 					basic.setInventorySlotContents(0, stacks.get(i));
 					int row = count/SlotsPerRow;
-					addControl(new SlotControlNoSync(new SlotPreview(basic, 0, (count-row*SlotsPerRow)*18, height+row*18)));
+					addControl(new SlotControlNoSync(new SlotPreview(basic, 0, (count-row*SlotsPerRow)*18, height+row*18)).getGuiControl());
 					count++;
 				}
 			}
 		}
 	}
 	
-	@Override
 	@CustomEventSubscribe
-	public void onLabelClicked(ControlClickEvent event)
+	public void onLabelClicked(GuiControlClickEvent event)
 	{
-		if(event.source instanceof GuiSlotControl && event.source.parent == gui)
+		if(event.source instanceof GuiSlotControl && event.source.parent == this)
 		{
 			((GuiInvSelector)comboBox).addAndSelectStack(((GuiSlotControl) event.source).slot.slot.getStack().copy());
 			comboBox.closeBox();

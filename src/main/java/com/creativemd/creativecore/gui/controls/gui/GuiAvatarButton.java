@@ -15,10 +15,14 @@ public abstract class GuiAvatarButton extends GuiAvatarLabel{
 		super(caption, x, y, ColorUtils.WHITE, avatar);
 	}
 	
+	public GuiAvatarButton(String name, String caption, int x, int y, int width, int height, Avatar avatar) {
+		super(name, caption, x, y, ColorUtils.WHITE, avatar);
+		this.width = width+getContentOffset()*2;
+		this.height = height+getContentOffset()*2;
+	}
+	
 	public GuiAvatarButton(String caption, int x, int y, int width, int height, Avatar avatar) {
-		super(caption, x, y, ColorUtils.WHITE, avatar);
-		this.width = width;
-		this.height = height;
+		this(caption, caption, x, y, width, height, avatar);
 	}
 	
 	@Override

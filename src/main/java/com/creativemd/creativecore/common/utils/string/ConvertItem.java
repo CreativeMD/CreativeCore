@@ -16,7 +16,10 @@ public class ConvertItem extends StringConverter{
 
 	@Override
 	public String toString(Object object) {
-		return Item.REGISTRY.getNameForObject((Item) object).toString();
+		ResourceLocation resource = Item.REGISTRY.getNameForObject((Item) object);
+		if(resource != null)
+			return resource.toString();
+		return null;
 	}
 
 	@Override
