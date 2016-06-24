@@ -54,6 +54,7 @@ public abstract class TileEntityCreative extends TileEntity{
 		receiveUpdatePacket(pkt.getNbtCompound());
     }
 	
+	@SideOnly(Side.CLIENT)
 	public void receiveUpdatePacket(NBTTagCompound nbt)
 	{
 		
