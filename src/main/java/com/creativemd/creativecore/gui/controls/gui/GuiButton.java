@@ -12,11 +12,20 @@ public abstract class GuiButton extends GuiClickableLabel{
 	
 	public GuiButton(String caption, int x, int y, int width)
 	{
-		this(caption, x, y, width, 14);
+		this(caption, caption, x, y, width, 14);
+	}
+	
+	public GuiButton(String name, String caption, int x, int y, int width)
+	{
+		this(name, caption, x, y, width, 14);
+	}
+	
+	public GuiButton(String name, String caption, int x, int y, int width, int height) {
+		super(name, caption, x, y, width, height, ColorUtils.WHITE);
 	}
 	
 	public GuiButton(String caption, int x, int y, int width, int height) {
-		super(caption, x, y, width, height, ColorUtils.WHITE);
+		this(caption, caption, x, y, width, height);
 	}
 	
 	@Override
