@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.CoreModManager;
+import scala.util.parsing.input.StreamReader;
 
 public class TransformerNames {
 	
@@ -20,41 +22,36 @@ public class TransformerNames {
 	private static ArrayList<FieldName> fields = new ArrayList<>();
 	
 	static {
-		if(obfuscated)
-		{
-			try {
-				File file = new File(TransformerNames.class.getResource("notch-mcp.srg").toURI());
-				FileReader reader = new FileReader(file);
-				@SuppressWarnings("resource")
-				BufferedReader bf = new BufferedReader(reader);
-				String line = null;
-				while((line = bf.readLine()) != null)
-				{
-					String[] parts = line.split(" ");
-					if(line.startsWith("CL:")){
-						if(parts.length == 3)
-							classes.add(new ClassName(parts[2], parts[1]));
-					}else if(line.startsWith("FD:")){
-						if(parts.length == 3)
-						{
-							String[] splitted = parts[2].split("/");
-							String name = splitted[splitted.length-1];
-							splitted = parts[1].split("/");
-							fields.add(new FieldName(name, splitted[1], splitted[0]));
-						}
-					}else if(line.startsWith("MD:")){
-						if(parts.length == 5)
-						{
-							String[] splitted = parts[3].split("/");
-							String name = splitted[splitted.length-1];
-							splitted = parts[1].split("/");
-							methods.add(new MethodName(name, splitted[1], splitted[0], parts[2]));
-						}
+		try {
+			InputStreamReader reader = new InputStreamReader(TransformerNames.class.getResourceAsStream("notch-mcp.srg"));
+			BufferedReader bf = new BufferedReader(reader);
+			String line = null;
+			while((line = bf.readLine()) != null)
+			{
+				String[] parts = line.split(" ");
+				if(line.startsWith("CL:")){
+					if(parts.length == 3)
+						classes.add(new ClassName(parts[2], parts[1]));
+				}else if(line.startsWith("FD:")){
+					if(parts.length == 3)
+					{
+						String[] splitted = parts[2].split("/");
+						String name = splitted[splitted.length-1];
+						splitted = parts[1].split("/");
+						fields.add(new FieldName(name, splitted[1], splitted[0]));
+					}
+				}else if(line.startsWith("MD:")){
+					if(parts.length == 5)
+					{
+						String[] splitted = parts[3].split("/");
+						String name = splitted[splitted.length-1];
+						splitted = parts[1].split("/");
+						methods.add(new MethodName(name, splitted[1], splitted[0], parts[2]));
 					}
 				}
-			} catch (IOException | URISyntaxException e) {
-				e.printStackTrace();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

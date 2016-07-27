@@ -14,6 +14,7 @@ public abstract class CreativeTransformer implements IClassTransformer {
 	
 	public CreativeTransformer(String modid) {
 		this.modid = modid;
+		initTransformers();
 	}
 	
 	private final ArrayList<Transformer> transformers = new ArrayList<>();
@@ -50,6 +51,7 @@ public abstract class CreativeTransformer implements IClassTransformer {
 				
 				System.out.println("[" + this.modid + "] Patched " + transformers.get(i).className + " ...");
 				transformers.get(i).done();
+				transformers.remove(i);
 			}else
 				i++;
 		}
