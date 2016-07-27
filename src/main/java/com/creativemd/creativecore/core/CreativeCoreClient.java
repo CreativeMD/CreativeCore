@@ -1,6 +1,9 @@
 package com.creativemd.creativecore.core;
 
+import com.creativemd.creativecore.client.rendering.model.CreativeCustomModelLoader;
+
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import scala.collection.parallel.ParIterableLike.Min;
@@ -14,6 +17,8 @@ public class CreativeCoreClient {
 	{
 		if(!mc.getFramebuffer().isStencilEnabled())
 			mc.getFramebuffer().enableStencil();
+		
+		ModelLoaderRegistry.registerLoader(new CreativeCustomModelLoader());
 	}
 	
 }
