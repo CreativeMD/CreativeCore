@@ -24,19 +24,23 @@ public abstract class TileEntityCreative extends TileEntity{
 	}
 	
 	@Override
+	public NBTTagCompound getUpdateTag()
+    {
+        return writeToNBT(new NBTTagCompound());
+    }
+	
+	@Override
+	public void handleUpdateTag(NBTTagCompound tag)
+    {
+        this.readFromNBT(tag);
+    }
+	
+	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
     {
 		NBTTagCompound nbt = new NBTTagCompound();
 		getDescriptionNBT(nbt);
         return new SPacketUpdateTileEntity(pos, getBlockMetadata(), nbt);
-    }
-	
-	@Override
-	public NBTTagCompound getUpdateTag()
-    {
-		NBTTagCompound nbt = new NBTTagCompound();
-		getDescriptionNBT(nbt);
-		return nbt;
     }
 	
 	public double getDistance(BlockPos coord)
@@ -66,6 +70,7 @@ public abstract class TileEntityCreative extends TileEntity{
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
 		receiveUpdatePacket(pkt.getNbtCompound());
+		updateRender();
     }
 	
 }
