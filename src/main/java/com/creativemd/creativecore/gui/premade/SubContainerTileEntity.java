@@ -12,8 +12,9 @@ public abstract class SubContainerTileEntity extends SubContainer{
 	protected int currenTick;
 	public TileEntity te;
 	
-	public SubContainerTileEntity(String name, EntityPlayer player, TileEntity te) {
-		super(name, player);
+	public SubContainerTileEntity(EntityPlayer player, TileEntity te) {
+		super(player);
+		this.te = te;
 	}
 	
 	@Override
@@ -45,6 +46,11 @@ public abstract class SubContainerTileEntity extends SubContainer{
 		container.coord = te.getPos();
     }
 	
+	public boolean shouldTick()
+	{
+		return true;
+	}
+	
 	public int getUpdateTickRate()
 	{
 		return 10;
@@ -52,11 +58,14 @@ public abstract class SubContainerTileEntity extends SubContainer{
 
 	public void onTick()
 	{
-		currenTick++;
-		if(currenTick > getUpdateTickRate())
+		if(shouldTick())
 		{
-			sendUpdate();
-			currenTick = 0;
+			currenTick++;
+			if(currenTick > getUpdateTickRate())
+			{
+				sendUpdate();
+				currenTick = 0;
+			}
 		}
 	}
 	
