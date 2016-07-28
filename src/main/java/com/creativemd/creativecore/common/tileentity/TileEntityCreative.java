@@ -17,6 +17,12 @@ public abstract class TileEntityCreative extends TileEntity{
 		
 	}
 	
+	@SideOnly(Side.CLIENT)
+	public void receiveUpdatePacket(NBTTagCompound nbt)
+	{
+		
+	}
+	
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket()
     {
@@ -25,9 +31,17 @@ public abstract class TileEntityCreative extends TileEntity{
         return new SPacketUpdateTileEntity(pos, getBlockMetadata(), nbt);
     }
 	
+	@Override
+	public NBTTagCompound getUpdateTag()
+    {
+		NBTTagCompound nbt = new NBTTagCompound();
+		getDescriptionNBT(nbt);
+		return nbt;
+    }
+	
 	public double getDistance(BlockPos coord)
 	{
-		return pos.distanceSq(coord);
+		return Math.sqrt(pos.distanceSq(coord));
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -43,7 +57,7 @@ public abstract class TileEntityCreative extends TileEntity{
 			IBlockState state = worldObj.getBlockState(pos);
 			worldObj.notifyBlockUpdate(pos, state, state, 3); //TODO CHECK IF IT'S THE RIGHT METHOD
 			//worldObj.markBlockForUpdate(pos);
-			markDirty();
+			//markDirty();
 		}
 	}
 	
@@ -53,11 +67,5 @@ public abstract class TileEntityCreative extends TileEntity{
     {
 		receiveUpdatePacket(pkt.getNbtCompound());
     }
-	
-	@SideOnly(Side.CLIENT)
-	public void receiveUpdatePacket(NBTTagCompound nbt)
-	{
-		
-	}
 	
 }

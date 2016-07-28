@@ -20,6 +20,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
 public class CreativeModel implements IModel {
 	
 	public static CreativeModel instance = new CreativeModel();
+	public static CreativeBakedModel bakedModel = new CreativeBakedModel();
 	
 	@Override
 	public Collection<ResourceLocation> getDependencies() {
@@ -34,8 +35,7 @@ public class CreativeModel implements IModel {
 	@Override
 	public IBakedModel bake(IModelState state, VertexFormat format,
 			Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-		return Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState());
-		//return null;
+		return bakedModel;
 	}
 
 	@Override

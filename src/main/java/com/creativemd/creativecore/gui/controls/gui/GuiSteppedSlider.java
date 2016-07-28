@@ -2,9 +2,9 @@ package com.creativemd.creativecore.gui.controls.gui;
 
 public class GuiSteppedSlider extends GuiAnalogeSlider{
 	
-	public GuiSteppedSlider(String name, int x, int y, int width, int height, int min, int max, int value)
+	public GuiSteppedSlider(String name, int x, int y, int width, int height, int value, int min, int max)
 	{
-		super(name, x, y, width, height, min, max, value);
+		super(name, x, y, width, height, value, min, max);
 	}
 	
 	@Override

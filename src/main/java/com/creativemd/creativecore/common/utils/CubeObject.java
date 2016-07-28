@@ -9,22 +9,18 @@ import net.minecraft.util.math.Vec3d;
 
 public class CubeObject {
 	
-	//public double rotation = 0;
-	
 	public Block block;
 	public int meta = 0;
 	public int color = ColorUtils.WHITE;
 	
-	//public boolean normalBlock = true;
+	public float minX;
+	public float minY;
+	public float minZ;
+	public float maxX;
+	public float maxY;
+	public float maxZ;
 	
-	public double minX;
-	public double minY;
-	public double minZ;
-	public double maxX;
-	public double maxY;
-	public double maxZ;
-	
-	public CubeObject(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
+	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 	{
 		this.minX = minX;
 		this.minY = minY;
@@ -36,7 +32,7 @@ public class CubeObject {
 	
 	public CubeObject(AxisAlignedBB box)
 	{
-		this(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
+		this((float)box.minX, (float)box.minY, (float)box.minZ, (float)box.maxX, (float)box.maxY, (float)box.maxZ);
 	}
 	
 	public CubeObject()
@@ -49,26 +45,28 @@ public class CubeObject {
 		this(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ, cube);
 	}
 	
-	public CubeObject(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, CubeObject cube)
+	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, CubeObject cube)
 	{
 		this(minX, minY, minZ, maxX, maxY, maxZ);
 		this.block = cube.block;
+		this.meta = cube.meta;
+		this.color = cube.color;
 	}
 	
-	public CubeObject(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Block block)
+	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Block block)
 	{
 		this(minX, minY, minZ, maxX, maxY, maxZ);
 		this.block = block;
 	}
 	
-	public CubeObject(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Block block, int meta)
+	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Block block, int meta)
 	{
 		this(minX, minY, minZ, maxX, maxY, maxZ);
 		this.block = block;
 		this.meta = meta;
 	}
 	
-	/*public CubeObject(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, boolean normalBlock)
+	/*public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, boolean normalBlock)
 	{
 		this(minX, minY, minZ, maxX, maxY, maxZ);
 		this.normalBlock = normalBlock;

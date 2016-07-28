@@ -134,12 +134,12 @@ public class RotationUtils {
 	
 	public static void applyCubeRotation(CubeObject cube, Rotation EnumFacing, Vec3d center)
 	{
-		double minX = cube.minX;
-		double minY = cube.minY;
-		double minZ = cube.minZ;
-		double maxX = cube.maxX;
-		double maxY = cube.maxY;
-		double maxZ = cube.maxZ;
+		float minX = cube.minX;
+		float minY = cube.minY;
+		float minZ = cube.minZ;
+		float maxX = cube.maxX;
+		float maxY = cube.maxY;
+		float maxZ = cube.maxZ;
 		if(center != null)
 		{
 			minX -= center.xCoord;
@@ -160,33 +160,33 @@ public class RotationUtils {
 		
 		if(min.xCoord < max.xCoord)
 		{
-			cube.minX = min.xCoord;
-			cube.maxX = max.xCoord;
+			cube.minX = (float)min.xCoord;
+			cube.maxX = (float)max.xCoord;
 		}
 		else
 		{
-			cube.minX = max.xCoord;
-			cube.maxX = min.xCoord;
+			cube.minX = (float)max.xCoord;
+			cube.maxX = (float)min.xCoord;
 		}
 		if(min.yCoord < max.yCoord)
 		{
-			cube.minY = min.yCoord;
-			cube.maxY = max.yCoord;
+			cube.minY = (float)min.yCoord;
+			cube.maxY = (float)max.yCoord;
 		}
 		else
 		{
-			cube.minY = max.yCoord;
-			cube.maxY = min.yCoord;
+			cube.minY = (float)max.yCoord;
+			cube.maxY = (float)min.yCoord;
 		}
 		if(min.zCoord < max.zCoord)
 		{
-			cube.minZ = min.zCoord;
-			cube.maxZ = max.zCoord;
+			cube.minZ = (float)min.zCoord;
+			cube.maxZ = (float)max.zCoord;
 		}
 		else
 		{
-			cube.minZ = max.zCoord;
-			cube.maxZ = min.zCoord;
+			cube.minZ = (float)max.zCoord;
+			cube.maxZ = (float)min.zCoord;
 		}
 	}
 	
