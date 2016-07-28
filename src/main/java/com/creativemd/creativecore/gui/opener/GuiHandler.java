@@ -3,13 +3,13 @@ package com.creativemd.creativecore.gui.opener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
-import com.creativemd.creativecore.core.CreativeCore;
+import com.creativemd.creativecore.core.CreativeCoreDummy;
 import com.creativemd.creativecore.gui.mc.ContainerSub;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

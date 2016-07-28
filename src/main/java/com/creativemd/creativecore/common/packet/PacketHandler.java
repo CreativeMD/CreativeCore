@@ -2,7 +2,8 @@ package com.creativemd.creativecore.common.packet;
 
 import java.util.ArrayList;
 
-import com.creativemd.creativecore.core.CreativeCore;
+import com.creativemd.creativecore.CreativeCore;
+import com.creativemd.creativecore.core.CreativeCoreDummy;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 

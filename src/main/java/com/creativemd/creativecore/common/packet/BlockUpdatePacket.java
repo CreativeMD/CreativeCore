@@ -1,7 +1,6 @@
 package com.creativemd.creativecore.common.packet;
 
 import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
-import com.creativemd.creativecore.core.CreativeCore;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;

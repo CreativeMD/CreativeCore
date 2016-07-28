@@ -2,7 +2,8 @@ package com.creativemd.creativecore.event;
 
 import java.util.ArrayList;
 
-import com.creativemd.creativecore.core.CreativeCore;
+import com.creativemd.creativecore.CreativeCore;
+import com.creativemd.creativecore.core.CreativeCoreDummy;
 import com.n247s.api.eventapi.eventsystem.CallHandler;
 import com.n247s.api.eventapi.eventsystem.EventBus;
 import com.n247s.api.eventapi.eventsystem.EventType;

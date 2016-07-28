@@ -13,10 +13,12 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -62,6 +64,8 @@ public abstract class Transformer {
 				return ((FieldInsnNode) node).name.equals(((FieldInsnNode) node2).name) &&
 						((FieldInsnNode) node).desc.equals(((FieldInsnNode) node2).desc) &&
 						((FieldInsnNode) node).owner.equals(((FieldInsnNode) node2).owner);
+			}else if(node instanceof LdcInsnNode){
+				return ((LdcInsnNode) node).cst.equals(((LdcInsnNode) node2).cst);
 			}
 		}
 		return false;
@@ -74,17 +78,26 @@ public abstract class Transformer {
 	
 	public void replaceLabel(InsnList instructions, AbstractInsnNode node, @Nullable ArrayList<AbstractInsnNode> replaceInstructions, int labels, boolean keepFirstLabel)
 	{
+		replaceLabelBefore(instructions, node, replaceInstructions, labels, 0, keepFirstLabel, true);
+	}
+	
+	public void replaceLabelBefore(InsnList instructions, AbstractInsnNode node, @Nullable ArrayList<AbstractInsnNode> replaceInstructions, int labels, int labelsBefore, boolean keepFirstLabel, boolean deleteFrame)
+	{
 		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
 		LabelNode searchedLabel = null;
-		LabelNode currentLabel = null;
+		ArrayList<LabelNode> foundLabels = new ArrayList<>();
 		while(iterator.hasNext())
 		{
 			AbstractInsnNode insn = iterator.next();
 			if(insn instanceof LabelNode)
-				currentLabel = (LabelNode) insn;
+				foundLabels.add((LabelNode) insn);
 			if(areNodesEqual(insn, node))
 			{
-				searchedLabel = currentLabel;
+				int index = foundLabels.size()-1;
+				index -= labelsBefore;
+				if(index >= 0)
+					searchedLabel = foundLabels.get(index);
+				labels += labelsBefore;
 				break;
 			}
 		}
@@ -115,7 +128,8 @@ public abstract class Transformer {
 						continue;
 				}
 				if(found)
-					instructions.remove(insn);
+					if(deleteFrame || !(insn instanceof FrameNode))
+						instructions.remove(insn);	
 			}
 		}else
 			if(node instanceof LineNumberNode)
