@@ -46,10 +46,11 @@ public class GuiUpdatePacket extends CreativeCorePacket{
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
 		if(player.openContainer instanceof ContainerSub)
-			if(isOpening)
+			/*if(isOpening)
 				((ContainerSub) player.openContainer).gui.getLayers().get(layer).readFromOpeningNBT(value);
 			else
-				((ContainerSub) player.openContainer).gui.getLayers().get(layer).readFromNBT(value);
+				((ContainerSub) player.openContainer).gui.getLayers().get(layer).readFromNBT(value);*/
+			((ContainerSub) player.openContainer).layers.get(layer).receivePacket(value);
 	}
 
 	@Override

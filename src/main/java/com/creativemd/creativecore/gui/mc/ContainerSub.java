@@ -20,6 +20,8 @@ public class ContainerSub extends Container{
 	
 	public BlockPos coord = null;
 	
+	private boolean first = true;
+	
 	public ContainerSub(EntityPlayer player, SubContainer subContainer)
 	{
 		layers = new ArrayList<SubContainer>();
@@ -27,7 +29,7 @@ public class ContainerSub extends Container{
 		subContainer.container = this;
 		
 		layers.add(subContainer);
-		subContainer.onOpened();
+		
 	}
 	
 	
@@ -51,6 +53,11 @@ public class ContainerSub extends Container{
     {
 		super.detectAndSendChanges();
 		for (int i = 0; i < layers.size(); i++) {
+			if(first)
+			{
+				layers.get(i).onOpened();
+				first = false;
+			}
 			layers.get(i).onTick();
 		}
     }

@@ -34,17 +34,30 @@ public class GuiContainerSub extends GuiContainer {
 	public GuiContainerSub(EntityPlayer player, SubGui gui, SubContainer container) {
 		super(new ContainerSub(player, container));
 		((ContainerSub)inventorySlots).gui = this;
+		Minecraft.getMinecraft().thePlayer.openContainer = this.inventorySlots;
 		
 		layers = new ArrayList<SubGui>();
 		gui.container = container;
 		gui.gui = this;
 		this.layers.add(gui);
 		
-		gui.onOpened();
+		
+		container.onOpened();
+		//gui.onOpened();
 		
 		resize();
+		
 		//SubGui.itemRender = GuiScreen.itemRender;
 	}
+	
+	@Override
+	public void initGui()
+    {
+		super.initGui();
+		for (int i = 0; i < layers.size(); i++) {
+			layers.get(i).onOpened();
+		}
+    }
 	
 	public ArrayList<SubGui> getLayers()
 	{
