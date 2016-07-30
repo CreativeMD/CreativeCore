@@ -5,10 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.vecmath.Matrix4f;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.util.vector.Vector3f;
 
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.creativemd.creativecore.common.utils.CubeObject;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -22,17 +28,39 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.block.model.ModelRotation;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.common.model.IModelPart;
+import net.minecraftforge.common.model.IModelState;
+import net.minecraftforge.common.model.TRSRTransformation;
 
-public class CreativeBakedModel implements IBakedModel {
+public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
 	public static FaceBakery faceBakery = new FaceBakery();
 	public static TextureAtlasSprite woodenTexture;
+	
+	private static ItemStack lastItemStack = null;
+	
+	public static ItemOverrideList customOverride = new ItemOverrideList(new ArrayList<>()){
+		@Override
+		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity)
+	    {
+	        lastItemStack = stack;
+			return super.handleItemState(originalModel, stack, world, entity);
+	    }
+	};
 	
 	public static TextureAtlasSprite getWoodenTexture()
 	{
@@ -49,14 +77,20 @@ public class CreativeBakedModel implements IBakedModel {
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {		
 		ArrayList<BakedQuad> baked = new ArrayList<>();
-		
-		if(state.getBlock() instanceof ICreativeRendered && state instanceof TileEntityState)
+		Block renderBlock = null;
+		if(state == null && lastItemStack != null)
 		{
-			ArrayList<CubeObject> cubes = ((ICreativeRendered)state.getBlock()).getRenderingCubes(state, ((TileEntityState) state).te);
+			renderBlock = Block.getBlockFromItem(lastItemStack.getItem());
+		}else if(state != null)
+			renderBlock = state.getBlock();
+		if(renderBlock instanceof ICreativeRendered)
+		{
+			TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
+			ArrayList<CubeObject> cubes = ((ICreativeRendered)renderBlock).getRenderingCubes(state, te, state != null ? null : lastItemStack);
 			for (int i = 0; i < cubes.size(); i++) {
 				CubeObject cube = cubes.get(i);
 				
-				Block block = state.getBlock();
+				Block block = renderBlock;
 				if(cube.block != null)
 					block = cube.block;
 				IBlockState newState = null;
@@ -74,8 +108,11 @@ public class CreativeBakedModel implements IBakedModel {
 				
 				BlockPart blockPart = new BlockPart(new Vector3f(cube.minX*16F, cube.minY*16F, cube.minZ*16F),
 						new Vector3f(cube.maxX*16F, cube.maxY*16F, cube.maxZ*16F), mapFacesIn, null, true);
+				
+				if(baseState == null)
+					loadTransformation();
 				for (EnumFacing facing : EnumFacing.values()) {
-					quads.put(facing, makeBakedQuad(blockPart, mapFacesIn.get(facing), texture, facing, ModelRotation.X0_Y0, false));
+					quads.put(facing, makeBakedQuad(blockPart, mapFacesIn.get(facing), texture, facing, baseState, false));
 				}
 				
 				if(side == null)
@@ -111,7 +148,30 @@ public class CreativeBakedModel implements IBakedModel {
 		
 		return getWoodenTexture();
 	}
+	
+	private static ImmutableMap<TransformType, TRSRTransformation> cameraTransforms;
+	private static TRSRTransformation baseState;
 
+	public static final void loadTransformation()
+	{
+		Map<TransformType, TRSRTransformation> tMap = Maps.newHashMap();
+        tMap.putAll(IPerspectiveAwareModel.MapWrapper.getTransforms(ItemCameraTransforms.DEFAULT));
+        tMap.putAll(IPerspectiveAwareModel.MapWrapper.getTransforms(ModelRotation.X0_Y0));
+        IModelState perState = new SimpleModelState(ImmutableMap.copyOf(tMap));
+        baseState = perState.apply(Optional.<IModelPart>absent()).or(TRSRTransformation.identity());
+        cameraTransforms = ImmutableMap.copyOf(tMap);
+	}
+	
+	@Override
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType)
+    {
+		if(cameraTransforms == null)
+			loadTransformation();
+        //return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, cameraTransforms, cameraTransformType);
+		Pair<? extends IBakedModel, Matrix4f> pair = ((IPerspectiveAwareModel) mc.getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState())).handlePerspective(cameraTransformType);
+		return pair.of(this, pair.getRight());
+    }
+	
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() {
 		return ItemCameraTransforms.DEFAULT;
@@ -119,7 +179,7 @@ public class CreativeBakedModel implements IBakedModel {
 
 	@Override
 	public ItemOverrideList getOverrides() {
-		return ItemOverrideList.NONE;
+		return customOverride;
 	}
 
 }

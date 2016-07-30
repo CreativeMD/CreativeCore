@@ -1,17 +1,19 @@
 package com.creativemd.creativecore.client.rendering.model;
 
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 
-public class CreativeCustomModelLoader implements ICustomModelLoader {
+public class CreativeCustomModelLoader implements ICustomModelLoader {//, ItemMeshDefinition{
 
 	@Override
 	public void onResourceManagerReload(IResourceManager resourceManager) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -29,5 +31,13 @@ public class CreativeCustomModelLoader implements ICustomModelLoader {
 		return CreativeModel.instance;
 		//return ModelLoaderRegistry.getModel(new ResourceLocation("minecraft", "block"));
 	}
+
+	/*@Override
+	public ModelResourceLocation getModelLocation(ItemStack stack) {
+		for (ResourceLocation location : CreativeBlockRenderHelper.blocks.keySet()) {
+			if(location.getResourceDomain().equals(modelLocation.getResourceDomain()) && location.getResourcePath().equals(modelLocation.getResourcePath()))
+				return true;
+		return;
+	}*/
 
 }

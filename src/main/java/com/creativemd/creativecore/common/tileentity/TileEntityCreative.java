@@ -59,7 +59,7 @@ public abstract class TileEntityCreative extends TileEntity{
 		if(!worldObj.isRemote)
 		{
 			IBlockState state = worldObj.getBlockState(pos);
-			worldObj.notifyBlockUpdate(pos, state, state, 3); //TODO CHECK IF IT'S THE RIGHT METHOD
+			worldObj.notifyBlockUpdate(pos, state, state, 3);
 			//worldObj.markBlockForUpdate(pos);
 			//markDirty();
 		}
