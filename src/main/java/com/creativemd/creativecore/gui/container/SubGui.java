@@ -30,6 +30,10 @@ public abstract class SubGui extends GuiParent {
 	
 	private CreativeCoreEventBus eventBus;
 	
+	public SubGui() {
+		this(150, 150);
+	}
+	
 	public SubGui(int width, int height) {
 		this("gui", width, height);
 	}
