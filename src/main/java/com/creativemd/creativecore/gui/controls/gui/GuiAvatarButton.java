@@ -9,7 +9,7 @@ import com.creativemd.creativecore.common.utils.ColorUtils;
 
 import net.minecraft.client.gui.FontRenderer;
 
-public abstract class GuiAvatarButton extends GuiAvatarLabel{
+public abstract class GuiAvatarButton extends GuiAvatarLabelClickable{
 	
 	public GuiAvatarButton(String caption, int x, int y, Avatar avatar) {
 		super(caption, x, y, ColorUtils.WHITE, avatar);
