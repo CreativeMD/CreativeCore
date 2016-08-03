@@ -12,27 +12,34 @@ import com.creativemd.creativecore.gui.client.style.Style;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 public class GuiColorPlate extends GuiControl {
 	
 	private Color color;
 	private DisplayStyle colorPlate;
 	
-	public GuiColorPlate(String name, int x, int y, int width, int height, Vec3d color) {
+	public GuiColorPlate(String name, int x, int y, int width, int height, Vec3i color) {
 		super(name, x, y, width, height);
 		
 		this.marginWidth = 0;
+		setColor(new Color(color.getX(), color.getY(), color.getZ()));
 	}
 	
-	public void setColor(Vec3d color)
+	public void setColor(Vec3i color)
 	{
-		setColor(new Color((byte)color.xCoord, (byte)color.yCoord, (byte)color.zCoord));
+		setColor(new Color((byte)color.getX(), (byte)color.getY(), (byte)color.getZ()));
 	}
 	
 	public void setColor(Color color)
 	{
 		this.color = color;
 		this.colorPlate = new ColoredDisplayStyle(color);
+	}
+	
+	public Color getColor()
+	{
+		return color;
 	}
 
 	@Override
