@@ -19,6 +19,26 @@ public interface IControlParent {
 	
 	public EntityPlayer getPlayer();
 	
+	public default void removeControls(String... exclude)
+	{
+		List controls = getControls();
+		int i = 0;
+		while (i < controls.size()){
+			boolean canBeDeleted = true;
+			if(controls.get(i) instanceof CoreControl)
+				for(int j = 0; j < exclude.length; j++)
+					if(((CoreControl) controls.get(i)).name.contains(exclude[j]))
+					{
+						canBeDeleted = false;
+						break;
+					}
+			if(canBeDeleted)
+				controls.remove(i);
+			else
+				i++;
+		}
+	}
+	
 	public default void moveControlBehind(CoreControl control, CoreControl controlInBack)
 	{
 		List controls = getControls();
