@@ -14,9 +14,19 @@ public class GuiLabel extends GuiControl{
 		this(caption, x, y, 14737632);
 	}
 	
+	public GuiLabel(String name, String caption, int x, int y)
+	{
+		this(name, caption, x, y, 14737632);
+	}
+	
+	public GuiLabel(String name, String caption, int x, int y, int color)
+	{
+		this(name, caption, x, y, GuiRenderHelper.instance.getStringWidth(caption), GuiRenderHelper.instance.getFontHeight(), color);
+	}
+	
 	public GuiLabel(String caption, int x, int y, int color)
 	{
-		this(caption, x, y, GuiRenderHelper.instance.getStringWidth(caption), GuiRenderHelper.instance.getFontHeight(), color);
+		this(caption, caption, x, y, color);
 	}
 	
 	public GuiLabel(String caption, int x, int y, int width, int height, int color)
