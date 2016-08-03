@@ -2,6 +2,8 @@ package com.creativemd.creativecore.client.rendering.model;
 
 import java.util.HashMap;
 
+import com.creativemd.creativecore.core.CreativeCoreClient;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
@@ -10,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,6 +33,14 @@ public class CreativeBlockRenderHelper {
 	{
 		blocks.put(block.getRegistryName(), block);
 		registerBlockItem(block);
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			registerCreativeRenderedBlockClient(block);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private static void registerCreativeRenderedBlockClient(Block block)
+	{
+		CreativeCoreClient.registerBlockColorHandler(block);
 	}
 	
 	private static void registerBlockItem(Block toRegister){

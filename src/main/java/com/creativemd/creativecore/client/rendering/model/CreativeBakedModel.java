@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.client.rendering.model;
 
+import java.time.chrono.MinguoEra;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.Map;
 import javax.vecmath.Matrix4f;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.util.Color;
 import org.lwjgl.util.vector.Vector3f;
 
 import com.creativemd.creativecore.common.block.TileEntityState;
+import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -19,7 +22,10 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.EnumFaceDirection;
+import net.minecraft.client.renderer.EnumFaceDirection.VertexInformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BakedQuadRetextured;
 import net.minecraft.client.renderer.block.model.BlockFaceUV;
 import net.minecraft.client.renderer.block.model.BlockPart;
 import net.minecraft.client.renderer.block.model.BlockPartFace;
@@ -31,13 +37,21 @@ import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.SimpleModelState;
@@ -75,9 +89,10 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
     }
 	
 	@Override
-	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {		
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 		ArrayList<BakedQuad> baked = new ArrayList<>();
 		Block renderBlock = null;
+		
 		if(state == null && lastItemStack != null)
 		{
 			renderBlock = Block.getBlockFromItem(lastItemStack.getItem());
@@ -89,40 +104,77 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			ArrayList<CubeObject> cubes = ((ICreativeRendered)renderBlock).getRenderingCubes(state, te, state != null ? null : lastItemStack);
 			for (int i = 0; i < cubes.size(); i++) {
 				CubeObject cube = cubes.get(i);
+				//CubeObject invCube = new CubeObject(cube.minX, cube.minY, cube.minZ, cube.maxX-1, cube.maxY-1, cube.maxZ-1);
 				
 				Block block = renderBlock;
 				if(cube.block != null)
 					block = cube.block;
-				IBlockState newState = null;
-				if(cube.meta != -1)
-					newState = block.getStateFromMeta(cube.meta);
-				else
-					newState = block.getDefaultState();
-				TextureAtlasSprite texture = mc.getBlockRendererDispatcher().getModelForState(newState).getParticleTexture();;
-				HashMap<EnumFacing, BakedQuad> quads = new HashMap<>();
-				Map<EnumFacing, BlockPartFace> mapFacesIn = new HashMap<>();
 				
-				for (EnumFacing facing : EnumFacing.values()) {
-					mapFacesIn.put(facing, new BlockPartFace(facing, -1, "", new BlockFaceUV(null, 0)));
-				}
 				
-				BlockPart blockPart = new BlockPart(new Vector3f(cube.minX*16F, cube.minY*16F, cube.minZ*16F),
-						new Vector3f(cube.maxX*16F, cube.maxY*16F, cube.maxZ*16F), mapFacesIn, null, true);
 				
-				if(baseState == null)
-					loadTransformation();
-				for (EnumFacing facing : EnumFacing.values()) {
-					quads.put(facing, makeBakedQuad(blockPart, mapFacesIn.get(facing), texture, facing, baseState, false));
-				}
+				//int overridenTint = -1;
+				//if(lastItemStack != null)
+					//overridenTint = mc.getItemColors().getColorFromItemstack(new ItemStack(block), -1);
 				
-				if(side == null)
-				{
-					for (BakedQuad bakedQuad : quads.values()) {
-						baked.add(bakedQuad);
+				IBlockState newState = cube.getBlockState(block);
+				if(state != null)
+					newState = newState.getActualState(te.getWorld(), te.getPos()) ;
+				
+				BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+				if(layer != null && !block.canRenderInLayer(newState, layer))
+					continue;
+				
+				IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
+				List<BakedQuad> blockQuads = blockModel.getQuads(newState, side, rand);
+				for (int j = 0; j < blockQuads.size(); j++) {
+					BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, -1);
+					
+					EnumFacing facing = side;
+					if(facing == null)
+						facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
+					
+					EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
+					
+					/*float scaleX = 1;
+					float scaleY = 1;
+					float scaleZ = 1;
+					
+					int lastIndexX = -1;
+					int lastIndexY = -1;
+					int lastIndexZ = -1;
+					for (int k = 0; k < 4; k++) {
+						VertexInformation vertex = direction.getVertexInformation(k);
+						int index = k * quad.getFormat().getIntegerSize();
+						float newX = cube.getVertexInformationPosition(vertex.xIndex);
+						float newY = cube.getVertexInformationPosition(vertex.yIndex);
+						float newZ = cube.getVertexInformationPosition(vertex.zIndex);
+						
+						float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
+						float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
+						float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);
+						
+						
+					}*/
+					
+					for (int k = 0; k < 4; k++) {
+						VertexInformation vertex = direction.getVertexInformation(k);
+						
+						int index = k * quad.getFormat().getIntegerSize();
+						float newX = cube.getVertexInformationPosition(vertex.xIndex);
+						float newY = cube.getVertexInformationPosition(vertex.yIndex);
+						float newZ = cube.getVertexInformationPosition(vertex.zIndex);
+						
+						/*float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
+						float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
+						float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);*/
+						
+						quad.getVertexData()[index] = Float.floatToIntBits(newX);
+						quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
+						quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);
 					}
+					
+					baked.add(quad);
 				}
-				else
-					baked.add(quads.get(side));
 			}
 		}
 		return baked;

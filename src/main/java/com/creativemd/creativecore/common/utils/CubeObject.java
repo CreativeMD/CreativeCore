@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.utils;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -84,6 +85,14 @@ public class CubeObject {
 		return this;
 	}
 	
+	public IBlockState getBlockState(Block block)
+	{
+		if(meta != -1)
+			return block.getStateFromMeta(meta);
+		else
+			return block.getDefaultState();
+	}
+	
 	public Vec3d getSize()
 	{
 		return new Vec3d(maxX-minX, maxY-minY, maxZ-minZ);
@@ -146,5 +155,24 @@ public class CubeObject {
 		CubeObject rotateCube = new CubeObject(cube);
 		RotationUtils.applyCubeRotation(rotateCube, direction, center);
 		return rotateCube;
+	}
+
+	public float getVertexInformationPosition(int index) {
+		switch(EnumFacing.getFront(index))
+		{
+		case EAST:
+			return maxX;
+		case WEST:
+			return minX;	
+		case UP:
+			return maxY;
+		case DOWN:
+			return minY;
+		case SOUTH:
+			return maxZ;
+		case NORTH:
+			return minZ;
+		}
+		return 0;
 	}
 }
