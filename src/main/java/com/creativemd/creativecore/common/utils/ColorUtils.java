@@ -23,9 +23,9 @@ public class ColorUtils {
         return new Color(r, g, b, a);
 	}
 	
-	public static int RGBToInt(Vec3d color)
+	public static int RGBToInt(Vec3i color)
 	{
-		return ((int)color.xCoord & 255) << 16 | ((int)color.yCoord & 255) << 8 | (int)color.zCoord & 255;
+		return ((int)color.getX() & 255) << 16 | ((int)color.getY() & 255) << 8 | (int)color.getZ() & 255;
 	}
 	
 	public static Vec3i IntToRGB(int color)
