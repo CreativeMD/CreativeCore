@@ -2,29 +2,21 @@ package com.creativemd.creativecore.core;
 
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.client.rendering.model.CreativeCustomModelLoader;
-import com.creativemd.creativecore.common.utils.ColorUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.ItemHandlerHelper;
-import scala.collection.parallel.ParIterableLike.Min;
 
 @SideOnly(Side.CLIENT)
 public class CreativeCoreClient {
@@ -37,8 +29,24 @@ public class CreativeCoreClient {
 			mc.getFramebuffer().enableStencil();
 		
 		ModelLoaderRegistry.registerLoader(new CreativeCustomModelLoader());
+	}
+	
+	public static ItemMeshDefinition mesh = new ItemMeshDefinition() {
 		
-		
+		@Override
+		public ModelResourceLocation getModelLocation(ItemStack stack) {
+			return new ModelResourceLocation(stack.getItem().getRegistryName(), "inventory");
+		}
+	};
+	
+	public static void registerBlockItem(Block toRegister){
+		Item item = Item.getItemFromBlock(toRegister);
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesh);
+	}
+	
+	public static void registerItemRenderer(Item item)
+	{
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 	
 	public static IItemColor itemColor = new IItemColor() {

@@ -19,20 +19,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CreativeBlockRenderHelper {
 	
-	public static ItemMeshDefinition mesh = new ItemMeshDefinition() {
-		
-		@Override
-		public ModelResourceLocation getModelLocation(ItemStack stack) {
-			return new ModelResourceLocation(stack.getItem().getRegistryName().toString(), "inventory");
-		}
-	};
-	
 	public static HashMap<ResourceLocation, Block> blocks = new HashMap<>();
 	
 	public static void registerCreativeRenderedBlock(Block block)
 	{
 		blocks.put(block.getRegistryName(), block);
-		registerBlockItem(block);
+		CreativeCoreClient.registerBlockItem(block);
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 			registerCreativeRenderedBlockClient(block);
 	}
@@ -41,11 +33,6 @@ public class CreativeBlockRenderHelper {
 	private static void registerCreativeRenderedBlockClient(Block block)
 	{
 		CreativeCoreClient.registerBlockColorHandler(block);
-	}
-	
-	private static void registerBlockItem(Block toRegister){
-		Item item = Item.getItemFromBlock(toRegister);
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesh);
 	}
 	
 }
