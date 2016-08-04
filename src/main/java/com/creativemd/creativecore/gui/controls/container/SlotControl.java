@@ -68,6 +68,9 @@ public class SlotControl extends ContainerControl{
 			if(nbt.hasKey("id"))
 				stack = ItemStack.loadItemStackFromNBT(nbt);
 			slot.putStack(stack);
+			if(!ItemStack.areItemStacksEqual(lastSended, slot.getStack()))
+				raiseEvent(new SlotChangeEvent(this));
+			lastSended = stack;		
 			ItemStack dragStack = null;
 			if(nbt.hasKey("drag"))
 				dragStack = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("drag"));

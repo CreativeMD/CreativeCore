@@ -36,7 +36,7 @@ public abstract class SubContainer extends ContainerParent{
 		super(name);
 		this.player = player;
 		eventBus = new CreativeCoreEventBus();
-		eventBus.RegisterEventListener(this);
+		addListener(this);
 	}
 	
 	
