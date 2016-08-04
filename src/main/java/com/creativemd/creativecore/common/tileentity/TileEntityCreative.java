@@ -60,6 +60,7 @@ public abstract class TileEntityCreative extends TileEntity{
 		{
 			IBlockState state = worldObj.getBlockState(pos);
 			worldObj.notifyBlockUpdate(pos, state, state, 3);
+			worldObj.markChunkDirty(getPos(), this);
 			//worldObj.markBlockForUpdate(pos);
 			//markDirty();
 		}
