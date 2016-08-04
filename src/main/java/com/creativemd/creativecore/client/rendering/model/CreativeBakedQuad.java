@@ -16,9 +16,9 @@ public class CreativeBakedQuad extends BakedQuad {
 	public static CreativeBakedQuad lastRenderedQuad = null;
 	public final CubeObject cube;
 	
-	public CreativeBakedQuad(BakedQuad quad, CubeObject cube, int tintedColor)
+	public CreativeBakedQuad(BakedQuad quad, CubeObject cube, int tintedColor, boolean shouldOverrideColor)
     {
-        super(Arrays.copyOf(quad.getVertexData(), quad.getVertexData().length), /*tintedColor*/quad.getTintIndex(), FaceBakery.getFacingFromVertexData(quad.getVertexData()), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
+        super(Arrays.copyOf(quad.getVertexData(), quad.getVertexData().length), shouldOverrideColor ? tintedColor : quad.getTintIndex(), FaceBakery.getFacingFromVertexData(quad.getVertexData()), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
         this.cube = cube;
     }
 	

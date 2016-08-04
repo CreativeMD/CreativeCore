@@ -98,10 +98,16 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			renderBlock = Block.getBlockFromItem(lastItemStack.getItem());
 		}else if(state != null)
 			renderBlock = state.getBlock();
+		
+		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
+		ArrayList<CubeObject> cubes = null;
 		if(renderBlock instanceof ICreativeRendered)
+			cubes = ((ICreativeRendered)renderBlock).getRenderingCubes(state, te, state != null ? null : lastItemStack);
+		else if(lastItemStack != null && lastItemStack.getItem() instanceof ICreativeRendered)
+			cubes = ((ICreativeRendered) lastItemStack.getItem()).getRenderingCubes(null, null, lastItemStack);
+		
+		if(cubes != null)
 		{
-			TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
-			ArrayList<CubeObject> cubes = ((ICreativeRendered)renderBlock).getRenderingCubes(state, te, state != null ? null : lastItemStack);
 			for (int i = 0; i < cubes.size(); i++) {
 				CubeObject cube = cubes.get(i);
 				//CubeObject invCube = new CubeObject(cube.minX, cube.minY, cube.minZ, cube.maxX-1, cube.maxY-1, cube.maxZ-1);
@@ -109,8 +115,6 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				Block block = renderBlock;
 				if(cube.block != null)
 					block = cube.block;
-				
-				
 				
 				//int overridenTint = -1;
 				//if(lastItemStack != null)
@@ -121,40 +125,18 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 					newState = newState.getActualState(te.getWorld(), te.getPos()) ;
 				
 				BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-				if(layer != null && !block.canRenderInLayer(newState, layer))
+				if(layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
 					continue;
 				
 				IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
 				List<BakedQuad> blockQuads = blockModel.getQuads(newState, side, rand);
 				for (int j = 0; j < blockQuads.size(); j++) {
-					BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, -1);
-					
+					BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, cube.color, block.getBlockLayer() != BlockRenderLayer.CUTOUT_MIPPED);
 					EnumFacing facing = side;
 					if(facing == null)
 						facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
 					
 					EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
-					
-					/*float scaleX = 1;
-					float scaleY = 1;
-					float scaleZ = 1;
-					
-					int lastIndexX = -1;
-					int lastIndexY = -1;
-					int lastIndexZ = -1;
-					for (int k = 0; k < 4; k++) {
-						VertexInformation vertex = direction.getVertexInformation(k);
-						int index = k * quad.getFormat().getIntegerSize();
-						float newX = cube.getVertexInformationPosition(vertex.xIndex);
-						float newY = cube.getVertexInformationPosition(vertex.yIndex);
-						float newZ = cube.getVertexInformationPosition(vertex.zIndex);
-						
-						float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
-						float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
-						float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);
-						
-						
-					}*/
 					
 					for (int k = 0; k < 4; k++) {
 						VertexInformation vertex = direction.getVertexInformation(k);
@@ -171,6 +153,43 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 						quad.getVertexData()[index] = Float.floatToIntBits(newX);
 						quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
 						quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);
+						
+						int uvIndex = index + quad.getFormat().getUvOffsetById(0) / 4;
+						
+						float u = 0;
+						float v = 0;
+						switch(facing)
+						{
+						case EAST:
+							newY = 1-newY;
+							newZ = 1-newZ;
+						case WEST:
+							if(facing == EnumFacing.WEST)
+								newY = 1-newY;
+							u = newZ;
+							v = newY;
+							break;
+						case DOWN:
+							newZ = 1-newZ;
+						case UP:
+							u = newX;
+							v = newZ;
+							break;
+						case NORTH:
+							newY = 1-newY;
+							newX = 1-newX;
+						case SOUTH:
+							if(facing == EnumFacing.SOUTH)
+								newY = 1-newY;
+							u = newX;
+							v = newY;
+							break;
+						}
+						u *= 16;
+						v *= 16;
+						
+						quad.getVertexData()[uvIndex] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedU(u));
+						quad.getVertexData()[uvIndex + 1] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedV(v));
 					}
 					
 					baked.add(quad);
