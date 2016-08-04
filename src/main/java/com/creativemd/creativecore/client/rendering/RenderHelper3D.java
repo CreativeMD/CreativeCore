@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL12;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
@@ -17,71 +18,71 @@ public class RenderHelper3D {
 	
 	public static void renderBlock(double x, double y, double z, double width, double height, double length, double rotateX, double rotateY, double rotateZ, double red, double green, double blue, double alpha)
 	{
-		GL11.glPushMatrix();
-		GL11.glTranslated(x, y, z);
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glRotated(rotateX, 1, 0, 0);
-		GL11.glRotated(rotateY, 0, 1, 0);
-		GL11.glRotated(rotateZ, 0, 0, 1);
-		GL11.glScaled(width, height, length);
-		GL11.glColor4d(red, green, blue, alpha);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x, y, z);
+		GlStateManager.enableRescaleNormal();
+		GlStateManager.rotate((float)rotateX, 1, 0, 0);
+		GlStateManager.rotate((float)rotateY, 0, 1, 0);
+		GlStateManager.rotate((float)rotateZ, 0, 0, 1);
+		GlStateManager.scale(width, height, length);
+		GlStateManager.color((float)red, (float)green, (float)blue, (float)alpha);
+		
+		GlStateManager.glBegin(GL11.GL_POLYGON);
+		GlStateManager.glNormal3f(0.0f, 1.0f, 0.0f);
+		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
+		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
+		GlStateManager.glVertex3f(0.5f, 0.5f, 0.5f);
+		GlStateManager.glVertex3f(0.5f, 0.5f, -0.5f);
+		GlStateManager.glVertex3f(-0.5f, 0.5f, -0.5f);
+		GlStateManager.glEnd();
 		
 		GL11.glBegin(GL11.GL_POLYGON);
 		//GL11.glColor4d(red, green, blue, alpha);
-		GL11.glNormal3f(0.0f, 1.0f, 0.0f);
-		GL11.glVertex3f(-0.5f, 0.5f, 0.5f);
-		GL11.glVertex3f(0.5f, 0.5f, 0.5f);
-		GL11.glVertex3f(0.5f, 0.5f, -0.5f);
-		GL11.glVertex3f(-0.5f, 0.5f, -0.5f);
-		GL11.glEnd();
-		
-		GL11.glBegin(GL11.GL_POLYGON);
-		//GL11.glColor4d(red, green, blue, alpha);
-		GL11.glNormal3f(0.0f, 0.0f, 1.0f);
-		GL11.glVertex3f(0.5f, -0.5f, 0.5f);
-		GL11.glVertex3f(0.5f, 0.5f, 0.5f);
-		GL11.glVertex3f(-0.5f, 0.5f, 0.5f);
-		GL11.glVertex3f(-0.5f, -0.5f, 0.5f);
-		GL11.glEnd();
+		GlStateManager.glNormal3f(0.0f, 0.0f, 1.0f);
+		GlStateManager.glVertex3f(0.5f, -0.5f, 0.5f);
+		GlStateManager.glVertex3f(0.5f, 0.5f, 0.5f);
+		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
+		GlStateManager.glVertex3f(-0.5f, -0.5f, 0.5f);
+		GlStateManager.glEnd();
 	 
 		GL11.glBegin(GL11.GL_POLYGON);
 		//GL11.glColor4d(red, green, blue, alpha);
-		GL11.glNormal3f(1.0f, 0.0f, 0.0f);
-		GL11.glVertex3f(0.5f, 0.5f, -0.5f);
-		GL11.glVertex3f(0.5f, 0.5f, 0.5f);
-		GL11.glVertex3f(0.5f, -0.5f, 0.5f);
-		GL11.glVertex3f(0.5f, -0.5f, -0.5f);
-		GL11.glEnd();
+		GlStateManager.glNormal3f(1.0f, 0.0f, 0.0f);
+		GlStateManager.glVertex3f(0.5f, 0.5f, -0.5f);
+		GlStateManager.glVertex3f(0.5f, 0.5f, 0.5f);
+		GlStateManager.glVertex3f(0.5f, -0.5f, 0.5f);
+		GlStateManager.glVertex3f(0.5f, -0.5f, -0.5f);
+		GlStateManager.glEnd();
 	 
 		GL11.glBegin(GL11.GL_POLYGON);
 		//GL11.glColor4d(red, green, blue, alpha);
-		GL11.glNormal3f(-1.0f, 0.0f, 0.0f);
-		GL11.glVertex3f(-0.5f, -0.5f, 0.5f);
-		GL11.glVertex3f(-0.5f, 0.5f, 0.5f);
-		GL11.glVertex3f(-0.5f, 0.5f, -0.5f);
-		GL11.glVertex3f(-0.5f, -0.5f, -0.5f);
-		GL11.glEnd();
+		GlStateManager.glNormal3f(-1.0f, 0.0f, 0.0f);
+		GlStateManager.glVertex3f(-0.5f, -0.5f, 0.5f);
+		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
+		GlStateManager.glVertex3f(-0.5f, 0.5f, -0.5f);
+		GlStateManager.glVertex3f(-0.5f, -0.5f, -0.5f);
+		GlStateManager.glEnd();
 	 
 		GL11.glBegin(GL11.GL_POLYGON);
 		//GL11.glColor4d(red, green, blue, alpha);
-		GL11.glNormal3f(0.0f, -1.0f, 0.0f);
-		GL11.glVertex3f(0.5f, -0.5f, 0.5f);
-		GL11.glVertex3f(-0.5f, -0.5f, 0.5f);
-		GL11.glVertex3f(-0.5f, -0.5f, -0.5f);
-		GL11.glVertex3f(0.5f, -0.5f, -0.5f);
-		GL11.glEnd();
+		GlStateManager.glNormal3f(0.0f, -1.0f, 0.0f);
+		GlStateManager.glVertex3f(0.5f, -0.5f, 0.5f);
+		GlStateManager.glVertex3f(-0.5f, -0.5f, 0.5f);
+		GlStateManager.glVertex3f(-0.5f, -0.5f, -0.5f);
+		GlStateManager.glVertex3f(0.5f, -0.5f, -0.5f);
+		GlStateManager.glEnd();
 	 
 		GL11.glBegin(GL11.GL_POLYGON);
 		//GL11.glColor4d(red, green, blue, alpha);
-		GL11.glNormal3f(0.0f, 0.0f, -1.0f);
-		GL11.glVertex3f(0.5f, 0.5f, -0.5f);
-		GL11.glVertex3f(0.5f, -0.5f, -0.5f);
-		GL11.glVertex3f(-0.5f, -0.5f, -0.5f);
-		GL11.glVertex3f(-0.5f, 0.5f, -0.5f);
-		GL11.glEnd();
+		GlStateManager.glNormal3f(0.0f, 0.0f, -1.0f);
+		GlStateManager.glVertex3f(0.5f, 0.5f, -0.5f);
+		GlStateManager.glVertex3f(0.5f, -0.5f, -0.5f);
+		GlStateManager.glVertex3f(-0.5f, -0.5f, -0.5f);
+		GlStateManager.glVertex3f(-0.5f, 0.5f, -0.5f);
+		GlStateManager.glEnd();
 		
 		
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 	}
 	
 	public static void applyDirection(EnumFacing direction)
