@@ -51,12 +51,18 @@ public class GuiContainerSub extends GuiContainer {
 		//SubGui.itemRender = GuiScreen.itemRender;
 	}
 	
+	public boolean isOpened = false;
+	
 	@Override
 	public void initGui()
     {
 		super.initGui();
-		for (int i = 0; i < layers.size(); i++) {
-			layers.get(i).onOpened();
+		if(!isOpened)
+		{
+			for (int i = 0; i < layers.size(); i++) {
+				layers.get(i).onOpened();
+			}
+			isOpened = true;
 		}
     }
 	
