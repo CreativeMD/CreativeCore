@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.creativemd.creativecore.client.avatar.AvatarItemStack;
 import com.creativemd.creativecore.command.GuiCommand;
+import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
@@ -54,6 +55,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -145,7 +147,7 @@ public class CreativeCore {
 			}
 		});
 		
-		//EntityRegistry.registerModEntity(EntitySit.class, "Sit", 0, this, 250, 250, true);
+		EntityRegistry.registerModEntity(EntitySit.class, "Sit", 0, this, 250, 250, true);
 		
 		//Init Packets
 		CreativeCorePacket.registerPacket(GuiUpdatePacket.class, "guiupdatepacket");
