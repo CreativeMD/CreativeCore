@@ -35,4 +35,8 @@ public class ColorUtils {
         float b = (float)(color & 255);
         return new Vec3i(r, g, b);
 	}
+
+	public static Vec3i colorToVec(Color color) {
+		return new Vec3i(color.getRed(), color.getGreen(), color.getBlue());
+	}
 }
