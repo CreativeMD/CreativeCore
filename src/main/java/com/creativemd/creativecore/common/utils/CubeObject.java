@@ -13,7 +13,7 @@ public class CubeObject {
 	
 	public Block block;
 	public int meta = 0;
-	public int color = ColorUtils.WHITE;
+	public int color = -1;
 	
 	public float minX;
 	public float minY;
@@ -157,7 +157,26 @@ public class CubeObject {
 		RotationUtils.applyCubeRotation(rotateCube, direction, center);
 		return rotateCube;
 	}
-
+	
+	public float getVertexInformationPositionOposite(int index) {
+		switch(EnumFacing.getFront(index).getOpposite())
+		{
+		case EAST:
+			return maxX;
+		case WEST:
+			return minX;	
+		case UP:
+			return maxY;
+		case DOWN:
+			return minY;
+		case SOUTH:
+			return maxZ;
+		case NORTH:
+			return minZ;
+		}
+		return 0;
+	}
+	
 	public float getVertexInformationPosition(int index) {
 		switch(EnumFacing.getFront(index))
 		{

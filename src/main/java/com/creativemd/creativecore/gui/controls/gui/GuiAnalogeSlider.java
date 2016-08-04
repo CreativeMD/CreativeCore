@@ -46,7 +46,7 @@ public class GuiAnalogeSlider extends GuiControl
 		int sliderWidth = 4;
 		float percent = getPercentage();
 		
-		int posX = 1+(int)((this.width - (1+sliderWidth)) * percent);
+		int posX = (int)((this.width - (borderWidth*2+sliderWidth)) * percent);
 		style.getFace(this).renderStyle(posX, 0, helper, 4, height);
 		
 		String text = getTextByValue();
