@@ -1,13 +1,53 @@
 package com.creativemd.creativecore.common.utils;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 public class RotationUtils {
 	
-	public static enum Axis {
+	public static int getAxisIndex(Axis axis)
+	{
+		switch (axis) {
+		case X:
+			return 0;
+		case Y:
+			return 1;
+		case Z:
+			return 2;
+		default:
+			return 0;
+		}
+	}
+	
+	public static Axis getAxisFromIndex(int index)
+	{
+		if(index == 0)
+			return Axis.X;
+		if(index == 1)
+			return Axis.Y;
+		if(index == 2)
+			return Axis.Z;
+		return null;
+	}
+	
+	public static EnumFacing getFacingFromAxis(Axis axis)
+	{
+		switch (axis) {
+		case X:
+			return EnumFacing.EAST;
+		case Y:
+			return EnumFacing.UP;
+		case Z:
+			return EnumFacing.SOUTH;
+		default:
+			return null;
+		}
+	}
+	
+	/*public static enum Axis {
 		
 		Xaxis, Yaxis, Zaxis;
 		
@@ -74,7 +114,7 @@ public class RotationUtils {
 				return Zaxis;
 			return null;
 		}
-	}
+	}*/
 	
 	public static Vec3d applyVectorRotation(Vec3d vector, EnumFacing EnumFacing)
 	{
@@ -190,7 +230,7 @@ public class RotationUtils {
 		}
 	}
 	
-	public static EnumFacing getEnumFacingFromVec(Vec3d vec)
+	public static EnumFacing getFacingFromVec(Vec3d vec)
 	{
 		if(vec.xCoord == 1 && vec.yCoord == 0 && vec.zCoord == 0)
 			return EnumFacing.EAST;
@@ -207,9 +247,9 @@ public class RotationUtils {
 		return null;
 	}
 
-	public static EnumFacing rotateEnumFacing(EnumFacing EnumFacing, EnumFacing EnumFacing2) {
+	public static EnumFacing rotateFacing(EnumFacing EnumFacing, EnumFacing EnumFacing2) {
 		Vec3d vec = new Vec3d(EnumFacing.getDirectionVec());
-		return getEnumFacingFromVec(applyVectorRotation(vec, EnumFacing2));
+		return getFacingFromVec(applyVectorRotation(vec, EnumFacing2));
 	}
 	
 }
