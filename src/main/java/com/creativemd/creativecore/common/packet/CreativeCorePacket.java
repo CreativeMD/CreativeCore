@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -146,6 +147,15 @@ public abstract class CreativeCorePacket {
 	public static ItemStack readItemStack(ByteBuf buf)
 	{
 		return ByteBufUtils.readItemStack(buf);
+	}
+	
+	public static EnumFacing readFacing(ByteBuf buf)
+	{
+		return EnumFacing.getFront(buf.readInt());
+	}
+	
+	public static void writeFacing(ByteBuf buf, EnumFacing facing) {
+		buf.writeInt(facing.getIndex());
 	}
 	
 	/*public static void writeDirection(ByteBuf buf, ForgeDirection direction)
