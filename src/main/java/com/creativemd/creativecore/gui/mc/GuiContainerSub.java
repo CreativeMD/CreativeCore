@@ -39,6 +39,7 @@ public class GuiContainerSub extends GuiContainer {
 		layers = new ArrayList<SubGui>();
 		gui.container = container;
 		gui.gui = this;
+		container.addListener(gui);
 		this.layers.add(gui);
 		
 		
