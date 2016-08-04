@@ -7,6 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 public class CubeObject {
 	
@@ -73,7 +74,7 @@ public class CubeObject {
 		this.normalBlock = normalBlock;
 	}*/
 	
-	public CubeObject setColor(Vec3d color)
+	public CubeObject setColor(Vec3i color)
 	{
 		this.setColor(ColorUtils.RGBToInt(color));
 		return this;

@@ -38,6 +38,12 @@ public class GuiHandler implements IGuiHandler {
 		return guihandlers.get(id);
 	}
 	
+	public static void openGuiItem(EntityPlayer player, World world)
+	{
+		if(!world.isRemote)
+			((EntityPlayerMP)player).openGui(CreativeCore.instance, 1, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+	}
+	
 	public static void openGui(EntityPlayer player, World world, BlockPos pos)
 	{
 		if(!world.isRemote)
