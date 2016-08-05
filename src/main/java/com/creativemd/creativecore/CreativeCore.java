@@ -14,6 +14,7 @@ import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
+import com.creativemd.creativecore.common.packet.gui.GuiNBTPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
 import com.creativemd.creativecore.common.utils.ColorUtils;
@@ -155,6 +156,7 @@ public class CreativeCore {
 		CreativeCorePacket.registerPacket(OpenGuiPacket.class, "opengui");
 		CreativeCorePacket.registerPacket(BlockUpdatePacket.class, "blockupdatepacket");
 		CreativeCorePacket.registerPacket(ContainerControlUpdatePacket.class, "containercontrolpacket");
+		CreativeCorePacket.registerPacket(GuiNBTPacket.class, "guinbtpacket");
 		
 		MinecraftForge.EVENT_BUS.register(guiTickHandler);
 		

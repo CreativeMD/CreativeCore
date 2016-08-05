@@ -3,6 +3,7 @@ package com.creativemd.creativecore.gui.container;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
+import com.creativemd.creativecore.common.packet.gui.GuiNBTPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.event.CreativeCoreEventBus;
 import com.creativemd.creativecore.gui.ContainerControl;
@@ -17,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -173,6 +175,11 @@ public abstract class SubContainer extends ContainerParent{
 	}
 	
 	//================NETWORK================
+	
+	public void sendNBTToGui(NBTTagCompound nbt)
+	{
+		PacketHandler.sendPacketToPlayer(new GuiNBTPacket(nbt), (EntityPlayerMP) player);
+	}
 	
 	public void sendNBTUpdate(NBTTagCompound nbt)
 	{

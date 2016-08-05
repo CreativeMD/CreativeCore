@@ -31,7 +31,7 @@ public abstract class SubGui extends GuiParent {
 	private CreativeCoreEventBus eventBus;
 	
 	public SubGui() {
-		this(150, 150);
+		this(176, 166);
 	}
 	
 	public SubGui(int width, int height) {
@@ -176,9 +176,9 @@ public abstract class SubGui extends GuiParent {
 	
 	//================NETWORK================
 	
-	public void readFromOpeningNBT(NBTTagCompound nbt){}
+	/*public void readFromOpeningNBT(NBTTagCompound nbt){}*/
 	
-	public void readFromNBT(NBTTagCompound nbt){}
+	public void receiveContainerPacket(NBTTagCompound nbt) {}
 	
 	public void sendPacketToServer(NBTTagCompound nbt)
 	{
