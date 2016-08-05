@@ -263,7 +263,7 @@ public abstract class GuiControl extends CoreControl{
 		
 		GL11.glEnable(GL11.GL_STENCIL_TEST);
 		
-		//prepareContentStencil(helper, relativeMaximumRect); TODO NOT FIXED YET
+		//prepareContentStencil(helper, relativeMaximumRect);
 		
 		//prepareStencil(x, y, scale, helper, maxWidth, maxHeight);
 		

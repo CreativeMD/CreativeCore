@@ -17,7 +17,7 @@ public class GuiInvSelectorExtension extends GuiComboBoxExtension{
 	public GuiInvSelectorExtension(String name, GuiComboBox comboBox, int x, int y, int width, int height, ArrayList<String> lines, ArrayList<ItemStack> stacks) {
 		super(name, comboBox, x, y, width, height, lines);
 		this.stacks = stacks;
-		refreshControls();
+		reloadControls();
 	}
 	
 	

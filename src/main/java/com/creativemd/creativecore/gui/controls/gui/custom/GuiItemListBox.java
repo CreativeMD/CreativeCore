@@ -16,7 +16,7 @@ public class GuiItemListBox extends GuiListBox{
 	public GuiItemListBox(String name, int x, int y, int width, int height, ArrayList<ItemStack> stacks,  ArrayList<String> lines) {
 		super(name, x, y, width, height, lines);
 		this.stacks = stacks;
-		refreshControls();
+		reloadControls();
 	}
 	
 	@Override
@@ -24,14 +24,14 @@ public class GuiItemListBox extends GuiListBox{
 	{
 		stacks.clear();
 		super.clear();
-		refreshControls();
+		reloadControls();
 	}
 	
 	public void add(String input, ItemStack stack)
 	{
 		stacks.add(stack);
 		lines.add(input);
-		refreshControls();
+		reloadControls();
 	}
 	
 	public ItemStack getSelectedStack()
