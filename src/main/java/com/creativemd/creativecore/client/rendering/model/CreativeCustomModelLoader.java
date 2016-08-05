@@ -19,6 +19,10 @@ public class CreativeCustomModelLoader implements ICustomModelLoader {//, ItemMe
 
 	@Override
 	public boolean accepts(ResourceLocation modelLocation) {
+		for (ResourceLocation location : CreativeBlockRenderHelper.items.keySet()) {
+			if(location.getResourceDomain().equals(modelLocation.getResourceDomain()) && location.getResourcePath().equals(modelLocation.getResourcePath()))
+				return true;
+		}
 		for (ResourceLocation location : CreativeBlockRenderHelper.blocks.keySet()) {
 			if(location.getResourceDomain().equals(modelLocation.getResourceDomain()) && location.getResourcePath().equals(modelLocation.getResourcePath()))
 				return true;

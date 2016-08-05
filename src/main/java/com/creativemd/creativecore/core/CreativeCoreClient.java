@@ -98,6 +98,11 @@ public class CreativeCoreClient {
 		}
 	};
 	
+	public static void registerItemColorHandler(Item item)
+	{
+		mc.getItemColors().registerItemColorHandler(itemColor, item);
+	}
+	
 	public static void registerBlockColorHandler(Block block)
 	{
 		mc.getItemColors().registerItemColorHandler(itemColor, block);
