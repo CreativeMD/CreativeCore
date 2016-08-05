@@ -20,6 +20,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CreativeBlockRenderHelper {
 	
 	public static HashMap<ResourceLocation, Block> blocks = new HashMap<>();
+	public static HashMap<ResourceLocation, Item> items = new HashMap<>();
+	
+	public static void registerCreativeRenderedItem(Item item)
+	{
+		items.put(item.getRegistryName(), item);
+		CreativeCoreClient.registerItemRenderer(item);
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			registerCreativeRenderedItemClient(item);
+	}
 	
 	public static void registerCreativeRenderedBlock(Block block)
 	{
@@ -27,6 +36,12 @@ public class CreativeBlockRenderHelper {
 		CreativeCoreClient.registerBlockItem(block);
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 			registerCreativeRenderedBlockClient(block);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private static void registerCreativeRenderedItemClient(Item item)
+	{
+		CreativeCoreClient.registerItemColorHandler(item);
 	}
 	
 	@SideOnly(Side.CLIENT)
