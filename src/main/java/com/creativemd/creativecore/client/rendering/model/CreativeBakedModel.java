@@ -99,13 +99,23 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		}else if(state != null)
 			renderBlock = state.getBlock();
 		
+		//mc.getRenderItem().getItemModelMesher().getModelManager().getModel(modelLocation);
+		
 		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
 		ArrayList<CubeObject> cubes = null;
-		if(renderBlock instanceof ICreativeRendered)
-			cubes = ((ICreativeRendered)renderBlock).getRenderingCubes(state, te, state != null ? null : lastItemStack);
-		else if(lastItemStack != null && lastItemStack.getItem() instanceof ICreativeRendered)
-			cubes = ((ICreativeRendered) lastItemStack.getItem()).getRenderingCubes(null, null, lastItemStack);
 		
+		ICreativeRendered renderer = null;
+		if(renderBlock instanceof ICreativeRendered)
+			renderer = (ICreativeRendered)renderBlock;
+		else if(lastItemStack != null && lastItemStack.getItem() instanceof ICreativeRendered)
+			renderer = (ICreativeRendered) lastItemStack.getItem();
+		
+		if(renderer != null)
+			cubes = renderer.getRenderingCubes(state, te, state != null ? null : lastItemStack);
+		
+		if(renderer instanceof IExtendedCreativeRendered)
+			baked.addAll(((IExtendedCreativeRendered) renderer).getSpecialBakedQuads(state, te, side, rand, state != null ? null : lastItemStack));
+			
 		if(cubes != null)
 		{
 			for (int i = 0; i < cubes.size(); i++) {
@@ -185,6 +195,13 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 							v = newY;
 							break;
 						}
+						
+						u = Math.abs(u);
+						if(u > 1)
+							u %= 1;
+						v = Math.abs(v);
+						if(v > 1)
+							v %= 1;
 						u *= 16;
 						v *= 16;
 						
