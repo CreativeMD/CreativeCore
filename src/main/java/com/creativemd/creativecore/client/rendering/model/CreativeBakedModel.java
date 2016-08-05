@@ -9,12 +9,14 @@ import java.util.Map;
 import javax.vecmath.Matrix4f;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.conn.routing.RouteInfo.LayerType;
 import org.lwjgl.util.Color;
 import org.lwjgl.util.vector.Vector3f;
 
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.creativecore.common.utils.RenderCubeObject;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -23,6 +25,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EnumFaceDirection;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.EnumFaceDirection.VertexInformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BakedQuadRetextured;
@@ -41,6 +44,7 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -91,6 +95,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 		ArrayList<BakedQuad> baked = new ArrayList<>();
+		
 		Block renderBlock = null;
 		
 		if(state == null && lastItemStack != null)
@@ -102,7 +107,9 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		//mc.getRenderItem().getItemModelMesher().getModelManager().getModel(modelLocation);
 		
 		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
-		ArrayList<CubeObject> cubes = null;
+		ItemStack stack = state != null ? null : lastItemStack;
+		
+		ArrayList<RenderCubeObject> cubes = null;
 		
 		ICreativeRendered renderer = null;
 		if(renderBlock instanceof ICreativeRendered)
@@ -110,16 +117,32 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		else if(lastItemStack != null && lastItemStack.getItem() instanceof ICreativeRendered)
 			renderer = (ICreativeRendered) lastItemStack.getItem();
 		
-		if(renderer != null)
-			cubes = renderer.getRenderingCubes(state, te, state != null ? null : lastItemStack);
+		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 		
 		if(renderer instanceof IExtendedCreativeRendered)
-			baked.addAll(((IExtendedCreativeRendered) renderer).getSpecialBakedQuads(state, te, side, rand, state != null ? null : lastItemStack));
+			baked.addAll(((IExtendedCreativeRendered) renderer).getSpecialBakedQuads(state, te, side, rand, stack));
+		
+		if(side == null)
+			return baked;
+		
+		if(renderer != null)
+		{
+			List<BakedQuad> cached = renderer.getCachedModel(side, layer, state, te, stack);
+			if(cached != null)
+				return cached;
+			cubes = renderer.getRenderingCubes(state, te, stack);
+		}
 			
 		if(cubes != null)
 		{
 			for (int i = 0; i < cubes.size(); i++) {
-				CubeObject cube = cubes.get(i);
+				RenderCubeObject cube = cubes.get(i);
+				
+				if(!cube.shouldSideBeRendered(side))
+					continue;
+				
+				CubeObject uvCube = cube.offset(cube.getOffset());
+				
 				//CubeObject invCube = new CubeObject(cube.minX, cube.minY, cube.minZ, cube.maxX-1, cube.maxY-1, cube.maxZ-1);
 				
 				Block block = renderBlock;
@@ -134,7 +157,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				if(state != null)
 					newState = newState.getActualState(te.getWorld(), te.getPos()) ;
 				
-				BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+				//BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 				if(layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
 					continue;
 				
@@ -143,8 +166,8 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				for (int j = 0; j < blockQuads.size(); j++) {
 					BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, cube.color, block.getBlockLayer() != BlockRenderLayer.CUTOUT_MIPPED);
 					EnumFacing facing = side;
-					if(facing == null)
-						facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
+					//if(facing == null)
+						//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
 					
 					EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
 					
@@ -165,6 +188,10 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 						quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);
 						
 						int uvIndex = index + quad.getFormat().getUvOffsetById(0) / 4;
+						
+						newX = uvCube.getVertexInformationPosition(vertex.xIndex);
+						newY = uvCube.getVertexInformationPosition(vertex.yIndex);
+						newZ = uvCube.getVertexInformationPosition(vertex.zIndex);
 						
 						float u = 0;
 						float v = 0;
@@ -196,12 +223,12 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 							break;
 						}
 						
-						u = Math.abs(u);
+						/*u = Math.abs(u);
 						if(u > 1)
 							u %= 1;
 						v = Math.abs(v);
 						if(v > 1)
-							v %= 1;
+							v %= 1;*/
 						u *= 16;
 						v *= 16;
 						
@@ -212,6 +239,8 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 					baked.add(quad);
 				}
 			}
+			
+			renderer.saveCachedModel(side,layer, baked, state, te, stack);
 		}
 		return baked;
 	}
@@ -255,7 +284,20 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
     {
 		if(cameraTransforms == null)
 			loadTransformation();
-        //return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, cameraTransforms, cameraTransformType);
+		
+		if(lastItemStack != null)
+		{
+			ICreativeRendered renderer = null;
+			Block block = Block.getBlockFromItem(lastItemStack.getItem());
+			if(block instanceof ICreativeRendered)
+				renderer = (ICreativeRendered)block;
+			else if(lastItemStack != null && lastItemStack.getItem() instanceof ICreativeRendered)
+				renderer = (ICreativeRendered) lastItemStack.getItem();
+			
+			if(renderer != null)
+				renderer.applyCustomOpenGLHackery(lastItemStack);
+		}
+		
 		Pair<? extends IBakedModel, Matrix4f> pair = ((IPerspectiveAwareModel) mc.getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState())).handlePerspective(cameraTransformType);
 		return pair.of(this, pair.getRight());
     }

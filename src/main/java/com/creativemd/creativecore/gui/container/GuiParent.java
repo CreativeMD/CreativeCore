@@ -108,7 +108,16 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.posY+control.height)*scale);
 			
 		}
+		GL11.glEnable(GL11.GL_STENCIL_TEST);
+		
+		prepareContentStencil(helper, relativeMaximumRect);
+		
+		GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
+		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+		
 		renderContent(helper, style, width, height);
+		
+		GL11.glDisable(GL11.GL_STENCIL_TEST);
 	}
 	
 	//================Helper================

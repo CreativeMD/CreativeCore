@@ -6,14 +6,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 public class CubeObject {
-	
-	public Block block;
-	public int meta = 0;
-	public int color = -1;
 	
 	public float minX;
 	public float minY;
@@ -50,22 +47,12 @@ public class CubeObject {
 	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, CubeObject cube)
 	{
 		this(minX, minY, minZ, maxX, maxY, maxZ);
-		this.block = cube.block;
-		this.meta = cube.meta;
-		this.color = cube.color;
+		applyExtraCubeData(cube);
 	}
 	
-	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Block block)
+	protected void applyExtraCubeData(CubeObject cube)
 	{
-		this(minX, minY, minZ, maxX, maxY, maxZ);
-		this.block = block;
-	}
-	
-	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Block block, int meta)
-	{
-		this(minX, minY, minZ, maxX, maxY, maxZ);
-		this.block = block;
-		this.meta = meta;
+		
 	}
 	
 	/*public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, boolean normalBlock)
@@ -73,26 +60,6 @@ public class CubeObject {
 		this(minX, minY, minZ, maxX, maxY, maxZ);
 		this.normalBlock = normalBlock;
 	}*/
-	
-	public CubeObject setColor(Vec3i color)
-	{
-		this.setColor(ColorUtils.RGBToInt(color));
-		return this;
-	}
-	
-	public CubeObject setColor(int color)
-	{
-		this.color = color;
-		return this;
-	}
-	
-	public IBlockState getBlockState(Block block)
-	{
-		if(meta != -1)
-			return block.getStateFromMeta(meta);
-		else
-			return block.getDefaultState();
-	}
 	
 	public Vec3d getSize()
 	{
@@ -110,7 +77,7 @@ public class CubeObject {
 		return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
-	public static Vec3d getSizeOfCubes(ArrayList<CubeObject> cubes)
+	public static Vec3d getSizeOfCubes(ArrayList<? extends CubeObject> cubes)
 	{
 		if(cubes.size() == 0)
 			return new Vec3d(0, 0, 0);
@@ -139,6 +106,16 @@ public class CubeObject {
 			}
 		}
 		return size;
+	}
+	
+	public BlockPos getOffset()
+	{
+		return new BlockPos(minX, minY, minZ);
+	}
+	
+	public CubeObject offset(BlockPos pos)
+	{
+		return new CubeObject(minX-pos.getX(), minY-pos.getY(), minZ-pos.getZ(), maxX-pos.getX(), maxY-pos.getY(), maxZ-pos.getZ(), this);
 	}
 	
 	public static CubeObject rotateCube(CubeObject cube, EnumFacing direction)
