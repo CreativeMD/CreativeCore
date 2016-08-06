@@ -7,16 +7,36 @@ import net.minecraft.util.math.Vec3i;
 
 public class RenderCubeObject extends CubeObject {
 	
+	public static enum EnumSideRender {
+		
+		INSIDE_RENDERED(true, false),
+		INSIDE_NOT_RENDERED(false, false),
+		OUTSIDE_RENDERED(true, true),
+		OUTSIDE_NOT_RENDERD(false, true);
+		
+		public final boolean shouldBeRendered;
+		public final boolean outside;
+		
+		EnumSideRender(boolean shouldBeRendered, boolean outside)
+		{
+			this.shouldBeRendered = shouldBeRendered;
+			this.outside = outside;
+		}
+		
+	}
+	
 	public Block block;
 	public int meta = 0;
 	public int color = -1;
 	
-	public boolean renderEast = true;
-	public boolean renderWest = true;
-	public boolean renderUp = true;
-	public boolean renderDown = true;
-	public boolean renderSouth = true;
-	public boolean renderNorth = true;
+	public Object customData = null;
+	
+	public EnumSideRender renderEast = EnumSideRender.INSIDE_RENDERED;
+	public EnumSideRender renderWest = EnumSideRender.INSIDE_RENDERED;
+	public EnumSideRender renderUp = EnumSideRender.INSIDE_RENDERED;
+	public EnumSideRender renderDown = EnumSideRender.INSIDE_RENDERED;
+	public EnumSideRender renderSouth = EnumSideRender.INSIDE_RENDERED;
+	public EnumSideRender renderNorth = EnumSideRender.INSIDE_RENDERED;
 	
 	public RenderCubeObject(CubeObject cube, RenderCubeObject cube2)
 	{
@@ -80,32 +100,32 @@ public class RenderCubeObject extends CubeObject {
 			return block.getDefaultState();
 	}
 	
-	public void setSideRender(EnumFacing facing, boolean shouldBeRendered)
+	public void setSideRender(EnumFacing facing, EnumSideRender renderer)
 	{
 		switch(facing)
 		{
 		case DOWN:
-			renderDown = shouldBeRendered;
+			renderDown = renderer;
 			break;
 		case EAST:
-			renderEast = shouldBeRendered;
+			renderEast = renderer;
 			break;
 		case NORTH:
-			renderNorth = shouldBeRendered;
+			renderNorth = renderer;
 			break;
 		case SOUTH:
-			renderSouth = shouldBeRendered;
+			renderSouth = renderer;
 			break;
 		case UP:
-			renderUp = shouldBeRendered;
+			renderUp = renderer;
 			break;
 		case WEST:
-			renderWest = shouldBeRendered;
+			renderWest = renderer;
 			break;
 		}
 	}
 	
-	public boolean shouldSideBeRendered(EnumFacing facing)
+	public EnumSideRender getSidedRendererType(EnumFacing facing)
 	{
 		switch(facing)
 		{
@@ -121,6 +141,26 @@ public class RenderCubeObject extends CubeObject {
 			return renderUp;
 		case WEST:
 			return renderWest;
+		}
+		return EnumSideRender.INSIDE_RENDERED;
+	}
+	
+	public boolean shouldSideBeRendered(EnumFacing facing)
+	{
+		switch(facing)
+		{
+		case DOWN:
+			return renderDown.shouldBeRendered;
+		case EAST:
+			return renderEast.shouldBeRendered;
+		case NORTH:
+			return renderNorth.shouldBeRendered;
+		case SOUTH:
+			return renderSouth.shouldBeRendered;
+		case UP:
+			return renderUp.shouldBeRendered;
+		case WEST:
+			return renderWest.shouldBeRendered;
 		}
 		return true;
 	}

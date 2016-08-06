@@ -172,4 +172,27 @@ public class CubeObject {
 		}
 		return 0;
 	}
+
+	public CubeObject flip(EnumFacing facing) {
+		CubeObject cube = new CubeObject(this);
+		switch(facing)
+		{
+		case EAST:
+		case WEST:
+			cube.maxX = 1-this.minX;
+			cube.minX = 1-this.maxX;
+			break;
+		case UP:
+		case DOWN:
+			cube.maxY = 1-this.minY;
+			cube.minY = 1-this.maxY;
+			break;
+		case SOUTH:
+		case NORTH:
+			cube.maxZ = 1-this.minZ;
+			cube.minZ = 1-this.maxZ;
+			break;
+		}
+		return cube;
+	}
 }

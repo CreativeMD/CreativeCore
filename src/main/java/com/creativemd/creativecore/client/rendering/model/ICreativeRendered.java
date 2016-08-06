@@ -16,7 +16,7 @@ import net.minecraft.util.EnumFacing;
 
 public interface ICreativeRendered {
 	
-	public ArrayList<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack);
+	public List<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack);
 	
 	public default void applyCustomOpenGLHackery(ItemStack stack) {}
 	

@@ -109,7 +109,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
 		ItemStack stack = state != null ? null : lastItemStack;
 		
-		ArrayList<RenderCubeObject> cubes = null;
+		List<RenderCubeObject> cubes = null;
 		
 		ICreativeRendered renderer = null;
 		if(renderBlock instanceof ICreativeRendered)
