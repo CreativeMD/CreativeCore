@@ -93,13 +93,13 @@ public abstract class CoreControl {
 	
 	//================SORTING================
 	
-	public void moveControlAbove(GuiControl controlInBack)
+	public void moveControlAbove(CoreControl controlInBack)
 	{
 		if(hasParent())
 			parent.moveControlAbove(this, controlInBack);
 	}
 	
-	public void moveControlBehind(GuiControl controlInFront)
+	public void moveControlBehind(CoreControl controlInFront)
 	{
 		if(hasParent())
 			parent.moveControlBehind(this, controlInFront);

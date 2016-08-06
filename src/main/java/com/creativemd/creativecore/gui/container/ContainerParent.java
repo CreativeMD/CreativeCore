@@ -8,7 +8,6 @@ import java.util.ListIterator;
 
 import com.creativemd.creativecore.gui.ContainerControl;
 import com.creativemd.creativecore.gui.CoreControl;
-import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.controls.container.SlotControl;
 
 import net.minecraft.entity.player.EntityPlayer;

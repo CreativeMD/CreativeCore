@@ -3,7 +3,6 @@ package com.creativemd.creativecore.gui;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.gui.container.ContainerParent;
-import com.creativemd.creativecore.gui.container.GuiParent;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
