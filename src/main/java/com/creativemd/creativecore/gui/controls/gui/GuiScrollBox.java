@@ -65,7 +65,7 @@ public class GuiScrollBox extends GuiParent{
 	@Override
 	public boolean mousePressed(int x, int y, int button)
 	{
-		if(button == 0 && width-x <= scrollbarWidth && needsScrollbar())
+		if(button == 0 && width-x+this.posX <= scrollbarWidth && needsScrollbar())
 		{
 			playSound(SoundEvents.UI_BUTTON_CLICK);
 			dragged = true;
