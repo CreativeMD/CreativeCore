@@ -14,7 +14,7 @@ import scala.collection.immutable.Stack;
 
 public class InventoryUtils {
 	
-	public static NBTTagCompound saveInventoryBasic(InventoryBasic basic)
+	public static NBTTagCompound saveInventoryBasic(IInventory basic)
 	{
 		ItemStack[] stacks = new ItemStack[basic.getSizeInventory()];
 		for (int i = 0; i < stacks.length; i++) {
@@ -43,6 +43,11 @@ public class InventoryUtils {
 			inventory[i] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("slot" + i));
 		}
 		return inventory;
+	}
+	
+	public static InventoryBasic loadInventoryBasic(NBTTagCompound nbt)
+	{
+		return loadInventoryBasic(nbt, nbt.getInteger("size"));
 	}
 	
 	public static InventoryBasic loadInventoryBasic(NBTTagCompound nbt, int length)
