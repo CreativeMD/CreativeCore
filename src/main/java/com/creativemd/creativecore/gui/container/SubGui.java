@@ -226,6 +226,14 @@ public abstract class SubGui extends GuiParent {
 		eventBus.removeAllEventListeners();
 	}
 	
+	public void addContainerControls()
+	{
+		for (int i = 0; i < container.controls.size(); i++) {
+			container.controls.get(i).onOpened();
+			controls.add(container.controls.get(i).getGuiControl());
+		}
+	}
+	
 	@Override
 	public void onOpened()
     {
@@ -237,10 +245,7 @@ public abstract class SubGui extends GuiParent {
     	
     	if(container != null)
     	{
-    		for (int i = 0; i < container.controls.size(); i++) {
-    			container.controls.get(i).onOpened();
-    			controls.add(container.controls.get(i).getGuiControl());
-    		}
+    		addContainerControls();
     	}
 		refreshControls();
     }
