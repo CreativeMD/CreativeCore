@@ -218,6 +218,7 @@ public class SlotControl extends ContainerControl{
 					amount = stack.stackSize;
 				ItemStack copy = stack.copy();
 				copy.stackSize = amount;
+				int minAmount = stack.stackSize-amount;
 				
 				for (int i = 0; i < getParent().controls.size(); i++) {
 					if(getParent().controls.get(i) instanceof SlotControl)
@@ -230,7 +231,7 @@ public class SlotControl extends ContainerControl{
 							if(copy != null)
 								stack.stackSize -= amount-copy.stackSize;
 							else
-								stack.stackSize -= amount;
+								stack.stackSize = minAmount;
 							
 							if(slot.getStack().stackSize == 0)
 							{
