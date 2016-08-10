@@ -7,6 +7,7 @@ import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
+import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
@@ -31,6 +32,19 @@ public class GuiComboBox extends GuiLabel{
 			this.index = -1;
 		}
 		this.lines = lines;
+	}
+	
+	public boolean select(String line)
+	{
+		
+		index = lines.indexOf(line);
+		if(index != -1)
+		{
+			caption = lines.get(index);
+			raiseEvent(new GuiControlChangedEvent(this));
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

@@ -21,6 +21,13 @@ public class GuiListBox extends GuiScrollBox{
 		reloadControls();
 	}
 	
+	public String getSelected()
+	{
+		if(selected != -1)
+			return get(selected);
+		return "";
+	}
+	
 	public void clear()
 	{
 		lines.clear();
