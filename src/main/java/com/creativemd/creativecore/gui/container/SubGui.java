@@ -163,12 +163,18 @@ public abstract class SubGui extends GuiParent {
 		return super.isInteractable() && isTopLayer();
 	}
 	
+	public boolean closeGuiUsingEscape()
+	{
+		return true;
+	}
+	
 	@Override
 	public boolean onKeyPressed(char character, int key)
 	{
 		if (key == 1 || key == this.mc.gameSettings.keyBindInventory.getKeyCode())
         {
-			closeGui();
+			if(closeGuiUsingEscape())
+				closeGui();
             return true;
         }
 		return super.onKeyPressed(character, key);
