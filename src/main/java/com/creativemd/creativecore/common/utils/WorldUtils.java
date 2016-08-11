@@ -8,8 +8,28 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.EmptyChunk;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldUtils {
+	
+	public static boolean checkIfChunkExists(Chunk chunk)
+	{
+		if(chunk == null)
+			return false;
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+			return checkIfChunkExistsClient(chunk);
+		return true;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private static boolean checkIfChunkExistsClient(Chunk chunk)
+	{
+		return !(chunk instanceof EmptyChunk);
+	}
 	
 	public static void dropItem(World world, ArrayList<ItemStack> stacks, BlockPos pos)
 	{
