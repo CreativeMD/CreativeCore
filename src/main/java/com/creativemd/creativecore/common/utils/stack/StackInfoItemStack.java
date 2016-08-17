@@ -118,7 +118,7 @@ public class StackInfoItemStack extends StackInfo implements IStackLoader{
 	@Override
 	public ItemStack getItemStack(int stacksize) {
 		ItemStack stack = new ItemStack(this.stack.getItem(), stacksize, this.stack.getItemDamage());
-		if(needNBT)
+		if(needNBT && stack.hasTagCompound())
 			stack.setTagCompound((NBTTagCompound) this.stack.getTagCompound().copy());
 		return stack;
 	}

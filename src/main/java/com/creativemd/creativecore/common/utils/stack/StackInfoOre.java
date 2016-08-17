@@ -75,6 +75,8 @@ public class StackInfoOre extends StackInfo implements IStackLoader{
 		if(stacks.size() > 0)
 		{
 			ItemStack stack = stacks.get(0).copy();
+			if(stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+				stack.setItemDamage(0);
 			stack.stackSize = stacksize;
 			return stack;
 		}
