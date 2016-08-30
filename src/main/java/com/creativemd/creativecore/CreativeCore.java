@@ -60,7 +60,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore")
+@Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore",acceptedMinecraftVersions="")
 public class CreativeCore {
 	
 	public static final String modid = "creativecore";

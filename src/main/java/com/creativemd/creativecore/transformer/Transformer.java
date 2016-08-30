@@ -165,6 +165,11 @@ public abstract class Transformer {
 	
 	public MethodNode findMethod(ClassNode node, String name, String desc)
 	{
+		if(TransformerNames.obfuscated)
+		{
+			name = patchMethodName(name, desc);
+			desc = patchDESC(desc);
+		}
 		Iterator<MethodNode> methods = node.methods.iterator();
 		while(methods.hasNext())
 		{
