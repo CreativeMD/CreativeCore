@@ -153,12 +153,12 @@ public abstract class Transformer {
 	
 	public String patchFieldName(String fieldName)
 	{
-		return TransformerNames.patchFieldName(fieldName, patchClassName(this.className));
+		return TransformerNames.patchFieldName(fieldName, patchClassName(this.className.replace(".", "/")));
 	}
 	
 	public String patchMethodName(String methodName, String desc)
 	{
-		return TransformerNames.patchMethodName(methodName, desc, patchClassName(this.className));
+		return TransformerNames.patchMethodName(methodName, desc, patchClassName(this.className.replace(".", "/")));
 	}
 	
 	public abstract void transform(ClassNode node);
