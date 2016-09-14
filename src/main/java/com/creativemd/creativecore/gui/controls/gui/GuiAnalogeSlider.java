@@ -37,7 +37,7 @@ public class GuiAnalogeSlider extends GuiControl
 	
 	public String getTextByValue()
 	{
-		return value + "";
+		return Math.round(value*100F)/100F + "";
 	}
 	
 	@Override
