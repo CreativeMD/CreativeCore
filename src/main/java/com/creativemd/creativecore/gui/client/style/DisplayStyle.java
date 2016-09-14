@@ -7,6 +7,14 @@ import net.minecraft.client.renderer.GlStateManager;
 
 public abstract class DisplayStyle {
 	
+	public static DisplayStyle emptyDisplay = new DisplayStyle() {
+		
+		@Override
+		public void renderStyle(GuiRenderHelper helper, int width, int height) {
+			
+		}
+	};
+	
 	public void renderStyle(int x, int y, GuiRenderHelper helper, int width, int height)
 	{
 		GlStateManager.pushMatrix();
