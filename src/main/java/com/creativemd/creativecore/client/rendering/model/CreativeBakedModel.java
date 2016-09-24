@@ -66,7 +66,7 @@ import net.minecraftforge.common.model.TRSRTransformation;
 public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
-	public static FaceBakery faceBakery = new FaceBakery();
+	//public static FaceBakery faceBakery = new FaceBakery();
 	public static TextureAtlasSprite woodenTexture;
 	
 	private static ItemStack lastItemStack = null;
@@ -87,13 +87,17 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return woodenTexture;
 	}
 	
-	protected static BakedQuad makeBakedQuad(BlockPart blockPart, BlockPartFace blockFace, TextureAtlasSprite texture, EnumFacing facing, net.minecraftforge.common.model.ITransformation transformation, boolean uvLocked)
+	/*protected static BakedQuad makeBakedQuad(BlockPart blockPart, BlockPartFace blockFace, TextureAtlasSprite texture, EnumFacing facing, net.minecraftforge.common.model.ITransformation transformation, boolean uvLocked)
     {
         return faceBakery.makeBakedQuad(blockPart.positionFrom, blockPart.positionTo, blockFace, texture, facing, transformation, blockPart.partRotation, uvLocked, blockPart.shade);
-    }
+    }*/
 	
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+		return getBlockQuads(state, side, rand, false);
+	}
+	
+	public static List<BakedQuad> getBlockQuads(IBlockState state, EnumFacing side, long rand, boolean threaded) {
 		ArrayList<BakedQuad> baked = new ArrayList<>();
 		
 		Block renderBlock = null;
@@ -127,7 +131,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		
 		if(renderer != null)
 		{
-			List<BakedQuad> cached = renderer.getCachedModel(side, layer, state, te, stack);
+			List<BakedQuad> cached = renderer.getCachedModel(side, layer, state, te, stack, threaded);
 			if(cached != null)
 				return cached;
 			cubes = renderer.getRenderingCubes(state, te, stack);
@@ -164,7 +168,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
 				List<BakedQuad> blockQuads = blockModel.getQuads(newState, side, rand);
 				for (int j = 0; j < blockQuads.size(); j++) {
-					BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, cube.color, block.getBlockLayer() != BlockRenderLayer.CUTOUT_MIPPED);
+					BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, cube.color, block.getBlockLayer() != BlockRenderLayer.CUTOUT_MIPPED, side);
 					EnumFacing facing = side;
 					//if(facing == null)
 						//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
@@ -240,7 +244,14 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				}
 			}
 			
-			renderer.saveCachedModel(side,layer, baked, state, te, stack);
+			if(renderer instanceof ICustomCachedCreativeRendered && stack == null)
+			{
+				CreativeBakedQuadCaching caching = new CreativeBakedQuadCaching(baked, side, (ICustomCachedCreativeRendered) renderer, te, stack, layer);
+				baked = new ArrayList<>();
+				baked.add(caching);
+			}
+			if(baked.size() > 0)
+				renderer.saveCachedModel(side,layer, baked, state, te, stack, threaded);
 		}
 		return baked;
 	}
