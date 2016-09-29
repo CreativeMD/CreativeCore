@@ -55,7 +55,7 @@ public class CreativeBakedQuadCaching extends CreativeBakedQuad {
 			
 			cc.blockInfo = info;
 			
-			QuadCache[] cached = cacher.getCustomCachedQuads(info, layer, face, te, stack);
+			QuadCache[] cached = cacher.getCustomCachedQuads(layer, face, te, stack);
 			if(cached != null)		
 				cc.processCachedQuad(cached);
 			else{
@@ -71,7 +71,7 @@ public class CreativeBakedQuadCaching extends CreativeBakedQuad {
 					cached[i] = cc.lastCache;
 					lastRenderedQuad = null;
 				}
-				cacher.saveCachedQuads(cached, info, layer, face, te, stack);
+				cacher.saveCachedQuads(cached, layer, face, te, stack);
 			}
 		}else
 			super.pipe(consumer);

@@ -8,8 +8,8 @@ import net.minecraftforge.client.model.pipeline.BlockInfo;
 
 public interface ICustomCachedCreativeRendered extends ICreativeRendered {
 	
-	public QuadCache[] getCustomCachedQuads(BlockInfo info, BlockRenderLayer layer, EnumFacing facing, TileEntity te, ItemStack stack);
+	public QuadCache[] getCustomCachedQuads(BlockRenderLayer layer, EnumFacing facing, TileEntity te, ItemStack stack);
 	
-	public void saveCachedQuads(QuadCache[] quads, BlockInfo info, BlockRenderLayer layer, EnumFacing facing, TileEntity te, ItemStack stack);
+	public void saveCachedQuads(QuadCache[] quads, BlockRenderLayer layer, EnumFacing facing, TileEntity te, ItemStack stack);
 	
 }
