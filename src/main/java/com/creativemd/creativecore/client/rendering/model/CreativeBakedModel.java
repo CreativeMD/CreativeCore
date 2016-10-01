@@ -98,6 +98,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	}
 	
 	public static List<BakedQuad> getBlockQuads(IBlockState state, EnumFacing side, long rand, boolean threaded) {
+		//long time = System.nanoTime();
 		ArrayList<BakedQuad> baked = new ArrayList<>();
 		
 		Block renderBlock = null;
@@ -133,7 +134,10 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		{
 			List<BakedQuad> cached = renderer.getCachedModel(side, layer, state, te, stack, threaded);
 			if(cached != null)
+			{
+				//System.out.println("done in " + (System.nanoTime()-time));
 				return cached;
+			}
 			cubes = renderer.getRenderingCubes(state, te, stack);
 		}
 			
@@ -253,6 +257,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			if(baked.size() > 0)
 				renderer.saveCachedModel(side,layer, baked, state, te, stack, threaded);
 		}
+		//System.out.println("Rerendered everything in " + (System.nanoTime()-time));
 		return baked;
 	}
 

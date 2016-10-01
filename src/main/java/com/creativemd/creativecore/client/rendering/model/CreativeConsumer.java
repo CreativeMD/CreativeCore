@@ -6,14 +6,17 @@ import javax.vecmath.Vector3f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.pipeline.BlockInfo;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
+import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
 import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import net.minecraftforge.client.model.pipeline.VertexLighterSmoothAo;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -24,6 +27,8 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
 	
 	private static Field tint = ReflectionHelper.findField(VertexLighterFlat.class, "tint");
 	private static Field diffuse = ReflectionHelper.findField(VertexLighterFlat.class, "diffuse");
+	private static Field renderer = ReflectionHelper.findField(VertexBufferConsumer.class, "renderer");
+	private static Field offset = ReflectionHelper.findField(VertexBufferConsumer.class, "offset");
 	
 	public CreativeConsumer(BlockColors colors) {
 		super(colors);
@@ -36,13 +41,22 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
 		return parent;
 	}
 	
-	public void processCachedQuad(QuadCache[] cached)
+	public static void processCachedQuad(IVertexConsumer parent, QuadCache[] cached)
 	{
-		for(int i = 0; i < cached.length; i++)
-		{
-			for (int j = 0; j < cached[i].fields.size(); j++) {
-				parent.put(cached[i].fields.get(j).index, cached[i].fields.get(j).cache);
+		try {
+			BlockPos pos = (BlockPos) offset.get(parent);
+			VertexBuffer buffer = (VertexBuffer) renderer.get(parent);
+			for(int i = 0; i < cached.length; i++)
+			{
+				
+				for (int j = 0; j < cached[i].quadDatas.size(); j++) {
+					buffer.addVertexData(cached[i].quadDatas.get(j));
+					//parent.put(cached[i].quadDatas.get(j).index, cached[i].fields.get(j).cache);
+					buffer.putPosition(pos.getX(), pos.getY(), pos.getZ());
+				}
 			}
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -146,7 +160,7 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
 			e2.printStackTrace();
 		}
         
-        QuadCache cache = new QuadCache();
+        QuadCache cache = new QuadCache(format);
 
         for(int v = 0; v < 4; v++)
         {
@@ -227,6 +241,8 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
         }
         lastCache = cache;
         setQuadTint(-1);
+        
+        
         //tint = -1;
     }
 }

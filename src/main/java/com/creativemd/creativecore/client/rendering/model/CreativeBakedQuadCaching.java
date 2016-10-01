@@ -44,21 +44,15 @@ public class CreativeBakedQuadCaching extends CreativeBakedQuad {
 		{
 			VertexLighterSmoothAo smooth = (VertexLighterSmoothAo) consumer;
 			IVertexConsumer parent = ReflectionHelper.getPrivateValue(QuadGatheringTransformer.class, smooth, "parent");
-			BlockInfo info = ReflectionHelper.getPrivateValue(VertexLighterFlat.class, smooth, "blockInfo");
-			
-			//long time = System.nanoTime();
-			CreativeConsumer cc = new CreativeConsumer(Minecraft.getMinecraft().getBlockColors());
-			//if(CreativeConsumer.instance.getParent() != parent)
-				cc.setParent(parent);
-				
-			
-			
-			cc.blockInfo = info;
-			
+			CreativeConsumer cc = CreativeConsumer.instance;
 			QuadCache[] cached = cacher.getCustomCachedQuads(layer, face, te, stack);
 			if(cached != null)		
-				cc.processCachedQuad(cached);
+				CreativeConsumer.processCachedQuad(parent, cached);
 			else{
+				BlockInfo info = ReflectionHelper.getPrivateValue(VertexLighterFlat.class, smooth, "blockInfo");
+				cc = new CreativeConsumer(Minecraft.getMinecraft().getBlockColors());
+				cc.setParent(parent);
+				cc.blockInfo = info;
 				cached = new QuadCache[quads.size()];
 				for (int i = 0; i < quads.size(); i++) {
 					BakedQuad quad = quads.get(i);
