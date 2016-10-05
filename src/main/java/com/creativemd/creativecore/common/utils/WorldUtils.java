@@ -51,7 +51,8 @@ public class WorldUtils {
 	
 	public static void dropItem(EntityPlayer player, ItemStack stack)
 	{
-		dropItem(player.worldObj, stack, player.getPosition());
+		if(stack != null)
+			dropItem(player.worldObj, stack, player.getPosition());
 	}
 	
 	public static void dropItem(EntityPlayer player, ArrayList<ItemStack> stacks)
