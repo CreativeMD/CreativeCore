@@ -2,6 +2,7 @@ package com.creativemd.creativecore.client.rendering.model;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.creativemd.creativecore.common.utils.CubeObject;
 import com.creativemd.creativecore.common.utils.RenderCubeObject;
@@ -23,12 +24,12 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class CreativeBakedQuadCaching extends CreativeBakedQuad {
 	
 	public ICustomCachedCreativeRendered cacher;
-	public ArrayList<BakedQuad> quads;
+	public List<BakedQuad> quads;
 	public TileEntity te;
 	public ItemStack stack;
 	public BlockRenderLayer layer;
 	
-	public CreativeBakedQuadCaching(ArrayList<BakedQuad> quads, EnumFacing facing, ICustomCachedCreativeRendered cacher, TileEntity te, ItemStack stack, BlockRenderLayer layer) {
+	public CreativeBakedQuadCaching(List<BakedQuad> quads, EnumFacing facing, ICustomCachedCreativeRendered cacher, TileEntity te, ItemStack stack, BlockRenderLayer layer) {
 		super(facing);
 		this.quads = quads;
 		this.cacher = cacher;
@@ -42,6 +43,7 @@ public class CreativeBakedQuadCaching extends CreativeBakedQuad {
     {
 		if(consumer instanceof VertexLighterSmoothAo)
 		{
+			
 			VertexLighterSmoothAo smooth = (VertexLighterSmoothAo) consumer;
 			IVertexConsumer parent = ReflectionHelper.getPrivateValue(QuadGatheringTransformer.class, smooth, "parent");
 			CreativeConsumer cc = CreativeConsumer.instance;
@@ -49,6 +51,7 @@ public class CreativeBakedQuadCaching extends CreativeBakedQuad {
 			if(cached != null)		
 				CreativeConsumer.processCachedQuad(parent, cached);
 			else{
+				//System.out.println("Trying to cache.");
 				BlockInfo info = ReflectionHelper.getPrivateValue(VertexLighterFlat.class, smooth, "blockInfo");
 				cc = new CreativeConsumer(Minecraft.getMinecraft().getBlockColors());
 				cc.setParent(parent);
@@ -66,6 +69,7 @@ public class CreativeBakedQuadCaching extends CreativeBakedQuad {
 					lastRenderedQuad = null;
 				}
 				cacher.saveCachedQuads(cached, layer, face, te, stack);
+				//System.out.println("Saving cached quads.");
 			}
 		}else
 			super.pipe(consumer);

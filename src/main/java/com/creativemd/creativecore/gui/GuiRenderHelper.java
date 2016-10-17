@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Color;
@@ -17,6 +18,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -35,6 +38,7 @@ public class GuiRenderHelper {
 	
 	public FontRenderer font;
 	public RenderItem itemRenderer;
+	public static Minecraft mc = Minecraft.getMinecraft();
 	
 	public GuiRenderHelper(Minecraft mc)
 	{
@@ -75,6 +79,40 @@ public class GuiRenderHelper {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
     }
+	
+	public static void renderBakedQuads(List<BakedQuad> baked)
+	{
+		
+		mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.pushMatrix();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+        
+		Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
+        for (int i = 0; i < baked.size(); i++) {
+			net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(vertexbuffer, baked.get(i), -1);
+        }
+        tessellator.draw();
+        
+        GlStateManager.popMatrix();
+        
+        
+        
+        GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+        GlStateManager.popMatrix();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableBlend();
+        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+	}
 	
 	public int getFontHeight()
 	{

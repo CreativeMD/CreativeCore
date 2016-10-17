@@ -34,6 +34,8 @@ public class RenderCubeObject extends CubeObject {
 	
 	public Object customData = null;
 	
+	public boolean keepVU = false;
+	
 	public EnumSideRender renderEast = EnumSideRender.INSIDE_RENDERED;
 	public EnumSideRender renderWest = EnumSideRender.INSIDE_RENDERED;
 	public EnumSideRender renderUp = EnumSideRender.INSIDE_RENDERED;
