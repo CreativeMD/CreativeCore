@@ -124,8 +124,8 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				//overridenTint = mc.getItemColors().getColorFromItemstack(new ItemStack(block), -1);
 			
 			IBlockState newState = cube.getBlockState(block);
-			if(state != null)
-				newState = newState.getActualState(te.getWorld(), te.getPos()) ;
+			if(state != null && te != null)
+				newState = newState.getActualState(te.getWorld(), te.getPos());
 			
 			//BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 			if(layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
