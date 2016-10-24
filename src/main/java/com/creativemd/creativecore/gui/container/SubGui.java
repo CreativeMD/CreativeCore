@@ -40,7 +40,7 @@ public abstract class SubGui extends GuiParent {
 	
 	public SubGui(String name, int width, int height) {
 		super(name, 0, 0, width, height);
-		eventBus = new CreativeCoreEventBus();
+		eventBus = new CreativeCoreEventBus(true);
 		eventBus.RegisterEventListener(this);
 	}
 	

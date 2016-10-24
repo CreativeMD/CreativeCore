@@ -28,7 +28,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	
     @Override
     public CreativeMessageHandler onMessage(CreativeMessageHandler message, MessageContext ctx) {
-    	if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+    	if(ctx.side.isClient())
     	{
     		executeClient(message);
     	}else{

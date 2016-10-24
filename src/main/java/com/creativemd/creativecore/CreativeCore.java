@@ -93,7 +93,7 @@ public class CreativeCore {
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.CLIENT);
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
 		
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if(FMLCommonHandler.instance().getSide().isClient())
 			loadClientSide();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());

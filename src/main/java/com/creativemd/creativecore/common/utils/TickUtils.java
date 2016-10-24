@@ -16,7 +16,7 @@ public class TickUtils {
 	
 	public static float getPartialTickTime()
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if(FMLCommonHandler.instance().getSide().isClient())
 			return getPartialTickTimeClient();
 		return 1.0F;
 	}

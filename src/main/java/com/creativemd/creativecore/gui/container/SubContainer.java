@@ -37,7 +37,7 @@ public abstract class SubContainer extends ContainerParent{
 	public SubContainer(String name, EntityPlayer player) {
 		super(name);
 		this.player = player;
-		eventBus = new CreativeCoreEventBus();
+		eventBus = new CreativeCoreEventBus(player.getEntityWorld().isRemote);
 		addListener(this);
 	}
 	
@@ -144,7 +144,7 @@ public abstract class SubContainer extends ContainerParent{
     	}
 		//refreshControls();
 		
-		if(FMLCommonHandler.instance().getEffectiveSide().isServer())
+		if(!player.getEntityWorld().isRemote)
 		{
 			NBTTagCompound nbt = new NBTTagCompound();
 			writeOpeningNBT(nbt);
@@ -189,7 +189,7 @@ public abstract class SubContainer extends ContainerParent{
 	public void sendNBTUpdate(ContainerControl control, NBTTagCompound nbt)
 	{
 		String name = control != null ? control.name : null;
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if(player.getEntityWorld().isRemote)
 			PacketHandler.sendPacketToServer(new ContainerControlUpdatePacket(getLayerID(), name, nbt));
 		else
 			PacketHandler.sendPacketToPlayer(new ContainerControlUpdatePacket(getLayerID(), name, nbt), (EntityPlayerMP) player);

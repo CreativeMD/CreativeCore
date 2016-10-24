@@ -52,7 +52,7 @@ public class GuiHandler implements IGuiHandler {
 	
 	public static void openGui(String id, NBTTagCompound nbt, EntityPlayer player)
 	{
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if(player.getEntityWorld().isRemote)
 			openGui(id, nbt);
 		else{
 			OpenGuiPacket packet = new OpenGuiPacket(id, nbt);

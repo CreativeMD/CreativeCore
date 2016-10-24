@@ -21,12 +21,15 @@ public class CreativeCoreEventBus extends EventBus
 	 * really need to, since this is the most sensitive part of the
 	 * CustomEventSystem, messing up the system is rather easy achievable.
 	 */
-	public CreativeCoreEventBus() {
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+	public CreativeCoreEventBus(boolean isClient) {
+		this.isClient = isClient;
+		if (isClient)
 			initClient();
 		else
 			initServer();
 	}
+	
+	private boolean isClient;
 
 	public void initServer() {
 		GuiTickHandler.ServerEvents.add(this);
@@ -90,7 +93,7 @@ public class CreativeCoreEventBus extends EventBus
 			((CreativeCoreCallHandler)value).getInstanceMap().clear();
 		}
 		EventList.clear();
-		if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if (isClient)
 			removeTickEventClient();
 		else
 			removeTickEventServer();

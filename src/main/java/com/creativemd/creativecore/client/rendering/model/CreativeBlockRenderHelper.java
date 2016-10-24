@@ -26,27 +26,13 @@ public class CreativeBlockRenderHelper {
 	{
 		items.put(item.getRegistryName(), item);
 		CreativeCoreClient.registerItemRenderer(item);
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-			registerCreativeRenderedItemClient(item);
+		CreativeCoreClient.registerItemColorHandler(item);
 	}
 	
 	public static void registerCreativeRenderedBlock(Block block)
 	{
 		blocks.put(block.getRegistryName(), block);
 		CreativeCoreClient.registerBlockItem(block);
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
-			registerCreativeRenderedBlockClient(block);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	private static void registerCreativeRenderedItemClient(Item item)
-	{
-		CreativeCoreClient.registerItemColorHandler(item);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	private static void registerCreativeRenderedBlockClient(Block block)
-	{
 		CreativeCoreClient.registerBlockColorHandler(block);
 	}
 	

@@ -17,7 +17,7 @@ public abstract class TileEntityCreative extends TileEntity{
 	{
 		if(worldObj != null)
 			return worldObj.isRemote;
-		return FMLCommonHandler.instance().getEffectiveSide().isClient();
+		return FMLCommonHandler.instance().getSide().isClient();
 	}
 	
 	public void getDescriptionNBT(NBTTagCompound nbt)

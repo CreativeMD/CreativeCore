@@ -20,7 +20,7 @@ public class WorldUtils {
 	{
 		if(chunk == null)
 			return false;
-		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		if(chunk.getWorld().isRemote)
 			return checkIfChunkExistsClient(chunk);
 		return true;
 	}
