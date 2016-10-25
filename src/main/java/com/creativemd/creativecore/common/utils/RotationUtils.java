@@ -247,9 +247,11 @@ public class RotationUtils {
 		return null;
 	}
 
-	public static EnumFacing rotateFacing(EnumFacing EnumFacing, EnumFacing EnumFacing2) {
-		Vec3d vec = new Vec3d(EnumFacing.getDirectionVec());
-		return getFacingFromVec(applyVectorRotation(vec, EnumFacing2));
+	public static EnumFacing rotateFacing(EnumFacing facing, EnumFacing facing2) {
+		Vec3d vec = new Vec3d(facing.getDirectionVec());
+		vec = applyVectorRotation(vec, facing2);
+		return EnumFacing.getFacingFromVector((float) vec.xCoord, (float) vec.yCoord, (float) vec.zCoord);
+		//return getFacingFromVec(vec);
 	}
 	
 }

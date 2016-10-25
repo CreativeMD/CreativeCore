@@ -2,6 +2,9 @@ package com.creativemd.creativecore.gui.controls.gui;
 
 import java.util.ArrayList;
 
+import org.lwjgl.util.Color;
+
+import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
@@ -81,7 +84,15 @@ public class GuiListBox extends GuiScrollBox{
 			int color = 14737632;
 			if(i == selected)
 				color = 16777000;
-			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 3, 1+i*15, width-20-getContentOffset()*2, 15, color) {
+			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 3, i*15, width-20-getContentOffset()*2, 8, color) {
+				
+				@Override
+				public int getColor()
+				{
+					if(isMouseOver() && color != 16777000)
+						return ColorUtils.RGBAToInt(new Color(255, 255, 100));
+					return color;
+				}
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
