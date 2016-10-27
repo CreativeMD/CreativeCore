@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
 import com.creativemd.creativecore.gui.GuiRenderHelper;
+import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
 public class GuiStateButton extends GuiButton{
 	
@@ -55,6 +56,7 @@ public class GuiStateButton extends GuiButton{
 		if(state >= states.length)
 			state = 0;
 		setState(state);
+		raiseEvent(new GuiControlChangedEvent(this));
 	}
 	
 	@Override
