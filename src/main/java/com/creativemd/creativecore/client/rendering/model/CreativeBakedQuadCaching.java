@@ -60,11 +60,14 @@ public class CreativeBakedQuadCaching extends CreativeBakedQuad {
 				for (int i = 0; i < quads.size(); i++) {
 					BakedQuad quad = quads.get(i);
 					lastRenderedQuad = (CreativeBakedQuad) quad;
+					cc.state = ((CreativeBakedQuad) quad).cube.getBlockState();
+					cc.shouldOverrideColor = ((CreativeBakedQuad) quad).shouldOverrideColor;
 					try{
 						net.minecraftforge.client.model.pipeline.LightUtil.putBakedQuad(cc, quad);
 					}catch(Exception e){
 						//e.printStackTrace();
 					}
+					cc.state = null;
 					cached[i] = cc.lastCache;
 					lastRenderedQuad = null;
 				}

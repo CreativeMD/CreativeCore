@@ -97,6 +97,14 @@ public class RenderCubeObject extends CubeObject {
 		return this;
 	}
 	
+	public IBlockState getBlockState()
+	{
+		if(meta != -1)
+			return block.getStateFromMeta(meta);
+		else
+			return block.getDefaultState();
+	}
+	
 	public IBlockState getBlockState(Block block)
 	{
 		if(meta != -1)

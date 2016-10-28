@@ -38,6 +38,8 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -64,6 +66,8 @@ import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.registry.RegistryDelegate;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	
@@ -104,6 +108,14 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return getBlockQuads(state, side, rand, false);
 	}
 	
+	public static boolean doesBlockHaveColor(Block block)
+	{
+		if(block.getBlockLayer() == BlockRenderLayer.CUTOUT_MIPPED)
+			return true;
+		Map<RegistryDelegate<Block>, IBlockColor> blockColorMap = ReflectionHelper.getPrivateValue(BlockColors.class, mc.getBlockColors(), "blockColorMap");
+		return blockColorMap.containsKey(block.delegate);
+	}
+	
 	public static List<BakedQuad> getBlockQuads(List<RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
 		for (int i = 0; i < cubes.size(); i++) {
 			RenderCubeObject cube = cubes.get(i);
@@ -134,7 +146,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
 			List<BakedQuad> blockQuads = blockModel.getQuads(newState, side, rand);
 			for (int j = 0; j < blockQuads.size(); j++) {
-				BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, cube.color, block.getBlockLayer() != BlockRenderLayer.CUTOUT_MIPPED, side);
+				BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, cube.color, cube.color != -1, side);
 				EnumFacing facing = side;
 				//if(facing == null)
 					//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());

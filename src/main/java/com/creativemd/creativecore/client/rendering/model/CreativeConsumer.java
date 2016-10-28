@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import javax.vecmath.Vector3f;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.VertexBuffer;
@@ -35,6 +36,9 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
 	}
 	
 	public BlockInfo blockInfo;
+	public boolean shouldOverrideColor = false;
+	
+	public IBlockState state;
 	
 	public IVertexConsumer getParent()
 	{
@@ -145,11 +149,13 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
 		} catch (IllegalArgumentException | IllegalAccessException e2) {
 			e2.printStackTrace();
 		}
-        
-        if(parentTint != -1)
+		//parentTint = 1;
+        if(parentTint != -1 && !shouldOverrideColor)
         {
-            multiplier = blockInfo.getColorMultiplier(parentTint);
-        }
+            //multiplier = blockInfo.getColorMultiplier(parentTint);
+        	multiplier = Minecraft.getMinecraft().getBlockColors().colorMultiplier(state, blockInfo.getWorld(), blockInfo.getBlockPos(), parentTint);
+        }else
+        	multiplier = parentTint;
 
         VertexFormat format = parent.getVertexFormat();
         int count = format.getElementCount();

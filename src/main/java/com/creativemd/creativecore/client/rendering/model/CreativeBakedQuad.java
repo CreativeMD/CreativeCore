@@ -24,6 +24,7 @@ public class CreativeBakedQuad extends BakedQuad {
 	public static TextureAtlasSprite missingSprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getTextureMap().getMissingSprite();
 	public static CreativeBakedQuad lastRenderedQuad = null;
 	public final RenderCubeObject cube;
+	public boolean shouldOverrideColor;
 	
 	public CreativeBakedQuad(EnumFacing facing)
     {
@@ -35,6 +36,7 @@ public class CreativeBakedQuad extends BakedQuad {
     {
         super(Arrays.copyOf(quad.getVertexData(), quad.getVertexData().length), shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
         this.cube = cube;
+        this.shouldOverrideColor = shouldOverrideColor;
     }
 	
 	@Override
