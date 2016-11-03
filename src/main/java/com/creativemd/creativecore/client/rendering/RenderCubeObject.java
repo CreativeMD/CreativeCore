@@ -1,4 +1,7 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.client.rendering;
+
+import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.CubeObject;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

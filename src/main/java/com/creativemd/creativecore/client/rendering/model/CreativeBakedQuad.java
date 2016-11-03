@@ -4,11 +4,12 @@ import java.util.Arrays;
 
 import org.lwjgl.util.Color;
 
+import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.creativecore.common.utils.RenderCubeObject;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ViewFrustum;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

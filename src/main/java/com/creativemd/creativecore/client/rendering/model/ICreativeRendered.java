@@ -3,8 +3,8 @@ package com.creativemd.creativecore.client.rendering.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.creativemd.creativecore.common.utils.RenderCubeObject;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
