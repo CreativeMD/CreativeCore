@@ -5,6 +5,7 @@ import com.creativemd.creativecore.common.utils.CubeObject;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.relauncher.Side;
@@ -39,12 +40,66 @@ public class RenderCubeObject extends CubeObject {
 	
 	public boolean keepVU = false;
 	
-	public EnumSideRender renderEast = EnumSideRender.INSIDE_RENDERED;
-	public EnumSideRender renderWest = EnumSideRender.INSIDE_RENDERED;
-	public EnumSideRender renderUp = EnumSideRender.INSIDE_RENDERED;
-	public EnumSideRender renderDown = EnumSideRender.INSIDE_RENDERED;
-	public EnumSideRender renderSouth = EnumSideRender.INSIDE_RENDERED;
-	public EnumSideRender renderNorth = EnumSideRender.INSIDE_RENDERED;
+	private EnumSideRender renderEast = EnumSideRender.INSIDE_RENDERED;
+	private EnumSideRender renderWest = EnumSideRender.INSIDE_RENDERED;
+	private EnumSideRender renderUp = EnumSideRender.INSIDE_RENDERED;
+	private EnumSideRender renderDown = EnumSideRender.INSIDE_RENDERED;
+	private EnumSideRender renderSouth = EnumSideRender.INSIDE_RENDERED;
+	private EnumSideRender renderNorth = EnumSideRender.INSIDE_RENDERED;
+	
+	private BakedQuad quadEast = null;
+	private BakedQuad quadWest = null;
+	private BakedQuad quadUp = null;
+	private BakedQuad quadDown = null;
+	private BakedQuad quadSouth = null;
+	private BakedQuad quadNorth = null;
+	
+	public boolean doesNeedQuadUpdate = true;
+	
+	public void setQuad(EnumFacing facing, BakedQuad quad)
+	{
+		switch(facing)
+		{
+		case DOWN:
+			quadDown = quad;
+			break;
+		case EAST:
+			quadEast = quad;
+			break;
+		case NORTH:
+			quadNorth = quad;
+			break;
+		case SOUTH:
+			quadSouth = quad;
+			break;
+		case UP:
+			quadUp = quad;
+			break;
+		case WEST:
+			quadWest = quad;
+			break;
+		}
+	}
+	
+	public BakedQuad getQuad(EnumFacing facing)
+	{
+		switch(facing)
+		{
+		case DOWN:
+			return quadDown;
+		case EAST:
+			return quadEast;
+		case NORTH:
+			return quadNorth;
+		case SOUTH:
+			return quadSouth;
+		case UP:
+			return quadUp;
+		case WEST:
+			return quadWest;
+		}
+		return null;
+	}
 	
 	public RenderCubeObject(CubeObject cube, RenderCubeObject cube2)
 	{
