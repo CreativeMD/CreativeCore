@@ -5,8 +5,10 @@ import java.lang.reflect.Field;
 import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.google.common.base.Objects;
 
+import mezz.jei.util.color.ColorUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -45,10 +47,16 @@ public class CreativeCubeConsumer {
     protected int colorIndex = -1;
     protected int lightmapIndex = -1;
     
+    public CreativeBakedQuad quad;
     public RenderCubeObject cube;
     public VertexBuffer buffer;
     
     private final CreativeVertexBufferConsumer parent;
+    
+    public BlockInfo getBlockInfo()
+    {
+    	return blockInfo;
+    }
     
     public CreativeCubeConsumer(VertexFormat format, BlockColors colors) {
 		this.format = format;
@@ -142,11 +150,12 @@ public class CreativeCubeConsumer {
         }
 
         int multiplier = -1;
-        if(tint != -1)
+        if(tint != -1 && !quad.shouldOverrideColor)
         {
             multiplier = blockInfo.getColorMultiplier(tint);
-        }
-        
+        }else
+        	multiplier = quad.getTintIndex();
+        //multiplier = ColorUtils.WHITE;
         int count = format.getElementCount();
 
         for(int v = 0; v < 4; v++)
@@ -231,37 +240,6 @@ public class CreativeCubeConsumer {
         color[2] = (r * 3 + color[2] * 7) / 10;
     }
 
-    protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z)
-    {
-        float e1 = 1 - 1e-2f;
-        float e2 = 0.95f;
-        BlockPos pos = blockInfo.getBlockPos();
-
-        boolean full = blockInfo.getState().isFullCube();
-
-        if((full || y < -e1) && normal[1] < -e2) pos = pos.down();
-        if((full || y >  e1) && normal[1] >  e2) pos = pos.up();
-        if((full || z < -e1) && normal[2] < -e2) pos = pos.north();
-        if((full || z >  e1) && normal[2] >  e2) pos = pos.south();
-        if((full || x < -e1) && normal[0] < -e2) pos = pos.west();
-        if((full || x >  e1) && normal[0] >  e2) pos = pos.east();
-
-        int brightness = blockInfo.getState().getPackedLightmapCoords(blockInfo.getWorld(), pos);
-
-        lightmap[0] = ((float)((brightness >> 0x04) & 0xF) * 0x20) / 0xFFFF;
-        lightmap[1] = ((float)((brightness >> 0x14) & 0xF) * 0x20) / 0xFFFF;
-    }
-
-    protected void updateColor(float[] normal, float[] color, float x, float y, float z, float tint, int multiplier)
-    {
-        if(tint != -1)
-        {
-            color[0] *= (float)(multiplier >> 0x10 & 0xFF) / 0xFF;
-            color[1] *= (float)(multiplier >> 0x8 & 0xFF) / 0xFF;
-            color[2] *= (float)(multiplier & 0xFF) / 0xFF;
-        }
-    }
-
     public void setQuadTint(int tint)
     {
         this.tint = tint;
@@ -287,6 +265,26 @@ public class CreativeCubeConsumer {
     public void setBlockPos(BlockPos blockPos)
     {
         blockInfo.setBlockPos(blockPos);
+    }
+
+    protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z)
+    {
+        lightmap[0] = calcLightmap(blockInfo.getBlockLight(), x, y, z);
+        lightmap[1] = calcLightmap(blockInfo.getSkyLight(), x, y, z);
+    }
+    
+    protected void updateColor(float[] normal, float[] color, float x, float y, float z, float tint, int multiplier)
+    {
+        if(tint != -1)
+        {
+            color[0] *= (float)(multiplier >> 0x10 & 0xFF) / 0xFF;
+            color[1] *= (float)(multiplier >> 0x8 & 0xFF) / 0xFF;
+            color[2] *= (float)(multiplier & 0xFF) / 0xFF;
+        }
+        float a = getAo(x, y, z);
+        color[0] *= a;
+        color[1] *= a;
+        color[2] *= a;
     }
 
     protected float calcLightmap(float[][][][] light, float x, float y, float z)
@@ -415,7 +413,7 @@ public class CreativeCubeConsumer {
         a = MathHelper.clamp_float(a, 0, 1);
         return a;
     }
-
+    
     public void updateBlockInfo()
     {
         blockInfo.updateShift(false);

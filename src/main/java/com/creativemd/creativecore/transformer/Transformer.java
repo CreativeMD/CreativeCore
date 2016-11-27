@@ -28,6 +28,10 @@ import org.objectweb.asm.tree.VarInsnNode;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSnow;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLModContainer;
+import net.minecraftforge.fml.common.LoadController;
+import net.minecraftforge.fml.common.Loader;
 
 public abstract class Transformer {
 	
@@ -198,5 +202,4 @@ public abstract class Transformer {
 		if(transformers.size() == 0)
 			TransformerNames.emptyLists();
 	}
-	
 }
