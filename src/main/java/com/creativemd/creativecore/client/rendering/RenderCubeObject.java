@@ -1,5 +1,7 @@
 package com.creativemd.creativecore.client.rendering;
 
+import java.util.List;
+
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
 
@@ -47,16 +49,16 @@ public class RenderCubeObject extends CubeObject {
 	private EnumSideRender renderSouth = EnumSideRender.INSIDE_RENDERED;
 	private EnumSideRender renderNorth = EnumSideRender.INSIDE_RENDERED;
 	
-	private BakedQuad quadEast = null;
-	private BakedQuad quadWest = null;
-	private BakedQuad quadUp = null;
-	private BakedQuad quadDown = null;
-	private BakedQuad quadSouth = null;
-	private BakedQuad quadNorth = null;
+	private List<BakedQuad> quadEast = null;
+	private List<BakedQuad> quadWest = null;
+	private List<BakedQuad> quadUp = null;
+	private List<BakedQuad> quadDown = null;
+	private List<BakedQuad> quadSouth = null;
+	private List<BakedQuad> quadNorth = null;
 	
 	public boolean doesNeedQuadUpdate = true;
 	
-	public void setQuad(EnumFacing facing, BakedQuad quad)
+	public void setQuad(EnumFacing facing, List<BakedQuad> quad)
 	{
 		switch(facing)
 		{
@@ -81,7 +83,7 @@ public class RenderCubeObject extends CubeObject {
 		}
 	}
 	
-	public BakedQuad getQuad(EnumFacing facing)
+	public List<BakedQuad> getQuad(EnumFacing facing)
 	{
 		switch(facing)
 		{

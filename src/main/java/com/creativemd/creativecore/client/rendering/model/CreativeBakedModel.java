@@ -2,6 +2,7 @@ package com.creativemd.creativecore.client.rendering.model;
 
 import java.time.chrono.MinguoEra;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,9 +214,9 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				
 			}*/
 			CubeObject uvCube = cube.offset(cube.getOffset());
-			BakedQuad quad = getBakedQuad(cube, uvCube, newState, blockModel, side, rand);
-			if(quad != null)
-				baked.add(quad);
+			baked.addAll(getBakedQuad(cube, uvCube, newState, blockModel, side, rand));
+			//if(quad != null)
+				//baked.add(quad);
 			//return baked;
 		}
 		
@@ -232,88 +233,95 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return baked;
 	}
 	
-	public static BakedQuad getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand)
+	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand)
 	{
 		List<BakedQuad> blockQuads = blockModel.getQuads(state, side, rand);
 		if(blockQuads.isEmpty())
-			return null;
+			return Collections.emptyList();
 		
-		BakedQuad quad = new CreativeBakedQuad(blockQuads.get(0), cube, cube.color, cube.color != -1, side);
-		EnumFacing facing = side;
-		//if(facing == null)
-			//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
+		List<BakedQuad> quads = new ArrayList<>();
 		
-		EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
-		
-		for (int k = 0; k < 4; k++) {
-			VertexInformation vertex = direction.getVertexInformation(k);
+		for(int i = 0; i < blockQuads.size(); i++)
+		{
+			BakedQuad quad = new CreativeBakedQuad(blockQuads.get(i), cube, cube.color, cube.color != -1, side);
+			EnumFacing facing = side;
+			//if(facing == null)
+				//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
 			
-			int index = k * quad.getFormat().getIntegerSize();
-			float newX = cube.getVertexInformationPosition(vertex.xIndex);
-			float newY = cube.getVertexInformationPosition(vertex.yIndex);
-			float newZ = cube.getVertexInformationPosition(vertex.zIndex);
+			EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
 			
-			/*float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
-			float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
-			float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);*/
-			
-			quad.getVertexData()[index] = Float.floatToIntBits(newX);
-			quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
-			quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);
-			
-			if(cube.keepVU)
-				continue;
-			
-			int uvIndex = index + quad.getFormat().getUvOffsetById(0) / 4;
-			
-			newX = uvCube.getVertexInformationPosition(vertex.xIndex);
-			newY = uvCube.getVertexInformationPosition(vertex.yIndex);
-			newZ = uvCube.getVertexInformationPosition(vertex.zIndex);
-			
-			float u = 0;
-			float v = 0;
-			switch(facing)
-			{
-			case EAST:
-				newY = 1-newY;
-				newZ = 1-newZ;
-			case WEST:
-				if(facing == EnumFacing.WEST)
+			for (int k = 0; k < 4; k++) {
+				VertexInformation vertex = direction.getVertexInformation(k);
+				
+				int index = k * quad.getFormat().getIntegerSize();
+				float newX = cube.getVertexInformationPosition(vertex.xIndex);
+				float newY = cube.getVertexInformationPosition(vertex.yIndex);
+				float newZ = cube.getVertexInformationPosition(vertex.zIndex);
+				
+				/*float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
+				float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
+				float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);*/
+				
+				//TODO Add calculations
+				
+				quad.getVertexData()[index] = Float.floatToIntBits(newX);
+				quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
+				quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);
+				
+				if(cube.keepVU)
+					continue;
+				
+				int uvIndex = index + quad.getFormat().getUvOffsetById(0) / 4;
+				
+				newX = uvCube.getVertexInformationPosition(vertex.xIndex);
+				newY = uvCube.getVertexInformationPosition(vertex.yIndex);
+				newZ = uvCube.getVertexInformationPosition(vertex.zIndex);
+				
+				float u = 0;
+				float v = 0;
+				switch(facing)
+				{
+				case EAST:
 					newY = 1-newY;
-				u = newZ;
-				v = newY;
-				break;
-			case DOWN:
-				newZ = 1-newZ;
-			case UP:
-				u = newX;
-				v = newZ;
-				break;
-			case NORTH:
-				newY = 1-newY;
-				newX = 1-newX;
-			case SOUTH:
-				if(facing == EnumFacing.SOUTH)
+					newZ = 1-newZ;
+				case WEST:
+					if(facing == EnumFacing.WEST)
+						newY = 1-newY;
+					u = newZ;
+					v = newY;
+					break;
+				case DOWN:
+					newZ = 1-newZ;
+				case UP:
+					u = newX;
+					v = newZ;
+					break;
+				case NORTH:
 					newY = 1-newY;
-				u = newX;
-				v = newY;
-				break;
+					newX = 1-newX;
+				case SOUTH:
+					if(facing == EnumFacing.SOUTH)
+						newY = 1-newY;
+					u = newX;
+					v = newY;
+					break;
+				}
+				
+				/*u = Math.abs(u);
+				if(u > 1)
+					u %= 1;
+				v = Math.abs(v);
+				if(v > 1)
+					v %= 1;*/
+				u *= 16;
+				v *= 16;
+				
+				quad.getVertexData()[uvIndex] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedU(u));
+				quad.getVertexData()[uvIndex + 1] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedV(v));
 			}
-			
-			/*u = Math.abs(u);
-			if(u > 1)
-				u %= 1;
-			v = Math.abs(v);
-			if(v > 1)
-				v %= 1;*/
-			u *= 16;
-			v *= 16;
-			
-			quad.getVertexData()[uvIndex] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedU(u));
-			quad.getVertexData()[uvIndex + 1] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedV(v));
+			quads.add(quad);
 		}
-		
-		return quad;
+		return quads;
 	}
 	
 	public static List<BakedQuad> getBlockQuads(IBlockState state, EnumFacing side, long rand, boolean threaded) {
