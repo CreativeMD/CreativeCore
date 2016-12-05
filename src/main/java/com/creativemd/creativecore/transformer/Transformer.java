@@ -198,7 +198,7 @@ public abstract class Transformer {
 	
 	public void done()
 	{
-		transformers.remove(this);
+		//transformers.remove(this);
 		if(transformers.size() == 0)
 			TransformerNames.emptyLists();
 	}
