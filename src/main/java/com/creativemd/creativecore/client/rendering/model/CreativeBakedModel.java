@@ -262,8 +262,6 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
 				float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);*/
 				
-				//TODO Add calculations
-				
 				quad.getVertexData()[index] = Float.floatToIntBits(newX);
 				quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
 				quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);

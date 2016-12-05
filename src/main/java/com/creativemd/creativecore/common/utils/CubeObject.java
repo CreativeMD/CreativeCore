@@ -2,9 +2,15 @@ package com.creativemd.creativecore.common.utils;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -106,6 +112,42 @@ public class CubeObject {
 			}
 		}
 		return size;
+	}
+	
+	public void rotate(EnumFacing facing, Vector3f center)
+	{
+		Matrix3f matrix = new Matrix3f();
+		if(facing.getAxis() == Axis.X)
+			facing = facing.getOpposite();
+		matrix.rotY((float) Math.toRadians(facing.getHorizontalAngle()));
+		rotate(matrix, center);
+	}
+	
+	public void rotate(Matrix3f matrix, Vector3f center)
+	{
+		Vector3f low = new Vector3f(minX, minY, minZ);
+		Vector3f high = new Vector3f(maxX, maxY, maxZ);
+		
+		low.sub(center);
+		high.sub(center);
+		
+		matrix.transform(low);
+		matrix.transform(high);
+		
+		low.add(center);
+		high.add(center);
+		
+		set(low.x, low.y, low.z, high.x, high.y, high.z);
+	}
+	
+	public void set(float x, float y, float z, float x2, float y2, float z2)
+	{
+		this.minX = Math.min(x, x2);
+		this.minY = Math.min(y, y2);
+		this.minZ = Math.min(z, z2);
+		this.maxX = Math.max(x, x2);
+		this.maxY = Math.max(y, y2);
+		this.maxZ = Math.max(z, z2);
 	}
 	
 	public BlockPos getOffset()
