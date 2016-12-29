@@ -5,25 +5,45 @@ import java.util.ArrayList;
 import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.CreativeCore;
+import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
 import com.creativemd.creativecore.core.CreativeCoreDummy;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.monster.EntityGuardian;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketChangeGameState;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class PacketHandler {	
+public class PacketHandler {
+	
+	public static void sendMessage(MessageType type, EntityPlayer player, IMessage message)
+	{
+		switch(type)
+		{
+		case ToAllPlayer:
+			CreativeCore.network.sendToAll(message);
+			break;
+		case ToPlayer:
+			CreativeCore.network.sendTo(message, (EntityPlayerMP) player);
+			break;
+		case ToServer:
+			CreativeCore.network.sendToServer(message);
+			break;
+		}
+	}
+	
 	public static void sendPacketToAllPlayers(CreativeCorePacket packet)
 	{
-		CreativeCore.network.sendToAll(new CreativeMessageHandler(packet));
+		CreativeCore.network.sendToAll(new CreativeMessageHandler(packet, MessageType.ToAllPlayer, null));
 	}
 	
 	public static void sendPacketToServer(CreativeCorePacket packet)
 	{
-		CreativeCore.network.sendToServer(new CreativeMessageHandler(packet));
+		CreativeCore.network.sendToServer(new CreativeMessageHandler(packet, MessageType.ToServer, null));
 	}
 	
 	public static void sendPacketsToAllPlayers(ArrayList<CreativeCorePacket> packets)
@@ -48,7 +68,7 @@ public class PacketHandler {
 	
 	public static void sendPacketToPlayer(CreativeCorePacket packet, EntityPlayerMP player)
 	{
-		CreativeCore.network.sendTo(new CreativeMessageHandler(packet), player);
+		CreativeCore.network.sendTo(new CreativeMessageHandler(packet, MessageType.ToPlayer, player), player);
 	}
 	
 }

@@ -15,8 +15,8 @@ public abstract class TileEntityCreative extends TileEntity{
 	
 	public boolean isClientSide()
 	{
-		if(worldObj != null)
-			return worldObj.isRemote;
+		if(world != null)
+			return world.isRemote;
 		return FMLCommonHandler.instance().getSide().isClient();
 	}
 	
@@ -59,16 +59,16 @@ public abstract class TileEntityCreative extends TileEntity{
 	@SideOnly(Side.CLIENT)
 	public void updateRender()
 	{
-		worldObj.markBlockRangeForRenderUpdate(pos, pos);
+		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
 	
 	public void updateBlock()
 	{
-		if(!worldObj.isRemote)
+		if(!world.isRemote)
 		{
-			IBlockState state = worldObj.getBlockState(pos);
-			worldObj.notifyBlockUpdate(pos, state, state, 3);
-			worldObj.markChunkDirty(getPos(), this);
+			IBlockState state = world.getBlockState(pos);
+			world.notifyBlockUpdate(pos, state, state, 3);
+			world.markChunkDirty(getPos(), this);
 			//worldObj.markBlockForUpdate(pos);
 			//markDirty();
 		}

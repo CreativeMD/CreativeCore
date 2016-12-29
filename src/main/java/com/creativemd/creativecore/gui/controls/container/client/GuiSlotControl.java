@@ -73,7 +73,7 @@ public class GuiSlotControl extends GuiControl{
 		if(newStack != null)
 		{
 			if(stack != null)
-				newStack.stackSize += stack.stackSize;
+				newStack.grow(stack.getCount());
 			stack = newStack;
 		}
 		
@@ -111,7 +111,7 @@ public class GuiSlotControl extends GuiControl{
 		{
 			List list = null;
 			try{
-				list = slot.slot.getStack().getTooltip(this.mc.thePlayer, this.mc.gameSettings.advancedItemTooltips);
+				list = slot.slot.getStack().getTooltip(this.mc.player, this.mc.gameSettings.advancedItemTooltips);
 		
 		        for (int k = 0; k < list.size(); ++k)
 		        {
@@ -193,7 +193,7 @@ public class GuiSlotControl extends GuiControl{
 			boolean canStack = Container.canAddItemToSlot(slot.slot, dragged, true);
 			int stackSize = Math.min(slot.slot.getSlotStackLimit(), dragged.getMaxStackSize());
 			if(slot.slot.getHasStack())
-				stackSize -= slot.slot.getStack().stackSize;
+				stackSize -= slot.slot.getStack().getCount();
 			if(!slot.slot.isItemValid(dragged))
 				stackSize = 0;
 			if(stackSize > 0 && canStack)
@@ -224,7 +224,7 @@ public class GuiSlotControl extends GuiControl{
 					boolean canStack = Container.canAddItemToSlot(slot.slot, startSlot.dragged, true);
 					int stackSize = Math.min(slot.slot.getSlotStackLimit(), startSlot.dragged.getMaxStackSize());
 					if(slot.slot.getHasStack())
-						stackSize -= slot.slot.getStack().stackSize;
+						stackSize -= slot.slot.getStack().getCount();
 					if(!slot.slot.isItemValid(dragged))
 						stackSize = 0;
 					if(stackSize > 0 && canStack)
@@ -279,25 +279,25 @@ public class GuiSlotControl extends GuiControl{
 		{
 			int stackSize = Math.min(slot.slot.getSlotStackLimit(), startSlot.dragged.getMaxStackSize());
 			if(slot.slot.getHasStack())
-				stackSize -= slot.slot.getStack().stackSize;
+				stackSize -= slot.slot.getStack().getCount();
 			startSlot.stackSize[index] = stackSize;
 		}
 	}
 	
 	public ItemStack getItemStackByIndex(int index)
 	{
-		if(index >= dragged.stackSize)
+		if(index >= dragged.getCount())
 			return null;
 		ItemStack result = dragged.copy();
 		if(isRightClick)
-			result.stackSize = 1;
+			result.setCount(1);
 		else{
 			int used = 0;
-			int StackPerSlot = MathHelper.floor_float((float)result.stackSize / (float)stackSize.length);
+			int StackPerSlot = MathHelper.floor((float)result.getCount() / (float)stackSize.length);
 			for (int i = 0; i < index; i++)
 				used += Math.min(StackPerSlot, stackSize[i]);
-			if(used < result.stackSize)
-				result.stackSize = Math.min(StackPerSlot, stackSize[index]);
+			if(used < result.getCount())
+				result.setCount(Math.min(StackPerSlot, stackSize[index]));
 		}
 		return result;
 	}
@@ -305,16 +305,16 @@ public class GuiSlotControl extends GuiControl{
 	public void updateHandStack()
 	{
 		int used = 0;
-		int StackPerSlot = MathHelper.floor_float((float)dragged.stackSize / (float)stackSize.length);
+		int StackPerSlot = MathHelper.floor((float)dragged.getCount() / (float)stackSize.length);
 		if(isRightClick)
 			StackPerSlot = 1;
 		for (int i = 0; i < stackSize.length; i++)
 			used += Math.min(StackPerSlot, stackSize[i]);
-		int left = dragged.stackSize - used;
+		int left = dragged.getCount() - used;
 		//if(left < 0)
 			//left = 0;
 		ItemStack hand = getPlayer().inventory.getItemStack().copy();
-		hand.stackSize = left;
+		hand.setCount(left);
 		getPlayer().inventory.setItemStack(hand);
 			
 	}

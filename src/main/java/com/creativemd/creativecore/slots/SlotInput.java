@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.slots;
 
-import com.creativemd.creativecore.common.utils.stack.StackInfo;
+import com.creativemd.creativecore.common.utils.stack.InfoStack;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -9,9 +9,9 @@ import net.minecraft.item.ItemStack;
 
 public class SlotInput extends Slot{
 	
-	public StackInfo input;
+	public InfoStack input;
 	
-	public SlotInput(IInventory inventory, int index, int x, int y, StackInfo input) {
+	public SlotInput(IInventory inventory, int index, int x, int y, InfoStack input) {
 		super(inventory, index, x, y);
 		this.input = input;
 	}

@@ -88,7 +88,7 @@ public abstract class SubContainer extends ContainerParent{
 	
 	public void openNewLayer(NBTTagCompound nbt, boolean isPacket)
     {
-		SubContainer Subcontainer = createLayerFromPacket(player.worldObj, player, nbt);
+		SubContainer Subcontainer = createLayerFromPacket(player.world, player, nbt);
 		Subcontainer.container = container;
     	container.layers.add(Subcontainer);
     	if(!isPacket)

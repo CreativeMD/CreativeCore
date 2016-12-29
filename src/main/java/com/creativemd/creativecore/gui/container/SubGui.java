@@ -63,7 +63,7 @@ public abstract class SubGui extends GuiParent {
     
     public void openNewLayer(NBTTagCompound nbt, boolean isPacket)
     {
-    	gui.addLayer(createLayer(mc.theWorld, mc.thePlayer, nbt));
+    	gui.addLayer(createLayer(mc.world, mc.player, nbt));
     	if(!isPacket)
     		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), false));
     }
@@ -101,7 +101,7 @@ public abstract class SubGui extends GuiParent {
 		nbt.setBoolean("exit", true);
 		closeLayer(nbt);
 		if(gui.getLayers().size() == 0)
-			mc.thePlayer.closeScreen();
+			mc.player.closeScreen();
     }
     
     public SubGui createLayer(World world, EntityPlayer player, NBTTagCompound nbt)

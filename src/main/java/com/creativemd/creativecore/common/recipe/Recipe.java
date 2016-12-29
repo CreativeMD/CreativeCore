@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.creativemd.creativecore.common.utils.stack.StackInfo;
+import com.creativemd.creativecore.common.utils.stack.InfoStack;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -12,14 +12,14 @@ import net.minecraft.item.ItemStack;
 public class Recipe {
 	
 	public ItemStack[] output;
-	public StackInfo[] input;
+	public InfoStack[] input;
 	
 	public Recipe(ItemStack output, Object... input)
 	{
 		this(new ItemStack[]{output}, input);
 	}
 	
-	public Recipe(ItemStack[] output, StackInfo[] info)
+	public Recipe(ItemStack[] output, InfoStack[] info)
 	{
 		this.output = output;
 		this.input = info;
@@ -27,21 +27,21 @@ public class Recipe {
 	
 	public Recipe(ItemStack[] output, Object... input)
 	{
-		ArrayList<StackInfo> info = new ArrayList<StackInfo>();
+		ArrayList<InfoStack> info = new ArrayList<InfoStack>();
 		for (int i = 0; i < input.length; i++) {
 			if(input[i] != null)
 			{
-				if(input[i] instanceof StackInfo)
-					info.add((StackInfo) input[i]);
+				if(input[i] instanceof InfoStack)
+					info.add((InfoStack) input[i]);
 				else{
-					StackInfo stackInfo = StackInfo.parseObject(input[i]);
-					if(stackInfo != null)
-						info.add(stackInfo);
+					InfoStack infoStack = InfoStack.parseObject(input[i]);
+					if(infoStack != null)
+						info.add(infoStack);
 				}
 			}
 		}
 		this.output = output;
-		this.input = info.toArray(new StackInfo[0]);
+		this.input = info.toArray(new InfoStack[0]);
 	}
 	
 	public ItemStack[] getInputStacks()
@@ -61,7 +61,7 @@ public class Recipe {
 	
 	public void consumeRecipe(IInventory inventory, int amount)
 	{
-		ArrayList<StackInfo> info = new ArrayList<StackInfo>(Arrays.asList(input));
+		ArrayList<InfoStack> info = new ArrayList<InfoStack>(Arrays.asList(input));
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if(stack != null)
@@ -69,9 +69,9 @@ public class Recipe {
 				for (int j = 0; j < info.size(); j++) {
 					if(info.get(j).isInstance(stack))
 					{
-						stack.stackSize -= info.get(j).stackSize*amount;
-						if(stack.stackSize <= 0)
-							inventory.setInventorySlotContents(i, null);
+						stack.shrink(info.get(j).stackSize*amount);
+						if(stack.isEmpty())
+							inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 						info.remove(j);
 						break;
 					}
@@ -89,7 +89,7 @@ public class Recipe {
 	public int getNumberofResults(IInventory inventory)
 	{
 		int limit = 1;
-		ArrayList<StackInfo> info = new ArrayList<StackInfo>(Arrays.asList(input));
+		ArrayList<InfoStack> info = new ArrayList<InfoStack>(Arrays.asList(input));
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if(stack != null)
@@ -113,7 +113,7 @@ public class Recipe {
 	
 	public boolean isValidRecipe(IInventory inventory)
 	{
-		ArrayList<StackInfo> info = new ArrayList<StackInfo>(Arrays.asList(input));
+		ArrayList<InfoStack> info = new ArrayList<InfoStack>(Arrays.asList(input));
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if(stack != null)

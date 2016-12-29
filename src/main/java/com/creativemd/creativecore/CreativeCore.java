@@ -11,14 +11,16 @@ import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
+import com.creativemd.creativecore.common.packet.CreativeSplittedMessageHandler;
 import com.creativemd.creativecore.common.packet.PacketReciever;
+import com.creativemd.creativecore.common.packet.SplittedPacketReceiver;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiNBTPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
 import com.creativemd.creativecore.common.utils.ColorUtils;
-import com.creativemd.creativecore.common.utils.stack.StackInfo;
+import com.creativemd.creativecore.common.utils.stack.InfoStack;
 import com.creativemd.creativecore.core.CreativeCoreClient;
 import com.creativemd.creativecore.event.GuiTickHandler;
 import com.creativemd.creativecore.gui.container.SubContainer;
@@ -43,6 +45,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -92,6 +95,8 @@ public class CreativeCore {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel("creativemd");
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.CLIENT);
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
+		network.registerMessage(SplittedPacketReceiver.class, CreativeSplittedMessageHandler.class, 1, Side.CLIENT);
+		network.registerMessage(SplittedPacketReceiver.class, CreativeSplittedMessageHandler.class, 1, Side.SERVER);
 		
 		if(FMLCommonHandler.instance().getSide().isClient())
 			loadClientSide();
@@ -148,7 +153,7 @@ public class CreativeCore {
 			}
 		});
 		
-		EntityRegistry.registerModEntity(EntitySit.class, "Sit", 0, this, 250, 250, true);
+		EntityRegistry.registerModEntity(new ResourceLocation(modid, "sit"), EntitySit.class, "Sit", 0, this, 250, 250, true);
 		
 		//Init Packets
 		CreativeCorePacket.registerPacket(GuiUpdatePacket.class, "guiupdatepacket");
@@ -160,7 +165,7 @@ public class CreativeCore {
 		
 		MinecraftForge.EVENT_BUS.register(guiTickHandler);
 		
-		StackInfo.registerDefaultLoaders();
+		InfoStack.registerDefaultTypes();
 		
 		//if(Loader.isModLoaded("NotEnoughItems") && FMLCommonHandler.instance().getEffectiveSide().isClient())
 			//NEIRecipeInfoHandler.load();

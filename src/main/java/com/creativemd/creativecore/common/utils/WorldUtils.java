@@ -46,13 +46,13 @@ public class WorldUtils {
         double d2 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
         EntityItem entityitem = new EntityItem(world, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, stack);
         entityitem.setPickupDelay(10);
-		world.spawnEntityInWorld(entityitem);
+		world.spawnEntity(entityitem);
 	}
 	
 	public static void dropItem(EntityPlayer player, ItemStack stack)
 	{
 		if(stack != null)
-			dropItem(player.worldObj, stack, player.getPosition());
+			dropItem(player.world, stack, player.getPosition());
 	}
 	
 	public static void dropItem(EntityPlayer player, ArrayList<ItemStack> stacks)
