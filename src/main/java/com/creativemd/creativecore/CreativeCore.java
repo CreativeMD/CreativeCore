@@ -11,6 +11,7 @@ import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
+import com.creativemd.creativecore.common.packet.CreativeTestPacket;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
@@ -92,6 +93,8 @@ public class CreativeCore {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel("creativemd");
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.CLIENT);
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
+		
+		CreativeCorePacket.registerPacket(CreativeTestPacket.class, "CCTest");
 		
 		if(FMLCommonHandler.instance().getSide().isClient())
 			loadClientSide();

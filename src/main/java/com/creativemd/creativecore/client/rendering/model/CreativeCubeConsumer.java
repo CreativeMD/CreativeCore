@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.client.rendering.model;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import javax.vecmath.Vector3f;
 
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -50,6 +52,7 @@ public class CreativeCubeConsumer {
     public CreativeBakedQuad quad;
     public RenderCubeObject cube;
     public VertexBuffer buffer;
+    public BlockRenderLayer layer;
     
     private final CreativeVertexBufferConsumer parent;
     
@@ -122,7 +125,7 @@ public class CreativeCubeConsumer {
         float[][] lightmap = quadData[lightmapIndex];
         float[][] color = quadData[colorIndex];
 
-        if(normalIndex != -1 && (
+        /*if(normalIndex != -1 && (
             quadData[normalIndex][0][0] != -1 ||
             quadData[normalIndex][0][1] != -1 ||
             quadData[normalIndex][0][2] != -1))
@@ -130,7 +133,7 @@ public class CreativeCubeConsumer {
             normal = quadData[normalIndex];
         }
         else
-        {
+        {*/
             normal = new float[4][4];
             Vector3f v1 = new Vector3f(position[3]);
             Vector3f t = new Vector3f(position[1]);
@@ -147,14 +150,15 @@ public class CreativeCubeConsumer {
                 normal[v][2] = v1.z;
                 normal[v][3] = 0;
             }
-        }
+        //}
 
         int multiplier = -1;
-        if(tint != -1 && !quad.shouldOverrideColor)
+        if(tint != -1 && (!quad.shouldOverrideColor || layer == BlockRenderLayer.CUTOUT_MIPPED))
         {
             multiplier = blockInfo.getColorMultiplier(tint);
         }else
         	multiplier = quad.getTintIndex();
+        
         //multiplier = ColorUtils.WHITE;
         int count = format.getElementCount();
 
