@@ -35,6 +35,19 @@ public class ColorUtils {
         float b = (float)(color & 255);
         return new Vec3i(r, g, b);
 	}
+	
+	public static Vec3d IntToVec(int color)
+	{
+		float r = (float)(color >> 16 & 255);
+        float g = (float)(color >> 8 & 255);
+        float b = (float)(color & 255);
+        return new Vec3d(r/255F, g/255F, b/255F);
+	}
+	
+	public static int VecToInt(Vec3d color)
+	{
+		return RGBToInt(new Vec3i(color.xCoord*255, color.yCoord*255, color.zCoord*255));
+	}
 
 	public static Vec3i colorToVec(Color color) {
 		return new Vec3i(color.getRed(), color.getGreen(), color.getBlue());

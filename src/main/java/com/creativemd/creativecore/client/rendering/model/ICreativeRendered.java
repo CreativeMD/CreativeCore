@@ -9,6 +9,7 @@ import com.creativemd.creativecore.common.utils.CubeObject;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -22,7 +23,7 @@ public interface ICreativeRendered {
 	public List<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack);
 	
 	@SideOnly(Side.CLIENT)
-	public default void applyCustomOpenGLHackery(ItemStack stack) {}
+	public default void applyCustomOpenGLHackery(ItemStack stack, TransformType cameraTransformType) {}
 	
 	@SideOnly(Side.CLIENT)
 	public default List<BakedQuad> getCachedModel(EnumFacing facing, BlockRenderLayer layer, IBlockState state, TileEntity te, ItemStack stack, boolean threaded)

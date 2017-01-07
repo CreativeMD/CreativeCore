@@ -424,7 +424,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				renderer = (ICreativeRendered) lastItemStack.getItem();
 			
 			if(renderer != null)
-				renderer.applyCustomOpenGLHackery(lastItemStack);
+				renderer.applyCustomOpenGLHackery(lastItemStack, cameraTransformType);
 		}
 		
 		Pair<? extends IBakedModel, Matrix4f> pair = ((IPerspectiveAwareModel) mc.getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState())).handlePerspective(cameraTransformType);

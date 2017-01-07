@@ -61,6 +61,26 @@ public class CubeObject {
 		
 	}
 	
+	public void add(Vec3d vec)
+	{
+		this.minX += vec.xCoord;
+		this.minY += vec.yCoord;
+		this.minZ += vec.zCoord;
+		this.maxX += vec.xCoord;
+		this.maxY += vec.yCoord;
+		this.maxZ += vec.zCoord;
+	}
+	
+	public void sub(Vec3d vec)
+	{
+		this.minX -= vec.xCoord;
+		this.minY -= vec.yCoord;
+		this.minZ -= vec.zCoord;
+		this.maxX -= vec.xCoord;
+		this.maxY -= vec.yCoord;
+		this.maxZ -= vec.zCoord;
+	}
+	
 	/*public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, boolean normalBlock)
 	{
 		this(minX, minY, minZ, maxX, maxY, maxZ);
