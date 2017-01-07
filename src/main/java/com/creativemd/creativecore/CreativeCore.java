@@ -11,6 +11,7 @@ import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
+import com.creativemd.creativecore.common.packet.CreativeTestPacket;
 import com.creativemd.creativecore.common.packet.CreativeSplittedMessageHandler;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.SplittedPacketReceiver;
@@ -97,6 +98,8 @@ public class CreativeCore {
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
 		network.registerMessage(SplittedPacketReceiver.class, CreativeSplittedMessageHandler.class, 1, Side.CLIENT);
 		network.registerMessage(SplittedPacketReceiver.class, CreativeSplittedMessageHandler.class, 1, Side.SERVER);
+		
+		CreativeCorePacket.registerPacket(CreativeTestPacket.class, "CCTest");
 		
 		if(FMLCommonHandler.instance().getSide().isClient())
 			loadClientSide();
