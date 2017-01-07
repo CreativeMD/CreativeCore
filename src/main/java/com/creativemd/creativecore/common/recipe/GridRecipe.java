@@ -1,7 +1,7 @@
 package com.creativemd.creativecore.common.recipe;
 
 import com.creativemd.creativecore.common.recipe.entry.RecipeEntry;
-import com.creativemd.creativecore.common.utils.stack.StackInfo;
+import com.creativemd.creativecore.common.utils.stack.InfoStack;
 import com.ibm.icu.impl.UBiDiProps;
 
 import net.minecraft.inventory.IInventory;
@@ -18,7 +18,7 @@ public class GridRecipe extends Recipe{
 		this.height = height;
 	}
 	
-	public GridRecipe(ItemStack[] output, int width, int height, StackInfo... input)
+	public GridRecipe(ItemStack[] output, int width, int height, InfoStack... input)
 	{
 		super(output, input);
 		this.width = width;
@@ -44,9 +44,9 @@ public class GridRecipe extends Recipe{
 				{
 					if(input[i].isInstance(stack))
 					{
-						stack.stackSize -= input[i].stackSize*amount;
-						if(stack.stackSize <= 0)
-							inventory.setInventorySlotContents(index, null);
+						stack.shrink(input[i].stackSize*amount);
+						if(stack.isEmpty())
+							inventory.setInventorySlotContents(index, ItemStack.EMPTY);
 					}
 				}
 				
@@ -62,7 +62,7 @@ public class GridRecipe extends Recipe{
 		{
 			int number = Integer.MAX_VALUE;
 			for (int i = 0; i < input.length; i++) {
-				int uses = inv[i].stackSize/input[i].stackSize;
+				int uses = inv[i].getCount()/input[i].stackSize;
 				number = Math.min(uses, number);
 			}
 			return number;
@@ -136,7 +136,7 @@ public class GridRecipe extends Recipe{
 		return isValidRecipe(inv);
 	}
 	
-	protected boolean isStackValid(ItemStack stack, StackInfo input)
+	protected boolean isStackValid(ItemStack stack, InfoStack input)
 	{
 		if(stack == null && input == null)
 			return true;

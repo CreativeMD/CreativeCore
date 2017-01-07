@@ -45,7 +45,7 @@ public class BlockUpdatePacket extends CreativeCorePacket{
 
 	@Override
 	public void executeServer(EntityPlayer player) {
-		TileEntity te = player.worldObj.getTileEntity(pos);
+		TileEntity te = player.world.getTileEntity(pos);
 		if(te instanceof TileEntityCreative)
 		{
 			((TileEntityCreative) te).receiveUpdatePacket(nbt);

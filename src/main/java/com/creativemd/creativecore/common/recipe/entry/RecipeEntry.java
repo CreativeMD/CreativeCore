@@ -15,8 +15,8 @@ public abstract class RecipeEntry {
 	public void consumeItemStack(int amount, int index, IInventory inventory)
 	{
 		ItemStack stack = inventory.getStackInSlot(index);
-		stack.stackSize -= amount*getStackSize(stack);
-		if(stack.stackSize == 0)
+		stack.shrink(amount*getStackSize(stack));
+		if(stack.isEmpty())
 			inventory.setInventorySlotContents(index, null);
 	}
 	
