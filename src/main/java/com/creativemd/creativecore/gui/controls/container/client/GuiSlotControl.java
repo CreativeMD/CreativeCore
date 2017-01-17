@@ -107,7 +107,7 @@ public class GuiSlotControl extends GuiControl{
 	public ArrayList<String> getTooltip()
 	{
 		ArrayList<String> tips = new ArrayList<String>();
-		if(slot.slot.getHasStack() && getPlayer().inventory.getItemStack() == null)
+		if(slot.slot.getHasStack() && getPlayer().inventory.getItemStack().isEmpty())
 		{
 			List list = null;
 			try{
