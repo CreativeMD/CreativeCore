@@ -40,6 +40,8 @@ public class WorldUtils {
 	
 	public static void dropItem(World world, ItemStack stack, BlockPos pos)
 	{
+		if(stack == null)
+			return ;
 		float f = 0.7F;
         double d0 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
         double d1 = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;

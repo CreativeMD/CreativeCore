@@ -56,7 +56,7 @@ public class ChunkProviderFake implements IChunkProvider
     {
         if (this.worldObj.provider.canDropChunk(chunkIn.xPosition, chunkIn.zPosition))
         {
-            this.droppedChunksSet.add(Long.valueOf(ChunkPos.chunkXZ2Int(chunkIn.xPosition, chunkIn.zPosition)));
+            this.droppedChunksSet.add(Long.valueOf(ChunkPos.asLong(chunkIn.xPosition, chunkIn.zPosition)));
             chunkIn.unloaded = true;
         }
     }
@@ -75,7 +75,7 @@ public class ChunkProviderFake implements IChunkProvider
     @Nullable
     public Chunk getLoadedChunk(int x, int z)
     {
-        long i = ChunkPos.chunkXZ2Int(x, z);
+        long i = ChunkPos.asLong(x, z);
         Chunk chunk = (Chunk)this.id2ChunkMap.get(i);
 
         if (chunk != null)
@@ -98,9 +98,9 @@ public class ChunkProviderFake implements IChunkProvider
         Chunk chunk = this.getLoadedChunk(x, z);
         if (chunk == null)
         {
-            long pos = ChunkPos.chunkXZ2Int(x, z);
+            long pos = ChunkPos.asLong(x, z);
             chunk = this.loadChunkFromFile(x, z);
-            this.id2ChunkMap.put(ChunkPos.chunkXZ2Int(x, z), chunk);
+            this.id2ChunkMap.put(ChunkPos.asLong(x, z), chunk);
         }
             /*chunk = net.minecraftforge.common.ForgeChunkManager.fetchDormantChunk(pos, this.worldObj);
             if (chunk != null || !(this.chunkLoader instanceof net.minecraft.world.chunk.storage.AnvilChunkLoader))
@@ -142,7 +142,7 @@ public class ChunkProviderFake implements IChunkProvider
 
         if (chunk == null)
         {
-            long i = ChunkPos.chunkXZ2Int(x, z);
+            long i = ChunkPos.asLong(x, z);
 
             try
             {
@@ -321,9 +321,9 @@ public class ChunkProviderFake implements IChunkProvider
     }
 
     @Nullable
-    public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position)
+    public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position, boolean p_180513_4_)
     {
-        return this.chunkGenerator.getStrongholdGen(worldIn, structureName, position);
+        return this.chunkGenerator.getStrongholdGen(worldIn, structureName, position, p_180513_4_);
     }
 
     public int getLoadedChunkCount()
@@ -336,6 +336,16 @@ public class ChunkProviderFake implements IChunkProvider
      */
     public boolean chunkExists(int x, int z)
     {
-        return this.id2ChunkMap.containsKey(ChunkPos.chunkXZ2Int(x, z));
+        return this.id2ChunkMap.containsKey(ChunkPos.asLong(x, z));
     }
+
+    public boolean isChunkGeneratedAt(int p_191062_1_, int p_191062_2_)
+    {
+        return this.id2ChunkMap.containsKey(ChunkPos.asLong(p_191062_1_, p_191062_2_)) || this.chunkLoader.isChunkGeneratedAt(p_191062_1_, p_191062_2_);
+    }
+
+	@Override
+	public boolean tick() {
+		return false;
+	}
 }

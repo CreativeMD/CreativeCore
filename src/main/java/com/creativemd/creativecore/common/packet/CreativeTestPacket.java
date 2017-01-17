@@ -22,13 +22,11 @@ public class CreativeTestPacket extends CreativeCorePacket {
 	
 	@Override
 	public void executeServer(EntityPlayer player) {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
 	public void executeClient(EntityPlayer player) {
-		// TODO Auto-generated method stub
 		
 	}
 	

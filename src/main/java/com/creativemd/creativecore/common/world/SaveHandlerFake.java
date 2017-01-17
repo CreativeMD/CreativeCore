@@ -61,6 +61,11 @@ public class SaveHandlerFake implements ISaveHandler {
 			public void chunkTick() {
 				
 			}
+
+			@Override
+			public boolean isChunkGeneratedAt(int x, int z) {
+				return true;
+			}
 		};
 	}
 

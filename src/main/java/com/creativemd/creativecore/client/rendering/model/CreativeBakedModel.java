@@ -139,8 +139,12 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				newState = newState.getActualState(te.getWorld(), te.getPos());
 			
 			//BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-			if(layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
-				continue;
+			try{
+				if(layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
+					continue;
+			}catch(Exception e){
+				
+			}
 			
 			IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
 			/*List<BakedQuad> blockQuads = blockModel.getQuads(newState, side, rand);
