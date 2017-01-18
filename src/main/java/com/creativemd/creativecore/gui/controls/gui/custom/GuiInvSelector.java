@@ -19,7 +19,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 public class GuiInvSelector extends GuiComboBox{
 	
@@ -44,10 +43,12 @@ public class GuiInvSelector extends GuiComboBox{
 	public void updateItems(EntityPlayer player)
 	{
 		boolean shouldSearch = search.equals("");
-		NonNullList<ItemStack> newStacks = NonNullList.create();
-		for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
-			if(!player.inventory.mainInventory.get(i).isEmpty())
-				newStacks.add(player.inventory.mainInventory.get(i).copy());
+		ArrayList<ItemStack> newStacks = new ArrayList<ItemStack>();
+		for (int i = 0; i < player.inventory.mainInventory.length; i++) {
+			if(player.inventory.mainInventory[i] != null)
+			{
+				newStacks.add(player.inventory.mainInventory[i].copy());
+			}
 		}
 		
 		Iterator iterator = Item.REGISTRY.iterator();

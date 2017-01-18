@@ -95,7 +95,7 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
         a += ao[sx - 0][sy - 0][sz - 1] * (0 + x) * (0 + y) * (1 - z);
         a += ao[sx - 0][sy - 0][sz - 0] * (0 + x) * (0 + y) * (0 + z);
 
-        a = MathHelper.clamp(a, 0, 1);
+        a = MathHelper.clamp_float(a, 0, 1);
         return a;
     }
 

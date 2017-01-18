@@ -3,14 +3,13 @@ package com.creativemd.creativecore.common.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.creativemd.creativecore.common.utils.stack.InfoStack;
+import com.creativemd.creativecore.common.utils.stack.StackInfo;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.storage.loot.functions.SetCount;
 import scala.collection.immutable.Stack;
 
 public class InventoryUtils {
@@ -41,7 +40,7 @@ public class InventoryUtils {
 	{
 		ItemStack[] inventory = new ItemStack[nbt.getInteger("size")];
 		for (int i = 0; i < inventory.length; i++) {
-			inventory[i] = new ItemStack(nbt.getCompoundTag("slot" + i));
+			inventory[i] = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("slot" + i));
 		}
 		return inventory;
 	}
@@ -83,19 +82,19 @@ public class InventoryUtils {
 	
 	public static boolean consumeItemStack(IInventory inventory, ItemStack stack)
 	{
-		if(getAmount(inventory, stack) >= stack.getCount())
+		if(getAmount(inventory, stack) >= stack.stackSize)
 		{
 			for (int i = 0; i < inventory.getSizeInventory(); i++) {
 				if(isItemStackEqual(inventory.getStackInSlot(i), stack)){
-					int amount = Math.min(stack.getCount(), inventory.getStackInSlot(i).getCount());
+					int amount = Math.min(stack.stackSize, inventory.getStackInSlot(i).stackSize);
 					if(amount > 0)
 					{
-						inventory.getStackInSlot(i).shrink(amount);
-						if(inventory.getStackInSlot(i).isEmpty())
-							inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-						stack.shrink(amount);
+						inventory.getStackInSlot(i).stackSize -= amount;
+						if(inventory.getStackInSlot(i).stackSize <= 0)
+							inventory.setInventorySlotContents(i, null);
+						stack.stackSize -= amount;
 					}
-					if(stack.isEmpty())
+					if(stack.stackSize <= 0)
 						return true;
 				}
 			}
@@ -105,19 +104,19 @@ public class InventoryUtils {
 	
 	public static boolean addItemStackToInventory(ItemStack[] inventory, ItemStack stack)
 	{
-		if(stack.isEmpty())
+		if(stack.stackSize <= 0)
 			return true;
 		for (int i = 0; i < inventory.length; i++) {
 			if(isItemStackEqual(inventory[i], stack)){
-				int amount = Math.min(64-inventory[i].getCount(), stack.getCount());
+				int amount = Math.min(64-inventory[i].stackSize, stack.stackSize);
 				if(amount > 0)
 				{
 					ItemStack newStack = stack.copy();
-					newStack.setCount(inventory[i].getCount()+amount);
+					newStack.stackSize = inventory[i].stackSize+amount;
 					inventory[i] = newStack;
 					
-					stack.shrink(amount);
-					if(stack.isEmpty())
+					stack.stackSize -= amount;
+					if(stack.stackSize <= 0)
 						return true;
 				}
 			}
@@ -137,15 +136,15 @@ public class InventoryUtils {
 	{
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if(isItemStackEqual(inventory.getStackInSlot(i), stack)){
-				int amount = Math.min(64-inventory.getStackInSlot(i).getCount(), stack.getCount());
+				int amount = Math.min(64-inventory.getStackInSlot(i).stackSize, stack.stackSize);
 				if(amount > 0)
 				{
 					ItemStack newStack = stack.copy();
-					newStack.setCount(inventory.getStackInSlot(i).getCount()+amount);
+					newStack.stackSize = inventory.getStackInSlot(i).stackSize+amount;
 					inventory.setInventorySlotContents(i, newStack);
 					
-					stack.shrink(amount);
-					if(stack.isEmpty())
+					stack.stackSize -= amount;
+					if(stack.stackSize <= 0)
 						return true;
 				}
 			}
@@ -166,7 +165,7 @@ public class InventoryUtils {
 		int amount = 0;
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if(isItemStackEqual(inventory.getStackInSlot(i), stack)){
-				amount += inventory.getStackInSlot(i).getCount();
+				amount += inventory.getStackInSlot(i).stackSize;
 			}
 		}
 		return amount;
@@ -176,17 +175,17 @@ public class InventoryUtils {
 	{
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
-			if(stack != null && stack.isEmpty())
+			if(stack != null && stack.stackSize == 0)
 				inventory.setInventorySlotContents(i, null);
 		}
 	}
 
-	public static int consumeInfoStack(InfoStack info, IInventory inventory)
+	public static int consumeStackInfo(StackInfo info, IInventory inventory)
 	{
-		return consumeInfoStack(info, inventory, null);
+		return consumeStackInfo(info, inventory, null);
 	}
 	
-	public static int consumeInfoStack(InfoStack info, IInventory inventory, ArrayList<ItemStack> consumed)
+	public static int consumeStackInfo(StackInfo info, IInventory inventory, ArrayList<ItemStack> consumed)
 	{
 		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
 		int stackSize = info.stackSize;
@@ -195,11 +194,11 @@ public class InventoryUtils {
 			if(stack != null && info.isInstanceIgnoreSize(stack))
 			{
 				
-				int used = Math.min(stackSize, stack.getCount());
-				stack.shrink(used);
+				int used = Math.min(stackSize, stack.stackSize);
+				stack.stackSize -= used;
 				stackSize -= used;
 				ItemStack stackCopy = stack.copy();
-				stackCopy.setCount(used);
+				stackCopy.stackSize = used;
 				stacks.add(stackCopy);
 				if(stackSize <= 0)
 					break;

@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.creativemd.creativecore.common.utils.stack.InfoStack;
+import com.creativemd.creativecore.common.utils.stack.StackInfo;
+import com.creativemd.creativecore.common.utils.string.StringUtils;
+
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.embedded.EmbeddedChannel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,8 +28,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class CreativeCorePacket {
 	
 	public static final HashMap<String, Class<? extends CreativeCorePacket>> packets = new HashMap<String, Class<? extends CreativeCorePacket>>();
-	
-	public static int maxPacketSize = FMLProxyPacket.MAX_LENGTH/8 - 12000;
 	
 	public static void registerPacket(Class<? extends CreativeCorePacket> PacketClass, String id)
 	{
@@ -110,28 +109,31 @@ public abstract class CreativeCorePacket {
 		return new Vec3d(x, y, z);
 	}
 	
-	public static void writeInfoStack(ByteBuf buf, InfoStack info)
+	public static void writeStackInfo(ByteBuf buf, StackInfo info)
 	{
-		writeNBT(buf, info.writeToNBT());
+		writeString(buf, StringUtils.ObjectsToString(info));
 	}
 	
-	public static InfoStack readInfoStack(ByteBuf buf)
+	public static StackInfo readStackInfo(ByteBuf buf)
 	{
-		return InfoStack.parseNBT(readNBT(buf));
+		Object[] objects = StringUtils.StringToObjects(readString(buf));
+		if(objects.length == 1 && objects[0] instanceof StackInfo)
+			return (StackInfo) objects[0];
+		return null;
 	}
 	
-	public void writeInfoStacks(ByteBuf buf, ArrayList<InfoStack> infos) {
+	public void writeStackInfos(ByteBuf buf, ArrayList<StackInfo> infos) {
 		buf.writeInt(infos.size());
 		for (int i = 0; i < infos.size(); i++) {
-			writeInfoStack(buf, infos.get(i));
+			writeStackInfo(buf, infos.get(i));
 		}
 	}
 
-	public ArrayList<InfoStack> readInfoStacks(ByteBuf buf) {
+	public ArrayList<StackInfo> readStackInfos(ByteBuf buf) {
 		int count = buf.readInt();
-		ArrayList<InfoStack> infos = new ArrayList<InfoStack>();
+		ArrayList<StackInfo> infos = new ArrayList<StackInfo>();
 		for (int i = 0; i < count; i++) {
-			InfoStack info = readInfoStack(buf);
+			StackInfo info = readStackInfo(buf);
 			if(info != null)
 				infos.add(info);
 		}

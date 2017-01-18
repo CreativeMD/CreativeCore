@@ -20,13 +20,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 public class GuiItemStackSelector extends GuiComboBoxExtension{
 	
 	//public GuiInvSelectorExtension extension;
-	public NonNullList<ItemStack> stacks;
-	public NonNullList<ItemStack> inv;
+	public ArrayList<ItemStack> stacks;
+	public ArrayList<ItemStack> inv;
 	
 	public String search;
 	public boolean onlyBlocks;
@@ -37,12 +36,12 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 		this.onlyBlocks = onlyBlocks;
 		//this.extension = extension;
 		
-		stacks = NonNullList.create();
-		inv = NonNullList.create();
+		stacks = new ArrayList<ItemStack>();
+		inv = new ArrayList<ItemStack>();
 		
-		for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
-			if(!player.inventory.mainInventory.get(i).isEmpty())
-				inv.add(player.inventory.mainInventory.get(i).copy());
+		for (int i = 0; i < player.inventory.mainInventory.length; i++) {
+			if(player.inventory.mainInventory[i] != null)
+				inv.add(player.inventory.mainInventory[i]);
 		}
 		//CreativeTabs.tabAllSearch.displayAllReleventItems(stacks);
 		Iterator iterator = Item.REGISTRY.iterator();

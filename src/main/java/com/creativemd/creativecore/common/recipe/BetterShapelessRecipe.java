@@ -8,18 +8,17 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
-import com.creativemd.creativecore.common.utils.stack.InfoStack;
+import com.creativemd.creativecore.common.utils.stack.StackInfo;
 
 public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 
-	public ArrayList<InfoStack> info;
+	public ArrayList<StackInfo> info;
 	public ItemStack output;
 	public int width;
 	
-	public BetterShapelessRecipe(ArrayList<InfoStack> info, ItemStack output)
+	public BetterShapelessRecipe(ArrayList<StackInfo> info, ItemStack output)
 	{
 		this.info = info;
 		this.output = output;
@@ -29,7 +28,7 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 	@Override
 	public boolean matches(InventoryCrafting inv, World world)
     {
-        ArrayList<InfoStack> list = new ArrayList(this.info);
+        ArrayList<StackInfo> list = new ArrayList(this.info);
         
         for (int i = 0; i < 3; ++i)
         {
@@ -44,7 +43,7 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 
                     while (iterator.hasNext())
                     {
-                        InfoStack stackInfo = (InfoStack)iterator.next();
+                        StackInfo stackInfo = (StackInfo)iterator.next();
 
                         if (stackInfo.isInstance(itemstack))
                         {
@@ -95,16 +94,16 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 	}
 	
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public ItemStack[] getRemainingItems(InventoryCrafting inv)
     {
-		NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
 
-        for (int i = 0; i < nonnulllist.size(); ++i)
+        for (int i = 0; i < aitemstack.length; ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
-            nonnulllist.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack));
+            aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
         }
 
-        return nonnulllist;
+        return aitemstack;
     }
 }

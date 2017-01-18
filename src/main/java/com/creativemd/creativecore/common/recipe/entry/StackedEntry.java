@@ -26,7 +26,7 @@ public class StackedEntry extends RecipeEntry{
 	public boolean isEntry(ItemStack stack) {
 		if(!isObject(stack, item))
 		{
-			if(stack.getCount() >= minStackSize)
+			if(stack.stackSize >= minStackSize)
 			{
 				if(nbt != null)
 				{
@@ -44,7 +44,7 @@ public class StackedEntry extends RecipeEntry{
 	public int getStackSize(ItemStack stack) {
 		if(minStackSize == 0)
 			return Integer.MAX_VALUE;
-		return stack.getCount()/minStackSize;
+		return stack.stackSize/minStackSize;
 	}
 
 }

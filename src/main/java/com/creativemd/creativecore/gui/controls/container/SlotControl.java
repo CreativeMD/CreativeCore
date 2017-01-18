@@ -27,7 +27,7 @@ public class SlotControl extends ContainerControl{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public GuiControl createGuiControl() {
-		GuiControl control = new GuiSlotControl(slot.xPos, slot.yPos, this);
+		GuiControl control = new GuiSlotControl(slot.xDisplayPosition, slot.yDisplayPosition, this);
 		//control.rotation = 45;
 		return control;
 	}
@@ -66,14 +66,14 @@ public class SlotControl extends ContainerControl{
 		case 0:
 			ItemStack stack = null;
 			if(nbt.hasKey("id"))
-				stack = new ItemStack(nbt);
+				stack = ItemStack.loadItemStackFromNBT(nbt);
 			slot.putStack(stack);
 			if(!ItemStack.areItemStacksEqual(lastSended, slot.getStack()))
 				raiseEvent(new SlotChangeEvent(this));
 			lastSended = stack;		
 			ItemStack dragStack = null;
 			if(nbt.hasKey("drag"))
-				dragStack = new ItemStack(nbt.getCompoundTag("drag"));
+				dragStack = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("drag"));
 			getPlayer().inventory.setItemStack(dragStack);
 			break;
 		/**Clicked*/
@@ -84,7 +84,7 @@ public class SlotControl extends ContainerControl{
 			dropItem(nbt.getBoolean("ctrl"));
 			break;
 		case 3:
-			splitStack(nbt.getIntArray("slots"), new ItemStack(nbt), nbt.getBoolean("right"));
+			splitStack(nbt.getIntArray("slots"), ItemStack.loadItemStackFromNBT(nbt), nbt.getBoolean("right"));
 			break;
 		}
 	}
@@ -98,16 +98,16 @@ public class SlotControl extends ContainerControl{
 			{
 				slot.putStack(null);
 			}else{
-				drop.setCount(1);
+				drop.stackSize = 1;
 				ItemStack newStack = slot.getStack();
-				newStack.shrink(1);
-				if(newStack.isEmpty())
-					slot.putStack(ItemStack.EMPTY);
+				newStack.stackSize -= 1;
+				if(newStack.stackSize == 0)
+					slot.putStack(null);
 				else
 					slot.putStack(newStack);
 			}
 			getPlayer().dropItem(drop, true);
-			slot.onTake(getPlayer(), drop);
+			slot.onPickupFromSlot(getPlayer(), drop);
 		}
 	}
 	
@@ -117,23 +117,23 @@ public class SlotControl extends ContainerControl{
 		int stackSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
 		if(canStack && slot.isItemValid(stack))
 		{
-			int neededStackSize = stack.getCount();
+			int neededStackSize = stack.stackSize;
 			if(slot.getHasStack())
-				stackSize -= slot.getStack().getCount();
+				stackSize -= slot.getStack().stackSize;
 			
 			stackSize = Math.min(stackSize, neededStackSize);
 			
 			if(stackSize > 0)
 			{
 				ItemStack inSlot = stack.copy();
-				inSlot.setCount(stackSize);;
+				inSlot.stackSize = stackSize;
 				if(slot.getHasStack())
-					inSlot.grow(slot.getStack().getCount());
+					inSlot.stackSize += slot.getStack().stackSize;
 				slot.putStack(inSlot);
 				
-				stack.shrink(stackSize);
-				if(stack.isEmpty())
-					return ItemStack.EMPTY;
+				stack.stackSize -= stackSize;
+				if(stack.stackSize == 0)
+					return null;
 			}
 		}
 		return stack;
@@ -151,32 +151,32 @@ public class SlotControl extends ContainerControl{
 			int stackSize = Math.min(slot.getSlotStackLimit(), hand.getMaxStackSize());
 			if(canStack && (!slot.getHasStack() || slot.canTakeStack(getPlayer())))
 			{
-				int neededStackSize = hand.getCount();
+				int neededStackSize = hand.stackSize;
 				if(slot.getHasStack())
-					stackSize -= slotItem.getCount();
+					stackSize -= slotItem.stackSize;
 				
 				stackSize = Math.min(stackSize, neededStackSize);
 				ItemStack inSlot = hand.copy();
 				
-				inSlot.setCount(stackSize);
+				inSlot.stackSize = stackSize;
 				if(slot.getHasStack())
-					inSlot.grow(slotItem.getCount());
+					inSlot.stackSize += slotItem.stackSize;
 				
 				slot.putStack(inSlot);
 				int left = neededStackSize - stackSize;
 				if(left > 0)
-					hand.setCount(left);
+					hand.stackSize = left;
 				else
 					inventoryplayer.setItemStack(null);
 			}else{
-				int left = hand.getCount() - stackSize;
+				int left = hand.stackSize - stackSize;
 				if(left > 1)
 					getPlayer().dropItem(slotItem.copy(), true);
 				ItemStack inSlot = hand.copy();
-				inSlot.setCount(Math.min(stackSize, hand.getCount()));
+				inSlot.stackSize = Math.min(stackSize, hand.stackSize);
 				slot.putStack(inSlot);
-				hand.shrink(Math.min(stackSize, hand.getCount()));
-				if(hand.isEmpty())
+				hand.stackSize -= Math.min(stackSize, hand.stackSize);
+				if(hand.stackSize == 0)
 					inventoryplayer.setItemStack(slotItem.copy());
 			}
 		}
@@ -191,7 +191,7 @@ public class SlotControl extends ContainerControl{
 			if(reverse)
 			{
 				int stackSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
-				stackSize -= stack.getCount();
+				stackSize -= stack.stackSize;
 				if(stackSize > 0)
 				{
 					for (int i = 0; i < getParent().controls.size(); i++) {
@@ -201,12 +201,12 @@ public class SlotControl extends ContainerControl{
 							if(mergeSlot.inventory != slot.inventory)
 							{
 								boolean canStack = Container.canAddItemToSlot(slot, stack, true);
-								if(canStack && mergeSlot.getHasStack() && !mergeSlot.getStack().isEmpty())
+								if(canStack && mergeSlot.getHasStack() && mergeSlot.getStack().stackSize > 0)
 								{
-									stack.grow(1);
-									mergeSlot.getStack().shrink(1);
-									if(mergeSlot.getStack().isEmpty())
-										mergeSlot.putStack(ItemStack.EMPTY);
+									stack.stackSize++;
+									mergeSlot.getStack().stackSize--;
+									if(mergeSlot.getStack().stackSize == 0)
+										mergeSlot.putStack(null);
 									return ;
 								}
 							}
@@ -214,11 +214,11 @@ public class SlotControl extends ContainerControl{
 					}
 				}
 			}else{
-				if(amount > stack.getCount())
-					amount = stack.getCount();
+				if(amount > stack.stackSize)
+					amount = stack.stackSize;
 				ItemStack copy = stack.copy();
-				copy.setCount(amount);
-				int minAmount = stack.getCount()-amount;
+				copy.stackSize = amount;
+				int minAmount = stack.stackSize-amount;
 				
 				for (int i = 0; i < getParent().controls.size(); i++) {
 					if(getParent().controls.get(i) instanceof SlotControl)
@@ -229,16 +229,16 @@ public class SlotControl extends ContainerControl{
 							
 							copy = putItemInSlot(mergeSlot, copy);
 							if(copy != null)
-								stack.shrink(amount-copy.getCount());
+								stack.stackSize -= amount-copy.stackSize;
 							else
-								stack.setCount(minAmount);
+								stack.stackSize = minAmount;
 							
-							if(slot.getStack().isEmpty())
+							if(slot.getStack().stackSize == 0)
 							{
-								slot.putStack(ItemStack.EMPTY);
+								slot.putStack(null);
 								return ;
 							}
-							if(copy == ItemStack.EMPTY)
+							if(copy == null)
 								return ;
 						}
 					}
@@ -266,7 +266,7 @@ public class SlotControl extends ContainerControl{
 					}else if(slot.getHasStack()) {
 						inventoryplayer.setItemStack(slotItem.copy());
 						slot.putStack(null);
-						slot.onTake(getPlayer(), inventoryplayer.getItemStack());
+						slot.onPickupFromSlot(getPlayer(), inventoryplayer.getItemStack());
 					}
 				}
 			}
@@ -280,16 +280,16 @@ public class SlotControl extends ContainerControl{
 					{
 						int stacksize = 1;
 						if(slot.getHasStack())
-							stacksize += slotItem.getCount();
+							stacksize += slotItem.stackSize;
 						stacksize = Math.min(stacksize, Math.min(slot.getSlotStackLimit(), hand.getMaxStackSize()));
-						if((slot.getHasStack() && stacksize > slotItem.getCount()) || (!slot.getHasStack() && stacksize > 0))
+						if((slot.getHasStack() && stacksize > slotItem.stackSize) || (!slot.getHasStack() && stacksize > 0))
 						{
 							ItemStack inSlot = hand.copy();
-							inSlot.setCount(stacksize);
+							inSlot.stackSize = stacksize;
 							slot.putStack(inSlot);
-							hand.shrink(1);
-							if(hand.isEmpty())
-								inventoryplayer.setItemStack(ItemStack.EMPTY);
+							hand.stackSize--;
+							if(hand.stackSize == 0)
+								inventoryplayer.setItemStack(null);
 						}
 					}else{
 						switchItems();
@@ -297,20 +297,20 @@ public class SlotControl extends ContainerControl{
 				}
 				//!slot.getHasStack() || slot.canTakeStack(parent.player)
 			}else if(slot.getHasStack() && slot.canTakeStack(getPlayer())){
-					int amount = (slotItem.getCount() + 1) / 2;
+					int amount = (slotItem.stackSize + 1) / 2;
 					hand = slot.decrStackSize(amount);
 					inventoryplayer.setItemStack(hand);
 					
-					if (slotItem.isEmpty())
-						slot.putStack(ItemStack.EMPTY);
+					if (slotItem.stackSize == 0)
+						slot.putStack((ItemStack)null);
 					
-					slot.onTake(getPlayer(), inventoryplayer.getItemStack());
+					slot.onPickupFromSlot(getPlayer(), inventoryplayer.getItemStack());
 			}
 		}else if(mouseButton == 2){
 			if(hand == null && slot.getHasStack() && getPlayer().capabilities.isCreativeMode)
 			{
 				ItemStack stack = slotItem.copy();
-				stack.setCount(stack.getMaxStackSize());
+				stack.stackSize = stack.getMaxStackSize();
 				inventoryplayer.setItemStack(stack);
 			}
 		}else if(mouseButton == 3){
@@ -322,7 +322,7 @@ public class SlotControl extends ContainerControl{
 	public void splitStack(int[] slots, ItemStack stack, boolean isRightClick)
 	{
 		stack = stack.copy();
-		int StackPerSlot = MathHelper.floor((float)stack.getCount() / (float)slots.length);
+		int StackPerSlot = MathHelper.floor_float((float)stack.stackSize / (float)slots.length);
 		if(isRightClick)
 			StackPerSlot = 1;
 		for (int i = 0; i < slots.length; i++)
@@ -330,24 +330,24 @@ public class SlotControl extends ContainerControl{
 			SlotControl control = (SlotControl) getParent().controls.get(slots[i]);
 			int stackSize = Math.min(control.slot.getSlotStackLimit(), stack.getMaxStackSize());
 			if(control.slot.getHasStack())
-				stackSize -= control.slot.getStack().getCount();
+				stackSize -= control.slot.getStack().stackSize;
 			
-			int use = Math.min(StackPerSlot, Math.min(stackSize, stack.getCount()));
+			int use = Math.min(StackPerSlot, Math.min(stackSize, stack.stackSize));
 			
 			if(use > 0)
 			{
 				int size = use;
 				if(control.slot.getHasStack())
-					size += control.slot.getStack().getCount();
+					size += control.slot.getStack().stackSize;
 				
 				ItemStack inSlot = stack.copy();
-				inSlot.setCount(size);
+				inSlot.stackSize = size;
 				control.slot.putStack(inSlot);
 			}
-			stack.shrink(use);
+			stack.stackSize -= use;
 		}
-		if(stack.isEmpty())
-			getPlayer().inventory.setItemStack(ItemStack.EMPTY);
+		if(stack.stackSize <= 0)
+			getPlayer().inventory.setItemStack(null);
 		else
 			getPlayer().inventory.setItemStack(stack.copy());
 	}

@@ -9,20 +9,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
 public class GuiCommand extends CommandBase{
-	
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		GuiHandler.openGui("test-gui", new NBTTagCompound());
-	}
 
 	@Override
-	public String getName() {
+	public String getCommandName() {
 		return "creative-gui";
 	}
 
 	@Override
-	public String getUsage(ICommandSender sender) {
+	public String getCommandUsage(ICommandSender sender) {
 		return "opens a test gui";
+	}
+
+	@Override
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		GuiHandler.openGui("test-gui", new NBTTagCompound());
 	}
 	
 }

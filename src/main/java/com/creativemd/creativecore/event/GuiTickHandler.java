@@ -4,20 +4,16 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.packet.CreativeTestPacket;
-import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.gui.mc.ContainerSub;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
@@ -78,13 +74,13 @@ public class GuiTickHandler {
 			}
 		}
 		
-		if(mc.player != null && mc.player.openContainer instanceof ContainerSub && ((ContainerSub)mc.player.openContainer).gui != null)
+		if(mc.thePlayer != null && mc.thePlayer.openContainer instanceof ContainerSub && ((ContainerSub)mc.thePlayer.openContainer).gui != null)
 		{
 			if(tick.phase == Phase.START)
 			{
 				if(!changed)
 					defaultScale = mc.gameSettings.guiScale;
-				int maxScale = ((GuiContainerSub)((ContainerSub)mc.player.openContainer).gui).getMaxScale(mc);
+				int maxScale = ((GuiContainerSub)((ContainerSub)mc.thePlayer.openContainer).gui).getMaxScale(mc);
 				int scale = Math.min(defaultScale, maxScale);
 				if(defaultScale == 0)
 					scale = maxScale;

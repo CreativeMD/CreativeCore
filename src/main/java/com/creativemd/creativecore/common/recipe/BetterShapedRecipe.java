@@ -3,24 +3,23 @@ package com.creativemd.creativecore.common.recipe;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.creativemd.creativecore.common.utils.stack.InfoStack;
+import com.creativemd.creativecore.common.utils.stack.StackInfo;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
 	
-	public InfoStack[] info;
+	public StackInfo[] info;
 	public ItemStack output;
 	public int width;
 	public int height;
 	
-	public BetterShapedRecipe(int width, InfoStack[] info, ItemStack output)
+	public BetterShapedRecipe(int width, StackInfo[] info, ItemStack output)
 	{
 		this.info = info;
 		this.output = output;
@@ -58,7 +57,7 @@ public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
             {
                 int subX = x - startX;
                 int subY = y - startY;
-                InfoStack target = null;
+                StackInfo target = null;
 
                 if (subX >= 0 && subY >= 0 && subX < width && subY < height)
                 {
@@ -118,17 +117,17 @@ public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
 	}
 	
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
+	public ItemStack[] getRemainingItems(InventoryCrafting inv)
     {
-		NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
 
-        for (int i = 0; i < nonnulllist.size(); ++i)
+        for (int i = 0; i < aitemstack.length; ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
-            nonnulllist.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack));
+            aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
         }
 
-        return nonnulllist;
+        return aitemstack;
     }
 
 }

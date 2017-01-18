@@ -7,6 +7,7 @@ import com.creativemd.creativecore.gui.GuiRenderHelper;
 
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.Vec4b;
 
 public class SidedColoredDisplayStyle extends DisplayStyle{
 	
