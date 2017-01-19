@@ -143,7 +143,13 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				if(layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
 					continue;
 			}catch(Exception e){
-				
+				try{
+					if(block.getBlockLayer() != layer)
+						continue;
+				}catch(Exception e2){
+					if(layer != BlockRenderLayer.SOLID)
+						continue;
+				}
 			}
 			
 			IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
