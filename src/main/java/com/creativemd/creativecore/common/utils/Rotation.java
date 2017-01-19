@@ -97,6 +97,10 @@ public enum Rotation {
 		return EAST;
 	}
 	
+	public static Rotation getRotationByID(int id)
+	{
+		return Rotation.values()[id];
+	}
 }
 
 

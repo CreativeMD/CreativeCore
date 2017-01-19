@@ -159,6 +159,8 @@ public class CreativeCubeConsumer {
         }else
         	multiplier = quad.getTintIndex();
         
+        //System.out.println("using multiplier " + multiplier);
+        
         //multiplier = ColorUtils.WHITE;
         int count = format.getElementCount();
 
