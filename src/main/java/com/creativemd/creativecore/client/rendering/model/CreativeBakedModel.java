@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.conn.routing.RouteInfo.LayerType;
 import org.lwjgl.util.Color;
-import org.lwjgl.util.vector.Vector3f;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.block.TileEntityState;
@@ -407,15 +407,38 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	
 	private static ImmutableMap<TransformType, TRSRTransformation> cameraTransforms;
 	private static TRSRTransformation baseState;
+	
+	private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s)
+    {
+        return TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(tx / 16, ty / 16, tz / 16),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)),
+            new Vector3f(s, s, s),
+            null));
+    }
+	
+	private static TRSRTransformation leftify(TRSRTransformation transform)
+    {
+        return TRSRTransformation.blockCenterToCorner(flipX.compose(TRSRTransformation.blockCornerToCenter(transform)).compose(flipX));
+    }
+	
+	private static final TRSRTransformation flipX = new TRSRTransformation(null, null, new Vector3f(-1, 1, 1), null);
 
 	public static final void loadTransformation()
 	{
-		Map<TransformType, TRSRTransformation> tMap = Maps.newHashMap();
-        tMap.putAll(IPerspectiveAwareModel.MapWrapper.getTransforms(ItemCameraTransforms.DEFAULT));
-        tMap.putAll(IPerspectiveAwareModel.MapWrapper.getTransforms(ModelRotation.X0_Y0));
-        IModelState perState = new SimpleModelState(ImmutableMap.copyOf(tMap));
+		TRSRTransformation thirdperson = get(0, 2.5f, 0, 75, 45, 0, 0.375f);
+        ImmutableMap.Builder<TransformType, TRSRTransformation> builder = ImmutableMap.builder();
+        builder.put(TransformType.GUI,                     get(0, 0, 0, 30, 225, 0, 0.625f));
+        builder.put(TransformType.GROUND,                  get(0, 3, 0, 0, 0, 0, 0.25f));
+        builder.put(TransformType.FIXED,                   get(0, 0, 0, 0, 0, 0, 0.5f));
+        builder.put(TransformType.THIRD_PERSON_RIGHT_HAND, thirdperson);
+        builder.put(TransformType.THIRD_PERSON_LEFT_HAND,  leftify(thirdperson));
+        builder.put(TransformType.FIRST_PERSON_RIGHT_HAND, get(0, 0, 0, 0, 45, 0, 0.4f));
+        builder.put(TransformType.FIRST_PERSON_LEFT_HAND,  get(0, 0, 0, 0, 225, 0, 0.4f));
+        //ret.state = Optional.<IModelState>of(new SimpleModelState(builder.build()));
+        IModelState perState = new SimpleModelState(ImmutableMap.copyOf(builder.build()));
         baseState = perState.apply(Optional.<IModelPart>absent()).or(TRSRTransformation.identity());
-        cameraTransforms = ImmutableMap.copyOf(tMap);
+        cameraTransforms = ImmutableMap.copyOf(builder.build());
 	}
 	
 	@Override
@@ -437,8 +460,12 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				renderer.applyCustomOpenGLHackery(lastItemStack, cameraTransformType);
 		}
 		
-		Pair<? extends IBakedModel, Matrix4f> pair = ((IPerspectiveAwareModel) mc.getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState())).handlePerspective(cameraTransformType);
-		return pair.of(this, pair.getRight());
+		//Pair<? extends IBakedModel, Matrix4f> pair = ((IPerspectiveAwareModel) mc.getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState())).handlePerspective(cameraTransformType);
+		TRSRTransformation tr = cameraTransforms.get(cameraTransformType);
+        Matrix4f mat = null;
+        if(tr != null && !tr.equals(TRSRTransformation.identity())) mat = TRSRTransformation.blockCornerToCenter(tr).getMatrix();
+        return Pair.of(this, mat);
+		//return Pair.of(this, cameraTransforms.get(cameraTransformType).getMatrix());
     }
 	
 	@Override
