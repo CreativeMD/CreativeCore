@@ -245,6 +245,11 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	
 	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand)
 	{
+		return getBakedQuad(cube, uvCube, state, blockModel, side, rand, true);
+	}
+	
+	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint)
+	{
 		List<BakedQuad> blockQuads = blockModel.getQuads(state, side, rand);
 		if(blockQuads.isEmpty())
 			return Collections.emptyList();
@@ -253,7 +258,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		
 		for(int i = 0; i < blockQuads.size(); i++)
 		{
-			BakedQuad quad = new CreativeBakedQuad(blockQuads.get(i), cube, cube.color, cube.color != -1, side);
+			BakedQuad quad = new CreativeBakedQuad(blockQuads.get(i), cube, cube.color, overrideTint && cube.color != -1, side);
 			EnumFacing facing = side;
 			//if(facing == null)
 				//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());

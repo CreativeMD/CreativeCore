@@ -153,11 +153,14 @@ public class CreativeCubeConsumer {
         //}
 
         int multiplier = -1;
-        if(tint != -1 && (!quad.shouldOverrideColor || layer == BlockRenderLayer.CUTOUT_MIPPED))
+        if(tint != -1 && cube.color == -1)//(cube.color != -1 || layer == BlockRenderLayer.CUTOUT_MIPPED))
         {
             multiplier = blockInfo.getColorMultiplier(tint);
-        }else
-        	multiplier = quad.getTintIndex();
+        }else{
+        	if(layer != BlockRenderLayer.CUTOUT_MIPPED && cube.getBlockState().getBlock().getBlockLayer() != BlockRenderLayer.CUTOUT)
+        		tint = 0;
+        	multiplier = cube.color;
+        }
         
         //System.out.println("using multiplier " + multiplier);
         
