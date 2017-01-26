@@ -81,12 +81,15 @@ public class GuiAnalogeSlider extends GuiControl
 	public void mouseMove(int posX, int posY, int button){
 		if(grabbedSlider)
 		{
+			int width = this.width - getContentOffset()*2;
 			if(posX < this.posX)
 				this.value = this.minValue;
-			else if(posX > this.posX + this.width)
+			else if(posX > this.posX + width)
 				this.value = this.maxValue;
-			else
-				this.value = this.minValue+(float)((this.maxValue - this.minValue) * ((float)(posX - this.posX) / (float)this.width));
+			else{
+				int mouseOffsetX = posX - this.posX - getContentOffset();
+				this.value = (float) (this.minValue+(float)((1+this.maxValue - this.minValue) * ((float)mouseOffsetX / (float)width)));
+			}
 			setValue(value);
 		}
 	}
