@@ -106,6 +106,6 @@ public class CreativeCoreClient {
 	public static void registerBlockColorHandler(Block block)
 	{
 		mc.getItemColors().registerItemColorHandler(itemColor, block);
-		mc.getBlockColors().registerBlockColorHandler(blockColor, block);
+		//mc.getBlockColors().registerBlockColorHandler(blockColor, block);
 	}
 }
