@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.CoreModManager;
@@ -50,6 +51,19 @@ public class TransformerNames {
 					}
 				}
 			}
+			
+			classes.sort(new Comparator<ClassName>() {
+
+				@Override
+				public int compare(ClassName arg0, ClassName arg1) {
+					if(arg0.name.length() > arg1.name.length())
+						return -1;
+					if(arg0.name.length() == arg1.name.length())
+						return 0;
+					return 1;
+				}
+				
+			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
