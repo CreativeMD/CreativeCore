@@ -22,23 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.common.interfaces.world;
+package co.aikar.timings;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
+/**
+ * Set of timers per world, to track world specific Timings.
+ */
+public class WorldTimingsHandler {
 
-public interface IMixinWorld {
-
-    long getWeatherStartTime();
-
-    void setWeatherStartTime(long weatherStartTime);
-
-    void setCallingWorldEvent(boolean flag);
-
-    @Nullable
-    EntityPlayer getClosestPlayerToEntityWhoAffectsSpawning(net.minecraft.entity.Entity entity, double d1tance);
-
-    @Nullable
-    EntityPlayer getClosestPlayerWhoAffectsSpawning(double x, double y, double z, double distance);
+    
 }
