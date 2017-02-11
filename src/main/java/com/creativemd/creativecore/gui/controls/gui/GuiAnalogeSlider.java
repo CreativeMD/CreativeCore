@@ -25,6 +25,7 @@ public class GuiAnalogeSlider extends GuiControl
 	public float minValue;
 	public float value;
 	public boolean grabbedSlider;
+	public int sliderWidth = 4;
 	
 	public GuiAnalogeSlider(String name, int x, int y, int width, int height, float value, float minValue, float maxValue)
 	{
@@ -43,7 +44,6 @@ public class GuiAnalogeSlider extends GuiControl
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		
-		int sliderWidth = 4;
 		float percent = getPercentage();
 		
 		int posX = (int)((this.width - (borderWidth*2+sliderWidth)) * percent);
@@ -81,14 +81,14 @@ public class GuiAnalogeSlider extends GuiControl
 	public void mouseMove(int posX, int posY, int button){
 		if(grabbedSlider)
 		{
-			int width = this.width - getContentOffset()*2;
-			if(posX < this.posX)
+			int width = this.width - getContentOffset()*2 - sliderWidth;
+			if(posX < this.posX+getContentOffset())
 				this.value = this.minValue;
-			else if(posX > this.posX + width)
+			else if(posX > this.posX + getContentOffset() + width + sliderWidth/2)
 				this.value = this.maxValue;
 			else{
-				int mouseOffsetX = posX - this.posX - getContentOffset();
-				this.value = (float) (this.minValue+(float)((1+this.maxValue - this.minValue) * ((float)mouseOffsetX / (float)width)));
+				int mouseOffsetX = posX - this.posX - getContentOffset() - sliderWidth/2;
+				this.value = (float) (this.minValue+(float)((this.maxValue - this.minValue) * ((float)mouseOffsetX / (float)width)));
 			}
 			setValue(value);
 		}
