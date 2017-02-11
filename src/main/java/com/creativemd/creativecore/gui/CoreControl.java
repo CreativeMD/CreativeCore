@@ -46,9 +46,13 @@ public abstract class CoreControl {
 	
 	//================Various Helper Methods================
 	
-	public boolean is(String name)
+	public boolean is(String... name)
 	{
-		return this.name.equalsIgnoreCase(name);
+		for (int i = 0; i < name.length; i++) {
+			if(this.name.equalsIgnoreCase(name[i]))
+				return true;
+		}
+		return false;
 	}
 	
 	public boolean hasParent()
