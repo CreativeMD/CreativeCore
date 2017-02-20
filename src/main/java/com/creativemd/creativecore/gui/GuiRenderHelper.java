@@ -98,7 +98,7 @@ public class GuiRenderHelper {
         VertexBuffer vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
         for (int i = 0; i < baked.size(); i++) {
-			net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(vertexbuffer, baked.get(i), -1);
+			net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(vertexbuffer, baked.get(i), baked.get(i).getTintIndex());
         }
         tessellator.draw();
         
