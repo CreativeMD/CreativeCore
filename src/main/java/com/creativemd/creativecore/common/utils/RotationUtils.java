@@ -8,6 +8,20 @@ import net.minecraft.util.math.Vec3i;
 
 public class RotationUtils {
 	
+	private static String[] facingNames;
+	
+	public static String[] getFacingNames()
+	{
+		if(facingNames == null)
+		{
+			facingNames = new String[6];
+			for (int i = 0; i < facingNames.length; i++) {
+				facingNames[i] = EnumFacing.getFront(i).getName();
+			}
+		}
+		return facingNames;
+	}
+	
 	public static int getAxisIndex(Axis axis)
 	{
 		switch (axis) {
