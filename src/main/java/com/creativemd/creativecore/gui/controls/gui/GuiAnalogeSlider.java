@@ -31,9 +31,9 @@ public class GuiAnalogeSlider extends GuiControl
 	{
 		super(name, x, y, width, height);
 		this.marginWidth = 0;
-		this.value = value;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
+		setValue(value);
 	}
 	
 	public String getTextByValue()
