@@ -28,6 +28,9 @@ public class WorldFake extends World {
 	
 	public final World parentWorld;
 	
+	@SideOnly(Side.CLIENT)
+	public boolean shouldRender;
+	
 	public Vector3d axis;
 	
 	public double rotX;
