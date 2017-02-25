@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler.OutboundTarget;
@@ -95,14 +96,14 @@ public abstract class CreativeCorePacket {
 		return ByteBufUtils.readTag(buf);
 	}
 	
-	public static void writeVec3(Vec3d vec, ByteBuf buf)
+	public static void writeVec3d(Vec3d vec, ByteBuf buf)
 	{
 		buf.writeDouble(vec.xCoord);
 		buf.writeDouble(vec.yCoord);
 		buf.writeDouble(vec.zCoord);
 	}
 	
-	public static Vec3d readVec3(ByteBuf buf)
+	public static Vec3d readVec3d(ByteBuf buf)
 	{
 		double x = buf.readDouble();
 		double y = buf.readDouble();

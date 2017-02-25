@@ -1,6 +1,8 @@
 package com.creativemd.creativecore.common.packet;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -69,6 +71,15 @@ public class PacketHandler {
 	public static void sendPacketToPlayer(CreativeCorePacket packet, EntityPlayerMP player)
 	{
 		CreativeCore.network.sendTo(new CreativeMessageHandler(packet, MessageType.ToPlayer, player), player);
+	}
+
+	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, EntityPlayerMP player)
+	{
+		Set<? extends EntityPlayer> players = ((EntityPlayerMP) player).getServerWorld().getEntityTracker().getTrackingPlayers(player);
+		for (Iterator iterator = players.iterator(); iterator.hasNext();) {
+			EntityPlayer entityPlayer = (EntityPlayer) iterator.next();
+			sendPacketToPlayer(packet, (EntityPlayerMP) entityPlayer);
+		}
 	}
 	
 }
