@@ -9,6 +9,19 @@ import net.minecraft.util.math.Vec3i;
 public class RotationUtils {
 	
 	private static String[] facingNames;
+	private static String[] horizontalFacingNames;
+	
+	public static String[] getHorizontalFacingNames()
+	{
+		if(horizontalFacingNames == null)
+		{
+			horizontalFacingNames = new String[4];
+			for (int i = 0; i < horizontalFacingNames.length; i++) {
+				horizontalFacingNames[i] = EnumFacing.getHorizontal(i).getName();
+			}
+		}
+		return horizontalFacingNames;
+	}
 	
 	public static String[] getFacingNames()
 	{
