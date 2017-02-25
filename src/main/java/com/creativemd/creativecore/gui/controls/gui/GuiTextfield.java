@@ -354,143 +354,157 @@ public class GuiTextfield extends GuiFocusControl{
 	public boolean onKeyPressed(char character, int key){
 		if(!focused)
 			return false;
-		switch (character)
+		else if (GuiScreen.isKeyComboCtrlA(key))
         {
-            case 1:
-                this.setCursorPositionEnd();
-                this.setSelectionPos(0);
-                return true;
-            case 3:
-                GuiScreen.setClipboardString(this.getSelectedText());
-                return true;
-            case 22:
-                if (this.enabled)
-                {
-                    this.writeText(GuiScreen.getClipboardString());
-                }
+            this.setCursorPositionEnd();
+            this.setSelectionPos(0);
+            return true;
+        }
+        else if (GuiScreen.isKeyComboCtrlC(key))
+        {
+            GuiScreen.setClipboardString(this.getSelectedText());
+            return true;
+        }
+        else if (GuiScreen.isKeyComboCtrlV(key))
+        {
+            if (this.enabled)
+            {
+                this.writeText(GuiScreen.getClipboardString());
+            }
 
-                return true;
-            case 24:
-                GuiScreen.setClipboardString(this.getSelectedText());
+            return true;
+        }
+        else if (GuiScreen.isKeyComboCtrlX(key))
+        {
+            GuiScreen.setClipboardString(this.getSelectedText());
 
-                if (this.enabled)
-                {
-                    this.writeText("");
-                }
+            if (this.enabled)
+            {
+                this.writeText("");
+            }
 
-                return true;
-            default:
-                switch (key)
-                {
-                    case 14:
+            return true;
+        }
+        else
+        {
+            switch (key)
+            {
+                case 14:
+
+                    if (GuiScreen.isCtrlKeyDown())
+                    {
+                        if (this.enabled)
+                        {
+                            this.deleteWords(-1);
+                        }
+                    }
+                    else if (this.enabled)
+                    {
+                        this.deleteFromCursor(-1);
+                    }
+
+                    return true;
+                case 199:
+
+                    if (GuiScreen.isShiftKeyDown())
+                    {
+                        this.setSelectionPos(0);
+                    }
+                    else
+                    {
+                        this.setCursorPositionZero();
+                    }
+
+                    return true;
+                case 203:
+
+                    if (GuiScreen.isShiftKeyDown())
+                    {
                         if (GuiScreen.isCtrlKeyDown())
                         {
-                            if (this.enabled)
-                            {
-                                this.deleteWords(-1);
-                            }
-                        }
-                        else if (this.enabled)
-                        {
-                            this.deleteFromCursor(-1);
-                        }
-                        
-                        return true;
-                    case 199:
-                        if (GuiScreen.isShiftKeyDown())
-                        {
-                            this.setSelectionPos(0);
+                            this.setSelectionPos(this.getNthWordFromPos(-1, selEnd));
                         }
                         else
                         {
-                            this.setCursorPositionZero();
+                            this.setSelectionPos(selEnd - 1);
                         }
+                    }
+                    else if (GuiScreen.isCtrlKeyDown())
+                    {
+                        this.setCursorPosition(this.getNthWordFromCursor(-1));
+                    }
+                    else
+                    {
+                        this.moveCursorBy(-1);
+                    }
 
-                        return true;
-                    case 203:
-                        if (GuiScreen.isShiftKeyDown())
-                        {
-                            if (GuiScreen.isCtrlKeyDown())
-                            {
-                                this.setSelectionPos(this.getNthWordFromPos(-1, this.selEnd));
-                            }
-                            else
-                            {
-                                this.setSelectionPos(this.selEnd - 1);
-                            }
-                        }
-                        else if (GuiScreen.isCtrlKeyDown())
-                        {
-                            this.setCursorPosition(this.getNthWordFromCursor(-1));
-                        }
-                        else
-                        {
-                            this.moveCursorBy(-1);
-                        }
+                    return true;
+                case 205:
 
-                        return true;
-                    case 205:
-                        if (GuiScreen.isShiftKeyDown())
-                        {
-                            if (GuiScreen.isCtrlKeyDown())
-                            {
-                                this.setSelectionPos(this.getNthWordFromPos(1, this.selEnd));
-                            }
-                            else
-                            {
-                                this.setSelectionPos(this.selEnd + 1);
-                            }
-                        }
-                        else if (GuiScreen.isCtrlKeyDown())
-                        {
-                            this.setCursorPosition(this.getNthWordFromCursor(1));
-                        }
-                        else
-                        {
-                            this.moveCursorBy(1);
-                        }
-
-                        return true;
-                    case 207:
-                        if (GuiScreen.isShiftKeyDown())
-                        {
-                            this.setSelectionPos(this.text.length());
-                        }
-                        else
-                        {
-                            this.setCursorPositionEnd();
-                        }
-
-                        return true;
-                    case 211:
+                    if (GuiScreen.isShiftKeyDown())
+                    {
                         if (GuiScreen.isCtrlKeyDown())
                         {
-                            if (this.enabled)
-                            {
-                                this.deleteWords(1);
-                            }
-                        }
-                        else if (this.enabled)
-                        {
-                            this.deleteFromCursor(1);
-                        }
-
-                        return true;
-                    default:
-                        if (ChatAllowedCharacters.isAllowedCharacter(character))
-                        {
-                            if (this.enabled)
-                            {
-                                this.writeText(Character.toString(character));
-                            }
-
-                            return true;
+                            this.setSelectionPos(this.getNthWordFromPos(1, selEnd));
                         }
                         else
                         {
-                            return false;
+                            this.setSelectionPos(selEnd + 1);
                         }
-                }
+                    }
+                    else if (GuiScreen.isCtrlKeyDown())
+                    {
+                        this.setCursorPosition(this.getNthWordFromCursor(1));
+                    }
+                    else
+                    {
+                        this.moveCursorBy(1);
+                    }
+
+                    return true;
+                case 207:
+
+                    if (GuiScreen.isShiftKeyDown())
+                    {
+                        this.setSelectionPos(this.text.length());
+                    }
+                    else
+                    {
+                        this.setCursorPositionEnd();
+                    }
+
+                    return true;
+                case 211:
+
+                    if (GuiScreen.isCtrlKeyDown())
+                    {
+                        if (this.enabled)
+                        {
+                            this.deleteWords(1);
+                        }
+                    }
+                    else if (this.enabled)
+                    {
+                        this.deleteFromCursor(1);
+                    }
+
+                    return true;
+                default:
+
+                    if (ChatAllowedCharacters.isAllowedCharacter(character))
+                    {
+                        if (this.enabled)
+                        {
+                            this.writeText(Character.toString(character));
+                        }
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+            }
         }
 	}
 	
