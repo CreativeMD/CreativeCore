@@ -75,6 +75,20 @@ public abstract class Transformer {
 		return false;
 	}
 	
+	public AbstractInsnNode findNode(InsnList instructions, AbstractInsnNode node)
+	{
+		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
+		while(iterator.hasNext())
+		{
+			AbstractInsnNode insn = iterator.next();
+			if(areNodesEqual(insn, node))
+			{
+				return insn;
+			}
+		}
+		return null;
+	}
+	
 	public void removeLabel(InsnList instructions, AbstractInsnNode node,  int labels)
 	{
 		replaceLabel(instructions, node, null, labels, false);
