@@ -11,6 +11,7 @@ import com.creativemd.creativecore.core.CreativeCoreDummy;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.monster.EntityGuardian;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketChangeGameState;
 import net.minecraft.potion.PotionEffect;
