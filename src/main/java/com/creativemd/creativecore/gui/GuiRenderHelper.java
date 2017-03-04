@@ -148,9 +148,9 @@ public class GuiRenderHelper {
 	{  
 		drawItemStack(stack, x, y, width, height);
 		GlStateManager.pushMatrix();
-		if(String.valueOf(stack.getCount()).length() > 3)
+		if(String.valueOf(stack.stackSize).length() > 3)
 		{
-			String s = String.valueOf(stack.getCount());
+			String s = String.valueOf(stack.stackSize);
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
             GlStateManager.disableBlend();

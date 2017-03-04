@@ -24,7 +24,8 @@ public class SlotControl extends ContainerControl{
 	{
 		super(slot.inventory.getName() + slot.getSlotIndex());
 		this.slot = slot;
-		lastSended = slot.getStack().copy();
+		if(slot.getHasStack())
+			lastSended = slot.getStack().copy();
 	}
 	
 	@Override
@@ -86,7 +87,7 @@ public class SlotControl extends ContainerControl{
 			{
 				stack = ItemStack.loadItemStackFromNBT(nbt);
 				if(nbt.hasKey("realCount"))
-					stack.setCount(nbt.getInteger("realCount"));
+					stack.stackSize = nbt.getInteger("realCount");
 			}
 			slot.putStack(stack);
 			if(!ItemStack.areItemStacksEqual(lastSended, slot.getStack()))
@@ -135,7 +136,9 @@ public class SlotControl extends ContainerControl{
 	public boolean canAddItemToSlot(@Nullable Slot slotIn, ItemStack stack, boolean stackSizeMatters)
     {
         boolean flag = slotIn == null || !slotIn.getHasStack();
-        return !flag && stack.isItemEqual(slotIn.getStack()) && ItemStack.areItemStackTagsEqual(slotIn.getStack(), stack) ? slotIn.getStack().getCount() + (stackSizeMatters ? 0 : stack.getCount()) <= getItemStackLimit(stack) : flag;
+        if(stack == null)
+        	return flag;
+        return !flag && stack.isItemEqual(slotIn.getStack()) && ItemStack.areItemStackTagsEqual(slotIn.getStack(), stack) ? slotIn.getStack().stackSize + (stackSizeMatters ? 0 : stack.stackSize) <= getItemStackLimit(stack) : flag;
     }
 	
 	public ItemStack putItemInSlot(Slot slot, ItemStack stack)
@@ -194,7 +197,7 @@ public class SlotControl extends ContainerControl{
 				if(left > 0)
 					hand.stackSize = left;
 				else
-					inventoryplayer.setItemStack(ItemStack.EMPTY);
+					inventoryplayer.setItemStack(null);
 			}else if(slotItem.stackSize <= 64){
 				int left = hand.stackSize - stackSize;
 				if(left > 1)
@@ -269,7 +272,10 @@ public class SlotControl extends ContainerControl{
 				if(copy.stackSize <= 0)
 					stack.stackSize = minAmount;
 				else
-					stack.stackSize -= amount-copy.getCount();
+					stack.stackSize -= amount-copy.stackSize;
+				
+				if(stack.stackSize <= 0)
+					slot.putStack(null);
 			}
 		}
 	}
@@ -298,7 +304,7 @@ public class SlotControl extends ContainerControl{
 						slotItem.stackSize -= stackSize;
 						if(slotItem.stackSize == 0)
 							slot.putStack(null);
-						slot.onTake(getPlayer(), inventoryplayer.getItemStack());
+						slot.onPickupFromSlot(getPlayer(), inventoryplayer.getItemStack());
 					}
 				}
 			}
