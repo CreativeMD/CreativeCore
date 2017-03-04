@@ -98,7 +98,10 @@ public class GuiRenderHelper {
         VertexBuffer vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
         for (int i = 0; i < baked.size(); i++) {
-			net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(vertexbuffer, baked.get(i), baked.get(i).getTintIndex());
+        	int tint = baked.get(i).getTintIndex();
+        	if(tint == 0)
+        		tint = -1;
+			net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(vertexbuffer, baked.get(i), tint);
         }
         tessellator.draw();
         
@@ -145,7 +148,29 @@ public class GuiRenderHelper {
 	{  
 		drawItemStack(stack, x, y, width, height);
 		GlStateManager.pushMatrix();
-		itemRenderer.renderItemOverlays(font, stack, x, y);
+		if(String.valueOf(stack.getCount()).length() > 3)
+		{
+			String s = String.valueOf(stack.getCount());
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
+            GlStateManager.disableBlend();
+            int fontWidth = font.getStringWidth(s);
+            GlStateManager.translate(font.FONT_HEIGHT/2, fontWidth/2, 0);
+            GlStateManager.scale(0.5, 0.5, 0.5);
+            GlStateManager.translate(-font.FONT_HEIGHT/2, -fontWidth/2, 0);
+            fontWidth /= 2;
+            font.drawStringWithShadow(s, (float)(x + 19 - 2 - fontWidth), (float)(y + 6 + 5), 16777215);
+            
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
+            // Fixes opaque cooldown overlay a bit lower
+            // TODO: check if enabled blending still screws things up down the line.
+            GlStateManager.enableBlend();
+			itemRenderer.renderItemOverlayIntoGUI(font, stack, x, y, "");
+		}
+		else
+			itemRenderer.renderItemOverlays(font, stack, x, y);
+		
 		GlStateManager.disableLighting();
         //GlStateManager.enableDepth();
 		GlStateManager.popMatrix();
