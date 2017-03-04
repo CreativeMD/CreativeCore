@@ -178,7 +178,8 @@ public abstract class SubContainer extends ContainerParent{
 	
 	public void sendNBTToGui(NBTTagCompound nbt)
 	{
-		PacketHandler.sendPacketToPlayer(new GuiNBTPacket(nbt), (EntityPlayerMP) player);
+		if(player instanceof EntityPlayerMP)
+			PacketHandler.sendPacketToPlayer(new GuiNBTPacket(nbt), (EntityPlayerMP) player);
 	}
 	
 	public void sendNBTUpdate(NBTTagCompound nbt)

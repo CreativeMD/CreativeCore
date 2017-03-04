@@ -24,6 +24,7 @@ public class SlotControl extends ContainerControl{
 	{
 		super(slot.inventory.getName() + slot.getSlotIndex());
 		this.slot = slot;
+		lastSended = slot.getStack().copy();
 	}
 	
 	@Override
@@ -41,8 +42,9 @@ public class SlotControl extends ContainerControl{
 	{
 		if(!ItemStack.areItemStacksEqual(lastSended, slot.getStack())) // || (lastSended != null && slot.getHasStack() && lastSended.stackSize != slot.getStack().stackSize))
 		{
-			raiseEvent(new SlotChangeEvent(this));
 			sendUpdate();
+			raiseEvent(new SlotChangeEvent(this));
+			
 		}
 	}
 	
@@ -207,6 +209,22 @@ public class SlotControl extends ContainerControl{
 		}
 	}
 	
+	public void mergeToOtherInventory(ItemStack toTransfer, boolean useEmptySlot)
+	{
+		for (int i = 0; i < getParent().controls.size(); i++) {
+			if(getParent().controls.get(i) instanceof SlotControl)
+			{
+				Slot mergeSlot = ((SlotControl)getParent().controls.get(i)).slot;
+				if(mergeSlot.inventory != slot.inventory && (useEmptySlot || mergeSlot.getHasStack()))
+				{
+					toTransfer = ((SlotControl)getParent().controls.get(i)).putItemInSlot(mergeSlot, toTransfer);
+					if(toTransfer == null)
+						return ;
+				}
+			}
+		}
+	}
+	
 	public void transferIntoOtherInventory(boolean reverse, int amount)
 	{
 		if(slot.getHasStack())
@@ -215,25 +233,24 @@ public class SlotControl extends ContainerControl{
 			
 			if(reverse)
 			{
+				int stackSizeLeft = Math.min(amount, stack.stackSize);
 				for (int i = 0; i < getParent().controls.size(); i++) {
 					if(getParent().controls.get(i) instanceof SlotControl)
 					{
-						int stackSize = ((SlotControl) getParent().controls.get(i)).getStackLimit(slot, stack);
-						stackSize -= stack.stackSize;
-						if(stackSize > 0)
+						Slot mergeSlot = ((SlotControl)getParent().controls.get(i)).slot;
+						if(mergeSlot.inventory != slot.inventory)
 						{
-							Slot mergeSlot = ((SlotControl)getParent().controls.get(i)).slot;
-							if(mergeSlot.inventory != slot.inventory)
+							boolean canStack = canAddItemToSlot(mergeSlot, stack, true);
+							if(canStack && mergeSlot.getHasStack())
 							{
-								boolean canStack = Container.canAddItemToSlot(slot, stack, true);
-								if(canStack && mergeSlot.getHasStack() && mergeSlot.getStack().stackSize > 0)
-								{
-									stack.stackSize++;
-									mergeSlot.getStack().stackSize--;
-									if(mergeSlot.getStack().stackSize == 0)
-										mergeSlot.putStack(null);
+								int transfer = Math.min(stackSizeLeft, ((SlotControl) getParent().controls.get(i)).getStackLimit(slot, stack));
+								stackSizeLeft -= transfer;
+								stack.stackSize += transfer;
+								mergeSlot.getStack().stackSize -= transfer;
+								if(mergeSlot.getStack().stackSize <= 0)
+									mergeSlot.putStack(null);
+								if(stackSizeLeft <= 0)
 									return ;
-								}
 							}
 						}
 					}
@@ -245,29 +262,14 @@ public class SlotControl extends ContainerControl{
 				copy.stackSize = amount;
 				int minAmount = stack.stackSize-amount;
 				
-				for (int i = 0; i < getParent().controls.size(); i++) {
-					if(getParent().controls.get(i) instanceof SlotControl)
-					{
-						Slot mergeSlot = ((SlotControl)getParent().controls.get(i)).slot;
-						if(mergeSlot.inventory != slot.inventory)
-						{
-							
-							copy = ((SlotControl)getParent().controls.get(i)).putItemInSlot(mergeSlot, copy);
-							if(copy != null)
-								stack.stacksize -= amount-copy.stackSize;
-							else
-								stack.stackSize = minAmount;
-							
-							if(slot.getStack().stackSize == 0)
-							{
-								slot.putStack(null);
-								return ;
-							}
-							if(copy == null)
-								return ;
-						}
-					}
-				}
+				mergeToOtherInventory(copy, false);
+				if(copy.stackSize > 0)
+					mergeToOtherInventory(copy, true);
+				
+				if(copy.stackSize <= 0)
+					stack.stackSize = minAmount;
+				else
+					stack.stackSize -= amount-copy.getCount();
 			}
 		}
 	}
@@ -305,7 +307,7 @@ public class SlotControl extends ContainerControl{
 			{
 				if(slot.isItemValid(hand))
 				{
-					boolean canStack = Container.canAddItemToSlot(slot, hand, true);
+					boolean canStack = canAddItemToSlot(slot, hand, true);
 					if(canStack)
 					{
 						int stacksize = 1;
@@ -344,7 +346,7 @@ public class SlotControl extends ContainerControl{
 				inventoryplayer.setItemStack(stack);
 			}
 		}else if(mouseButton == 3){
-			if(slot.canTakeStack(getPlayer()))
+			if(scrolled == 1 ||slot.canTakeStack(getPlayer()))
 				transferIntoOtherInventory(scrolled == -1, 1);
 		}
 	}
