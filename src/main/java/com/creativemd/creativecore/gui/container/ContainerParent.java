@@ -12,6 +12,7 @@ import com.creativemd.creativecore.gui.controls.container.SlotControl;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class ContainerParent extends ContainerControl implements IControlParent {
@@ -118,23 +119,67 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 	
 	public void addPlayerSlotsToContainer(EntityPlayer player)
 	{
-		addPlayerSlotsToContainer(player, 8, 84);
+		addPlayerSlotsToContainer(player, -1);
+	}
+	
+	public void addPlayerSlotsToContainer(EntityPlayer player, int indexUninteractable)
+	{
+		addPlayerSlotsToContainer(player, 8, 84, indexUninteractable);
 	}
 	
 	public void addPlayerSlotsToContainer(EntityPlayer player, int x, int y)
+	{
+		addPlayerSlotsToContainer(player, x, y, -1);
+	}
+	
+	public void addPlayerSlotsToContainer(EntityPlayer player, int x, int y, int indexUninteractable)
 	{
 		int l;
         for (l = 0; l < 3; ++l)
         {
             for (int i1 = 0; i1 < 9; ++i1)
             {
-            	addSlotToContainer(new Slot(player.inventory, i1 + l * 9 + 9, i1 * 18 + x, l * 18+y));
+            	int index = i1 + l * 9 + 9;
+            	if(index == indexUninteractable)
+            		addSlotToContainer(new Slot(player.inventory, index, i1 * 18 + x, l * 18+y)
+            		{
+            			@Override
+            			public boolean canTakeStack(EntityPlayer playerIn)
+            		    {
+            		        return false;
+            		    }
+            			
+            			@Override
+            			public boolean isItemValid(ItemStack stack)
+            		    {
+            		        return false;
+            		    }
+            			
+            		});
+            	else
+            		addSlotToContainer(new Slot(player.inventory, index, i1 * 18 + x, l * 18+y));
             }
         }
 
         for (l = 0; l < 9; ++l)
         {
-        	addSlotToContainer(new Slot(player.inventory, l, l * 18+x, 58+y));
+        	if(l == indexUninteractable)
+        		addSlotToContainer(new Slot(player.inventory, l, l * 18+x, 58+y)
+				{
+        			@Override
+        			public boolean canTakeStack(EntityPlayer playerIn)
+        		    {
+        		        return false;
+        		    }
+        			
+        			@Override
+        			public boolean isItemValid(ItemStack stack)
+        		    {
+        		        return false;
+        		    }
+				});
+        	else
+        		addSlotToContainer(new Slot(player.inventory, l, l * 18+x, 58+y));
         }
 	}
 	
