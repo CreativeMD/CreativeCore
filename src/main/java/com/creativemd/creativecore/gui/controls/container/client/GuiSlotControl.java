@@ -53,13 +53,18 @@ public class GuiSlotControl extends GuiControl{
 		return slotStyle;
 	}
 	
+	protected ItemStack getStackToRender()
+	{
+		return slot.slot.getStack();
+	}
+	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		
 		if(isDragged())
 			style.getMouseOverBackground(this).renderStyle(helper, width, height);
 		
-		ItemStack stack = slot.slot.getStack();
+		ItemStack stack = getStackToRender();
 		
 		ItemStack newStack = null;
 		if(isDragged() && stackSize.length > 1){
