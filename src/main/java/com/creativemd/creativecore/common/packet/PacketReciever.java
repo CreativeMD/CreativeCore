@@ -20,8 +20,12 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	
 	public static HashMap<PacketKey, PacketValue> splittedPackets = new HashMap<>();
 	
+	public static ArrayList<CreativeSplittedMessageHandler> packetsToSend = new ArrayList<>();
+	
 	@SideOnly(Side.CLIENT)
 	public static HashMap<PacketKey, PacketValue> clientSplittedPackets;
+	@SideOnly(Side.CLIENT)
+	public static ArrayList<CreativeSplittedMessageHandler> clientPacketsToSend;
 	
 	static {
 		if(FMLCommonHandler.instance().getSide().isClient())
@@ -32,6 +36,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	public static void initClient()
 	{
 		clientSplittedPackets = new HashMap<>();
+		clientPacketsToSend = new ArrayList<>();
 	}
 	
 	public static void refreshQueue(boolean isServer)
@@ -39,6 +44,8 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 		if(!isServer)
 			refreshQueueClient();
 		else{
+			if(splittedPackets.isEmpty())
+				return ;
 			ArrayList<PacketKey> packetsToRemove = new ArrayList<>();
 			for (Iterator<Entry<PacketKey, PacketValue>> iterator = splittedPackets.entrySet().iterator(); iterator.hasNext();) {
 				Entry<PacketKey, PacketValue> entry = iterator.next();
@@ -54,6 +61,8 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	@SideOnly(Side.CLIENT)
 	public static void refreshQueueClient()
 	{
+		if(clientSplittedPackets.isEmpty())
+			return ;
 		ArrayList<PacketKey> packetsToRemove = new ArrayList<>();
 		for (Iterator<Entry<PacketKey, PacketValue>> iterator = clientSplittedPackets.entrySet().iterator(); iterator.hasNext();) {
 			Entry<PacketKey, PacketValue> entry = iterator.next();
@@ -140,6 +149,12 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 		}
     	
     	@Override
+    	public int hashCode()
+    	{
+    		return uuid.hashCode();
+    	}
+    	
+    	@Override
     	public boolean equals(Object object)
     	{
     		if(object instanceof PacketKey)
@@ -156,7 +171,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
     
     public static class PacketValue {
     	
-    	public static long timeToWait = (long) 60*10^9;
+    	public static long timeToWait = (long) (60 * Math.pow(10, 9));
     	
     	public final ByteBuf buf;
     	public final UUID uuid;

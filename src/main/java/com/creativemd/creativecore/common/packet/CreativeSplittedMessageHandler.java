@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.packet;
 import java.util.UUID;
 
 import com.creativemd.creativecore.CreativeCore;
+import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
 import com.creativemd.creativecore.common.packet.PacketReciever.PacketKey;
 import com.creativemd.creativecore.common.packet.PacketReciever.PacketValue;
 
@@ -31,14 +32,18 @@ public class CreativeSplittedMessageHandler implements IMessage{
 	public ByteBuf buffer;
 	public int index;
 	public int length;
+	public MessageType type;
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		isLast = buf.readBoolean();
 		packetID = CreativeCorePacket.readString(buf);
 		uuid = UUID.fromString(CreativeCorePacket.readString(buf));
-		ByteBuf content = ByteBufAllocator.DEFAULT.buffer();
-		buf.readBytes(content, buf.readInt());
+		buffer = ByteBufAllocator.DEFAULT.buffer();
+		length = buf.readInt();
+		byte[] data = new byte[length];
+		buf.readBytes(data);
+		buffer.writeBytes(data);
 	}
 
 	@Override
@@ -47,7 +52,7 @@ public class CreativeSplittedMessageHandler implements IMessage{
 		CreativeCorePacket.writeString(buf, packetID);
 		CreativeCorePacket.writeString(buf, uuid.toString());
 		buf.writeInt(length);
-		buf.writeBytes(buf, index, length);
+		buf.writeBytes(buffer, index, length);
 	}
 
 }

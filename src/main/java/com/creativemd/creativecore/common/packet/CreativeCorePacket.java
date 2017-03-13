@@ -29,7 +29,7 @@ public abstract class CreativeCorePacket {
 	
 	public static final HashMap<String, Class<? extends CreativeCorePacket>> packets = new HashMap<String, Class<? extends CreativeCorePacket>>();
 	
-	public static int maxPacketSize = FMLProxyPacket.MAX_LENGTH/8 - 12000;
+	public static int maxPacketSize = 0x100000 - 1000;
 	
 	public static void registerPacket(Class<? extends CreativeCorePacket> PacketClass, String id)
 	{
