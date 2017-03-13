@@ -46,7 +46,7 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
                     {
                         InfoStack stackInfo = (InfoStack)iterator.next();
 
-                        if (stackInfo.isInstance(itemstack))
+                        if (stackInfo.isInstanceIgnoreSize(itemstack))
                         {
                             flag = true;
                             list.remove(stackInfo);

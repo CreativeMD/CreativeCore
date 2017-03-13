@@ -18,7 +18,7 @@ public class InfoItem extends InfoStack {
 	
 	public InfoItem(Item item)
 	{
-		this(item, 0);
+		this(item, 1);
 	}
 	
 	public InfoItem() {

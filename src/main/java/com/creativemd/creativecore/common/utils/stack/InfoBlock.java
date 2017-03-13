@@ -17,7 +17,7 @@ public class InfoBlock extends InfoStack {
 	
 	public InfoBlock(Block block)
 	{
-		this(block, 0);
+		this(block, 1);
 	}
 	
 	public InfoBlock() {

@@ -18,7 +18,7 @@ public String ore;
 	
 	public InfoOre(String ore)
 	{
-		this(ore, 0);
+		this(ore, 1);
 	}
 	
 	public InfoOre() {

@@ -8,6 +8,7 @@ import com.creativemd.creativecore.common.utils.stack.InfoStack;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
@@ -73,13 +74,13 @@ public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
                 }
 
                 ItemStack slot = inv.getStackInRowAndColumn(x, y);
-
+                
                 if(target == null && !slot.isEmpty())
                 	return false;
                 if(target != null && slot.isEmpty())
                 	return false;
                 if(target != null && !slot.isEmpty())
-	                if(!target.isInstance(slot))
+	                if(!target.isInstanceIgnoreSize(slot))
 	                	return false;
             }
         }

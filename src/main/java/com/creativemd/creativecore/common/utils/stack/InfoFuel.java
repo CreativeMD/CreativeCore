@@ -12,7 +12,7 @@ public class InfoFuel extends InfoStack {
 	}
 	
 	public InfoFuel() {
-		super();
+		super(1);
 	}
 
 	@Override

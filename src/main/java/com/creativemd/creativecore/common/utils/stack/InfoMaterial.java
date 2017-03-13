@@ -18,7 +18,7 @@ public Material material;
 	
 	public InfoMaterial(Material material)
 	{
-		this(material, 0);
+		this(material, 1);
 	}
 	
 	public InfoMaterial() {
