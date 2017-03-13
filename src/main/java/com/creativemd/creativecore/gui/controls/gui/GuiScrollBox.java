@@ -110,7 +110,7 @@ public class GuiScrollBox extends GuiParent{
 		style.getBorder(this).renderStyle(width-scrollbarWidth+1, (int) (percent*(height-scrollThingHeight)), helper, scrollbarWidth-1, scrollThingHeight);
 		style.getFace(this).renderStyle(width-scrollbarWidth+2, (int) (percent*(height-scrollThingHeight))+1, helper, scrollbarWidth-3, scrollThingHeight-2);
 		
-		maxScroll = Math.max(0, (lastRenderedHeight-height));
+		maxScroll = Math.max(0, (lastRenderedHeight-height))+5;
 	}
 	
 	@Override

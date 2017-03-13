@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.packet.CreativeTestPacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
+import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.gui.mc.ContainerSub;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 
@@ -39,6 +40,7 @@ public class GuiTickHandler {
 					}
 					ServerEvents.get(i).eventsToRaise.clear();
 				}
+				//PacketReciever.refreshQueue(true);
 			}catch(Exception e){
 				//It is ready to crash
 			}
@@ -69,6 +71,7 @@ public class GuiTickHandler {
 					}
 					ClientEvents.get(i).eventsToRaise.clear();
 				}
+				//PacketReciever.refreshQueue(false);
 			}catch(Exception e){
 				//It is ready to crash
 			}
