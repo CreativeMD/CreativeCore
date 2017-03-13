@@ -2,6 +2,7 @@ package com.creativemd.creativecore.common.utils.stack;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 
 public class StackInfoFuel extends StackInfo{
@@ -11,9 +12,8 @@ public class StackInfoFuel extends StackInfo{
 		super(stackSize);
 	}
 	
-	public StackInfoFuel()
-	{
-		this(0);
+	public InfoFuel() {
+		super(1);
 	}
 
 	@Override
