@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.creativemd.creativecore.common.utils.stack.StackInfo;
 import com.creativemd.creativecore.common.utils.string.StringUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -29,6 +28,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class CreativeCorePacket {
 	
 	public static final HashMap<String, Class<? extends CreativeCorePacket>> packets = new HashMap<String, Class<? extends CreativeCorePacket>>();
+	
+	public static int maxPacketSize = 0x100000 - 1000;
 	
 	public static void registerPacket(Class<? extends CreativeCorePacket> PacketClass, String id)
 	{

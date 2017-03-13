@@ -18,15 +18,49 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class PacketHandler {	
+public class PacketHandler {
+	
+	private static ArrayList<CreativeSplittedMessageHandler> queuedMessages = new ArrayList<>();
+	
+	public static void addQueueMessage(CreativeSplittedMessageHandler message)
+	{
+		queuedMessages.add(message);
+	}
+	
+	private static void sendQueuedMessage(EntityPlayer player)
+	{
+		for (int i = 0; i < queuedMessages.size(); i++) {
+			sendMessage(queuedMessages.get(i).type, player, queuedMessages.get(i));
+		}
+		queuedMessages.clear();
+	}
+	
+	public static void sendMessage(MessageType type, EntityPlayer player, IMessage message)
+	{
+		switch(type)
+		{
+		case ToAllPlayer:
+			CreativeCore.network.sendToAll(message);
+			break;
+		case ToPlayer:
+			CreativeCore.network.sendTo(message, (EntityPlayerMP) player);
+			break;
+		case ToServer:
+			CreativeCore.network.sendToServer(message);
+			break;
+		}
+	}
+	
 	public static void sendPacketToAllPlayers(CreativeCorePacket packet)
 	{
-		CreativeCore.network.sendToAll(new CreativeMessageHandler(packet));
+		CreativeCore.network.sendToAll(new CreativeMessageHandler(packet, MessageType.ToAllPlayer, null));
+		sendQueuedMessage(null);
 	}
 	
 	public static void sendPacketToServer(CreativeCorePacket packet)
 	{
-		CreativeCore.network.sendToServer(new CreativeMessageHandler(packet));
+		CreativeCore.network.sendToServer(new CreativeMessageHandler(packet, MessageType.ToServer, null));
+		sendQueuedMessage(null);
 	}
 	
 	public static void sendPacketsToAllPlayers(ArrayList<CreativeCorePacket> packets)
@@ -51,7 +85,8 @@ public class PacketHandler {
 	
 	public static void sendPacketToPlayer(CreativeCorePacket packet, EntityPlayerMP player)
 	{
-		CreativeCore.network.sendTo(new CreativeMessageHandler(packet), player);
+		CreativeCore.network.sendTo(new CreativeMessageHandler(packet, MessageType.ToPlayer, player), player);
+		sendQueuedMessage(player);
 	}
 
 	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, EntityPlayerMP player)
