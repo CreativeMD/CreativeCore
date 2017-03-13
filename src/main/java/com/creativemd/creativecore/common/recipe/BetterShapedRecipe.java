@@ -74,11 +74,11 @@ public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
 
                 ItemStack slot = inv.getStackInRowAndColumn(x, y);
 
-                if(target == null && slot != null)
+                if(target == null && !slot.isEmpty())
                 	return false;
-                if(target != null && slot == null)
+                if(target != null && slot.isEmpty())
                 	return false;
-                if(target != null && slot != null)
+                if(target != null && !slot.isEmpty())
 	                if(!target.isInstance(slot))
 	                	return false;
             }

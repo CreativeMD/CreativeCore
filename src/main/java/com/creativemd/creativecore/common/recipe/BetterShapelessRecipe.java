@@ -37,7 +37,7 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
             {
                 ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
 
-                if (itemstack != null)
+                if (!itemstack.isEmpty())
                 {
                     boolean flag = false;
                     Iterator iterator = list.iterator();
