@@ -1,7 +1,20 @@
 # CreativeCore
-The core mod for RandomAdditions and LittleTiles
 
-This Core mod contains parts of the still-in-progress "Forge Development Library",
-made by N247S in cooperation with CreativeMD.These libraries are made accessible
-for the CreativeCore by N247S, who has given CreativeMD full permission to use/
-distribute these libraries in returns of his efforts given to the project(s).
+## Dependants
+- LittleTiles
+- IGCM (OpticManager)
+- ItemPhysic Full
+- OnlinePictureFrame
+
+## Features
+- Gui-Api
+- Packet system (supports splitted packets)
+- Recipe system
+- Enhanced Vanilla Recipe
+- Transformer API (obfuscated name converter)
+- Event system (by N247s)
+- InfoStack objects (a way to uniform itemstack groups)
+- Fake world
+
+## Terms of use
+Feel free to use this mod as a dependency, but you may not copy add files to your mod directly.
