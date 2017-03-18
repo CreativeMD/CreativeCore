@@ -113,7 +113,12 @@ public abstract class CreativeCorePacket {
 	
 	public static void writeStackInfo(ByteBuf buf, StackInfo info)
 	{
-		writeString(buf, StringUtils.ObjectsToString(info));
+		writeNBT(buf, info.writeToNBT(new NBTTagCompound()));
+	}
+	
+	public static InfoStack readInfoStack(ByteBuf buf)
+	{
+		return InfoStack.parseNBT(readNBT(buf));
 	}
 	
 	public static StackInfo readStackInfo(ByteBuf buf)

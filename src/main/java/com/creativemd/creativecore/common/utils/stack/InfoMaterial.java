@@ -1,14 +1,22 @@
 package com.creativemd.creativecore.common.utils.stack;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 public class InfoMaterial extends InfoStack {
 	
-public Material material;
+	public Material material;
 	
 	public InfoMaterial(Material material, int stackSize)
 	{
@@ -69,14 +77,23 @@ public Material material;
 
 	@Override
 	public ItemStack getItemStack(int stacksize) {
-		for (Object name : Block.REGISTRY.getKeys()) {
-			Block block = Block.getBlockFromName((String) name);
+		
+		for (Iterator<Block> iterator = Block.REGISTRY.iterator(); iterator.hasNext();) {
+			Block block = iterator.next();
 			if(block != null && block.getDefaultState().getMaterial() == material)
 			{
-				return new ItemStack(block, stacksize);
+				NonNullList<ItemStack> stacks = NonNullList.create();
+				
+				try {
+					block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs) displayOnCreativeTab.get(block), stacks);
+					if(!stacks.isEmpty() && !stacks.get(0).isEmpty())
+						return stacks.get(0).copy();
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -92,4 +109,28 @@ public Material material;
 		return object instanceof InfoMaterial && ((InfoMaterial) object).material == this.material;
 	}
 	
+	@Override
+	public ArrayList<ItemStack> getAllPossibleItemStacks() {
+		ArrayList<ItemStack> result = new ArrayList<>();
+		NonNullList<ItemStack> stacks = NonNullList.create();
+		
+		Iterator iterator = Block.REGISTRY.iterator();
+
+        while (iterator.hasNext())
+        {
+        	Block block = (Block)iterator.next();
+
+            try {
+				block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs) displayOnCreativeTab.get(block), stacks);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+        }
+        
+		for (int i = 0; i < stacks.size(); i++) {
+			if(isInstanceIgnoreSize(stacks.get(i)))
+				result.add(stacks.get(i));
+		}
+		return result;
+	}
 }

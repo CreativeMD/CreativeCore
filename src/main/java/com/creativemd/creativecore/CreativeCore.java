@@ -12,6 +12,7 @@ import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
 import com.creativemd.creativecore.common.packet.CreativeTestPacket;
+import com.creativemd.creativecore.common.packet.CreativeSplittedMessageHandler;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
@@ -162,8 +163,6 @@ public class CreativeCore {
 		CreativeCorePacket.registerPacket(GuiNBTPacket.class, "guinbtpacket");
 		
 		MinecraftForge.EVENT_BUS.register(guiTickHandler);
-		
-		StackInfo.registerDefaultLoaders();
 		
 		//if(Loader.isModLoaded("NotEnoughItems") && FMLCommonHandler.instance().getEffectiveSide().isClient())
 			//NEIRecipeInfoHandler.load();
