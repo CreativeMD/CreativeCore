@@ -66,19 +66,9 @@ public class InventoryUtils {
 		return basic;
 	}
 	
-	public static boolean isItemStackEqual(ItemStack stack, ItemStack stack2)
+	public static boolean isItemStackEqual(ItemStack stackA, ItemStack stackB)
 	{
-		if(stack != null && stack2 != null && stack.getItem() == stack2.getItem() && stack.getItemDamage() == stack2.getItemDamage())
-		{
-			if(!stack.hasTagCompound() && !stack2.hasTagCompound())
-				return true;
-			else if(stack.hasTagCompound() != stack2.hasTagCompound())
-				return false;
-			else if(stack.getTagCompound().equals(stack2.getTagCompound()))
-				return true;
-				
-		}
-		return false;
+		return stackA == stackB ? true : (!stackA.isEmpty() && !stackB.isEmpty() ? stackA.isItemEqual(stackB) : false);
 	}
 	
 	public static boolean consumeItemStack(IInventory inventory, ItemStack stack)
@@ -124,7 +114,7 @@ public class InventoryUtils {
 			
 		}
 		for (int i = 0; i < inventory.length; i++) {
-			if(inventory[i] == null)
+			if(inventory[i] == null || inventory[i].isEmpty())
 			{
 				inventory[i] = stack;
 				return true;
@@ -152,7 +142,7 @@ public class InventoryUtils {
 			
 		}
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			if(inventory.getStackInSlot(i) == null)
+			if(inventory.getStackInSlot(i).isEmpty())
 			{
 				inventory.setInventorySlotContents(i, stack);
 				return true;
@@ -177,7 +167,7 @@ public class InventoryUtils {
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if(stack != null && stack.isEmpty())
-				inventory.setInventorySlotContents(i, null);
+				inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 		}
 	}
 
@@ -192,7 +182,7 @@ public class InventoryUtils {
 		int stackSize = info.stackSize;
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
-			if(stack != null && info.isInstanceIgnoreSize(stack))
+			if(!stack.isEmpty() && info.isInstanceIgnoreSize(stack))
 			{
 				
 				int used = Math.min(stackSize, stack.getCount());

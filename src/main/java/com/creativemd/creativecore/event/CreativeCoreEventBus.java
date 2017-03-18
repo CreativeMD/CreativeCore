@@ -32,12 +32,14 @@ public class CreativeCoreEventBus extends EventBus
 	private boolean isClient;
 
 	public void initServer() {
-		GuiTickHandler.ServerEvents.add(this);
+		if(GuiTickHandler.ServerEvents != null)
+			GuiTickHandler.ServerEvents.add(this);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void initClient() {
-		GuiTickHandler.ClientEvents.add(this);
+		if(GuiTickHandler.ClientEvents != null)
+			GuiTickHandler.ClientEvents.add(this);
 	}
 
 	/**

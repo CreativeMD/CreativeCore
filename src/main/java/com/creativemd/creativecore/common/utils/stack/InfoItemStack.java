@@ -1,7 +1,10 @@
 package com.creativemd.creativecore.common.utils.stack;
 
+import java.util.ArrayList;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoItemStack extends InfoStack {
 	
@@ -95,6 +98,13 @@ public class InfoItemStack extends InfoStack {
 	@Override
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoItemStack && ((InfoItemStack) object).isInstanceIgnoreSize(stack);
+	}
+
+	@Override
+	public ArrayList<ItemStack> getAllPossibleItemStacks() {
+		ArrayList<ItemStack> stacks = new ArrayList<>();
+		stacks.add(getItemStack(1));
+		return stacks;
 	}
 
 }

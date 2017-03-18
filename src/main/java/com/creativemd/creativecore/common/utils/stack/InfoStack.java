@@ -1,19 +1,25 @@
 package com.creativemd.creativecore.common.utils.stack;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class InfoStack {
@@ -91,7 +97,7 @@ public abstract class InfoStack {
 		return null;
 	}
 	
-	public static void registerDefaultTypes()
+	static
 	{
 		//Load default types
 		registerType("block", InfoBlock.class);
@@ -203,9 +209,8 @@ public abstract class InfoStack {
 		
 	}
 	
-	public NBTTagCompound writeToNBT()
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
-		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setString("id", getID());
 		nbt.setInteger("count", stackSize);
 		writeToNBTExtra(nbt);
@@ -258,6 +263,12 @@ public abstract class InfoStack {
 		return getItemStack(stackSize);
 	}
 	
+	/**
+	 * Please don't use it often since some InfoStacks need to iterate through all blocks and items
+	 * @return All possible ItemStacks, also using {@link #OreDictionary.WILDCARD_VALUE}
+	 */
+	public abstract ArrayList<ItemStack> getAllPossibleItemStacks();
+	
 	public abstract ItemStack getItemStack(int stacksize);
 	
 	protected abstract boolean isStackInstanceIgnoreSize(ItemStack stack);
@@ -274,5 +285,35 @@ public abstract class InfoStack {
 	}
 	
 	public abstract boolean equalsIgnoreSize(Object object);
+	
+	protected static Field displayOnCreativeTab = ReflectionHelper.findField(Block.class, "displayOnCreativeTab", "field_149772_a");
+	
+	protected static List<ItemStack> getAllExistingItems()
+	{
+		NonNullList<ItemStack> stacks = NonNullList.create();
+		Iterator iterator = Item.REGISTRY.iterator();
+
+        while (iterator.hasNext())
+        {
+            Item item = (Item)iterator.next();
+
+            item.getSubItems(item, item.getCreativeTab(), stacks);
+        }
+        
+        iterator = Block.REGISTRY.iterator();
+
+        while (iterator.hasNext())
+        {
+        	Block block = (Block)iterator.next();
+
+            try {
+				block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs) displayOnCreativeTab.get(block), stacks);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+        }
+        
+        return stacks;
+	}
 	
 }

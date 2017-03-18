@@ -168,8 +168,6 @@ public class CreativeCore {
 		
 		MinecraftForge.EVENT_BUS.register(guiTickHandler);
 		
-		InfoStack.registerDefaultTypes();
-		
 		//if(Loader.isModLoaded("NotEnoughItems") && FMLCommonHandler.instance().getEffectiveSide().isClient())
 			//NEIRecipeInfoHandler.load();
     }

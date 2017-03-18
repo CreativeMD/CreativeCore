@@ -38,7 +38,7 @@ public class Style {
 	
 	public DisplayStyle getBackground(GuiControl control)
 	{
-		if(control.hasMouseOverEffect() && control.isMouseOver())
+		if(control != null && control.hasMouseOverEffect() && control.isMouseOver())
 			return mouseOverBackground;
 		return background;
 	}

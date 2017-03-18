@@ -1,10 +1,13 @@
 package com.creativemd.creativecore.common.utils.stack;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoItem extends InfoStack {
 	
@@ -62,6 +65,13 @@ public class InfoItem extends InfoStack {
 	@Override
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoItem && ((InfoItem) object).item == this.item;
+	}
+	
+	@Override
+	public ArrayList<ItemStack> getAllPossibleItemStacks() {
+		ArrayList<ItemStack> stacks = new ArrayList<>();
+		stacks.add(new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE));
+		return stacks;
 	}
 
 }

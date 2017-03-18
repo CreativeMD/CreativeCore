@@ -12,6 +12,7 @@ import com.creativemd.creativecore.client.avatar.AvatarItemStack;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
+import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -93,6 +94,8 @@ public class GuiInvSelector extends GuiComboBox{
 		stacks.add(stack.copy());
 		caption = lines.get(lines.size()-1);
 		index = lines.size()-1;
+		
+		raiseEvent(new GuiControlChangedEvent(this));
 	}
 	
 	/*@Override

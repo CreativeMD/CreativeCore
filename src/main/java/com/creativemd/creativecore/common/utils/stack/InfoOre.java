@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.common.utils.stack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
@@ -8,7 +9,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoOre extends InfoStack {
 	
-public String ore;
+	public String ore;
 	
 	public InfoOre(String ore, int stackSize)
 	{
@@ -58,7 +59,7 @@ public String ore;
 			stack.setCount(stacksize);
 			return stack;
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -73,5 +74,10 @@ public String ore;
 	@Override
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoOre && ((InfoOre) object).ore.equals(ore);
+	}
+	
+	@Override
+	public ArrayList<ItemStack> getAllPossibleItemStacks() {
+		return new ArrayList<>(OreDictionary.getOres(ore));
 	}
 }

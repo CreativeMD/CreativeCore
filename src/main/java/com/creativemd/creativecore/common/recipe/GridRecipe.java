@@ -35,7 +35,7 @@ public class GridRecipe extends Recipe{
 		ItemStack[] inv = getObjectInValidOrder(inventory, width, heigt);
 		
 		for (int i = 0; i < inv.length; i++) {
-			if(inv[i] != null)
+			if(!inv[i].isEmpty())
 			{
 				ItemStack stack = inv[i];
 				
@@ -82,7 +82,7 @@ public class GridRecipe extends Recipe{
 		boolean foundX = false;
 		for (int x = 0; x < InvWidth; x++) {
 			for (int y = 0; y < InvHeigt; y++) {
-				if(inventory.getStackInSlot(x+y*InvHeigt) != null)
+				if(!inventory.getStackInSlot(x+y*InvHeigt).isEmpty())
 				{
 					foundX = true;
 					posX2 = x;
@@ -95,7 +95,7 @@ public class GridRecipe extends Recipe{
 		boolean foundY = false;
 		for (int y = 0; y < InvHeigt; y++) {
 			for (int x = 0; x < InvWidth; x++) {
-				if(inventory.getStackInSlot(x+y*InvHeigt) != null)
+				if(!inventory.getStackInSlot(x+y*InvHeigt).isEmpty())
 				{
 					foundY = true;
 					posY2 = y;
@@ -138,7 +138,7 @@ public class GridRecipe extends Recipe{
 	
 	protected boolean isStackValid(ItemStack stack, InfoStack input)
 	{
-		if(stack == null && input == null)
+		if(stack.isEmpty() && input == null)
 			return true;
 		if(input != null)
 			return input.isInstance(stack);
