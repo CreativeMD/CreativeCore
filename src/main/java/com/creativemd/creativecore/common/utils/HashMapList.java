@@ -17,27 +17,10 @@ public class HashMapList<K, V> {
 		this.keys = new HashMap<>();
 	}
 	
-	/*public ArrayList<V> getValues(int index)
-	{
-		return values.get(index);
-	}*/
-	
 	public ArrayList<V> getValues(K key)
 	{
 		return keys.get(key);
 	}
-	
-	/*public K getKey(int index)
-	{
-		return keys.get(index);
-	}
-	
-	public K getLast()
-	{
-		if(keys.size() > 0)
-			return keys.get(keys.size()-1);
-		return null;
-	}*/
 	
 	public K getKey(V search)
 	{
@@ -115,6 +98,17 @@ public class HashMapList<K, V> {
 	public int size()
 	{
 		return keys.size();
+	}
+	
+	public void clear()
+	{
+		keys.clear();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return keys.toString();
 	}
 	
 }

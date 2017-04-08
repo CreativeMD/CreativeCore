@@ -34,13 +34,13 @@ public class InfoItemStack extends InfoStack {
 
 	@Override
 	protected void writeToNBTExtra(NBTTagCompound nbt) {
-		stack.writeToNBT(nbt);
+		nbt.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
 		nbt.setBoolean("needNBT", needNBT);
 	}
 
 	@Override
 	protected void loadFromNBTExtra(NBTTagCompound nbt) {
-		stack = new ItemStack(nbt);
+		stack = new ItemStack(nbt.getCompoundTag("stack"));
 		needNBT = nbt.getBoolean("needNBT");
 	}
 
@@ -73,7 +73,7 @@ public class InfoItemStack extends InfoStack {
 	@Override
 	public ItemStack getItemStack(int stacksize) {
 		ItemStack stack = new ItemStack(this.stack.getItem(), stacksize, this.stack.getItemDamage());
-		if(needNBT && stack.hasTagCompound())
+		if(needNBT && this.stack.hasTagCompound())
 			stack.setTagCompound((NBTTagCompound) this.stack.getTagCompound().copy());
 		return stack;
 	}
