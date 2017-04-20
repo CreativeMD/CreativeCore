@@ -77,15 +77,29 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	@SideOnly(Side.CLIENT)
 	public void executeClient(IMessage message)
 	{
-		if(message instanceof CreativeMessageHandler && ((CreativeMessageHandler)message).packet != null)
+		if(message instanceof CreativeMessageHandler)
 		{
-			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-				
-				@Override
-				public void run() {
-					((CreativeMessageHandler)message).packet.executeClient(Minecraft.getMinecraft().thePlayer);
+			CreativeMessageHandler cm = (CreativeMessageHandler)message;
+			
+			if(!cm.isLast)
+			{
+				PacketKey key = new PacketKey(CreativeCorePacket.getIDByClass(cm.packet), cm.uuid);
+				if(clientSplittedPackets.containsKey(key))
+					System.out.println("Something went wrong! Received another packet of the same type with the same uuid id! " + key);
+				else
+					clientSplittedPackets.put(key, new PacketValue(cm.content, cm.uuid, cm.packet, cm.amount));
+			}else{
+				if(cm.packet != null)
+				{
+					Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+						
+						@Override
+						public void run() {
+							((CreativeMessageHandler)message).packet.executeClient(Minecraft.getMinecraft().thePlayer);
+						}
+					});
 				}
-			});
+			}
 			
 		}
 	}
@@ -96,16 +110,29 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
     	{
     		executeClient(message);
     	}else{
-    		if(message instanceof CreativeMessageHandler && ((CreativeMessageHandler)message).packet != null)
+    		if(message instanceof CreativeMessageHandler)
     		{
-    			ctx.getServerHandler().playerEntity.getServer().addScheduledTask(new Runnable() {
-					
-					@Override
-					public void run() {
-						((CreativeMessageHandler)message).packet.executeServer(ctx.getServerHandler().playerEntity);
-					}
-				});
+    			CreativeMessageHandler cm = (CreativeMessageHandler)message;
     			
+    			if(!cm.isLast)
+    			{
+    				PacketKey key = new PacketKey(CreativeCorePacket.getIDByClass(cm.packet), cm.uuid);
+    				if(splittedPackets.containsKey(key))
+    					System.out.println("Something went wrong! Received another packet of the same type with the same uuid id! " + key);
+    				else
+    					splittedPackets.put(key, new PacketValue(cm.content, cm.uuid, cm.packet, cm.amount));
+    			}else{
+    				if(cm.packet != null)
+    				{
+		    			ctx.getServerHandler().playerEntity.getServer().addScheduledTask(new Runnable() {
+							
+							@Override
+							public void run() {
+								((CreativeMessageHandler)message).packet.executeServer(ctx.getServerHandler().playerEntity);
+							}
+						});
+    				}
+    			}
     		}
     	}
         return null;

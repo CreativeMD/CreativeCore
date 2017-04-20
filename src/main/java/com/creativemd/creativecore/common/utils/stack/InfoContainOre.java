@@ -48,12 +48,12 @@ public class InfoContainOre extends InfoOre {
 					ItemStack stack = stacks.get(0).copy();
 					if(stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 						stack.setItemDamage(0);
-					stack.setCount(stacksize);
+					stack.stackSize = stacksize;
 					return stack;
 				}
 			}
 		}
-		return ItemStack.EMPTY;
+		return null;
 	}
 
 	@Override

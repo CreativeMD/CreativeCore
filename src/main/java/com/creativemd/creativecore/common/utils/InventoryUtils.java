@@ -1,16 +1,11 @@
 package com.creativemd.creativecore.common.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import com.creativemd.creativecore.common.utils.stack.StackInfo;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import scala.collection.immutable.Stack;
 
 public class InventoryUtils {
 	
@@ -180,7 +175,7 @@ public class InventoryUtils {
 		}
 	}
 
-	public static int consumeStackInfo(StackInfo info, IInventory inventory)
+	/*public static int consumeStackInfo(StackInfo info, IInventory inventory)
 	{
 		return consumeStackInfo(info, inventory, null);
 	}
@@ -207,6 +202,6 @@ public class InventoryUtils {
 		if(consumed != null)
 			consumed.addAll(stacks);
 		return stackSize;
-	}
+	}*/
 	
 }

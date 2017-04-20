@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import com.creativemd.creativecore.common.utils.string.StringUtils;
-
+import com.creativemd.creativecore.common.utils.stack.InfoStack;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.embedded.EmbeddedChannel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -111,7 +111,7 @@ public abstract class CreativeCorePacket {
 		return new Vec3d(x, y, z);
 	}
 	
-	public static void writeStackInfo(ByteBuf buf, StackInfo info)
+	public static void writeInfoStack(ByteBuf buf, InfoStack info)
 	{
 		writeNBT(buf, info.writeToNBT(new NBTTagCompound()));
 	}
@@ -121,26 +121,18 @@ public abstract class CreativeCorePacket {
 		return InfoStack.parseNBT(readNBT(buf));
 	}
 	
-	public static StackInfo readStackInfo(ByteBuf buf)
-	{
-		Object[] objects = StringUtils.StringToObjects(readString(buf));
-		if(objects.length == 1 && objects[0] instanceof StackInfo)
-			return (StackInfo) objects[0];
-		return null;
-	}
-	
-	public void writeStackInfos(ByteBuf buf, ArrayList<StackInfo> infos) {
+	public void writeInfoStacks(ByteBuf buf, ArrayList<InfoStack> infos) {
 		buf.writeInt(infos.size());
 		for (int i = 0; i < infos.size(); i++) {
-			writeStackInfo(buf, infos.get(i));
+			writeInfoStack(buf, infos.get(i));
 		}
 	}
 
-	public ArrayList<StackInfo> readStackInfos(ByteBuf buf) {
+	public ArrayList<InfoStack> readInfoStacks(ByteBuf buf) {
 		int count = buf.readInt();
-		ArrayList<StackInfo> infos = new ArrayList<StackInfo>();
+		ArrayList<InfoStack> infos = new ArrayList<InfoStack>();
 		for (int i = 0; i < count; i++) {
-			StackInfo info = readStackInfo(buf);
+			InfoStack info = readInfoStack(buf);
 			if(info != null)
 				infos.add(info);
 		}

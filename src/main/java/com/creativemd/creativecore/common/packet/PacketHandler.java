@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.CreativeCore;
+import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
 import com.creativemd.creativecore.core.CreativeCoreDummy;
 import com.google.common.base.Predicate;
 
@@ -17,6 +18,7 @@ import net.minecraft.network.play.server.SPacketChangeGameState;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketHandler {
 	

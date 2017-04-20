@@ -1,36 +1,23 @@
 package com.creativemd.creativecore.client.rendering.model;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
 import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
-import com.creativemd.creativecore.common.utils.ColorUtils;
-import com.google.common.base.Objects;
 
-import mezz.jei.util.color.ColorUtil;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.pipeline.BlockInfo;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.client.model.pipeline.VertexBufferConsumer;
-import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
-import net.minecraftforge.client.model.pipeline.VertexLighterSmoothAo;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class CreativeCubeConsumer {
 	

@@ -67,7 +67,7 @@ public class InfoName extends InfoStack {
 				return new ItemStack(Item.REGISTRY.getObject(location), stackSize);
 		}
 		
-		return ItemStack.EMPTY;
+		return null;
 	}
 
 	@Override

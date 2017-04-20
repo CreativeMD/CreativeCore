@@ -13,12 +13,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -231,14 +229,14 @@ public abstract class InfoStack {
 	{
 		if(this.stackSize == 0)
 			return Integer.MAX_VALUE;
-		return stack.getCount()/stackSize;
+		return stack.stackSize/stackSize;
 	}
 	
 	public boolean isInstance(ItemStack stack)
 	{
 		if(isInstanceIgnoreSize(stack))
 		{
-			if(stackSize <= stack.getCount())
+			if(stackSize <= stack.stackSize)
 				return true;
 		}
 		return false;
@@ -290,7 +288,7 @@ public abstract class InfoStack {
 	
 	protected static List<ItemStack> getAllExistingItems()
 	{
-		NonNullList<ItemStack> stacks = NonNullList.create();
+		List<ItemStack> stacks = new ArrayList<>();
 		Iterator iterator = Item.REGISTRY.iterator();
 
         while (iterator.hasNext())

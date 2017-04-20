@@ -1,23 +1,16 @@
 package com.creativemd.creativecore.common.utils.stack;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class StackInfoFuel extends StackInfo{
+public class InfoFuel extends InfoStack {
 	
-	public StackInfoFuel(int stackSize)
-	{
+	public InfoFuel(int stackSize) {
 		super(stackSize);
 	}
 	
@@ -26,8 +19,28 @@ public class StackInfoFuel extends StackInfo{
 	}
 
 	@Override
-	public String toString() {
-		return "f";
+	protected void writeToNBTExtra(NBTTagCompound nbt) {
+		
+	}
+
+	@Override
+	protected void loadFromNBTExtra(NBTTagCompound nbt) {
+		
+	}
+
+	@Override
+	public boolean isInstanceIgnoreSize(InfoStack info) {
+		return TileEntityFurnace.isItemFuel(info.getItemStack());
+	}
+
+	@Override
+	public InfoStack copy() {
+		return new InfoFuel(stackSize);
+	}
+
+	@Override
+	public ItemStack getItemStack(int stacksize) {
+		return new ItemStack(Items.COAL);
 	}
 
 	@Override
@@ -36,26 +49,8 @@ public class StackInfoFuel extends StackInfo{
 	}
 
 	@Override
-	public boolean isInstanceIgnoreSize(StackInfo info) {
-		if(info instanceof StackInfoFuel)
-			return true;
-		return TileEntityFurnace.isItemFuel(info.getItemStack());
-	}
-
-	@Override
-	public ItemStack getItemStack(int stacksize) {
-		return new ItemStack(Items.COAL);
-	}
-	
-	@Override
-	public boolean equalsIgnoreSize(Object object)
-	{
-		return object instanceof StackInfoFuel;
-	}
-
-	@Override
-	public StackInfo copy() {
-		return new StackInfoFuel(stackSize);
+	public boolean equalsIgnoreSize(Object object) {
+		return object instanceof InfoFuel;
 	}
 
 	@Override

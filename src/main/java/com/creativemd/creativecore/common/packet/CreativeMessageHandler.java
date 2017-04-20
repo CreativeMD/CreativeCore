@@ -22,16 +22,26 @@ public class CreativeMessageHandler implements IMessage{
 		
 	}
 	
+	public boolean isLast = true;
+	public UUID uuid;
 	public CreativeCorePacket packet = null;
+	public MessageType type;
+	public EntityPlayer player;
+	public int amount;
+	public ByteBuf content;
 	
-	public CreativeMessageHandler(CreativeCorePacket packet)
+	public CreativeMessageHandler(CreativeCorePacket packet, MessageType type, EntityPlayer player)
 	{
 		this.packet = packet;
+		this.type = type;
+		this.player = player;
 	}
 	
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		String id = ByteBufUtils.readUTF8String(buf);
+		isLast = buf.readBoolean();
+		
+		String id = CreativeCorePacket.readString(buf);
 		Class PacketClass = CreativeCorePacket.getClassByID(id);
 		packet = null;
 		try {

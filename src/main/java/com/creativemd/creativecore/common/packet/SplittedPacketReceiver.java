@@ -46,7 +46,7 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
 							
 							@Override
 							public void run() {
-								value.packet.executeClient(Minecraft.getMinecraft().player);
+								value.packet.executeClient(Minecraft.getMinecraft().thePlayer);
 							}
 						});
 						

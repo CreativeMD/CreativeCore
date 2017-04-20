@@ -25,7 +25,7 @@ public class InfoItemStack extends InfoStack {
 	
 	public InfoItemStack(ItemStack stack)
 	{
-		this(stack, stack.getCount());
+		this(stack, stack.stackSize);
 	}
 	
 	public InfoItemStack() {
@@ -40,7 +40,7 @@ public class InfoItemStack extends InfoStack {
 
 	@Override
 	protected void loadFromNBTExtra(NBTTagCompound nbt) {
-		stack = new ItemStack(nbt.getCompoundTag("stack"));
+		stack = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("stack"));
 		needNBT = nbt.getBoolean("needNBT");
 	}
 

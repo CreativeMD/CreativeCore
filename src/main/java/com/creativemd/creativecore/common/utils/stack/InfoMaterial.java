@@ -11,8 +11,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 
 public class InfoMaterial extends InfoStack {
 	
@@ -82,18 +80,18 @@ public class InfoMaterial extends InfoStack {
 			Block block = iterator.next();
 			if(block != null && block.getDefaultState().getMaterial() == material)
 			{
-				NonNullList<ItemStack> stacks = NonNullList.create();
+				List<ItemStack> stacks = new ArrayList<>();
 				
 				try {
 					block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs) displayOnCreativeTab.get(block), stacks);
-					if(!stacks.isEmpty() && !stacks.get(0).isEmpty())
+					if(!stacks.isEmpty() && stacks.get(0) != null)
 						return stacks.get(0).copy();
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return ItemStack.EMPTY;
+		return null;
 	}
 
 	@Override
@@ -112,7 +110,7 @@ public class InfoMaterial extends InfoStack {
 	@Override
 	public ArrayList<ItemStack> getAllPossibleItemStacks() {
 		ArrayList<ItemStack> result = new ArrayList<>();
-		NonNullList<ItemStack> stacks = NonNullList.create();
+		List<ItemStack> stacks = new ArrayList<>();
 		
 		Iterator iterator = Block.REGISTRY.iterator();
 
