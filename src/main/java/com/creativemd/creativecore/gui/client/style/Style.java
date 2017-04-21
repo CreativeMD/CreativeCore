@@ -7,6 +7,8 @@ public class Style {
 	public static Style liteStyle = new Style("default", new ColoredDisplayStyle(0, 0, 0), new ColoredDisplayStyle(90, 90, 90), new ColoredDisplayStyle(100, 100, 100),
 			new ColoredDisplayStyle(198, 198, 198), new ColoredDisplayStyle(0, 0, 0, 100));
 	
+	public static Style emptyStyle = new Style("empty", DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay);
+	
 	public final String name;
 	
 	private DisplayStyle border;
