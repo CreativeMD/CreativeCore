@@ -19,6 +19,13 @@ public class GuiColorPlate extends GuiControl {
 	private Color color;
 	private DisplayStyle colorPlate;
 	
+	public GuiColorPlate(String name, int x, int y, int width, int height, Color color) {
+		super(name, x, y, width, height);
+		
+		this.marginWidth = 0;
+		setColor(color);
+	}
+	
 	public GuiColorPlate(String name, int x, int y, int width, int height, Vec3i color) {
 		super(name, x, y, width, height);
 		
