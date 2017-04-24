@@ -56,6 +56,7 @@ import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -68,7 +69,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CreativeCore {
 	
 	public static final String modid = "creativecore";
-	public static final String version = "1.5.0";
+	public static final String version = "1.7.4";
 	
 	@Instance(CreativeCore.modid)
 	public static CreativeCore instance = new CreativeCore();
@@ -88,6 +89,12 @@ public class CreativeCore {
 	public void loadClientSide()
 	{
 		CreativeCoreClient.doClientThings();
+	}
+	
+	@EventHandler
+	public void PreInit(FMLPreInitializationEvent event)
+	{
+		event.getModMetadata().version = version;
 	}
 	
 	@EventHandler
