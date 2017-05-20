@@ -228,6 +228,11 @@ public abstract class SubGui extends GuiParent {
 		return isTopLayer();
 	}
 	
+	public boolean hasGrayBackground()
+	{
+		return true;
+	}
+	
 	//================CUSTOM EVENTS================
 	
 	public void onTick() {}

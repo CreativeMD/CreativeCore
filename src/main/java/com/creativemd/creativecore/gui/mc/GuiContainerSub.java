@@ -172,7 +172,8 @@ public class GuiContainerSub extends GuiContainer {
 			
 			GlStateManager.translate(-k, -l, 0);
 	        
-			this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
+			if(layers.get(i).hasGrayBackground())
+				this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 			
 			int offX = (this.width - layers.get(i).width) / 2 - k;
 	        int offY = (this.height - layers.get(i).height) / 2 - l;
