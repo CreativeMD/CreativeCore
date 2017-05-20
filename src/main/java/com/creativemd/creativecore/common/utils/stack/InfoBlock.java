@@ -29,7 +29,11 @@ public class InfoBlock extends InfoStack {
 
 	@Override
 	protected void writeToNBTExtra(NBTTagCompound nbt) {
-		nbt.setString("block", Block.REGISTRY.getNameForObject(block).toString());
+		ResourceLocation location = Block.REGISTRY.getNameForObject(block);
+		if(location != null)
+			nbt.setString("block", location.toString());
+		else
+			System.out.println("Invalid InfoBlock entry. Block does not exists");
 	}
 
 	@Override
