@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -35,6 +36,16 @@ public class HashMapList<K, V> {
 	public Set<K> getKeys()
 	{
 		return keys.keySet();
+	}
+	
+	public Collection<ArrayList<V>> getValues()
+	{
+		return keys.values();
+	}
+	
+	public Set<Entry<K, ArrayList<V>>> entrySet()
+	{
+		return keys.entrySet();
 	}
 	
 	public void add(K key, V[] values)
@@ -109,6 +120,10 @@ public class HashMapList<K, V> {
 	public String toString()
 	{
 		return keys.toString();
+	}
+
+	public boolean isEmpty() {
+		return sizeOfValues() > 0;
 	}
 	
 }
