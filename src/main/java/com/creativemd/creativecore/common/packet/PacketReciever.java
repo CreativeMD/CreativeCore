@@ -46,14 +46,13 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 		else{
 			if(splittedPackets.isEmpty())
 				return ;
-			ArrayList<PacketKey> packetsToRemove = new ArrayList<>();
 			for (Iterator<Entry<PacketKey, PacketValue>> iterator = splittedPackets.entrySet().iterator(); iterator.hasNext();) {
 				Entry<PacketKey, PacketValue> entry = iterator.next();
 				if(entry.getValue().isExpired())
-					packetsToRemove.add(entry.getKey());
-			}
-			for (int i = 0; i < packetsToRemove.size(); i++) {
-				splittedPackets.remove(packetsToRemove.get(i));
+				{
+					System.out.println("Packet parts expired " + (entry.getValue().received+1) + "/" + entry.getValue().amount);
+					iterator.remove();
+				}
 			}
 		}
 	}
@@ -63,14 +62,13 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	{
 		if(clientSplittedPackets.isEmpty())
 			return ;
-		ArrayList<PacketKey> packetsToRemove = new ArrayList<>();
 		for (Iterator<Entry<PacketKey, PacketValue>> iterator = clientSplittedPackets.entrySet().iterator(); iterator.hasNext();) {
 			Entry<PacketKey, PacketValue> entry = iterator.next();
 			if(entry.getValue().isExpired())
-				packetsToRemove.add(entry.getKey());
-		}
-		for (int i = 0; i < packetsToRemove.size(); i++) {
-			clientSplittedPackets.remove(packetsToRemove.get(i));
+			{
+				System.out.println("Packet parts expired " + (entry.getValue().received+1) + "/" + entry.getValue().amount);
+				iterator.remove();
+			}
 		}
 	}
 	
@@ -171,7 +169,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
     
     public static class PacketValue {
     	
-    	public static long timeToWait = (long) (60 * Math.pow(10, 9));
+    	public static long timeToWait = 60000;
     	
     	public final ByteBuf buf;
     	public final UUID uuid;
@@ -179,7 +177,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
     	public final int amount;
     	public int received;
     	
-    	public long lastReceivedPart = System.nanoTime();
+    	public long lastReceivedPart = System.currentTimeMillis();
     	
     	public PacketValue(ByteBuf buf, UUID uuid, CreativeCorePacket packet, int amount) {
 			this.buf = buf;
@@ -195,7 +193,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
     	
     	public boolean isExpired()
     	{
-    		return System.nanoTime() - lastReceivedPart > timeToWait;
+    		return System.currentTimeMillis() - lastReceivedPart > timeToWait;
     	}
     	
     	public void receivePacket(ByteBuf toRead, int index, int length) throws IllegalAccessException
