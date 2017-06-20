@@ -10,11 +10,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
+public class BetterShapedRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeInfo{
 	
 	public InfoStack[] info;
 	public ItemStack output;

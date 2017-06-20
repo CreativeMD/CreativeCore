@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
@@ -17,12 +19,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
-public abstract class InfoStack {
+public abstract class InfoStack extends Ingredient {
 	
 	public static HashMap<String, Class<? extends InfoStack>> types = new HashMap<>();
 	
@@ -197,6 +200,7 @@ public abstract class InfoStack {
 	
 	public InfoStack(int stackSize)
 	{
+		super(0);
 		if(stackSize < 0)
 			stackSize = 0;
 		if(stackSize > 64)
@@ -206,8 +210,22 @@ public abstract class InfoStack {
 	
 	public InfoStack()
 	{
-		
+		super(0);
 	}
+	
+	public ItemStack[] getMatchingStacks()
+    {
+        return this.getAllPossibleItemStacks().toArray(new ItemStack[0]);
+    }
+	
+	@Override
+    public boolean apply(@Nullable ItemStack stack)
+    {
+		if(stack == null)
+			return false;
+		
+    	return isInstance(stack);
+    }
 	
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{

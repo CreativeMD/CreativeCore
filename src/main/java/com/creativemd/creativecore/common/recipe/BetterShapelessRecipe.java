@@ -10,10 +10,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
 
-public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
+public class BetterShapelessRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeInfo{
 
 	public ArrayList<InfoStack> info;
 	public ItemStack output;
