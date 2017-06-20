@@ -68,12 +68,6 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 	public ItemStack getCraftingResult(InventoryCrafting inventory) {
 		return output.copy();
 	}
-
-	@Override
-	public int getRecipeSize() {
-		return info.size();
-	}
-
 	@Override
 	public ItemStack getRecipeOutput() {
 		return output.copy();
@@ -107,4 +101,9 @@ public class BetterShapelessRecipe implements IRecipe, IRecipeInfo{
 
         return nonnulllist;
     }
+
+	@Override
+	public boolean canFit(int width, int height) {
+		return width * height >= this.info.size();
+	}
 }

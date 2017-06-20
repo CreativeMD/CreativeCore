@@ -98,9 +98,9 @@ public abstract class CreativeCorePacket {
 	
 	public static void writeVec3d(Vec3d vec, ByteBuf buf)
 	{
-		buf.writeDouble(vec.xCoord);
-		buf.writeDouble(vec.yCoord);
-		buf.writeDouble(vec.zCoord);
+		buf.writeDouble(vec.x);
+		buf.writeDouble(vec.y);
+		buf.writeDouble(vec.z);
 	}
 	
 	public static Vec3d readVec3d(ByteBuf buf)

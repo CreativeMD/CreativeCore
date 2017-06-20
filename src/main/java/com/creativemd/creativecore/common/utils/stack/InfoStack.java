@@ -297,7 +297,7 @@ public abstract class InfoStack {
         {
             Item item = (Item)iterator.next();
 
-            item.getSubItems(item, item.getCreativeTab(), stacks);
+            item.getSubItems(item.getCreativeTab(), stacks);
         }
         
         iterator = Block.REGISTRY.iterator();
@@ -307,7 +307,7 @@ public abstract class InfoStack {
         	Block block = (Block)iterator.next();
 
             try {
-				block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs) displayOnCreativeTab.get(block), stacks);
+				block.getSubBlocks((CreativeTabs) displayOnCreativeTab.get(block), stacks);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}

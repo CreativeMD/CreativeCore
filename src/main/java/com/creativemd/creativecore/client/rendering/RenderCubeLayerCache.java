@@ -2,7 +2,6 @@ package com.creativemd.creativecore.client.rendering;
 
 import java.util.ArrayList;
 
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

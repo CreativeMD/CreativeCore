@@ -94,14 +94,14 @@ public abstract class GuiControl extends CoreControl{
 	public Vec3d rotateMouseVec(Vec3d mouse)
 	{
 		Vec3d centerOffset = getCenterOffset();
-		return getRotationAround(-rotation, mouse, new Vec3d(posX+centerOffset.xCoord, posY+centerOffset.yCoord, 0));
+		return getRotationAround(-rotation, mouse, new Vec3d(posX+centerOffset.x, posY+centerOffset.y, 0));
 	}
 	
 	public boolean isMouseOver()
 	{
 		Vec3d mouse = getParent().getMousePos();
 		Vec3d pos = rotateMouseVec(mouse);
-		return isInteractable() && visible && isMouseOver((int)pos.xCoord, (int)pos.yCoord);
+		return isInteractable() && visible && isMouseOver((int)pos.x, (int)pos.y);
 	}
 	
 	public boolean isMouseOver(int posX, int posY)
@@ -248,9 +248,9 @@ public abstract class GuiControl extends CoreControl{
 		Vec3d centerOffset = getCenterOffset();
 		
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(posX+centerOffset.xCoord, posY+centerOffset.yCoord, 0);
+		GlStateManager.translate(posX+centerOffset.x, posY+centerOffset.y, 0);
 		GlStateManager.rotate(rotation, 0, 0, 1);
-		GlStateManager.translate(-centerOffset.xCoord, -centerOffset.yCoord, 0);
+		GlStateManager.translate(-centerOffset.x, -centerOffset.y, 0);
 		
 		//GlStateManager.translate(x, y, 0);
 		GlStateManager.scale(scale, scale, 1);
@@ -321,8 +321,8 @@ public abstract class GuiControl extends CoreControl{
 	
 	public static Vec3d getRotationAround(double angle, Vec3d pos, Vec3d center)
 	{
-		Vector2d result = new Vector2d(pos.xCoord, pos.yCoord);
-		Vector2d newCenter = new Vector2d(center.xCoord, center.yCoord);
+		Vector2d result = new Vector2d(pos.x, pos.y);
+		Vector2d newCenter = new Vector2d(center.x, center.y);
 		result.sub(newCenter);
 		Vector2d temp = new Vector2d(result);
 		result.x = Math.cos(Math.toRadians(angle)) * temp.x - Math.sin(Math.toRadians(angle)) * temp.y;

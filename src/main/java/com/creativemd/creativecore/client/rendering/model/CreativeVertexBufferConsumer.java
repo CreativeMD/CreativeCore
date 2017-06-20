@@ -1,13 +1,10 @@
 package com.creativemd.creativecore.client.rendering.model;
 
-import net.minecraft.client.renderer.VertexBuffer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraft.util.EnumFacing;
 
 /**
  * Assumes VertexFormatElement is present in the VertexBuffer's vertex format.
@@ -30,7 +27,7 @@ public class CreativeVertexBufferConsumer
     public void put(int e, float... data)
     {
         VertexFormat format = consumer.format;
-        VertexBuffer renderer = consumer.buffer;
+        BufferBuilder renderer = consumer.buffer;
         if(renderer.isColorDisabled() && format.getElement(e).getUsage() == EnumUsage.COLOR)
         {
             data = dummyColor;

@@ -226,7 +226,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		for(int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
 			Vec3d pos = control.rotateMouseVec(mouse);			
-			if(control.isInteractable() && control.isMouseOver((int)pos.xCoord, (int)pos.yCoord) && control.mouseScrolled((int)pos.xCoord, (int)pos.yCoord, scrolled))
+			if(control.isInteractable() && control.isMouseOver((int)pos.x, (int)pos.y) && control.mouseScrolled((int)pos.x, (int)pos.y, scrolled))
 				return true;
 		}
 		return false;
@@ -240,7 +240,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		for(int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
 			Vec3d pos = control.rotateMouseVec(mouse);			
-			if(!result && control.isInteractable() && control.isMouseOver((int)pos.xCoord, (int)pos.yCoord) && control.mousePressed((int)pos.xCoord, (int)pos.yCoord, button)){
+			if(!result && control.isInteractable() && control.isMouseOver((int)pos.x, (int)pos.y) && control.mousePressed((int)pos.x, (int)pos.y, button)){
 				raiseEvent(new GuiControlClickEvent(control, x, y));
 				result = true;
 			}else
@@ -257,7 +257,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			GuiControl control = controls.get(i);
 			Vec3d pos = control.rotateMouseVec(mouse);			
 			if(control.isInteractable())
-				control.mouseMove((int)pos.xCoord, (int)pos.yCoord, button);
+				control.mouseMove((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
@@ -269,7 +269,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			GuiControl control = controls.get(i);
 			Vec3d pos = control.rotateMouseVec(mouse);			
 			if(control.isInteractable())
-				control.mouseReleased((int)pos.xCoord, (int)pos.yCoord, button);
+				control.mouseReleased((int)pos.x, (int)pos.y, button);
 		}
 	}
 	
@@ -296,7 +296,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
 			Vec3d pos = control.rotateMouseVec(mouse);			
-			if(control.isInteractable() && control.isMouseOver((int)pos.xCoord, (int)pos.yCoord))
+			if(control.isInteractable() && control.isMouseOver((int)pos.x, (int)pos.y))
 			{
 				event = control.getToolTipEvent();
 				if(event != null)

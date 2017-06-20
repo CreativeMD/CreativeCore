@@ -38,11 +38,6 @@ public class SaveHandlerFake implements ISaveHandler {
 		return new IChunkLoader() {
 			
 			@Override
-			public void saveExtraData() {
-				
-			}
-			
-			@Override
 			public void saveExtraChunkData(World worldIn, Chunk chunkIn) throws IOException {
 				
 			}
@@ -65,6 +60,11 @@ public class SaveHandlerFake implements ISaveHandler {
 			@Override
 			public boolean isChunkGeneratedAt(int x, int z) {
 				return true;
+			}
+
+			@Override
+			public void flush() {
+				
 			}
 		};
 	}

@@ -18,13 +18,13 @@ public class RecipeLoader {
 		if(recipe instanceof IRecipeInfo)
 			return ((IRecipeInfo) recipe).getInput();
 		if(recipe instanceof ShapedRecipes)
-			return ((ShapedRecipes) recipe).recipeItems;
+			return ((ShapedRecipes) recipe).recipeItems.toArray();
 		if(recipe instanceof ShapedOreRecipe)
-			return ((ShapedOreRecipe) recipe).getInput();
+			return ((ShapedOreRecipe) recipe).getIngredients().toArray();
 		if(recipe instanceof ShapelessRecipes)
 			return ((ShapelessRecipes) recipe).recipeItems.toArray();
 		if(recipe instanceof ShapelessOreRecipe)
-			return ((ShapelessOreRecipe) recipe).getInput().toArray();
+			return ((ShapelessOreRecipe) recipe).getIngredients().toArray();
 		
 		if(!vanillaOnly)
 		{

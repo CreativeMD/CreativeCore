@@ -12,12 +12,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -42,7 +42,7 @@ public class GuiRenderHelper {
 	
 	public GuiRenderHelper(Minecraft mc)
 	{
-		this(mc.fontRendererObj, mc.getRenderItem());
+		this(mc.fontRenderer, mc.getRenderItem());
 	}
 	
 	public GuiRenderHelper(FontRenderer font, RenderItem itemRenderer)
@@ -71,7 +71,7 @@ public class GuiRenderHelper {
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
         vertexbuffer.pos((double)right, (double)top, 0).color(f5, f6, f7, f4).endVertex();
         vertexbuffer.pos((double)left, (double)top, 0).color(f1, f2, f3, f).endVertex();
@@ -97,7 +97,7 @@ public class GuiRenderHelper {
 	public static void renderColorTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color color)
 	{
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -128,7 +128,7 @@ public class GuiRenderHelper {
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
         
 		Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+		BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.ITEM);
         for (int i = 0; i < baked.size(); i++) {
         	int tint = baked.get(i).getTintIndex();
@@ -196,8 +196,6 @@ public class GuiRenderHelper {
             
             GlStateManager.enableLighting();
             GlStateManager.enableDepth();
-            // Fixes opaque cooldown overlay a bit lower
-            // TODO: check if enabled blending still screws things up down the line.
             GlStateManager.enableBlend();
 			itemRenderer.renderItemOverlayIntoGUI(font, stack, x, y, "");
 		}

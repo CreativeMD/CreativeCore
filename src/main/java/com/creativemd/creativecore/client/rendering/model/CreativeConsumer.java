@@ -6,8 +6,8 @@ import javax.vecmath.Vector3f;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
@@ -49,7 +49,7 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
 	{
 		try {
 			BlockPos pos = (BlockPos) offset.get(parent);
-			VertexBuffer buffer = (VertexBuffer) renderer.get(parent);
+			BufferBuilder buffer = (BufferBuilder) renderer.get(parent);
 			for(int i = 0; i < cached.length; i++)
 			{
 				

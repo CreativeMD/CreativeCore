@@ -150,9 +150,9 @@ public class RotationUtils {
 	
 	public static Vec3d applyVectorRotation(Vec3d vector, Rotation EnumFacing)
 	{
-		double tempX = vector.xCoord;
-		double tempY = vector.yCoord;
-		double tempZ = vector.zCoord;
+		double tempX = vector.x;
+		double tempY = vector.y;
+		double tempZ = vector.z;
 		
 		double posX = tempX;
 		double posY = tempY;
@@ -209,67 +209,67 @@ public class RotationUtils {
 		float maxZ = cube.maxZ;
 		if(center != null)
 		{
-			minX -= center.xCoord;
-			minY -= center.yCoord;
-			minZ -= center.zCoord;
-			maxX -= center.xCoord;
-			maxY -= center.yCoord;
-			maxZ -= center.zCoord;
+			minX -= center.x;
+			minY -= center.y;
+			minZ -= center.z;
+			maxX -= center.x;
+			maxY -= center.y;
+			maxZ -= center.z;
 		}
 		Vec3d min = applyVectorRotation(new Vec3d(minX, minY, minZ), EnumFacing);
 		Vec3d max = applyVectorRotation(new Vec3d(maxX, maxY, maxZ), EnumFacing);
 		
 		if(center != null)
 		{
-			min = min.addVector(center.xCoord, center.yCoord, center.zCoord);
-			max = max.addVector(center.xCoord, center.yCoord, center.zCoord);
+			min = min.addVector(center.x, center.y, center.z);
+			max = max.addVector(center.x, center.y, center.z);
 		}
 		
-		if(min.xCoord < max.xCoord)
+		if(min.x < max.x)
 		{
-			cube.minX = (float)min.xCoord;
-			cube.maxX = (float)max.xCoord;
+			cube.minX = (float)min.x;
+			cube.maxX = (float)max.x;
 		}
 		else
 		{
-			cube.minX = (float)max.xCoord;
-			cube.maxX = (float)min.xCoord;
+			cube.minX = (float)max.x;
+			cube.maxX = (float)min.x;
 		}
-		if(min.yCoord < max.yCoord)
+		if(min.y < max.y)
 		{
-			cube.minY = (float)min.yCoord;
-			cube.maxY = (float)max.yCoord;
-		}
-		else
-		{
-			cube.minY = (float)max.yCoord;
-			cube.maxY = (float)min.yCoord;
-		}
-		if(min.zCoord < max.zCoord)
-		{
-			cube.minZ = (float)min.zCoord;
-			cube.maxZ = (float)max.zCoord;
+			cube.minY = (float)min.y;
+			cube.maxY = (float)max.y;
 		}
 		else
 		{
-			cube.minZ = (float)max.zCoord;
-			cube.maxZ = (float)min.zCoord;
+			cube.minY = (float)max.y;
+			cube.maxY = (float)min.y;
+		}
+		if(min.z < max.z)
+		{
+			cube.minZ = (float)min.z;
+			cube.maxZ = (float)max.z;
+		}
+		else
+		{
+			cube.minZ = (float)max.z;
+			cube.maxZ = (float)min.z;
 		}
 	}
 	
 	public static EnumFacing getFacingFromVec(Vec3d vec)
 	{
-		if(vec.xCoord == 1 && vec.yCoord == 0 && vec.zCoord == 0)
+		if(vec.x == 1 && vec.y == 0 && vec.z == 0)
 			return EnumFacing.EAST;
-		if(vec.xCoord == -1 && vec.yCoord == 0 && vec.zCoord == 0)
+		if(vec.x == -1 && vec.y == 0 && vec.z == 0)
 			return EnumFacing.WEST;
-		if(vec.xCoord == 0 && vec.yCoord == 1 && vec.zCoord == 0)
+		if(vec.x == 0 && vec.y == 1 && vec.z == 0)
 			return EnumFacing.UP;
-		if(vec.xCoord == 0 && vec.yCoord == -1 && vec.zCoord == 0)
+		if(vec.x == 0 && vec.y == -1 && vec.z == 0)
 			return EnumFacing.DOWN;
-		if(vec.xCoord == 0 && vec.yCoord == 0 && vec.zCoord == 1)
+		if(vec.x == 0 && vec.y == 0 && vec.z == 1)
 			return EnumFacing.SOUTH;
-		if(vec.xCoord == 0 && vec.yCoord == 0 && vec.zCoord == -1)
+		if(vec.x == 0 && vec.y == 0 && vec.z == -1)
 			return EnumFacing.NORTH;
 		return null;
 	}
@@ -277,7 +277,7 @@ public class RotationUtils {
 	public static EnumFacing rotateFacing(EnumFacing facing, EnumFacing facing2) {
 		Vec3d vec = new Vec3d(facing.getDirectionVec());
 		vec = applyVectorRotation(vec, facing2);
-		return EnumFacing.getFacingFromVector((float) vec.xCoord, (float) vec.yCoord, (float) vec.zCoord);
+		return EnumFacing.getFacingFromVector((float) vec.x, (float) vec.y, (float) vec.z);
 		//return getFacingFromVec(vec);
 	}
 	

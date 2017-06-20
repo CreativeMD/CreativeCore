@@ -44,7 +44,7 @@ public class ColoredDisplayStyle extends DisplayStyle{
 	
 	public ColoredDisplayStyle(Vec3d color)
 	{
-		this(new Color((byte)color.xCoord, (byte)color.yCoord, (byte)color.zCoord));
+		this(new Color((byte)color.x, (byte)color.y, (byte)color.z));
 	}
 	
 	public ColoredDisplayStyle(Vec3i color)

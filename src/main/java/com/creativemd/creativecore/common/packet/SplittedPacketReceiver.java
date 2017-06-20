@@ -86,11 +86,11 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
 	    				{
 	    					value.packet.readBytes(value.buf);
 	    					
-	    					ctx.getServerHandler().playerEntity.getServer().addScheduledTask(new Runnable() {
+	    					ctx.getServerHandler().player.getServer().addScheduledTask(new Runnable() {
 	    						
 	    						@Override
 	    						public void run() {
-	    							value.packet.executeServer(ctx.getServerHandler().playerEntity);
+	    							value.packet.executeServer(ctx.getServerHandler().player);
 	    						}
 	    					});
 	    					

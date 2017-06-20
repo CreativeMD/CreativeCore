@@ -25,6 +25,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -116,7 +117,7 @@ public class GuiSlotControl extends GuiControl{
 		{
 			List list = null;
 			try{
-				list = slot.slot.getStack().getTooltip(this.mc.player, this.mc.gameSettings.advancedItemTooltips);
+				list = slot.slot.getStack().getTooltip(this.mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
 		
 		        for (int k = 0; k < list.size(); ++k)
 		        {

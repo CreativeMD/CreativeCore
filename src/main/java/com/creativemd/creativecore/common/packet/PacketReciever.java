@@ -124,11 +124,11 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
     			}else{
     				if(cm.packet != null)
     				{
-		    			ctx.getServerHandler().playerEntity.getServer().addScheduledTask(new Runnable() {
+		    			ctx.getServerHandler().player.getServer().addScheduledTask(new Runnable() {
 							
 							@Override
 							public void run() {
-								((CreativeMessageHandler)message).packet.executeServer(ctx.getServerHandler().playerEntity);
+								((CreativeMessageHandler)message).packet.executeServer(ctx.getServerHandler().player);
 							}
 						});
     				}

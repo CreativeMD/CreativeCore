@@ -85,7 +85,7 @@ public class InfoMaterial extends InfoStack {
 				NonNullList<ItemStack> stacks = NonNullList.create();
 				
 				try {
-					block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs) displayOnCreativeTab.get(block), stacks);
+					block.getSubBlocks((CreativeTabs) displayOnCreativeTab.get(block), stacks);
 					if(!stacks.isEmpty() && !stacks.get(0).isEmpty())
 						return stacks.get(0).copy();
 				} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -121,7 +121,7 @@ public class InfoMaterial extends InfoStack {
         	Block block = (Block)iterator.next();
 
             try {
-				block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs) displayOnCreativeTab.get(block), stacks);
+				block.getSubBlocks((CreativeTabs) displayOnCreativeTab.get(block), stacks);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}

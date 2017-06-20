@@ -207,7 +207,7 @@ public class GuiContainerSub extends GuiContainer {
 	        Vec3d mouse = layers.get(i).getMousePos();
 	        GuiToolTipEvent event = layers.get(i).getToolTipEvent();
 	        if(event != null && layers.get(i).raiseEvent(event))
-	        	this.drawHoveringText(event.tooltip, (int)mouse.xCoord, (int)mouse.yCoord, GuiRenderHelper.instance.font);
+	        	this.drawHoveringText(event.tooltip, (int)mouse.x, (int)mouse.y, GuiRenderHelper.instance.font);
 		}
 	}
 	
@@ -233,7 +233,7 @@ public class GuiContainerSub extends GuiContainer {
 		{
 			handleScrolling();
 			Vec3d mouse = getTopLayer().getMousePos();
-        	getTopLayer().mouseMove((int)mouse.xCoord, (int)mouse.yCoord, 0);
+        	getTopLayer().mouseMove((int)mouse.x, (int)mouse.y, 0);
 		}
 		super.handleInput();
     }
@@ -244,7 +244,7 @@ public class GuiContainerSub extends GuiContainer {
         if (j != 0)
         {
         	Vec3d mouse = getTopLayer().getMousePos();
-        	getTopLayer().mouseScrolled((int)mouse.xCoord, (int)mouse.yCoord, j > 0 ? 1 : -1);
+        	getTopLayer().mouseScrolled((int)mouse.x, (int)mouse.y, j > 0 ? 1 : -1);
         	//Mouse.setGrabbed(true);
         }
 	}

@@ -116,7 +116,7 @@ public class ColorUtils {
 	
 	public static int VecToInt(Vec3d color)
 	{
-		return RGBToInt(new Vec3i(color.xCoord*255, color.yCoord*255, color.zCoord*255));
+		return RGBToInt(new Vec3i(color.x*255, color.y*255, color.z*255));
 	}
 
 	public static Vec3i colorToVec(Color color) {

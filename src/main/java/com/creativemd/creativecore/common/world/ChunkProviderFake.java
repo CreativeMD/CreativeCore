@@ -1,15 +1,20 @@
 package com.creativemd.creativecore.common.world;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.Nullable;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.EnumCreatureType;
@@ -18,14 +23,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.IChunkLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.world.gen.IChunkGenerator;
 
 public class ChunkProviderFake implements IChunkProvider
 {
@@ -54,10 +56,10 @@ public class ChunkProviderFake implements IChunkProvider
      */
     public void unload(Chunk chunkIn)
     {
-        if (this.worldObj.provider.canDropChunk(chunkIn.xPosition, chunkIn.zPosition))
+        if (this.worldObj.provider.canDropChunk(chunkIn.x, chunkIn.z))
         {
-            this.droppedChunksSet.add(Long.valueOf(ChunkPos.asLong(chunkIn.xPosition, chunkIn.zPosition)));
-            chunkIn.unloaded = true;
+            this.droppedChunksSet.add(Long.valueOf(ChunkPos.asLong(chunkIn.x, chunkIn.z)));
+            chunkIn.markLoaded(false);
         }
     }
 
@@ -80,7 +82,7 @@ public class ChunkProviderFake implements IChunkProvider
 
         if (chunk != null)
         {
-            chunk.unloaded = false;
+        	chunk.markLoaded(false);
         }
 
         return chunk;
@@ -146,7 +148,7 @@ public class ChunkProviderFake implements IChunkProvider
 
             try
             {
-                chunk = this.chunkGenerator.provideChunk(x, z);
+                chunk = this.chunkGenerator.generateChunk(x, z);
             }
             catch (Throwable throwable)
             {
@@ -159,8 +161,8 @@ public class ChunkProviderFake implements IChunkProvider
             }
 
             this.id2ChunkMap.put(i, chunk);
-            chunk.onChunkLoad();
-            chunk.populateChunk(this, this.chunkGenerator);
+            chunk.onLoad();
+            chunk.populate(this, this.chunkGenerator);
         }
 
         return chunk;
@@ -248,15 +250,6 @@ public class ChunkProviderFake implements IChunkProvider
     }
 
     /**
-     * Save extra data not associated with any Chunk.  Not saved during autosave, only during world unload.  Currently
-     * unimplemented.
-     */
-    public void saveExtraData()
-    {
-        this.chunkLoader.saveExtraData();
-    }
-
-    /**
      * Unloads chunks that are marked to be unloaded. This is not guaranteed to unload every such chunk.
      */
     public boolean unloadQueuedChunks()
@@ -323,7 +316,7 @@ public class ChunkProviderFake implements IChunkProvider
     @Nullable
     public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position, boolean p_180513_4_)
     {
-        return this.chunkGenerator.getStrongholdGen(worldIn, structureName, position, p_180513_4_);
+        return this.chunkGenerator.getNearestStructurePos(worldIn, structureName, position, p_180513_4_);
     }
 
     public int getLoadedChunkCount()

@@ -94,11 +94,6 @@ public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
 	}
 
 	@Override
-	public int getRecipeSize() {
-		return this.width * this.height;
-	}
-
-	@Override
 	public ItemStack getRecipeOutput() {
 		return output.copy();
 	}
@@ -131,5 +126,10 @@ public class BetterShapedRecipe implements IRecipe, IRecipeInfo{
 
         return nonnulllist;
     }
+
+	@Override
+	public boolean canFit(int width, int height) {
+		return width >= this.width && height >= this.height;
+	}
 
 }

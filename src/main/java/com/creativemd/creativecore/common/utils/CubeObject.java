@@ -63,22 +63,22 @@ public class CubeObject {
 	
 	public void add(Vec3d vec)
 	{
-		this.minX += vec.xCoord;
-		this.minY += vec.yCoord;
-		this.minZ += vec.zCoord;
-		this.maxX += vec.xCoord;
-		this.maxY += vec.yCoord;
-		this.maxZ += vec.zCoord;
+		this.minX += vec.x;
+		this.minY += vec.y;
+		this.minZ += vec.z;
+		this.maxX += vec.x;
+		this.maxY += vec.y;
+		this.maxZ += vec.z;
 	}
 	
 	public void sub(Vec3d vec)
 	{
-		this.minX -= vec.xCoord;
-		this.minY -= vec.yCoord;
-		this.minZ -= vec.zCoord;
-		this.maxX -= vec.xCoord;
-		this.maxY -= vec.yCoord;
-		this.maxZ -= vec.zCoord;
+		this.minX -= vec.x;
+		this.minY -= vec.y;
+		this.minZ -= vec.z;
+		this.maxX -= vec.x;
+		this.maxY -= vec.y;
+		this.maxZ -= vec.z;
 	}
 	
 	/*public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, boolean normalBlock)
@@ -128,7 +128,7 @@ public class CubeObject {
 				size = newSize;
 			else
 			{
-				size = new Vec3d(Math.max(size.xCoord, newSize.xCoord), Math.max(size.yCoord, newSize.yCoord), Math.max(size.zCoord, newSize.zCoord));
+				size = new Vec3d(Math.max(size.x, newSize.x), Math.max(size.y, newSize.y), Math.max(size.z, newSize.z));
 			}
 		}
 		return size;
