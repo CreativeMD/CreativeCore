@@ -45,7 +45,7 @@ public abstract class CreativeTransformer implements IClassTransformer {
 				
 				transformers.get(i).transform(classNode);
 				
-				ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+				ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
 				classNode.accept(writer);
 				basicClass = writer.toByteArray();
 				
