@@ -20,7 +20,11 @@ public class HashMapList<K, V> {
 	
 	public HashMapList(HashMapList<K, V> object)
 	{
-		this.keys = new HashMap<>(object.keys);
+		this();
+		for (Iterator<Entry<K, ArrayList<V>>> iterator = object.entrySet().iterator(); iterator.hasNext();) {
+			Entry<K, ArrayList<V>> entry = iterator.next();
+			keys.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+		}
 	}
 	
 	public ArrayList<V> getValues(K key)
@@ -107,15 +111,26 @@ public class HashMapList<K, V> {
 	{
 		ArrayList<V> values = getValues(key);
 		if(values != null)
-			return values.remove(value);
+			if(values.remove(value))
+			{
+				if(values.isEmpty())
+					removeKey(key);
+				return true;
+			}
+		
 		return false;
 	}
 	
 	public boolean removeValue(V value)
 	{
-		for (ArrayList<V> values : keys.values()) {
+		for (Iterator<ArrayList<V>> iterator = keys.values().iterator(); iterator.hasNext();) {
+			ArrayList<V> values = iterator.next();
 			if(values.remove(value))
+			{
+				if(values.isEmpty())
+					iterator.remove();
 				return true;
+			}
 		}
 		return false;
 	}
@@ -196,7 +211,7 @@ public class HashMapList<K, V> {
 			
 			@Override
 			public void remove() {
-				currentList.remove(index);
+				currentList.remove(index-1);
 			}
 		};
 	}
