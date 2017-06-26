@@ -19,7 +19,7 @@ import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
-import com.creativemd.creativecore.event.GuiTickHandler;
+import com.creativemd.creativecore.event.CreativeTickHandler;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.controls.gui.GuiAvatarLabel;
