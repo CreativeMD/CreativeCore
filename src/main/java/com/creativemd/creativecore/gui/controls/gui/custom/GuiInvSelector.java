@@ -24,27 +24,49 @@ import net.minecraft.util.NonNullList;
 
 public class GuiInvSelector extends GuiComboBox{
 	
+	public static class StackSelector {
+		
+		public boolean allow(ItemStack stack)
+		{
+			return true;
+		}
+		
+	}
+	
 	public ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
 	
-	public boolean onlyBlocks;
+	public StackSelector selector;
+	
 	public String search;
 	
-	public GuiInvSelector(String name, int x, int y, int width, EntityPlayer player, boolean onlyBlocks, String search) {
+	public GuiInvSelector(String name, int x, int y, int width, EntityPlayer player, boolean onlyBlocks) {	
+		this(name, x, y, width, player, onlyBlocks, "");
+	}
+	
+	public GuiInvSelector(String name, int x, int y, int width, EntityPlayer player, boolean onlyBlocks, String search) {		
 		super(name, x, y, width, new ArrayList<String>());
+		this.selector = new StackSelector(){
+			
+			@Override
+			public boolean allow(ItemStack stack) {
+				return GuiItemStackSelector.shouldShowItem(onlyBlocks, GuiInvSelector.this.search, stack);
+			}
+			
+		};
 		this.search = search;
-		this.onlyBlocks = onlyBlocks;
 		updateItems(player);
 		
 	}
 	
-	public GuiInvSelector(String name, int x, int y, int width, EntityPlayer player, boolean onlyBlocks) {
+	public GuiInvSelector(String name, int x, int y, int width, EntityPlayer player, StackSelector selector) {
 		
-		this(name, x, y, width, player, onlyBlocks, "");
+		super(name, x, y, width, new ArrayList<String>());
+		this.selector = selector;
+		updateItems(player);
 	}
 	
 	public void updateItems(EntityPlayer player)
 	{
-		boolean shouldSearch = search.equals("");
 		NonNullList<ItemStack> newStacks = NonNullList.create();
 		for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
 			if(!player.inventory.mainInventory.get(i).isEmpty())
@@ -66,7 +88,7 @@ public class GuiInvSelector extends GuiComboBox{
 		lines.clear();
 		
 		for (int i = 0; i < newStacks.size(); i++) {
-			if(GuiItemStackSelector.shouldShowItem(onlyBlocks, search, newStacks.get(i)))
+			if(selector.allow(newStacks.get(i)))
 			{
 				stacks.add(newStacks.get(i));
 				lines.add(GuiItemStackSelector.getItemName(newStacks.get(i)));
@@ -138,7 +160,7 @@ public class GuiInvSelector extends GuiComboBox{
 	@Override
 	public void openBox()
 	{
-		extension = new GuiItemStackSelector(name + "extension", getPlayer(), posX, posY+height, width-getContentOffset()*2, 80, this, onlyBlocks, search);
+		extension = new GuiItemStackSelector(name + "extension", getPlayer(), posX, posY+height, width-getContentOffset()*2, 80, this, selector);
 		//extension = new GuiInvSelectorExtension(name + "extension", parent.container.player, this, posX, posY+height, width, 150, lines, stacks);
 		getParent().controls.add(extension);
 		
