@@ -9,6 +9,7 @@ import com.creativemd.creativecore.gui.controls.container.client.GuiSlotControl;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBoxExtension;
 import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.gui.controls.gui.custom.GuiInvSelector.StackSelector;
 import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.slots.SlotPreview;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
@@ -28,13 +29,11 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 	public NonNullList<ItemStack> stacks;
 	public NonNullList<ItemStack> inv;
 	
-	public String search;
-	public boolean onlyBlocks;
+	public StackSelector selector;
 	
-	public GuiItemStackSelector(String name, EntityPlayer player, int x, int y, int width, int height, GuiComboBox comboBox, boolean onlyBlocks, String search) {
+	public GuiItemStackSelector(String name, EntityPlayer player, int x, int y, int width, int height, GuiComboBox comboBox, StackSelector selector) {
 		super(name, comboBox, x, y, width, height, new ArrayList<String>());
-		this.search = search;
-		this.onlyBlocks = onlyBlocks;
+		this.selector = selector;
 		//this.extension = extension;
 		
 		stacks = NonNullList.create();
@@ -76,7 +75,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 	
 	public static boolean shouldShowItem(boolean onlyBlocks, String search, ItemStack stack)
 	{
-		if(onlyBlocks && Block.getBlockFromItem(stack.getItem()) == null)
+		if(onlyBlocks && (Block.getBlockFromItem(stack.getItem()) == null || Block.getBlockFromItem(stack.getItem()) instanceof BlockAir))
 			return false;
 		if(search.equals(""))
 			return true;
@@ -113,7 +112,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 			int SlotsPerRow = (width-20)/18;
 			int count = 0;
 			for (int i = 0; i < inv.size(); i++) {
-				if(shouldShowItem(onlyBlocks, search, inv.get(i)))
+				if(selector.allow(inv.get(i)))
 				{
 					InventoryBasic basic = new InventoryBasic("", false, 1);
 					basic.setInventorySlotContents(0, inv.get(i));
@@ -132,7 +131,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 			height += label.height;
 			count = 0;
 			for (int i = 0; i < stacks.size(); i++) {
-				if(shouldShowItem(onlyBlocks, search, stacks.get(i)))
+				if(selector.allow(stacks.get(i)))
 				{
 					InventoryBasic basic = new InventoryBasic("", false, 1);
 					basic.setInventorySlotContents(0, stacks.get(i));
