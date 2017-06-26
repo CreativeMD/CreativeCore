@@ -7,6 +7,7 @@ import com.creativemd.creativecore.common.packet.CreativeTestPacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.packet.PacketReciever;
+import com.creativemd.creativecore.common.world.WorldInteractor;
 import com.creativemd.creativecore.gui.mc.ContainerSub;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 
@@ -15,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -26,7 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-public class GuiTickHandler {
+public class CreativeTickHandler {
 	
 	public static ArrayList<CreativeCoreEventBus> ServerEvents = new ArrayList<CreativeCoreEventBus>();
 	
@@ -114,5 +116,11 @@ public class GuiTickHandler {
 			changed = false;
 			mc.gameSettings.guiScale = defaultScale;
 		}
+	}
+	
+	@SubscribeEvent
+	public void ChunkUnload(ChunkEvent.Unload event)
+	{
+		WorldInteractor.addChunkToBeRemoved(event.getWorld(), event.getChunk());
 	}
 }

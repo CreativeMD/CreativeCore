@@ -20,6 +20,7 @@ import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
+import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
@@ -85,6 +86,46 @@ public abstract class Transformer {
 			{
 				return insn;
 			}
+		}
+		return null;
+	}
+	
+	public int getIndexOfVar(MethodNode m, String desc, String signature)
+	{
+		desc = patchDESC(desc);
+		signature = patchDESC(signature);
+		
+		for (Iterator<LocalVariableNode> iterator = m.localVariables.iterator(); iterator.hasNext();) {
+			LocalVariableNode local = iterator.next();
+			if(local.desc.equals(desc) && (signature == null || signature.equals(local.signature)))
+				return local.index;
+		}
+		return -1;
+	}
+	
+	public int getIndexOfVar(MethodNode m, String desc)
+	{
+		return getIndexOfVar(m, desc, null);
+	}
+	
+	public LabelNode findPreviousLabel(AbstractInsnNode node)
+	{
+		while(node.getPrevious() != null)
+		{
+			if(node.getPrevious() instanceof LabelNode)
+				return (LabelNode) node.getPrevious();
+			node = node.getPrevious();
+		}
+		return null;
+	}
+	
+	public LabelNode findNextLabel(AbstractInsnNode node)
+	{
+		while(node.getNext() != null)
+		{
+			if(node.getNext() instanceof LabelNode)
+				return (LabelNode) node.getNext();
+			node = node.getNext();
 		}
 		return null;
 	}

@@ -32,14 +32,14 @@ public class CreativeCoreEventBus extends EventBus
 	private boolean isClient;
 
 	public void initServer() {
-		if(GuiTickHandler.ServerEvents != null)
-			GuiTickHandler.ServerEvents.add(this);
+		if(CreativeTickHandler.ServerEvents != null)
+			CreativeTickHandler.ServerEvents.add(this);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void initClient() {
-		if(GuiTickHandler.ClientEvents != null)
-			GuiTickHandler.ClientEvents.add(this);
+		if(CreativeTickHandler.ClientEvents != null)
+			CreativeTickHandler.ClientEvents.add(this);
 	}
 
 	/**
@@ -102,12 +102,12 @@ public class CreativeCoreEventBus extends EventBus
 	}
 
 	public void removeTickEventServer() {
-		GuiTickHandler.ServerEvents.remove(this);
+		CreativeTickHandler.ServerEvents.remove(this);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void removeTickEventClient() {
-		GuiTickHandler.ClientEvents.remove(this);
+		CreativeTickHandler.ClientEvents.remove(this);
 	}
 	
 	@Override
