@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.core;
 
+import java.io.PrintWriter;
 import java.util.Iterator;
 
 import org.objectweb.asm.Opcodes;
@@ -14,6 +15,7 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 import com.creativemd.creativecore.transformer.CreativeTransformer;
 import com.creativemd.creativecore.transformer.Transformer;
@@ -135,8 +137,14 @@ public class CreativeCoreTransformer extends CreativeTransformer {
 				m.instructions.insertBefore(toInsert, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/creativemd/creativecore/common/world/WorldInteractor", "removeTileEntities", patchDESC("(Lnet/minecraft/world/World;)V"), false));
 				
 				//Surround update method
-				LabelNode addBefore = findPreviousLabel(invokeUpdate);
+				LabelNode before = findPreviousLabel(invokeUpdate);
 				LabelNode after = findNextLabel(invokeUpdate);
+				
+				replaceLabelBefore(m.instructions, before, null, 0, 1, true, false);
+				replaceLabelBefore(m.instructions, after, null, 0, 1, true, false);
+				
+				LabelNode addBefore = new LabelNode();
+				m.instructions.insert(before, addBefore);
 				
 				int indexOfTileEntityVar = getIndexOfVar(m, "Lnet/minecraft/tileentity/TileEntity;");
 				int indexOfIteratorVar = getIndexOfVar(m, "Ljava/util/Iterator;", "Ljava/util/Iterator<Lnet/minecraft/tileentity/TileEntity;>;");
@@ -153,6 +161,59 @@ public class CreativeCoreTransformer extends CreativeTransformer {
 				m.instructions.insertBefore(addBefore, new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Iterator", "remove", "()V", true));
 				m.instructions.insertBefore(addBefore, new JumpInsnNode(Opcodes.GOTO, after));
 			}
+		});
+		
+		addTransformer(new Transformer("org.spongepowered.common.mixin.core.world.MixinWorld") {
+			
+			@Override
+			public void transform(ClassNode node) {
+				String tickMethodOwner = "net/minecraft/util/ITickable";
+				String tickMethodName = "func_73660_a";
+				
+				MethodNode m = findMethod(node, "func_72939_s", "()V");
+				
+				Iterator<AbstractInsnNode> iterator2 = m.instructions.iterator();
+				AbstractInsnNode toInsert = null;
+				AbstractInsnNode invokeUpdate = null;
+				
+				while(iterator2.hasNext())
+				{
+					AbstractInsnNode insn = iterator2.next();
+					
+					if(insn instanceof MethodInsnNode && ((MethodInsnNode) insn).owner.equals(tickMethodOwner) && ((MethodInsnNode) insn).name.equals(tickMethodName))
+					{
+						invokeUpdate = insn;
+						break;
+					}
+				}
+				
+				//Surround update method
+				LabelNode before = findPreviousLabel(invokeUpdate);
+				LabelNode after = findNextLabel(invokeUpdate);
+				
+				LabelNode addBefore = new LabelNode();
+				m.instructions.insert(before, addBefore);
+				boolean ofuscated = TransformerNames.obfuscated;
+				TransformerNames.obfuscated = false;
+				int indexOfTileEntityVar = getIndexOfVar(m, "Lnet/minecraft/tileentity/TileEntity;");
+				int indexOfIteratorVar = getIndexOfVar(m, "Ljava/util/Iterator;", "Ljava/util/Iterator<Lnet/minecraft/tileentity/TileEntity;>;");
+				TransformerNames.obfuscated = ofuscated;
+				m.instructions.insertBefore(addBefore, new VarInsnNode(Opcodes.ALOAD, indexOfTileEntityVar));
+				m.instructions.insertBefore(addBefore, new TypeInsnNode(Opcodes.INSTANCEOF, "com/creativemd/creativecore/common/tileentity/ICustomTickable"));
+				m.instructions.insertBefore(addBefore, new JumpInsnNode(Opcodes.IFEQ, addBefore));
+				m.instructions.insertBefore(addBefore, new VarInsnNode(Opcodes.ALOAD, indexOfTileEntityVar));
+				m.instructions.insertBefore(addBefore, new MethodInsnNode(Opcodes.INVOKEINTERFACE, "com/creativemd/creativecore/common/tileentity/ICustomTickable", "shouldTick", "()Z", true));
+				m.instructions.insertBefore(addBefore, new JumpInsnNode(Opcodes.IFNE, addBefore));
+				LabelNode conditionRemove = new LabelNode();
+				m.instructions.insertBefore(addBefore, conditionRemove);
+				m.instructions.insertBefore(addBefore, new VarInsnNode(Opcodes.ALOAD, indexOfIteratorVar));
+				m.instructions.insertBefore(addBefore, new MethodInsnNode(Opcodes.INVOKEINTERFACE, "java/util/Iterator", "remove", "()V", true));
+				m.instructions.insertBefore(addBefore, new JumpInsnNode(Opcodes.GOTO, after));
+				
+				//node.accept(new TraceClassVisitor(new PrintWriter(System.out)));
+			}
+			
+			
 		});
 	}
 

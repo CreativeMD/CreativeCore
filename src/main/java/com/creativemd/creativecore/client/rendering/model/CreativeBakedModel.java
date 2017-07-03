@@ -41,6 +41,7 @@ import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -73,6 +74,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
+	public static ItemColors itemColores = mc.getItemColors();
 	//public static FaceBakery faceBakery = new FaceBakery();
 	public static TextureAtlasSprite woodenTexture;
 	
@@ -99,11 +101,6 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return woodenTexture;
 	}
 	
-	/*protected static BakedQuad makeBakedQuad(BlockPart blockPart, BlockPartFace blockFace, TextureAtlasSprite texture, EnumFacing facing, net.minecraftforge.common.model.ITransformation transformation, boolean uvLocked)
-    {
-        return faceBakery.makeBakedQuad(blockPart.positionFrom, blockPart.positionTo, blockFace, texture, facing, transformation, blockPart.partRotation, uvLocked, blockPart.shade);
-    }*/
-	
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 		return getBlockQuads(state, side, rand, false);
@@ -124,21 +121,14 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			if(!cube.shouldSideBeRendered(side))
 				continue;
 			
-			//CubeObject invCube = new CubeObject(cube.minX, cube.minY, cube.minZ, cube.maxX-1, cube.maxY-1, cube.maxZ-1);
-			
 			Block block = renderBlock;
 			if(cube.block != null)
 				block = cube.block;
-			
-			//int overridenTint = -1;
-			//if(lastItemStack != null)
-				//overridenTint = mc.getItemColors().getColorFromItemstack(new ItemStack(block), -1);
 			
 			IBlockState newState = cube.getBlockState(block);
 			if(state != null && te != null)
 				newState = newState.getActualState(te.getWorld(), te.getPos());
 			
-			//BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 			try{
 				if(layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
 					continue;
@@ -153,81 +143,13 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			}
 			
 			IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
-			/*List<BakedQuad> blockQuads = blockModel.getQuads(newState, side, rand);
-			for (int j = 0; j < blockQuads.size(); j++) {
-				BakedQuad quad = new CreativeBakedQuad(blockQuads.get(j), cube, cube.color, cube.color != -1, side);
-				EnumFacing facing = side;
-				//if(facing == null)
-					//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
-				
-				EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
-				
-				for (int k = 0; k < 4; k++) {
-					VertexInformation vertex = direction.getVertexInformation(k);
-					
-					int index = k * quad.getFormat().getIntegerSize();
-					float newX = cube.getVertexInformationPosition(vertex.xIndex);
-					float newY = cube.getVertexInformationPosition(vertex.yIndex);
-					float newZ = cube.getVertexInformationPosition(vertex.zIndex);
-					
-					quad.getVertexData()[index] = Float.floatToIntBits(newX);
-					quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
-					quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);
-					
-					if(cube.keepVU)
-						continue;
-					
-					int uvIndex = index + quad.getFormat().getUvOffsetById(0) / 4;
-					
-					newX = uvCube.getVertexInformationPosition(vertex.xIndex);
-					newY = uvCube.getVertexInformationPosition(vertex.yIndex);
-					newZ = uvCube.getVertexInformationPosition(vertex.zIndex);
-					
-					float u = 0;
-					float v = 0;
-					switch(facing)
-					{
-					case EAST:
-						newY = 1-newY;
-						newZ = 1-newZ;
-					case WEST:
-						if(facing == EnumFacing.WEST)
-							newY = 1-newY;
-						u = newZ;
-						v = newY;
-						break;
-					case DOWN:
-						newZ = 1-newZ;
-					case UP:
-						u = newX;
-						v = newZ;
-						break;
-					case NORTH:
-						newY = 1-newY;
-						newX = 1-newX;
-					case SOUTH:
-						if(facing == EnumFacing.SOUTH)
-							newY = 1-newY;
-						u = newX;
-						v = newY;
-						break;
-					}
-					u *= 16;
-					v *= 16;
-					
-					quad.getVertexData()[uvIndex] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedU(u));
-					quad.getVertexData()[uvIndex + 1] = Float.floatToRawIntBits(quad.getSprite().getInterpolatedV(v));
-				}
-				
-				baked.add(quad);
-				
-				
-			}*/
 			CubeObject uvCube = cube.offset(cube.getOffset());
-			baked.addAll(getBakedQuad(cube, uvCube, newState, blockModel, side, rand));
-			//if(quad != null)
-				//baked.add(quad);
-			//return baked;
+			
+			int defaultColor = -1;
+			if(te == null && stack != null)
+				defaultColor = itemColores.getColorFromItemstack(new ItemStack(newState.getBlock(), 1, newState.getBlock().getMetaFromState(newState)), -1);
+			
+			baked.addAll(getBakedQuad(cube, uvCube, newState, blockModel, side, rand, true, defaultColor));
 		}
 		
 		if(renderer instanceof ICustomCachedCreativeRendered && !FMLClientHandler.instance().hasOptifine() && stack == null)
@@ -243,12 +165,12 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return baked;
 	}
 	
-	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand)
+	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint)
 	{
-		return getBakedQuad(cube, uvCube, state, blockModel, side, rand, true);
+		return getBakedQuad(cube, uvCube, state, blockModel, side, rand, overrideTint, -1);
 	}
 	
-	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint)
+	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint, int defaultColor)
 	{
 		List<BakedQuad> blockQuads = blockModel.getQuads(state, side, rand);
 		if(blockQuads.isEmpty())
@@ -256,12 +178,11 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		
 		List<BakedQuad> quads = new ArrayList<>();
 		
+		int color = cube.color != -1 ? cube.color : defaultColor;
 		for(int i = 0; i < blockQuads.size(); i++)
 		{
-			BakedQuad quad = new CreativeBakedQuad(blockQuads.get(i), cube, cube.color, overrideTint && cube.color != -1, side);
+			BakedQuad quad = new CreativeBakedQuad(blockQuads.get(i), cube, color, overrideTint && (defaultColor == -1 || blockQuads.get(i).hasTintIndex()) && color != -1, side);
 			EnumFacing facing = side;
-			//if(facing == null)
-				//facing = faceBakery.getFacingFromVertexData(quad.getVertexData());
 			
 			EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
 			
@@ -272,10 +193,6 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				float newX = cube.getVertexInformationPosition(vertex.xIndex);
 				float newY = cube.getVertexInformationPosition(vertex.yIndex);
 				float newZ = cube.getVertexInformationPosition(vertex.zIndex);
-				
-				/*float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
-				float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
-				float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);*/
 				
 				quad.getVertexData()[index] = Float.floatToIntBits(newX);
 				quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
@@ -290,42 +207,41 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 				newY = uvCube.getVertexInformationPosition(vertex.yIndex);
 				newZ = uvCube.getVertexInformationPosition(vertex.zIndex);
 				
-				float u = 0;
-				float v = 0;
+				float uMin = 0;
+				float uMax = 1;
+				float vMin = 0;
+				float vMax = 1;
+				
+				float u = uMin;
+				float v = vMin;
 				switch(facing)
 				{
 				case EAST:
-					newY = 1-newY;
-					newZ = 1-newZ;
+					newY = vMax-newY;
+					newZ = uMax-newZ;
 				case WEST:
 					if(facing == EnumFacing.WEST)
-						newY = 1-newY;
+						newY = vMax-newY;
 					u = newZ;
 					v = newY;
 					break;
 				case DOWN:
-					newZ = 1-newZ;
+					newZ = vMax-newZ;
 				case UP:
 					u = newX;
 					v = newZ;
 					break;
 				case NORTH:
-					newY = 1-newY;
-					newX = 1-newX;
+					newY = vMax-newY;
+					newX = uMax-newX;
 				case SOUTH:
 					if(facing == EnumFacing.SOUTH)
-						newY = 1-newY;
+						newY = vMax-newY;
 					u = newX;
 					v = newY;
 					break;
 				}
 				
-				/*u = Math.abs(u);
-				if(u > 1)
-					u %= 1;
-				v = Math.abs(v);
-				if(v > 1)
-					v %= 1;*/
 				u *= 16;
 				v *= 16;
 				
@@ -349,7 +265,6 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		}else if(state != null)
 			renderBlock = state.getBlock();
 		
-		//mc.getRenderItem().getItemModelMesher().getModelManager().getModel(modelLocation);
 		
 		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
 		ItemStack stack = state != null ? null : lastItemStack;

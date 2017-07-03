@@ -134,6 +134,11 @@ public class GuiRenderHelper {
         	int tint = baked.get(i).getTintIndex();
         	if(tint == 0)
         		tint = -1;
+        	else{
+        		Color color = ColorUtils.IntToRGBA(tint);
+        		color.setAlpha(255);
+        		tint = ColorUtils.RGBAToInt(color);
+        	}
 			net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(vertexbuffer, baked.get(i), tint);
         }
         tessellator.draw();
