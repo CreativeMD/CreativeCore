@@ -93,7 +93,7 @@ public abstract class Transformer {
 	public int getIndexOfVar(MethodNode m, String desc, String signature)
 	{
 		desc = patchDESC(desc);
-		signature = patchDESC(signature);
+		signature = signature == null ? null : patchDESC(signature);
 		
 		for (Iterator<LocalVariableNode> iterator = m.localVariables.iterator(); iterator.hasNext();) {
 			LocalVariableNode local = iterator.next();

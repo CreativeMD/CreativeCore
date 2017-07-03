@@ -48,8 +48,8 @@ public class CreativeCubeConsumer {
     	return blockInfo;
     }
     
-    public CreativeCubeConsumer(VertexFormat format, BlockColors colors) {
-		this.format = format;
+    public CreativeCubeConsumer(VertexFormat newFormat, BlockColors colors) {
+		this.format = new VertexFormat(newFormat);
 		this.blockInfo = new BlockInfo(colors);
         for(int i = 0; i < format.getElementCount(); i++)
         {
