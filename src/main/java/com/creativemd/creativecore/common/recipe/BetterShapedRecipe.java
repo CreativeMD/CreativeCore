@@ -1,20 +1,13 @@
 package com.creativemd.creativecore.common.recipe;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class BetterShapedRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeInfo{
 	

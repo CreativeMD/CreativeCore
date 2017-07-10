@@ -31,16 +31,15 @@ public class CreativeModel implements IModel {
 	public Collection<ResourceLocation> getTextures() {
 		return ImmutableSet.of();
 	}
-
-	@Override
-	public IBakedModel bake(IModelState state, VertexFormat format,
-			Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-		return bakedModel;
-	}
-
 	@Override
 	public IModelState getDefaultState() {
 		return TRSRTransformation.identity();
+	}
+
+	@Override
+	public IBakedModel bake(IModelState state, VertexFormat format,
+			java.util.function.Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+		return bakedModel;
 	}
 
 }

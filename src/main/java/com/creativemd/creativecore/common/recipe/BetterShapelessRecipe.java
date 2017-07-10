@@ -3,16 +3,14 @@ package com.creativemd.creativecore.common.recipe;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.minecraft.client.gui.inventory.GuiCrafting;
+import com.creativemd.creativecore.common.utils.stack.InfoStack;
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
-
-import com.creativemd.creativecore.common.utils.stack.InfoStack;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class BetterShapelessRecipe extends IForgeRegistryEntry.Impl<IRecipe> implements IRecipe, IRecipeInfo{
 

@@ -45,7 +45,7 @@ public class RecipeLoader {
 					for (int i = 0; i < input.length; i++) {
 						if(classRecipeInput.isAssignableFrom(input[i].getClass()))
 						{
-							List<ItemStack> stacks = (List<ItemStack>) ReflectionHelper.findMethod((Class<? super Object>)input[i].getClass(), input[i], new String[]{"getInputs"}).invoke(input[i]);
+							List<ItemStack> stacks = (List<ItemStack>) ReflectionHelper.findMethod((Class<? super Object>)input[i].getClass(), "getInputs", "getInputs").invoke(input[i]);
 							if(stacks.size() > 0)
 								input[i] = stacks.get(0);
 							else

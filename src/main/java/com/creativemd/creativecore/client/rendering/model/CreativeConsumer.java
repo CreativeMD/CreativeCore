@@ -102,7 +102,7 @@ public class CreativeConsumer extends VertexLighterSmoothAo {
     @Override
     public void updateBlockInfo()
     {
-        blockInfo.updateShift(false);
+        blockInfo.updateShift();
         blockInfo.updateLightMatrix();
     }
 	

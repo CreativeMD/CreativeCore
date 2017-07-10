@@ -410,7 +410,7 @@ public class CreativeCubeConsumer {
     
     public void updateBlockInfo()
     {
-        blockInfo.updateShift(false);
+        blockInfo.updateShift();
         blockInfo.updateLightMatrix();
     }
 	

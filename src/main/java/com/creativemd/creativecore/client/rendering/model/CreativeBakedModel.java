@@ -1,76 +1,45 @@
 package com.creativemd.creativecore.client.rendering.model;
 
-import java.time.chrono.MinguoEra;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.conn.routing.RouteInfo.LayerType;
-import org.lwjgl.util.Color;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.block.TileEntityState;
-import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.common.utils.CubeObject;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EnumFaceDirection;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.EnumFaceDirection.VertexInformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BakedQuadRetextured;
-import net.minecraft.client.renderer.block.model.BlockFaceUV;
-import net.minecraft.client.renderer.block.model.BlockPart;
-import net.minecraft.client.renderer.block.model.BlockPartFace;
-import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.EnumUsage;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.EnumFacing.AxisDirection;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.common.model.IModelPart;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.registry.RegistryDelegate;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
+public class CreativeBakedModel implements IBakedModel {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
 	//public static FaceBakery faceBakery = new FaceBakery();
@@ -109,13 +78,13 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return getBlockQuads(state, side, rand, false);
 	}
 	
-	public static boolean doesBlockHaveColor(Block block)
+	/*public static boolean doesBlockHaveColor(Block block)
 	{
 		if(block.getBlockLayer() == BlockRenderLayer.CUTOUT_MIPPED)
 			return true;
-		Map<RegistryDelegate<Block>, IBlockColor> blockColorMap = ReflectionHelper.getPrivateValue(BlockColors.class, mc.getBlockColors(), "blockColorMap");
+		Map<IRegistryDelegate<Block>, IBlockColor> blockColorMap = ReflectionHelper.getPrivateValue(BlockColors.class, mc.getBlockColors(), "blockColorMap");
 		return blockColorMap.containsKey(block.delegate);
-	}
+	}*/
 	
 	public static List<BakedQuad> getBlockQuads(List<RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
 		for (int i = 0; i < cubes.size(); i++) {
@@ -442,7 +411,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
         builder.put(TransformType.FIRST_PERSON_LEFT_HAND,  get(0, 0, 0, 0, 225, 0, 0.4f));
         //ret.state = Optional.<IModelState>of(new SimpleModelState(builder.build()));
         IModelState perState = new SimpleModelState(ImmutableMap.copyOf(builder.build()));
-        baseState = perState.apply(Optional.<IModelPart>absent()).or(TRSRTransformation.identity());
+        baseState = perState.apply(Optional.empty()).orElse(TRSRTransformation.identity());
         cameraTransforms = ImmutableMap.copyOf(builder.build());
 	}
 	
