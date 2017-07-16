@@ -140,8 +140,8 @@ public class CreativeCoreTransformer extends CreativeTransformer {
 				LabelNode before = findPreviousLabel(invokeUpdate);
 				LabelNode after = findNextLabel(invokeUpdate);
 				
-				replaceLabelBefore(m.instructions, before, null, 0, 1, true, false);
-				replaceLabelBefore(m.instructions, after, null, 0, 1, true, false);
+				//replaceLabelBefore(m.instructions, before, null, 0, 1, true, false);
+				//replaceLabelBefore(m.instructions, after, null, 0, 1, true, false);
 				
 				LabelNode addBefore = new LabelNode();
 				m.instructions.insert(before, addBefore);
