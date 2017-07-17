@@ -26,14 +26,14 @@ public class CreativeBlockRenderHelper {
 	{
 		items.put(item.getRegistryName(), item);
 		CreativeCoreClient.registerItemRenderer(item);
-		CreativeCoreClient.registerItemColorHandler(item);
+		//CreativeCoreClient.registerItemColorHandler(item);
 	}
 	
 	public static void registerCreativeRenderedBlock(Block block)
 	{
 		blocks.put(block.getRegistryName(), block);
 		CreativeCoreClient.registerBlockItem(block);
-		CreativeCoreClient.registerBlockColorHandler(block);
+		//CreativeCoreClient.registerBlockColorHandler(block);
 	}
 	
 }

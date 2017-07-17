@@ -2,6 +2,7 @@ package com.creativemd.creativecore.core;
 
 import java.util.EnumSet;
 
+import com.creativemd.creativecore.client.rendering.model.CreativeBakedModel;
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.client.rendering.model.CreativeCustomModelLoader;
 import com.creativemd.creativecore.common.utils.ColorUtils;
@@ -21,6 +22,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -43,6 +45,11 @@ public class CreativeCoreClient {
 		ModelLoaderRegistry.registerLoader(new CreativeCustomModelLoader());
 	}
 	
+	public static void doClientThingsLate()
+	{
+		CreativeBakedModel.lateInit();
+	}
+	
 	public static ItemMeshDefinition mesh = new ItemMeshDefinition() {
 		
 		@Override
@@ -53,12 +60,14 @@ public class CreativeCoreClient {
 	
 	public static void registerBlockItem(Block toRegister){
 		Item item = Item.getItemFromBlock(toRegister);
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesh);
+		ModelLoader.setCustomMeshDefinition(item, mesh);
+		//Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, mesh);
 	}
 	
 	public static void registerItemRenderer(Item item)
 	{
-		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
+		//Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
 	}
 	
 	public static IItemColor itemColor = new IItemColor() {
@@ -77,7 +86,8 @@ public class CreativeCoreClient {
 			
 			ResourceLocation location = new ResourceLocation(modID + ":" + prefix + ((IStringSerializable) enumtype[i]).getName());
 			locations[i] = location;
-			mc.getRenderItem().getItemModelMesher().register(item, i, new ModelResourceLocation(location, "inventory"));
+			ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(location, "inventory"));
+			//mc.getRenderItem().getItemModelMesher().register(item, i, new ModelResourceLocation(location, "inventory"));
 		}
 		
 		ModelBakery.registerItemVariants(item, locations);

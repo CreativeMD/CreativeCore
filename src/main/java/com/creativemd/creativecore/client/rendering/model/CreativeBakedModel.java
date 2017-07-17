@@ -48,7 +48,14 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 public class CreativeBakedModel implements IBakedModel {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
-	public static ItemColors itemColores = mc.getItemColors();
+	
+	public static ItemColors itemColores = null;
+	
+	public static void lateInit()
+	{
+		itemColores = mc.getItemColors();
+	}
+	
 	//public static FaceBakery faceBakery = new FaceBakery();
 	public static TextureAtlasSprite woodenTexture;
 	

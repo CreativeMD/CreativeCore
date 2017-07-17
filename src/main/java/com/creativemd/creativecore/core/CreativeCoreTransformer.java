@@ -34,7 +34,7 @@ public class CreativeCoreTransformer extends CreativeTransformer {
 			
 			@Override
 			public void transform(ClassNode node) {
-				MethodNode m = findMethod(node, "onChunkUnload", "()V");
+				MethodNode m = findMethod(node, "onUnload", "()V");
 				
 				String fieldOwner = patchClassName("net/minecraft/world/chunk/Chunk");
 				String fieldName = patchFieldName("chunkTileEntityMap");

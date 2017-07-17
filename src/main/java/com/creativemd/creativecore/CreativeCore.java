@@ -86,15 +86,21 @@ public class CreativeCore {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void loadClientSide()
+	public void loadClientSide(boolean late)
 	{
-		CreativeCoreClient.doClientThings();
+		if(late)
+			CreativeCoreClient.doClientThingsLate();
+		else
+			CreativeCoreClient.doClientThings();
 	}
 	
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event)
 	{
 		event.getModMetadata().version = version;
+		
+		if(FMLCommonHandler.instance().getSide().isClient())
+			loadClientSide(false);
 	}
 	
 	@EventHandler
@@ -107,9 +113,6 @@ public class CreativeCore {
 		network.registerMessage(SplittedPacketReceiver.class, CreativeSplittedMessageHandler.class, 1, Side.SERVER);
 		
 		CreativeCorePacket.registerPacket(CreativeTestPacket.class, "CCTest");
-		
-		if(FMLCommonHandler.instance().getSide().isClient())
-			loadClientSide();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		
@@ -177,5 +180,8 @@ public class CreativeCore {
 		
 		//if(Loader.isModLoaded("NotEnoughItems") && FMLCommonHandler.instance().getEffectiveSide().isClient())
 			//NEIRecipeInfoHandler.load();
+		
+		if(FMLCommonHandler.instance().getSide().isClient())
+			loadClientSide(true);
     }
 }
