@@ -147,7 +147,8 @@ public class WorldChunkedTileEntityList implements List<TileEntity> {
 	public TileEntity get(int paramInt) {
 		// Ouch this should not happen, bad performance can be expected!!!
 		
-		int currentIndex = 0;
+		
+		/*int currentIndex = 0;
 		for (Iterator<ArrayList<TileEntity>> iterator = content.getValues().iterator(); iterator.hasNext();) {
 			ArrayList<TileEntity> type = iterator.next();
 			if(currentIndex + type.size() < paramInt)
@@ -156,12 +157,15 @@ public class WorldChunkedTileEntityList implements List<TileEntity> {
 				return type.get(paramInt-currentIndex);
 		}
 		
-		return null;
+		return null;*/
+		
+		throw new RuntimeException("Please use the iterator instead");
 	}
 
 	@Override
 	public TileEntity set(int paramInt, TileEntity paramE) {
-		// Ouch this should not happen, bad performance can be expected!!!
+		throw new RuntimeException("Please use the iterator instead");
+		/*// Ouch this should not happen, bad performance can be expected!!!
 		
 		int currentIndex = 0;
 		for (Iterator<ArrayList<TileEntity>> iterator = content.getValues().iterator(); iterator.hasNext();) {
@@ -172,7 +176,7 @@ public class WorldChunkedTileEntityList implements List<TileEntity> {
 				return type.set(paramInt-currentIndex, paramE);
 		}
 		
-		return null;
+		return null;*/
 	}
 
 	@Override
@@ -182,7 +186,8 @@ public class WorldChunkedTileEntityList implements List<TileEntity> {
 
 	@Override
 	public TileEntity remove(int paramInt) {
-		// Ouch this should not happen, bad performance can be expected!!!
+		throw new RuntimeException("Please use the iterator instead");
+		/*// Ouch this should not happen, bad performance can be expected!!!
 		int currentIndex = 0;
 		for (Iterator<ArrayList<TileEntity>> iterator = content.getValues().iterator(); iterator.hasNext();) {
 			ArrayList<TileEntity> type = iterator.next();
@@ -191,13 +196,15 @@ public class WorldChunkedTileEntityList implements List<TileEntity> {
 			else
 				return type.remove(paramInt-currentIndex);
 		}
-		return null;
+		return null;*/
 	}
 
 	@Override
 	public int indexOf(Object paramObject) {
+		throw new RuntimeException("Please use the iterator instead");
+		
 		// Ouch this should not happen, bad performance can be expected!!!
-		if(!(paramObject instanceof TileEntity))
+		/*if(!(paramObject instanceof TileEntity))
 			return -1;
 		
 		int currentIndex = 0;
@@ -216,32 +223,33 @@ public class WorldChunkedTileEntityList implements List<TileEntity> {
 			}else
 				currentIndex += type.getValue().size();
 		}
-		return -1;
+		return -1;*/
 	}
 
 	@Override
 	public int lastIndexOf(Object paramObject) {
+		throw new RuntimeException("Please use the iterator instead");
 		// Ouch this should not happen, bad performance can be expected!!!
-				if(!(paramObject instanceof TileEntity))
-					return -1;
-				
-				int currentIndex = 0;
-				ChunkPos pos = getChunkPos((TileEntity) paramObject);
-				if(content.getValues(pos) == null)
-					return -1;
-				
-				for (Iterator<Entry<ChunkPos, ArrayList<TileEntity>>> iterator = content.entrySet().iterator(); iterator.hasNext();) {
-					Entry<ChunkPos, ArrayList<TileEntity>> type = iterator.next();
-					if(type.getKey().equals(pos))
-					{
-						int index = type.getValue().lastIndexOf(paramObject);
-						if(index != -1)
-							return index+currentIndex;
-						return -1;
-					}else
-						currentIndex += type.getValue().size();
-				}
+		/*if(!(paramObject instanceof TileEntity))
+			return -1;
+		
+		int currentIndex = 0;
+		ChunkPos pos = getChunkPos((TileEntity) paramObject);
+		if(content.getValues(pos) == null)
+			return -1;
+		
+		for (Iterator<Entry<ChunkPos, ArrayList<TileEntity>>> iterator = content.entrySet().iterator(); iterator.hasNext();) {
+			Entry<ChunkPos, ArrayList<TileEntity>> type = iterator.next();
+			if(type.getKey().equals(pos))
+			{
+				int index = type.getValue().lastIndexOf(paramObject);
+				if(index != -1)
+					return index+currentIndex;
 				return -1;
+			}else
+				currentIndex += type.getValue().size();
+		}
+		return -1;*/
 	}
 
 	@Override
