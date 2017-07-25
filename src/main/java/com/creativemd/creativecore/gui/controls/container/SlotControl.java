@@ -291,7 +291,7 @@ public class SlotControl extends ContainerControl{
 					{
 						switchItems();
 					}else if(slot.getHasStack()) {
-						int stackSize = Math.min(Math.min(slotItem.getCount(), 64), slotItem.getCount());
+						int stackSize = Math.min(Math.min(slotItem.getCount(), slotItem.getMaxStackSize()), slotItem.getCount());
 						ItemStack newHand = slotItem.copy();
 						newHand.setCount(stackSize);
 						inventoryplayer.setItemStack(newHand);

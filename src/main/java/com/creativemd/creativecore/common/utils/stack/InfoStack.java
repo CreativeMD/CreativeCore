@@ -199,8 +199,8 @@ public abstract class InfoStack {
 	{
 		if(stackSize < 0)
 			stackSize = 0;
-		if(stackSize > 64)
-			stackSize = 64;
+		/*if(stackSize > 64)
+			stackSize = 64;*/
 		this.stackSize = stackSize;	
 	}
 	

@@ -99,7 +99,7 @@ public class InventoryUtils {
 			return true;
 		for (int i = 0; i < inventory.length; i++) {
 			if(isItemStackEqual(inventory[i], stack)){
-				int amount = Math.min(64-inventory[i].getCount(), stack.getCount());
+				int amount = Math.min(stack.getMaxStackSize()-inventory[i].getCount(), stack.getCount());
 				if(amount > 0)
 				{
 					ItemStack newStack = stack.copy();
@@ -127,7 +127,7 @@ public class InventoryUtils {
 	{
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if(isItemStackEqual(inventory.getStackInSlot(i), stack)){
-				int amount = Math.min(64-inventory.getStackInSlot(i).getCount(), stack.getCount());
+				int amount = Math.min(stack.getMaxStackSize()-inventory.getStackInSlot(i).getCount(), stack.getCount());
 				if(amount > 0)
 				{
 					ItemStack newStack = stack.copy();
