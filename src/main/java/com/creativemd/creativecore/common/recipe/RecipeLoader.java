@@ -13,6 +13,19 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class RecipeLoader {
 	
+	public static int[] getRecipeDimensions(IRecipe recipe)
+	{
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if(recipe.canFit(i, j))
+				{
+					return new int[]{i, j};
+				}
+			}
+		}
+		return new int[]{3,3};
+	}
+	
 	public static Object[] getInput(IRecipe recipe, boolean vanillaOnly)
 	{
 		if(recipe instanceof IRecipeInfo)
