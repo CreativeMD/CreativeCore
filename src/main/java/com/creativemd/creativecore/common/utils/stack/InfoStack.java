@@ -203,8 +203,8 @@ public abstract class InfoStack extends Ingredient {
 		super(0);
 		if(stackSize < 0)
 			stackSize = 0;
-		if(stackSize > 64)
-			stackSize = 64;
+		/*if(stackSize > 64)
+			stackSize = 64;*/
 		this.stackSize = stackSize;	
 	}
 	
