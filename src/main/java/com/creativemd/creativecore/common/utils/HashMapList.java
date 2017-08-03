@@ -161,7 +161,7 @@ public class HashMapList<K, V> {
 	}
 
 	public boolean isEmpty() {
-		return sizeOfValues() > 0;
+		return sizeOfValues() == 0;
 	}
 
 	public V getFirst() {

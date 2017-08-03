@@ -33,7 +33,7 @@ public class WorldChunkedTileEntityList implements List<TileEntity> {
 		{
 			for (TileEntity tileentity : chunk.getTileEntityMap().values())
 	        {
-	            world.markTileEntityForRemoval(tileentity);
+				tileentity.onChunkUnload();
 	        }
 		}
 		
