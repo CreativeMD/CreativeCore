@@ -15,7 +15,7 @@ public class CreativePatchingLoader implements IFMLLoadingPlugin {
 	
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{CreativeCoreTransformer.class.getName()};
+		return null;
 	}
 
 	@Override
