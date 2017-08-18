@@ -119,7 +119,16 @@ public class ColorUtils {
 		return RGBToInt(new Vec3i(color.x*255, color.y*255, color.z*255));
 	}
 
-	public static Vec3i colorToVec(Color color) {
+	public static Vec3i colorToVec(Color color)
+	{
 		return new Vec3i(color.getRed(), color.getGreen(), color.getBlue());
+	}
+
+	public static boolean isWhite(int color)
+	{
+		int r = color >> 16 & 255;
+        int g = color >> 8 & 255;
+        int b = color & 255;
+		return r == 255 && g == 255 && b == 255;
 	}
 }
