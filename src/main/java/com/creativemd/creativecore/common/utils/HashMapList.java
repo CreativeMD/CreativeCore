@@ -80,7 +80,7 @@ public class HashMapList<K, V> {
 		add(key, new ArrayList<V>(Arrays.asList(values)));
 	}
 	
-	public void add(K key, ArrayList<V> values)
+	public void add(K key, List<V> values)
 	{
 		ArrayList<V> list = getValues(key);
 		if(list == null)
