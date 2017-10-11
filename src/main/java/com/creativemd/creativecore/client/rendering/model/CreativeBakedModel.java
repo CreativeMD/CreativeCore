@@ -128,7 +128,7 @@ public class CreativeBakedModel implements IBakedModel {
 			
 			int defaultColor = -1;
 			if(te == null && stack != null)
-				defaultColor = itemColores.getColorFromItemstack(new ItemStack(newState.getBlock(), 1, newState.getBlock().getMetaFromState(newState)), -1);
+				defaultColor = itemColores.colorMultiplier(new ItemStack(newState.getBlock(), 1, newState.getBlock().getMetaFromState(newState)), -1);
 			
 			baked.addAll(getBakedQuad(cube, uvCube, newState, blockModel, side, rand, true, defaultColor));
 		}

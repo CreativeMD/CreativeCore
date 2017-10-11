@@ -73,7 +73,7 @@ public class CreativeCoreClient {
 	public static IItemColor itemColor = new IItemColor() {
 		
 		@Override
-		public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+		public int colorMultiplier(ItemStack stack, int tintIndex) {
 			return tintIndex;
 		}
 	};
