@@ -58,6 +58,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -114,7 +115,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return blockColorMap.containsKey(block.delegate);
 	}
 	
-	public static List<BakedQuad> getBlockQuads(List<RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
+	public static List<BakedQuad> getBlockQuads(List<? extends RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
 		for (int i = 0; i < cubes.size(); i++) {
 			RenderCubeObject cube = cubes.get(i);
 			
@@ -143,13 +144,12 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			}
 			
 			IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
-			CubeObject uvCube = cube.offset(cube.getOffset());
 			
 			int defaultColor = -1;
 			if(te == null && stack != null)
 				defaultColor = itemColores.getColorFromItemstack(new ItemStack(newState.getBlock(), 1, newState.getBlock().getMetaFromState(newState)), -1);
 			
-			baked.addAll(getBakedQuad(cube, uvCube, newState, blockModel, side, rand, true, defaultColor));
+			baked.addAll(cube.getBakedQuad(cube.getOffset(), newState, blockModel, side, rand, true, defaultColor));
 		}
 		
 		if(renderer instanceof ICustomCachedCreativeRendered && !FMLClientHandler.instance().hasOptifine() && stack == null)
@@ -165,12 +165,12 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return baked;
 	}
 	
-	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint)
+	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, BlockPos offset, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint)
 	{
-		return getBakedQuad(cube, uvCube, state, blockModel, side, rand, overrideTint, -1);
+		return cube.getBakedQuad(offset, state, blockModel, side, rand, overrideTint, -1);
 	}
 	
-	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint, int defaultColor)
+	/*public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint, int defaultColor)
 	{
 		List<BakedQuad> blockQuads = blockModel.getQuads(state, side, rand);
 		if(blockQuads.isEmpty())
@@ -251,7 +251,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			quads.add(quad);
 		}
 		return quads;
-	}
+	}*/
 	
 	public static List<BakedQuad> getBlockQuads(IBlockState state, EnumFacing side, long rand, boolean threaded) {
 		//long time = System.nanoTime();
@@ -269,7 +269,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
 		ItemStack stack = state != null ? null : lastItemStack;
 		
-		List<RenderCubeObject> cubes = null;
+		List<? extends RenderCubeObject> cubes = null;
 		
 		ICreativeRendered renderer = null;
 		if(renderBlock instanceof ICreativeRendered)
@@ -296,7 +296,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			cubes = renderer.getRenderingCubes(state, te, stack);
 		}
 			
-		if(cubes != null)
+		if(cubes != null)	
 		{
 			return getBlockQuads(cubes, baked, renderer, side, state, layer, renderBlock, te, rand, stack, threaded);
 		}

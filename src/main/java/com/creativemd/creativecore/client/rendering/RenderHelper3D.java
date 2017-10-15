@@ -30,7 +30,6 @@ public class RenderHelper3D {
 		GlStateManager.glBegin(GL11.GL_POLYGON);
 		GlStateManager.glNormal3f(0.0f, 1.0f, 0.0f);
 		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
-		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
 		GlStateManager.glVertex3f(0.5f, 0.5f, 0.5f);
 		GlStateManager.glVertex3f(0.5f, 0.5f, -0.5f);
 		GlStateManager.glVertex3f(-0.5f, 0.5f, -0.5f);

@@ -3,104 +3,87 @@ package com.creativemd.creativecore.common.utils;
 import java.util.ArrayList;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 
 public enum Rotation {
 	
-	EAST,
-	WEST,
-	UP,
-	UPX,
-	DOWN,
-	DOWNX,
-	SOUTH,
-	NORTH;
-	//UNKOWN;
+	X_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0,
+			0, 0, 1,
+			0, -1, 0)) {
+				@Override
+				public Rotation getOpposite() {
+					return X_COUNTER_CLOCKWISE;
+				}
+			},
+	X_COUNTER_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0,
+			0, 0, -1,
+			0, 1, 0)) {
+				@Override
+				public Rotation getOpposite() {
+					return X_CLOCKWISE;
+				}
+			},
+	Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1,
+			0, 1, 0,
+			1, 0, 0)) {
+				@Override
+				public Rotation getOpposite() {
+					return Rotation.Y_CLOCKWISE;
+				}
+			},
+	Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1,
+			0, 1, 0,
+			-1, 0, 0)) {
+				@Override
+				public Rotation getOpposite() {
+					return Rotation.Y_COUNTER_CLOCKWISE;
+				}
+			},
+	Z_CLOCKWISE(Axis.Z, new RotationMatrix(0, -1, 0,
+			1, 0, 0,
+			0, 0, 1)) {
+				@Override
+				public Rotation getOpposite() {
+					return Rotation.Z_COUNTER_CLOCKWISE;
+				}
+			},
+	Z_COUNTER_CLOCKWISE(Axis.Z, new RotationMatrix(0, 1, 0,
+			-1, 0, 0,
+			0, 0, 1)) {
+				@Override
+				public Rotation getOpposite() {
+					return Z_CLOCKWISE;
+				}
+			};
 	
-	public ArrayList<EnumFacing> getRotations()
+	public static Rotation getRotation(Axis axis, boolean clockwise)
 	{
-		ArrayList<EnumFacing> rotations = new ArrayList<>();
-		switch(this)
+		switch(axis)
 		{
-		case EAST:
-			rotations.add(EnumFacing.EAST);
-			break;
-		case WEST:
-			rotations.add(EnumFacing.WEST);
-			break;
-		case UP:
-			rotations.add(EnumFacing.UP);
-			break;
-		case UPX:
-			rotations.add(EnumFacing.NORTH);
-			rotations.add(EnumFacing.UP);
-			rotations.add(EnumFacing.SOUTH);
-			break;
-		case DOWN:
-			rotations.add(EnumFacing.DOWN);
-			break;
-		case DOWNX:
-			rotations.add(EnumFacing.NORTH);
-			rotations.add(EnumFacing.DOWN);
-			rotations.add(EnumFacing.SOUTH);
-			break;
-		case SOUTH:
-			rotations.add(EnumFacing.SOUTH);
-			break;
-		case NORTH:
-			rotations.add(EnumFacing.NORTH);
-			break;
+		case X:
+			return clockwise ? X_CLOCKWISE : X_COUNTER_CLOCKWISE;
+		case Y:
+			return clockwise ? Y_CLOCKWISE : Y_COUNTER_CLOCKWISE;
+		case Z:
+			return clockwise ? Z_CLOCKWISE : Z_COUNTER_CLOCKWISE;
 		}
-		return rotations;
+		return null;
 	}
 	
-	public Rotation getOpposite()
-	{
-		switch(this)
-		{
-		case DOWN:
-			return UP;
-		case DOWNX:
-			return UPX;
-		case EAST:
-			return WEST;
-		case NORTH:
-			return SOUTH;
-		case SOUTH:
-			return NORTH;
-		case UP:
-			return DOWN;
-		case UPX:
-			return DOWNX;
-		case WEST:
-			return EAST;
-		}
-		return EAST;
+	public final Axis axis;
+	private RotationMatrix rotationMatrix;
+	
+	private Rotation(Axis axis, RotationMatrix matrix) {
+		this.rotationMatrix = matrix;
+		this.axis = axis;
 	}
 	
-	public static Rotation getRotationByFacing(EnumFacing direction)
+	public RotationMatrix getMatrix()
 	{
-		switch(direction)
-		{
-		case DOWN:
-			return DOWN;
-		case EAST:
-			return EAST;
-		case NORTH:
-			return NORTH;
-		case SOUTH:
-			return SOUTH;
-		case UP:
-			return UP;
-		case WEST:
-			return WEST;
-		}
-		return EAST;
+		return this.rotationMatrix;
 	}
-	
-	public static Rotation getRotationByID(int id)
-	{
-		return Rotation.values()[id];
-	}
+
+	public abstract Rotation getOpposite();
 	
 }
 

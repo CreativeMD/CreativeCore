@@ -51,6 +51,76 @@ public class GuiRenderHelper {
 		this.itemRenderer = itemRenderer;
 	}
 	
+	public void drawGrayBackgroundRect(int x, int y, int width, int height)
+	{
+		int alpha = 180;
+		
+		int widthThird = width/3;
+		int heightThird = height/3;
+		//Color black = new Color(0, 0, 0, 150);
+		//renderColorPlate(x, y, black, width, height);
+		GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.shadeModel(7425);
+        Tessellator tessellator = Tessellator.getInstance();
+        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        
+        vertexbuffer.pos((double)x + widthThird, (double)y, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x, (double)y, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x, (double)y + heightThird, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x, (double)y + heightThird, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x, (double)y + heightThird*2, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird*3, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x, (double)y + heightThird*2, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x, (double)y + heightThird*3, 0).color(0, 0, 0, 0).endVertex();
+        
+        
+        vertexbuffer.pos((double)x + widthThird*2, (double)y, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird, (double)y + heightThird*3, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird*3, 0).color(0, 0, 0, 0).endVertex();
+        
+        vertexbuffer.pos((double)x + widthThird*2, (double)y, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird*3, (double)y + heightThird, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird*3, (double)y, 0).color(0, 0, 0, 0).endVertex();
+        
+        vertexbuffer.pos((double)x + widthThird*3, (double)y + heightThird, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird*3, (double)y + heightThird*2, 0).color(0, 0, 0, 0).endVertex();
+        
+        vertexbuffer.pos((double)x + widthThird*3, (double)y + heightThird*2, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird*2, 0).color(0, 0, 0, alpha).endVertex();
+        vertexbuffer.pos((double)x + widthThird*2, (double)y + heightThird*3, 0).color(0, 0, 0, 0).endVertex();
+        vertexbuffer.pos((double)x + widthThird*3, (double)y + heightThird*3, 0).color(0, 0, 0, 0).endVertex();
+        
+        tessellator.draw();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+	}
+	
 	public void drawHorizontalChannelMaskGradientRect(int left, int top, int right, int bottom, int colour, int mask) {
 	    drawHorizontalGradientRect(left, top, right, bottom, (colour & ~mask) | 0xFF000000, colour | 0xFF000000 | mask);
 	}
