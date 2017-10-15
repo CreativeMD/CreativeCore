@@ -91,11 +91,11 @@ public class RotationUtils {
 		switch (axis)
 		{
 		case X:
-			return new Vec3d(value, vec.yCoord, vec.zCoord);
+			return new Vec3d(value, vec.y, vec.z);
 		case Y:
-			return new Vec3d(vec.xCoord, value, vec.zCoord);
+			return new Vec3d(vec.x, value, vec.z);
 		case Z:
-			return new Vec3d(vec.xCoord, vec.yCoord, value);
+			return new Vec3d(vec.x, vec.y, value);
 		}
 		return null;
 	}
@@ -112,7 +112,7 @@ public class RotationUtils {
 	
 	public static double get(Axis axis, Vec3d vec)
 	{
-		return get(axis, vec.xCoord, vec.yCoord, vec.zCoord);
+		return get(axis, vec.x, vec.y, vec.z);
 	}
 	
 	public static int get(Axis axis, Vec3i vec)

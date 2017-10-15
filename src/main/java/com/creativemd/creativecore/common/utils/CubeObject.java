@@ -311,9 +311,9 @@ public class CubeObject {
 	
 	public static Vec3d applyVectorRotation(Vec3d vector, EnumFacing EnumFacing)
 	{
-		double tempX = vector.xCoord;
-		double tempY = vector.yCoord;
-		double tempZ = vector.zCoord;
+		double tempX = vector.x;
+		double tempY = vector.y;
+		double tempZ = vector.z;
 		
 		double posX = tempX;
 		double posY = tempY;
@@ -362,51 +362,51 @@ public class CubeObject {
 		float maxZ = cube.maxZ;
 		if(center != null)
 		{
-			minX -= center.xCoord;
-			minY -= center.yCoord;
-			minZ -= center.zCoord;
-			maxX -= center.xCoord;
-			maxY -= center.yCoord;
-			maxZ -= center.zCoord;
+			minX -= center.x;
+			minY -= center.y;
+			minZ -= center.z;
+			maxX -= center.x;
+			maxY -= center.y;
+			maxZ -= center.z;
 		}
 		Vec3d min = applyVectorRotation(new Vec3d(minX, minY, minZ), EnumFacing);
 		Vec3d max = applyVectorRotation(new Vec3d(maxX, maxY, maxZ), EnumFacing);
 		
 		if(center != null)
 		{
-			min = min.addVector(center.xCoord, center.yCoord, center.zCoord);
-			max = max.addVector(center.xCoord, center.yCoord, center.zCoord);
+			min = min.addVector(center.x, center.y, center.z);
+			max = max.addVector(center.x, center.y, center.z);
 		}
 		
-		if(min.xCoord < max.xCoord)
+		if(min.x < max.x)
 		{
-			cube.minX = (float)min.xCoord;
-			cube.maxX = (float)max.xCoord;
+			cube.minX = (float)min.x;
+			cube.maxX = (float)max.x;
 		}
 		else
 		{
-			cube.minX = (float)max.xCoord;
-			cube.maxX = (float)min.xCoord;
+			cube.minX = (float)max.x;
+			cube.maxX = (float)min.x;
 		}
-		if(min.yCoord < max.yCoord)
+		if(min.y < max.y)
 		{
-			cube.minY = (float)min.yCoord;
-			cube.maxY = (float)max.yCoord;
-		}
-		else
-		{
-			cube.minY = (float)max.yCoord;
-			cube.maxY = (float)min.yCoord;
-		}
-		if(min.zCoord < max.zCoord)
-		{
-			cube.minZ = (float)min.zCoord;
-			cube.maxZ = (float)max.zCoord;
+			cube.minY = (float)min.y;
+			cube.maxY = (float)max.y;
 		}
 		else
 		{
-			cube.minZ = (float)max.zCoord;
-			cube.maxZ = (float)min.zCoord;
+			cube.minY = (float)max.y;
+			cube.maxY = (float)min.y;
+		}
+		if(min.z < max.z)
+		{
+			cube.minZ = (float)min.z;
+			cube.maxZ = (float)max.z;
+		}
+		else
+		{
+			cube.minZ = (float)max.z;
+			cube.maxZ = (float)min.z;
 		}
 	}
 }
