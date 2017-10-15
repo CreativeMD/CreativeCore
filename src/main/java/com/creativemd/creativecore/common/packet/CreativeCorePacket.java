@@ -154,7 +154,8 @@ public abstract class CreativeCorePacket {
 		return EnumFacing.getFront(buf.readInt());
 	}
 	
-	public static void writeFacing(ByteBuf buf, EnumFacing facing) {
+	public static void writeFacing(ByteBuf buf, EnumFacing facing)
+	{
 		buf.writeInt(facing.getIndex());
 	}
 	

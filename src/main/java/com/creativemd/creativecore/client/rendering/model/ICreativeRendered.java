@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public interface ICreativeRendered {
 	
 	@SideOnly(Side.CLIENT)
-	public List<RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack);
+	public List<? extends RenderCubeObject> getRenderingCubes(IBlockState state, TileEntity te, ItemStack stack);
 	
 	@SideOnly(Side.CLIENT)
 	public default void applyCustomOpenGLHackery(ItemStack stack, TransformType cameraTransformType) {}
