@@ -262,6 +262,17 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	}
 	
 	@Override
+	public void mouseDragged(int x, int y, int button, long time) {
+		Vec3d mouse = getMousePos();
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			Vec3d pos = control.rotateMouseVec(mouse);			
+			if(control.isInteractable())
+				control.mouseDragged((int)pos.x, (int)pos.y, button, time);
+		}
+	}
+	
+	@Override
 	public void mouseReleased(int x, int y, int button)
 	{
 		Vec3d mouse = getMousePos();
