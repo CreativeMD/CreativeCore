@@ -10,6 +10,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CubeObject {
 	
@@ -170,6 +172,7 @@ public class CubeObject {
 		return getVertexInformationPosition(info.zIndex);
 	}*/
 	
+	@SideOnly(Side.CLIENT)
 	public Vector3f get(VertexInformation info, Vector3f output)
 	{
 		output.set(getVertexInformationPosition(info.xIndex), getVertexInformationPosition(info.yIndex), getVertexInformationPosition(info.zIndex));
