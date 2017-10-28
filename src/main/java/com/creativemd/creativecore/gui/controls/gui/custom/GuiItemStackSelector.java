@@ -55,6 +55,17 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
                 item.getSubItems(item, (CreativeTabs)null, stacks);
             }
         }
+        
+        iterator = Block.REGISTRY.iterator();
+		while (iterator.hasNext())
+        {
+			Block block = (Block)iterator.next();
+
+            if (block != null && block.getCreativeTabToDisplayOn() != null)
+            {
+            	block.getSubBlocks((CreativeTabs)null, stacks);
+            }
+        }
 		reloadControls();
 	}
 	
