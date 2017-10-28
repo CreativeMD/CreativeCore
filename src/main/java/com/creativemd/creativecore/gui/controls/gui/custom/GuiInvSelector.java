@@ -14,6 +14,7 @@ import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.creativetab.CreativeTabs;
@@ -81,6 +82,17 @@ public class GuiInvSelector extends GuiComboBox{
             if (item != null && item.getCreativeTab() != null)
             {
                 item.getSubItems((CreativeTabs)null, newStacks);
+            }
+        }
+		
+		iterator = Block.REGISTRY.iterator();
+		while (iterator.hasNext())
+        {
+			Block block = (Block)iterator.next();
+
+            if (block != null && block.getCreativeTabToDisplayOn() != null)
+            {
+            	block.getSubBlocks((CreativeTabs)null, newStacks);
             }
         }
 		
