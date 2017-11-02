@@ -51,6 +51,12 @@ public class RotationMatrix {
 		return x * m00 + y * m01 + z * m02;
 	}
 	
+	
+	public long getX(long x, long y, long z)
+	{
+		return x * m00 + y * m01 + z * m02;
+	}
+	
 	public int getY(int[] vec)
 	{
 		return getY(vec[0], vec[1], vec[2]);
@@ -66,6 +72,11 @@ public class RotationMatrix {
 		return x * m10 + y * m11 + z * m12;
 	}
 	
+	public long getY(long x, long y, long z)
+	{
+		return x * m10 + y * m11 + z * m12;
+	}
+	
 	public int getZ(int[] vec)
 	{
 		return getZ(vec[0], vec[1], vec[2]);
@@ -77,6 +88,11 @@ public class RotationMatrix {
 	}
 	
 	public int getZ(int x, int y, int z)
+	{
+		return x * m20 + y * m21 + z * m22;
+	}
+	
+	public long getZ(long x, long y, long z)
 	{
 		return x * m20 + y * m21 + z * m22;
 	}
