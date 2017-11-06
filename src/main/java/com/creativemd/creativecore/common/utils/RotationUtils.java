@@ -162,6 +162,26 @@ public class RotationUtils {
 		return 0;
 	}
 	
+	public static Axis getDifferentAxis(Axis one, Axis two)
+	{
+		switch(one)
+		{
+		case X:
+			if(two == Axis.Y)
+				return Axis.Z;
+			return Axis.Y;
+		case Y:
+			if(two == Axis.X)
+				return Axis.Z;
+			return Axis.X;
+		case Z:
+			if(two == Axis.Y)
+				return Axis.X;
+			return Axis.Y;
+		}
+		return null;
+	}
+	
 	public static Axis getDifferentAxisFirst(Axis axis)
 	{
 		switch(axis)
@@ -236,6 +256,39 @@ public class RotationUtils {
 	public static void rotateVec(Vector3d vector, Rotation rotation)
 	{
 		rotation.getMatrix().transform(vector);
+	}
+
+	public static boolean isFacingPositive(int index)
+	{
+		return index == 1 || index == 3 || index == 5;
+	}
+	
+	public static float getUFromFacing(EnumFacing facing, float x, float y, float z)
+	{
+		switch(facing.getAxis())
+		{
+		case X:
+			return z;
+		case Y:
+			return x;
+		case Z:
+			return x;
+		}
+		return 0;
+	}
+	
+	public static float getVFromFacing(EnumFacing facing, float x, float y, float z)
+	{
+		switch(facing.getAxis())
+		{
+		case X:
+			return y;
+		case Y:
+			return z;
+		case Z:
+			return y;
+		}
+		return 0;
 	}
 	
 }
