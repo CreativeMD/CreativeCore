@@ -34,7 +34,8 @@ public abstract class TileEntityCreative extends TileEntity{
 	@Override
 	public NBTTagCompound getUpdateTag()
     {
-        return writeToNBT(new NBTTagCompound());
+		return super.getUpdateTag();
+        //return writeToNBT(new NBTTagCompound());
     }
 	
 	@Override
