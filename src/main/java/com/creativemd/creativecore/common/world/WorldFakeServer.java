@@ -1,5 +1,8 @@
 package com.creativemd.creativecore.common.world;
 
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.world.BlockChangeFlag;
 import org.spongepowered.api.world.explosion.Explosion;
@@ -19,7 +22,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.Optional.Interface;
 
 @Interface(modid = "sponge", iface = "org.spongepowered.common.interfaces.world.IMixinWorldServer")
@@ -77,11 +82,6 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer{
 	@Override
 	public void updateWorldGenerator() {
 		((IMixinWorldServer) parentWorld).updateWorldGenerator();
-	}
-
-	@Override
-	public CauseTracker getCauseTracker() {
-		return ((IMixinWorldServer) parentWorld).getCauseTracker();
 	}
 
 	@Override
@@ -180,6 +180,36 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer{
 	@Override
 	public void doChunkGC() {
 		((IMixinWorldServer) parentWorld).doChunkGC();
+	}
+
+	@Override
+	public boolean isLightLevel(Chunk chunk, BlockPos pos, int level) {
+		return ((IMixinWorldServer) parentWorld).isLightLevel(chunk, pos, level);
+	}
+
+	@Override
+	public boolean updateLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk) {
+		return ((IMixinWorldServer) parentWorld).updateLightAsync(lightType, pos, chunk);
+	}
+
+	@Override
+	public boolean checkLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk, List<Chunk> neighbors) {
+		return ((IMixinWorldServer) parentWorld).checkLightAsync(lightType, pos, chunk, neighbors);
+	}
+
+	@Override
+	public ExecutorService getLightingExecutor() {
+		return ((IMixinWorldServer) parentWorld).getLightingExecutor();
+	}
+
+	@Override
+	public int getRawBlockLight(BlockPos pos, EnumSkyBlock lightType) {
+		return ((IMixinWorldServer) parentWorld).getRawBlockLight(pos, lightType);
+	}
+
+	@Override
+	public boolean isFake() {
+		return ((IMixinWorldServer) parentWorld).isFake();
 	}
 
 }
