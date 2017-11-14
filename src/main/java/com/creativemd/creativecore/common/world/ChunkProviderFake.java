@@ -80,7 +80,7 @@ public class ChunkProviderFake implements IChunkProvider
         long i = ChunkPos.asLong(x, z);
         Chunk chunk = (Chunk)this.id2ChunkMap.get(i);
 
-        if (chunk != null)
+        if (worldObj.isRemote && chunk != null)
         {
         	chunk.markLoaded(false);
         }
