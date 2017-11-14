@@ -254,6 +254,20 @@ public class RenderCubeObject extends CubeObject {
 		return true;
 	}
 	
+	public boolean intersectsWithFace(EnumFacing facing, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, BlockPos offset)
+	{
+		switch(facing.getAxis())
+		{
+		case X:
+			return maxY > this.minY - offset.getY() && minY < this.maxY - offset.getY() && maxZ > this.minZ - offset.getZ() && minZ < this.maxZ - offset.getZ();
+		case Y:
+			return maxX > this.minX - offset.getX() && minX < this.maxX - offset.getX() && maxZ > this.minZ - offset.getZ() && minZ < this.maxZ - offset.getZ();
+		case Z:
+			return maxX > this.minX - offset.getX() && minX < this.maxX - offset.getX() && maxY > this.minY - offset.getY() && minY < this.maxY - offset.getY();
+		}
+		return false;
+	}
+	
 	public List<BakedQuad> getBakedQuad(BlockPos offset, IBlockState state, IBakedModel blockModel, EnumFacing facing, long rand, boolean overrideTint, int defaultColor)
 	{
 		List<BakedQuad> blockQuads = blockModel.getQuads(state, facing, rand);
@@ -287,21 +301,8 @@ public class RenderCubeObject extends CubeObject {
 			
 			
 			//Check if it is intersecting, otherwise there is no need to render it
-			switch(facing.getAxis())
-			{
-			case X:
-				if(!(maxY > this.minY && minY < this.maxY && maxZ > this.minZ && minZ < this.maxZ))
-					continue;
-				break;
-			case Y:
-				if(!(maxX > this.minX && minX < this.maxX && maxZ > this.minZ && minZ < this.maxZ))
-					continue;
-				break;
-			case Z:
-				if(!(maxX > this.minX && minX < this.maxX && maxY > this.minY && minY < this.maxY))
-					continue;
-				break;
-			}
+			if(!intersectsWithFace(facing, minX, minY, minZ, maxX, maxY, maxZ, offset))
+				continue;
 			
 			float sizeX = maxX - minX;
 			float sizeY = maxY - minY;
@@ -326,17 +327,17 @@ public class RenderCubeObject extends CubeObject {
 				
 				index = k * quad.getFormat().getIntegerSize();
 				
-				float x = facing.getAxis() == Axis.X ? getVertexInformationPosition(vertex.xIndex) : MathHelper.clamp(getVertexInformationPosition(vertex.xIndex), minX, maxX);
-				float y = facing.getAxis() == Axis.Y ? getVertexInformationPosition(vertex.yIndex) : MathHelper.clamp(getVertexInformationPosition(vertex.yIndex), minY, maxY);
-				float z = facing.getAxis() == Axis.Z ? getVertexInformationPosition(vertex.zIndex) : MathHelper.clamp(getVertexInformationPosition(vertex.zIndex), minZ, maxZ);
+				float x = facing.getAxis() == Axis.X ? getVertexInformationPosition(vertex.xIndex) - offset.getX() : MathHelper.clamp(getVertexInformationPosition(vertex.xIndex) - offset.getX(), minX, maxX);
+				float y = facing.getAxis() == Axis.Y ? getVertexInformationPosition(vertex.yIndex) - offset.getY() : MathHelper.clamp(getVertexInformationPosition(vertex.yIndex) - offset.getY(), minY, maxY);
+				float z = facing.getAxis() == Axis.Z ? getVertexInformationPosition(vertex.zIndex) - offset.getZ() : MathHelper.clamp(getVertexInformationPosition(vertex.zIndex) - offset.getZ(), minZ, maxZ);
 				
 				float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
 				float oldY = Float.intBitsToFloat(quad.getVertexData()[index+1]);
 				float oldZ = Float.intBitsToFloat(quad.getVertexData()[index+2]);
 				
-				quad.getVertexData()[index] = Float.floatToIntBits(x);
-				quad.getVertexData()[index+1] = Float.floatToIntBits(y);
-				quad.getVertexData()[index+2] = Float.floatToIntBits(z);
+				quad.getVertexData()[index] = Float.floatToIntBits(x + offset.getX());
+				quad.getVertexData()[index+1] = Float.floatToIntBits(y + offset.getY());
+				quad.getVertexData()[index+2] = Float.floatToIntBits(z + offset.getZ());
 				
 				if(keepVU)
 					continue;
