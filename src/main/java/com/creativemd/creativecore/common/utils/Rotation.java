@@ -8,37 +8,40 @@ import net.minecraft.util.EnumFacing.Axis;
 public enum Rotation {
 	
 	X_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0,
-			0, 0, 1,
-			0, -1, 0)) {
+			0, 0, -1,
+			0, 1, 0)) {
 				@Override
 				public Rotation getOpposite() {
 					return X_COUNTER_CLOCKWISE;
 				}
 			},
+	
 	X_COUNTER_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0,
-			0, 0, -1,
-			0, 1, 0)) {
+			0, 0, 1,
+			0, -1, 0)) {
 				@Override
 				public Rotation getOpposite() {
 					return X_CLOCKWISE;
 				}
 			},
-	Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1,
+	
+	Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1,
 			0, 1, 0,
-			1, 0, 0)) {
+			-1, 0, 0)) {
 				@Override
 				public Rotation getOpposite() {
 					return Rotation.Y_CLOCKWISE;
 				}
 			},
-	Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1,
+	Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1,
 			0, 1, 0,
-			-1, 0, 0)) {
+			1, 0, 0)) {
 				@Override
 				public Rotation getOpposite() {
 					return Rotation.Y_COUNTER_CLOCKWISE;
 				}
 			},
+	
 	Z_CLOCKWISE(Axis.Z, new RotationMatrix(0, -1, 0,
 			1, 0, 0,
 			0, 0, 1)) {
