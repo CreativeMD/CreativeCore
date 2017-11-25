@@ -2,6 +2,8 @@ package com.creativemd.creativecore.common.utils;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Matrix3d;
+
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 
@@ -25,20 +27,20 @@ public enum Rotation {
 				}
 			},
 	
-	Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1,
+	Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1,
 			0, 1, 0,
 			-1, 0, 0)) {
 				@Override
 				public Rotation getOpposite() {
-					return Rotation.Y_CLOCKWISE;
+					return Rotation.Y_COUNTER_CLOCKWISE;
 				}
 			},
-	Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1,
+	Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1,
 			0, 1, 0,
 			1, 0, 0)) {
 				@Override
 				public Rotation getOpposite() {
-					return Rotation.Y_COUNTER_CLOCKWISE;
+					return Rotation.Y_CLOCKWISE;
 				}
 			},
 	

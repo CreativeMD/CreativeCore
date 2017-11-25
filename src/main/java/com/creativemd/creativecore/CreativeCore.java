@@ -69,7 +69,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CreativeCore {
 	
 	public static final String modid = "creativecore";
-	public static final String version = "1.9.8";
+	public static final String version = "1.9.9";
 	
 	@Instance(CreativeCore.modid)
 	public static CreativeCore instance = new CreativeCore();
