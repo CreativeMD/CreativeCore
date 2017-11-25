@@ -9,6 +9,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.profiler.Profiler;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldEventListener;
@@ -53,7 +54,12 @@ public class WorldFake extends World {
 		chunkProvider = createChunkProvider();
 		parentWorld = world;
 	}
-
+	
+	@Override
+	public MinecraftServer getMinecraftServer() {
+		return parentWorld.getMinecraftServer();
+	}
+	
 	@Override
 	protected IChunkProvider createChunkProvider() {
 		return new ChunkProviderFake(this, this.saveHandler.getChunkLoader(provider), provider.createChunkGenerator());
