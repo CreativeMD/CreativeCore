@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.utils;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -62,6 +63,14 @@ public class WorldUtils {
 		for (int i = 0; i < stacks.size(); i++) {
 			dropItem(player, stacks.get(i));
 		}
+	}
+	
+	public static boolean isMainThread(World world)
+	{
+		if(world.isRemote)
+			return Minecraft.getMinecraft().isCallingFromMinecraftThread();
+		else
+			return world.getMinecraftServer().isCallingFromMinecraftThread();
 	}
 	
 }

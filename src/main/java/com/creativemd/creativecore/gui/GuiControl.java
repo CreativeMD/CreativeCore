@@ -230,7 +230,7 @@ public abstract class GuiControl extends CoreControl{
 		
 		Rect contentRect = getRect();
 		
-		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); 		
+		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 		
 		GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
