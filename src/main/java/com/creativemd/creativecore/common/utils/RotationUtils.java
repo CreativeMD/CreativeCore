@@ -189,7 +189,7 @@ public class RotationUtils {
 		case X:
 			return Axis.Y;
 		case Y:
-			return Axis.X;
+			return Axis.Z;
 		case Z:
 			return Axis.X;
 		}
@@ -203,7 +203,7 @@ public class RotationUtils {
 		case X:
 			return Axis.Z;
 		case Y:
-			return Axis.Z;
+			return Axis.X;
 		case Z:
 			return Axis.Y;
 		}
