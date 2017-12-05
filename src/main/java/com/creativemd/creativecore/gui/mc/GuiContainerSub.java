@@ -161,7 +161,10 @@ public class GuiContainerSub extends GuiContainer {
 			
 			layers.get(i).onTick();
 			
-			GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); 
+			GL11.glDisable(GL11.GL_STENCIL_TEST);
+			GL11.glStencilMask(~0);
+			GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+			
 			GL11.glStencilFunc(GL11.GL_ALWAYS, 0x1, 0x1);
 			GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 			
