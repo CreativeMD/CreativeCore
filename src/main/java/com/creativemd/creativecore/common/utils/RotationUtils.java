@@ -263,6 +263,34 @@ public class RotationUtils {
 		return index == 1 || index == 3 || index == 5;
 	}
 	
+	public static Axis getUAxisFromFacing(EnumFacing facing)
+	{
+		switch(facing.getAxis())
+		{
+		case X:
+			return Axis.Z;
+		case Y:
+			return Axis.X;
+		case Z:
+			return Axis.X;
+		}
+		return null;
+	}
+	
+	public static Axis getVAxisFromFacing(EnumFacing facing)
+	{
+		switch(facing.getAxis())
+		{
+		case X:
+			return Axis.Y;
+		case Y:
+			return Axis.Z;
+		case Z:
+			return Axis.Y;
+		}
+		return null;
+	}
+	
 	public static float getUFromFacing(EnumFacing facing, float x, float y, float z)
 	{
 		switch(facing.getAxis())

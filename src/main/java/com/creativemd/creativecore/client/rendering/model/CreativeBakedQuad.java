@@ -35,10 +35,19 @@ public class CreativeBakedQuad extends BakedQuad {
 	
 	public CreativeBakedQuad(BakedQuad quad, RenderCubeObject cube, int tintedColor, boolean shouldOverrideColor, EnumFacing facing)
     {
-        super(Arrays.copyOf(quad.getVertexData(), quad.getVertexData().length), shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
+        super(copyArray(quad.getVertexData()), shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
         this.cube = cube;
         this.shouldOverrideColor = shouldOverrideColor;
     }
+	
+	private static int[] copyArray(int[] array)
+	{
+		int[] newarray = new int[array.length];
+		for (int i = 0; i < array.length; i++) {
+			newarray[i] = array[i];
+		}
+		return newarray;
+	}
 	
 	@Override
     public void pipe(net.minecraftforge.client.model.pipeline.IVertexConsumer consumer)
