@@ -18,3 +18,5 @@
 
 ## Terms of use
 Feel free to use this mod as a dependency, but you may not copy add files to your mod directly.
+
+## [How to setup a repository](https://www.youtube.com/watch?v=7Ahshi_QjM4)
