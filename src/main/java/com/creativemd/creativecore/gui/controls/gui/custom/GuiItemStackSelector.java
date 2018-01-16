@@ -52,7 +52,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 
             if (item != null && item.getCreativeTab() != null)
             {
-                item.getSubItems((CreativeTabs)null, stacks);
+                item.getSubItems(CreativeTabs.SEARCH, stacks);
             }
         }
         
