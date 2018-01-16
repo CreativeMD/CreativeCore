@@ -52,7 +52,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 
             if (item != null && item.getCreativeTab() != null)
             {
-                item.getSubItems(item, (CreativeTabs)null, stacks);
+                item.getSubItems(item, CreativeTabs.SEARCH, stacks);
             }
         }
         
@@ -63,7 +63,7 @@ public class GuiItemStackSelector extends GuiComboBoxExtension{
 
             if (block != null && block.getCreativeTabToDisplayOn() != null)
             {
-            	block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs)null, stacks);
+            	block.getSubBlocks(Item.getItemFromBlock(block), CreativeTabs.SEARCH, stacks);
             }
         }
 		reloadControls();

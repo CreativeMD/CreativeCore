@@ -81,7 +81,7 @@ public class GuiInvSelector extends GuiComboBox{
 
             if (item != null && item.getCreativeTab() != null)
             {
-                item.getSubItems(item, (CreativeTabs)null, newStacks);
+                item.getSubItems(item, CreativeTabs.SEARCH, newStacks);
             }
         }
 		
@@ -92,7 +92,7 @@ public class GuiInvSelector extends GuiComboBox{
 
             if (block != null && block.getCreativeTabToDisplayOn() != null)
             {
-            	block.getSubBlocks(Item.getItemFromBlock(block), (CreativeTabs)null, newStacks);
+            	block.getSubBlocks(Item.getItemFromBlock(block), CreativeTabs.SEARCH, newStacks);
             }
         }
 		
