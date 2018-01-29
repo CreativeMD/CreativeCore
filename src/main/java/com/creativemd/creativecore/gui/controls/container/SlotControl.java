@@ -31,6 +31,7 @@ public class SlotControl extends ContainerControl{
 	@SideOnly(Side.CLIENT)
 	public GuiControl createGuiControl() {
 		GuiControl control = new GuiSlotControl(slot.xPos, slot.yPos, this);
+		control.enabled = this.enabled;
 		//control.rotation = 45;
 		return control;
 	}
