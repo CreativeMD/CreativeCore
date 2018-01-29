@@ -108,6 +108,11 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		return slots;
 	}
 	
+	public void addSlotToContainerUninteractable(Slot slot)
+	{
+		controls.add((ContainerControl) new SlotControl(slot).setEnabled(false));
+	}
+	
 	public void addSlotToContainer(Slot slot)
 	{
 		//slot.xDisplayPosition += 8;
@@ -164,7 +169,7 @@ public abstract class ContainerParent extends ContainerControl implements IContr
         for (l = 0; l < 9; ++l)
         {
         	if(l == indexUninteractable)
-        		addSlotToContainer(new Slot(player.inventory, l, l * 18+x, 58+y)
+        		addSlotToContainerUninteractable(new Slot(player.inventory, l, l * 18+x, 58+y)
 				{
         			@Override
         			public boolean canTakeStack(EntityPlayer playerIn)
