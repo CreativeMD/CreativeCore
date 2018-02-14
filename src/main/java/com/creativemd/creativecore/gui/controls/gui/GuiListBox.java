@@ -12,7 +12,7 @@ import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-public class GuiListBox extends GuiScrollBox{
+public class GuiListBox extends GuiScrollBox {
 	
 	protected ArrayList<String> lines = new ArrayList<String>();
 	

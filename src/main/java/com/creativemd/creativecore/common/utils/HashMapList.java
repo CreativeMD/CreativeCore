@@ -5,17 +5,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
 public class HashMapList<K, V> {
 	
-	private HashMap<K, ArrayList<V>> keys;
+	private LinkedHashMap<K, ArrayList<V>> keys;
 	
 	public HashMapList()
 	{
-		this.keys = new HashMap<>();
+		this.keys = new LinkedHashMap<>();
 	}
 	
 	public HashMapList(HashMapList<K, V> object)
@@ -42,12 +43,12 @@ public class HashMapList<K, V> {
 	}
 	
 	
-	public Set<K> getKeys()
+	public Set<K> keySet()
 	{
 		return keys.keySet();
 	}
 	
-	public Collection<ArrayList<V>> getValues()
+	public Collection<ArrayList<V>> values()
 	{
 		return keys.values();
 	}
@@ -59,7 +60,7 @@ public class HashMapList<K, V> {
 	
 	public boolean contains(V value)
 	{
-		for (Iterator<ArrayList<V>> iterator = getValues().iterator(); iterator.hasNext();) {
+		for (Iterator<ArrayList<V>> iterator = values().iterator(); iterator.hasNext();) {
 			ArrayList<V> type = iterator.next();
 			if(type.contains(value))
 				return true;
@@ -167,7 +168,7 @@ public class HashMapList<K, V> {
 	public V getFirst() {
 		if(size() > 0)
 		{
-			for (Iterator<ArrayList<V>> iterator = getValues().iterator(); iterator.hasNext();) {
+			for (Iterator<ArrayList<V>> iterator = values().iterator(); iterator.hasNext();) {
 				ArrayList<V> list = iterator.next();
 				if(list.size() > 0)
 					return list.get(0);
@@ -182,7 +183,7 @@ public class HashMapList<K, V> {
 			
 			int index = 0;
 			
-			Iterator<ArrayList<V>> iterator = getValues().iterator();
+			Iterator<ArrayList<V>> iterator = values().iterator();
 			
 			ArrayList<V> currentList;
 			
