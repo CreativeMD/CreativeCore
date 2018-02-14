@@ -28,7 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiControl extends CoreControl{
+public abstract class GuiControl extends CoreControl {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
 	public static Style defaultStyle = Style.liteStyle;

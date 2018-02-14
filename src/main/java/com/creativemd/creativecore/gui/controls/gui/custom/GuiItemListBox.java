@@ -9,7 +9,7 @@ import com.creativemd.creativecore.gui.controls.gui.GuiListBox;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-public class GuiItemListBox extends GuiListBox{
+public class GuiItemListBox extends GuiListBox {
 	
 	public ArrayList<ItemStack> stacks;
 	

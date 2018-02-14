@@ -15,13 +15,13 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 
-public class GuiScrollBox extends GuiParent{
+public class GuiScrollBox extends GuiParent {
 	
 	public int maxScroll = 0;
 	public int scrolled = 0;
 	public float scaleFactor;
 	public boolean dragged;
-	public int scrollbarWidth = 14;
+	public int scrollbarWidth = 6;
 	
 	public GuiScrollBox(String name, int x, int y, int width, int height) {
 		this(name, x, y, width, height, 1F);
@@ -107,8 +107,8 @@ public class GuiScrollBox extends GuiParent{
 		if(lastRenderedHeight < height)
 			scrollThingHeight = height;
 		double percent = (double)scrolled/(double)maxScroll;
-		style.getBorder(this).renderStyle(width-scrollbarWidth+1, (int) (percent*(height-scrollThingHeight)), helper, scrollbarWidth-1, scrollThingHeight);
-		style.getFace(this).renderStyle(width-scrollbarWidth+2, (int) (percent*(height-scrollThingHeight))+1, helper, scrollbarWidth-3, scrollThingHeight-2);
+		//style.getBorder(this).renderStyle(width-scrollbarWidth+1, (int) (percent*(height-scrollThingHeight)), helper, scrollbarWidth-1, scrollThingHeight);
+		style.getFace(this).renderStyle(width-scrollbarWidth+1, (int) (percent*(height-scrollThingHeight)), helper, scrollbarWidth-1, scrollThingHeight);
 		
 		maxScroll = Math.max(0, (lastRenderedHeight-height))+5;
 	}

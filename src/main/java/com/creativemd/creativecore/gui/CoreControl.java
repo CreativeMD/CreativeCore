@@ -4,6 +4,7 @@ import com.creativemd.creativecore.gui.container.IControlParent;
 import com.creativemd.creativecore.gui.event.ControlEvent;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.translation.I18n;
 
 public abstract class CoreControl {
 	
@@ -119,6 +120,13 @@ public abstract class CoreControl {
 	{
 		if(hasParent())
 			parent.moveControlToTop(this);
+	}
+	
+	//================Static Helpers================
+	
+	public static String translate(String text)
+	{
+		return I18n.translateToLocal(text);
 	}
 	
 }

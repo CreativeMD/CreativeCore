@@ -312,7 +312,9 @@ public class GuiRenderHelper {
 	}
 	
 	public void drawItemStack(ItemStack stack, int x, int y, int width, int height, int rotation)
-	{        
+	{
+		if(stack.isEmpty())
+			return ;
 		GlStateManager.pushMatrix();
 		
 		/*GlStateManager.enableRescaleNormal();

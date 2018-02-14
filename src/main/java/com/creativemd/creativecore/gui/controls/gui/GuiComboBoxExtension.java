@@ -10,7 +10,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 
-public class GuiComboBoxExtension extends GuiListBox{
+public class GuiComboBoxExtension extends GuiListBox {
 	
 	public GuiComboBox comboBox;
 	
@@ -29,7 +29,7 @@ public class GuiComboBoxExtension extends GuiListBox{
 	
 	public void onLoseFocus()
 	{
-		if(!comboBox.isMouseOver())
+		if(!comboBox.isMouseOver() && !isMouseOver())
 			comboBox.closeBox();
 	}
 	
