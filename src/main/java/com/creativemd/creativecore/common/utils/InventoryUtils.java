@@ -68,7 +68,7 @@ public class InventoryUtils {
 	
 	public static boolean isItemStackEqual(ItemStack stackA, ItemStack stackB)
 	{
-		return stackA == stackB ? true : (!stackA.isEmpty() && !stackB.isEmpty() ? stackA.isItemEqual(stackB) : false);
+		return ItemStack.areItemStacksEqual(stackA, stackB);
 	}
 	
 	public static boolean consumeItemStack(IInventory inventory, ItemStack stack)
