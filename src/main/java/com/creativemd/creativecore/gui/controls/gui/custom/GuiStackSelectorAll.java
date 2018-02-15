@@ -109,7 +109,7 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 	
 	            if (item != null && item.getCreativeTab() != null)
 	            {
-	                item.getSubItems(CreativeTabs.SEARCH, tempStacks);
+	                item.getSubItems(item, CreativeTabs.SEARCH, tempStacks);
 	            }
 	        }
 			
@@ -120,7 +120,7 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 	
 	            if (block != null && block.getCreativeTabToDisplayOn() != null)
 	            {
-	            	block.getSubBlocks(CreativeTabs.SEARCH, tempStacks);
+	            	block.getSubBlocks(Item.getItemFromBlock(block), CreativeTabs.SEARCH, tempStacks);
 	            }
 	        }
 			
