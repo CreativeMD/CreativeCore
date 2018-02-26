@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.vecmath.Vector4d;
 import com.creativemd.creativecore.common.utils.ColorUtils;
@@ -17,10 +18,10 @@ import net.minecraft.util.ResourceLocation;
 public class GuiComboBox extends GuiLabel{
 	
 	public GuiComboBoxExtension extension;
-	public ArrayList<String> lines;
+	public List<String> lines;
 	public int index;
 	
-	public GuiComboBox(String name, int x, int y, int width, ArrayList<String> lines) {
+	public GuiComboBox(String name, int x, int y, int width, List<String> lines) {
 		super(name, x, y, width, 14, ColorUtils.WHITE);
 		if(lines.size() > 0)
 		{

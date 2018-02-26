@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.vecmath.Vector2d;
 
@@ -14,7 +15,7 @@ public class GuiComboBoxExtension extends GuiListBox {
 	
 	public GuiComboBox comboBox;
 	
-	public GuiComboBoxExtension(String name, GuiComboBox comboBox, int x, int y, int width, int height, ArrayList<String> lines) {
+	public GuiComboBoxExtension(String name, GuiComboBox comboBox, int x, int y, int width, int height, List<String> lines) {
 		super(name, x, y, width, height, lines);
 		this.comboBox = comboBox;
 		this.selected = lines.indexOf(comboBox.caption);
