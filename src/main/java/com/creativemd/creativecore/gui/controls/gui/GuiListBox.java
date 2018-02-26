@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.util.Color;
 
@@ -14,11 +15,11 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class GuiListBox extends GuiScrollBox {
 	
-	protected ArrayList<String> lines = new ArrayList<String>();
+	protected List<String> lines = new ArrayList<String>();
 	
 	public int selected = -1;
 	
-	public GuiListBox(String name, int x, int y, int width, int height, ArrayList<String> lines) {
+	public GuiListBox(String name, int x, int y, int width, int height, List<String> lines) {
 		super(name, x, y, width, height);
 		this.lines = lines;
 		reloadControls();

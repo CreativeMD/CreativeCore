@@ -4,7 +4,7 @@ import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 
-public class GuiLabel extends GuiControl{
+public class GuiLabel extends GuiControl {
 	
 	public String caption;
 	public int color;
