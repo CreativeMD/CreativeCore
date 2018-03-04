@@ -31,7 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class GuiControl extends CoreControl {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
-	public static FontRenderer font = mc.fontRenderer;
+	public static FontRenderer font = mc.fontRendererObj;
 	public static Style defaultStyle = Style.liteStyle;
 	
 	public int posX;
