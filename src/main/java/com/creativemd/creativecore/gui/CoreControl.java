@@ -68,6 +68,11 @@ public abstract class CoreControl {
 		return null;
 	}
 	
+	public boolean isRemote()
+	{
+		return getPlayer().world.isRemote;
+	}
+	
 	//================Internal Events================
 	
 	public boolean raiseEvent(ControlEvent event)
