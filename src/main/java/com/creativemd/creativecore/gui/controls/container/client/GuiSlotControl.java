@@ -99,7 +99,7 @@ public class GuiSlotControl extends GuiControl{
 			}
 		}
 		
-		if(stack != null)
+		if(stack != null && !stack.isEmpty())
 		{
 			try{
 				helper.drawItemStackAndOverlay(stack, 0, 0, 16, 16);
@@ -189,9 +189,14 @@ public class GuiSlotControl extends GuiControl{
 	}
 	
 	@Override
-	public boolean mousePressed(int posX, int posY, int button){
+	public boolean mousePressed(int posX, int posY, int button) {
+		for (int i = 0; i < getParent().controls.size(); i++) {
+			if(getParent().controls.get(i) instanceof GuiSlotControl && ((GuiSlotControl) getParent().controls.get(i)).isDragged())
+				return true;
+		}
+		
 		ItemStack stack = getPlayer().inventory.getItemStack();
-		if(stack != null && button < 2)
+		if(!stack.isEmpty() && button < 2)
 		{
 			dragged = stack.copy();
 			isRightClick = button == 1;
@@ -267,7 +272,7 @@ public class GuiSlotControl extends GuiControl{
 			
 			nbt.setIntArray("slots", slotArray);
 			nbt.setBoolean("right", isRightClick);
-			dragged.writeToNBT(nbt);
+			//dragged.writeToNBT(nbt);
 			nbt.setInteger("type", 3);
 			slot.sendPacket(nbt);
 			slot.splitStack(slotArray, dragged, isRightClick);
@@ -319,7 +324,7 @@ public class GuiSlotControl extends GuiControl{
 		int left = dragged.getCount() - used;
 		//if(left < 0)
 			//left = 0;
-		ItemStack hand = getPlayer().inventory.getItemStack().copy();
+		ItemStack hand = dragged.copy();
 		hand.setCount(left);
 		getPlayer().inventory.setItemStack(hand);
 			
