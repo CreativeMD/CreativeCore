@@ -5,6 +5,8 @@ import javax.vecmath.Vector3d;
 
 import org.spongepowered.common.interfaces.world.IMixinWorld;
 
+import com.creativemd.creativecore.common.utils.IVecOrigin;
+
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,22 +27,24 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-public class WorldFake extends World {
+public class WorldFake extends World implements IVecOrigin {
 	
 	public final World parentWorld;
 	
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRender;
 	
+	protected boolean rotated = false;
+	
 	public Vector3d axis;
 	
-	public double rotX;
-	public double rotY;
-	public double rotZ;
+	protected double rotX;
+	protected double rotY;
+	protected double rotZ;
 	
-	public double offsetX;
-	public double offsetY;
-	public double offsetZ;
+	protected double offsetX;
+	protected double offsetY;
+	protected double offsetZ;
 	
 	public static WorldFake createFakeWorld(World world)
 	{
@@ -123,5 +127,83 @@ public class WorldFake extends World {
             ((IWorldEventListener)this.eventListeners.get(i)).spawnParticle(particleID, ignoreRange, pos.x, pos.y, pos.z, xSpeed, ySpeed, zSpeed, parameters);
         }
     }
+
+	@Override
+	public double offX() {
+		return offsetX;
+	}
+
+	@Override
+	public double offY() {
+		return offsetY;
+	}
+
+	@Override
+	public double offZ() {
+		return offsetZ;
+	}
+
+	@Override
+	public double rotX() {
+		return rotX;
+	}
+
+	@Override
+	public double rotY() {
+		return rotY;
+	}
+
+	@Override
+	public double rotZ() {
+		return rotZ;
+	}
+
+	@Override
+	public boolean isRotated() {
+		return rotated;
+	}
+	
+	protected void updateRotated()
+	{
+		rotated = rotX % 360 != 0 || rotY % 360 != 0 || rotZ % 360 != 0;
+	}
+
+	@Override
+	public void offX(double value) {
+		this.offsetX = value;
+	}
+
+	@Override
+	public void offY(double value) {
+		this.offsetY = value;
+	}
+
+	@Override
+	public void offZ(double value) {
+		this.offsetZ = value;
+	}
+
+	@Override
+	public void rotX(double value) {
+		this.rotX = value;
+		updateRotated();
+	}
+
+	@Override
+	public void rotY(double value) {
+		this.rotY = value;
+		updateRotated();
+	}
+
+	@Override
+	public void rotZ(double value) {
+		this.rotZ = value;
+		updateRotated();
+	}
+
+	@Override
+	public Vector3d axis() {
+		return axis;
+	}
 
 }
