@@ -1,6 +1,9 @@
 package com.creativemd.creativecore.common.utils;
 
+import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
+
+import net.minecraft.util.math.AxisAlignedBB;
 
 public interface IVecOrigin {
 	
@@ -23,5 +26,9 @@ public interface IVecOrigin {
 	public void rotZ(double value);
 	
 	public Vector3d axis();
-	
+	public Matrix3d rotationX();
+	public Matrix3d rotationY();
+	public Matrix3d rotationZ();
+	public Vector3d translation();
+
 }
