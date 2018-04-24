@@ -5,6 +5,7 @@ import javax.vecmath.Vector3d;
 
 import org.spongepowered.common.interfaces.world.IMixinWorld;
 
+import com.creativemd.creativecore.common.utils.BoxUtils;
 import com.creativemd.creativecore.common.utils.IVecOrigin;
 
 import net.minecraft.client.multiplayer.WorldClient;
@@ -37,6 +38,10 @@ public class WorldFake extends World implements IVecOrigin {
 	protected boolean rotated = false;
 	
 	public Vector3d axis;
+	private Vector3d translation = new Vector3d(0, 0, 0);
+	private Matrix3d rotationX = BoxUtils.createIdentityMatrix();
+	private Matrix3d rotationY = BoxUtils.createIdentityMatrix();
+	private Matrix3d rotationZ = BoxUtils.createIdentityMatrix();
 	
 	protected double rotX;
 	protected double rotY;
@@ -171,39 +176,65 @@ public class WorldFake extends World implements IVecOrigin {
 	@Override
 	public void offX(double value) {
 		this.offsetX = value;
+		translation.set(offsetX, offsetY, offsetZ);
 	}
 
 	@Override
 	public void offY(double value) {
 		this.offsetY = value;
+		translation.set(offsetX, offsetY, offsetZ);
 	}
 
 	@Override
 	public void offZ(double value) {
 		this.offsetZ = value;
+		translation.set(offsetX, offsetY, offsetZ);
 	}
 
 	@Override
 	public void rotX(double value) {
 		this.rotX = value;
 		updateRotated();
+		rotationX = BoxUtils.createRotationMatrixX(rotX);
 	}
 
 	@Override
 	public void rotY(double value) {
 		this.rotY = value;
 		updateRotated();
+		rotationY = BoxUtils.createRotationMatrixY(rotY);
 	}
 
 	@Override
 	public void rotZ(double value) {
 		this.rotZ = value;
 		updateRotated();
+		rotationZ = BoxUtils.createRotationMatrixZ(rotZ);
 	}
 
 	@Override
 	public Vector3d axis() {
 		return axis;
+	}
+
+	@Override
+	public Matrix3d rotationX() {
+		return rotationX;
+	}
+	
+	@Override
+	public Matrix3d rotationY() {
+		return rotationY;
+	}
+	
+	@Override
+	public Matrix3d rotationZ() {
+		return rotationZ;
+	}
+
+	@Override
+	public Vector3d translation() {
+		return translation;
 	}
 
 }
