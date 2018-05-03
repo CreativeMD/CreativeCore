@@ -127,7 +127,7 @@ public class CreativeAxisAlignedBB extends AxisAlignedBB {
 		return 0;
 	}
 	
-	protected static double getValueOfFacing(AxisAlignedBB bb, EnumFacing facing)
+	public static double getValueOfFacing(AxisAlignedBB bb, EnumFacing facing)
 	{
 		switch(facing)
 		{

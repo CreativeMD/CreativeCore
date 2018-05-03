@@ -21,14 +21,16 @@ public interface IVecOrigin {
 	public void offY(double value);
 	public void offZ(double value);
 	
+	public void off(double x, double y, double z);
+	
 	public void rotX(double value);
 	public void rotY(double value);
 	public void rotZ(double value);
 	
+	public void rot(double x, double y, double z);
+	
 	public Vector3d axis();
-	public Matrix3d rotationX();
-	public Matrix3d rotationY();
-	public Matrix3d rotationZ();
+	public Matrix3d rotation();
 	public Vector3d translation();
 
 }

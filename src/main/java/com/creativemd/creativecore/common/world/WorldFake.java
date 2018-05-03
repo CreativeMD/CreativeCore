@@ -39,9 +39,7 @@ public class WorldFake extends World implements IVecOrigin {
 	
 	public Vector3d axis;
 	private Vector3d translation = new Vector3d(0, 0, 0);
-	private Matrix3d rotationX = BoxUtils.createIdentityMatrix();
-	private Matrix3d rotationY = BoxUtils.createIdentityMatrix();
-	private Matrix3d rotationZ = BoxUtils.createIdentityMatrix();
+	private Matrix3d rotation = BoxUtils.createIdentityMatrix();
 	
 	protected double rotX;
 	protected double rotY;
@@ -81,23 +79,10 @@ public class WorldFake extends World implements IVecOrigin {
 	
 	public Vector3d getRotatedVector(Vector3d vec)
 	{	
-		Matrix3d matrixX = new Matrix3d();
-		matrixX.rotX(Math.toRadians(rotX));
-		
-		Matrix3d matrixY = new Matrix3d();
-		matrixY.rotY(Math.toRadians(rotY));
-		
-		Matrix3d matrixZ = new Matrix3d();
-		matrixZ.rotZ(Math.toRadians(rotZ));
-		
 		vec.sub(axis);
-		matrixX.transform(vec);
-		matrixY.transform(vec);	
-		matrixZ.transform(vec);	
+		rotation.transform(vec);
 		vec.add(axis);
-		
-		vec.add(new Vector3d(offsetX, offsetY, offsetZ));
-		
+		vec.add(translation);
 		return vec;
 	}
 	
@@ -171,45 +156,66 @@ public class WorldFake extends World implements IVecOrigin {
 	protected void updateRotated()
 	{
 		rotated = rotX % 360 != 0 || rotY % 360 != 0 || rotZ % 360 != 0;
+		rotation = new Matrix3d(BoxUtils.createRotationMatrixZ(rotZ));
+		rotation.mul(BoxUtils.createRotationMatrixY(rotY));
+		rotation.mul(BoxUtils.createRotationMatrixX(rotX));
+	}
+	
+	protected void updateTranslation()
+	{
+		translation.set(offsetX, offsetY, offsetZ);
 	}
 
 	@Override
 	public void offX(double value) {
 		this.offsetX = value;
-		translation.set(offsetX, offsetY, offsetZ);
+		updateTranslation();
 	}
 
 	@Override
 	public void offY(double value) {
 		this.offsetY = value;
-		translation.set(offsetX, offsetY, offsetZ);
+		updateTranslation();
 	}
 
 	@Override
 	public void offZ(double value) {
 		this.offsetZ = value;
-		translation.set(offsetX, offsetY, offsetZ);
+		updateTranslation();
+	}
+	
+	@Override
+	public void off(double x, double y, double z) {
+		this.offsetX = x;
+		this.offsetY = y;
+		this.offsetZ = z;
+		updateTranslation();
 	}
 
 	@Override
 	public void rotX(double value) {
 		this.rotX = value;
 		updateRotated();
-		rotationX = BoxUtils.createRotationMatrixX(rotX);
 	}
 
 	@Override
 	public void rotY(double value) {
 		this.rotY = value;
 		updateRotated();
-		rotationY = BoxUtils.createRotationMatrixY(rotY);
 	}
 
 	@Override
 	public void rotZ(double value) {
 		this.rotZ = value;
 		updateRotated();
-		rotationZ = BoxUtils.createRotationMatrixZ(rotZ);
+	}
+	
+	@Override
+	public void rot(double x, double y, double z) {
+		this.rotX = x;
+		this.rotY = y;
+		this.rotZ = z;
+		updateRotated();
 	}
 
 	@Override
@@ -218,18 +224,8 @@ public class WorldFake extends World implements IVecOrigin {
 	}
 
 	@Override
-	public Matrix3d rotationX() {
-		return rotationX;
-	}
-	
-	@Override
-	public Matrix3d rotationY() {
-		return rotationY;
-	}
-	
-	@Override
-	public Matrix3d rotationZ() {
-		return rotationZ;
+	public Matrix3d rotation() {
+		return rotation;
 	}
 
 	@Override
