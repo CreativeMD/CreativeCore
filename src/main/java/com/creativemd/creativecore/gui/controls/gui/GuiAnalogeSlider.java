@@ -3,6 +3,7 @@ package com.creativemd.creativecore.gui.controls.gui;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector4d;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.common.utils.ColorUtils;
@@ -27,6 +28,8 @@ public class GuiAnalogeSlider extends GuiControl
 	public boolean grabbedSlider;
 	public int sliderWidth = 4;
 	
+	protected GuiTextfield textfield = null;
+	
 	public GuiAnalogeSlider(String name, int x, int y, int width, int height, float value, float minValue, float maxValue)
 	{
 		super(name, x, y, width, height);
@@ -49,8 +52,10 @@ public class GuiAnalogeSlider extends GuiControl
 		int posX = (int)((this.width - (borderWidth*2+sliderWidth)) * percent);
 		style.getFace(this).renderStyle(posX, 0, helper, 4, height);
 		
-		String text = getTextByValue();
-		helper.drawStringWithShadow(text, width, height, ColorUtils.WHITE);
+		if(textfield != null)
+			textfield.renderControl(helper, 1, getRect());
+		else
+			helper.drawStringWithShadow(getTextByValue(), width, height, ColorUtils.WHITE);
 	}
 	
 	public float getPercentage()
@@ -63,10 +68,49 @@ public class GuiAnalogeSlider extends GuiControl
 	{
 		if(button == 0)
 		{
+			if(textfield != null)
+				return textfield.mousePressed(x, y, button);
 			playSound(SoundEvents.UI_BUTTON_CLICK);
 			return (grabbedSlider = true);
 		}
+		else if(button == 1)
+		{
+			grabbedSlider = false;
+			textfield = createTextfield();
+			textfield.parent = parent;
+			return true;
+		}
 		return false;
+	}
+	
+	protected GuiTextfield createTextfield()
+	{
+		return new GuiTextfield(getTextByValue(), 0, 0, width - getContentOffset()*8, height - getContentOffset()*8).setFloatOnly();
+	}
+	
+	public void closeTextField()
+	{
+		float value = this.value;
+		try {
+			setValue(Float.parseFloat(textfield.text));
+		} catch(NumberFormatException e) {
+			setValue(value);
+		}
+		textfield = null;
+	}
+	
+	@Override
+	public boolean onKeyPressed(char character, int key) {
+		if(textfield != null)
+		{
+			if(key == Keyboard.KEY_RETURN)
+			{
+				closeTextField();
+				return true;
+			}
+			return textfield.onKeyPressed(character, key);
+		}
+		return super.onKeyPressed(character, key);
 	}
 	
 	public void setValue(float value)
@@ -94,6 +138,13 @@ public class GuiAnalogeSlider extends GuiControl
 			}
 			setValue(value);
 		}
+	}
+	
+	@Override
+	public void onLoseFocus() {
+		if(textfield != null)
+			closeTextField();
+		super.onLoseFocus();
 	}
 	
 	@Override
