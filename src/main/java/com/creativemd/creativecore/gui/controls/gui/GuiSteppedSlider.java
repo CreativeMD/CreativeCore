@@ -23,4 +23,9 @@ public class GuiSteppedSlider extends GuiAnalogeSlider{
 	{
 		super.setValue((int) value); 
 	}
+	
+	protected GuiTextfield createTextfield()
+	{
+		return super.createTextfield().setNumbersIncludingNegativeOnly();
+	}
 }
