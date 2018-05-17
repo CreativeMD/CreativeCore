@@ -77,6 +77,8 @@ public class GuiAnalogeSlider extends GuiControl
 		{
 			grabbedSlider = false;
 			textfield = createTextfield();
+			textfield.focused = true;
+			textfield.setCursorPosition(textfield.text.length());
 			textfield.parent = parent;
 			return true;
 		}
@@ -93,6 +95,7 @@ public class GuiAnalogeSlider extends GuiControl
 		float value = this.value;
 		try {
 			setValue(Float.parseFloat(textfield.text));
+			playSound(SoundEvents.UI_BUTTON_CLICK);
 		} catch(NumberFormatException e) {
 			setValue(value);
 		}
