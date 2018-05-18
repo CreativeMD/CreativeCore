@@ -38,7 +38,8 @@ public class CreativeVertexBufferConsumer
             v++;
             if(v == 4)
             {
-                renderer.addVertexData(quadData);
+            	BufferBuilderUtils.addVertexDataSmall(renderer, quadData);
+                //renderer.addVertexData(quadData);
                 renderer.putPosition(offset.getX(), offset.getY(), offset.getZ());
                 //Arrays.fill(quadData, 0);
                 v = 0;
