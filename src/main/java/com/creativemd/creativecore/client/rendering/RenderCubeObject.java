@@ -114,6 +114,24 @@ public class RenderCubeObject extends CubeObject {
 		return null;
 	}
 	
+	public int getQuads()
+	{
+		int quads = 0;
+		if(quadUp != null)
+			quads += quadUp.size();
+		if(quadDown != null)
+			quads += quadDown.size();
+		if(quadEast != null)
+			quads += quadEast.size();
+		if(quadWest != null)
+			quads += quadWest.size();
+		if(quadSouth != null)
+			quads += quadSouth.size();
+		if(quadNorth != null)
+			quads += quadNorth.size();
+		return quads;
+	}
+	
 	public RenderCubeObject(CubeObject cube, RenderCubeObject cube2)
 	{
 		super(cube);
