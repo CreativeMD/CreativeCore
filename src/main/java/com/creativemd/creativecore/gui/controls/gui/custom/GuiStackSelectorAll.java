@@ -113,7 +113,7 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 	            }
 	        }
 			
-			iterator = Block.REGISTRY.iterator();
+			/*iterator = Block.REGISTRY.iterator();
 			while (iterator.hasNext())
 	        {
 				Block block = (Block)iterator.next();
@@ -122,7 +122,7 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 	            {
 	            	block.getSubBlocks(CreativeTabs.SEARCH, tempStacks);
 	            }
-	        }
+	        }*/
 			
 			List<ItemStack> newStacks = new ArrayList<>();
 			for (ItemStack stack : tempStacks) {
