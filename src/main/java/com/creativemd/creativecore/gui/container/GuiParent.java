@@ -77,6 +77,8 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height, Rect relativeMaximumRect)
 	{
+		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+		
 		float scale = getScaleFactor();
 		int xOffset = getOffsetX();
 		int yOffset = getOffsetY();
@@ -108,6 +110,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.posY+control.height)*scale);
 			
 		}
+		
 		GL11.glEnable(GL11.GL_STENCIL_TEST);
 		
 		prepareContentStencil(helper, relativeMaximumRect);
