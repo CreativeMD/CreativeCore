@@ -12,7 +12,7 @@ import com.google.common.base.Objects;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -48,10 +48,11 @@ public class CreativeCubeConsumer {
     protected int colorIndex = -1;
     protected int lightmapIndex = -1;
     
-    public CreativeBakedQuad quad;
+    public BakedQuad quad;
     public RenderCubeObject cube;
     public VertexBuffer buffer;
     public BlockRenderLayer layer;
+    public IBlockState state;
     
     private final CreativeVertexBufferConsumer parent;
     
@@ -152,11 +153,11 @@ public class CreativeCubeConsumer {
         //}
 
         int multiplier = -1;
-        if(tint != -1 && cube.color == -1)//(cube.color != -1 || layer == BlockRenderLayer.CUTOUT_MIPPED))
+        if(tint != -1 && cube.color == -1)
         {
             multiplier = blockInfo.getColorMultiplier(tint);
         }else{
-        	if(layer != BlockRenderLayer.CUTOUT_MIPPED && cube.getBlockState().getBlock().getBlockLayer() != BlockRenderLayer.CUTOUT)
+        	if(layer != BlockRenderLayer.CUTOUT_MIPPED || state.getBlock().canRenderInLayer(state, BlockRenderLayer.CUTOUT))
         		tint = 0;
         	multiplier = cube.color;
         }
@@ -265,6 +266,7 @@ public class CreativeCubeConsumer {
 
     public void setState(IBlockState state)
     {
+    	this.state = state;
         blockInfo.setState(state);
     }
 
@@ -283,6 +285,7 @@ public class CreativeCubeConsumer {
     {
         if(tint != -1)
         {
+        	color[3] *= (float)(multiplier >> 0x18 & 0xFF) / 0xFF; // Alpha
             color[0] *= (float)(multiplier >> 0x10 & 0xFF) / 0xFF;
             color[1] *= (float)(multiplier >> 0x8 & 0xFF) / 0xFF;
             color[2] *= (float)(multiplier & 0xFF) / 0xFF;
