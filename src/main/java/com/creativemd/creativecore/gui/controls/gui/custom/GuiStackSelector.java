@@ -15,6 +15,7 @@ import com.creativemd.creativecore.common.utils.HashMapList;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
+import com.creativemd.creativecore.gui.controls.gui.GuiComboBoxExtension;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
 import net.minecraft.block.Block;
@@ -117,16 +118,9 @@ public abstract class GuiStackSelector extends GuiComboBox {
 	}
 	
 	@Override
-	public void openBox()
+	protected GuiComboBoxExtension createBox()
 	{
-		extension = new GuiStackSelectorExtension(name + "extension", getPlayer(), posX, posY+height, width-getContentOffset()*2, 80, this);
-		getParent().controls.add(extension);
-		
-		extension.parent = parent;
-		extension.moveControlToTop();
-		extension.onOpened();
-		parent.refreshControls();
-		extension.rotation = rotation;
+		return new GuiStackSelectorExtension(name + "extension", getPlayer(), posX, posY+height, width-getContentOffset()*2, 80, this);
 	}
 	
 	public boolean select(String line)
