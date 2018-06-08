@@ -72,7 +72,7 @@ public class GuiComboBox extends GuiLabel{
 	
 	public void openBox()
 	{
-		extension = new GuiComboBoxExtension(name + "extension", this, posX, posY+height, width-getContentOffset()*2, 100, lines);
+		this.extension = createBox();
 		getParent().controls.add(extension);
 		
 		extension.parent = parent;
@@ -80,6 +80,14 @@ public class GuiComboBox extends GuiLabel{
 		extension.onOpened();
 		parent.refreshControls();
 		extension.rotation = rotation;
+		
+		if(extension.posY + extension.height > getParent().height && this.posY >= extension.height)
+			extension.posY -= this.height + extension.height;
+	}
+	
+	protected GuiComboBoxExtension createBox()
+	{
+		return new GuiComboBoxExtension(name + "extension", this, posX, posY+height, width-getContentOffset()*2, 100, lines);
 	}
 	
 	public void closeBox()

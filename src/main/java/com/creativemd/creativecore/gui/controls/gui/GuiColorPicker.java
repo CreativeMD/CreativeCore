@@ -12,8 +12,8 @@ public class GuiColorPicker extends GuiParent {
 	
 	public Color color;
 	
-	public GuiColorPicker(String name, int x, int y, Color color) {
-		super(name, x, y, 140, 30);
+	public GuiColorPicker(String name, int x, int y, Color color, boolean hasAlpha) {
+		super(name, x, y, 140, hasAlpha ? 40 : 30);
 		marginWidth = 0;
 		this.color = color;
 		setStyle(Style.emptyStyle);
@@ -80,9 +80,38 @@ public class GuiColorPicker extends GuiParent {
 			}
 			
 		});
+		
+		if(hasAlpha)
+		{
+			
+			addControl(new GuiButtonHold("a-", "<", 0, 30, 1, 5) {
+				
+				@Override
+				public void onClicked(int x, int y, int button) {
+					onColorChanged();
+					GuiColoredSteppedSlider slider = (GuiColoredSteppedSlider) get("a");
+					slider.setValue(slider.value - 1);
+				}
+				
+			});
+			addControl(new GuiButtonHold("a+", ">", 98, 30, 1, 5) {
+				
+				@Override
+				public void onClicked(int x, int y, int button) {
+					onColorChanged();
+					GuiColoredSteppedSlider slider = (GuiColoredSteppedSlider) get("a");
+					slider.setValue(slider.value + 1);
+				}
+				
+			});
+		}else
+			color.setAlpha(255);
+		
 		addControl(new GuiColoredSteppedSlider("r", 8, 0, 84, 5, this, ColorPart.RED).setStyle(defaultStyle));
 		addControl(new GuiColoredSteppedSlider("g", 8, 10, 84, 5, this, ColorPart.GREEN).setStyle(defaultStyle));
 		addControl(new GuiColoredSteppedSlider("b", 8, 20, 84, 5, this, ColorPart.BLUE).setStyle(defaultStyle));
+		if(hasAlpha)
+			addControl(new GuiColoredSteppedSlider("a", 8, 30, 84, 5, this, ColorPart.ALPHA).setStyle(defaultStyle));
 		addControl(new GuiColorPlate("plate", 107, 2, 20, 20, color).setStyle(defaultStyle));
 		
 	}
