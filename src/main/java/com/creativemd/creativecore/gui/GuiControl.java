@@ -61,6 +61,13 @@ public abstract class GuiControl extends CoreControl {
 	
 	//================Construction================
 	
+	public GuiControl setDimension(int width, int height)
+	{
+		this.width = width+getContentOffset()*2;
+		this.height = height+getContentOffset()*2;
+		return this;
+	}
+	
 	public GuiControl setRotation(float rotation)
 	{
 		this.rotation = rotation;
