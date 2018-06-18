@@ -209,7 +209,7 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer{
 
 	@Override
 	public boolean isFake() {
-		return ((IMixinWorldServer) parentWorld).isFake();
+		return true;
 	}
 
 }
