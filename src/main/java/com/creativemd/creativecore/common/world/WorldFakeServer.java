@@ -182,4 +182,34 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer{
 		((IMixinWorldServer) parentWorld).doChunkGC();
 	}
 
+	@Override
+	public boolean isLightLevel(Chunk chunk, BlockPos pos, int level) {
+		return ((IMixinWorldServer) parentWorld).isLightLevel(chunk, pos, level);
+	}
+
+	@Override
+	public boolean updateLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk) {
+		return ((IMixinWorldServer) parentWorld).updateLightAsync(lightType, pos, chunk);
+	}
+
+	@Override
+	public boolean checkLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk, List<Chunk> neighbors) {
+		return ((IMixinWorldServer) parentWorld).checkLightAsync(lightType, pos, chunk, neighbors);
+	}
+
+	@Override
+	public ExecutorService getLightingExecutor() {
+		return ((IMixinWorldServer) parentWorld).getLightingExecutor();
+	}
+
+	@Override
+	public int getRawBlockLight(BlockPos pos, EnumSkyBlock lightType) {
+		return ((IMixinWorldServer) parentWorld).getRawBlockLight(pos, lightType);
+	}
+
+	@Override
+	public boolean isFake() {
+		return true;
+	}
+
 }
