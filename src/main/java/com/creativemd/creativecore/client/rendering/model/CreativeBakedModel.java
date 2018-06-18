@@ -59,6 +59,7 @@ import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -149,7 +150,7 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 			if(te == null && stack != null)
 				defaultColor = itemColores.getColorFromItemstack(new ItemStack(newState.getBlock(), 1, newState.getBlock().getMetaFromState(newState)), -1);
 			
-			baked.addAll(cube.getBakedQuad(cube.getOffset(), newState, blockModel, side, rand, true, defaultColor));
+			baked.addAll(cube.getBakedQuad(te != null ? te.getWorld() : null, cube.getOffset(), newState, blockModel, side, layer, rand, true, defaultColor));
 		}
 		
 		if(renderer instanceof ICustomCachedCreativeRendered && !FMLClientHandler.instance().hasOptifine() && stack == null)
@@ -165,9 +166,9 @@ public class CreativeBakedModel implements IBakedModel, IPerspectiveAwareModel {
 		return baked;
 	}
 	
-	public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, BlockPos offset, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint)
+	public static List<BakedQuad> getBakedQuad(IBlockAccess world, RenderCubeObject cube, BlockPos offset, IBlockState state, IBakedModel blockModel, BlockRenderLayer layer, EnumFacing side, long rand, boolean overrideTint)
 	{
-		return cube.getBakedQuad(offset, state, blockModel, side, rand, overrideTint, -1);
+		return cube.getBakedQuad(world, offset, state, blockModel, side, layer, rand, overrideTint, -1);
 	}
 	
 	/*public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint, int defaultColor)
