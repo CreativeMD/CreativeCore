@@ -85,7 +85,7 @@ public class GuiListBox extends GuiScrollBox {
 			int color = 14737632;
 			if(i == selected)
 				color = 16777000;
-			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 3, i*15, width-20-getContentOffset()*2, 8, color) {
+			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 0, i*15, width-scrollbarWidth-2-getContentOffset()*2, 8, color) {
 				
 				@Override
 				public int getColor()

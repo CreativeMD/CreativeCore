@@ -45,5 +45,11 @@ public class GuiComboBoxExtension extends GuiListBox {
 		}
 		comboBox.closeBox();
 	}
+	
+	@Override
+	public boolean canOverlap()
+	{
+		return true;
+	}
 
 }

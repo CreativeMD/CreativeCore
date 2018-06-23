@@ -92,7 +92,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			
 			if(control.visible && control.isVisibleInsideRect(-xOffset, -yOffset, width, height, scale))
 			{
-				GL11.glEnable(GL11.GL_STENCIL_TEST);
+				if(control.canOverlap())
+					GL11.glDisable(GL11.GL_STENCIL_TEST);
+				else
+					GL11.glEnable(GL11.GL_STENCIL_TEST);
 				
 				prepareContentStencil(helper, relativeMaximumRect);
 				
