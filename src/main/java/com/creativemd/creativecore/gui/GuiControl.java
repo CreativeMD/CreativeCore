@@ -162,6 +162,11 @@ public abstract class GuiControl extends CoreControl {
 		return true;
 	}
 	
+	public boolean canOverlap()
+	{
+		return false;
+	}
+	
 	//================Tooltip================
 	
 	public GuiToolTipEvent getToolTipEvent()
