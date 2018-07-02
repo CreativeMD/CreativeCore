@@ -2,16 +2,20 @@ package com.creativemd.creativecore.common.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.vecmath.Matrix3d;
+import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.collision.CreativeAxisAlignedBB;
+import com.creativemd.creativecore.common.utils.RotationUtils.BooleanRotation;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
 public class BoxUtils {
 	
@@ -19,6 +23,32 @@ public class BoxUtils {
 	{
 		Matrix3d matrix = new Matrix3d();
 		matrix.setIdentity();
+		return matrix;
+	}
+	
+	public static Matrix3d createRotationMatrix(double rotX, double rotY, double rotZ)
+	{
+		Matrix3d matrix = createRotationMatrixZ(rotZ);
+		matrix.mul(createRotationMatrixY(rotY));
+		matrix.mul(createRotationMatrixX(rotX));
+		return matrix;
+	}
+	
+	public static Matrix4d createRotationMatrixAndTranslation(double x, double y, double z, double rotX, double rotY, double rotZ)
+	{
+		Matrix4d matrix = new Matrix4d();
+		matrix.rotZ(Math.toRadians(rotZ));
+		
+		Matrix4d temp = new Matrix4d();
+		temp.rotY(Math.toRadians(rotY));
+		matrix.mul(temp);
+		
+		temp = new Matrix4d();
+		temp.rotX(Math.toRadians(rotX));
+		matrix.mul(temp);
+		
+		matrix.setTranslation(new Vector3d(x, y, z));
+		
 		return matrix;
 	}
 	
@@ -52,7 +82,6 @@ public class BoxUtils {
 	{
 		return a >= (b > 0 ? b - deviation : b + deviation);
 	}
-	
 	
 	/**
 	 * It is used to improve performance
@@ -154,6 +183,127 @@ public class BoxUtils {
 		return corners;
 	}
 	
+	private static double lengthIgnoreAxis(Vector3d vec, Axis axis)
+	{
+		switch(axis)
+		{
+		case X:
+			return Math.sqrt(vec.y*vec.y + vec.z*vec.z);
+		case Y:
+			return Math.sqrt(vec.x*vec.x + vec.z*vec.z);
+		case Z:
+			return Math.sqrt(vec.x*vec.x + vec.y*vec.y);
+		default:
+			return 0;
+		}
+	}
+	
+	private static void includeMaxRotationInBox(Box box, Vector3d vec, Axis axis, Matrix3d matrix, double rotation, Vector3d additionalTranslation)
+	{
+		if(matrix == null)
+			return ;
+		
+		Double length = null;
+		
+		BooleanRotation state = BooleanRotation.getRotationState(axis, vec);
+		
+		if(rotation > 0)
+		{
+			double skipRotation = 90;
+			while(skipRotation < rotation && skipRotation < 360)
+			{
+				EnumFacing facing = state.clockwiseMaxFacing();
+				
+				if(length == null)
+					length = lengthIgnoreAxis(vec, axis);
+				
+				box.include(facing, length);
+				if(additionalTranslation != null)
+					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
+				
+				state = state.clockwise();
+				skipRotation += 90;
+			}
+			
+			matrix.transform(vec);
+			
+			if(skipRotation < 360 && !state.is(vec))
+			{
+				EnumFacing facing = state.clockwiseMaxFacing();
+				
+				if(length == null)
+					length = lengthIgnoreAxis(vec, axis);
+				
+				box.include(facing, length);
+				if(additionalTranslation != null)
+					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
+			}
+		}
+		else
+		{
+			double skipRotation = -90;
+			while(skipRotation > rotation && skipRotation > -360)
+			{
+				EnumFacing facing = state.counterMaxClockwiseFacing();
+				
+				if(length == null)
+					length = lengthIgnoreAxis(vec, axis);
+				
+				box.include(facing, length);
+				if(additionalTranslation != null)
+					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
+				
+				state = state.counterClockwise();
+				skipRotation -= 90;
+			}
+			
+			matrix.transform(vec);
+			
+			if(skipRotation > -360 && !state.is(vec))
+			{
+				EnumFacing facing = state.counterMaxClockwiseFacing();
+				
+				if(length == null)
+					length = lengthIgnoreAxis(vec, axis);
+				
+				box.include(facing, length);
+				if(additionalTranslation != null)
+					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
+			}
+		}
+	}
+	
+	public static AxisAlignedBB getRotatedSurrounding(AxisAlignedBB box, Vector3d rotationCenter, Matrix3d initRotation, Vector3d initTranslation, Matrix3d addRotX, double rotX, Matrix3d addRotY, double rotY, Matrix3d addRotZ, double rotZ, Vector3d additionalTranslation)
+	{
+		Vector3d[] corners = getCorners(box);
+		
+		Box bb = new Box();
+		
+		for (int i = 0; i < corners.length; i++) {
+			Vector3d vec = corners[i];
+			vec.sub(rotationCenter);
+			
+			// Apply initial rotation
+			initRotation.transform(vec);
+			bb.include(vec);
+			
+			//Additional rotation and translation			
+			includeMaxRotationInBox(bb, vec, Axis.X, addRotX, rotX, additionalTranslation);
+			includeMaxRotationInBox(bb, vec, Axis.Y, addRotY, rotY, additionalTranslation);
+			includeMaxRotationInBox(bb, vec, Axis.Z, addRotZ, rotZ, additionalTranslation);
+			
+			if(additionalTranslation != null)
+				vec.add(additionalTranslation);
+			
+			bb.include(vec);
+		}
+		
+		bb.translate(rotationCenter);
+		bb.translate(initTranslation);
+		
+		return bb.getAxisBB();
+	}
+	
 	public static AxisAlignedBB getRotated(AxisAlignedBB box, Vector3d rotationCenter, Matrix3d rotation, Vector3d translation)
 	{
 		Vector3d[] corners = getCorners(box);
@@ -214,6 +364,77 @@ public class BoxUtils {
 		}
 		
 		return new Vector3d[] {corners[selected.ordinal()], corners[selected.neighborOne.ordinal()], corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree.ordinal()]};
+	}
+	
+	private static class Box {
+		
+		public double minX;
+		public double minY;
+		public double minZ;
+		public double maxX;
+		public double maxY;
+		public double maxZ;
+		
+		public Box()
+		{
+			minX = Double.MAX_VALUE;
+			minY = Double.MAX_VALUE;
+			minZ = Double.MAX_VALUE;
+			maxX = -Double.MAX_VALUE;
+			maxY = -Double.MAX_VALUE;
+			maxZ = -Double.MAX_VALUE;
+		}
+		
+		public void include(Vector3d vec)
+		{
+			minX = Math.min(minX, vec.x);
+			minY = Math.min(minY, vec.y);
+			minZ = Math.min(minZ, vec.z);
+			maxX = Math.max(maxX, vec.x);
+			maxY = Math.max(maxY, vec.y);
+			maxZ = Math.max(maxZ, vec.z);
+		}
+		
+		public void include(EnumFacing facing, double value)
+		{
+			switch(facing)
+			{
+			case EAST:
+				maxX = Math.max(maxX, value);
+				break;
+			case WEST:
+				minX = Math.min(minX, value);
+				break;
+			case UP:
+				maxY = Math.max(maxY, value);
+				break;
+			case DOWN:
+				minY = Math.min(minY, value);
+				break;
+			case SOUTH:
+				maxZ = Math.max(maxZ, value);
+				break;
+			case NORTH:
+				minZ = Math.min(minZ, value);
+				break;
+			}
+		}
+		
+		public void translate(Vector3d translation)
+		{
+			minX += translation.x;
+			minY += translation.y;
+			minZ += translation.z;
+			maxX += translation.x;
+			maxY += translation.y;
+			maxZ += translation.z;
+		}
+		
+		public AxisAlignedBB getAxisBB()
+		{
+			return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+		}
+		
 	}
 	
 	public static enum BoxCorner

@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -317,6 +317,122 @@ public class RotationUtils {
 			return y;
 		}
 		return 0;
+	}
+	
+	static BooleanRotation[][] rotations = new BooleanRotation[3][4];
+	
+	public static enum BooleanRotation {
+		
+		// one: y, two: z
+		X_PP(Axis.X, 0, true, true),
+		X_NP(Axis.X, 1, false, true),
+		X_NN(Axis.X, 2, false, false),
+		X_PN(Axis.X, 3, true, false),
+		// one: x, two: z
+		Y_PP(Axis.Y, 0, true, true),
+		Y_PN(Axis.Y, 1, true, false),
+		Y_NN(Axis.Y, 2, false, false),
+		Y_NP(Axis.Y, 3, false, true),
+		// one: x, two: y
+		Z_PP(Axis.Z, 0, true, true),
+		Z_NP(Axis.Z, 1, false, true),
+		Z_NN(Axis.Z, 2, false, false),
+		Z_PN(Axis.Z, 3, true, false);
+		
+		public final Axis axis;
+		private final int index;
+		private final boolean positiveOne;
+		private final boolean positiveTwo;
+		
+		BooleanRotation (Axis axis, int index, boolean positiveOne, boolean positiveTwo) {
+			this.axis = axis;
+			this.index = index;
+			this.positiveOne = positiveOne;
+			this.positiveTwo = positiveTwo;
+			
+			rotations[axis.ordinal()][index] = this;
+		}
+		
+		private static Axis getOne(Axis axis)
+		{
+			switch(axis)
+			{
+			case X:
+				return Axis.Y;
+			case Y:
+			case Z:
+				return Axis.X;
+			default:
+				return null;
+			}
+		}
+		
+		private static Axis getTwo(Axis axis)
+		{
+			switch(axis)
+			{
+			case X:
+			case Y:
+				return Axis.Z;
+			case Z:
+				return Axis.Y;
+			default:
+				return null;
+			}
+		}
+		
+		public BooleanRotation clockwise()
+		{
+			if(index == 3)
+				return rotations[axis.ordinal()][0];
+			return rotations[axis.ordinal()][index+1];
+		}
+		
+		public BooleanRotation counterClockwise()
+		{
+			if(index == 0)
+				return rotations[axis.ordinal()][3];
+			return rotations[axis.ordinal()][index-1];
+		}
+		
+		public EnumFacing clockwiseMaxFacing()
+		{
+			return getFacingInBetween(clockwise());
+		}
+		
+		public EnumFacing counterMaxClockwiseFacing()
+		{
+			return getFacingInBetween(counterClockwise());
+		}
+		
+		private EnumFacing getFacingInBetween(BooleanRotation other)
+		{
+			if(positiveOne != other.positiveOne)
+				return EnumFacing.getFacingFromAxis(positiveTwo ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, getTwo(axis));
+			else if(positiveTwo != other.positiveTwo)
+				return EnumFacing.getFacingFromAxis(positiveOne ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, getOne(axis));
+			else
+				throw new RuntimeException("Impossible to happen!");
+		}
+		
+		public boolean is(Vector3d vec)
+		{
+			return positiveOne == (RotationUtils.get(BooleanRotation.getOne(axis), vec) >= 0) && positiveTwo == (RotationUtils.get(BooleanRotation.getTwo(axis), vec) >= 0);
+		}
+		
+		public static BooleanRotation getRotationState(Axis axis, Vector3d vec)
+		{
+			boolean positiveOne = RotationUtils.get(BooleanRotation.getOne(axis), vec) >= 0;
+			boolean positiveTwo = RotationUtils.get(BooleanRotation.getTwo(axis), vec) >= 0;
+			
+			for (int i = 0; i < rotations[axis.ordinal()].length; i++) {
+				BooleanRotation rotation = rotations[axis.ordinal()][i];
+				if(rotation.positiveOne == positiveOne && rotation.positiveTwo == positiveTwo)
+					return rotation;
+			}
+			return null;
+		}
+		
 	}
 	
 }
