@@ -156,9 +156,7 @@ public class WorldFake extends World implements IVecOrigin {
 	protected void updateRotated()
 	{
 		rotated = rotX % 360 != 0 || rotY % 360 != 0 || rotZ % 360 != 0;
-		rotation = new Matrix3d(BoxUtils.createRotationMatrixZ(rotZ));
-		rotation.mul(BoxUtils.createRotationMatrixY(rotY));
-		rotation.mul(BoxUtils.createRotationMatrixX(rotX));
+		rotation = BoxUtils.createRotationMatrix(rotX, rotY, rotZ);
 	}
 	
 	protected void updateTranslation()
