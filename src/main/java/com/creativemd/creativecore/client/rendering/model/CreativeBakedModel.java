@@ -139,14 +139,6 @@ public class CreativeBakedModel implements IBakedModel {
 			baked.addAll(cube.getBakedQuad(te != null ? te.getWorld() : null, te != null ? te.getPos() : null, cube.getOffset(), newState, blockModel, side, layer, rand, true, defaultColor));
 		}
 		
-		if(renderer instanceof ICustomCachedCreativeRendered && !FMLClientHandler.instance().hasOptifine() && stack == null)
-		{
-			CreativeBakedQuadCaching caching = new CreativeBakedQuadCaching(baked, side, (ICustomCachedCreativeRendered) renderer, te, stack, layer);
-			baked = new ArrayList<>();
-			if(caching.quads.size() > 0)
-				baked.add(caching);
-		}
-		
 		if(baked.size() > 0)
 			renderer.saveCachedModel(side,layer, baked, state, te, stack, threaded);
 		return baked;
