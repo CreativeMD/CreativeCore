@@ -120,7 +120,7 @@ public class Plane3d {
 		
 		if(beforeFront != afterFront)
 		{
-			// TODO add auto-accuracy system. depending on tocheck size and how far away it is
+			// TODO add auto-accuracy system. depending on tocheck size and how far away it is, we got distance to the center and the radius, this should be more than enough to do it
 			if(steps < accuracySteps)
 			{
 				steps++;
