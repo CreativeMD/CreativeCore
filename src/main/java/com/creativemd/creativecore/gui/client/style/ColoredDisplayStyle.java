@@ -2,7 +2,7 @@ package com.creativemd.creativecore.gui.client.style;
 
 import org.lwjgl.util.Color;
 
-import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 
 import net.minecraft.util.math.Vec3d;

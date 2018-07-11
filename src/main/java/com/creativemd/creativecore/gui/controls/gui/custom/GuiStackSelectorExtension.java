@@ -3,7 +3,7 @@ package com.creativemd.creativecore.gui.controls.gui.custom;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import com.creativemd.creativecore.common.utils.HashMapList;
+import com.creativemd.creativecore.common.utils.type.HashMapList;
 import com.creativemd.creativecore.gui.controls.container.SlotControlNoSync;
 import com.creativemd.creativecore.gui.controls.container.client.GuiSlotControl;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;

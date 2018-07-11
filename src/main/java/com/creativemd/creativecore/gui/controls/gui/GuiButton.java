@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
-import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 
 public abstract class GuiButton extends GuiClickableLabel{

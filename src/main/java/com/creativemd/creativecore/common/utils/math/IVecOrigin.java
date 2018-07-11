@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.common.utils.math;
 
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
@@ -31,6 +31,7 @@ public interface IVecOrigin {
 	
 	public Vector3d axis();
 	public Matrix3d rotation();
+	public Matrix3d rotationInv();
 	public Vector3d translation();
 
 }

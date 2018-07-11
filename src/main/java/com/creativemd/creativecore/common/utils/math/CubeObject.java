@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.common.utils.math;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;

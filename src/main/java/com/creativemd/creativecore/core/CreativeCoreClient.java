@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.client.rendering.model.CreativeCustomModelLoader;
-import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

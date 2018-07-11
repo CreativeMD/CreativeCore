@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.common.utils.mc;
 
 import com.creativemd.creativecore.core.CreativeCoreClient;
 

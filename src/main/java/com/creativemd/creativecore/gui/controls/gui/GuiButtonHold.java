@@ -2,7 +2,7 @@ package com.creativemd.creativecore.gui.controls.gui;
 
 import org.lwjgl.input.Mouse;
 
-import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 
 import net.minecraft.init.SoundEvents;

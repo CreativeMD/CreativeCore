@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.common.utils.math;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.collision.CreativeAxisAlignedBB;
-import com.creativemd.creativecore.common.utils.RotationUtils.BooleanRotation;
+import com.creativemd.creativecore.common.utils.math.RotationUtils.BooleanRotation;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -18,60 +18,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 public class BoxUtils {
-	
-	public static Matrix3d createIdentityMatrix()
-	{
-		Matrix3d matrix = new Matrix3d();
-		matrix.setIdentity();
-		return matrix;
-	}
-	
-	public static Matrix3d createRotationMatrix(double rotX, double rotY, double rotZ)
-	{
-		Matrix3d matrix = createRotationMatrixZ(rotZ);
-		matrix.mul(createRotationMatrixY(rotY));
-		matrix.mul(createRotationMatrixX(rotX));
-		return matrix;
-	}
-	
-	public static Matrix4d createRotationMatrixAndTranslation(double x, double y, double z, double rotX, double rotY, double rotZ)
-	{
-		Matrix4d matrix = new Matrix4d();
-		matrix.rotZ(Math.toRadians(rotZ));
-		
-		Matrix4d temp = new Matrix4d();
-		temp.rotY(Math.toRadians(rotY));
-		matrix.mul(temp);
-		
-		temp = new Matrix4d();
-		temp.rotX(Math.toRadians(rotX));
-		matrix.mul(temp);
-		
-		matrix.setTranslation(new Vector3d(x, y, z));
-		
-		return matrix;
-	}
-	
-	public static Matrix3d createRotationMatrixX(double angle)
-	{
-		Matrix3d matrix = new Matrix3d();
-		matrix.rotX(Math.toRadians(angle));
-		return matrix;
-	}
-	
-	public static Matrix3d createRotationMatrixY(double angle)
-	{
-		Matrix3d matrix = new Matrix3d();
-		matrix.rotY(Math.toRadians(angle));
-		return matrix;
-	}
-	
-	public static Matrix3d createRotationMatrixZ(double angle)
-	{
-		Matrix3d matrix = new Matrix3d();
-		matrix.rotZ(Math.toRadians(angle));
-		return matrix;
-	}
 	
 	public static boolean equals(double a, double b, double deviation)
 	{
@@ -302,6 +248,20 @@ public class BoxUtils {
 		bb.translate(initTranslation);
 		
 		return bb.getAxisBB();
+	}
+	
+	public static Vector3d[] getRotatedCorners(AxisAlignedBB box, Vector3d rotationCenter, Matrix3d rotation, Vector3d translation)
+	{
+		Vector3d[] corners = getCorners(box);
+		for (int i = 0; i < corners.length; i++) {
+			Vector3d vec = corners[i];
+			vec.sub(rotationCenter);
+			rotation.transform(vec);
+			vec.add(rotationCenter);
+			
+			vec.add(translation);
+		}
+		return corners;
 	}
 	
 	public static AxisAlignedBB getRotated(AxisAlignedBB box, Vector3d rotationCenter, Matrix3d rotation, Vector3d translation)

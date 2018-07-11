@@ -1,8 +1,9 @@
 package com.creativemd.creativecore.common.collision;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Vector3d;
 
-import com.creativemd.creativecore.common.utils.BoxUtils.BoxCorner;
+import com.creativemd.creativecore.common.utils.math.BoxUtils.BoxCorner;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -27,6 +28,25 @@ public class CreativeAxisAlignedBB extends AxisAlignedBB {
     public CreativeAxisAlignedBB(BlockPos pos1, BlockPos pos2)
     {
         super(pos1, pos2);
+    }
+    
+    public boolean contains(Vector3d vec)
+    {
+        if (vec.x > this.minX && vec.x < this.maxX)
+        {
+            if (vec.y > this.minY && vec.y < this.maxY)
+            {
+                return vec.z > this.minZ && vec.z < this.maxZ;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
     }
     
     public double calculateYOffsetStepUp(AxisAlignedBB other, AxisAlignedBB otherY, double offset)
