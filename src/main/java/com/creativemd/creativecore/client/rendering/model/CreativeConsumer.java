@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 
 import javax.vecmath.Vector3f;
 
+import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;

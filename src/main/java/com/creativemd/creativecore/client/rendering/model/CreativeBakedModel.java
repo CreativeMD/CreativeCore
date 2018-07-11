@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
@@ -12,7 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.block.TileEntityState;
-import com.creativemd.creativecore.common.utils.CubeObject;
+import com.creativemd.creativecore.common.utils.math.CubeObject;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.Block;
@@ -135,7 +136,7 @@ public class CreativeBakedModel implements IBakedModel {
 			if(te == null && stack != null)
 				defaultColor = itemColores.colorMultiplier(new ItemStack(newState.getBlock(), 1, newState.getBlock().getMetaFromState(newState)), -1);
 			
-			baked.addAll(cube.getBakedQuad(te != null ? te.getWorld() : null, cube.getOffset(), newState, blockModel, side, layer, rand, true, defaultColor));
+			baked.addAll(cube.getBakedQuad(te != null ? te.getWorld() : null, te != null ? te.getPos() : null, cube.getOffset(), newState, blockModel, side, layer, rand, true, defaultColor));
 		}
 		
 		if(renderer instanceof ICustomCachedCreativeRendered && !FMLClientHandler.instance().hasOptifine() && stack == null)
@@ -151,9 +152,9 @@ public class CreativeBakedModel implements IBakedModel {
 		return baked;
 	}
 	
-	public static List<BakedQuad> getBakedQuad(IBlockAccess world, RenderCubeObject cube, BlockPos offset, IBlockState state, IBakedModel blockModel, BlockRenderLayer layer, EnumFacing side, long rand, boolean overrideTint)
+	public static List<BakedQuad> getBakedQuad(IBlockAccess world, RenderCubeObject cube, @Nullable BlockPos pos, BlockPos offset, IBlockState state, IBakedModel blockModel, BlockRenderLayer layer, EnumFacing side, long rand, boolean overrideTint)
 	{
-		return cube.getBakedQuad(world, offset, state, blockModel, side, layer, rand, overrideTint, -1);
+		return cube.getBakedQuad(world, pos, offset, state, blockModel, side, layer, rand, overrideTint, -1);
 	}
 	
 	/*public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long rand, boolean overrideTint, int defaultColor)

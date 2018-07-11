@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils.sorting;
+package com.creativemd.creativecore.common.utils.type;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.common.utils.math;
 
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Tuple3f;

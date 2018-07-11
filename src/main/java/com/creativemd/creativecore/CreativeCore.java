@@ -20,7 +20,7 @@ import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiNBTPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
-import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
 import com.creativemd.creativecore.core.CreativeCoreClient;
 import com.creativemd.creativecore.event.CreativeTickHandler;

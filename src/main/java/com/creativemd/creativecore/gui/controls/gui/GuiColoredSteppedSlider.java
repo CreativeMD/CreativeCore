@@ -2,8 +2,8 @@ package com.creativemd.creativecore.gui.controls.gui;
 
 import org.lwjgl.util.Color;
 
-import com.creativemd.creativecore.common.utils.ColorUtils;
-import com.creativemd.creativecore.common.utils.ColorUtils.ColorPart;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils.ColorPart;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 

@@ -1,14 +1,17 @@
 package com.creativemd.creativecore.client.mods.optifine;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +23,8 @@ public class OptifineHelper {
 	
 	private static boolean active = FMLClientHandler.instance().hasOptifine();
 	
+	private static Minecraft mc = Minecraft.getMinecraft();
+	
 	private static ThreadLocal<Object> renderEnv;
 	
 	private static boolean loadedOptifineReflections = false;
@@ -29,17 +34,20 @@ public class OptifineHelper {
 	private static Class blockModelCustomizer;
 	private static Constructor<?> renderEnvConstructor;
 	private static Method resetEnv;
+	private static Method getColorMultiplier;
 	
 	private static void loadOptifineReflections()
 	{
 		try {
 			loadedOptifineReflections = true;
-			renderEnvClass = Class.forName("RenderEnv");
+			renderEnvClass = Class.forName("net.optifine.render.RenderEnv");
 			renderEnvConstructor = renderEnvClass.getConstructor(IBlockAccess.class, IBlockState.class, BlockPos.class);
 			resetEnv = ReflectionHelper.findMethod(renderEnvClass, "reset", "reset", IBlockAccess.class, IBlockState.class, BlockPos.class);
-			blockModelCustomizer = Class.forName("BlockModelCustomizer");
+			blockModelCustomizer = Class.forName("net.optifine.model.BlockModelCustomizer");
 			getCustomizedModel = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderModel", "getRenderModel", IBakedModel.class, IBlockState.class, renderEnvClass);			
 			getCustomizedQuads = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderQuads", "getRenderQuads", List.class, IBlockAccess.class, IBlockState.class, BlockPos.class, EnumFacing.class, BlockRenderLayer.class, long.class, renderEnvClass);
+			Class customColorsClass = Class.forName("net.optifine.CustomColors");
+			getColorMultiplier = ReflectionHelper.findMethod(customColorsClass, "getColorMultiplier", "getColorMultiplier", BakedQuad.class, IBlockState.class, IBlockAccess.class, BlockPos.class, renderEnvClass);
 			
 			renderEnv = ThreadLocal.withInitial(new Supplier<Object>() {
 
@@ -53,8 +61,28 @@ public class OptifineHelper {
 					}
 				}
 			});
+			
+			Class configClass = Class.forName("Config");
+			isShadersMethod = configClass.getMethod("isShaders");
+			isRenderRegions = configClass.getMethod("isRenderRegions");
+			
+			regionX = ReflectionHelper.findField(RenderChunk.class, "regionX");
+			regionZ = ReflectionHelper.findField(RenderChunk.class, "regionZ");
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
+			active = false;
 			e.printStackTrace();
+		}
+	}
+	
+	public static IBakedModel getRenderModel(IBakedModel model, IBlockAccess world, IBlockState state, BlockPos pos)
+	{
+		if(!active)
+			return model;
+		try {
+			return (IBakedModel) getCustomizedModel.invoke(null, model, state, getEnv(world, state, pos));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -80,6 +108,69 @@ public class OptifineHelper {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public static int getColorMultiplier(BakedQuad quad, IBlockState state, IBlockAccess world, BlockPos pos)
+	{
+		try {
+			return (int) getColorMultiplier.invoke(null, quad, state, world, pos, getEnv(world, state, pos));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static boolean isActive()
+	{
+		return active;
+	}
+	
+	private static Method isShadersMethod = null;
+	
+	public static boolean isShaders()
+	{
+		try {
+			return (boolean) isShadersMethod.invoke(null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private static Method isRenderRegions = null;
+	
+	public static boolean isRenderRegions()
+	{
+		try {
+			return (boolean) isRenderRegions.invoke(null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private static Field regionX;
+	
+	public static int getRenderChunkRegionX(RenderChunk chunk)
+	{
+		try {
+			return regionX.getInt(chunk);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	private static Field regionZ;
+	
+	public static int getRenderChunkRegionZ(RenderChunk chunk)
+	{
+		try {
+			return regionZ.getInt(chunk);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	static

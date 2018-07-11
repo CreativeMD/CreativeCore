@@ -4,8 +4,9 @@ import javax.vecmath.Vector3f;
 
 import org.lwjgl.util.Color;
 
+import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
-import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -147,7 +148,7 @@ public class CreativeCubeConsumer {
         int multiplier = -1;
         if(tint != -1 && cube.color == -1)
         {
-            multiplier = blockInfo.getColorMultiplier(tint);
+            multiplier = OptifineHelper.isActive() ? OptifineHelper.getColorMultiplier(quad, state, blockInfo.getWorld(), blockInfo.getBlockPos()) : blockInfo.getColorMultiplier(tint);
             Color tempColor = ColorUtils.IntToRGBA(multiplier);
             tempColor.setAlpha(255);
             multiplier = ColorUtils.RGBAToInt(tempColor);

@@ -5,8 +5,9 @@ import javax.vecmath.Vector3d;
 
 import org.spongepowered.common.interfaces.world.IMixinWorld;
 
-import com.creativemd.creativecore.common.utils.BoxUtils;
-import com.creativemd.creativecore.common.utils.IVecOrigin;
+import com.creativemd.creativecore.common.utils.math.BoxUtils;
+import com.creativemd.creativecore.common.utils.math.IVecOrigin;
+import com.creativemd.creativecore.common.utils.math.MatrixUtils;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
@@ -39,7 +40,8 @@ public class WorldFake extends World implements IVecOrigin {
 	
 	public Vector3d axis;
 	private Vector3d translation = new Vector3d(0, 0, 0);
-	private Matrix3d rotation = BoxUtils.createIdentityMatrix();
+	private Matrix3d rotation = MatrixUtils.createIdentityMatrix();
+	private Matrix3d rotationInv = rotation;
 	
 	protected double rotX;
 	protected double rotY;
@@ -156,7 +158,8 @@ public class WorldFake extends World implements IVecOrigin {
 	protected void updateRotated()
 	{
 		rotated = rotX % 360 != 0 || rotY % 360 != 0 || rotZ % 360 != 0;
-		rotation = BoxUtils.createRotationMatrix(rotX, rotY, rotZ);
+		rotation = MatrixUtils.createRotationMatrix(rotX, rotY, rotZ);
+		rotationInv.invert(rotation);
 	}
 	
 	protected void updateTranslation()
@@ -226,6 +229,11 @@ public class WorldFake extends World implements IVecOrigin {
 		return rotation;
 	}
 
+	@Override
+	public Matrix3d rotationInv() {
+		return rotationInv;
+	}
+	
 	@Override
 	public Vector3d translation() {
 		return translation;

@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.client.avatar.Avatar;
 import com.creativemd.creativecore.client.avatar.AvatarItemStack;
-import com.creativemd.creativecore.common.utils.HashMapList;
+import com.creativemd.creativecore.common.utils.type.HashMapList;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;

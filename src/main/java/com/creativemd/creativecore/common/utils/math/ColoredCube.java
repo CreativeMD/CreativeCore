@@ -1,6 +1,7 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.common.utils.math;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;

@@ -3,7 +3,7 @@ package com.creativemd.creativecore.gui.controls.gui;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Color;
 
-import com.creativemd.creativecore.common.utils.ColorUtils.ColorPart;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils.ColorPart;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.container.GuiParent;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;

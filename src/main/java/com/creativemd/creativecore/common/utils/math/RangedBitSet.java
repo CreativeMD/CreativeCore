@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils;
+package com.creativemd.creativecore.common.utils.math;
 
 import java.util.ArrayList;
 import java.util.BitSet;
