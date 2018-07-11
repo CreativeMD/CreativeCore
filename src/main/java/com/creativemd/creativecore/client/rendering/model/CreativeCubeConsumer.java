@@ -146,9 +146,18 @@ public class CreativeCubeConsumer {
         //}
 
         int multiplier = -1;
+        
+        if(OptifineHelper.isActive())
+        {
+        	multiplier = OptifineHelper.getColorMultiplier(quad, state, blockInfo.getWorld(), blockInfo.getBlockPos());
+        	if(multiplier != -1)
+        		tint = 0;
+        }
         if(tint != -1 && cube.color == -1)
         {
-            multiplier = OptifineHelper.isActive() ? OptifineHelper.getColorMultiplier(quad, state, blockInfo.getWorld(), blockInfo.getBlockPos()) : blockInfo.getColorMultiplier(tint);
+        	if(multiplier == -1)
+        		multiplier = blockInfo.getColorMultiplier(tint);
+        	
             Color tempColor = ColorUtils.IntToRGBA(multiplier);
             tempColor.setAlpha(255);
             multiplier = ColorUtils.RGBAToInt(tempColor);
