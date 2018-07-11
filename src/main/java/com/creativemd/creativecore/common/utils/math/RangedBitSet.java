@@ -30,18 +30,10 @@ public class RangedBitSet {
 		return max;
 	}
 	
-	public void set(int min, int max)
+	public void add(int value)
 	{
-		set(min, max, true);
-	}
-	
-	public void set(int min, int max, boolean value)
-	{
-		int min_index = Math.max(this.min, min);
-		int max_index = Math.min(this.max, max);
-		
-		if(min_index < this.max)
-			set.set(min_index - this.min, max_index - this.min, value);
+		if(value >= min && value <= max)
+			set.set(value - min, true);
 	}
 	
 	public List<BitRange> getRanges()
@@ -50,12 +42,11 @@ public class RangedBitSet {
 		int index = 0;
 		while(index < max - min)
 		{
-			boolean value = set.get(index);
-			int nextIndex = value ? set.nextClearBit(index) : set.nextSetBit(index);
+			int nextIndex = set.nextSetBit(index+1);
 			if(nextIndex == -1)
 				nextIndex = max - min;
 			
-			ranges.add(new BitRange(index + min, nextIndex + min, value));
+			ranges.add(new BitRange(index + min, nextIndex + min));
 			
 			index = nextIndex;
 		}
@@ -66,13 +57,11 @@ public class RangedBitSet {
 		
 		public final int min;
 		public final int max;
-		public final boolean value;
 		
-		public BitRange(int min, int max, boolean value)
+		public BitRange(int min, int max)
 		{
 			this.min = min;
 			this.max = max;
-			this.value = value;
 		}
 		
 	}
