@@ -258,9 +258,6 @@ public class CreativeBakedModel implements IBakedModel {
 		
 		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
 		
-		if(renderer instanceof IExtendedCreativeRendered)
-			baked.addAll(((IExtendedCreativeRendered) renderer).getSpecialBakedQuads(state, te, side, rand, stack));
-		
 		if(side == null)
 			return baked;
 		
