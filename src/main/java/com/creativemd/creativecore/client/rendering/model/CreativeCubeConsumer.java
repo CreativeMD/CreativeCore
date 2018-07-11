@@ -153,13 +153,16 @@ public class CreativeCubeConsumer {
         	if(multiplier != -1)
         		tint = 0;
         }
-        if(tint != -1 && cube.color == -1)
+        if(tint != -1 && (cube.color == -1 || ColorUtils.isWhite(cube.color)))
         {
         	if(multiplier == -1)
         		multiplier = blockInfo.getColorMultiplier(tint);
         	
             Color tempColor = ColorUtils.IntToRGBA(multiplier);
-            tempColor.setAlpha(255);
+            if(cube.color != -1)
+            	tempColor.setAlpha(ColorUtils.getAlpha(cube.color));
+            else
+            	tempColor.setAlpha(255);
             multiplier = ColorUtils.RGBAToInt(tempColor);
         }else{
         	if(layer != BlockRenderLayer.CUTOUT_MIPPED || state.getBlock().canRenderInLayer(state, BlockRenderLayer.CUTOUT))
