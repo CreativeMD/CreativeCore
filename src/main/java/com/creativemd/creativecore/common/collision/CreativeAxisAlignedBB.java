@@ -79,6 +79,11 @@ public class CreativeAxisAlignedBB extends AxisAlignedBB {
 	{
 		return new Vec3d(getCornerX(corner), getCornerY(corner), getCornerZ(corner));
 	}
+    
+    public Vector3d getCornerVector3d(BoxCorner corner)
+   	{
+   		return new Vector3d(getCornerX(corner), getCornerY(corner), getCornerZ(corner));
+   	}
 	
 	public double getCornerValue(BoxCorner corner, Axis axis)
 	{
@@ -103,6 +108,24 @@ public class CreativeAxisAlignedBB extends AxisAlignedBB {
 	public Vec3d getSize()
 	{
 		return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
+	}
+	
+	public double getVolume()
+	{
+		return (maxX - minX) * (maxY - minY) * (maxZ - minZ);
+	}
+	
+	public double getIntersectionVolume(AxisAlignedBB other)
+	{
+		double d0 = Math.max(this.minX, other.minX);
+        double d1 = Math.max(this.minY, other.minY);
+        double d2 = Math.max(this.minZ, other.minZ);
+        double d3 = Math.min(this.maxX, other.maxX);
+        double d4 = Math.min(this.maxY, other.maxY);
+        double d5 = Math.min(this.maxZ, other.maxZ);
+        if(d0 < d3 && d1 < d4 && d2 < d5)
+        	return (d3 - d0) * (d4 - d1) * (d5 - d2);
+        return 0;
 	}
 	
 	public double getSize(Axis axis)

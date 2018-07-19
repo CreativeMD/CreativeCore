@@ -11,19 +11,23 @@ import com.creativemd.creativecore.common.collision.CreativeAxisAlignedBB;
 import com.creativemd.creativecore.common.utils.math.BoxUtils.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.MatrixUtils.MatrixLookupTable;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class Plane3d {
+public class CollidingPlane {
 	
 	public final CreativeAxisAlignedBB bb;
+	public final Axis axis;
 	public final PlaneCache cache;
 	protected final Vector3d origin;
 	protected final Vector3d normal;
 	
-	public Plane3d(CreativeAxisAlignedBB bb, PlaneCache cache, Vector3d[] corners, BoxCorner[] planeCorners)
+	public CollidingPlane(CreativeAxisAlignedBB bb, Axis axis, PlaneCache cache, Vector3d[] corners, BoxCorner[] planeCorners)
 	{
 		this.bb = bb;
+		this.axis = axis;
 		this.cache = cache;
 		this.origin = corners[planeCorners[0].ordinal()];
 		Vector3d first = corners[planeCorners[1].ordinal()];
@@ -120,7 +124,6 @@ public class Plane3d {
 		
 		if(beforeFront != afterFront)
 		{
-			// TODO add auto-accuracy system. depending on tocheck size and how far away it is, we got distance to the center and the radius, this should be more than enough to do it
 			if(steps < accuracySteps)
 			{
 				steps++;
@@ -185,7 +188,7 @@ public class Plane3d {
 		return bb.intersects(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
-	public static Plane3d[] getPlanes(CreativeAxisAlignedBB box, PlaneCache cache, MatrixLookupTable table)
+	public static CollidingPlane[] getPlanes(CreativeAxisAlignedBB box, PlaneCache cache, MatrixLookupTable table)
 	{
 		Vector3d[] corners = BoxUtils.getCorners(box);
 		
@@ -202,7 +205,7 @@ public class Plane3d {
 		if(table.hasZ && !needsX && !needsY)
 			needsX = true;
 		
-		Plane3d[] planes = new Plane3d[(needsX ? 2 : 0) + (needsY ? 2 : 0) + (needsZ ? 2 : 0)];
+		CollidingPlane[] planes = new CollidingPlane[(needsX ? 2 : 0) + (needsY ? 2 : 0) + (needsZ ? 2 : 0)];
 		int index = 0;
 		
 		if(needsX)
@@ -226,6 +229,58 @@ public class Plane3d {
 		return planes;
 	}
 	
+	private static void setPlane(Vector3d[] corners, CollidingPlane[] planes, CreativeAxisAlignedBB box, PlaneCache cache, Axis axis, int index)
+	{		
+		planes[index] = new CollidingPlane(box, axis, cache, corners, planesForAxis[axis.ordinal() * 2]);
+		planes[index + 1] = new CollidingPlane(box, axis, cache, corners, planesForAxis[axis.ordinal() * 2 + 1]);
+	}
+	
+	private static EnumFacing getFacing(CollidingPlane first, CollidingPlane second, Vector3d relativeVec)
+	{
+		Boolean firstInFront = first.isInFront(relativeVec);
+		if(firstInFront == null)
+			return null;
+		
+		Boolean secondInFront = second.isInFront(relativeVec);
+		if(secondInFront == null)
+			return null;
+		
+		int index;
+		if(firstInFront)
+			if(secondInFront)
+				index = 3;
+			else
+				index = 1;
+		else
+			if(secondInFront)
+				index = 2;
+			else
+				index = 0;
+		
+		return faceCache[first.axis.ordinal()][index];		
+	}
+	
+	public static EnumFacing getDirection(CollidingPlane[] planes, Vector3d origin, Vector3d center)
+	{
+		//Vector3d relative = new Vector3d(center);
+		//relative.sub(origin);
+		EnumFacing facing = getFacing(planes[0], planes[1], center);
+		
+		if(facing == null)
+			return null;
+		
+		if(planes.length == 2 || facing.getAxis() == Axis.X)
+			return facing;
+		
+		if(planes[2].axis == facing.getAxis())
+			return getFacing(planes[2], planes[3], center);
+		
+		if(planes.length > 4 && planes[4].axis == facing.getAxis())
+			return getFacing(planes[4], planes[5], center);
+		
+		return facing;
+	}
+	
 	private static BoxCorner[][] planesForAxis = new BoxCorner[][] {
 		{ BoxCorner.EUS, BoxCorner.EDN, BoxCorner.WUS, BoxCorner.WDN },
 		{ BoxCorner.EDS, BoxCorner.EUN, BoxCorner.WDS, BoxCorner.WUN },
@@ -237,15 +292,75 @@ public class Plane3d {
 		{ BoxCorner.WUS, BoxCorner.EDS, BoxCorner.WUN, BoxCorner.EDN }
 	};
 	
-	private static void setPlane(Vector3d[] corners, Plane3d[] planes, CreativeAxisAlignedBB box, PlaneCache cache, Axis axis, int index)
-	{		
-		planes[index] = new Plane3d(box, cache, corners, planesForAxis[axis.ordinal() * 2]);
-		planes[index + 1] = new Plane3d(box, cache, corners, planesForAxis[axis.ordinal() * 2 + 1]);
+	private static EnumFacing[][] faceCache;
+	
+	private static void buildCache()
+	{
+		AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+		faceCache = new EnumFacing[3][];
+		
+		for (int i = 0; i < Axis.values().length; i++) {
+			Vector3d[] corners = BoxUtils.getCorners(box);
+			
+			Axis axis = Axis.values()[i];
+			
+			Axis one = RotationUtils.getDifferentAxisFirst(axis);
+			Axis two = RotationUtils.getDifferentAxisSecond(axis);
+			
+			CollidingPlane[] planes = new CollidingPlane[2];
+			setPlane(corners, planes, null, null, axis, 0);
+			
+			EnumFacing[] cache = new EnumFacing[4];
+			for (int j = 0; j < cache.length; j++) {
+				
+				int oneDirection = -1;
+				int twoDirection = -1;
+				
+				switch(j)
+				{
+				case 1:
+					oneDirection = 1;
+					break;
+				case 2:
+					twoDirection = 1;
+					break;
+				case 3:
+					oneDirection = 1;
+					twoDirection = 1;
+					break;
+				}
+				
+				Vector3d normalFirst = new Vector3d(planes[0].normal);
+				normalFirst.scale(oneDirection);
+				Vector3d normalSecond = new Vector3d(planes[1].normal);
+				normalSecond.scale(twoDirection);
+				
+				EnumFacing facing;
+				if(RotationUtils.get(one, normalFirst) == RotationUtils.get(one, normalSecond))
+					facing = EnumFacing.getFacingFromAxis(RotationUtils.get(one, normalFirst) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, one);
+				else if(RotationUtils.get(two, normalFirst) == RotationUtils.get(two, normalSecond))
+					facing = EnumFacing.getFacingFromAxis(RotationUtils.get(two, normalFirst) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, two);
+				else
+					throw new RuntimeException("This cannot happen!");
+				
+				cache[j] = facing;
+			}
+			
+			faceCache[i] = cache;
+			
+			
+		}
+		
+	}
+	
+	static
+	{
+		buildCache();
 	}
 	
 	public static class PlaneCache {
 		
-		public Plane3d[] planes;
+		public CollidingPlane[] planes;
 		public final Vector3d center;
 		public final double radiusSquared;
 		
@@ -264,6 +379,15 @@ public class Plane3d {
 		{
 			planes = null;
 		}
+		
+	}
+	
+	public static class PushCache {
+		
+		public CreativeAxisAlignedBB pushBox;
+		public EnumFacing facing;
+		
+		public AxisAlignedBB entityBox;
 		
 	}
 }
