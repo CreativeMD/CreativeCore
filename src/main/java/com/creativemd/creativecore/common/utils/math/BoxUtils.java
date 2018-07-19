@@ -11,6 +11,7 @@ import javax.vecmath.Vector3d;
 import com.creativemd.creativecore.common.collision.CreativeAxisAlignedBB;
 import com.creativemd.creativecore.common.utils.math.RotationUtils.BooleanRotation;
 
+import net.minecraft.client.renderer.EnumFaceDirection;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
@@ -514,6 +515,76 @@ public class BoxUtils {
 			}
 		}
 		
+	}
+	
+	public static enum BoxFace
+	{
+		EAST(EnumFacing.EAST, new BoxCorner[] {BoxCorner.EUS, BoxCorner.EDS, BoxCorner.EDN, BoxCorner.EUN}),
+		WEST(EnumFacing.WEST, new BoxCorner[] {BoxCorner.WUN, BoxCorner.WDN, BoxCorner.WDS, BoxCorner.WUS}),
+		UP(EnumFacing.UP, new BoxCorner[] {BoxCorner.WUN, BoxCorner.WUS, BoxCorner.EUS, BoxCorner.EUN}),
+		DOWN(EnumFacing.DOWN, new BoxCorner[] {BoxCorner.WDS, BoxCorner.WDN, BoxCorner.EDN, BoxCorner.EDS}),
+		SOUTH(EnumFacing.SOUTH, new BoxCorner[] {BoxCorner.WUS, BoxCorner.WDS, BoxCorner.EDS, BoxCorner.EUS}),
+		NORTH(EnumFacing.NORTH, new BoxCorner[] {BoxCorner.EUN, BoxCorner.EDN, BoxCorner.WDN, BoxCorner.WUN});
+		
+		public final EnumFacing facing;
+		public final BoxCorner[] corners;
+		
+		BoxFace(EnumFacing facing, BoxCorner[] corners)
+		{
+			this.facing = facing;
+			this.corners = corners;
+		}
+		
+		public Vector3d first(Vector3d[] corners)
+		{
+			return corners[this.corners[0].ordinal()];
+		}
+		
+		public Vector3d normal(Vector3d[] corners)
+		{
+			Vector3d origin = first(corners);
+			Vector3d first = new Vector3d(corners[this.corners[1].ordinal()]);
+			Vector3d second = new Vector3d(corners[this.corners[2].ordinal()]);
+			first.sub(origin);
+			second.sub(origin);
+			return new Vector3d(first.y * second.z - first.z * second.y, first.z * second.x - first.x * second.z, first.x * second.y - first.y * second.x);
+		}
+		
+		public static BoxFace getFace(EnumFacing facing)
+		{
+			switch(facing)
+			{
+			case EAST:
+				return EAST;
+			case WEST:
+				return WEST;
+			case UP:
+				return UP;
+			case DOWN:
+				return DOWN;
+			case SOUTH:
+				return SOUTH;
+			case NORTH:
+				return NORTH;
+			default:
+				return null;
+			}
+		}
+		
+		public static BoxFace getFace(Axis axis, boolean direction)
+		{
+			switch(axis)
+			{
+			case X:
+				return direction ? EAST : WEST;
+			case Y:
+				return direction ? UP : DOWN;
+			case Z:
+				return direction ? SOUTH : NORTH;
+			default:
+				return null;
+			}
+		}
 	}
 	
 	static
