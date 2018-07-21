@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils.math;
+package com.creativemd.creativecore.common.utils.math.box;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;

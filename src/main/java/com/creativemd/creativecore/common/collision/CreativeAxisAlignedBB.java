@@ -3,7 +3,7 @@ package com.creativemd.creativecore.common.collision;
 import javax.annotation.Nullable;
 import javax.vecmath.Vector3d;
 
-import com.creativemd.creativecore.common.utils.math.BoxUtils.BoxCorner;
+import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
