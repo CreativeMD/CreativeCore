@@ -1,7 +1,10 @@
-package com.creativemd.creativecore.common.utils.math;
+package com.creativemd.creativecore.common.utils.math.box;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
+
+import com.creativemd.creativecore.common.utils.math.Rotation;
+import com.creativemd.creativecore.common.utils.math.RotationUtils;
 
 import net.minecraft.client.renderer.EnumFaceDirection.VertexInformation;
 import net.minecraft.util.EnumFacing;

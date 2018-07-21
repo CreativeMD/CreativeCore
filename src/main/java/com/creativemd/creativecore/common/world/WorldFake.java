@@ -5,9 +5,9 @@ import javax.vecmath.Vector3d;
 
 import org.spongepowered.common.interfaces.world.IMixinWorld;
 
-import com.creativemd.creativecore.common.utils.math.BoxUtils;
-import com.creativemd.creativecore.common.utils.math.IVecOrigin;
-import com.creativemd.creativecore.common.utils.math.MatrixUtils;
+import com.creativemd.creativecore.common.utils.math.box.BoxUtils;
+import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
+import com.creativemd.creativecore.common.utils.math.vec.MatrixUtils;
 
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
@@ -29,27 +29,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-public class WorldFake extends World implements IVecOrigin {
+public class WorldFake extends World implements IFakeWorld {
 	
 	public final World parentWorld;
+	public IVecOrigin origin;
 	
 	@SideOnly(Side.CLIENT)
 	public boolean shouldRender;
-	
-	protected boolean rotated = false;
-	
-	public Vector3d axis;
-	private Vector3d translation = new Vector3d(0, 0, 0);
-	private Matrix3d rotation = MatrixUtils.createIdentityMatrix();
-	private Matrix3d rotationInv = rotation;
-	
-	protected double rotX;
-	protected double rotY;
-	protected double rotZ;
-	
-	protected double offsetX;
-	protected double offsetY;
-	protected double offsetZ;
 	
 	public static WorldFake createFakeWorld(World world)
 	{
@@ -79,15 +65,6 @@ public class WorldFake extends World implements IVecOrigin {
 		return ((ChunkProviderFake) getChunkProvider()).chunkExists(x, z);
 	}
 	
-	public Vector3d getRotatedVector(Vector3d vec)
-	{	
-		vec.sub(axis);
-		rotation.transform(vec);
-		vec.add(axis);
-		vec.add(translation);
-		return vec;
-	}
-	
 	@Override
 	public void spawnParticle(EnumParticleTypes particleType, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, int... parameters)
     {
@@ -99,7 +76,8 @@ public class WorldFake extends World implements IVecOrigin {
     {
         for (int i = 0; i < this.eventListeners.size(); ++i)
         {
-        	Vector3d pos = getRotatedVector(new Vector3d(p_190523_2_, p_190523_4_, p_190523_6_));
+        	Vector3d pos = new Vector3d(p_190523_2_, p_190523_4_, p_190523_6_);
+        	origin.transformPointToWorld(pos);
             ((IWorldEventListener)this.eventListeners.get(i)).spawnParticle(p_190523_1_, false, true, pos.x, pos.y, pos.z, p_190523_8_, p_190523_10_, p_190523_12_, p_190523_14_);
         }
     }
@@ -111,132 +89,24 @@ public class WorldFake extends World implements IVecOrigin {
         this.spawnParticle(particleType.getParticleID(), particleType.getShouldIgnoreRange() || ignoreRange, xCoord, yCoord, zCoord, xSpeed, ySpeed, zSpeed, parameters);
     }
 	
-	private void spawnParticle(int particleID, boolean ignoreRange, double xCood, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, int... parameters)
+	private void spawnParticle(int particleID, boolean ignoreRange, double xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double zSpeed, int... parameters)
     {
         for (int i = 0; i < this.eventListeners.size(); ++i)
         {
-        	Vector3d pos = getRotatedVector(new Vector3d(xCood, yCoord, zCoord));
+        	Vector3d pos = new Vector3d(xCoord, yCoord, zCoord);
+        	origin.transformPointToWorld(pos);
             ((IWorldEventListener)this.eventListeners.get(i)).spawnParticle(particleID, ignoreRange, pos.x, pos.y, pos.z, xSpeed, ySpeed, zSpeed, parameters);
         }
     }
 
 	@Override
-	public double offX() {
-		return offsetX;
+	public IVecOrigin getOrigin() {
+		return origin;
 	}
 
 	@Override
-	public double offY() {
-		return offsetY;
-	}
-
-	@Override
-	public double offZ() {
-		return offsetZ;
-	}
-
-	@Override
-	public double rotX() {
-		return rotX;
-	}
-
-	@Override
-	public double rotY() {
-		return rotY;
-	}
-
-	@Override
-	public double rotZ() {
-		return rotZ;
-	}
-
-	@Override
-	public boolean isRotated() {
-		return rotated;
-	}
-	
-	protected void updateRotated()
-	{
-		rotated = rotX % 360 != 0 || rotY % 360 != 0 || rotZ % 360 != 0;
-		rotation = MatrixUtils.createRotationMatrix(rotX, rotY, rotZ);
-		rotationInv.invert(rotation);
-	}
-	
-	protected void updateTranslation()
-	{
-		translation.set(offsetX, offsetY, offsetZ);
-	}
-
-	@Override
-	public void offX(double value) {
-		this.offsetX = value;
-		updateTranslation();
-	}
-
-	@Override
-	public void offY(double value) {
-		this.offsetY = value;
-		updateTranslation();
-	}
-
-	@Override
-	public void offZ(double value) {
-		this.offsetZ = value;
-		updateTranslation();
-	}
-	
-	@Override
-	public void off(double x, double y, double z) {
-		this.offsetX = x;
-		this.offsetY = y;
-		this.offsetZ = z;
-		updateTranslation();
-	}
-
-	@Override
-	public void rotX(double value) {
-		this.rotX = value;
-		updateRotated();
-	}
-
-	@Override
-	public void rotY(double value) {
-		this.rotY = value;
-		updateRotated();
-	}
-
-	@Override
-	public void rotZ(double value) {
-		this.rotZ = value;
-		updateRotated();
-	}
-	
-	@Override
-	public void rot(double x, double y, double z) {
-		this.rotX = x;
-		this.rotY = y;
-		this.rotZ = z;
-		updateRotated();
-	}
-
-	@Override
-	public Vector3d axis() {
-		return axis;
-	}
-
-	@Override
-	public Matrix3d rotation() {
-		return rotation;
-	}
-
-	@Override
-	public Matrix3d rotationInv() {
-		return rotationInv;
-	}
-	
-	@Override
-	public Vector3d translation() {
-		return translation;
+	public void setOrigin(IVecOrigin origin) {
+		this.origin = origin;
 	}
 
 }

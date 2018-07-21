@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils.math;
+package com.creativemd.creativecore.common.utils.math.box;
 
 import java.util.Vector;
 
@@ -8,8 +8,9 @@ import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.collision.CreativeAxisAlignedBB;
-import com.creativemd.creativecore.common.utils.math.BoxUtils.BoxCorner;
-import com.creativemd.creativecore.common.utils.math.MatrixUtils.MatrixLookupTable;
+import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
+import com.creativemd.creativecore.common.utils.math.vec.MatrixUtils.MatrixLookupTable;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -384,7 +385,7 @@ public class CollidingPlane {
 	
 	public static class PushCache {
 		
-		public CreativeAxisAlignedBB pushBox;
+		public OrientatedBoundingBox pushBox;
 		public EnumFacing facing;
 		
 		public AxisAlignedBB entityBox;

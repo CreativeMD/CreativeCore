@@ -1,10 +1,12 @@
-package com.creativemd.creativecore.common.utils.math;
+package com.creativemd.creativecore.common.utils.math.vec;
 
 import java.util.HashMap;
 
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
+
+import com.creativemd.creativecore.common.utils.math.BooleanUtils;
 
 import net.minecraft.world.gen.structure.StructureVillagePieces.Well;
 

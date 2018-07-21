@@ -13,7 +13,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.block.TileEntityState;
-import com.creativemd.creativecore.common.utils.math.CubeObject;
+import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.block.Block;
