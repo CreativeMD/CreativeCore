@@ -47,6 +47,18 @@ public class GuiStateButton extends GuiButton{
 		return -1;
 	}
 	
+	public void previousState()
+	{
+		int state = getState();
+		state--;
+		if(state < 0)
+			state = states.length-1;
+		if(state >= states.length)
+			state = 0;
+		setState(state);
+		raiseEvent(new GuiControlChangedEvent(this));
+	}
+	
 	public void nextState()
 	{
 		int state = getState();
@@ -69,7 +81,10 @@ public class GuiStateButton extends GuiButton{
 	{
 		if(super.mousePressed(posX, posY, button))
 		{
-			nextState();
+			if(button == 1)
+				previousState();
+			else
+				nextState();
 			return true;
 		}
 		return false;			
