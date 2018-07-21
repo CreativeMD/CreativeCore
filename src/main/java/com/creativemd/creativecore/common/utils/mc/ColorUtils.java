@@ -77,7 +77,7 @@ public class ColorUtils {
 		public abstract int getBrightest();
 	}
 	
-	public static int WHITE = 16777215;
+	public static int WHITE = -1;
 	
 	public static int getAlpha(int color)
 	{
