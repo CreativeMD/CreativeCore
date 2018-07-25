@@ -11,8 +11,8 @@ import java.nio.ShortBuffer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -20,15 +20,15 @@ public class BufferBuilderUtils {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	
-	public static Field byteBufferField = ReflectionHelper.findField(BufferBuilder.class, "byteBuffer", "field_179001_a");
-	public static Field rawIntBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawIntBuffer", "field_178999_b");
-	public static Field rawFloatBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawFloatBuffer", "field_179000_c");
-	public static Field rawShortBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawShortBuffer", "field_181676_c");
-	public static Field vertexCountField = ReflectionHelper.findField(BufferBuilder.class, "vertexCount", "field_178997_d");
+	public static Field byteBufferField = ReflectionHelper.findField(VertexBuffer.class, "byteBuffer", "field_179001_a");
+	public static Field rawIntBufferField = ReflectionHelper.findField(VertexBuffer.class, "rawIntBuffer", "field_178999_b");
+	public static Field rawFloatBufferField = ReflectionHelper.findField(VertexBuffer.class, "rawFloatBuffer", "field_179000_c");
+	public static Field rawShortBufferField = ReflectionHelper.findField(VertexBuffer.class, "rawShortBuffer", "field_181676_c");
+	public static Field vertexCountField = ReflectionHelper.findField(VertexBuffer.class, "vertexCount", "field_178997_d");
 	
-	public static Method growBuffer = ReflectionHelper.findMethod(BufferBuilder.class, "growBuffer",  "func_181670_b", int.class);
+	public static Method growBuffer = ReflectionHelper.findMethod(VertexBuffer.class, "growBuffer",  "func_181670_b", int.class);
 	
-	public static void growBuffer(BufferBuilder builder, int size)
+	public static void growBuffer(VertexBuffer builder, int size)
 	{
 		try {
 			growBuffer.invoke(builder, size);
@@ -37,7 +37,7 @@ public class BufferBuilderUtils {
 		}
 	}
 	
-	public static void growBufferSmall(BufferBuilder builder, int size)
+	public static void growBufferSmall(VertexBuffer builder, int size)
 	{
 		try {
 			ByteBuffer oldByteBuffer = builder.getByteBuffer();
@@ -66,12 +66,12 @@ public class BufferBuilderUtils {
 		}
 	}
 	
-	public static int getBufferSize(BufferBuilder builder)
+	public static int getBufferSize(VertexBuffer builder)
 	{
 		return builder.getVertexFormat().getIntegerSize() * builder.getVertexCount();
 	}
 	
-	public static void addVertexDataSmall(BufferBuilder builder, int[] vertexData)
+	public static void addVertexDataSmall(VertexBuffer builder, int[] vertexData)
 	{
 		growBufferSmall(builder, vertexData.length * 4 + builder.getVertexFormat().getNextOffset());
 		try {
@@ -84,7 +84,7 @@ public class BufferBuilderUtils {
 		}
 	}
 	
-	public static void addBuffer(BufferBuilder buffer, BufferBuilder toAdd)
+	public static void addBuffer(VertexBuffer buffer, VertexBuffer toAdd)
 	{
 		int size = toAdd.getVertexFormat().getIntegerSize() * toAdd.getVertexCount();
 		try {

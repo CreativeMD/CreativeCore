@@ -1,48 +1,32 @@
 package com.creativemd.creativecore.common.world;
 
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.world.BlockChangeFlag;
 import org.spongepowered.api.world.explosion.Explosion;
 import org.spongepowered.common.block.SpongeBlockSnapshot;
 import org.spongepowered.common.config.SpongeConfig;
 import org.spongepowered.common.config.type.WorldConfig;
-import org.spongepowered.common.event.tracking.CauseTracker;
 import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.common.world.gen.SpongeChunkGenerator;
 import org.spongepowered.common.world.gen.SpongeWorldGenerator;
 
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
-import com.creativemd.creativecore.common.utils.math.vec.MatrixUtils;
 
 import co.aikar.timings.WorldTimingsHandler;
-import net.minecraft.advancements.AdvancementManager;
-import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.profiler.Profiler;
-import net.minecraft.scoreboard.ScoreboardSaveData;
-import net.minecraft.scoreboard.ServerScoreboard;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.village.VillageCollection;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.MapStorage;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraft.world.storage.WorldSavedDataCallableSave;
-import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Interface(modid = "sponge", iface = "org.spongepowered.common.interfaces.world.IMixinWorldServer")
 public class WorldFakeServer extends WorldFake implements IMixinWorldServer {
@@ -150,11 +134,6 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer {
 	@Override
 	public void updateWorldGenerator() {
 		((IMixinWorldServer) parentWorld).updateWorldGenerator();
-	}
-
-	@Override
-	public CauseTracker getCauseTracker() {
-		return ((IMixinWorldServer) parentWorld).getCauseTracker();
 	}
 
 	@Override
@@ -283,6 +262,11 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer {
 	@Override
 	public boolean isFake() {
 		return true;
+	}
+
+	@Override
+	public void markTileEntitiesInChunkForRemoval(Chunk chunk) {
+		
 	}
 
 }

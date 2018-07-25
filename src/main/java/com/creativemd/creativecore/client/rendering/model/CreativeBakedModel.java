@@ -18,6 +18,7 @@ import org.lwjgl.util.Color;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 

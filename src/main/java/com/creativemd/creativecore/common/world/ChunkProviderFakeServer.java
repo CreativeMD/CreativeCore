@@ -1,7 +1,5 @@
 package com.creativemd.creativecore.common.world;
 
-import javax.annotation.Nullable;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.common.interfaces.world.gen.IMixinChunkProviderServer;
@@ -9,9 +7,8 @@ import org.spongepowered.common.interfaces.world.gen.IMixinChunkProviderServer;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.storage.IChunkLoader;
-import net.minecraft.world.gen.ChunkProviderServer;
-import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.Optional.Interface;
 
 @Interface(modid = "sponge", iface = "org.spongepowered.common.interfaces.world.gen.IMixinChunkProviderServer")

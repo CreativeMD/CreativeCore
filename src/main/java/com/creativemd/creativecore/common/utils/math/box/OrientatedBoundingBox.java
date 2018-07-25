@@ -135,7 +135,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
     }
     
     @Override
-    public OrientatedBoundingBox expand(double x, double y, double z)
+    public OrientatedBoundingBox addCoord(double x, double y, double z)
     {
         double d0 = this.minX;
         double d1 = this.minY;
@@ -175,7 +175,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
     }
     
     @Override
-    public OrientatedBoundingBox grow(double x, double y, double z)
+    public OrientatedBoundingBox expand(double x, double y, double z)
     {
         double d0 = this.minX - x;
         double d1 = this.minY - y;
@@ -187,9 +187,9 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
     }
     
     @Override
-    public OrientatedBoundingBox grow(double value)
+    public OrientatedBoundingBox expandXyz(double value)
     {
-        return this.grow(value, value, value);
+        return this.expand(value, value, value);
     }
     
     @Override
@@ -277,9 +277,9 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
     }
 
     @Override
-    public OrientatedBoundingBox offset(Vec3d vec)
+    public OrientatedBoundingBox move(Vec3d vec)
     {
-        return this.offset(vec.x, vec.y, vec.z);
+        return this.offset(vec.xCoord, vec.yCoord, vec.zCoord);
     }
     
     /**
@@ -610,7 +610,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
     }
 
     @Override
-    public boolean intersects(AxisAlignedBB other)
+    public boolean intersectsWith(AxisAlignedBB other)
     {
     	if(other instanceof OrientatedBoundingBox)
     	{
