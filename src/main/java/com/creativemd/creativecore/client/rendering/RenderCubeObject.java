@@ -291,6 +291,8 @@ public class RenderCubeObject extends CubeObject {
 		return false;
 	}
 	
+	public boolean isEmissive = false;
+	
 	protected List<BakedQuad> getBakedQuad(IBlockAccess world, IBakedModel blockModel, IBlockState state, EnumFacing facing, BlockPos pos, BlockRenderLayer layer, long rand)
 	{
 		return OptifineHelper.getRenderQuads(blockModel.getQuads(state, facing, rand), world, state, pos, facing, layer, rand);
@@ -309,6 +311,9 @@ public class RenderCubeObject extends CubeObject {
 		for(int i = 0; i < blockQuads.size(); i++)
 		{
 			BakedQuad oldQuad = blockQuads.get(i);
+			
+			if(!isEmissive && OptifineHelper.isEmissive(oldQuad.getSprite()))
+				isEmissive = true;
 			
 			int index = 0;
 			int uvIndex = index + oldQuad.getFormat().getUvOffsetById(0) / 4;

@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.chunk.RenderChunk;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -35,6 +36,8 @@ public class OptifineHelper {
 	private static Constructor<?> renderEnvConstructor;
 	private static Method resetEnv;
 	private static Method getColorMultiplier;
+	private static Field isEmissive;
+	private static Method getQuadEmissive;
 	
 	private static void loadOptifineReflections()
 	{
@@ -68,6 +71,10 @@ public class OptifineHelper {
 			
 			regionX = ReflectionHelper.findField(RenderChunk.class, "regionX");
 			regionZ = ReflectionHelper.findField(RenderChunk.class, "regionZ");
+			
+			isEmissive = ReflectionHelper.findField(TextureAtlasSprite.class, "isEmissive");
+			
+			getQuadEmissive = ReflectionHelper.findMethod(BakedQuad.class, "getQuadEmissive", "getQuadEmissive");
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
 			active = false;
 			e.printStackTrace();
@@ -103,7 +110,16 @@ public class OptifineHelper {
 		if(!active || world == null || layer == null)
 			return quads;
 		try {
-			return (List<BakedQuad>) getCustomizedQuads.invoke(null, quads, world, state, pos, facing, layer, rand, getEnv(world, state, pos));
+			quads  = (List<BakedQuad>) getCustomizedQuads.invoke(null, quads, world, state, pos, facing, layer, rand, getEnv(world, state, pos));
+			
+			int size = quads.size();
+			for (int i = 0; i < size; i++) {
+				BakedQuad emissive = (BakedQuad) getQuadEmissive.invoke(quads.get(i));
+				if(emissive != null)
+					quads.add(emissive);
+			}
+			
+			return quads;
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -171,6 +187,35 @@ public class OptifineHelper {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+	
+	public static boolean isEmissive(TextureAtlasSprite sprite)
+	{
+		if(!active)
+			return false;
+		
+		try {
+			return isEmissive.getBoolean(sprite);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static BakedQuad getQuadEmissive(BakedQuad quad)
+	{
+		if(!active)
+			return quad;
+		
+		try {
+			BakedQuad emissive = (BakedQuad) getQuadEmissive.invoke(quad);
+			if(emissive != null)
+				return emissive;
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		
+		return quad;
 	}
 	
 	static

@@ -1,6 +1,5 @@
 package com.creativemd.creativecore.client.rendering.model;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 
 import javax.vecmath.Vector3f;
@@ -201,7 +200,14 @@ public class CreativeCubeConsumer {
             }
 
             float blockLight = lightmap[v][0], skyLight = lightmap[v][1];
-            updateLightmap(normal[v], lightmap[v], x, y, z);
+            
+            if(OptifineHelper.isEmissive(quad.getSprite()))
+            {
+            	lightmap[v][0] = 1;
+            	lightmap[v][1] = 1;
+            }
+            else
+            	updateLightmap(normal[v], lightmap[v], x, y, z);
             if(dataLength[lightmapIndex] > 1)
             {
                 if(blockLight > lightmap[v][0]) lightmap[v][0] = blockLight;
