@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.lwjgl.util.Color;
 
+import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
@@ -35,10 +36,15 @@ public class CreativeBakedQuad extends BakedQuad {
 	
 	public CreativeBakedQuad(BakedQuad quad, RenderCubeObject cube, int tintedColor, boolean shouldOverrideColor, EnumFacing facing)
     {
-        super(copyArray(quad.getVertexData()), shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
+        this(quad, cube, tintedColor, shouldOverrideColor, facing, false);
+    }
+	
+	private CreativeBakedQuad(BakedQuad quad, RenderCubeObject cube, int tintedColor, boolean shouldOverrideColor, EnumFacing facing, boolean something)
+	{
+		super(copyArray(quad.getVertexData()), shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
         this.cube = cube;
         this.shouldOverrideColor = shouldOverrideColor;
-    }
+	}
 	
 	private static int[] copyArray(int[] array)
 	{
