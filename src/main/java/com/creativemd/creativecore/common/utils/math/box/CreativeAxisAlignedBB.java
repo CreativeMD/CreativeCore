@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.collision;
+package com.creativemd.creativecore.common.utils.math.box;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Vector3d;

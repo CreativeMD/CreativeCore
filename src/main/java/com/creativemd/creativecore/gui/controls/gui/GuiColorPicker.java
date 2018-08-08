@@ -12,7 +12,7 @@ public class GuiColorPicker extends GuiParent {
 	
 	public Color color;
 	
-	public GuiColorPicker(String name, int x, int y, Color color, boolean hasAlpha) {
+	public GuiColorPicker(String name, int x, int y, Color color, boolean hasAlpha, int alphaMin) {
 		super(name, x, y, 140, hasAlpha ? 40 : 30);
 		marginWidth = 0;
 		this.color = color;
@@ -111,7 +111,11 @@ public class GuiColorPicker extends GuiParent {
 		addControl(new GuiColoredSteppedSlider("g", 8, 10, 84, 5, this, ColorPart.GREEN).setStyle(defaultStyle));
 		addControl(new GuiColoredSteppedSlider("b", 8, 20, 84, 5, this, ColorPart.BLUE).setStyle(defaultStyle));
 		if(hasAlpha)
-			addControl(new GuiColoredSteppedSlider("a", 8, 30, 84, 5, this, ColorPart.ALPHA).setStyle(defaultStyle));
+		{
+			GuiColoredSteppedSlider alpha = new GuiColoredSteppedSlider("a", 8, 30, 84, 5, this, ColorPart.ALPHA);
+			alpha.minValue = alphaMin;
+			addControl(alpha.setStyle(defaultStyle));
+		}
 		addControl(new GuiColorPlate("plate", 107, 2, 20, 20, color).setStyle(defaultStyle));
 		
 	}

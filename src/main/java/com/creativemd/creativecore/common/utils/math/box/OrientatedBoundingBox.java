@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
-import com.creativemd.creativecore.common.collision.CreativeAxisAlignedBB;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.box.CollidingPlane.PlaneCache;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
@@ -466,11 +465,11 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
     				double valueAxis = outerCornerAxis + (RotationUtils.get(axis, corners[indexFirst+1]) - outerCornerAxis) * t + (RotationUtils.get(axis, corners[indexSecond+1]) - outerCornerAxis) * s;
     				double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
     				
-    				if(distance < 0)
-    					return distance;
+    				//if(distance < 0)
+    					//return distance;
     				
-    				if(distance > 0.00000000001)
-    					distance -= 0.00000000001;
+    				//if(distance > 0.00000000001)
+    					//distance -= 0.00000000001;
     				
     				minDistance = Math.min(distance, minDistance);
 				}
@@ -491,7 +490,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
     	
     	double distance = calculateDistanceRotated(other, axis, offset);
     	
-    	if(distance < 0)
+    	if(distance < 0 && !equals(distance, 0))
     		return offset;
     	
     	if (offset > 0.0D)
@@ -508,6 +507,23 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
         }
         return offset;
     }
+    
+    public static final float EPSILON = 0.001F;
+	
+	public static boolean smallerThanAndEquals(double a, double b)
+	{
+		return a < b || equals(a, b);
+	}
+	
+	public static boolean greaterThanAndEquals(double a, double b)
+	{
+		return a > b || equals(a, b);
+	}
+	
+	public static boolean equals(double a, double b)
+	{
+		return a == b ? true : Math.abs(a - b) < EPSILON;
+	}
     
     @Override
     public double calculateYOffsetStepUp(AxisAlignedBB other, AxisAlignedBB otherY, double offset)
@@ -575,9 +591,9 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
                     offset = d1;
                 }
             }
-            else if (offset < 0.0D && getMin(other, axis) >= getMaxTranslated(one))
+            else if (offset < 0.0D && getMin(other, axis) >= getMaxTranslated(axis))
             {
-                double d0 = getMaxTranslated(one) - getMin(other, axis);
+                double d0 = getMaxTranslated(axis) - getMin(other, axis);
 
                 if (d0 > offset)
                 {
