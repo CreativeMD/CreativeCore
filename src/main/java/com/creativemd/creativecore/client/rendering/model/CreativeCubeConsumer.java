@@ -174,6 +174,8 @@ public class CreativeCubeConsumer {
             	tempColor.setAlpha(255);
             multiplier = ColorUtils.RGBAToInt(tempColor);
         }else{
+        	if(layer == BlockRenderLayer.CUTOUT_MIPPED && state.getBlock().getBlockLayer() != BlockRenderLayer.CUTOUT_MIPPED)
+        		tint = 0;
         	if(layer != BlockRenderLayer.CUTOUT_MIPPED || state.getBlock().canRenderInLayer(state, BlockRenderLayer.CUTOUT))
         		tint = 0;
         	multiplier = cube.color;
