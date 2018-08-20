@@ -15,4 +15,14 @@ public class BooleanUtils {
 		return wasTrue;
 	}
 	
+	public static int countTrue(boolean... array)
+	{
+		int count = 0;
+		for (int i = 0; i < array.length; i++) {
+			if(array[i])
+				count++;
+		}
+		return count;
+	}
+	
 }
