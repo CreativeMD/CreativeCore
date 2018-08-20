@@ -7,9 +7,13 @@ import javax.vecmath.Matrix3d;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
+import com.creativemd.creativecore.common.utils.math.BooleanUtils;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
+import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxFace;
+import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 import com.creativemd.creativecore.common.utils.math.vec.MatrixUtils.MatrixLookupTable;
+import com.creativemd.creativecore.common.utils.math.vec.VecOrigin;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -19,23 +23,23 @@ import net.minecraft.util.math.AxisAlignedBB;
 public class CollidingPlane {
 	
 	public final CreativeAxisAlignedBB bb;
-	public final Axis axis;
+	public final EnumFacing facing;
 	public final PlaneCache cache;
 	protected final Vector3d origin;
 	protected final Vector3d normal;
 	
-	public CollidingPlane(CreativeAxisAlignedBB bb, Axis axis, PlaneCache cache, Vector3d[] corners, BoxCorner[] planeCorners)
+	public CollidingPlane(CreativeAxisAlignedBB bb, EnumFacing facing, PlaneCache cache, Vector3d[] corners, BoxCorner[] planeCorners)
 	{
 		this.bb = bb;
-		this.axis = axis;
+		this.facing = facing;
 		this.cache = cache;
 		this.origin = corners[planeCorners[0].ordinal()];
 		Vector3d first = corners[planeCorners[1].ordinal()];
 		Vector3d second = corners[planeCorners[2].ordinal()];
 		
-		first.sub(origin);
-		second.sub(origin);
-		this.normal = new Vector3d(first.y * second.z - first.z * second.y, first.z * second.x - first.x * second.z, first.x * second.y - first.y * second.x);
+		this.normal = new Vector3d((first.y - origin.y) * (second.z - origin.z) - (first.z - origin.z) * (second.y - origin.y),
+				(first.z - origin.z) * (second.x - origin.x) - (first.x - origin.x) * (second.z - origin.z),
+				(first.x - origin.x) * (second.y - origin.y) - (first.y - origin.y) * (second.x - origin.x));
 	}
 	
 	public Boolean isInFront(Vector3d vec)
@@ -185,177 +189,145 @@ public class CollidingPlane {
 			maxZ = Math.max(maxZ, corner.z);
 		}
 		
-		return bb.intersects(minX, minY, minZ, maxX, maxY, maxZ);
+		return bb.minX < maxX && bb.maxX > minX && bb.minY < maxY && bb.maxY > minY && bb.minZ < maxZ && bb.maxZ > minZ;
 	}
 	
 	public static CollidingPlane[] getPlanes(CreativeAxisAlignedBB box, PlaneCache cache, MatrixLookupTable table)
 	{
 		Vector3d[] corners = BoxUtils.getCorners(box);
 		
-		boolean needsX = table.hasRotX;
-		boolean needsY = table.hasRotY;
-		boolean needsZ = table.hasRotZ;
+		boolean east = table.x > 0;
+		boolean west = table.x < 0;
+		boolean up = table.y > 0;
+		boolean down = table.y < 0;
+		boolean south = table.z > 0;
+		boolean north = table.z < 0;
 		
-		if(table.hasX && !needsY && !needsZ)
-			needsY = true;
+		if(table.hasRotY || table.hasRotZ)
+			east = west = true;
 		
-		if(table.hasY && !needsX && !needsZ)
-			needsX = true;
+		if(table.hasRotX || table.hasRotZ)
+			up = down = true;
 		
-		if(table.hasZ && !needsX && !needsY)
-			needsX = true;
+		if(table.hasRotX || table.hasRotY)
+			south = north = true;
 		
-		CollidingPlane[] planes = new CollidingPlane[(needsX ? 2 : 0) + (needsY ? 2 : 0) + (needsZ ? 2 : 0)];
+		CollidingPlane[] planes = new CollidingPlane[BooleanUtils.countTrue(east, west, up, down, south, north)];
 		int index = 0;
-		
-		if(needsX)
+		if(east)
 		{
-			setPlane(corners, planes, box, cache, Axis.X, index);
-			index += 2;
+			planes[index] = new CollidingPlane(box, EnumFacing.EAST, cache, corners, BoxFace.getFace(EnumFacing.EAST).corners);
+			index++;
 		}
-		
-		if(needsY)
+		if(west)
 		{
-			setPlane(corners, planes, box, cache, Axis.Y, index);
-			index += 2;
+			planes[index] = new CollidingPlane(box, EnumFacing.WEST, cache, corners, BoxFace.getFace(EnumFacing.WEST).corners);
+			index++;
 		}
-		
-		if(needsZ)
+		if(up)
 		{
-			setPlane(corners, planes, box, cache, Axis.Z, index);
-			index += 2;
+			planes[index] = new CollidingPlane(box, EnumFacing.UP, cache, corners, BoxFace.getFace(EnumFacing.UP).corners);
+			index++;
+		}
+		if(down)
+		{
+			planes[index] = new CollidingPlane(box, EnumFacing.DOWN, cache, corners, BoxFace.getFace(EnumFacing.DOWN).corners);
+			index++;
+		}
+		if(south)
+		{
+			planes[index] = new CollidingPlane(box, EnumFacing.SOUTH, cache, corners, BoxFace.getFace(EnumFacing.SOUTH).corners);
+			index++;
+		}
+		if(north)
+		{
+			planes[index] = new CollidingPlane(box, EnumFacing.NORTH, cache, corners, BoxFace.getFace(EnumFacing.NORTH).corners);
+			index++;
 		}
 		
 		return planes;
 	}
 	
-	private static void setPlane(Vector3d[] corners, CollidingPlane[] planes, CreativeAxisAlignedBB box, PlaneCache cache, Axis axis, int index)
-	{		
-		planes[index] = new CollidingPlane(box, axis, cache, corners, planesForAxis[axis.ordinal() * 2]);
-		planes[index + 1] = new CollidingPlane(box, axis, cache, corners, planesForAxis[axis.ordinal() * 2 + 1]);
-	}
-	
-	private static EnumFacing getFacing(CollidingPlane first, CollidingPlane second, Vector3d relativeVec)
+	public static EnumFacing getDirection(OrientatedBoundingBox box, CollidingPlane[] planes, Vector3d center)
 	{
-		Boolean firstInFront = first.isInFront(relativeVec);
-		if(firstInFront == null)
+		if(box.contains(center))
 			return null;
 		
-		Boolean secondInFront = second.isInFront(relativeVec);
-		if(secondInFront == null)
-			return null;
+		Boolean positiveX = null;
+		Boolean positiveY = null;
+		Boolean positiveZ = null;
 		
-		int index;
-		if(firstInFront)
-			if(secondInFront)
-				index = 3;
-			else
-				index = 1;
-		else
-			if(secondInFront)
-				index = 2;
-			else
-				index = 0;
-		
-		return faceCache[first.axis.ordinal()][index];		
-	}
-	
-	public static EnumFacing getDirection(CollidingPlane[] planes, Vector3d origin, Vector3d center)
-	{
-		//Vector3d relative = new Vector3d(center);
-		//relative.sub(origin);
-		EnumFacing facing = getFacing(planes[0], planes[1], center);
-		
-		if(facing == null)
-			return null;
-		
-		if(planes.length == 2 || facing.getAxis() == Axis.X)
-			return facing;
-		
-		if(planes[2].axis == facing.getAxis())
-			return getFacing(planes[2], planes[3], center);
-		
-		if(planes.length > 4 && planes[4].axis == facing.getAxis())
-			return getFacing(planes[4], planes[5], center);
-		
-		return facing;
-	}
-	
-	private static BoxCorner[][] planesForAxis = new BoxCorner[][] {
-		{ BoxCorner.EUS, BoxCorner.EDN, BoxCorner.WUS, BoxCorner.WDN },
-		{ BoxCorner.EDS, BoxCorner.EUN, BoxCorner.WDS, BoxCorner.WUN },
-		
-		{ BoxCorner.EUS, BoxCorner.WUN, BoxCorner.EDS, BoxCorner.WDN },
-		{ BoxCorner.EUN, BoxCorner.WUS, BoxCorner.EDN, BoxCorner.WDS },
-		
-		{ BoxCorner.EUS, BoxCorner.WDS, BoxCorner.EUN, BoxCorner.WDN },
-		{ BoxCorner.WUS, BoxCorner.EDS, BoxCorner.WUN, BoxCorner.EDN }
-	};
-	
-	private static EnumFacing[][] faceCache;
-	
-	private static void buildCache()
-	{
-		AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
-		faceCache = new EnumFacing[3][];
-		
-		for (int i = 0; i < Axis.values().length; i++) {
-			Vector3d[] corners = BoxUtils.getCorners(box);
-			
-			Axis axis = Axis.values()[i];
-			
-			Axis one = RotationUtils.getDifferentAxisFirst(axis);
-			Axis two = RotationUtils.getDifferentAxisSecond(axis);
-			
-			CollidingPlane[] planes = new CollidingPlane[2];
-			setPlane(corners, planes, null, null, axis, 0);
-			
-			EnumFacing[] cache = new EnumFacing[4];
-			for (int j = 0; j < cache.length; j++) {
-				
-				int oneDirection = -1;
-				int twoDirection = -1;
-				
-				switch(j)
+		for (CollidingPlane plane : planes) {
+			Boolean result = plane.isInFront(center);
+			if(result == null || result)
+				switch(plane.facing.getAxis())
 				{
-				case 1:
-					oneDirection = 1;
+				case X:
+					positiveX = plane.facing.getAxisDirection() == AxisDirection.POSITIVE;
 					break;
-				case 2:
-					twoDirection = 1;
+				case Y:
+					positiveY = plane.facing.getAxisDirection() == AxisDirection.POSITIVE;
 					break;
-				case 3:
-					oneDirection = 1;
-					twoDirection = 1;
+				case Z:
+					positiveZ = plane.facing.getAxisDirection() == AxisDirection.POSITIVE;
 					break;
+				default:
+					throw new InternalError("1 + 1 = 3");
 				}
-				
-				Vector3d normalFirst = new Vector3d(planes[0].normal);
-				normalFirst.scale(oneDirection);
-				Vector3d normalSecond = new Vector3d(planes[1].normal);
-				normalSecond.scale(twoDirection);
-				
-				EnumFacing facing;
-				if(RotationUtils.get(one, normalFirst) == RotationUtils.get(one, normalSecond))
-					facing = EnumFacing.getFacingFromAxis(RotationUtils.get(one, normalFirst) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, one);
-				else if(RotationUtils.get(two, normalFirst) == RotationUtils.get(two, normalSecond))
-					facing = EnumFacing.getFacingFromAxis(RotationUtils.get(two, normalFirst) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, two);
-				else
-					throw new RuntimeException("This cannot happen!");
-				
-				cache[j] = facing;
-			}
-			
-			faceCache[i] = cache;
-			
-			
 		}
 		
-	}
-	
-	static
-	{
-		buildCache();
+		if(positiveX == null && positiveY == null && positiveZ == null)
+			return null;
+		
+		if(positiveY == null && positiveZ == null)
+			return positiveX == null ? null : (positiveX ? EnumFacing.EAST : EnumFacing.WEST);
+		if(positiveX == null && positiveZ == null)
+			return positiveY == null ? null : (positiveY ? EnumFacing.UP : EnumFacing.DOWN);
+		if(positiveX == null && positiveY == null)
+			return positiveZ == null ? null : (positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH);
+		
+		Vector3d relative = new Vector3d(center);
+		relative.sub(box.cache.center);
+		
+		Vector3d size = box.getSize3d();
+		size.normalize();
+		relative.x *= size.x;
+		relative.y *= size.y;
+		relative.z *= size.z;
+		
+		if(positiveX != null && positiveY != null && positiveZ != null)
+		{
+			if(Math.abs(relative.x) > Math.abs(relative.y))
+				if(Math.abs(relative.x) > Math.abs(relative.z))
+					return positiveX ? EnumFacing.EAST : EnumFacing.WEST;
+				else
+					return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
+			else
+				if(Math.abs(relative.y) > Math.abs(relative.z))
+					return positiveY ? EnumFacing.UP : EnumFacing.DOWN;
+				else
+					return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
+		}
+		
+		if(positiveX != null && positiveY != null)
+			if(Math.abs(relative.x) > Math.abs(relative.y))
+				return positiveX ? EnumFacing.EAST : EnumFacing.WEST;
+			else
+				return positiveY ? EnumFacing.UP : EnumFacing.DOWN;
+		
+		if(positiveY != null && positiveZ != null)
+			if(Math.abs(relative.y) > Math.abs(relative.z))
+				return positiveY ? EnumFacing.UP : EnumFacing.DOWN;
+			else
+				return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
+		
+		if(positiveX != null && positiveZ != null)
+			if(Math.abs(relative.x) > Math.abs(relative.z))
+				return positiveX ? EnumFacing.EAST : EnumFacing.WEST;
+			else
+				return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
+		
+		throw new InternalError("Math has failed: 1 != 1");
 	}
 	
 	public static class PlaneCache {

@@ -110,6 +110,12 @@ public class CreativeAxisAlignedBB extends AxisAlignedBB {
 		return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
 	}
 	
+	public Vector3d getSize3d()
+	{
+		return new Vector3d(maxX - minX, maxY - minY, maxZ - minZ);
+	}
+	
+	
 	public double getVolume()
 	{
 		return (maxX - minX) * (maxY - minY) * (maxZ - minZ);
