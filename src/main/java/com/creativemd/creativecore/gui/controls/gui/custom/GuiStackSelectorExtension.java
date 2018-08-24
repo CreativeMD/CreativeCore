@@ -84,9 +84,10 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 	
 	@Override
 	public boolean mouseScrolled(int posX, int posY, int scrolled){
-		this.scrolled -= scrolled*30;
+		/*this.scrolled -= scrolled*30;
 		onScrolled();
-		return true;
+		return true;*/
+		return super.mouseScrolled(posX, posY, scrolled);
 	}
 	
 

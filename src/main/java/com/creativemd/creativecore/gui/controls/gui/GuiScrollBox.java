@@ -18,7 +18,11 @@ import net.minecraft.init.SoundEvents;
 public class GuiScrollBox extends GuiParent {
 	
 	public int maxScroll = 0;
-	public int scrolled = 0;
+	public int aimedScrolled = 0;
+	public double scrolled = 0;
+	public double beforeScrolled = 0;
+	public static final long scrollTime = 200;
+	public long scrollMS = 0;
 	public float scaleFactor;
 	public boolean dragged;
 	public int scrollbarWidth = 6;
@@ -40,25 +44,27 @@ public class GuiScrollBox extends GuiParent {
 	}
 	
 	@Override
-	protected int getOffsetY()
+	protected double getOffsetY()
 	{
 		return -scrolled;
 	}
 	
 	public void onScrolled()
 	{
-		if(this.scrolled < 0)
-			this.scrolled = 0;
-		if(this.scrolled > maxScroll)
-			this.scrolled = maxScroll;
+		if(this.aimedScrolled < 0)
+			this.aimedScrolled = 0;
+		if(this.aimedScrolled > maxScroll)
+			this.aimedScrolled = maxScroll;
 	}
 	
 	@Override
 	public boolean mouseScrolled(int x, int y, int scrolled){
 		if(super.mouseScrolled(x, y, scrolled))
 			return true;
-		this.scrolled -= scrolled*10;
+		scrollMS = System.currentTimeMillis();
+		this.aimedScrolled -= scrolled*20;
 		onScrolled();
+		beforeScrolled = this.scrolled;
 		return true;
 	}
 	
@@ -79,9 +85,13 @@ public class GuiScrollBox extends GuiParent {
 		if(dragged)
 		{
 			double percent = (double)(y-this.posY)/(double)(height);
-			scrolled = (int) (percent*maxScroll);
-			//System.out.println("scrolling to " + scrolled + "; percent=" + percent);
+			aimedScrolled = (int) (percent*maxScroll);
+			scrollMS = System.currentTimeMillis();
+			
 			onScrolled();
+			beforeScrolled = scrolled;
+			/*scrolled = aimedScrolled;
+			beforeScrolled = scrolled;*/
 		}
 		super.mouseMove(x, y, button);
 	}
@@ -101,7 +111,19 @@ public class GuiScrollBox extends GuiParent {
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		super.renderContent(helper, style, width-scrollbarWidth, height);
 		style.getBorder(this).renderStyle(width-scrollbarWidth, 0, helper, scrollbarWidth, height);
-		style.getMouseOverBackground(this).renderStyle(width-scrollbarWidth+1, 0, helper, scrollbarWidth-1, height);	
+		style.getMouseOverBackground(this).renderStyle(width-scrollbarWidth+1, 0, helper, scrollbarWidth-1, height);
+		
+		if(scrollMS != 0)
+		{
+			if(scrollMS + scrollTime <= System.currentTimeMillis())
+			{
+				scrolled = aimedScrolled;
+				beforeScrolled = scrolled;
+				scrollMS = 0;
+			}
+			else
+				scrolled = beforeScrolled + (aimedScrolled - beforeScrolled) * ((System.currentTimeMillis() - scrollMS) / (double) scrollTime);
+		}
 		
 		int scrollThingHeight = Math.max(10, Math.min(height, lastRenderedHeight/height/height));
 		if(lastRenderedHeight < height)
