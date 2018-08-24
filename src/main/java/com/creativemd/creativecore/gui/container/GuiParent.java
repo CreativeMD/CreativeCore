@@ -61,12 +61,12 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		return 1F;
 	}
 	
-	protected int getOffsetY()
+	protected double getOffsetY()
 	{
 		return 0;
 	}
 	
-	protected int getOffsetX()
+	protected double getOffsetX()
 	{
 		return 0;
 	}
@@ -80,8 +80,8 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 		
 		float scale = getScaleFactor();
-		int xOffset = getOffsetX();
-		int yOffset = getOffsetY();
+		double xOffset = getOffsetX();
+		double yOffset = getOffsetY();
 		
 		Rect newRect = relativeMaximumRect.mergeRects(getRect());
 		
@@ -90,7 +90,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		for (int i = controls.size()-1; i >= 0; i--) {
 			GuiControl control = controls.get(i);
 			
-			if(control.visible && control.isVisibleInsideRect(-xOffset, -yOffset, width, height, scale))
+			if(control.visible && control.isVisibleInsideRect((int) -xOffset, (int) -yOffset, width, height, scale))
 			{
 				if(control.canOverlap())
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -104,10 +104,11 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 				
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(xOffset, yOffset, 0);				
-				control.renderControl(helper, scale, newRect.getOffsetRect(xOffset, yOffset));
+				control.renderControl(helper, scale, newRect.getOffsetRect((int) xOffset, (int) yOffset));
 				GlStateManager.popMatrix();
 				
-				GL11.glDisable(GL11.GL_STENCIL_TEST);
+				if(!control.canOverlap())
+					GL11.glDisable(GL11.GL_STENCIL_TEST);
 			}
 			
 			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.posY+control.height)*scale);

@@ -22,6 +22,7 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -160,6 +161,8 @@ public class GuiSlotControl extends GuiControl{
 	
 	@Override
 	public boolean mouseScrolled(int posX, int posY, int scrolled){
+		if(!GuiContainer.isShiftKeyDown())
+			return false;
 		sendClickedPacket(3, scrolled);
 		return true;
 	}
