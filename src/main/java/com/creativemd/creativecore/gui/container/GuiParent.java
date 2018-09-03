@@ -94,13 +94,13 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			{
 				if(control.canOverlap())
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
-				else
+				else {
 					GL11.glEnable(GL11.GL_STENCIL_TEST);
-				
-				prepareContentStencil(helper, relativeMaximumRect);
-				
-				GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
-				GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+					prepareContentStencil(helper, relativeMaximumRect);
+					
+					GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
+					GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+				}
 				
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(xOffset, yOffset, 0);				

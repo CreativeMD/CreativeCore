@@ -11,8 +11,10 @@ import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.ColoredDisplayStyle;
+import com.creativemd.creativecore.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.gui.client.style.SidedColoredDisplayStyle;
 import com.creativemd.creativecore.gui.client.style.Style;
+import com.creativemd.creativecore.gui.client.style.TextureDisplayStyle;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.controls.container.SlotControl;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
@@ -35,7 +37,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class GuiSlotControl extends GuiControl{
 	
-	public static Style slotStyle = new Style("slot", new SidedColoredDisplayStyle(new Color(55, 55, 55), new Color(255, 255, 255), new Color(255, 255, 255), new Color(55, 55, 55)), new ColoredDisplayStyle(139, 139, 139), new ColoredDisplayStyle(197, 197, 197),
+	public static Style slotStyle = new Style("slot", new TextureDisplayStyle(guiUtilsImage, 176, 0), DisplayStyle.emptyDisplay, new ColoredDisplayStyle(197, 197, 197),
 			new ColoredDisplayStyle(139, 139, 139), new ColoredDisplayStyle(0, 0, 0, 100));
 	
 	public SlotControl slot;
@@ -227,7 +229,7 @@ public class GuiSlotControl extends GuiControl{
 	
 	@Override
 	public void mouseMove(int posX, int posY, int button){
-		if(startSlot == null && !isDragged() && isMouseOver())
+		if(startSlot == null && !isDragged() && isMouseOver(posX, posY))
 		{
 			for (int i = 0; i < getParent().controls.size(); i++) {
 				if(getParent().controls.get(i) instanceof GuiSlotControl && ((GuiSlotControl) getParent().controls.get(i)).isDragged())
