@@ -9,6 +9,7 @@ import javax.vecmath.Vector2d;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Color;
 
+import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.gui.client.style.ColoredDisplayStyle;
 import com.creativemd.creativecore.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.gui.client.style.Style;
@@ -30,6 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiControl extends CoreControl {
 	
+	public static final ResourceLocation guiUtilsImage = new ResourceLocation(CreativeCore.modid, "textures/gui/utils.png");
 	public static Minecraft mc = Minecraft.getMinecraft();
 	public static FontRenderer font = mc.fontRenderer;
 	public static Style defaultStyle = Style.liteStyle;
@@ -101,6 +103,8 @@ public abstract class GuiControl extends CoreControl {
 	
 	public Vec3d rotateMouseVec(Vec3d mouse)
 	{
+		if(rotation == 0)
+			return mouse;
 		Vec3d centerOffset = getCenterOffset();
 		return getRotationAround(-rotation, mouse, new Vec3d(posX+centerOffset.x, posY+centerOffset.y, 0));
 	}
@@ -258,15 +262,21 @@ public abstract class GuiControl extends CoreControl {
 		if(!visible)
 			return ;
 		Style style = getStyle();
-		Vec3d centerOffset = getCenterOffset();
+		
 		
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(posX+centerOffset.x, posY+centerOffset.y, 0);
-		GlStateManager.rotate(rotation, 0, 0, 1);
-		GlStateManager.translate(-centerOffset.x, -centerOffset.y, 0);
 		
-		//GlStateManager.translate(x, y, 0);
-		GlStateManager.scale(scale, scale, 1);
+		GlStateManager.translate(posX, posY, 0);
+		if(rotation != 0)
+		{
+			Vec3d centerOffset = getCenterOffset();
+			GlStateManager.translate(posX+centerOffset.x, posY+centerOffset.y, 0);
+			GlStateManager.rotate(rotation, 0, 0, 1);
+			GlStateManager.translate(-centerOffset.x, -centerOffset.y, 0);
+		}
+		
+		if(scale != 0)
+			GlStateManager.scale(scale, scale, 1);
 		
 		renderBackground(helper, style);
 		

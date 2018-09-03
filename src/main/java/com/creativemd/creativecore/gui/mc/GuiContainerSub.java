@@ -276,11 +276,6 @@ public class GuiContainerSub extends GuiContainer {
 			onMouseReleased(x, y, button);
 	}
 	
-	public void onMouseMove(int x, int y, int button)
-	{
-		getTopLayer().mouseMove(x, y, button);
-	}
-	
 	public void onMouseReleased(int x, int y, int button)
 	{
 		getTopLayer().mouseReleased(x, y, button);

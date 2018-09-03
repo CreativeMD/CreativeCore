@@ -46,7 +46,7 @@ public abstract class GuiButtonHold extends GuiButton {
 	@Override
 	public void mouseMove(int x, int y, int button)
 	{
-		if(isMouseOver() && wait > 0)
+		if(isMouseOver(x, y) && wait > 0)
 		{
 			if(Mouse.isButtonDown(button))
 			{

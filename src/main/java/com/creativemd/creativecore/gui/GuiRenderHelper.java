@@ -181,8 +181,21 @@ public class GuiRenderHelper {
 	}
 	
 	public void renderColorPlate(int x, int y, Color color, int width, int height)
-	{
-		Gui.drawRect(x, y, width, height, ColorUtils.RGBAToInt(color));
+	{	        
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.pos((double)x, (double)height, 0.0D).endVertex();
+        bufferbuilder.pos((double)width, (double)height, 0.0D).endVertex();
+        bufferbuilder.pos((double)width, (double)y, 0.0D).endVertex();
+        bufferbuilder.pos((double)x, (double)y, 0.0D).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
 	}
 	
 	public static void renderColorTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color color)
@@ -206,7 +219,6 @@ public class GuiRenderHelper {
 	
 	public static void renderBakedQuads(List<BakedQuad> baked)
 	{
-		
 		mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
