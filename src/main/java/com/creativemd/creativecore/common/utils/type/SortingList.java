@@ -217,7 +217,7 @@ public class SortingList implements List<InfoStack> {
 
 	@Override
 	public void clear() {
-		entries.clear();
+		entries = new ArrayList<>();
 	}
 
 	@Override
