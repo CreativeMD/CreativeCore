@@ -89,7 +89,7 @@ public class GuiSlotControl extends GuiControl{
 			if(((SlotInput)slot.slot).input != null)
 				backgroundStack = ((SlotInput)slot.slot).input.getItemStack(1);
 			
-			if(backgroundStack != null)
+			if(backgroundStack != null && !backgroundStack.isEmpty())
 			{
 				try{
 					helper.drawItemStackAndOverlay(backgroundStack, 0, 0, 16, 16);
