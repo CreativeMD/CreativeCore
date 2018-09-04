@@ -2,6 +2,10 @@ package com.creativemd.creativecore.common.utils.mc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
 
@@ -28,9 +32,10 @@ public class InventoryUtils {
 	{
 		NBTTagCompound nbtInv = new NBTTagCompound();
 		for (int i = 0; i < inventory.length; i++) {
+			if(inventory[i].isEmpty())
+				continue;
 			NBTTagCompound newNBT = new NBTTagCompound();
-			if(inventory[i] != null)
-				inventory[i].writeToNBT(newNBT);
+			inventory[i].writeToNBT(newNBT);
 			nbtInv.setTag("slot" + i, newNBT);
 		}
 		nbtInv.setInteger("size", inventory.length);
@@ -41,7 +46,10 @@ public class InventoryUtils {
 	{
 		ItemStack[] inventory = new ItemStack[nbt.getInteger("size")];
 		for (int i = 0; i < inventory.length; i++) {
-			inventory[i] = new ItemStack(nbt.getCompoundTag("slot" + i));
+			if(nbt.hasKey("slot" + i))
+				inventory[i] = new ItemStack(nbt.getCompoundTag("slot" + i));
+			else
+				inventory[i] = ItemStack.EMPTY;
 		}
 		return inventory;
 	}
@@ -68,7 +76,22 @@ public class InventoryUtils {
 	
 	public static boolean isItemStackEqual(ItemStack stackA, ItemStack stackB)
 	{
-		return ItemStack.areItemStacksEqual(stackA, stackB);
+		if (stackA.isEmpty() && stackB.isEmpty())
+            return true;
+		
+    	if(stackA.isEmpty() || stackB.isEmpty())
+    		return false;
+    	
+    	if (stackA.getItem() != stackB.getItem())
+            return false;
+    	
+        if (stackA.getItemDamage() != stackB.getItemDamage())
+        	return false;
+        
+        if (!stackA.hasTagCompound() && stackB.hasTagCompound())
+        	return false;
+        
+    	return (!stackA.hasTagCompound() || stackA.getTagCompound().equals(stackB.getTagCompound())) && stackA.areCapsCompatible(stackB);
 	}
 	
 	public static boolean consumeItemStack(IInventory inventory, ItemStack stack)
@@ -198,6 +221,72 @@ public class InventoryUtils {
 		if(consumed != null)
 			consumed.addAll(stacks);
 		return stackSize;
+	}
+	
+	public static void sortInventory(IInventory inventory, boolean alphabetical)
+	{
+		List<ItemStack> sorting = new ArrayList<>();
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if(!stack.isEmpty())
+				sorting.add(stack);
+		}
+		
+		if(alphabetical)
+			Collections.sort(sorting, new Comparator<ItemStack>() {
+
+				@Override
+				public int compare(ItemStack arg0, ItemStack arg1) {
+					return arg0.getDisplayName().compareToIgnoreCase(arg1.getDisplayName());
+				}
+				
+			});
+		else
+			Collections.sort(sorting, new Comparator<ItemStack>() {
+	
+				@Override
+				public int compare(ItemStack arg0, ItemStack arg1) {
+					int id0 = Item.getIdFromItem(arg0.getItem());
+					int id1 = Item.getIdFromItem(arg1.getItem());
+					if(id0 < id1)
+						return -1;
+					if(id0 > id1)
+						return 1;
+					
+					if(arg0.getItemDamage() < arg1.getItemDamage())
+						return -1;
+					if(arg0.getItemDamage() > arg1.getItemDamage())
+						return 1;
+					
+					return arg0.getDisplayName().compareToIgnoreCase(arg1.getDisplayName());
+				}
+				
+			});
+		
+		int maxStackSize = inventory.getInventoryStackLimit();
+		for (int i = 0; i < sorting.size() - 1; i++) {
+			ItemStack stack0 = sorting.get(i);
+			ItemStack stack1 = sorting.get(i + 1);
+			
+			if(isItemStackEqual(stack0, stack1))
+			{
+				int maxStack = Math.min(maxStackSize, stack0.getMaxStackSize());
+				int use = Math.min(maxStack - stack0.getCount(), stack1.getCount());
+				if(use > 0)
+				{
+					stack0.grow(use);
+					stack1.shrink(use);
+					if(stack1.isEmpty())
+						sorting.remove(i + 1);
+					i--;
+				}
+			}
+		}
+		
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			inventory.setInventorySlotContents(i, i < sorting.size() ? sorting.get(i) : ItemStack.EMPTY);			
+		}
+		
 	}
 	
 }
