@@ -35,17 +35,16 @@ public class InfoMaterial extends InfoStack {
 
 	@Override
 	protected void writeToNBTExtra(NBTTagCompound nbt) {
-		String blockName = null;
-		for (Object name : Block.REGISTRY.getKeys()) {
-			Block block = Block.getBlockFromName((String) name);
+		ResourceLocation blockName = null;
+		for (Block block : Block.REGISTRY) {
 			if(block != null && block.getDefaultState().getMaterial() == material)
 			{
-				blockName = (String) name;
+				blockName = block.getRegistryName();
 				break;
 			}
 		}
 		if(blockName != null)
-			nbt.setString("material", blockName);
+			nbt.setString("material", blockName.toString());
 	}
 
 	@Override
