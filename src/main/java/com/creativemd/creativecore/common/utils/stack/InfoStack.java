@@ -58,6 +58,7 @@ public abstract class InfoStack {
 				return entry.getKey();
 			
 		}
+		System.out.println("Could not find type for class " + classType.getName());
 		return "";
 	}
 	
@@ -86,6 +87,8 @@ public abstract class InfoStack {
 	{
 		String id = nbt.getString("id");
 		Class<? extends InfoStack> classType = types.get(id);
+		if(classType == null)
+			System.out.println("Missing class type=" + id);
 		try {
 			InfoStack info = classType.getConstructor().newInstance();
 			info.loadFromNBT(nbt);
@@ -184,6 +187,7 @@ public abstract class InfoStack {
 			}
 		});
 		
+		registerType("name", InfoName.class);
 		registerType("fuel", InfoFuel.class);
 	}
 	
