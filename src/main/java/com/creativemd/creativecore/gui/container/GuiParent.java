@@ -174,8 +174,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		ScaledResolution scaledresolution = new ScaledResolution(mc);
 		int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
-		int x = Mouse.getEventX() * i / mc.displayWidth;
-        int y = j - Mouse.getEventY() * j / mc.displayHeight - 1;
+        //int mouseX = Mouse.getX() * width / client.displayWidth;
+        //int mouseZ = height - Mouse.getY() * height / client.displayHeight - 1;
+		int x = Mouse.getX() * i / mc.displayWidth;
+        int y = j - Mouse.getY() * j / mc.displayHeight - 1;
         int movex = (i - width)/2;
         int movey = (j - height)/2;
         x -= movex;
