@@ -32,10 +32,12 @@ public abstract class GuiStackSelector extends GuiComboBox {
 	protected HashMapList<String, ItemStack> stacks;
 	
 	public EntityPlayer player;
+	public boolean searchBar;
 	
-	public GuiStackSelector(String name, int x, int y, int width, EntityPlayer player)
+	public GuiStackSelector(String name, int x, int y, int width, EntityPlayer player, boolean searchBar)
 	{
 		super(name, x, y, width, new ArrayList<String>());
+		this.searchBar = searchBar;
 		this.player = player;
 		updateCollectedStacks();
 		selectFirst();

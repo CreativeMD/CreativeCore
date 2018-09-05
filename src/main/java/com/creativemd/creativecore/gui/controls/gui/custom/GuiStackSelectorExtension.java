@@ -9,6 +9,9 @@ import com.creativemd.creativecore.gui.controls.container.client.GuiSlotControl;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBoxExtension;
 import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
+import com.creativemd.creativecore.gui.controls.gui.custom.GuiStackSelectorAll.SearchSelector;
+import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.slots.SlotPreview;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
@@ -18,6 +21,8 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 
 public class GuiStackSelectorExtension extends GuiComboBoxExtension {
+	
+	public String search = "";
 	
 	public GuiStackSelectorExtension(String name, EntityPlayer player, int x, int y, int width, int height, GuiStackSelector comboBox)
 	{
@@ -43,10 +48,34 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 	{
 		if(comboBox == null)
 			return ;
-		HashMapList<String, ItemStack> stacks = ((GuiStackSelector) comboBox).getStacks();
+		
+		HashMapList<String, ItemStack> stacks = search == null || search.equals("") ? ((GuiStackSelector) comboBox).getStacks() : new HashMapList<>();
+		
+		if(search != null && !search.equals(""))
+		{
+			for (Entry<String, ArrayList<ItemStack>> entry : ((GuiStackSelector) comboBox).getStacks().entrySet()) {
+				for (ItemStack stack : entry.getValue()) {
+					if(GuiStackSelectorAll.SearchSelector.getItemName(stack).toLowerCase().contains(search))
+						stacks.add(entry.getKey(), stack);
+				}
+			}
+		}
 		
 		int height = 0;
+		GuiTextfield textfield = null;
+		if(((GuiStackSelector) comboBox).searchBar && controls.size() > 0)
+			textfield = (GuiTextfield) controls.get(0);
+			
 		controls.clear();
+		
+		if(((GuiStackSelector) comboBox).searchBar)
+		{
+			height += 4;
+			if(textfield == null)
+				textfield = new GuiTextfield("searchBar", search == null ? "" : search, 3, height, width-20, 10);
+			controls.add(textfield);
+			height += textfield.height;
+		}
 		
 		for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
 			GuiLabel label = new GuiLabel(translate(entry.getKey()), 3, height);
@@ -69,6 +98,17 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 			}
 			
 			height += Math.ceil(i/(double) SlotsPerRow)*18;
+		}
+	}
+	
+	@CustomEventSubscribe
+	public void onChanged(GuiControlChangedEvent event)
+	{
+		if(event.source.is("searchBar"))
+		{
+			search = ((GuiTextfield) event.source).text;
+			reloadControls();
+			refreshControls();
 		}
 	}
 	

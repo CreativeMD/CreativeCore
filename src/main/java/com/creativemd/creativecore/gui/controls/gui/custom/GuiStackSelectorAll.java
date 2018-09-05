@@ -19,11 +19,15 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 	
 	public StackCollector collector;
 
-	public GuiStackSelectorAll(String name, int x, int y, int width, EntityPlayer player, StackCollector collector) {
-		super(name, x, y, width, player);
+	public GuiStackSelectorAll(String name, int x, int y, int width, EntityPlayer player, StackCollector collector, boolean searchBar) {
+		super(name, x, y, width, player, searchBar);
 		this.collector = collector;
 		updateCollectedStacks();
 		selectFirst();
+	}
+	
+	public GuiStackSelectorAll(String name, int x, int y, int width, EntityPlayer player, StackCollector collector) {
+		this(name, x, y, width, player, collector, false);
 	}
 	
 	@Override
