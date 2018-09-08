@@ -1,5 +1,7 @@
 package com.creativemd.creativecore.gui;
 
+import java.util.List;
+
 import com.creativemd.creativecore.gui.container.IControlParent;
 import com.creativemd.creativecore.gui.event.ControlEvent;
 
@@ -98,7 +100,7 @@ public abstract class CoreControl {
 	
 	public boolean isInteractable()
 	{
-		return enabled && hasParent() ? ((CoreControl) parent).isInteractable() : true;
+		return enabled && (hasParent() ? ((CoreControl) parent).isInteractable() : true);
 	}
 	
 	//================SORTING================
@@ -132,6 +134,14 @@ public abstract class CoreControl {
 	public static String translate(String text)
 	{
 		return I18n.translateToLocal(text);
+	}
+	
+	public static List<String> translate(List<String> lines)
+	{
+		for (int i = 0; i < lines.size(); i++) {
+			lines.set(i, translate(lines.get(i)));
+		}
+		return lines;
 	}
 	
 }
