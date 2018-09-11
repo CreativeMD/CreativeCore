@@ -270,7 +270,7 @@ public abstract class GuiControl extends CoreControl {
 		if(rotation != 0)
 		{
 			Vec3d centerOffset = getCenterOffset();
-			GlStateManager.translate(posX+centerOffset.xCoord, posY+centerOffset.yCoord, 0);
+			GlStateManager.translate(centerOffset.xCoord, centerOffset.yCoord, 0);
 			GlStateManager.rotate(rotation, 0, 0, 1);
 			GlStateManager.translate(-centerOffset.xCoord, -centerOffset.yCoord, 0);
 		}
