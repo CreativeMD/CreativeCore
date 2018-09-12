@@ -9,18 +9,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class QuadCache {
-
+	
 	// public ArrayList<FloatCache> fields = new ArrayList<>();
 	private int v = 0;
 	public VertexFormat format;
 	public final ArrayList<int[]> quadDatas = new ArrayList<>();
 	private int[] quadData;
-
+	
 	public QuadCache(VertexFormat format) {
 		this.format = format;
-
+		
 	}
-
+	
 	public void addCache(int index, float... cache/* , EnumUsage usage */) {
 		if (quadData == null)
 			quadData = new int[format.getNextOffset()/* / 4 * 4 */];
@@ -42,7 +42,7 @@ public class QuadCache {
 		}
 		// fields.add(new FloatCache(index, cache/*, usage*/));
 	}
-
+	
 	/*
 	 * public static class FloatCache {
 	 * 

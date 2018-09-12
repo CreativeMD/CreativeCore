@@ -9,35 +9,35 @@ import javax.vecmath.Vector3d;
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
 
 public class MatrixUtils {
-
+	
 	public static Matrix3d createIdentityMatrix() {
 		Matrix3d matrix = new Matrix3d();
 		matrix.setIdentity();
 		return matrix;
 	}
-
+	
 	public static Matrix3d createRotationMatrix(double rotX, double rotY, double rotZ) {
 		Matrix3d matrix = createRotationMatrixZ(rotZ);
 		matrix.mul(createRotationMatrixY(rotY));
 		matrix.mul(createRotationMatrixX(rotX));
 		return matrix;
 	}
-
+	
 	public static void mul(Matrix4d matrix, Matrix3d matrix2) {
 		double m00, m01, m02, m10, m11, m12, m20, m21, m22;
-
+		
 		m00 = matrix.m00 * matrix2.m00 + matrix.m01 * matrix2.m10 + matrix.m02 * matrix2.m20;
 		m01 = matrix.m00 * matrix2.m01 + matrix.m01 * matrix2.m11 + matrix.m02 * matrix2.m21;
 		m02 = matrix.m00 * matrix2.m02 + matrix.m01 * matrix2.m12 + matrix.m02 * matrix2.m22;
-
+		
 		m10 = matrix.m10 * matrix2.m00 + matrix.m11 * matrix2.m10 + matrix.m12 * matrix2.m20;
 		m11 = matrix.m10 * matrix2.m01 + matrix.m11 * matrix2.m11 + matrix.m12 * matrix2.m21;
 		m12 = matrix.m10 * matrix2.m02 + matrix.m11 * matrix2.m12 + matrix.m12 * matrix2.m22;
-
+		
 		m20 = matrix.m20 * matrix2.m00 + matrix.m21 * matrix2.m10 + matrix.m22 * matrix2.m20;
 		m21 = matrix.m20 * matrix2.m01 + matrix.m21 * matrix2.m11 + matrix.m22 * matrix2.m21;
 		m22 = matrix.m20 * matrix2.m02 + matrix.m21 * matrix2.m12 + matrix.m22 * matrix2.m22;
-
+		
 		matrix.m00 = m00;
 		matrix.m01 = m01;
 		matrix.m02 = m02;
@@ -48,97 +48,97 @@ public class MatrixUtils {
 		matrix.m21 = m21;
 		matrix.m22 = m22;
 	}
-
+	
 	private static Matrix4d createRotationMatrixAndTranslationRadians(double x, double y, double z, double rotX, double rotY, double rotZ) {
 		Matrix4d matrix = new Matrix4d();
 		if (rotZ != 0)
 			matrix.rotZ(rotZ);
 		else
 			matrix.setIdentity();
-
+		
 		if (rotY != 0)
 			mul(matrix, createRotationMatrixYRadians(rotY));
 		if (rotX != 0)
 			mul(matrix, createRotationMatrixXRadians(rotX));
-
+		
 		matrix.m03 = x;
 		matrix.m13 = y;
 		matrix.m23 = z;
-
+		
 		return matrix;
 	}
-
+	
 	public static Matrix4d createRotationMatrixAndTranslation(double x, double y, double z, double rotX, double rotY, double rotZ) {
 		Matrix4d matrix = new Matrix4d();
 		if (rotZ != 0)
 			matrix.rotZ(Math.toRadians(rotZ));
 		else
 			matrix.setIdentity();
-
+		
 		if (rotY != 0)
 			mul(matrix, createRotationMatrixY(rotY));
 		if (rotX != 0)
 			mul(matrix, createRotationMatrixX(rotX));
-
+		
 		matrix.m03 = x;
 		matrix.m13 = y;
 		matrix.m23 = z;
-
+		
 		return matrix;
 	}
-
+	
 	public static Matrix3d createRotationMatrixX(double angle) {
 		Matrix3d matrix = new Matrix3d();
 		matrix.rotX(Math.toRadians(angle));
 		return matrix;
 	}
-
+	
 	private static Matrix3d createRotationMatrixXRadians(double radians) {
 		Matrix3d matrix = new Matrix3d();
 		matrix.rotX(radians);
 		return matrix;
 	}
-
+	
 	public static Matrix3d createRotationMatrixY(double angle) {
 		Matrix3d matrix = new Matrix3d();
 		matrix.rotY(Math.toRadians(angle));
 		return matrix;
 	}
-
+	
 	private static Matrix3d createRotationMatrixYRadians(double radians) {
 		Matrix3d matrix = new Matrix3d();
 		matrix.rotY(radians);
 		return matrix;
 	}
-
+	
 	public static Matrix3d createRotationMatrixZ(double angle) {
 		Matrix3d matrix = new Matrix3d();
 		matrix.rotZ(Math.toRadians(angle));
 		return matrix;
 	}
-
+	
 	private static Matrix3d createRotationMatrixZRadians(double radians) {
 		Matrix3d matrix = new Matrix3d();
 		matrix.rotZ(radians);
 		return matrix;
 	}
-
+	
 	public static class MatrixLookupTable {
-
+		
 		private HashMap<Double, Matrix4d> table = new HashMap<>();
 		private HashMap<Double, Matrix4d> invertedTable = new HashMap<>();
-
+		
 		private final double rotXRadians;
 		private final double rotYRadians;
 		private final double rotZRadians;
-
+		
 		public final double rotX;
 		public final double rotY;
 		public final double rotZ;
 		public final double x;
 		public final double y;
 		public final double z;
-
+		
 		public final boolean hasRotX;
 		public final boolean hasRotY;
 		public final boolean hasRotZ;
@@ -148,10 +148,10 @@ public class MatrixUtils {
 		public final boolean hasTranslation;
 		public final boolean hasOneRotation;
 		public final boolean isSimple;
-
+		
 		public final Vector3d rotationCenter;
 		public final IVecOrigin origin;
-
+		
 		public MatrixLookupTable(double x, double y, double z, double rotX, double rotY, double rotZ, Vector3d rotationCenter, IVecOrigin origin) {
 			this.x = x;
 			this.y = y;
@@ -162,7 +162,7 @@ public class MatrixUtils {
 			this.rotXRadians = Math.toRadians(rotX);
 			this.rotYRadians = Math.toRadians(rotY);
 			this.rotZRadians = Math.toRadians(rotZ);
-
+			
 			this.hasRotX = rotX != 0;
 			this.hasRotY = rotY != 0;
 			this.hasRotZ = rotZ != 0;
@@ -172,11 +172,11 @@ public class MatrixUtils {
 			this.hasTranslation = hasX || hasY || hasZ;
 			this.hasOneRotation = BooleanUtils.oneTrue(hasRotX, hasRotY, hasRotZ);
 			this.isSimple = isSimple();
-
+			
 			this.rotationCenter = rotationCenter;
 			this.origin = origin;
 		}
-
+		
 		private boolean isSimple() {
 			if (BooleanUtils.oneTrue(hasRotX, hasRotY, hasRotZ, hasTranslation)) {
 				if (hasRotX)
@@ -189,7 +189,7 @@ public class MatrixUtils {
 			}
 			return false;
 		}
-
+		
 		public int getNumberOfHalfRotations() {
 			int halfRotations = 0;
 			if (hasRotX)
@@ -200,43 +200,43 @@ public class MatrixUtils {
 				halfRotations += (int) Math.ceil(Math.abs(rotZ) / 180);
 			return halfRotations;
 		}
-
+		
 		public Matrix4d getInverted(Double delta) {
 			Matrix4d matrix = invertedTable.get(delta);
 			if (matrix != null)
 				return matrix;
-
+			
 			matrix = table.get(delta);
 			if (matrix != null) {
 				matrix = new Matrix4d(matrix);
 				matrix.invert();
 			} else
 				matrix = createRotationMatrixAndTranslationRadians(-x * delta, -y * delta, -z * delta, -rotXRadians * delta, -rotYRadians * delta, -rotZRadians * delta);
-
+			
 			invertedTable.put(delta, matrix);
 			return matrix;
 		}
-
+		
 		public Matrix4d get(Double delta) {
 			Matrix4d matrix = table.get(delta);
 			if (matrix != null)
 				return matrix;
-
+			
 			matrix = invertedTable.get(delta);
 			if (matrix != null) {
 				matrix = new Matrix4d(matrix);
 				matrix.invert();
 			} else
 				matrix = createRotationMatrixAndTranslationRadians(x * delta, y * delta, z * delta, rotXRadians * delta, rotYRadians * delta, rotZRadians * delta);
-
+			
 			table.put(delta, matrix);
 			return matrix;
 		}
-
+		
 		public void transform(Vector3d vec, Double delta) {
 			if (delta <= 0)
 				return;
-
+			
 			vec.sub(rotationCenter);
 			Matrix4d matrix = get(delta);
 			double x, y;
@@ -247,11 +247,11 @@ public class MatrixUtils {
 			vec.y = y;
 			vec.add(rotationCenter);
 		}
-
+		
 		public void transformInverted(Vector3d vec, Double delta) {
 			if (delta <= 0)
 				return;
-
+			
 			vec.sub(rotationCenter);
 			Matrix4d matrix = getInverted(delta);
 			double x, y;
@@ -262,7 +262,7 @@ public class MatrixUtils {
 			vec.y = y;
 			vec.add(rotationCenter);
 		}
-
+		
 		public static void transform(Matrix4d matrix, Vector3d rotationCenter, Vector3d vec) {
 			vec.sub(rotationCenter);
 			double x, y;
@@ -274,5 +274,5 @@ public class MatrixUtils {
 			vec.add(rotationCenter);
 		}
 	}
-
+	
 }

@@ -17,7 +17,7 @@ public class EventApi {
 	 * Callhandlers and EventTypes
 	 */
 	public static final EventBus defaultEventBusInstance = new EventBus();
-
+	
 	// @Instance
 	// public static EventApi instance;
 }

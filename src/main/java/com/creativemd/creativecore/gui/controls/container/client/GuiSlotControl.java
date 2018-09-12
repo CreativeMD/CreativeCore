@@ -24,11 +24,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
 
 public class GuiSlotControl extends GuiControl {
-
+	
 	public static Style slotStyle = new Style("slot", new TextureDisplayStyle(guiUtilsImage, 176, 0), DisplayStyle.emptyDisplay, new ColoredDisplayStyle(197, 197, 197), new ColoredDisplayStyle(139, 139, 139), new ColoredDisplayStyle(0, 0, 0, 100));
-
+	
 	public SlotControl slot;
-
+	
 	public GuiSlotControl(int x, int y, SlotControl slot) {
 		super(slot.slot.inventory.getName() + slot.slot.slotNumber, x, y, 14, 14);
 		this.slot = slot;
@@ -36,24 +36,24 @@ public class GuiSlotControl extends GuiControl {
 		this.height -= this.marginWidth;
 		this.marginWidth = 0;
 	}
-
+	
 	@Override
 	public Style getDefaultStyle() {
 		return slotStyle;
 	}
-
+	
 	protected ItemStack getStackToRender() {
 		return slot.slot.getStack();
 	}
-
+	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
-
+		
 		if (isDragged())
 			style.getMouseOverBackground(this).renderStyle(helper, width, height);
-
+		
 		ItemStack stack = getStackToRender();
-
+		
 		ItemStack newStack = null;
 		if (isDragged() && stackSize.length > 1) {
 			updateHandStack();
@@ -62,18 +62,18 @@ public class GuiSlotControl extends GuiControl {
 			updateStackSize();
 			newStack = startSlot.getItemStackByIndex(index);
 		}
-
+		
 		if (newStack != null) {
 			if (stack != null)
 				newStack.grow(stack.getCount());
 			stack = newStack;
 		}
-
+		
 		if (slot.slot instanceof SlotInput) {
 			ItemStack backgroundStack = null;
 			if (((SlotInput) slot.slot).input != null)
 				backgroundStack = ((SlotInput) slot.slot).input.getItemStack(1);
-
+			
 			if (backgroundStack != null && !backgroundStack.isEmpty()) {
 				try {
 					helper.drawItemStackAndOverlay(backgroundStack, 0, 0, 16, 16);
@@ -82,7 +82,7 @@ public class GuiSlotControl extends GuiControl {
 				}
 			}
 		}
-
+		
 		if (stack != null && !stack.isEmpty()) {
 			try {
 				helper.drawItemStackAndOverlay(stack, 0, 0, 16, 16);
@@ -91,7 +91,7 @@ public class GuiSlotControl extends GuiControl {
 			}
 		}
 	}
-
+	
 	@Override
 	public ArrayList<String> getTooltip() {
 		ArrayList<String> tips = new ArrayList<String>();
@@ -99,7 +99,7 @@ public class GuiSlotControl extends GuiControl {
 			List list = null;
 			try {
 				list = slot.slot.getStack().getTooltip(this.mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
-
+				
 				for (int k = 0; k < list.size(); ++k) {
 					if (k == 0) {
 						list.set(k, slot.slot.getStack().getRarity().rarityColor + (String) list.get(k));
@@ -121,7 +121,7 @@ public class GuiSlotControl extends GuiControl {
 		}
 		return tips;
 	}
-
+	
 	@Override
 	public boolean onKeyPressed(char character, int key) {
 		if (key == mc.gameSettings.keyBindDrop.getKeyCode() && isMouseOver()) {
@@ -133,7 +133,7 @@ public class GuiSlotControl extends GuiControl {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean mouseScrolled(int posX, int posY, int scrolled) {
 		if (!GuiContainer.isShiftKeyDown())
@@ -141,7 +141,7 @@ public class GuiSlotControl extends GuiControl {
 		sendClickedPacket(3, scrolled);
 		return true;
 	}
-
+	
 	public void sendClickedPacket(int button, int scrolled) {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setInteger("button", button);
@@ -152,29 +152,29 @@ public class GuiSlotControl extends GuiControl {
 		slot.sendPacket(nbt);
 		slot.onSlotClicked(button, shift, scrolled);
 	}
-
+	
 	public ItemStack dragged = null;
 	public boolean isRightClick = false;
 	public GuiSlotControl startSlot = null;
 	public int[] stackSize = null;
 	public int index = -1;
-
+	
 	public boolean isDragged() {
 		return dragged != null;
 	}
-
+	
 	@Override
 	public boolean mousePressed(int posX, int posY, int button) {
 		for (int i = 0; i < getParent().controls.size(); i++) {
 			if (getParent().controls.get(i) instanceof GuiSlotControl && ((GuiSlotControl) getParent().controls.get(i)).isDragged())
 				return true;
 		}
-
+		
 		ItemStack stack = getPlayer().inventory.getItemStack();
 		if (!stack.isEmpty() && button < 2) {
 			dragged = stack.copy();
 			isRightClick = button == 1;
-
+			
 			boolean canStack = Container.canAddItemToSlot(slot.slot, dragged, true);
 			int stackSize = Math.min(slot.slot.getSlotStackLimit(), dragged.getMaxStackSize());
 			if (slot.slot.getHasStack())
@@ -189,20 +189,20 @@ public class GuiSlotControl extends GuiControl {
 			} else {
 				dragged = null;
 			}
-
+			
 		}
-
+		
 		sendClickedPacket(button, 0);
 		return true;
 	}
-
+	
 	@Override
 	public void mouseMove(int posX, int posY, int button) {
 		if (startSlot == null && !isDragged() && isMouseOver(posX, posY)) {
 			for (int i = 0; i < getParent().controls.size(); i++) {
 				if (getParent().controls.get(i) instanceof GuiSlotControl && ((GuiSlotControl) getParent().controls.get(i)).isDragged()) {
 					startSlot = (GuiSlotControl) getParent().controls.get(i);
-
+					
 					boolean canStack = Container.canAddItemToSlot(slot.slot, startSlot.dragged, true);
 					int stackSize = Math.min(slot.slot.getSlotStackLimit(), startSlot.dragged.getMaxStackSize());
 					if (slot.slot.getHasStack())
@@ -223,7 +223,7 @@ public class GuiSlotControl extends GuiControl {
 			}
 		}
 	}
-
+	
 	@Override
 	public void mouseReleased(int posX, int posY, int button) {
 		if (isDragged() && stackSize.length > 1) {
@@ -237,7 +237,7 @@ public class GuiSlotControl extends GuiControl {
 					((GuiSlotControl) getParent().controls.get(i)).index = -1;
 				}
 			}
-
+			
 			nbt.setIntArray("slots", slotArray);
 			nbt.setBoolean("right", isRightClick);
 			// dragged.writeToNBT(nbt);
@@ -249,9 +249,9 @@ public class GuiSlotControl extends GuiControl {
 		}
 		dragged = null;
 		stackSize = null;
-
+		
 	}
-
+	
 	public void updateStackSize() {
 		if (startSlot != null) {
 			int stackSize = Math.min(slot.slot.getSlotStackLimit(), startSlot.dragged.getMaxStackSize());
@@ -260,7 +260,7 @@ public class GuiSlotControl extends GuiControl {
 			startSlot.stackSize[index] = stackSize;
 		}
 	}
-
+	
 	public ItemStack getItemStackByIndex(int index) {
 		if (index >= dragged.getCount())
 			return null;
@@ -277,7 +277,7 @@ public class GuiSlotControl extends GuiControl {
 		}
 		return result;
 	}
-
+	
 	public void updateHandStack() {
 		int used = 0;
 		int StackPerSlot = MathHelper.floor((float) dragged.getCount() / (float) stackSize.length);
@@ -291,7 +291,7 @@ public class GuiSlotControl extends GuiControl {
 		ItemStack hand = dragged.copy();
 		hand.setCount(left);
 		getPlayer().inventory.setItemStack(hand);
-
+		
 	}
-
+	
 }

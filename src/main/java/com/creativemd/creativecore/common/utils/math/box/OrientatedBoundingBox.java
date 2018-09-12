@@ -17,29 +17,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
-
+	
 	public IVecOrigin origin;
 	public PlaneCache cache;
-
+	
 	public void buildCache() {
 		this.cache = new PlaneCache(this);
 	}
-
+	
 	public OrientatedBoundingBox(IVecOrigin origin, double x1, double y1, double z1, double x2, double y2, double z2) {
 		super(x1, y1, z1, x2, y2, z2);
 		this.origin = origin;
 	}
-
+	
 	public OrientatedBoundingBox(IVecOrigin origin, AxisAlignedBB bb) {
 		super(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
 		this.origin = origin;
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox setMaxY(double y2) {
 		return new OrientatedBoundingBox(origin, this.minX, this.minY, this.minZ, this.maxX, y2, this.maxZ);
 	}
-
+	
 	@Override
 	public boolean equals(Object p_equals_1_) {
 		if (this == p_equals_1_) {
@@ -48,7 +48,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			return false;
 		} else {
 			OrientatedBoundingBox axisalignedbb = (OrientatedBoundingBox) p_equals_1_;
-
+			
 			if (axisalignedbb.origin != origin) {
 				return false;
 			} else if (Double.compare(axisalignedbb.minX, this.minX) != 0) {
@@ -66,7 +66,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			}
 		}
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox contract(double x, double y, double z) {
 		double d0 = this.minX;
@@ -75,28 +75,28 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		double d3 = this.maxX;
 		double d4 = this.maxY;
 		double d5 = this.maxZ;
-
+		
 		if (x < 0.0D) {
 			d0 -= x;
 		} else if (x > 0.0D) {
 			d3 -= x;
 		}
-
+		
 		if (y < 0.0D) {
 			d1 -= y;
 		} else if (y > 0.0D) {
 			d4 -= y;
 		}
-
+		
 		if (z < 0.0D) {
 			d2 -= z;
 		} else if (z > 0.0D) {
 			d5 -= z;
 		}
-
+		
 		return new OrientatedBoundingBox(origin, d0, d1, d2, d3, d4, d5);
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox expand(double x, double y, double z) {
 		double d0 = this.minX;
@@ -105,28 +105,28 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		double d3 = this.maxX;
 		double d4 = this.maxY;
 		double d5 = this.maxZ;
-
+		
 		if (x < 0.0D) {
 			d0 += x;
 		} else if (x > 0.0D) {
 			d3 += x;
 		}
-
+		
 		if (y < 0.0D) {
 			d1 += y;
 		} else if (y > 0.0D) {
 			d4 += y;
 		}
-
+		
 		if (z < 0.0D) {
 			d2 += z;
 		} else if (z > 0.0D) {
 			d5 += z;
 		}
-
+		
 		return new OrientatedBoundingBox(origin, d0, d1, d2, d3, d4, d5);
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox grow(double x, double y, double z) {
 		double d0 = this.minX - x;
@@ -137,12 +137,12 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		double d5 = this.maxZ + z;
 		return new OrientatedBoundingBox(origin, d0, d1, d2, d3, d4, d5);
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox grow(double value) {
 		return this.grow(value, value, value);
 	}
-
+	
 	@Override
 	public AxisAlignedBB intersect(AxisAlignedBB other) {
 		if (other instanceof OrientatedBoundingBox) {
@@ -175,7 +175,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		double d5 = Math.min(box.maxZ, other.maxZ);
 		return new AxisAlignedBB(d0, d1, d2, d3, d4, d5);
 	}
-
+	
 	@Override
 	public AxisAlignedBB union(AxisAlignedBB other) {
 		if (other instanceof OrientatedBoundingBox) {
@@ -208,22 +208,22 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		double d5 = Math.max(box.maxZ, other.maxZ);
 		return new AxisAlignedBB(d0, d1, d2, d3, d4, d5);
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox offset(double x, double y, double z) {
 		return new OrientatedBoundingBox(origin, this.minX + x, this.minY + y, this.minZ + z, this.maxX + x, this.maxY + y, this.maxZ + z);
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox offset(BlockPos pos) {
 		return new OrientatedBoundingBox(origin, this.minX + (double) pos.getX(), this.minY + (double) pos.getY(), this.minZ + (double) pos.getZ(), this.maxX + (double) pos.getX(), this.maxY + (double) pos.getY(), this.maxZ + (double) pos.getZ());
 	}
-
+	
 	@Override
 	public OrientatedBoundingBox offset(Vec3d vec) {
 		return this.offset(vec.x, vec.y, vec.z);
 	}
-
+	
 	/**
 	 * @return -1 -> value is too small; 0 -> value is inside min and max; 1 ->
 	 *         value is too large
@@ -235,13 +235,13 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			return 1;
 		return 0;
 	}
-
+	
 	public static boolean isFurtherOrEqualThan(double value, double toCheck) {
 		if (value < 0)
 			return toCheck <= value;
 		return toCheck >= value;
 	}
-
+	
 	/**
 	 * @return if result is negative there should be no collision
 	 */
@@ -250,61 +250,61 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		EnumFacing facing = EnumFacing.getFacingFromAxis(!positive ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, axis);
 		double closestValue = getValueOfFacing(other, facing.getOpposite());
 		Vector3d[] corners = BoxUtils.getOuterCorner(facing, origin, this);
-
+		
 		Axis one = RotationUtils.getDifferentAxisFirst(axis);
 		Axis two = RotationUtils.getDifferentAxisSecond(axis);
-
+		
 		double minOne = getMin(other, one);
 		double minTwo = getMin(other, two);
 		double maxOne = getMax(other, one);
 		double maxTwo = getMax(other, two);
-
+		
 		Vector3d outerCorner = corners[0];
 		double outerCornerOne = RotationUtils.get(one, outerCorner);
 		double outerCornerTwo = RotationUtils.get(two, outerCorner);
 		double outerCornerAxis = RotationUtils.get(axis, outerCorner);
-
+		
 		int outerCornerOffsetOne = getCornerOffset(outerCornerOne, minOne, maxOne);
 		int outerCornerOffsetTwo = getCornerOffset(outerCornerTwo, minTwo, maxTwo);
-
+		
 		if (outerCornerOffsetOne == 0 && outerCornerOffsetTwo == 0) // Hits the outer corner
 		{
 			if (positive)
 				return RotationUtils.get(axis, outerCorner) - closestValue;
 			return closestValue - RotationUtils.get(axis, outerCorner);
 		}
-
+		
 		double minDistance = Double.MAX_VALUE;
-
+		
 		Vector2d[] directions = new Vector2d[3];
-
+		
 		for (int i = 1; i <= 3; i++) { // Check all lines which connect to the outer corner
-
+			
 			Vector3d corner = corners[i];
-
+			
 			Ray2d line = new Ray2d(one, two, outerCorner, RotationUtils.get(one, corner) - outerCornerOne, RotationUtils.get(two, corner) - outerCornerTwo);
 			directions[i - 1] = new Vector2d(line.directionOne, line.directionTwo);
-
+			
 			int cornerOffsetOne = getCornerOffset(RotationUtils.get(one, corner), minOne, maxOne);
 			if (outerCornerOffsetOne != 0 && outerCornerOffsetOne == cornerOffsetOne)
 				continue;
-
+			
 			int cornerOffsetTwo = getCornerOffset(RotationUtils.get(two, corner), minTwo, maxTwo);
 			if (outerCornerOffsetTwo != 0 && outerCornerOffsetTwo == cornerOffsetTwo)
 				continue;
-
+			
 			double axisStart = RotationUtils.get(axis, outerCorner);
 			double axisDirection = RotationUtils.get(axis, corner) - axisStart;
-
+			
 			if (outerCornerOffsetOne == -1) {
 				double coordinateTwo = line.get(one, minOne);
 				if (coordinateTwo > minTwo && coordinateTwo < maxTwo) {
 					double valueAxis = axisStart + ((minOne - line.originOne) / line.directionOne) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
-
+					
 					if (distance < 0)
 						return distance;
-
+					
 					minDistance = Math.min(distance, minDistance);
 				}
 			} else if (outerCornerOffsetOne == 1) {
@@ -312,23 +312,23 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				if (coordinateTwo > minTwo && coordinateTwo < maxTwo) {
 					double valueAxis = axisStart + ((maxOne - line.originOne) / line.directionOne) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
-
+					
 					if (distance < 0)
 						return distance;
-
+					
 					minDistance = Math.min(distance, minDistance);
 				}
 			}
-
+			
 			if (outerCornerOffsetTwo == -1) {
 				double coordinateOne = line.get(two, minTwo);
 				if (coordinateOne > minOne && coordinateOne < maxOne) {
 					double valueAxis = axisStart + ((minTwo - line.originTwo) / line.directionTwo) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
-
+					
 					if (distance < 0)
 						return distance;
-
+					
 					minDistance = Math.min(distance, minDistance);
 				}
 			} else if (outerCornerOffsetTwo == 1) {
@@ -336,22 +336,22 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				if (coordinateOne > minOne && coordinateOne < maxOne) {
 					double valueAxis = axisStart + ((maxTwo - line.originTwo) / line.directionTwo) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
-
+					
 					if (distance < 0)
 						return distance;
-
+					
 					minDistance = Math.min(distance, minDistance);
 				}
 			}
 		}
-
+		
 		boolean minOneOffset = outerCornerOne > minOne;
 		boolean minTwoOffset = outerCornerTwo > minTwo;
 		boolean maxOneOffset = outerCornerOne > maxOne;
 		boolean maxTwoOffset = outerCornerTwo > maxTwo;
-
+		
 		Vector2d[] vectors;
-
+		
 		if (minOneOffset == maxOneOffset && minTwoOffset == maxTwoOffset)
 			vectors = new Vector2d[] { new Vector2d((minOneOffset ? maxOne : minOne) - outerCornerOne, (minTwoOffset ? maxTwo : minTwo) - outerCornerTwo) };
 		else if (minOneOffset == maxOneOffset)
@@ -361,15 +361,15 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		else
 			vectors = new Vector2d[] {}; // that one cannot exist {new Vector2d(minOne, minTwo), new Vector2d(maxOne,
 			                             // minTwo), new Vector2d(minOne, maxTwo), new Vector2d(maxOne, maxTwo)};
-
+			
 		for (int i = 0; i < 3; i++) { // Calculate faces
-
+			
 			int indexFirst = i;
 			int indexSecond = i == 2 ? 0 : i + 1;
-
+			
 			Vector2d first = directions[indexFirst];
 			Vector2d second = directions[indexSecond];
-
+			
 			if (first.x == 0 || second.y == 0) {
 				int temp = indexFirst;
 				indexFirst = indexSecond;
@@ -377,50 +377,50 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				first = directions[indexFirst];
 				second = directions[indexSecond];
 			}
-
+			
 			for (int j = 0; j < vectors.length; j++) {
-
+				
 				Vector2d vector = vectors[j];
-
+				
 				if ((isFurtherOrEqualThan(vector.x, first.x) || isFurtherOrEqualThan(vector.x, second.x) || isFurtherOrEqualThan(vector.x, first.x + second.x)) && (isFurtherOrEqualThan(vector.y, first.y) || isFurtherOrEqualThan(vector.y, second.y) || isFurtherOrEqualThan(vector.y, first.y + second.y))) {
 					double t = (vector.x * second.y - vector.y * second.x) / (first.x * second.y - first.y * second.x);
 					if (t <= 0 || t >= 1 || Double.isNaN(t))
 						continue;
-
+					
 					double s = (vector.y - t * first.y) / second.y;
 					if (s <= 0 || s >= 1 || Double.isNaN(s))
 						continue;
-
+					
 					double valueAxis = outerCornerAxis + (RotationUtils.get(axis, corners[indexFirst + 1]) - outerCornerAxis) * t + (RotationUtils.get(axis, corners[indexSecond + 1]) - outerCornerAxis) * s;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
-
+					
 					// if(distance < 0)
 					// return distance;
-
+					
 					// if(distance > 0.00000000001)
 					// distance -= 0.00000000001;
-
+					
 					minDistance = Math.min(distance, minDistance);
 				}
 			}
-
+			
 		}
-
+		
 		if (minDistance == Double.MAX_VALUE)
 			return -1;
-
+		
 		return minDistance;
 	}
-
+	
 	public double calculateOffsetRotated(AxisAlignedBB other, Axis axis, double offset) {
 		if (offset == 0)
 			return offset;
-
+		
 		double distance = calculateDistanceRotated(other, axis, offset);
-
+		
 		if (distance < 0 && !equals(distance, 0))
 			return offset;
-
+		
 		if (offset > 0.0D) {
 			if (distance < offset)
 				return distance;
@@ -432,25 +432,25 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		}
 		return offset;
 	}
-
+	
 	public static final float EPSILON = 0.001F;
-
+	
 	public static boolean smallerThanAndEquals(double a, double b) {
 		return a < b || equals(a, b);
 	}
-
+	
 	public static boolean greaterThanAndEquals(double a, double b) {
 		return a > b || equals(a, b);
 	}
-
+	
 	public static boolean equals(double a, double b) {
 		return a == b ? true : Math.abs(a - b) < EPSILON;
 	}
-
+	
 	@Override
 	public double calculateYOffsetStepUp(AxisAlignedBB other, AxisAlignedBB otherY, double offset) {
 		double newOffset = calculateYOffset(otherY, offset);
-
+		
 		if (offset > 0) {
 			if (newOffset < offset)
 				return newOffset / 2;
@@ -458,18 +458,18 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			if (newOffset > offset)
 				return newOffset / 2;
 		}
-
+		
 		return newOffset;
 	}
-
+	
 	public double getMaxTranslated(Axis axis) {
 		return getMax(axis) + RotationUtils.get(axis, origin.translation());
 	}
-
+	
 	public double getMinTranslated(Axis axis) {
 		return getMin(axis) + RotationUtils.get(axis, origin.translation());
 	}
-
+	
 	public double calculateOffset(AxisAlignedBB other, Axis axis, double offset) {
 		if (other instanceof OrientatedBoundingBox) {
 			if (((OrientatedBoundingBox) other).origin == origin) {
@@ -482,52 +482,52 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 					return super.calculateZOffset(other, offset);
 				}
 			}
-
+			
 			other = ((OrientatedBoundingBox) other).origin.getAxisAlignedBox(other);
 		}
-
+		
 		if (origin.isRotated())
 			return calculateOffsetRotated(other, axis, offset);
-
+		
 		Axis one = RotationUtils.getDifferentAxisFirst(axis);
 		Axis two = RotationUtils.getDifferentAxisSecond(axis);
-
+		
 		if (getMax(other, one) > getMinTranslated(one) && getMin(other, one) < getMaxTranslated(one) && getMax(other, two) > getMinTranslated(two) && getMin(other, two) < getMaxTranslated(two)) {
 			if (offset > 0.0D && getMax(other, axis) <= getMinTranslated(axis)) {
 				double d1 = getMinTranslated(axis) - getMax(other, axis);
-
+				
 				if (d1 < offset) {
 					offset = d1;
 				}
 			} else if (offset < 0.0D && getMin(other, axis) >= getMaxTranslated(axis)) {
 				double d0 = getMaxTranslated(axis) - getMin(other, axis);
-
+				
 				if (d0 > offset) {
 					offset = d0;
 				}
 			}
-
+			
 			return offset;
 		}
-
+		
 		return offset;
 	}
-
+	
 	@Override
 	public double calculateXOffset(AxisAlignedBB other, double offsetX) {
 		return calculateOffset(other, Axis.X, offsetX);
 	}
-
+	
 	@Override
 	public double calculateYOffset(AxisAlignedBB other, double offsetY) {
 		return calculateOffset(other, Axis.Y, offsetY);
 	}
-
+	
 	@Override
 	public double calculateZOffset(AxisAlignedBB other, double offsetZ) {
 		return calculateOffset(other, Axis.Z, offsetZ);
 	}
-
+	
 	@Override
 	public boolean intersects(AxisAlignedBB other) {
 		if (other instanceof OrientatedBoundingBox) {
@@ -538,23 +538,23 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				return converted.minX < other.maxX && converted.maxX > other.minX && converted.minY < other.maxY && converted.maxY > other.minY && converted.minZ < other.maxZ && converted.maxZ > other.minZ;
 			}
 		}
-
+		
 		return this.intersects(other.minX, other.minY, other.minZ, other.maxX, other.maxY, other.maxZ);
 	}
-
+	
 	@Override
 	public boolean intersects(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
 		AxisAlignedBB box = origin.getAxisAlignedBox(this);
 		return box.minX < maxX && box.maxX > minX && box.minY < maxY && box.maxY > minY && box.minZ < maxZ && box.maxZ > minZ;
 	}
-
+	
 	/*
 	 * @Override public boolean contains(Vec3d vec) { if (vec.x > this.getRealMinX()
 	 * && vec.x < this.getRealMaxX()) { if (vec.y > this.getRealMinY() && vec.y <
 	 * this.getRealMaxY()) { return vec.z > this.getRealMinZ() && vec.z <
 	 * this.getRealMaxZ(); } else { return false; } } else { return false; } }
 	 */
-
+	
 	/*
 	 * @Override
 	 * 
@@ -627,44 +627,44 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 	 * >= this.getRealMinX() && vec.x <= this.getRealMaxX() && vec.y >=
 	 * this.getRealMinY() && vec.y <= this.getRealMaxY(); }
 	 */
-
+	
 	@Override
 	public String toString() {
 		return "box[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
 	}
-
+	
 	public Vector3d getCenter3d() {
 		return new Vector3d(this.minX + (this.maxX - this.minX) * 0.5D, this.minY + (this.maxY - this.minY) * 0.5D, this.minZ + (this.maxZ - this.minZ) * 0.5D);
 	}
-
+	
 	public double getPushOutScale(double minScale, OrientatedBoundingBox fakeBox, AxisAlignedBB originalBox, Vector3d pushVec, Vector3d pushVecInv, @Nullable BoxPlane xPlane, @Nullable BoxPlane yPlane, @Nullable BoxPlane zPlane) {
 		double scale = Double.MAX_VALUE;
-
+		
 		boolean pushX = pushVec.x != 0;
 		boolean pushY = pushVec.y != 0;
 		boolean pushZ = pushVec.z != 0;
-
+		
 		if (pushX)
 			if (pushVec.x > 0)
 				scale = Math.min(scale, (this.maxX - fakeBox.minX) / pushVec.x);
 			else
 				scale = Math.min(scale, (this.minX - fakeBox.maxX) / pushVec.x);
-
+			
 		if (pushY)
 			if (pushVec.y > 0)
 				scale = Math.min(scale, (this.maxY - fakeBox.minY) / pushVec.y);
 			else
 				scale = Math.min(scale, (this.minY - fakeBox.maxY) / pushVec.y);
-
+			
 		if (pushZ)
 			if (pushVec.z > 0)
 				scale = Math.min(scale, (this.maxZ - fakeBox.minZ) / pushVec.z);
 			else
 				scale = Math.min(scale, (this.minZ - fakeBox.maxZ) / pushVec.z);
-
+			
 		if (scale <= minScale)
 			return minScale;
-
+		
 		/*
 		 * for(BoxCorner corner : BoxCorner.values()) { if(corner.x.getAxisDirection()
 		 * == AxisDirection.POSITIVE) { if(pushVec.x < 0) continue; } else {
@@ -692,9 +692,9 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		 * 
 		 * }
 		 */
-
+		
 		return scale;
-
+		
 	}
-
+	
 }

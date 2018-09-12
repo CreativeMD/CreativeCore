@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class CreativeMessageHandler implements IMessage {
-
+	
 	public CreativeMessageHandler() {
-
+		
 	}
-
+	
 	public boolean isLast = true;
 	public UUID uuid;
 	public CreativeCorePacket packet = null;
@@ -22,17 +22,17 @@ public class CreativeMessageHandler implements IMessage {
 	public EntityPlayer player;
 	public int amount;
 	public ByteBuf content;
-
+	
 	public CreativeMessageHandler(CreativeCorePacket packet, MessageType type, EntityPlayer player) {
 		this.packet = packet;
 		this.type = type;
 		this.player = player;
 	}
-
+	
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		isLast = buf.readBoolean();
-
+		
 		String id = CreativeCorePacket.readString(buf);
 		Class PacketClass = CreativeCorePacket.getClassByID(id);
 		packet = null;
@@ -41,7 +41,7 @@ public class CreativeMessageHandler implements IMessage {
 		} catch (Exception e) {
 			System.out.println("Invalid packet id=" + id);
 		}
-
+		
 		if (isLast) {
 			if (packet != null)
 				packet.readBytes(buf);
@@ -55,7 +55,7 @@ public class CreativeMessageHandler implements IMessage {
 			content.writeBytes(data);
 		}
 	}
-
+	
 	@Override
 	public void toBytes(ByteBuf buf) {
 		content = ByteBufAllocator.DEFAULT.buffer();
@@ -70,7 +70,7 @@ public class CreativeMessageHandler implements IMessage {
 		} else {
 			// CREATE SPLITTED MESSAGES
 			amount = (int) Math.ceil((double) content.writerIndex() / (double) packetSize);
-
+			
 			uuid = UUID.randomUUID();
 			String id = CreativeCorePacket.getIDByClass(packet);
 			for (int i = 0; i < amount; i++) {
@@ -90,9 +90,9 @@ public class CreativeMessageHandler implements IMessage {
 			}
 		}
 	}
-
+	
 	public static enum MessageType {
-
+		
 		ToServer {
 			@Override
 			public Side getSide() {
@@ -111,8 +111,8 @@ public class CreativeMessageHandler implements IMessage {
 				return Side.SERVER;
 			}
 		};
-
+		
 		public abstract Side getSide();
 	}
-
+	
 }

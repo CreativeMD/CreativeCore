@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class StackedEntry extends RecipeEntry {
-
+	
 	public Object item;
 	/**
 	 * Maybe a block/item/ore need a custom nbt, because only itemstacks have a
@@ -16,16 +16,16 @@ public class StackedEntry extends RecipeEntry {
 	 * place
 	 **/
 	public int minStackSize = 1;
-
+	
 	public StackedEntry(Object item, int stackSize) {
 		this.minStackSize = stackSize;
 	}
-
+	
 	public StackedEntry(Object item, int stackSize, NBTTagCompound nbt) {
 		this(item, stackSize);
 		this.nbt = nbt;
 	}
-
+	
 	@Override
 	public boolean isEntry(ItemStack stack) {
 		if (!isObject(stack, item)) {
@@ -40,12 +40,12 @@ public class StackedEntry extends RecipeEntry {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public int getStackSize(ItemStack stack) {
 		if (minStackSize == 0)
 			return Integer.MAX_VALUE;
 		return stack.getCount() / minStackSize;
 	}
-
+	
 }

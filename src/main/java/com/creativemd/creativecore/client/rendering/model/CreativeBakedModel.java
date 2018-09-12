@@ -38,24 +38,24 @@ import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 
 public class CreativeBakedModel implements IBakedModel {
-
+	
 	public static Minecraft mc = Minecraft.getMinecraft();
-
+	
 	public static ItemColors itemColores = null;
-
+	
 	public static void lateInit() {
 		itemColores = mc.getItemColors();
 	}
-
+	
 	// public static FaceBakery faceBakery = new FaceBakery();
 	public static TextureAtlasSprite woodenTexture;
-
+	
 	private static ItemStack lastItemStack = null;
-
+	
 	public static void setLastItemStack(ItemStack stack) {
 		lastItemStack = stack;
 	}
-
+	
 	public static ItemOverrideList customOverride = new ItemOverrideList(new ArrayList<>()) {
 		@Override
 		public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
@@ -63,18 +63,18 @@ public class CreativeBakedModel implements IBakedModel {
 			return super.handleItemState(originalModel, stack, world, entity);
 		}
 	};
-
+	
 	public static TextureAtlasSprite getWoodenTexture() {
 		if (woodenTexture == null)
 			woodenTexture = mc.getTextureMapBlocks().getAtlasSprite("minecraft:blocks/planks_oak");
 		return woodenTexture;
 	}
-
+	
 	@Override
 	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 		return getBlockQuads(state, side, rand, false);
 	}
-
+	
 	/*
 	 * public static boolean doesBlockHaveColor(Block block) {
 	 * if(block.getBlockLayer() == BlockRenderLayer.CUTOUT_MIPPED) return true;
@@ -82,22 +82,22 @@ public class CreativeBakedModel implements IBakedModel {
 	 * ReflectionHelper.getPrivateValue(BlockColors.class, mc.getBlockColors(),
 	 * "blockColorMap"); return blockColorMap.containsKey(block.delegate); }
 	 */
-
+	
 	public static List<BakedQuad> getBlockQuads(List<? extends RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
 		for (int i = 0; i < cubes.size(); i++) {
 			RenderCubeObject cube = cubes.get(i);
-
+			
 			if (!cube.shouldSideBeRendered(side))
 				continue;
-
+			
 			Block block = renderBlock;
 			if (cube.block != null)
 				block = cube.block;
-
+			
 			IBlockState newState = cube.getBlockState(block);
 			if (state != null && te != null)
 				newState = newState.getActualState(te.getWorld(), te.getPos());
-
+			
 			try {
 				if (layer != null && renderBlock != null && !renderBlock.canRenderInLayer(state, layer))
 					continue;
@@ -110,25 +110,25 @@ public class CreativeBakedModel implements IBakedModel {
 						continue;
 				}
 			}
-
+			
 			IBakedModel blockModel = mc.getBlockRendererDispatcher().getModelForState(newState);
-
+			
 			int defaultColor = -1;
 			if (te == null && stack != null)
 				defaultColor = itemColores.colorMultiplier(new ItemStack(newState.getBlock(), 1, newState.getBlock().getMetaFromState(newState)), -1);
-
+			
 			baked.addAll(cube.getBakedQuad(te != null ? te.getWorld() : null, te != null ? te.getPos() : null, cube.getOffset(), newState, blockModel, side, layer, rand, true, defaultColor));
 		}
-
+		
 		if (baked.size() > 0)
 			renderer.saveCachedModel(side, layer, baked, state, te, stack, threaded);
 		return baked;
 	}
-
+	
 	public static List<BakedQuad> getBakedQuad(IBlockAccess world, RenderCubeObject cube, @Nullable BlockPos pos, BlockPos offset, IBlockState state, IBakedModel blockModel, BlockRenderLayer layer, EnumFacing side, long rand, boolean overrideTint) {
 		return cube.getBakedQuad(world, pos, offset, state, blockModel, side, layer, rand, overrideTint, -1);
 	}
-
+	
 	/*
 	 * public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject
 	 * uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long
@@ -182,34 +182,34 @@ public class CreativeBakedModel implements IBakedModel {
 	 * Float.floatToRawIntBits(quad.getSprite().getInterpolatedV(v)); }
 	 * quads.add(quad); } return quads; }
 	 */
-
+	
 	public static List<BakedQuad> getBlockQuads(IBlockState state, EnumFacing side, long rand, boolean threaded) {
 		// long time = System.nanoTime();
 		ArrayList<BakedQuad> baked = new ArrayList<>();
-
+		
 		Block renderBlock = null;
-
+		
 		if (state == null && lastItemStack != null) {
 			renderBlock = Block.getBlockFromItem(lastItemStack.getItem());
 		} else if (state != null)
 			renderBlock = state.getBlock();
-
+		
 		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
 		ItemStack stack = state != null ? null : lastItemStack;
-
+		
 		List<? extends RenderCubeObject> cubes = null;
-
+		
 		ICreativeRendered renderer = null;
 		if (renderBlock instanceof ICreativeRendered)
 			renderer = (ICreativeRendered) renderBlock;
 		else if (lastItemStack != null && lastItemStack.getItem() instanceof ICreativeRendered)
 			renderer = (ICreativeRendered) lastItemStack.getItem();
-
+		
 		BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-
+		
 		if (side == null)
 			return baked;
-
+		
 		if (renderer != null) {
 			List<BakedQuad> cached = renderer.getCachedModel(side, layer, state, te, stack, threaded);
 			if (cached != null) {
@@ -218,48 +218,48 @@ public class CreativeBakedModel implements IBakedModel {
 			}
 			cubes = renderer.getRenderingCubes(state, te, stack);
 		}
-
+		
 		if (cubes != null) {
 			return getBlockQuads(cubes, baked, renderer, side, state, layer, renderBlock, te, rand, stack, threaded);
 		}
 		// System.out.println("Rerendered everything in " + (System.nanoTime()-time));
 		return baked;
 	}
-
+	
 	@Override
 	public boolean isAmbientOcclusion() {
 		return true;
 	}
-
+	
 	@Override
 	public boolean isGui3d() {
 		return true;
 	}
-
+	
 	@Override
 	public boolean isBuiltInRenderer() {
 		return false;
 	}
-
+	
 	@Override
 	public TextureAtlasSprite getParticleTexture() {
-
+		
 		return getWoodenTexture();
 	}
-
+	
 	private static ImmutableMap<TransformType, TRSRTransformation> cameraTransforms;
 	private static TRSRTransformation baseState;
-
+	
 	private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s) {
 		return TRSRTransformation.blockCenterToCorner(new TRSRTransformation(new Vector3f(tx / 16, ty / 16, tz / 16), TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)), new Vector3f(s, s, s), null));
 	}
-
+	
 	private static TRSRTransformation leftify(TRSRTransformation transform) {
 		return TRSRTransformation.blockCenterToCorner(flipX.compose(TRSRTransformation.blockCornerToCenter(transform)).compose(flipX));
 	}
-
+	
 	private static final TRSRTransformation flipX = new TRSRTransformation(null, null, new Vector3f(-1, 1, 1), null);
-
+	
 	public static final void loadTransformation() {
 		TRSRTransformation thirdperson = get(0, 2.5f, 0, 75, 45, 0, 0.375f);
 		ImmutableMap.Builder<TransformType, TRSRTransformation> builder = ImmutableMap.builder();
@@ -275,12 +275,12 @@ public class CreativeBakedModel implements IBakedModel {
 		baseState = perState.apply(Optional.empty()).orElse(TRSRTransformation.identity());
 		cameraTransforms = ImmutableMap.copyOf(builder.build());
 	}
-
+	
 	@Override
 	public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
 		if (cameraTransforms == null)
 			loadTransformation();
-
+		
 		if (lastItemStack != null) {
 			ICreativeRendered renderer = null;
 			Block block = Block.getBlockFromItem(lastItemStack.getItem());
@@ -288,11 +288,11 @@ public class CreativeBakedModel implements IBakedModel {
 				renderer = (ICreativeRendered) block;
 			else if (lastItemStack != null && lastItemStack.getItem() instanceof ICreativeRendered)
 				renderer = (ICreativeRendered) lastItemStack.getItem();
-
+			
 			if (renderer != null)
 				renderer.applyCustomOpenGLHackery(lastItemStack, cameraTransformType);
 		}
-
+		
 		// Pair<? extends IBakedModel, Matrix4f> pair = ((IPerspectiveAwareModel)
 		// mc.getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState())).handlePerspective(cameraTransformType);
 		TRSRTransformation tr = cameraTransforms.get(cameraTransformType);
@@ -302,15 +302,15 @@ public class CreativeBakedModel implements IBakedModel {
 		return Pair.of(this, mat);
 		// return Pair.of(this, cameraTransforms.get(cameraTransformType).getMatrix());
 	}
-
+	
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() {
 		return ItemCameraTransforms.DEFAULT;
 	}
-
+	
 	@Override
 	public ItemOverrideList getOverrides() {
 		return customOverride;
 	}
-
+	
 }

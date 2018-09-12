@@ -6,17 +6,17 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
 public class TextureDisplayStyle extends DisplayStyle {
-
+	
 	public ResourceLocation location;
 	public int u;
 	public int v;
-
+	
 	public TextureDisplayStyle(ResourceLocation location, int u, int v) {
 		this.location = location;
 		this.u = u;
 		this.v = v;
 	}
-
+	
 	@Override
 	public void renderStyle(GuiRenderHelper helper, int width, int height) {
 		GlStateManager.pushMatrix();
@@ -30,5 +30,5 @@ public class TextureDisplayStyle extends DisplayStyle {
 		helper.drawTexturedModalRect(location, 0, 0, u, v, width, height);
 		GlStateManager.popMatrix();
 	}
-
+	
 }

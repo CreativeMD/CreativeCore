@@ -11,10 +11,10 @@ import com.n247s.api.eventapi.EventApi;
 @Target(ElementType.METHOD)
 public @interface CustomEventSubscribe {
 	public Priority eventPriority() default Priority.Normal;
-
+	
 	public enum Priority {
 		Highest, High, Normal, Low, Lowest;
-
+		
 		/**
 		 * @param i
 		 *            - The number of Priority you want to get.

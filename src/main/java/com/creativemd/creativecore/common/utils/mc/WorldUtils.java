@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldUtils {
-
+	
 	public static boolean checkIfChunkExists(Chunk chunk) {
 		if (chunk == null)
 			return false;
@@ -22,18 +22,18 @@ public class WorldUtils {
 			return checkIfChunkExistsClient(chunk);
 		return true;
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	private static boolean checkIfChunkExistsClient(Chunk chunk) {
 		return !(chunk instanceof EmptyChunk);
 	}
-
+	
 	public static void dropItem(World world, ArrayList<ItemStack> stacks, BlockPos pos) {
 		for (int i = 0; i < stacks.size(); i++) {
 			dropItem(world, stacks.get(i), pos);
 		}
 	}
-
+	
 	public static void dropItem(World world, ItemStack stack, BlockPos pos) {
 		if (stack == null)
 			return;
@@ -45,23 +45,23 @@ public class WorldUtils {
 		entityitem.setPickupDelay(10);
 		world.spawnEntity(entityitem);
 	}
-
+	
 	public static void dropItem(EntityPlayer player, ItemStack stack) {
 		if (stack != null)
 			dropItem(player.world, stack, player.getPosition());
 	}
-
+	
 	public static void dropItem(EntityPlayer player, ArrayList<ItemStack> stacks) {
 		for (int i = 0; i < stacks.size(); i++) {
 			dropItem(player, stacks.get(i));
 		}
 	}
-
+	
 	public static boolean isMainThread(World world) {
 		if (world.isRemote)
 			return Minecraft.getMinecraft().isCallingFromMinecraftThread();
 		else
 			return world.getMinecraftServer().isCallingFromMinecraftThread();
 	}
-
+	
 }

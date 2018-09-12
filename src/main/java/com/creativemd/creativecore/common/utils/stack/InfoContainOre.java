@@ -7,19 +7,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoContainOre extends InfoOre {
-
+	
 	public InfoContainOre(String name) {
 		this(name, 1);
 	}
-
+	
 	public InfoContainOre(String name, int stackSize) {
 		super(name.toLowerCase(), stackSize);
 	}
-
+	
 	public InfoContainOre() {
 		super();
 	}
-
+	
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
 		if (equalsIgnoreSize(info))
@@ -28,12 +28,12 @@ public class InfoContainOre extends InfoOre {
 			return ((InfoOre) info).ore.toLowerCase().contains(ore);
 		return false;
 	}
-
+	
 	@Override
 	public InfoStack copy() {
 		return new InfoContainOre(ore, stackSize);
 	}
-
+	
 	@Override
 	public ItemStack getItemStack(int stacksize) {
 		String[] names = OreDictionary.getOreNames();
@@ -51,7 +51,7 @@ public class InfoContainOre extends InfoOre {
 		}
 		return ItemStack.EMPTY;
 	}
-
+	
 	@Override
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		int[] ores = OreDictionary.getOreIDs(stack);
@@ -61,12 +61,12 @@ public class InfoContainOre extends InfoOre {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoContainOre && ((InfoContainOre) object).ore.equals(ore);
 	}
-
+	
 	@Override
 	public ArrayList<ItemStack> getAllPossibleItemStacks() {
 		ArrayList<ItemStack> result = new ArrayList<>();
@@ -77,5 +77,5 @@ public class InfoContainOre extends InfoOre {
 		}
 		return result;
 	}
-
+	
 }

@@ -24,16 +24,16 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 public abstract class Transformer {
-
+	
 	public static ArrayList<Transformer> transformers = new ArrayList<>();
-
+	
 	public final String className;
-
+	
 	public Transformer(String className) {
 		transformers.add(this);
 		this.className = TransformerNames.patchClassName(className);
 	}
-
+	
 	public static boolean areNodesEqual(AbstractInsnNode node, AbstractInsnNode node2) {
 		if (node.getClass() == node2.getClass() && node.getOpcode() == node2.getOpcode()) {
 			if (node instanceof MethodInsnNode) {
@@ -58,7 +58,7 @@ public abstract class Transformer {
 		}
 		return false;
 	}
-
+	
 	public AbstractInsnNode findNode(InsnList instructions, AbstractInsnNode node) {
 		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
 		while (iterator.hasNext()) {
@@ -69,11 +69,11 @@ public abstract class Transformer {
 		}
 		return null;
 	}
-
+	
 	public int getIndexOfVar(MethodNode m, String desc, String signature) {
 		desc = patchDESC(desc);
 		signature = signature == null ? null : patchDESC(signature);
-
+		
 		for (Iterator<LocalVariableNode> iterator = m.localVariables.iterator(); iterator.hasNext();) {
 			LocalVariableNode local = iterator.next();
 			if (local.desc.equals(desc) && (signature == null || signature.equals(local.signature)))
@@ -81,11 +81,11 @@ public abstract class Transformer {
 		}
 		return -1;
 	}
-
+	
 	public int getIndexOfVar(MethodNode m, String desc) {
 		return getIndexOfVar(m, desc, null);
 	}
-
+	
 	public LabelNode findPreviousLabel(AbstractInsnNode node) {
 		while (node.getPrevious() != null) {
 			if (node.getPrevious() instanceof LabelNode)
@@ -94,7 +94,7 @@ public abstract class Transformer {
 		}
 		return null;
 	}
-
+	
 	public LabelNode findNextLabel(AbstractInsnNode node) {
 		while (node.getNext() != null) {
 			if (node.getNext() instanceof LabelNode)
@@ -103,15 +103,15 @@ public abstract class Transformer {
 		}
 		return null;
 	}
-
+	
 	public void removeLabel(InsnList instructions, AbstractInsnNode node, int labels) {
 		replaceLabel(instructions, node, null, labels, false);
 	}
-
+	
 	public void replaceLabel(InsnList instructions, AbstractInsnNode node, @Nullable ArrayList<AbstractInsnNode> replaceInstructions, int labels, boolean keepFirstLabel) {
 		replaceLabelBefore(instructions, node, replaceInstructions, labels, 0, keepFirstLabel, true);
 	}
-
+	
 	public void replaceLabelBefore(InsnList instructions, AbstractInsnNode node, @Nullable ArrayList<AbstractInsnNode> replaceInstructions, int labels, int labelsBefore, boolean keepFirstLabel, boolean deleteFrame) {
 		ListIterator<AbstractInsnNode> iterator = instructions.iterator();
 		LabelNode searchedLabel = null;
@@ -129,7 +129,7 @@ public abstract class Transformer {
 				break;
 			}
 		}
-
+		
 		if (searchedLabel != null) {
 			boolean found = false;
 			int labelCounter = 0;
@@ -157,29 +157,29 @@ public abstract class Transformer {
 		} else if (node instanceof LineNumberNode)
 			System.out.println("COULD NOT FIND NODE line=" + ((LineNumberNode) node).line);
 	}
-
+	
 	public boolean is(String className) {
 		return className.equals(this.className);
 	}
-
+	
 	public String patchDESC(String desc) {
 		return TransformerNames.patchDESC(desc);
 	}
-
+	
 	public String patchClassName(String className) {
 		return TransformerNames.patchClassName(className);
 	}
-
+	
 	public String patchFieldName(String fieldName) {
 		return TransformerNames.patchFieldName(fieldName, patchClassName(this.className.replace(".", "/")));
 	}
-
+	
 	public String patchMethodName(String methodName, String desc) {
 		return TransformerNames.patchMethodName(methodName, desc, patchClassName(this.className.replace(".", "/")));
 	}
-
+	
 	public abstract void transform(ClassNode node);
-
+	
 	public MethodNode findMethod(ClassNode node, String name, String desc) {
 		if (TransformerNames.obfuscated) {
 			name = patchMethodName(name, desc);
@@ -193,7 +193,7 @@ public abstract class Transformer {
 		}
 		return null;
 	}
-
+	
 	public FieldNode findField(ClassNode node, String name) {
 		Iterator<FieldNode> fields = node.fields.iterator();
 		while (fields.hasNext()) {
@@ -203,7 +203,7 @@ public abstract class Transformer {
 		}
 		return null;
 	}
-
+	
 	public void done() {
 		// transformers.remove(this);
 		if (transformers.size() == 0)

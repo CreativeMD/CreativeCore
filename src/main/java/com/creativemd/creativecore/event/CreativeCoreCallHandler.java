@@ -11,16 +11,16 @@ public class CreativeCoreCallHandler extends EventApiCallHandler {
 	public CreativeCoreCallHandler(Class<? extends EventType> eventType) {
 		super(eventType);
 	}
-
+	
 	@Override
 	protected boolean CallInstances(EventType eventType) {
 		return super.CallInstances(eventType);
 	}
-
+	
 	public Class<? extends EventType> getEventType() {
 		return this.eventType;
 	}
-
+	
 	public HashMap<CustomEventSubscribe.Priority, LinkedHashMap> getInstanceMap() {
 		return this.instanceMap;
 	}

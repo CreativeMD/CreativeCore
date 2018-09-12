@@ -25,34 +25,34 @@ import net.minecraftforge.client.model.pipeline.BlockInfo;
 import net.minecraftforge.client.model.pipeline.LightUtil;
 
 public class CreativeCubeConsumer {
-
+	
 	public final VertexFormat format;
 	protected int vertices = 0;
-
+	
 	protected byte[] dataLength = null;
 	protected float[][][] quadData = null;
-
+	
 	protected final BlockInfo blockInfo;
 	private int tint = -1;
 	private boolean diffuse = true;
-
+	
 	protected int posIndex = -1;
 	protected int normalIndex = -1;
 	protected int colorIndex = -1;
 	protected int lightmapIndex = -1;
-
+	
 	public BakedQuad quad;
 	public RenderCubeObject cube;
 	public BufferBuilder buffer;
 	public BlockRenderLayer layer;
 	public IBlockState state;
-
+	
 	private final CreativeVertexBufferConsumer parent;
-
+	
 	public BlockInfo getBlockInfo() {
 		return blockInfo;
 	}
-
+	
 	public CreativeCubeConsumer(VertexFormat newFormat, BlockColors colors) {
 		this.format = new VertexFormat(newFormat);
 		this.blockInfo = new BlockInfo(colors);
@@ -88,7 +88,7 @@ public class CreativeCubeConsumer {
 		dataLength = new byte[format.getElementCount()];
 		quadData = new float[format.getElementCount()][4][4];
 	}
-
+	
 	public void put(int element, float... data) {
 		System.arraycopy(data, 0, quadData[element][vertices], 0, data.length);
 		if (element == format.getElementCount() - 1)
@@ -100,13 +100,13 @@ public class CreativeCubeConsumer {
 			processQuad();
 		}
 	}
-
+	
 	protected void processQuad() {
 		float[][] position = quadData[posIndex];
 		float[][] normal = null;
 		float[][] lightmap = quadData[lightmapIndex];
 		float[][] color = quadData[colorIndex];
-
+		
 		/*
 		 * if(normalIndex != -1 && ( quadData[normalIndex][0][0] != -1 ||
 		 * quadData[normalIndex][0][1] != -1 || quadData[normalIndex][0][2] != -1)) {
@@ -128,9 +128,9 @@ public class CreativeCubeConsumer {
 			normal[v][3] = 0;
 		}
 		// }
-
+		
 		int multiplier = -1;
-
+		
 		if (OptifineHelper.isActive()) {
 			multiplier = OptifineHelper.getColorMultiplier(quad, state, blockInfo.getWorld(), blockInfo.getBlockPos());
 			if (multiplier != -1)
@@ -139,7 +139,7 @@ public class CreativeCubeConsumer {
 		if (tint != -1 && (cube.color == -1 || ColorUtils.isWhite(cube.color))) {
 			if (multiplier == -1)
 				multiplier = blockInfo.getColorMultiplier(tint);
-
+			
 			Color tempColor = ColorUtils.IntToRGBA(multiplier);
 			if (cube.color != -1)
 				tempColor.setAlpha(ColorUtils.getAlpha(cube.color));
@@ -153,28 +153,28 @@ public class CreativeCubeConsumer {
 				tint = 0;
 			multiplier = cube.color;
 		}
-
+		
 		// multiplier = ColorUtils.WHITE;
 		int count = format.getElementCount();
-
+		
 		for (int v = 0; v < 4; v++) {
 			position[v][0] += blockInfo.getShx();
 			position[v][1] += blockInfo.getShy();
 			position[v][2] += blockInfo.getShz();
-
+			
 			float x = position[v][0] - .5f;
 			float y = position[v][1] - .5f;
 			float z = position[v][2] - .5f;
-
+			
 			// if(blockInfo.getBlock().isFullCube())
 			{
 				x += normal[v][0] * .5f;
 				y += normal[v][1] * .5f;
 				z += normal[v][2] * .5f;
 			}
-
+			
 			float blockLight = lightmap[v][0], skyLight = lightmap[v][1];
-
+			
 			if (OptifineHelper.isEmissive(quad.getSprite())) {
 				lightmap[v][0] = 1;
 				lightmap[v][1] = 1;
@@ -196,7 +196,7 @@ public class CreativeCubeConsumer {
 			if (EntityRenderer.anaglyphEnable) {
 				applyAnaglyph(color[v]);
 			}
-
+			
 			// no need for remapping cause all we could've done is add 1 element to the end
 			for (int e = 0; e < count; e++) {
 				VertexFormatElement element = format.getElement(e);
@@ -231,49 +231,49 @@ public class CreativeCubeConsumer {
 		}
 		tint = -1;
 	}
-
+	
 	protected void applyAnaglyph(float[] color) {
 		float r = color[0];
 		color[0] = (r * 30 + color[1] * 59 + color[2] * 11) / 100;
 		color[1] = (r * 3 + color[1] * 7) / 10;
 		color[2] = (r * 3 + color[2] * 7) / 10;
 	}
-
+	
 	public void setQuadTint(int tint) {
 		this.tint = tint;
 	}
-
+	
 	public void setQuadOrientation(EnumFacing orientation) {
 	}
-
+	
 	public void setQuadCulled() {
 	}
-
+	
 	public void setTexture(TextureAtlasSprite texture) {
 	}
-
+	
 	public void setApplyDiffuseLighting(boolean diffuse) {
 		this.diffuse = diffuse;
 	}
-
+	
 	public void setWorld(IBlockAccess world) {
 		blockInfo.setWorld(world);
 	}
-
+	
 	public void setState(IBlockState state) {
 		this.state = state;
 		blockInfo.setState(state);
 	}
-
+	
 	public void setBlockPos(BlockPos blockPos) {
 		blockInfo.setBlockPos(blockPos);
 	}
-
+	
 	protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z) {
 		lightmap[0] = calcLightmap(blockInfo.getBlockLight(), x, y, z);
 		lightmap[1] = calcLightmap(blockInfo.getSkyLight(), x, y, z);
 	}
-
+	
 	protected void updateColor(float[] normal, float[] color, float x, float y, float z, float tint, int multiplier) {
 		if (tint != -1) {
 			color[3] *= (float) (multiplier >> 0x18 & 0xFF) / 0xFF; // Alpha
@@ -286,7 +286,7 @@ public class CreativeCubeConsumer {
 		color[1] *= a;
 		color[2] *= a;
 	}
-
+	
 	protected float calcLightmap(float[][][][] light, float x, float y, float z) {
 		x *= 2;
 		y *= 2;
@@ -339,59 +339,59 @@ public class CreativeCubeConsumer {
 			y *= s;
 			z *= s;
 		}
-
+		
 		float l = 0;
 		float s = 0;
-
+		
 		for (int ix = 0; ix <= 1; ix++) {
 			for (int iy = 0; iy <= 1; iy++) {
 				for (int iz = 0; iz <= 1; iz++) {
 					float vx = x * (1 - ix * 2);
 					float vy = y * (1 - iy * 2);
 					float vz = z * (1 - iz * 2);
-
+					
 					float s3 = vx + vy + vz + 4;
 					float sx = vy + vz + 3;
 					float sy = vz + vx + 3;
 					float sz = vx + vy + 3;
-
+					
 					float bx = (2 * vx + vy + vz + 6) / (s3 * sy * sz * (vx + 2));
 					s += bx;
 					l += bx * light[0][ix][iy][iz];
-
+					
 					float by = (2 * vy + vz + vx + 6) / (s3 * sz * sx * (vy + 2));
 					s += by;
 					l += by * light[1][ix][iy][iz];
-
+					
 					float bz = (2 * vz + vx + vy + 6) / (s3 * sx * sy * (vz + 2));
 					s += bz;
 					l += bz * light[2][ix][iy][iz];
 				}
 			}
 		}
-
+		
 		l /= s;
-
+		
 		if (l > 15f * 0x20 / 0xFFFF)
 			l = 15f * 0x20 / 0xFFFF;
 		if (l < 0)
 			l = 0;
-
+		
 		return l;
 	}
-
+	
 	protected float getAo(float x, float y, float z) {
 		int sx = x < 0 ? 1 : 2;
 		int sy = y < 0 ? 1 : 2;
 		int sz = z < 0 ? 1 : 2;
-
+		
 		if (x < 0)
 			x++;
 		if (y < 0)
 			y++;
 		if (z < 0)
 			z++;
-
+		
 		float a = 0;
 		float[][][] ao = blockInfo.getAo();
 		a += ao[sx - 1][sy - 1][sz - 1] * (1 - x) * (1 - y) * (1 - z);
@@ -402,14 +402,14 @@ public class CreativeCubeConsumer {
 		a += ao[sx - 0][sy - 1][sz - 0] * (0 + x) * (1 - y) * (0 + z);
 		a += ao[sx - 0][sy - 0][sz - 1] * (0 + x) * (0 + y) * (1 - z);
 		a += ao[sx - 0][sy - 0][sz - 0] * (0 + x) * (0 + y) * (0 + z);
-
+		
 		a = MathHelper.clamp(a, 0, 1);
 		return a;
 	}
-
+	
 	public void updateBlockInfo() {
 		blockInfo.updateShift();
 		blockInfo.updateLightMatrix();
 	}
-
+	
 }

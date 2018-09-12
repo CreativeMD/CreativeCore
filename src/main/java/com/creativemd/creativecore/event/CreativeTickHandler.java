@@ -16,9 +16,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CreativeTickHandler {
-
+	
 	public static ArrayList<CreativeCoreEventBus> ServerEvents = new ArrayList<CreativeCoreEventBus>();
-
+	
 	@SubscribeEvent
 	public void onEventTick(TickEvent tick) // Remove all Structures which doesn't have any connections
 	{
@@ -38,15 +38,15 @@ public class CreativeTickHandler {
 			}
 		}
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public static int defaultScale;
 	@SideOnly(Side.CLIENT)
 	public static boolean changed;
-
+	
 	@SideOnly(Side.CLIENT)
 	public static ArrayList<CreativeCoreEventBus> ClientEvents;
-
+	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onTick(RenderTickEvent tick) {
@@ -66,7 +66,7 @@ public class CreativeTickHandler {
 				// It is ready to crash
 			}
 		}
-
+		
 		if (mc.player != null && mc.player.openContainer instanceof ContainerSub && ((ContainerSub) mc.player.openContainer).gui != null) {
 			if (tick.phase == Phase.START) {
 				if (!changed)
@@ -83,12 +83,12 @@ public class CreativeTickHandler {
 					int l = scaledresolution.getScaledHeight();
 					// mc.getFramebuffer().isStencilEnabled()
 					mc.currentScreen.setWorldAndResolution(mc, k, l);
-
+					
 					// mc.loadingScreen = new LoadingScreenRenderer(mc);
 					// mc.updateFramebufferSize();
 				}
 			}
-
+			
 			// if(tick.phase == Phase.END)
 			// {
 			// mc.gameSettings.guiScale = defaultScale;

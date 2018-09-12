@@ -21,29 +21,29 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class GuiHandler implements IGuiHandler {
-
+	
 	public static ArrayList<ContainerSub> openContainers = new ArrayList<ContainerSub>();
-
+	
 	private static HashMap<String, CustomGuiHandler> guihandlers = new HashMap<String, CustomGuiHandler>();
-
+	
 	public static void registerGuiHandler(String id, CustomGuiHandler handler) {
 		guihandlers.put(id, handler);
 	}
-
+	
 	public static CustomGuiHandler getHandler(String id) {
 		return guihandlers.get(id);
 	}
-
+	
 	public static void openGuiItem(EntityPlayer player, World world) {
 		if (!world.isRemote)
 			((EntityPlayerMP) player).openGui(CreativeCore.instance, 1, world, (int) player.posX, (int) player.posY, (int) player.posZ);
 	}
-
+	
 	public static void openGui(EntityPlayer player, World world, BlockPos pos) {
 		if (!world.isRemote)
 			((EntityPlayerMP) player).openGui(CreativeCore.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 	}
-
+	
 	public static void openGui(String id, NBTTagCompound nbt, EntityPlayer player) {
 		if (player.getEntityWorld().isRemote)
 			openGui(id, nbt);
@@ -53,13 +53,13 @@ public class GuiHandler implements IGuiHandler {
 			packet.executeServer(player);
 		}
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public static void openGui(String id, NBTTagCompound nbt) {
 		OpenGuiPacket packet = new OpenGuiPacket(id, nbt);
 		PacketHandler.sendPacketToServer(packet);
 	}
-
+	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		switch (ID) {
@@ -81,7 +81,7 @@ public class GuiHandler implements IGuiHandler {
 		}
 		return null;
 	}
-
+	
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		switch (ID) {
@@ -99,5 +99,5 @@ public class GuiHandler implements IGuiHandler {
 		}
 		return null;
 	}
-
+	
 }

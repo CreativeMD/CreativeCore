@@ -10,9 +10,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderHelper3D {
-
+	
 	public static Minecraft mc = Minecraft.getMinecraft();
-
+	
 	public static void renderBlock(double x, double y, double z, double width, double height, double length, double rotateX, double rotateY, double rotateZ, double red, double green, double blue, double alpha) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
@@ -22,7 +22,7 @@ public class RenderHelper3D {
 		GlStateManager.rotate((float) rotateZ, 0, 0, 1);
 		GlStateManager.scale(width, height, length);
 		GlStateManager.color((float) red, (float) green, (float) blue, (float) alpha);
-
+		
 		GlStateManager.glBegin(GL11.GL_POLYGON);
 		GlStateManager.glNormal3f(0.0f, 1.0f, 0.0f);
 		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
@@ -30,7 +30,7 @@ public class RenderHelper3D {
 		GlStateManager.glVertex3f(0.5f, 0.5f, -0.5f);
 		GlStateManager.glVertex3f(-0.5f, 0.5f, -0.5f);
 		GlStateManager.glEnd();
-
+		
 		GL11.glBegin(GL11.GL_POLYGON);
 		// GL11.glColor4d(red, green, blue, alpha);
 		GlStateManager.glNormal3f(0.0f, 0.0f, 1.0f);
@@ -39,7 +39,7 @@ public class RenderHelper3D {
 		GlStateManager.glVertex3f(-0.5f, 0.5f, 0.5f);
 		GlStateManager.glVertex3f(-0.5f, -0.5f, 0.5f);
 		GlStateManager.glEnd();
-
+		
 		GL11.glBegin(GL11.GL_POLYGON);
 		// GL11.glColor4d(red, green, blue, alpha);
 		GlStateManager.glNormal3f(1.0f, 0.0f, 0.0f);
@@ -48,7 +48,7 @@ public class RenderHelper3D {
 		GlStateManager.glVertex3f(0.5f, -0.5f, 0.5f);
 		GlStateManager.glVertex3f(0.5f, -0.5f, -0.5f);
 		GlStateManager.glEnd();
-
+		
 		GL11.glBegin(GL11.GL_POLYGON);
 		// GL11.glColor4d(red, green, blue, alpha);
 		GlStateManager.glNormal3f(-1.0f, 0.0f, 0.0f);
@@ -57,7 +57,7 @@ public class RenderHelper3D {
 		GlStateManager.glVertex3f(-0.5f, 0.5f, -0.5f);
 		GlStateManager.glVertex3f(-0.5f, -0.5f, -0.5f);
 		GlStateManager.glEnd();
-
+		
 		GL11.glBegin(GL11.GL_POLYGON);
 		// GL11.glColor4d(red, green, blue, alpha);
 		GlStateManager.glNormal3f(0.0f, -1.0f, 0.0f);
@@ -66,7 +66,7 @@ public class RenderHelper3D {
 		GlStateManager.glVertex3f(-0.5f, -0.5f, -0.5f);
 		GlStateManager.glVertex3f(0.5f, -0.5f, -0.5f);
 		GlStateManager.glEnd();
-
+		
 		GL11.glBegin(GL11.GL_POLYGON);
 		// GL11.glColor4d(red, green, blue, alpha);
 		GlStateManager.glNormal3f(0.0f, 0.0f, -1.0f);
@@ -75,10 +75,10 @@ public class RenderHelper3D {
 		GlStateManager.glVertex3f(-0.5f, -0.5f, -0.5f);
 		GlStateManager.glVertex3f(-0.5f, 0.5f, -0.5f);
 		GlStateManager.glEnd();
-
+		
 		GlStateManager.popMatrix();
 	}
-
+	
 	public static void applyDirection(EnumFacing direction) {
 		int rotation = 0;
 		switch (direction) {

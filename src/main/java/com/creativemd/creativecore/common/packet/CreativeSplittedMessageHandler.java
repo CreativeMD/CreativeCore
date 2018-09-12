@@ -9,11 +9,11 @@ import io.netty.buffer.ByteBufAllocator;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class CreativeSplittedMessageHandler implements IMessage {
-
+	
 	public CreativeSplittedMessageHandler() {
-
+		
 	}
-
+	
 	public CreativeSplittedMessageHandler(boolean isLast, String packetID, UUID uuid, ByteBuf buffer, int index, int length) {
 		this.isLast = isLast;
 		this.buffer = buffer;
@@ -22,7 +22,7 @@ public class CreativeSplittedMessageHandler implements IMessage {
 		this.length = length;
 		this.packetID = packetID;
 	}
-
+	
 	public boolean isLast;
 	public String packetID;
 	public UUID uuid;
@@ -30,7 +30,7 @@ public class CreativeSplittedMessageHandler implements IMessage {
 	public int index;
 	public int length;
 	public MessageType type;
-
+	
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		isLast = buf.readBoolean();
@@ -42,7 +42,7 @@ public class CreativeSplittedMessageHandler implements IMessage {
 		buf.readBytes(data);
 		buffer.writeBytes(data);
 	}
-
+	
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeBoolean(isLast);
@@ -51,5 +51,5 @@ public class CreativeSplittedMessageHandler implements IMessage {
 		buf.writeInt(length);
 		buf.writeBytes(buffer, index, length);
 	}
-
+	
 }

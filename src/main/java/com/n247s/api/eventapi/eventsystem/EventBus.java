@@ -12,7 +12,7 @@ import com.n247s.api.eventapi.EventApi;
 public class EventBus {
 	private static final Logger log = EventApi.logger;
 	protected final HashMap<Class<? extends EventType>, CallHandler> EventList = new HashMap<Class<? extends EventType>, CallHandler>();
-
+	
 	/**
 	 * Be very careful when creating your own EventBus! Only create one when you
 	 * really need to, since this is the most sensitive part of the
@@ -20,7 +20,7 @@ public class EventBus {
 	 */
 	public EventBus() {
 	}
-
+	
 	/**
 	 * @param eventType
 	 * @return - true if EventType is Canceled.
@@ -36,7 +36,7 @@ public class EventBus {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * used to bind a custom CallHandler to a EventType.
 	 * 
@@ -48,7 +48,7 @@ public class EventBus {
 			this.EventList.remove(callHandler.eventType);
 		this.EventList.put(callHandler.eventType, callHandler);
 	}
-
+	
 	/**
 	 * With this method you can add an EventListner(Class object/Class instance)
 	 * which CustomEventSubscribed methods should be Called on eventRaise.
@@ -67,9 +67,9 @@ public class EventBus {
 			clazz = listener.getClass();
 		else
 			clazz = (Class) listener;
-
+		
 		Method[] methods = clazz.getMethods();
-
+		
 		for (int i = 0; i < methods.length; i++) {
 			Method currentMethod = methods[i];
 			if (currentMethod.isAnnotationPresent(CustomEventSubscribe.class)) {
@@ -77,21 +77,21 @@ public class EventBus {
 					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
 				if (!(EventType.class.isAssignableFrom(currentMethod.getParameterTypes()[0])))
 					log.catching(new IllegalArgumentException("The Parameter isn't an EventType!"));
-
+				
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
-
+				
 				getCallHandlerFromEventType(methodEventType).RegisterEventListener(annotation.eventPriority(), listener, currentMethod);
 			}
 		}
 	}
-
+	
 	public void RegisterEventListners(List<Object> listenersList) {
 		for (int i = 0; i < listenersList.size(); i++) {
 			RegisterEventListener(listenersList.get(i));
 		}
 	}
-
+	
 	/**
 	 * With this method you can remove an EventListner(Class object/Class instance).
 	 * 
@@ -105,12 +105,12 @@ public class EventBus {
 			clazz = Listener.getClass();
 		else
 			clazz = (Class) Listener;
-
+		
 		Method[] methodArray = clazz.getMethods();
-
+		
 		for (int i = 0; i < methodArray.length; i++) {
 			Method currentMethod = methodArray[i];
-
+			
 			if (currentMethod.isAnnotationPresent(CustomEventSubscribe.class)) {
 				if (currentMethod.getParameterTypes().length > 1)
 					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't have more than one Parameter!"));
@@ -118,21 +118,21 @@ public class EventBus {
 					log.catching(new IllegalArgumentException("An CustomEventSubScribed Method Can't be non-static if you register an Class Object!"));
 				if (!(EventType.class.isAssignableFrom(currentMethod.getParameterTypes()[0])))
 					log.catching(new IllegalArgumentException("The Parameter of a CustomEventSubscribed method isn't an EventType!"));
-
+				
 				CustomEventSubscribe annotation = currentMethod.getAnnotation(CustomEventSubscribe.class);
 				Class<? extends EventType> methodEventType = (Class<? extends EventType>) currentMethod.getParameterTypes()[0];
-
+				
 				getCallHandlerFromEventType(methodEventType).removeListener(annotation.eventPriority(), Listener);
 			}
 		}
 	}
-
+	
 	public void removeEventListeners(List<Object> listenersList) {
 		for (int i = 0; i < listenersList.size(); i++) {
 			removeEventListener(listenersList.get(i));
 		}
 	}
-
+	
 	/**
 	 * @param eventTypeClass
 	 * @return The instance of the CallHandler of this specific EventType. Note that

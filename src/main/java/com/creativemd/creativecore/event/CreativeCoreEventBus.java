@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CreativeCoreEventBus extends EventBus {
 	public ArrayList<EventType> eventsToRaise = new ArrayList<EventType>();
-
+	
 	/**
 	 * Be very careful when creating your own EventBus! Only create one when you
 	 * really need to, since this is the most sensitive part of the
@@ -25,20 +25,20 @@ public class CreativeCoreEventBus extends EventBus {
 		else
 			initServer();
 	}
-
+	
 	private boolean isClient;
-
+	
 	public void initServer() {
 		if (CreativeTickHandler.ServerEvents != null)
 			CreativeTickHandler.ServerEvents.add(this);
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public void initClient() {
 		if (CreativeTickHandler.ClientEvents != null)
 			CreativeTickHandler.ClientEvents.add(this);
 	}
-
+	
 	/**
 	 * @param eventType
 	 * @param force
@@ -53,7 +53,7 @@ public class CreativeCoreEventBus extends EventBus {
 		eventsToRaise.add(event);
 		return false;
 	}
-
+	
 	@Override
 	public boolean raiseEvent(EventType eventType) {
 		try {
@@ -66,7 +66,7 @@ public class CreativeCoreEventBus extends EventBus {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * used to bind a custom CallHandler to a EventType.
 	 * 
@@ -78,7 +78,7 @@ public class CreativeCoreEventBus extends EventBus {
 			this.EventList.remove(callHandler.getEventType());
 		this.EventList.put(callHandler.getEventType(), callHandler);
 	}
-
+	
 	/**
 	 * Destroy the eventbus
 	 */
@@ -92,16 +92,16 @@ public class CreativeCoreEventBus extends EventBus {
 		else
 			removeTickEventServer();
 	}
-
+	
 	public void removeTickEventServer() {
 		CreativeTickHandler.ServerEvents.remove(this);
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public void removeTickEventClient() {
 		CreativeTickHandler.ClientEvents.remove(this);
 	}
-
+	
 	@Override
 	public CallHandler getCallHandlerFromEventType(Class<? extends EventType> eventTypeClass) {
 		if (!this.EventList.containsKey(eventTypeClass))

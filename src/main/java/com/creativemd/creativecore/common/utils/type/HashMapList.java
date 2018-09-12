@@ -10,13 +10,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class HashMapList<K, V> {
-
+	
 	private LinkedHashMap<K, ArrayList<V>> keys;
-
+	
 	public HashMapList() {
 		this.keys = new LinkedHashMap<>();
 	}
-
+	
 	public HashMapList(HashMapList<K, V> object) {
 		this();
 		for (Iterator<Entry<K, ArrayList<V>>> iterator = object.entrySet().iterator(); iterator.hasNext();) {
@@ -24,11 +24,11 @@ public class HashMapList<K, V> {
 			keys.put(entry.getKey(), new ArrayList<>(entry.getValue()));
 		}
 	}
-
+	
 	public ArrayList<V> getValues(K key) {
 		return keys.get(key);
 	}
-
+	
 	public K getKey(V search) {
 		for (Entry<K, ArrayList<V>> entry : keys.entrySet()) {
 			if (entry.getValue().contains(search))
@@ -36,19 +36,19 @@ public class HashMapList<K, V> {
 		}
 		return null;
 	}
-
+	
 	public Set<K> keySet() {
 		return keys.keySet();
 	}
-
+	
 	public Collection<ArrayList<V>> values() {
 		return keys.values();
 	}
-
+	
 	public Set<Entry<K, ArrayList<V>>> entrySet() {
 		return keys.entrySet();
 	}
-
+	
 	public boolean contains(V value) {
 		for (Iterator<ArrayList<V>> iterator = values().iterator(); iterator.hasNext();) {
 			ArrayList<V> type = iterator.next();
@@ -57,18 +57,18 @@ public class HashMapList<K, V> {
 		}
 		return false;
 	}
-
+	
 	public boolean contains(K key, V value) {
 		ArrayList<V> list = getValues(key);
 		if (list != null)
 			return list.contains(value);
 		return false;
 	}
-
+	
 	public void add(K key, V[] values) {
 		add(key, new ArrayList<V>(Arrays.asList(values)));
 	}
-
+	
 	public void add(K key, List<V> values) {
 		ArrayList<V> list = getValues(key);
 		if (list == null)
@@ -76,7 +76,7 @@ public class HashMapList<K, V> {
 		else
 			list.addAll(values);
 	}
-
+	
 	public void add(K key, V value) {
 		ArrayList<V> list = getValues(key);
 		if (list == null) {
@@ -86,11 +86,11 @@ public class HashMapList<K, V> {
 		} else
 			list.add(value);
 	}
-
+	
 	public boolean removeKey(K key) {
 		return keys.remove(key) != null;
 	}
-
+	
 	public boolean removeValue(K key, V value) {
 		ArrayList<V> values = getValues(key);
 		if (values != null)
@@ -99,10 +99,10 @@ public class HashMapList<K, V> {
 					removeKey(key);
 				return true;
 			}
-
+		
 		return false;
 	}
-
+	
 	public boolean removeValue(V value) {
 		for (Iterator<ArrayList<V>> iterator = keys.values().iterator(); iterator.hasNext();) {
 			ArrayList<V> values = iterator.next();
@@ -114,7 +114,7 @@ public class HashMapList<K, V> {
 		}
 		return false;
 	}
-
+	
 	public int sizeOfValues() {
 		int size = 0;
 		for (ArrayList<V> values : keys.values()) {
@@ -122,24 +122,24 @@ public class HashMapList<K, V> {
 		}
 		return size;
 	}
-
+	
 	public int size() {
 		return keys.size();
 	}
-
+	
 	public void clear() {
 		keys.clear();
 	}
-
+	
 	@Override
 	public String toString() {
 		return keys.toString();
 	}
-
+	
 	public boolean isEmpty() {
 		return sizeOfValues() == 0;
 	}
-
+	
 	public V getFirst() {
 		if (size() > 0) {
 			for (Iterator<ArrayList<V>> iterator = values().iterator(); iterator.hasNext();) {
@@ -150,16 +150,16 @@ public class HashMapList<K, V> {
 		}
 		return null;
 	}
-
+	
 	public Iterator<V> iterator() {
 		return new Iterator<V>() {
-
+			
 			int index = 0;
-
+			
 			Iterator<ArrayList<V>> iterator = values().iterator();
-
+			
 			ArrayList<V> currentList;
-
+			
 			@Override
 			public boolean hasNext() {
 				while (currentList == null || currentList.size() <= index) {
@@ -169,22 +169,22 @@ public class HashMapList<K, V> {
 					} else
 						return false;
 				}
-
+				
 				return true;
 			}
-
+			
 			@Override
 			public V next() {
 				V value = currentList.get(index);
 				index++;
 				return value;
 			}
-
+			
 			@Override
 			public void remove() {
 				currentList.remove(index - 1);
 			}
 		};
 	}
-
+	
 }

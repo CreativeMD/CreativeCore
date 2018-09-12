@@ -17,17 +17,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class BufferBuilderUtils {
-
+	
 	private static final Logger LOGGER = LogManager.getLogger();
-
+	
 	public static Field byteBufferField = ReflectionHelper.findField(BufferBuilder.class, "byteBuffer", "field_179001_a");
 	public static Field rawIntBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawIntBuffer", "field_178999_b");
 	public static Field rawFloatBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawFloatBuffer", "field_179000_c");
 	public static Field rawShortBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawShortBuffer", "field_181676_c");
 	public static Field vertexCountField = ReflectionHelper.findField(BufferBuilder.class, "vertexCount", "field_178997_d");
-
+	
 	public static Method growBuffer = ReflectionHelper.findMethod(BufferBuilder.class, "growBuffer", "func_181670_b", int.class);
-
+	
 	public static void growBuffer(BufferBuilder builder, int size) {
 		try {
 			growBuffer.invoke(builder, size);
@@ -35,12 +35,12 @@ public class BufferBuilderUtils {
 			e1.printStackTrace();
 		}
 	}
-
+	
 	public static void growBufferSmall(BufferBuilder builder, int size) {
 		try {
 			ByteBuffer oldByteBuffer = builder.getByteBuffer();
 			IntBuffer intBuffer = (IntBuffer) rawIntBufferField.get(builder);
-
+			
 			if (MathHelper.roundUp(size, 4) / 4 > intBuffer.remaining() || vertexCountField.getInt(builder) * builder.getVertexFormat().getNextOffset() + size > oldByteBuffer.capacity()) {
 				int i = oldByteBuffer.capacity();
 				int j = i + size;
@@ -62,11 +62,11 @@ public class BufferBuilderUtils {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static int getBufferSize(BufferBuilder builder) {
 		return builder.getVertexFormat().getIntegerSize() * builder.getVertexCount();
 	}
-
+	
 	public static void addVertexDataSmall(BufferBuilder builder, int[] vertexData) {
 		growBufferSmall(builder, vertexData.length * 4 + builder.getVertexFormat().getNextOffset());
 		try {
@@ -78,23 +78,23 @@ public class BufferBuilderUtils {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static void addBuffer(BufferBuilder buffer, BufferBuilder toAdd) {
 		int size = toAdd.getVertexFormat().getIntegerSize() * toAdd.getVertexCount();
 		try {
 			IntBuffer rawIntBuffer = (IntBuffer) rawIntBufferField.get(toAdd);
 			rawIntBuffer.rewind();
 			rawIntBuffer.limit(size);
-
+			
 			growBuffer(buffer, size);
 			IntBuffer chunkIntBuffer = (IntBuffer) rawIntBufferField.get(buffer);
 			chunkIntBuffer.position(getBufferSize(buffer));
 			chunkIntBuffer.put(rawIntBuffer);
-
+			
 			vertexCountField.setInt(buffer, vertexCountField.getInt(buffer) + size / buffer.getVertexFormat().getIntegerSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 }

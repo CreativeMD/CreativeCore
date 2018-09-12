@@ -52,69 +52,69 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
 public interface IMixinWorldServer extends IMixinWorld {
-
+	
 	SpongeConfig<?> getActiveConfig();
-
+	
 	SpongeConfig<WorldConfig> getWorldConfig();
-
+	
 	void setActiveConfig(SpongeConfig<?> config);
-
+	
 	Integer getDimensionId();
-
+	
 	void updateWorldGenerator();
-
+	
 	void updateRotation(Entity entityIn);
-
+	
 	void spongeNotifyNeighborsPostBlockChange(BlockPos pos, IBlockState oldState, IBlockState newState, int flags);
-
+	
 	boolean setBlockState(BlockPos pos, IBlockState state, BlockChangeFlag flag);
-
+	
 	boolean forceSpawnEntity(org.spongepowered.api.entity.Entity entity);
-
+	
 	default boolean forceSpawnEntity(Entity entity) {
 		return forceSpawnEntity(EntityUtil.fromNative(entity));
 	}
-
+	
 	void onSpongeEntityAdded(Entity entity);
-
+	
 	void onSpongeEntityRemoved(Entity entity);
-
+	
 	void addEntityRotationUpdate(Entity entity, Vector3d rotation);
-
+	
 	SpongeBlockSnapshot createSpongeBlockSnapshot(IBlockState state, IBlockState extended, BlockPos pos, int updateFlag);
-
+	
 	SpongeWorldGenerator createWorldGenerator(DataContainer settings);
-
+	
 	SpongeWorldGenerator createWorldGenerator(String settings);
-
+	
 	SpongeChunkGenerator createChunkGenerator(SpongeWorldGenerator newGenerator);
-
+	
 	boolean isProcessingExplosion();
-
+	
 	boolean isMinecraftChunkLoaded(int x, int z, boolean allowEmpty);
-
+	
 	boolean isLightLevel(Chunk chunk, BlockPos pos, int level);
-
+	
 	boolean updateLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk);
-
+	
 	boolean checkLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk, List<Chunk> neighbors);
-
+	
 	ExecutorService getLightingExecutor();
-
+	
 	WorldTimingsHandler getTimingsHandler();
-
+	
 	int getChunkGCTickInterval();
-
+	
 	long getChunkUnloadDelay();
-
+	
 	void triggerInternalExplosion(Explosion explosion);
-
+	
 	void playCustomSound(@Nullable EntityPlayer player, double x, double y, double z, String soundIn, SoundCategory category, float volume, float pitch);
-
+	
 	void doChunkGC();
-
+	
 	default WorldServer asMinecraftWorld() {
 		return (WorldServer) this;
 	}
-
+	
 }

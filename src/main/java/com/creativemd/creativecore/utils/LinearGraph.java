@@ -3,11 +3,11 @@ package com.creativemd.creativecore.utils;
 import java.util.HashMap;
 
 public class LinearGraph extends Graph {
-
+	
 	public LinearGraph(HashMap<Float, Float> points) {
 		super(points);
 	}
-
+	
 	@Override
 	public float getY(float x) {
 		Float pointBefore = getPreviousPointX(x);
@@ -28,5 +28,5 @@ public class LinearGraph extends Graph {
 			return points.get(pointAfter);
 		return 0;
 	}
-
+	
 }

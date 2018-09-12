@@ -19,32 +19,32 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 
 public class GuiStackSelectorExtension extends GuiComboBoxExtension {
-
+	
 	public String search = "";
-
+	
 	public GuiStackSelectorExtension(String name, EntityPlayer player, int x, int y, int width, int height, GuiStackSelector comboBox) {
 		super(name, comboBox, x, y, width, height, new ArrayList<>());
 	}
-
+	
 	@Override
 	public void onOpened() {
 		super.onOpened();
 		addListener(this);
 	}
-
+	
 	@Override
 	public void onClosed() {
 		super.onClosed();
 		removeListener(this);
 	}
-
+	
 	@Override
 	public void reloadControls() {
 		if (comboBox == null)
 			return;
-
+		
 		HashMapList<String, ItemStack> stacks = search == null || search.equals("") ? ((GuiStackSelector) comboBox).getStacks() : new HashMapList<>();
-
+		
 		if (search != null && !search.equals("")) {
 			for (Entry<String, ArrayList<ItemStack>> entry : ((GuiStackSelector) comboBox).getStacks().entrySet()) {
 				for (ItemStack stack : entry.getValue()) {
@@ -53,14 +53,14 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 				}
 			}
 		}
-
+		
 		int height = 0;
 		GuiTextfield textfield = null;
 		if (((GuiStackSelector) comboBox).searchBar && controls.size() > 0)
 			textfield = (GuiTextfield) controls.get(0);
-
+		
 		controls.clear();
-
+		
 		if (((GuiStackSelector) comboBox).searchBar) {
 			height += 4;
 			if (textfield == null)
@@ -68,30 +68,30 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 			controls.add(textfield);
 			height += textfield.height;
 		}
-
+		
 		for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
 			GuiLabel label = new GuiLabel(translate(entry.getKey()), 3, height);
 			label.width = width - 20;
 			label.height = 14;
 			controls.add(label);
 			height += label.height;
-
+			
 			int SlotsPerRow = (width - 20) / 18;
-
+			
 			InventoryBasic basic = new InventoryBasic(entry.getKey(), false, entry.getValue().size());
 			int i = 0;
 			for (ItemStack stack : entry.getValue()) {
 				basic.setInventorySlotContents(i, stack);
-
+				
 				int row = i / SlotsPerRow;
 				addControl(new SlotControlNoSync(new SlotPreview(basic, i, (i - row * SlotsPerRow) * 18, height + row * 18)).getGuiControl());
 				i++;
 			}
-
+			
 			height += Math.ceil(i / (double) SlotsPerRow) * 18;
 		}
 	}
-
+	
 	@CustomEventSubscribe
 	public void onChanged(GuiControlChangedEvent event) {
 		if (event.source.is("searchBar")) {
@@ -100,7 +100,7 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 			refreshControls();
 		}
 	}
-
+	
 	@CustomEventSubscribe
 	public void onLabelClicked(GuiControlClickEvent event) {
 		if (event.source instanceof GuiSlotControl && event.source.parent == this) {
@@ -108,7 +108,7 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 			comboBox.closeBox();
 		}
 	}
-
+	
 	@Override
 	public boolean mouseScrolled(int posX, int posY, int scrolled) {
 		/*
@@ -116,5 +116,5 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 		 */
 		return super.mouseScrolled(posX, posY, scrolled);
 	}
-
+	
 }

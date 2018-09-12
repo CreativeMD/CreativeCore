@@ -11,49 +11,49 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class TileEntityCreative extends TileEntity {
-
+	
 	public boolean isClientSide() {
 		if (world != null)
 			return world.isRemote;
 		return FMLCommonHandler.instance().getEffectiveSide().isClient();
 	}
-
+	
 	public void getDescriptionNBT(NBTTagCompound nbt) {
-
+		
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public void receiveUpdatePacket(NBTTagCompound nbt) {
-
+		
 	}
-
+	
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		return super.getUpdateTag();
 		// return writeToNBT(new NBTTagCompound());
 	}
-
+	
 	@Override
 	public void handleUpdateTag(NBTTagCompound tag) {
 		this.readFromNBT(tag);
 	}
-
+	
 	@Override
 	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		getDescriptionNBT(nbt);
 		return new SPacketUpdateTileEntity(pos, getBlockMetadata(), nbt);
 	}
-
+	
 	public double getDistance(BlockPos coord) {
 		return Math.sqrt(pos.distanceSq(coord));
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public void updateRender() {
 		world.markBlockRangeForRenderUpdate(pos, pos);
 	}
-
+	
 	public void updateBlock() {
 		if (!world.isRemote) {
 			IBlockState state = world.getBlockState(pos);
@@ -63,12 +63,12 @@ public abstract class TileEntityCreative extends TileEntity {
 			// markDirty();
 		}
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
 		receiveUpdatePacket(pkt.getNbtCompound());
 		updateRender();
 	}
-
+	
 }

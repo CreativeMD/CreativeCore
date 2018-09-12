@@ -19,37 +19,37 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class OpenGuiPacket extends CreativeCorePacket {
-
+	
 	public OpenGuiPacket() {
-
+		
 	}
-
+	
 	public String name;
 	public NBTTagCompound nbt;
-
+	
 	public OpenGuiPacket(String name, NBTTagCompound nbt) {
 		this.name = name;
 		this.nbt = nbt;
 	}
-
+	
 	@Override
 	public void writeBytes(ByteBuf buf) {
 		writeString(buf, name);
 		writeNBT(buf, nbt);
 	}
-
+	
 	@Override
 	public void readBytes(ByteBuf buf) {
 		name = readString(buf);
 		nbt = readNBT(buf);
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
 		if (!Minecraft.getMinecraft().isSingleplayer() && Minecraft.getMinecraft().getCurrentServerData() == null)
 			return;
-
+		
 		CustomGuiHandler handler = GuiHandler.getHandler(name);
 		if (handler != null) {
 			SubGui gui = handler.getGui(player, nbt);
@@ -58,7 +58,7 @@ public class OpenGuiPacket extends CreativeCorePacket {
 				FMLCommonHandler.instance().showGuiScreen(new GuiContainerSub(player, gui, container));
 		}
 	}
-
+	
 	@Override
 	public void executeServer(EntityPlayer player) {
 		PacketHandler.sendPacketToPlayer(this, (EntityPlayerMP) player);
@@ -69,5 +69,5 @@ public class OpenGuiPacket extends CreativeCorePacket {
 				openContainerOnServer((EntityPlayerMP) player, new ContainerSub(player, container));
 		}
 	}
-
+	
 }

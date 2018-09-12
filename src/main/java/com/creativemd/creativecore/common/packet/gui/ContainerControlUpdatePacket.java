@@ -14,22 +14,22 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerControlUpdatePacket extends CreativeCorePacket {
-
+	
 	public NBTTagCompound value;
 	public String name;
 	public int layer;
-
+	
 	public ContainerControlUpdatePacket() {
 		super();
 	}
-
+	
 	public ContainerControlUpdatePacket(int layer, String name, NBTTagCompound value) {
 		super();
 		this.value = value;
 		this.name = name;
 		this.layer = layer;
 	}
-
+	
 	@Override
 	public void writeBytes(ByteBuf bytes) {
 		writeNBT(bytes, value);
@@ -38,7 +38,7 @@ public class ContainerControlUpdatePacket extends CreativeCorePacket {
 			writeString(bytes, name);
 		bytes.writeInt(layer);
 	}
-
+	
 	@Override
 	public void readBytes(ByteBuf bytes) {
 		value = ByteBufUtils.readTag(bytes);
@@ -46,7 +46,7 @@ public class ContainerControlUpdatePacket extends CreativeCorePacket {
 			name = readString(bytes);
 		layer = bytes.readInt();
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
@@ -58,7 +58,7 @@ public class ContainerControlUpdatePacket extends CreativeCorePacket {
 				((ContainerControl) control).receivePacket(value);
 		}
 	}
-
+	
 	@Override
 	public void executeServer(EntityPlayer player) {
 		if (player.openContainer instanceof ContainerSub) {

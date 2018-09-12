@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class InventoryUtils {
-
+	
 	public static NBTTagCompound saveInventoryBasic(IInventory basic) {
 		ItemStack[] stacks = new ItemStack[basic.getSizeInventory()];
 		for (int i = 0; i < stacks.length; i++) {
@@ -22,7 +22,7 @@ public class InventoryUtils {
 		}
 		return saveInventory(stacks);
 	}
-
+	
 	public static NBTTagCompound saveInventory(ItemStack[] inventory) {
 		NBTTagCompound nbtInv = new NBTTagCompound();
 		for (int i = 0; i < inventory.length; i++) {
@@ -35,7 +35,7 @@ public class InventoryUtils {
 		nbtInv.setInteger("size", inventory.length);
 		return nbtInv;
 	}
-
+	
 	public static ItemStack[] loadInventory(NBTTagCompound nbt) {
 		ItemStack[] inventory = new ItemStack[nbt.getInteger("size")];
 		for (int i = 0; i < inventory.length; i++) {
@@ -46,13 +46,13 @@ public class InventoryUtils {
 		}
 		return inventory;
 	}
-
+	
 	public static InventoryBasic loadInventoryBasic(NBTTagCompound nbt) {
 		return loadInventoryBasic(nbt, nbt.getInteger("size"));
 	}
-
+	
 	public static InventoryBasic loadInventoryBasic(NBTTagCompound nbt, int length) {
-
+		
 		InventoryBasic basic = new InventoryBasic("basic", false, length);
 		if (nbt != null) {
 			ItemStack[] stacks = loadInventory(nbt);
@@ -63,26 +63,26 @@ public class InventoryUtils {
 		}
 		return basic;
 	}
-
+	
 	public static boolean isItemStackEqual(ItemStack stackA, ItemStack stackB) {
 		if (stackA.isEmpty() && stackB.isEmpty())
 			return true;
-
+		
 		if (stackA.isEmpty() || stackB.isEmpty())
 			return false;
-
+		
 		if (stackA.getItem() != stackB.getItem())
 			return false;
-
+		
 		if (stackA.getItemDamage() != stackB.getItemDamage())
 			return false;
-
+		
 		if (!stackA.hasTagCompound() && stackB.hasTagCompound())
 			return false;
-
+		
 		return (!stackA.hasTagCompound() || stackA.getTagCompound().equals(stackB.getTagCompound())) && stackA.areCapsCompatible(stackB);
 	}
-
+	
 	public static boolean consumeItemStack(IInventory inventory, ItemStack stack) {
 		if (getAmount(inventory, stack) >= stack.getCount()) {
 			for (int i = 0; i < inventory.getSizeInventory(); i++) {
@@ -101,7 +101,7 @@ public class InventoryUtils {
 		}
 		return false;
 	}
-
+	
 	public static boolean addItemStackToInventory(ItemStack[] inventory, ItemStack stack) {
 		if (stack.isEmpty())
 			return true;
@@ -112,13 +112,13 @@ public class InventoryUtils {
 					ItemStack newStack = stack.copy();
 					newStack.setCount(inventory[i].getCount() + amount);
 					inventory[i] = newStack;
-
+					
 					stack.shrink(amount);
 					if (stack.isEmpty())
 						return true;
 				}
 			}
-
+			
 		}
 		for (int i = 0; i < inventory.length; i++) {
 			if (inventory[i] == null || inventory[i].isEmpty()) {
@@ -128,7 +128,7 @@ public class InventoryUtils {
 		}
 		return false;
 	}
-
+	
 	public static boolean addItemStackToInventory(IInventory inventory, ItemStack stack) {
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if (isItemStackEqual(inventory.getStackInSlot(i), stack)) {
@@ -137,13 +137,13 @@ public class InventoryUtils {
 					ItemStack newStack = stack.copy();
 					newStack.setCount(inventory.getStackInSlot(i).getCount() + amount);
 					inventory.setInventorySlotContents(i, newStack);
-
+					
 					stack.shrink(amount);
 					if (stack.isEmpty())
 						return true;
 				}
 			}
-
+			
 		}
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if (inventory.getStackInSlot(i).isEmpty()) {
@@ -153,7 +153,7 @@ public class InventoryUtils {
 		}
 		return false;
 	}
-
+	
 	public static int getAmount(IInventory inventory, ItemStack stack) {
 		int amount = 0;
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
@@ -163,7 +163,7 @@ public class InventoryUtils {
 		}
 		return amount;
 	}
-
+	
 	public static void cleanInventory(IInventory inventory) {
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
@@ -171,18 +171,18 @@ public class InventoryUtils {
 				inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 		}
 	}
-
+	
 	public static int consumeInfoStack(InfoStack info, IInventory inventory) {
 		return consumeInfoStack(info, inventory, null);
 	}
-
+	
 	public static int consumeInfoStack(InfoStack info, IInventory inventory, ArrayList<ItemStack> consumed) {
 		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
 		int stackSize = info.stackSize;
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			ItemStack stack = inventory.getStackInSlot(i);
 			if (!stack.isEmpty() && info.isInstanceIgnoreSize(stack)) {
-
+				
 				int used = Math.min(stackSize, stack.getCount());
 				stack.shrink(used);
 				stackSize -= used;
@@ -197,7 +197,7 @@ public class InventoryUtils {
 			consumed.addAll(stacks);
 		return stackSize;
 	}
-
+	
 	public static void sortInventory(IInventory inventory, boolean alphabetical) {
 		List<ItemStack> sorting = new ArrayList<>();
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
@@ -205,19 +205,19 @@ public class InventoryUtils {
 			if (!stack.isEmpty())
 				sorting.add(stack);
 		}
-
+		
 		if (alphabetical)
 			Collections.sort(sorting, new Comparator<ItemStack>() {
-
+				
 				@Override
 				public int compare(ItemStack arg0, ItemStack arg1) {
 					return arg0.getDisplayName().compareToIgnoreCase(arg1.getDisplayName());
 				}
-
+				
 			});
 		else
 			Collections.sort(sorting, new Comparator<ItemStack>() {
-
+				
 				@Override
 				public int compare(ItemStack arg0, ItemStack arg1) {
 					int id0 = Item.getIdFromItem(arg0.getItem());
@@ -226,22 +226,22 @@ public class InventoryUtils {
 						return -1;
 					if (id0 > id1)
 						return 1;
-
+					
 					if (arg0.getItemDamage() < arg1.getItemDamage())
 						return -1;
 					if (arg0.getItemDamage() > arg1.getItemDamage())
 						return 1;
-
+					
 					return arg0.getDisplayName().compareToIgnoreCase(arg1.getDisplayName());
 				}
-
+				
 			});
-
+		
 		int maxStackSize = inventory.getInventoryStackLimit();
 		for (int i = 0; i < sorting.size() - 1; i++) {
 			ItemStack stack0 = sorting.get(i);
 			ItemStack stack1 = sorting.get(i + 1);
-
+			
 			if (isItemStackEqual(stack0, stack1)) {
 				int maxStack = Math.min(maxStackSize, stack0.getMaxStackSize());
 				int use = Math.min(maxStack - stack0.getCount(), stack1.getCount());
@@ -254,11 +254,11 @@ public class InventoryUtils {
 				}
 			}
 		}
-
+		
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			inventory.setInventorySlotContents(i, i < sorting.size() ? sorting.get(i) : ItemStack.EMPTY);
 		}
-
+		
 	}
-
+	
 }

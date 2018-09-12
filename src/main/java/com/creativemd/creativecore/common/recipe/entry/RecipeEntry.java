@@ -7,18 +7,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class RecipeEntry {
-
+	
 	public abstract boolean isEntry(ItemStack stack);
-
+	
 	public abstract int getStackSize(ItemStack stack);
-
+	
 	public void consumeItemStack(int amount, int index, IInventory inventory) {
 		ItemStack stack = inventory.getStackInSlot(index);
 		stack.shrink(amount * getStackSize(stack));
 		if (stack.isEmpty())
 			inventory.setInventorySlotContents(index, null);
 	}
-
+	
 	public static boolean isObject(ItemStack stack, Object object) {
 		if (stack == null)
 			return object == null;

@@ -12,13 +12,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IGuiCreator {
-
+	
 	/**
 	 * If it's not a stack: stack == null, else world == null; x = 0; y = 0; z = 0
 	 */
 	@SideOnly(Side.CLIENT)
 	public SubGui getGui(EntityPlayer player, ItemStack stack, World world, BlockPos pos, IBlockState state);
-
+	
 	/**
 	 * If it's not a stack: stack == null, else world == null; x = 0; y = 0; z = 0
 	 */

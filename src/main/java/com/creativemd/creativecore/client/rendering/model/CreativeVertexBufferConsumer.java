@@ -15,13 +15,13 @@ public class CreativeVertexBufferConsumer {
 	private final int[] quadData;
 	private int v = 0;
 	private BlockPos offset = BlockPos.ORIGIN;
-
+	
 	public CreativeVertexBufferConsumer(CreativeCubeConsumer consumer) {
 		super();
 		this.consumer = consumer;
 		quadData = new int[consumer.format.getNextOffset()/* / 4 * 4 */];
 	}
-
+	
 	public void put(int e, float... data) {
 		VertexFormat format = consumer.format;
 		BufferBuilder renderer = consumer.buffer;
@@ -40,7 +40,7 @@ public class CreativeVertexBufferConsumer {
 			}
 		}
 	}
-
+	
 	public void setOffset(BlockPos offset) {
 		this.offset = new BlockPos(offset);
 	}

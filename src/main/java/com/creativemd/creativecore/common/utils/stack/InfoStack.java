@@ -25,20 +25,20 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class InfoStack extends Ingredient {
-
+	
 	public static HashMap<String, Class<? extends InfoStack>> types = new HashMap<>();
-
+	
 	public abstract static class InfoStackObjectParser {
-
+		
 		public abstract InfoStack parseObject(Object object);
 	}
-
+	
 	public static ArrayList<InfoStackObjectParser> objectParser = new ArrayList<>();
-
+	
 	public static void registerObjectParser(InfoStackObjectParser parser) {
 		objectParser.add(parser);
 	}
-
+	
 	public static void registerType(String id, Class<? extends InfoStack> classType) {
 		if (types.containsKey(id))
 			throw new IllegalArgumentException("Id '" + id + "' is already taken!");
@@ -49,24 +49,24 @@ public abstract class InfoStack extends Ingredient {
 		}
 		types.put(id, classType);
 	}
-
+	
 	public static String getIDFromClass(Class<? extends InfoStack> classType) {
 		for (Iterator<Entry<String, Class<? extends InfoStack>>> iterator = types.entrySet().iterator(); iterator.hasNext();) {
 			Entry<String, Class<? extends InfoStack>> entry = iterator.next();
 			if (entry.getValue() == classType)
 				return entry.getKey();
-
+			
 		}
 		System.out.println("Could not find type for class " + classType.getName());
 		return "";
 	}
-
+	
 	public static InfoStack parseObject(Object stack) {
 		if (stack == null)
 			return null;
 		if (stack instanceof InfoStack)
 			return (InfoStack) stack;
-
+		
 		for (int i = 0; i < objectParser.size(); i++) {
 			InfoStack temp = null;
 			try {
@@ -77,10 +77,10 @@ public abstract class InfoStack extends Ingredient {
 			if (temp != null)
 				return temp;
 		}
-
+		
 		return null;
 	}
-
+	
 	public static InfoStack parseNBT(NBTTagCompound nbt) {
 		String id = nbt.getString("id");
 		Class<? extends InfoStack> classType = types.get(id);
@@ -95,12 +95,12 @@ public abstract class InfoStack extends Ingredient {
 		}
 		return null;
 	}
-
+	
 	static {
 		// Load default types
 		registerType("block", InfoBlock.class);
 		registerObjectParser(new InfoStackObjectParser() {
-
+			
 			@Override
 			public InfoStack parseObject(Object object) {
 				Block block = null;
@@ -113,10 +113,10 @@ public abstract class InfoStack extends Ingredient {
 				return null;
 			}
 		});
-
+		
 		registerType("item", InfoItem.class);
 		registerObjectParser(new InfoStackObjectParser() {
-
+			
 			@Override
 			public InfoStack parseObject(Object object) {
 				if (object instanceof Item && !(object instanceof ItemBlock))
@@ -124,10 +124,10 @@ public abstract class InfoStack extends Ingredient {
 				return null;
 			}
 		});
-
+		
 		registerType("itemstack", InfoItemStack.class);
 		registerObjectParser(new InfoStackObjectParser() {
-
+			
 			@Override
 			public InfoStack parseObject(Object object) {
 				if (object instanceof ItemStack) {
@@ -142,10 +142,10 @@ public abstract class InfoStack extends Ingredient {
 				return null;
 			}
 		});
-
+		
 		registerType("material", InfoMaterial.class);
 		registerObjectParser(new InfoStackObjectParser() {
-
+			
 			@Override
 			public InfoStack parseObject(Object object) {
 				if (object instanceof Material)
@@ -153,10 +153,10 @@ public abstract class InfoStack extends Ingredient {
 				return null;
 			}
 		});
-
+		
 		registerType("ore", InfoOre.class);
 		registerObjectParser(new InfoStackObjectParser() {
-
+			
 			@Override
 			public InfoStack parseObject(Object object) {
 				if (object instanceof String)
@@ -178,18 +178,18 @@ public abstract class InfoStack extends Ingredient {
 				return null;
 			}
 		});
-
+		
 		registerType("name", InfoName.class);
 		registerType("fuel", InfoFuel.class);
 	}
-
+	
 	public String getID() {
 		return getIDFromClass(getClass());
 	}
-
+	
 	/** stacksize=0->stacksize ignored **/
 	public int stackSize = 0;
-
+	
 	public InfoStack(int stackSize) {
 		super(0);
 		if (stackSize < 0)
@@ -199,45 +199,45 @@ public abstract class InfoStack extends Ingredient {
 		 */
 		this.stackSize = stackSize;
 	}
-
+	
 	public InfoStack() {
 		super(0);
 	}
-
+	
 	public ItemStack[] getMatchingStacks() {
 		return this.getAllPossibleItemStacks().toArray(new ItemStack[0]);
 	}
-
+	
 	@Override
 	public boolean apply(@Nullable ItemStack stack) {
 		if (stack == null)
 			return false;
-
+		
 		return isInstance(stack);
 	}
-
+	
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setString("id", getID());
 		nbt.setInteger("count", stackSize);
 		writeToNBTExtra(nbt);
 		return nbt;
 	}
-
+	
 	protected abstract void writeToNBTExtra(NBTTagCompound nbt);
-
+	
 	public void loadFromNBT(NBTTagCompound nbt) {
 		stackSize = nbt.getInteger("count");
 		loadFromNBTExtra(nbt);
 	}
-
+	
 	protected abstract void loadFromNBTExtra(NBTTagCompound nbt);
-
+	
 	public int getAmount(ItemStack stack) {
 		if (this.stackSize == 0)
 			return Integer.MAX_VALUE;
 		return stack.getCount() / stackSize;
 	}
-
+	
 	public boolean isInstance(ItemStack stack) {
 		if (isInstanceIgnoreSize(stack)) {
 			if (stackSize <= stack.getCount())
@@ -245,7 +245,7 @@ public abstract class InfoStack extends Ingredient {
 		}
 		return false;
 	}
-
+	
 	public boolean isInstance(InfoStack info) {
 		if (isInstanceIgnoreSize(info)) {
 			if (stackSize < info.stackSize)
@@ -253,15 +253,15 @@ public abstract class InfoStack extends Ingredient {
 		}
 		return false;
 	}
-
+	
 	public abstract boolean isInstanceIgnoreSize(InfoStack info);
-
+	
 	public abstract InfoStack copy();
-
+	
 	public ItemStack getItemStack() {
 		return getItemStack(stackSize);
 	}
-
+	
 	/**
 	 * Please don't use it often since some InfoStacks need to iterate through all
 	 * blocks and items
@@ -270,47 +270,47 @@ public abstract class InfoStack extends Ingredient {
 	 *         {@link #OreDictionary.WILDCARD_VALUE}
 	 */
 	public abstract ArrayList<ItemStack> getAllPossibleItemStacks();
-
+	
 	public abstract ItemStack getItemStack(int stacksize);
-
+	
 	protected abstract boolean isStackInstanceIgnoreSize(ItemStack stack);
-
+	
 	public boolean isInstanceIgnoreSize(ItemStack stack) {
 		return isStackInstanceIgnoreSize(stack);
 	}
-
+	
 	@Override
 	public boolean equals(Object object) {
 		return object instanceof InfoStack && ((InfoStack) object).stackSize == this.stackSize && equalsIgnoreSize(object);
 	}
-
+	
 	public abstract boolean equalsIgnoreSize(Object object);
-
+	
 	protected static Field displayOnCreativeTab = ReflectionHelper.findField(Block.class, "displayOnCreativeTab", "field_149772_a");
-
+	
 	protected static List<ItemStack> getAllExistingItems() {
 		NonNullList<ItemStack> stacks = NonNullList.create();
 		Iterator iterator = Item.REGISTRY.iterator();
-
+		
 		while (iterator.hasNext()) {
 			Item item = (Item) iterator.next();
-
+			
 			item.getSubItems(item.getCreativeTab(), stacks);
 		}
-
+		
 		iterator = Block.REGISTRY.iterator();
-
+		
 		while (iterator.hasNext()) {
 			Block block = (Block) iterator.next();
-
+			
 			try {
 				block.getSubBlocks((CreativeTabs) displayOnCreativeTab.get(block), stacks);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		}
-
+		
 		return stacks;
 	}
-
+	
 }

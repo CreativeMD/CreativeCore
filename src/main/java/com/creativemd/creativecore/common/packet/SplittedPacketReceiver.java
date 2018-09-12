@@ -11,15 +11,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedMessageHandler, IMessage> {
-
+	
 	@SideOnly(Side.CLIENT)
 	public void executeClient(IMessage message) {
 		if (message instanceof CreativeSplittedMessageHandler) {
 			CreativeSplittedMessageHandler cm = (CreativeSplittedMessageHandler) message;
-
+			
 			PacketKey key = new PacketKey(cm.packetID, cm.uuid);
 			PacketValue value = PacketReciever.clientSplittedPackets.get(key);
-
+			
 			if (value == null) {
 				System.out.println("Something went wrong! Either a packet got lost or the receiving time has expired. " + key);
 				return;
@@ -29,29 +29,29 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
-
+			
 			if (cm.isLast) {
 				if (value != null && value.isComplete()) {
 					value.packet.readBytes(value.buf);
-
+					
 					Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-
+						
 						@Override
 						public void run() {
 							value.packet.executeClient(Minecraft.getMinecraft().player);
 						}
 					});
-
+					
 					PacketReciever.clientSplittedPackets.remove(key);
 				} else
 					System.out.println("Something went wrong! Either a packet got lost or the receiving time has expired. " + key);
 			}
-
+			
 			PacketReciever.refreshQueue(false);
-
+			
 		}
 	}
-
+	
 	@Override
 	public CreativeMessageHandler onMessage(CreativeSplittedMessageHandler message, MessageContext ctx) {
 		if (ctx.side.isClient()) {
@@ -67,19 +67,19 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
 						return null;
 					}
 					value.receivePacket(cm.buffer, 0, cm.length);
-
+					
 					if (cm.isLast) {
 						if (value != null && value.isComplete()) {
 							value.packet.readBytes(value.buf);
-
+							
 							ctx.getServerHandler().player.getServer().addScheduledTask(new Runnable() {
-
+								
 								@Override
 								public void run() {
 									value.packet.executeServer(ctx.getServerHandler().player);
 								}
 							});
-
+							
 							PacketReciever.splittedPackets.remove(key);
 						} else
 							System.out.println("Something went wrong! Either a packet got lost or the receiving time has expired. " + key);

@@ -12,38 +12,38 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerSub extends Container {
-
+	
 	public ArrayList<SubContainer> layers;
-
+	
 	@SideOnly(Side.CLIENT)
 	public GuiContainerSub gui;
-
+	
 	public BlockPos coord = null;
-
+	
 	private boolean first = true;
-
+	
 	public ContainerSub(EntityPlayer player, SubContainer subContainer) {
 		layers = new ArrayList<SubContainer>();
-
+		
 		subContainer.container = this;
-
+		
 		layers.add(subContainer);
-
+		
 	}
-
+	
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {
 		return true;
 	}
-
+	
 	public SubContainer getTopLayer() {
 		return layers.get(layers.size() - 1);
 	}
-
+	
 	public boolean isTopLayer(SubContainer container) {
 		return getTopLayer() == container;
 	}
-
+	
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
@@ -55,7 +55,7 @@ public class ContainerSub extends Container {
 			layers.get(i).onTick();
 		}
 	}
-
+	
 	@Override
 	public void onContainerClosed(EntityPlayer player) {
 		super.onContainerClosed(player);
@@ -64,5 +64,5 @@ public class ContainerSub extends Container {
 		}
 		GuiHandler.openContainers.remove(this);
 	}
-
+	
 }

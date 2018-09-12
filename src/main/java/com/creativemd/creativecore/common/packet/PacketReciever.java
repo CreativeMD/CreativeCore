@@ -16,27 +16,27 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PacketReciever implements IMessageHandler<CreativeMessageHandler, IMessage> {
-
+	
 	public static HashMap<PacketKey, PacketValue> splittedPackets = new HashMap<>();
-
+	
 	public static ArrayList<CreativeSplittedMessageHandler> packetsToSend = new ArrayList<>();
-
+	
 	@SideOnly(Side.CLIENT)
 	public static HashMap<PacketKey, PacketValue> clientSplittedPackets;
 	@SideOnly(Side.CLIENT)
 	public static ArrayList<CreativeSplittedMessageHandler> clientPacketsToSend;
-
+	
 	static {
 		if (FMLCommonHandler.instance().getSide().isClient())
 			initClient();
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public static void initClient() {
 		clientSplittedPackets = new HashMap<>();
 		clientPacketsToSend = new ArrayList<>();
 	}
-
+	
 	public static void refreshQueue(boolean isServer) {
 		if (!isServer)
 			refreshQueueClient();
@@ -52,7 +52,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 			}
 		}
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public static void refreshQueueClient() {
 		if (clientSplittedPackets.isEmpty())
@@ -65,12 +65,12 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 			}
 		}
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	public void executeClient(IMessage message) {
 		if (message instanceof CreativeMessageHandler) {
 			CreativeMessageHandler cm = (CreativeMessageHandler) message;
-
+			
 			if (!cm.isLast) {
 				PacketKey key = new PacketKey(CreativeCorePacket.getIDByClass(cm.packet), cm.uuid);
 				if (clientSplittedPackets.containsKey(key))
@@ -80,7 +80,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 			} else {
 				if (cm.packet != null) {
 					Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-
+						
 						@Override
 						public void run() {
 							((CreativeMessageHandler) message).packet.executeClient(Minecraft.getMinecraft().player);
@@ -88,10 +88,10 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 					});
 				}
 			}
-
+			
 		}
 	}
-
+	
 	@Override
 	public CreativeMessageHandler onMessage(CreativeMessageHandler message, MessageContext ctx) {
 		if (ctx.side.isClient()) {
@@ -99,7 +99,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 		} else {
 			if (message instanceof CreativeMessageHandler) {
 				CreativeMessageHandler cm = (CreativeMessageHandler) message;
-
+				
 				if (!cm.isLast) {
 					PacketKey key = new PacketKey(CreativeCorePacket.getIDByClass(cm.packet), cm.uuid);
 					if (splittedPackets.containsKey(key))
@@ -109,7 +109,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 				} else {
 					if (cm.packet != null) {
 						ctx.getServerHandler().player.getServer().addScheduledTask(new Runnable() {
-
+							
 							@Override
 							public void run() {
 								((CreativeMessageHandler) message).packet.executeServer(ctx.getServerHandler().player);
@@ -121,70 +121,70 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 		}
 		return null;
 	}
-
+	
 	public static class PacketKey {
-
+		
 		public final String packetID;
 		public final UUID uuid;
-
+		
 		public PacketKey(String packetID, UUID uuid) {
 			this.packetID = packetID;
 			this.uuid = uuid;
 		}
-
+		
 		@Override
 		public int hashCode() {
 			return uuid.hashCode();
 		}
-
+		
 		@Override
 		public boolean equals(Object object) {
 			if (object instanceof PacketKey)
 				return ((PacketKey) object).packetID.equals(packetID) && ((PacketKey) object).uuid.equals(uuid);
 			return false;
 		}
-
+		
 		@Override
 		public String toString() {
 			return "[id=" + packetID + ",uuid=" + uuid + "]";
 		}
 	}
-
+	
 	public static class PacketValue {
-
+		
 		public static long timeToWait = 60000;
-
+		
 		public final ByteBuf buf;
 		public final UUID uuid;
 		public final CreativeCorePacket packet;
 		public final int amount;
 		public int received;
-
+		
 		public long lastReceivedPart = System.currentTimeMillis();
-
+		
 		public PacketValue(ByteBuf buf, UUID uuid, CreativeCorePacket packet, int amount) {
 			this.buf = buf;
 			this.packet = packet;
 			this.amount = amount;
 			this.uuid = uuid;
 		}
-
+		
 		public boolean isComplete() {
 			return received == amount - 1;
 		}
-
+		
 		public boolean isExpired() {
 			return System.currentTimeMillis() - lastReceivedPart > timeToWait;
 		}
-
+		
 		public void receivePacket(ByteBuf toRead, int index, int length) throws IllegalAccessException {
 			received++;
 			if (received >= amount)
 				throw new IllegalAccessException("This packet received more parts than it should! packetID=" + CreativeCorePacket.getIDByClass(packet) + ", uuid=" + uuid);
-
+			
 			buf.writeBytes(toRead, index, length);
 			lastReceivedPart = System.nanoTime();
 		}
-
+		
 	}
 }

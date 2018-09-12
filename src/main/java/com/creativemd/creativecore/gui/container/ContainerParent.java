@@ -13,18 +13,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class ContainerParent extends ContainerControl implements IControlParent {
-
+	
 	public ContainerParent(String name) {
 		super(name);
 	}
-
+	
 	public ArrayList<ContainerControl> controls = new ArrayList<>();
-
+	
 	@Override
 	public List getControls() {
 		return controls;
 	}
-
+	
 	@Override
 	public CoreControl get(String name) {
 		for (int i = 0; i < controls.size(); i++) {
@@ -33,7 +33,7 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		}
 		return null;
 	}
-
+	
 	@Override
 	public boolean has(String name) {
 		for (int i = 0; i < controls.size(); i++) {
@@ -42,7 +42,7 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		}
 		return false;
 	}
-
+	
 	@Override
 	public void onOpened() {
 		for (int i = 0; i < controls.size(); i++) {
@@ -51,7 +51,7 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		}
 		refreshControls();
 	}
-
+	
 	@Override
 	public void onClosed() {
 		for (int i = 0; i < controls.size(); i++) {
@@ -59,12 +59,12 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		}
 		// eventBus.removeAllEventListeners();
 	}
-
+	
 	public void updateEqualContainers() {
 		if (parent != null)
 			getParent().updateEqualContainers();
 	}
-
+	
 	@Override
 	public void refreshControls() {
 		for (int i = 0; i < controls.size(); i++) {
@@ -72,21 +72,21 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 			controls.get(i).setID(i);
 		}
 	}
-
+	
 	public void sendNBTUpdate(ContainerControl control, NBTTagCompound nbt) {
 		if (parent != null)
 			getParent().sendNBTUpdate(control, nbt);
 	}
-
+	
 	@Override
 	public void onTick() {
 		for (int i = 0; i < controls.size(); i++) {
 			controls.get(i).onTick();
 		}
 	}
-
+	
 	/* =============================Helper Methods============================= */
-
+	
 	public ArrayList<Slot> getSlots() {
 		ArrayList<Slot> slots = new ArrayList<Slot>();
 		for (int i = 0; i < controls.size(); i++) {
@@ -95,11 +95,11 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		}
 		return slots;
 	}
-
+	
 	public void addSlotToContainerUninteractable(Slot slot) {
 		controls.add((ContainerControl) new SlotControl(slot).setEnabled(false));
 	}
-
+	
 	public void addSlotToContainer(Slot slot) {
 		// slot.xDisplayPosition += 8;
 		// slot.yDisplayPosition += 8;
@@ -107,19 +107,19 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 		// inventories.add(slot.inventory);
 		controls.add(new SlotControl(slot));
 	}
-
+	
 	public void addPlayerSlotsToContainer(EntityPlayer player) {
 		addPlayerSlotsToContainer(player, -1);
 	}
-
+	
 	public void addPlayerSlotsToContainer(EntityPlayer player, int indexUninteractable) {
 		addPlayerSlotsToContainer(player, 8, 84, indexUninteractable);
 	}
-
+	
 	public void addPlayerSlotsToContainer(EntityPlayer player, int x, int y) {
 		addPlayerSlotsToContainer(player, x, y, -1);
 	}
-
+	
 	public void addPlayerSlotsToContainer(EntityPlayer player, int x, int y, int indexUninteractable) {
 		int l;
 		for (l = 0; l < 3; ++l) {
@@ -131,18 +131,18 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 						public boolean canTakeStack(EntityPlayer playerIn) {
 							return false;
 						}
-
+						
 						@Override
 						public boolean isItemValid(ItemStack stack) {
 							return false;
 						}
-
+						
 					});
 				else
 					addSlotToContainer(new Slot(player.inventory, index, i1 * 18 + x, l * 18 + y));
 			}
 		}
-
+		
 		for (l = 0; l < 9; ++l) {
 			if (l == indexUninteractable)
 				addSlotToContainerUninteractable(new Slot(player.inventory, l, l * 18 + x, 58 + y) {
@@ -150,7 +150,7 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 					public boolean canTakeStack(EntityPlayer playerIn) {
 						return false;
 					}
-
+					
 					@Override
 					public boolean isItemValid(ItemStack stack) {
 						return false;
@@ -160,5 +160,5 @@ public abstract class ContainerParent extends ContainerControl implements IContr
 				addSlotToContainer(new Slot(player.inventory, l, l * 18 + x, 58 + y));
 		}
 	}
-
+	
 }

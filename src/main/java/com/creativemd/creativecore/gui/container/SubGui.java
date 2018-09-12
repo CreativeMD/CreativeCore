@@ -16,51 +16,51 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public abstract class SubGui extends GuiParent {
-
+	
 	public SubContainer container;
-
+	
 	public GuiContainerSub gui;
-
+	
 	private CreativeCoreEventBus eventBus;
-
+	
 	public SubGui() {
 		this(176, 166);
 	}
-
+	
 	public SubGui(int width, int height) {
 		this("gui", width, height);
 	}
-
+	
 	public SubGui(String name, int width, int height) {
 		super(name, 0, 0, width, height);
 		eventBus = new CreativeCoreEventBus(true);
 		eventBus.RegisterEventListener(this);
 	}
-
+	
 	// ================Layers================
-
+	
 	public boolean isTopLayer() {
 		return gui.isTopLayer(this);
 	}
-
+	
 	public int getLayerID() {
 		return gui.getLayers().indexOf(this);
 	}
-
+	
 	public void openNewLayer(NBTTagCompound nbt) {
 		openNewLayer(nbt, false);
 	}
-
+	
 	public void openNewLayer(NBTTagCompound nbt, boolean isPacket) {
 		gui.addLayer(createLayer(mc.world, mc.player, nbt));
 		if (!isPacket)
 			PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, getLayerID(), false));
 	}
-
+	
 	public void closeLayer(NBTTagCompound nbt) {
 		closeLayer(nbt, false);
 	}
-
+	
 	public void closeLayer(NBTTagCompound nbt, boolean isPacket) {
 		onClosed();
 		if (!isPacket)
@@ -69,7 +69,7 @@ public abstract class SubGui extends GuiParent {
 		if (gui.hasTopLayer())
 			gui.getTopLayer().onLayerClosed(this, nbt);
 	}
-
+	
 	public void onLayerClosed(SubGui gui, NBTTagCompound nbt) {
 		if (nbt.getBoolean("dialog")) {
 			String[] buttons = new String[nbt.getInteger("count")];
@@ -79,7 +79,7 @@ public abstract class SubGui extends GuiParent {
 			onDialogClosed(nbt.getString("text"), buttons, nbt.getString("clicked"));
 		}
 	}
-
+	
 	public void closeGui() {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setBoolean("exit", true);
@@ -87,7 +87,7 @@ public abstract class SubGui extends GuiParent {
 		if (gui.getLayers().size() == 0)
 			mc.player.closeScreen();
 	}
-
+	
 	public SubGui createLayer(World world, EntityPlayer player, NBTTagCompound nbt) {
 		SubGui layer = createLayerFromPacket(world, player, nbt);
 		layer.container = container.createLayerFromPacket(world, player, nbt);
@@ -95,7 +95,7 @@ public abstract class SubGui extends GuiParent {
 		layer.onOpened();
 		return layer;
 	}
-
+	
 	public SubGui createLayerFromPacket(World world, EntityPlayer player, NBTTagCompound nbt) {
 		if (nbt.getBoolean("dialog")) {
 			String[] buttons = new String[nbt.getInteger("count")];
@@ -106,13 +106,13 @@ public abstract class SubGui extends GuiParent {
 		}
 		return null;
 	}
-
+	
 	// ================DIALOGS================
-
+	
 	public void openYesNoDialog(String text) {
 		openButtonDialogDialog(text, "Yes", "No");
 	}
-
+	
 	public void openButtonDialogDialog(String text, String... buttons) {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setBoolean("dialog", true);
@@ -123,26 +123,26 @@ public abstract class SubGui extends GuiParent {
 		}
 		openNewLayer(nbt);
 	}
-
+	
 	public void openSaveDialog(String text) {
 		openButtonDialogDialog(text, "Yes", "No", "Cancel");
 	}
-
+	
 	public void onDialogClosed(String text, String[] buttons, String clicked) {
-
+		
 	}
-
+	
 	// ================Interaction================
-
+	
 	@Override
 	public boolean isInteractable() {
 		return super.isInteractable() && isTopLayer();
 	}
-
+	
 	public boolean closeGuiUsingEscape() {
 		return true;
 	}
-
+	
 	@Override
 	public boolean onKeyPressed(char character, int key) {
 		if (key == 1) {
@@ -158,67 +158,67 @@ public abstract class SubGui extends GuiParent {
 		}
 		return false;
 	}
-
+	
 	// ================NETWORK================
-
+	
 	/* public void readFromOpeningNBT(NBTTagCompound nbt){} */
-
+	
 	public void receiveContainerPacket(NBTTagCompound nbt) {
 	}
-
+	
 	public void sendPacketToServer(NBTTagCompound nbt) {
 		PacketHandler.sendPacketToServer(new GuiUpdatePacket(nbt, false, getLayerID()));
 	}
-
+	
 	// ================Helper================
-
+	
 	@Override
 	public EntityPlayer getPlayer() {
 		return container.player;
 	}
-
+	
 	// ================Controls================
-
+	
 	public abstract void createControls();
-
+	
 	// ================Rendering================
-
+	
 	@Override
 	protected void renderBackground(GuiRenderHelper helper, Style style) {
 		style.getBorder(this).renderStyle(helper, width, height);
 		GlStateManager.translate(borderWidth, borderWidth, 0);
 		style.getFace(this).renderStyle(helper, width - borderWidth * 2, height - borderWidth * 2);
 	}
-
+	
 	@Override
 	public boolean isMouseOver() {
 		if (parent != null)
 			return super.isMouseOver();
 		return isTopLayer();
 	}
-
+	
 	public boolean hasGrayBackground() {
 		return true;
 	}
-
+	
 	// ================CUSTOM EVENTS================
-
+	
 	public void onTick() {
 	}
-
+	
 	@Override
 	public void onClosed() {
 		super.onClosed();
 		eventBus.removeAllEventListeners();
 	}
-
+	
 	public void addContainerControls() {
 		for (int i = 0; i < container.controls.size(); i++) {
 			container.controls.get(i).onOpened();
 			controls.add(container.controls.get(i).getGuiControl());
 		}
 	}
-
+	
 	@Override
 	public void onOpened() {
 		createControls();
@@ -226,25 +226,25 @@ public abstract class SubGui extends GuiParent {
 			controls.get(i).parent = this;
 			controls.get(i).onOpened();
 		}
-
+		
 		if (container != null) {
 			addContainerControls();
 		}
 		refreshControls();
 	}
-
+	
 	// ================Internal Events================
-
+	
 	public boolean raiseEvent(ControlEvent event) {
 		return !eventBus.raiseEvent(event);
 	}
-
+	
 	public void addListener(Object listener) {
 		eventBus.RegisterEventListener(listener);
 	}
-
+	
 	public void removeListener(Object listener) {
 		eventBus.removeEventListener(listener);
 	}
-
+	
 }

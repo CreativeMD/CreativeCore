@@ -6,40 +6,40 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class InfoItemStack extends InfoStack {
-
+	
 	public ItemStack stack;
 	public boolean needNBT;
-
+	
 	public InfoItemStack(ItemStack stack, boolean needNBT, int stackSize) {
 		super(stackSize);
 		this.stack = stack;
 		this.needNBT = needNBT;
 	}
-
+	
 	public InfoItemStack(ItemStack stack, int stackSize) {
 		this(stack, stack.hasTagCompound(), stackSize);
 	}
-
+	
 	public InfoItemStack(ItemStack stack) {
 		this(stack, stack.getCount());
 	}
-
+	
 	public InfoItemStack() {
 		super();
 	}
-
+	
 	@Override
 	protected void writeToNBTExtra(NBTTagCompound nbt) {
 		nbt.setTag("stack", stack.writeToNBT(new NBTTagCompound()));
 		nbt.setBoolean("needNBT", needNBT);
 	}
-
+	
 	@Override
 	protected void loadFromNBTExtra(NBTTagCompound nbt) {
 		stack = new ItemStack(nbt.getCompoundTag("stack"));
 		needNBT = nbt.getBoolean("needNBT");
 	}
-
+	
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
 		if (info instanceof InfoItemStack) {
@@ -58,12 +58,12 @@ public class InfoItemStack extends InfoStack {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public InfoStack copy() {
 		return new InfoItemStack(stack.copy(), needNBT, stackSize);
 	}
-
+	
 	@Override
 	public ItemStack getItemStack(int stacksize) {
 		ItemStack stack = new ItemStack(this.stack.getItem(), stacksize, this.stack.getItemDamage());
@@ -71,7 +71,7 @@ public class InfoItemStack extends InfoStack {
 			stack.setTagCompound((NBTTagCompound) this.stack.getTagCompound().copy());
 		return stack;
 	}
-
+	
 	@Override
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		if (stack.getItem() != this.stack.getItem())
@@ -87,17 +87,17 @@ public class InfoItemStack extends InfoStack {
 		}
 		return true;
 	}
-
+	
 	@Override
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoItemStack && ((InfoItemStack) object).isInstanceIgnoreSize(stack);
 	}
-
+	
 	@Override
 	public ArrayList<ItemStack> getAllPossibleItemStacks() {
 		ArrayList<ItemStack> stacks = new ArrayList<>();
 		stacks.add(getItemStack(1));
 		return stacks;
 	}
-
+	
 }

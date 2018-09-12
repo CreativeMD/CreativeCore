@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class TransformerNames {
-
+	
 	public static boolean obfuscated = false;
-
+	
 	private static ArrayList<ClassName> classes = new ArrayList<>();
 	private static ArrayList<MethodName> methods = new ArrayList<>();
 	private static ArrayList<FieldName> fields = new ArrayList<>();
-
+	
 	static {
 		try {
 			InputStreamReader reader = new InputStreamReader(TransformerNames.class.getResourceAsStream("notch-mcp.srg"));
@@ -40,9 +40,9 @@ public class TransformerNames {
 					}
 				}
 			}
-
+			
 			classes.sort(new Comparator<ClassName>() {
-
+				
 				@Override
 				public int compare(ClassName arg0, ClassName arg1) {
 					if (arg0.name.length() > arg1.name.length())
@@ -51,26 +51,26 @@ public class TransformerNames {
 						return 0;
 					return 1;
 				}
-
+				
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static void emptyLists() {
 		classes.clear();
 		fields.clear();
 		methods.clear();
 	}
-
+	
 	public static String patchDESC(String desc) {
 		if (obfuscated)
 			for (int i = 0; i < classes.size(); i++)
 				desc = desc.replace(classes.get(i).name, classes.get(i).obfname);
 		return desc;
 	}
-
+	
 	public static String patchClassName(String className) {
 		if (obfuscated)
 			for (int i = 0; i < classes.size(); i++)
@@ -78,11 +78,11 @@ public class TransformerNames {
 					return classes.get(i).obfname;
 		return className;
 	}
-
+	
 	public static String patchFieldName(String fieldName, Class parent) {
 		return patchFieldName(fieldName, patchClassName(parent.getName()));
 	}
-
+	
 	public static String patchFieldName(String fieldName, String parentName) {
 		if (obfuscated) {
 			for (int i = 0; i < fields.size(); i++)
@@ -91,11 +91,11 @@ public class TransformerNames {
 		}
 		return fieldName;
 	}
-
+	
 	public static String patchMethodName(String methodName, String desc, Class parent) {
 		return patchMethodName(methodName, desc, patchClassName(parent.getName()));
 	}
-
+	
 	public static String patchMethodName(String methodName, String desc, String parentName) {
 		if (obfuscated) {
 			String obfdesc = patchDESC(desc);
@@ -105,36 +105,36 @@ public class TransformerNames {
 		}
 		return methodName;
 	}
-
+	
 	private static class ClassName {
 		public final String name;
 		public final String obfname;
-
+		
 		public ClassName(String name, String obfname) {
 			this.name = name;
 			this.obfname = obfname;
 		}
 	}
-
+	
 	private static class FieldName extends ClassName {
-
+		
 		public FieldName(String name, String obfname, String parent) {
 			super(name, obfname);
 			this.parent = parent;
 		}
-
+		
 		public final String parent;
 	}
-
+	
 	private static class MethodName extends FieldName {
-
+		
 		public final String desc;
-
+		
 		public MethodName(String name, String obfname, String parent, String desc) {
 			super(name, obfname, parent);
 			this.desc = desc;
 		}
-
+		
 	}
-
+	
 }

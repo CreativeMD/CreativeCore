@@ -15,12 +15,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public abstract class GuiStackSelector extends GuiComboBox {
-
+	
 	protected HashMapList<String, ItemStack> stacks;
-
+	
 	public EntityPlayer player;
 	public boolean searchBar;
-
+	
 	public GuiStackSelector(String name, int x, int y, int width, EntityPlayer player, boolean searchBar) {
 		super(name, x, y, width, new ArrayList<String>());
 		this.searchBar = searchBar;
@@ -28,7 +28,7 @@ public abstract class GuiStackSelector extends GuiComboBox {
 		updateCollectedStacks();
 		selectFirst();
 	}
-
+	
 	public boolean selectFirst() {
 		if (stacks != null) {
 			ItemStack first = stacks.getFirst();
@@ -39,20 +39,20 @@ public abstract class GuiStackSelector extends GuiComboBox {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public EntityPlayer getPlayer() {
 		return player;
 	}
-
+	
 	protected abstract HashMapList<String, ItemStack> collectItems();
-
+	
 	public void updateCollectedStacks() {
 		stacks = collectItems();
 	}
-
+	
 	protected ItemStack selected = ItemStack.EMPTY;
-
+	
 	public boolean setSelected(ItemStack stack) {
 		if (stacks.contains(stack)) {
 			String display;
@@ -68,24 +68,24 @@ public abstract class GuiStackSelector extends GuiComboBox {
 		}
 		return false;
 	}
-
+	
 	public HashMapList<String, ItemStack> getStacks() {
 		return stacks;
 	}
-
+	
 	public ItemStack getSelected() {
 		return selected;
 	}
-
+	
 	@Override
 	protected int getAdditionalSize() {
 		return 16 + 6;
 	}
-
+	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		super.renderContent(helper, style, width, height);
-
+		
 		ItemStack stack = getSelected();
 		if (!stack.isEmpty()) {
 			GlStateManager.pushMatrix();
@@ -94,14 +94,14 @@ public abstract class GuiStackSelector extends GuiComboBox {
 			GlStateManager.popMatrix();
 		}
 	}
-
+	
 	@Override
 	protected GuiComboBoxExtension createBox() {
 		return new GuiStackSelectorExtension(name + "extension", getPlayer(), posX, posY + height, width - getContentOffset() * 2, 80, this);
 	}
-
+	
 	public boolean select(String line) {
 		return false;
 	}
-
+	
 }

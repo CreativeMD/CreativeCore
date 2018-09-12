@@ -17,14 +17,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CubeObject {
-
+	
 	public float minX;
 	public float minY;
 	public float minZ;
 	public float maxX;
 	public float maxY;
 	public float maxZ;
-
+	
 	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
 		this.minX = minX;
 		this.minY = minY;
@@ -33,28 +33,28 @@ public class CubeObject {
 		this.maxY = maxY;
 		this.maxZ = maxZ;
 	}
-
+	
 	public CubeObject(AxisAlignedBB box) {
 		this((float) box.minX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.maxY, (float) box.maxZ);
 	}
-
+	
 	public CubeObject() {
 		this(0, 0, 0, 1, 1, 1);
 	}
-
+	
 	public CubeObject(CubeObject cube) {
 		this(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ, cube);
 	}
-
+	
 	public CubeObject(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, CubeObject cube) {
 		this(minX, minY, minZ, maxX, maxY, maxZ);
 		applyExtraCubeData(cube);
 	}
-
+	
 	protected void applyExtraCubeData(CubeObject cube) {
-
+		
 	}
-
+	
 	public void add(Vec3d vec) {
 		this.minX += vec.x;
 		this.minY += vec.y;
@@ -63,7 +63,7 @@ public class CubeObject {
 		this.maxY += vec.y;
 		this.maxZ += vec.z;
 	}
-
+	
 	public void sub(Vec3d vec) {
 		this.minX -= vec.x;
 		this.minY -= vec.y;
@@ -72,36 +72,36 @@ public class CubeObject {
 		this.maxY -= vec.y;
 		this.maxZ -= vec.z;
 	}
-
+	
 	public Vec3d getSize() {
 		return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
 	}
-
+	
 	@Override
 	public String toString() {
 		return "cube[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
 	}
-
+	
 	public AxisAlignedBB getAxis() {
 		return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
 	}
-
+	
 	public void rotate(Rotation rotation, Vector3f center) {
 		Vector3f low = new Vector3f(minX, minY, minZ);
 		Vector3f high = new Vector3f(maxX, maxY, maxZ);
-
+		
 		low.sub(center);
 		high.sub(center);
-
+		
 		rotation.getMatrix().transform(low);
 		rotation.getMatrix().transform(high);
-
+		
 		low.add(center);
 		high.add(center);
-
+		
 		set(low.x, low.y, low.z, high.x, high.y, high.z);
 	}
-
+	
 	public void rotate(EnumFacing facing, Vector3f center) {
 		Matrix3f matrix = new Matrix3f();
 		if (facing.getAxis() == Axis.X)
@@ -109,23 +109,23 @@ public class CubeObject {
 		matrix.rotY((float) Math.toRadians(facing.getHorizontalAngle()));
 		rotate(matrix, center);
 	}
-
+	
 	public void rotate(Matrix3f matrix, Vector3f center) {
 		Vector3f low = new Vector3f(minX, minY, minZ);
 		Vector3f high = new Vector3f(maxX, maxY, maxZ);
-
+		
 		low.sub(center);
 		high.sub(center);
-
+		
 		matrix.transform(low);
 		matrix.transform(high);
-
+		
 		low.add(center);
 		high.add(center);
-
+		
 		set(low.x, low.y, low.z, high.x, high.y, high.z);
 	}
-
+	
 	public void set(float x, float y, float z, float x2, float y2, float z2) {
 		this.minX = Math.min(x, x2);
 		this.minY = Math.min(y, y2);
@@ -134,15 +134,15 @@ public class CubeObject {
 		this.maxY = Math.max(y, y2);
 		this.maxZ = Math.max(z, z2);
 	}
-
+	
 	public BlockPos getOffset() {
 		return new BlockPos(minX, minY, minZ);
 	}
-
+	
 	public CubeObject offset(BlockPos pos) {
 		return new CubeObject(minX - pos.getX(), minY - pos.getY(), minZ - pos.getZ(), maxX - pos.getX(), maxY - pos.getY(), maxZ - pos.getZ(), this);
 	}
-
+	
 	/*
 	 * public float getVertexInformationPositionX(VertexInformation info) { return
 	 * getVertexInformationPosition(info.xIndex); }
@@ -153,17 +153,17 @@ public class CubeObject {
 	 * public float getVertexInformationPositionZ(VertexInformation info) { return
 	 * getVertexInformationPosition(info.zIndex); }
 	 */
-
+	
 	@SideOnly(Side.CLIENT)
 	public Vector3f get(VertexInformation info, Vector3f output) {
 		output.set(getVertexInformationPosition(info.xIndex), getVertexInformationPosition(info.yIndex), getVertexInformationPosition(info.zIndex));
 		return output;
 	}
-
+	
 	public float getVertexInformationPositionOffset(int index, Vec3i pos) {
 		return getVertexInformationPosition(index) - RotationUtils.get(EnumFacing.getFront(index).getAxis(), pos);
 	}
-
+	
 	public float getVertexInformationPosition(int index) {
 		switch (EnumFacing.getFront(index)) {
 		case EAST:
@@ -181,7 +181,7 @@ public class CubeObject {
 		}
 		return 0;
 	}
-
+	
 	public float getValueOfFacing(EnumFacing facing) {
 		switch (facing) {
 		case EAST:
@@ -196,11 +196,11 @@ public class CubeObject {
 			return maxZ;
 		case NORTH:
 			return minZ;
-
+		
 		}
 		return 0;
 	}
-
+	
 	public float getSize(Axis axis) {
 		switch (axis) {
 		case X:
@@ -212,7 +212,7 @@ public class CubeObject {
 		}
 		return 0;
 	}
-
+	
 	public void setMin(Axis axis, float value) {
 		switch (axis) {
 		case X:
@@ -226,7 +226,7 @@ public class CubeObject {
 			break;
 		}
 	}
-
+	
 	public float getMin(Axis axis) {
 		switch (axis) {
 		case X:
@@ -238,7 +238,7 @@ public class CubeObject {
 		}
 		return 0;
 	}
-
+	
 	public void setMax(Axis axis, float value) {
 		switch (axis) {
 		case X:
@@ -252,7 +252,7 @@ public class CubeObject {
 			break;
 		}
 	}
-
+	
 	public float getMax(Axis axis) {
 		switch (axis) {
 		case X:
@@ -264,27 +264,27 @@ public class CubeObject {
 		}
 		return 0;
 	}
-
+	
 	// Old
 	public static CubeObject rotateCube(CubeObject cube, EnumFacing direction) {
 		return rotateCube(cube, direction, new Vec3d(0.5, 0.5, 0.5));
 	}
-
+	
 	public static CubeObject rotateCube(CubeObject cube, EnumFacing direction, Vec3d center) {
 		CubeObject rotateCube = new CubeObject(cube);
 		applyCubeRotation(rotateCube, direction, center);
 		return rotateCube;
 	}
-
+	
 	public static Vec3d applyVectorRotation(Vec3d vector, EnumFacing EnumFacing) {
 		double tempX = vector.x;
 		double tempY = vector.y;
 		double tempZ = vector.z;
-
+		
 		double posX = tempX;
 		double posY = tempY;
 		double posZ = tempZ;
-
+		
 		switch (EnumFacing) {
 		case UP:
 			posX = -tempY;
@@ -311,11 +311,11 @@ public class CubeObject {
 		}
 		return new Vec3d(posX, posY, posZ);
 	}
-
+	
 	public static void applyCubeRotation(CubeObject cube, EnumFacing EnumFacing) {
 		applyCubeRotation(cube, EnumFacing, new Vec3d(0.5, 0.5, 0.5));
 	}
-
+	
 	public static void applyCubeRotation(CubeObject cube, EnumFacing EnumFacing, Vec3d center) {
 		float minX = cube.minX;
 		float minY = cube.minY;
@@ -333,12 +333,12 @@ public class CubeObject {
 		}
 		Vec3d min = applyVectorRotation(new Vec3d(minX, minY, minZ), EnumFacing);
 		Vec3d max = applyVectorRotation(new Vec3d(maxX, maxY, maxZ), EnumFacing);
-
+		
 		if (center != null) {
 			min = min.addVector(center.x, center.y, center.z);
 			max = max.addVector(center.x, center.y, center.z);
 		}
-
+		
 		if (min.x < max.x) {
 			cube.minX = (float) min.x;
 			cube.maxX = (float) max.x;

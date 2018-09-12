@@ -9,19 +9,19 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 public class Recipe {
-
+	
 	public ItemStack[] output;
 	public InfoStack[] input;
-
+	
 	public Recipe(ItemStack output, Object... input) {
 		this(new ItemStack[] { output }, input);
 	}
-
+	
 	public Recipe(ItemStack[] output, InfoStack[] info) {
 		this.output = output;
 		this.input = info;
 	}
-
+	
 	public Recipe(ItemStack[] output, Object... input) {
 		ArrayList<InfoStack> info = new ArrayList<InfoStack>();
 		for (int i = 0; i < input.length; i++) {
@@ -38,7 +38,7 @@ public class Recipe {
 		this.output = output;
 		this.input = info.toArray(new InfoStack[0]);
 	}
-
+	
 	public ItemStack[] getInputStacks() {
 		ItemStack[] stacks = new ItemStack[input.length];
 		for (int i = 0; i < stacks.length; i++) {
@@ -47,11 +47,11 @@ public class Recipe {
 		}
 		return stacks;
 	}
-
+	
 	public void consumeRecipe(IInventory inventory) {
 		consumeRecipe(inventory, 1);
 	}
-
+	
 	public void consumeRecipe(IInventory inventory, int amount) {
 		ArrayList<InfoStack> info = new ArrayList<InfoStack>(Arrays.asList(input));
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
@@ -68,13 +68,13 @@ public class Recipe {
 				}
 			}
 		}
-
+		
 	}
-
+	
 	public ItemStack[] getCraftingResult(IInventory inventory) {
 		return output;
 	}
-
+	
 	public int getNumberofResults(IInventory inventory) {
 		int limit = 1;
 		ArrayList<InfoStack> info = new ArrayList<InfoStack>(Arrays.asList(input));
@@ -96,7 +96,7 @@ public class Recipe {
 		}
 		return info.size() == 0 ? limit : 0;
 	}
-
+	
 	public boolean isValidRecipe(IInventory inventory) {
 		ArrayList<InfoStack> info = new ArrayList<InfoStack>(Arrays.asList(input));
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
@@ -116,7 +116,7 @@ public class Recipe {
 		}
 		return info.size() == 0;
 	}
-
+	
 	public static int indexOf(IInventory inventory, ItemStack stack) {
 		for (int i = 0; i < inventory.getSizeInventory(); i++) {
 			if (inventory.getStackInSlot(i) == stack)
