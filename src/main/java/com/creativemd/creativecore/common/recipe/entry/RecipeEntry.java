@@ -7,49 +7,47 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class RecipeEntry {
-	
+
 	public abstract boolean isEntry(ItemStack stack);
-	
+
 	public abstract int getStackSize(ItemStack stack);
-	
-	public void consumeItemStack(int amount, int index, IInventory inventory)
-	{
+
+	public void consumeItemStack(int amount, int index, IInventory inventory) {
 		ItemStack stack = inventory.getStackInSlot(index);
-		stack.shrink(amount*getStackSize(stack));
-		if(stack.isEmpty())
+		stack.shrink(amount * getStackSize(stack));
+		if (stack.isEmpty())
 			inventory.setInventorySlotContents(index, null);
 	}
-	
-	public static boolean isObject(ItemStack stack, Object object)
-	{
-		if(stack == null)
+
+	public static boolean isObject(ItemStack stack, Object object) {
+		if (stack == null)
 			return object == null;
-		if(object instanceof Block){
+		if (object instanceof Block) {
 			return Block.getBlockFromItem(stack.getItem()) == object;
-		}else if(object instanceof Item){
+		} else if (object instanceof Item) {
 			return stack.getItem() == object;
-		}else if(object instanceof ItemStack){
+		} else if (object instanceof ItemStack) {
 			ItemStack input = (ItemStack) object;
-			if(stack.getItem() != input.getItem())
+			if (stack.getItem() != input.getItem())
 				return false;
-			if(stack.getItemDamage() != input.getItemDamage())
+			if (stack.getItemDamage() != input.getItemDamage())
 				return false;
-			if(stack.getTagCompound() != input.getTagCompound())
-				if(stack.hasTagCompound() && input.hasTagCompound())
+			if (stack.getTagCompound() != input.getTagCompound())
+				if (stack.hasTagCompound() && input.hasTagCompound())
 					return stack.getTagCompound().equals(input.getTagCompound());
 				else
 					return false;
 			else
 				return true;
-		}else if(object instanceof String){
+		} else if (object instanceof String) {
 			int[] ores = OreDictionary.getOreIDs(stack);
 			int id = OreDictionary.getOreID((String) object);
 			for (int i = 0; i < ores.length; i++) {
-				if(ores[i] == id)
+				if (ores[i] == id)
 					return true;
 			}
 			return false;
-		}else{
+		} else {
 			return stack == null;
 		}
 	}

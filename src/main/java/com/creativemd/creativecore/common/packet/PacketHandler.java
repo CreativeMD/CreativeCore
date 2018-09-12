@@ -9,39 +9,31 @@ import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
-import com.creativemd.creativecore.core.CreativeCoreDummy;
 import com.google.common.base.Predicate;
 
-import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketChangeGameState;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketHandler {
-	
+
 	private static ArrayList<CreativeSplittedMessageHandler> queuedMessages = new ArrayList<>();
-	
-	public static void addQueueMessage(CreativeSplittedMessageHandler message)
-	{
+
+	public static void addQueueMessage(CreativeSplittedMessageHandler message) {
 		queuedMessages.add(message);
 	}
-	
-	private static void sendQueuedMessage(EntityPlayer player)
-	{
+
+	private static void sendQueuedMessage(EntityPlayer player) {
 		for (int i = 0; i < queuedMessages.size(); i++) {
 			sendMessage(queuedMessages.get(i).type, player, queuedMessages.get(i));
 		}
 		queuedMessages.clear();
 	}
-	
-	public static void sendMessage(MessageType type, EntityPlayer player, IMessage message)
-	{
-		switch(type)
-		{
+
+	public static void sendMessage(MessageType type, EntityPlayer player, IMessage message) {
+		switch (type) {
 		case ToAllPlayer:
 			CreativeCore.network.sendToAll(message);
 			break;
@@ -53,60 +45,50 @@ public class PacketHandler {
 			break;
 		}
 	}
-	
-	public static void sendPacketToAllPlayers(CreativeCorePacket packet)
-	{
+
+	public static void sendPacketToAllPlayers(CreativeCorePacket packet) {
 		CreativeCore.network.sendToAll(new CreativeMessageHandler(packet, MessageType.ToAllPlayer, null));
 		sendQueuedMessage(null);
 	}
-	
-	public static void sendPacketToServer(CreativeCorePacket packet)
-	{
+
+	public static void sendPacketToServer(CreativeCorePacket packet) {
 		CreativeCore.network.sendToServer(new CreativeMessageHandler(packet, MessageType.ToServer, null));
 		sendQueuedMessage(null);
 	}
-	
-	public static void sendPacketsToAllPlayers(List<CreativeCorePacket> packets)
-	{
+
+	public static void sendPacketsToAllPlayers(List<CreativeCorePacket> packets) {
 		for (int i = 0; i < packets.size(); i++) {
 			sendPacketToAllPlayers(packets.get(i));
 		}
 	}
-	
-	public static void sendPacketToNearPlayers(World world, CreativeCorePacket packet, int distance, BlockPos pos)
-	{
-		for (EntityPlayerMP entityplayermp : world.getPlayers(EntityPlayerMP.class, new Predicate<EntityPlayerMP>(){
-            public boolean apply(@Nullable EntityPlayerMP p_apply_1_)
-                {
-                    return p_apply_1_.getDistanceSq(pos) < Math.pow(distance, 2);
-                }
-            }))
-            {
-            	sendPacketToPlayer(packet, entityplayermp);
-            }
+
+	public static void sendPacketToNearPlayers(World world, CreativeCorePacket packet, int distance, BlockPos pos) {
+		for (EntityPlayerMP entityplayermp : world.getPlayers(EntityPlayerMP.class, new Predicate<EntityPlayerMP>() {
+			public boolean apply(@Nullable EntityPlayerMP p_apply_1_) {
+				return p_apply_1_.getDistanceSq(pos) < Math.pow(distance, 2);
+			}
+		})) {
+			sendPacketToPlayer(packet, entityplayermp);
+		}
 	}
-	
-	public static void sendPacketToPlayer(CreativeCorePacket packet, EntityPlayerMP player)
-	{
+
+	public static void sendPacketToPlayer(CreativeCorePacket packet, EntityPlayerMP player) {
 		CreativeCore.network.sendTo(new CreativeMessageHandler(packet, MessageType.ToPlayer, player), player);
 		sendQueuedMessage(player);
 	}
-	
-	public static void sendPacketToPlayers(CreativeCorePacket packet, List<EntityPlayerMP> players)
-	{
+
+	public static void sendPacketToPlayers(CreativeCorePacket packet, List<EntityPlayerMP> players) {
 		for (int i = 0; i < players.size(); i++) {
 			sendPacketToPlayer(packet, players.get(i));
 		}
 	}
-	
-	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, EntityPlayerMP player)
-	{
+
+	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, EntityPlayerMP player) {
 		Set<? extends EntityPlayer> players = ((EntityPlayerMP) player).getServerWorld().getEntityTracker().getTrackingPlayers(player);
 		for (Iterator iterator = players.iterator(); iterator.hasNext();) {
 			EntityPlayer entityPlayer = (EntityPlayer) iterator.next();
 			sendPacketToPlayer(packet, (EntityPlayerMP) entityPlayer);
 		}
 	}
-	
-	
+
 }

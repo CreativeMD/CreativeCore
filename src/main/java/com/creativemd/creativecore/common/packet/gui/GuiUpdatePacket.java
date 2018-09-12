@@ -10,24 +10,22 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GuiUpdatePacket extends CreativeCorePacket{
-	
+public class GuiUpdatePacket extends CreativeCorePacket {
+
 	public NBTTagCompound value;
 	public boolean isOpening;
 	public int layer;
-	
-	public GuiUpdatePacket()
-	{
+
+	public GuiUpdatePacket() {
 		super();
 	}
-	
-	public GuiUpdatePacket(NBTTagCompound value, boolean isOpening, int layer)
-	{
+
+	public GuiUpdatePacket(NBTTagCompound value, boolean isOpening, int layer) {
 		this.value = value;
 		this.isOpening = isOpening;
 		this.layer = layer;
 	}
-	
+
 	@Override
 	public void writeBytes(ByteBuf bytes) {
 		ByteBufUtils.writeTag(bytes, value);
@@ -45,18 +43,20 @@ public class GuiUpdatePacket extends CreativeCorePacket{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
-		if(player.openContainer instanceof ContainerSub)
-			/*if(isOpening)
-				((ContainerSub) player.openContainer).gui.getLayers().get(layer).readFromOpeningNBT(value);
-			else
-				((ContainerSub) player.openContainer).gui.getLayers().get(layer).readFromNBT(value);*/
+		if (player.openContainer instanceof ContainerSub)
+			/*
+			 * if(isOpening) ((ContainerSub)
+			 * player.openContainer).gui.getLayers().get(layer).readFromOpeningNBT(value);
+			 * else ((ContainerSub)
+			 * player.openContainer).gui.getLayers().get(layer).readFromNBT(value);
+			 */
 			((ContainerSub) player.openContainer).layers.get(layer).receivePacket(value);
 	}
 
 	@Override
 	public void executeServer(EntityPlayer player) {
-		if(player.openContainer instanceof ContainerSub)
+		if (player.openContainer instanceof ContainerSub)
 			((ContainerSub) player.openContainer).layers.get(layer).receivePacket(value);
 	}
-	
+
 }

@@ -18,18 +18,16 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class OpenGuiPacket extends CreativeCorePacket{
-	
-	public OpenGuiPacket()
-	{
-		
+public class OpenGuiPacket extends CreativeCorePacket {
+
+	public OpenGuiPacket() {
+
 	}
-	
+
 	public String name;
 	public NBTTagCompound nbt;
-	
-	public OpenGuiPacket(String name, NBTTagCompound nbt)
-	{
+
+	public OpenGuiPacket(String name, NBTTagCompound nbt) {
 		this.name = name;
 		this.nbt = nbt;
 	}
@@ -49,15 +47,14 @@ public class OpenGuiPacket extends CreativeCorePacket{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
-		if(!Minecraft.getMinecraft().isSingleplayer() && Minecraft.getMinecraft().getCurrentServerData() == null)
-			return ;
-		
+		if (!Minecraft.getMinecraft().isSingleplayer() && Minecraft.getMinecraft().getCurrentServerData() == null)
+			return;
+
 		CustomGuiHandler handler = GuiHandler.getHandler(name);
-		if(handler != null)
-		{
+		if (handler != null) {
 			SubGui gui = handler.getGui(player, nbt);
 			SubContainer container = handler.getContainer(player, nbt);
-			if(gui != null && container != null)
+			if (gui != null && container != null)
 				FMLCommonHandler.instance().showGuiScreen(new GuiContainerSub(player, gui, container));
 		}
 	}
@@ -66,10 +63,9 @@ public class OpenGuiPacket extends CreativeCorePacket{
 	public void executeServer(EntityPlayer player) {
 		PacketHandler.sendPacketToPlayer(this, (EntityPlayerMP) player);
 		CustomGuiHandler handler = GuiHandler.getHandler(name);
-		if(handler != null)
-		{
+		if (handler != null) {
 			SubContainer container = handler.getContainer(player, nbt);
-			if(container != null)
+			if (container != null)
 				openContainerOnServer((EntityPlayerMP) player, new ContainerSub(player, container));
 		}
 	}

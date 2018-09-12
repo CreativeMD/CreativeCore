@@ -6,13 +6,11 @@ import java.util.Map;
 import com.creativemd.creativecore.transformer.TransformerNames;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
 public class CreativePatchingLoader implements IFMLLoadingPlugin {
-	
+
 	public static File location;
 
-	
 	@Override
 	public String[] getASMTransformerClass() {
 		return null;

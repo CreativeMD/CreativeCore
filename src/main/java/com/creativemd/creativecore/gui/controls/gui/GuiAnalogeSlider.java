@@ -1,10 +1,6 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
-import javax.vecmath.Vector2d;
-import javax.vecmath.Vector4d;
-
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiControl;
@@ -12,69 +8,55 @@ import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 
-public class GuiAnalogeSlider extends GuiControl
-{
+public class GuiAnalogeSlider extends GuiControl {
 	public float maxValue;
 	public float minValue;
 	public float value;
 	public boolean grabbedSlider;
 	public int sliderWidth = 4;
-	
+
 	protected GuiTextfield textfield = null;
-	
-	public GuiAnalogeSlider(String name, int x, int y, int width, int height, float value, float minValue, float maxValue)
-	{
+
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, float value, float minValue, float maxValue) {
 		super(name, x, y, width, height);
 		this.marginWidth = 0;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		setValue(value);
 	}
-	
-	public String getTextByValue()
-	{
-		return Math.round(value*100F)/100F + "";
+
+	public String getTextByValue() {
+		return Math.round(value * 100F) / 100F + "";
 	}
-	
+
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
-		
+
 		float percent = getPercentage();
-		
-		int posX = (int)((this.width - (borderWidth*2+sliderWidth)) * percent);
+
+		int posX = (int) ((this.width - (borderWidth * 2 + sliderWidth)) * percent);
 		style.getFace(this).renderStyle(posX, 0, helper, 4, height);
-		
-		if(textfield != null)
+
+		if (textfield != null)
 			textfield.renderControl(helper, 1, getRect());
 		else
 			helper.drawStringWithShadow(getTextByValue(), width, height, ColorUtils.WHITE);
 	}
-	
-	public float getPercentage()
-	{
+
+	public float getPercentage() {
 		return (this.value - this.minValue) / (this.maxValue - this.minValue);
 	}
-	
+
 	@Override
-	public boolean mousePressed(int x, int y, int button)
-	{
-		if(button == 0)
-		{
-			if(textfield != null)
+	public boolean mousePressed(int x, int y, int button) {
+		if (button == 0) {
+			if (textfield != null)
 				return textfield.mousePressed(x, y, button);
 			playSound(SoundEvents.UI_BUTTON_CLICK);
 			return (grabbedSlider = true);
-		}
-		else if(button == 1)
-		{
+		} else if (button == 1) {
 			grabbedSlider = false;
 			textfield = createTextfield();
 			textfield.focused = true;
@@ -84,30 +66,26 @@ public class GuiAnalogeSlider extends GuiControl
 		}
 		return false;
 	}
-	
-	protected GuiTextfield createTextfield()
-	{
-		return new GuiTextfield(getTextByValue(), 0, 0, width - getContentOffset()*8, height - getContentOffset()*8).setFloatOnly();
+
+	protected GuiTextfield createTextfield() {
+		return new GuiTextfield(getTextByValue(), 0, 0, width - getContentOffset() * 8, height - getContentOffset() * 8).setFloatOnly();
 	}
-	
-	public void closeTextField()
-	{
+
+	public void closeTextField() {
 		float value = this.value;
 		try {
 			setValue(Float.parseFloat(textfield.text));
 			playSound(SoundEvents.UI_BUTTON_CLICK);
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			setValue(value);
 		}
 		textfield = null;
 	}
-	
+
 	@Override
 	public boolean onKeyPressed(char character, int key) {
-		if(textfield != null)
-		{
-			if(key == Keyboard.KEY_RETURN)
-			{
+		if (textfield != null) {
+			if (key == Keyboard.KEY_RETURN) {
 				closeTextField();
 				return true;
 			}
@@ -115,45 +93,41 @@ public class GuiAnalogeSlider extends GuiControl
 		}
 		return super.onKeyPressed(character, key);
 	}
-	
-	public void setValue(float value)
-	{
+
+	public void setValue(float value) {
 		this.value = Math.max(minValue, value);
 		this.value = Math.min(maxValue, this.value);
-		
+
 		raiseEvent(new GuiControlChangedEvent(this));
 	}
-	
+
 	@Override
-	public void mouseMove(int posX, int posY, int button){
-		if(grabbedSlider)
-		{
-			int width = this.width - getContentOffset()*2 - sliderWidth;
-			
-			
-			if(posX < this.posX+getContentOffset())
+	public void mouseMove(int posX, int posY, int button) {
+		if (grabbedSlider) {
+			int width = this.width - getContentOffset() * 2 - sliderWidth;
+
+			if (posX < this.posX + getContentOffset())
 				this.value = this.minValue;
-			else if(posX > this.posX + getContentOffset() + width + sliderWidth/2)
-				this.value = this.maxValue;	
-			else{
-				int mouseOffsetX = posX - this.posX - getContentOffset() - sliderWidth/2;
-				this.value = (float) (this.minValue+(float)((this.maxValue - this.minValue) * ((float)mouseOffsetX / (float)width)));
+			else if (posX > this.posX + getContentOffset() + width + sliderWidth / 2)
+				this.value = this.maxValue;
+			else {
+				int mouseOffsetX = posX - this.posX - getContentOffset() - sliderWidth / 2;
+				this.value = (float) (this.minValue + (float) ((this.maxValue - this.minValue) * ((float) mouseOffsetX / (float) width)));
 			}
 			setValue(value);
 		}
 	}
-	
+
 	@Override
 	public void onLoseFocus() {
-		if(textfield != null)
+		if (textfield != null)
 			closeTextField();
 		super.onLoseFocus();
 	}
-	
+
 	@Override
-	public void mouseReleased(int posX, int posY, int button)
-	{
-		if(this.grabbedSlider)
+	public void mouseReleased(int posX, int posY, int button) {
+		if (this.grabbedSlider)
 			grabbedSlider = false;
 	}
 }

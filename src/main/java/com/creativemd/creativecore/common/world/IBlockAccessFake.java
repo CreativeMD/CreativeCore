@@ -9,18 +9,16 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 
 public class IBlockAccessFake implements IBlockAccess {
-	
+
 	public IBlockAccess parent;
 	public BlockPos pos;
 	public IBlockState fakeState;
-	
-	public IBlockAccessFake()
-	{
-		
+
+	public IBlockAccessFake() {
+
 	}
-	
-	public void set(IBlockAccess world, BlockPos pos, IBlockState fakeState)
-	{
+
+	public void set(IBlockAccess world, BlockPos pos, IBlockState fakeState) {
 		this.parent = world;
 		this.pos = pos;
 		this.fakeState = fakeState;
@@ -28,7 +26,7 @@ public class IBlockAccessFake implements IBlockAccess {
 
 	@Override
 	public TileEntity getTileEntity(BlockPos pos) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return null;
 		return parent.getTileEntity(pos);
 	}
@@ -40,14 +38,14 @@ public class IBlockAccessFake implements IBlockAccess {
 
 	@Override
 	public IBlockState getBlockState(BlockPos pos) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return fakeState;
 		return parent.getBlockState(pos);
 	}
 
 	@Override
 	public boolean isAirBlock(BlockPos pos) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return fakeState.getBlock().isAir(fakeState, this, pos);
 		return parent.isAirBlock(pos);
 	}
@@ -69,9 +67,9 @@ public class IBlockAccessFake implements IBlockAccess {
 
 	@Override
 	public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return fakeState.isSideSolid(this, pos, side);
 		return parent.isSideSolid(pos, side, _default);
 	}
-	
+
 }

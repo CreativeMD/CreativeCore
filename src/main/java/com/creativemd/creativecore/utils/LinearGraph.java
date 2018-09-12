@@ -12,22 +12,21 @@ public class LinearGraph extends Graph {
 	public float getY(float x) {
 		Float pointBefore = getPreviousPointX(x);
 		Float pointAfter = getNextPointX(x);
-		if(pointBefore != null && pointAfter != null)
-		{
-			if(pointBefore == pointAfter)
+		if (pointBefore != null && pointAfter != null) {
+			if (pointBefore == pointAfter)
 				return points.get(pointBefore);
-			float distance = pointAfter-pointBefore;
-			float relativePos = x-pointBefore;
-			float percentage = relativePos/distance;
+			float distance = pointAfter - pointBefore;
+			float relativePos = x - pointBefore;
+			float percentage = relativePos / distance;
 			float pointBeforeY = points.get(pointBefore);
 			float distanceY = points.get(pointAfter) - pointBeforeY;
-			return pointBeforeY+distanceY*percentage;
+			return pointBeforeY + distanceY * percentage;
 		}
-		if(pointBefore != null)
+		if (pointBefore != null)
 			return points.get(pointBefore);
-		if(pointAfter != null)
+		if (pointAfter != null)
 			return points.get(pointAfter);
 		return 0;
 	}
-	
+
 }

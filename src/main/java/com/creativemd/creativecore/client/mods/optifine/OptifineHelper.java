@@ -21,13 +21,13 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class OptifineHelper {
-	
+
 	private static boolean active = FMLClientHandler.instance().hasOptifine();
-	
+
 	private static Minecraft mc = Minecraft.getMinecraft();
-	
+
 	private static ThreadLocal<Object> renderEnv;
-	
+
 	private static boolean loadedOptifineReflections = false;
 	private static Method getCustomizedQuads;
 	private static Method getCustomizedModel;
@@ -38,52 +38,49 @@ public class OptifineHelper {
 	private static Method getColorMultiplier;
 	private static Field isEmissive;
 	private static Method getQuadEmissive;
-	
-	private static void loadOptifineReflections()
-	{
+
+	private static void loadOptifineReflections() {
 		try {
 			loadedOptifineReflections = true;
 			renderEnvClass = Class.forName("net.optifine.render.RenderEnv");
 			renderEnvConstructor = renderEnvClass.getConstructor(IBlockAccess.class, IBlockState.class, BlockPos.class);
 			resetEnv = ReflectionHelper.findMethod(renderEnvClass, "reset", "reset", IBlockAccess.class, IBlockState.class, BlockPos.class);
 			blockModelCustomizer = Class.forName("net.optifine.model.BlockModelCustomizer");
-			getCustomizedModel = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderModel", "getRenderModel", IBakedModel.class, IBlockState.class, renderEnvClass);			
+			getCustomizedModel = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderModel", "getRenderModel", IBakedModel.class, IBlockState.class, renderEnvClass);
 			getCustomizedQuads = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderQuads", "getRenderQuads", List.class, IBlockAccess.class, IBlockState.class, BlockPos.class, EnumFacing.class, BlockRenderLayer.class, long.class, renderEnvClass);
 			Class customColorsClass = Class.forName("net.optifine.CustomColors");
 			getColorMultiplier = ReflectionHelper.findMethod(customColorsClass, "getColorMultiplier", "getColorMultiplier", BakedQuad.class, IBlockState.class, IBlockAccess.class, BlockPos.class, renderEnvClass);
-			
+
 			renderEnv = ThreadLocal.withInitial(new Supplier<Object>() {
 
 				@Override
 				public Object get() {
 					try {
 						return renderEnvConstructor.newInstance(null, null, null);
-					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-							| InvocationTargetException e) {
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						throw new RuntimeException(e);
 					}
 				}
 			});
-			
+
 			Class configClass = Class.forName("Config");
 			isShadersMethod = configClass.getMethod("isShaders");
 			isRenderRegions = configClass.getMethod("isRenderRegions");
-			
+
 			regionX = ReflectionHelper.findField(RenderChunk.class, "regionX");
 			regionZ = ReflectionHelper.findField(RenderChunk.class, "regionZ");
-			
+
 			isEmissive = ReflectionHelper.findField(TextureAtlasSprite.class, "isEmissive");
-			
+
 			getQuadEmissive = ReflectionHelper.findMethod(BakedQuad.class, "getQuadEmissive", "getQuadEmissive");
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
 			active = false;
 			e.printStackTrace();
 		}
 	}
-	
-	public static IBakedModel getRenderModel(IBakedModel model, IBlockAccess world, IBlockState state, BlockPos pos)
-	{
-		if(!active)
+
+	public static IBakedModel getRenderModel(IBakedModel model, IBlockAccess world, IBlockState state, BlockPos pos) {
+		if (!active)
 			return model;
 		try {
 			return (IBakedModel) getCustomizedModel.invoke(null, model, state, getEnv(world, state, pos));
@@ -92,9 +89,8 @@ public class OptifineHelper {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	private static Object getEnv(IBlockAccess world, IBlockState state, BlockPos pos)
-	{
+
+	private static Object getEnv(IBlockAccess world, IBlockState state, BlockPos pos) {
 		try {
 			Object env = renderEnv.get();
 			resetEnv.invoke(env, world, state, pos);
@@ -104,30 +100,28 @@ public class OptifineHelper {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public static List<BakedQuad> getRenderQuads(List<BakedQuad> quads, IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing facing, BlockRenderLayer layer, long rand)
-	{
-		if(!active || world == null || layer == null)
+
+	public static List<BakedQuad> getRenderQuads(List<BakedQuad> quads, IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing facing, BlockRenderLayer layer, long rand) {
+		if (!active || world == null || layer == null)
 			return quads;
 		try {
-			quads  = (List<BakedQuad>) getCustomizedQuads.invoke(null, quads, world, state, pos, facing, layer, rand, getEnv(world, state, pos));
-			
+			quads = (List<BakedQuad>) getCustomizedQuads.invoke(null, quads, world, state, pos, facing, layer, rand, getEnv(world, state, pos));
+
 			int size = quads.size();
 			for (int i = 0; i < size; i++) {
 				BakedQuad emissive = (BakedQuad) getQuadEmissive.invoke(quads.get(i));
-				if(emissive != null)
+				if (emissive != null)
 					quads.add(emissive);
 			}
-			
+
 			return quads;
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public static int getColorMultiplier(BakedQuad quad, IBlockState state, IBlockAccess world, BlockPos pos)
-	{
+
+	public static int getColorMultiplier(BakedQuad quad, IBlockState state, IBlockAccess world, BlockPos pos) {
 		try {
 			return (int) getColorMultiplier.invoke(null, quad, state, world, pos, getEnv(world, state, pos));
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -135,16 +129,14 @@ public class OptifineHelper {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	public static boolean isActive()
-	{
+
+	public static boolean isActive() {
 		return active;
 	}
-	
+
 	private static Method isShadersMethod = null;
-	
-	public static boolean isShaders()
-	{
+
+	public static boolean isShaders() {
 		try {
 			return (boolean) isShadersMethod.invoke(null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -152,11 +144,10 @@ public class OptifineHelper {
 		}
 		return false;
 	}
-	
+
 	private static Method isRenderRegions = null;
-	
-	public static boolean isRenderRegions()
-	{
+
+	public static boolean isRenderRegions() {
 		try {
 			return (boolean) isRenderRegions.invoke(null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -164,11 +155,10 @@ public class OptifineHelper {
 		}
 		return false;
 	}
-	
+
 	private static Field regionX;
-	
-	public static int getRenderChunkRegionX(RenderChunk chunk)
-	{
+
+	public static int getRenderChunkRegionX(RenderChunk chunk) {
 		try {
 			return regionX.getInt(chunk);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -176,11 +166,10 @@ public class OptifineHelper {
 		}
 		return -1;
 	}
-	
+
 	private static Field regionZ;
-	
-	public static int getRenderChunkRegionZ(RenderChunk chunk)
-	{
+
+	public static int getRenderChunkRegionZ(RenderChunk chunk) {
 		try {
 			return regionZ.getInt(chunk);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -188,12 +177,11 @@ public class OptifineHelper {
 		}
 		return -1;
 	}
-	
-	public static boolean isEmissive(TextureAtlasSprite sprite)
-	{
-		if(!active)
+
+	public static boolean isEmissive(TextureAtlasSprite sprite) {
+		if (!active)
 			return false;
-		
+
 		try {
 			return isEmissive.getBoolean(sprite);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -201,27 +189,25 @@ public class OptifineHelper {
 		}
 		return false;
 	}
-	
-	public static BakedQuad getQuadEmissive(BakedQuad quad)
-	{
-		if(!active)
+
+	public static BakedQuad getQuadEmissive(BakedQuad quad) {
+		if (!active)
 			return quad;
-		
+
 		try {
 			BakedQuad emissive = (BakedQuad) getQuadEmissive.invoke(quad);
-			if(emissive != null)
+			if (emissive != null)
 				return emissive;
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		
+
 		return quad;
 	}
-	
-	static
-	{
-		if(active)
+
+	static {
+		if (active)
 			loadOptifineReflections();
 	}
-	
+
 }

@@ -21,177 +21,186 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class SortingList implements List<InfoStack> {
-	
+
 	private ArrayList<InfoStack> entries = new ArrayList<>();
-	
+
 	private boolean isWhitelist;
-	
+
 	public SortingList(SortingList list) {
 		isWhitelist = list.isWhitelist;
 		entries = new ArrayList<>(list.entries);
 	}
-	
+
 	public SortingList() {
 		this(true);
 	}
-	
+
 	public SortingList(boolean isWhitelist) {
 		this.isWhitelist = isWhitelist;
 	}
-	
-	public boolean isBlacklist()
-	{
+
+	public boolean isBlacklist() {
 		return !isWhitelist;
 	}
-	
-	public boolean isWhitelist()
-	{
+
+	public boolean isWhitelist() {
 		return isWhitelist;
 	}
-	
-	public void setListType(boolean isWhitelist)
-	{
+
+	public void setListType(boolean isWhitelist) {
 		this.isWhitelist = isWhitelist;
 	}
-	
-	public void setWhitelist()
-	{
+
+	public void setWhitelist() {
 		isWhitelist = true;
 	}
-	
-	public void setBlacklist()
-	{
+
+	public void setBlacklist() {
 		isWhitelist = false;
 	}
-	
+
 	/**
 	 * The given array will be added to the list.
-	 * @param objects the array can either contain a Material, a Block, an Item, an ItemStack or a String for the OreDictionary.
+	 * 
+	 * @param objects
+	 *            the array can either contain a Material, a Block, an Item, an
+	 *            ItemStack or a String for the OreDictionary.
 	 */
-	public void addSortingObjects(Object... objects)
-	{
+	public void addSortingObjects(Object... objects) {
 		for (int i = 0; i < objects.length; i++) {
 			addSortingObject(objects[i]);
 		}
 	}
-	
+
 	/**
 	 * The given parameter will be added to the list.
-	 * @param object can either be a Material, a Block, an Item, an ItemStack or a String for the OreDictionary.
+	 * 
+	 * @param object
+	 *            can either be a Material, a Block, an Item, an ItemStack or a
+	 *            String for the OreDictionary.
 	 */
-	public void addSortingObject(Object object)
-	{
-		if(object instanceof InfoStack)
-		{
+	public void addSortingObject(Object object) {
+		if (object instanceof InfoStack) {
 			add((InfoStack) object);
-			return ;
+			return;
 		}
 		InfoStack info = InfoStack.parseObject(object);
-		if(info != null)
+		if (info != null)
 			add(info);
 	}
-	
+
 	/**
 	 * The given parameter will be added to the list.
-	 * @param name relates to blocks/items which contains this pattern in their name. Example: "axe".
+	 * 
+	 * @param name
+	 *            relates to blocks/items which contains this pattern in their name.
+	 *            Example: "axe".
 	 */
-	public void addSortingByNameContains(String name)
-	{
+	public void addSortingByNameContains(String name) {
 		add(new InfoName(name));
 	}
-	
+
 	/**
 	 * The given parameter will be added to the list.
-	 * @param name relates to ore which contains this pattern {@link #OreDictionary OreDictionary}. Examples: "ingot" or "iron".
+	 * 
+	 * @param name
+	 *            relates to ore which contains this pattern {@link #OreDictionary
+	 *            OreDictionary}. Examples: "ingot" or "iron".
 	 */
-	public void addSortingByOreContains(String name)
-	{
+	public void addSortingByOreContains(String name) {
 		add(new InfoContainOre(name));
 	}
-	
+
 	/**
 	 * The given parameter will be added to the list.
-	 * @param name relates to all objects which are connected to this ore inside the {@link #OreDictionary OreDictionary}. Example: "ingotIron".
+	 * 
+	 * @param name
+	 *            relates to all objects which are connected to this ore inside the
+	 *            {@link #OreDictionary OreDictionary}. Example: "ingotIron".
 	 */
-	public void addSortingByOre(String ore)
-	{
+	public void addSortingByOre(String ore) {
 		add(new InfoOre(ore));
 	}
-	
+
 	/**
 	 * The given parameter will be added to the list.
-	 * @param block relates to all equal Blocks.
+	 * 
+	 * @param block
+	 *            relates to all equal Blocks.
 	 */
-	public void addSortingByBlock(Block block)
-	{
+	public void addSortingByBlock(Block block) {
 		add(new InfoBlock(block));
 	}
-	
+
 	/**
 	 * The given parameter will be added to the list.
-	 * @param item relates to all equal Items.
+	 * 
+	 * @param item
+	 *            relates to all equal Items.
 	 */
-	public void addSortingByItem(Item item)
-	{
+	public void addSortingByItem(Item item) {
 		add(new InfoItem(item));
 	}
-	
+
 	/**
-	 * The given parameter will be added to the list. It is recommended to use {@link #addSortingObject addSortingObject} instead.
-	 * @param stack relates to all equal ItemStacks.
+	 * The given parameter will be added to the list. It is recommended to use
+	 * {@link #addSortingObject addSortingObject} instead.
+	 * 
+	 * @param stack
+	 *            relates to all equal ItemStacks.
 	 */
-	public void addSortingByItemStack(ItemStack stack)
-	{
+	public void addSortingByItemStack(ItemStack stack) {
 		add(new InfoItemStack(stack));
 	}
-	
+
 	/**
 	 * The given parameter will be added to the list.
-	 * @param material relates to all blocks which have the equal Material.
+	 * 
+	 * @param material
+	 *            relates to all blocks which have the equal Material.
 	 */
-	public void addSortingByMaterial(Material material)
-	{
+	public void addSortingByMaterial(Material material) {
 		add(new InfoMaterial(material));
 	}
-	
-	protected boolean canBeFoundInList(Object object)
-	{
+
+	protected boolean canBeFoundInList(Object object) {
 		InfoStack info = InfoStack.parseObject(object);
-		if(info == null)
+		if (info == null)
 			return false;
 		for (Iterator iterator = entries.iterator(); iterator.hasNext();) {
 			InfoStack infoStack = (InfoStack) iterator.next();
-			if(infoStack.isInstanceIgnoreSize(infoStack))
+			if (infoStack.isInstanceIgnoreSize(infoStack))
 				return true;
 		}
 		return false;
 	}
-	
-	protected boolean canBeFoundInList(ItemStack stack)
-	{
+
+	protected boolean canBeFoundInList(ItemStack stack) {
 		for (Iterator iterator = entries.iterator(); iterator.hasNext();) {
 			InfoStack infoStack = (InfoStack) iterator.next();
-			if(infoStack.isInstanceIgnoreSize(stack))
+			if (infoStack.isInstanceIgnoreSize(stack))
 				return true;
 		}
 		return false;
 	}
-	
+
 	/**
-	 * If the given object can pass the test. Whitelist: if it can be found. Blacklist: if it cannot be found.
+	 * If the given object can pass the test. Whitelist: if it can be found.
+	 * Blacklist: if it cannot be found.
+	 * 
 	 * @param object
 	 */
-	public boolean canPass(Object object)
-	{
+	public boolean canPass(Object object) {
 		return canBeFoundInList(object) == isWhitelist;
 	}
-	
+
 	/**
-	 * If the given itemstack can pass the test. Whitelist: if it can be found. Blacklist: if it cannot be found.
+	 * If the given itemstack can pass the test. Whitelist: if it can be found.
+	 * Blacklist: if it cannot be found.
+	 * 
 	 * @param object
 	 */
-	public boolean canPass(ItemStack stack)
-	{
+	public boolean canPass(ItemStack stack) {
 		return canBeFoundInList(stack) == isWhitelist;
 	}
 

@@ -3,17 +3,14 @@ package com.creativemd.creativecore.event;
 import java.util.ArrayList;
 
 import com.creativemd.creativecore.CreativeCore;
-import com.creativemd.creativecore.core.CreativeCoreDummy;
 import com.n247s.api.eventapi.eventsystem.CallHandler;
 import com.n247s.api.eventapi.eventsystem.EventBus;
 import com.n247s.api.eventapi.eventsystem.EventType;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class CreativeCoreEventBus extends EventBus
-{
+public class CreativeCoreEventBus extends EventBus {
 	public ArrayList<EventType> eventsToRaise = new ArrayList<EventType>();
 
 	/**
@@ -28,17 +25,17 @@ public class CreativeCoreEventBus extends EventBus
 		else
 			initServer();
 	}
-	
+
 	private boolean isClient;
 
 	public void initServer() {
-		if(CreativeTickHandler.ServerEvents != null)
+		if (CreativeTickHandler.ServerEvents != null)
 			CreativeTickHandler.ServerEvents.add(this);
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void initClient() {
-		if(CreativeTickHandler.ClientEvents != null)
+		if (CreativeTickHandler.ClientEvents != null)
 			CreativeTickHandler.ClientEvents.add(this);
 	}
 
@@ -50,26 +47,21 @@ public class CreativeCoreEventBus extends EventBus
 	public boolean raiseEvent(EventType event, boolean force) {
 		if (event.isCancelable() || force) {
 			if (!this.EventList.containsKey(event.getClass()))
-				this.EventList.put(event.getClass(), new CreativeCoreCallHandler(
-						event.getClass()));
+				this.EventList.put(event.getClass(), new CreativeCoreCallHandler(event.getClass()));
 			return ((CreativeCoreCallHandler) this.EventList.get(event.getClass())).CallInstances(event);
 		}
 		eventsToRaise.add(event);
 		return false;
 	}
-	
+
 	@Override
-	public boolean raiseEvent(EventType eventType)
-	{
-		try
-		{
-			Class eventClass =  eventType.getClass();
-			if(!this.EventList.containsKey(eventClass))
+	public boolean raiseEvent(EventType eventType) {
+		try {
+			Class eventClass = eventType.getClass();
+			if (!this.EventList.containsKey(eventClass))
 				this.EventList.put(eventClass, new CreativeCoreCallHandler(eventClass));
-			return ((CreativeCoreCallHandler)this.EventList.get(eventClass)).CallInstances(eventType);
-		}
-		catch(Exception e)
-		{
+			return ((CreativeCoreCallHandler) this.EventList.get(eventClass)).CallInstances(eventType);
+		} catch (Exception e) {
 			CreativeCore.logger.catching(e);
 		}
 		return false;
@@ -92,7 +84,7 @@ public class CreativeCoreEventBus extends EventBus
 	 */
 	public void removeAllEventListeners() {
 		for (Object value : this.EventList.values()) {
-			((CreativeCoreCallHandler)value).getInstanceMap().clear();
+			((CreativeCoreCallHandler) value).getInstanceMap().clear();
 		}
 		EventList.clear();
 		if (isClient)
@@ -109,11 +101,10 @@ public class CreativeCoreEventBus extends EventBus
 	public void removeTickEventClient() {
 		CreativeTickHandler.ClientEvents.remove(this);
 	}
-	
+
 	@Override
-	public CallHandler getCallHandlerFromEventType(Class<? extends EventType> eventTypeClass)
-	{
-		if(!this.EventList.containsKey(eventTypeClass))
+	public CallHandler getCallHandlerFromEventType(Class<? extends EventType> eventTypeClass) {
+		if (!this.EventList.containsKey(eventTypeClass))
 			this.EventList.put(eventTypeClass, new CreativeCoreCallHandler(eventTypeClass));
 		return (CallHandler) this.EventList.get(eventTypeClass);
 	}

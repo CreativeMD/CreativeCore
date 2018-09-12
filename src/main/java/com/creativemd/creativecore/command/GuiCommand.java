@@ -8,8 +8,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
-public class GuiCommand extends CommandBase{
-	
+public class GuiCommand extends CommandBase {
+
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		GuiHandler.openGui("test-gui", new NBTTagCompound());
@@ -24,5 +24,5 @@ public class GuiCommand extends CommandBase{
 	public String getUsage(ICommandSender sender) {
 		return "opens a test gui";
 	}
-	
+
 }

@@ -5,7 +5,7 @@ import com.creativemd.creativecore.gui.container.SubContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class SubContainerEmpty extends SubContainer{
+public class SubContainerEmpty extends SubContainer {
 
 	public SubContainerEmpty(EntityPlayer player) {
 		super("empty", player);
@@ -13,12 +13,12 @@ public class SubContainerEmpty extends SubContainer{
 
 	@Override
 	public void createControls() {
-		
+
 	}
-	
+
 	@Override
 	public void onPacketReceive(NBTTagCompound nbt) {
-		
+
 	}
 
 }

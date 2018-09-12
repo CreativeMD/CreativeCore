@@ -53,68 +53,68 @@ import net.minecraft.world.chunk.Chunk;
 
 public interface IMixinWorldServer extends IMixinWorld {
 
-    SpongeConfig<?> getActiveConfig();
+	SpongeConfig<?> getActiveConfig();
 
-    SpongeConfig<WorldConfig> getWorldConfig();
+	SpongeConfig<WorldConfig> getWorldConfig();
 
-    void setActiveConfig(SpongeConfig<?> config);
+	void setActiveConfig(SpongeConfig<?> config);
 
-    Integer getDimensionId();
+	Integer getDimensionId();
 
-    void updateWorldGenerator();
+	void updateWorldGenerator();
 
-    void updateRotation(Entity entityIn);
+	void updateRotation(Entity entityIn);
 
-    void spongeNotifyNeighborsPostBlockChange(BlockPos pos, IBlockState oldState, IBlockState newState, int flags);
+	void spongeNotifyNeighborsPostBlockChange(BlockPos pos, IBlockState oldState, IBlockState newState, int flags);
 
-    boolean setBlockState(BlockPos pos, IBlockState state, BlockChangeFlag flag);
+	boolean setBlockState(BlockPos pos, IBlockState state, BlockChangeFlag flag);
 
-    boolean forceSpawnEntity(org.spongepowered.api.entity.Entity entity);
+	boolean forceSpawnEntity(org.spongepowered.api.entity.Entity entity);
 
-    default boolean forceSpawnEntity(Entity entity) {
-        return forceSpawnEntity(EntityUtil.fromNative(entity));
-    }
+	default boolean forceSpawnEntity(Entity entity) {
+		return forceSpawnEntity(EntityUtil.fromNative(entity));
+	}
 
-    void onSpongeEntityAdded(Entity entity);
+	void onSpongeEntityAdded(Entity entity);
 
-    void onSpongeEntityRemoved(Entity entity);
+	void onSpongeEntityRemoved(Entity entity);
 
-    void addEntityRotationUpdate(Entity entity, Vector3d rotation);
+	void addEntityRotationUpdate(Entity entity, Vector3d rotation);
 
-    SpongeBlockSnapshot createSpongeBlockSnapshot(IBlockState state, IBlockState extended, BlockPos pos, int updateFlag);
+	SpongeBlockSnapshot createSpongeBlockSnapshot(IBlockState state, IBlockState extended, BlockPos pos, int updateFlag);
 
-    SpongeWorldGenerator createWorldGenerator(DataContainer settings);
+	SpongeWorldGenerator createWorldGenerator(DataContainer settings);
 
-    SpongeWorldGenerator createWorldGenerator(String settings);
+	SpongeWorldGenerator createWorldGenerator(String settings);
 
-    SpongeChunkGenerator createChunkGenerator(SpongeWorldGenerator newGenerator);
+	SpongeChunkGenerator createChunkGenerator(SpongeWorldGenerator newGenerator);
 
-    boolean isProcessingExplosion();
+	boolean isProcessingExplosion();
 
-    boolean isMinecraftChunkLoaded(int x, int z, boolean allowEmpty);
+	boolean isMinecraftChunkLoaded(int x, int z, boolean allowEmpty);
 
-    boolean isLightLevel(Chunk chunk, BlockPos pos, int level);
+	boolean isLightLevel(Chunk chunk, BlockPos pos, int level);
 
-    boolean updateLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk);
+	boolean updateLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk);
 
-    boolean checkLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk, List<Chunk> neighbors);
+	boolean checkLightAsync(EnumSkyBlock lightType, BlockPos pos, Chunk chunk, List<Chunk> neighbors);
 
-    ExecutorService getLightingExecutor();
+	ExecutorService getLightingExecutor();
 
-    WorldTimingsHandler getTimingsHandler();
+	WorldTimingsHandler getTimingsHandler();
 
-    int getChunkGCTickInterval();
+	int getChunkGCTickInterval();
 
-    long getChunkUnloadDelay();
+	long getChunkUnloadDelay();
 
-    void triggerInternalExplosion(Explosion explosion);
+	void triggerInternalExplosion(Explosion explosion);
 
-    void playCustomSound(@Nullable EntityPlayer player, double x, double y, double z, String soundIn, SoundCategory category, float volume, float pitch);
+	void playCustomSound(@Nullable EntityPlayer player, double x, double y, double z, String soundIn, SoundCategory category, float volume, float pitch);
 
-    void doChunkGC();
+	void doChunkGC();
 
-    default WorldServer asMinecraftWorld() {
-        return (WorldServer) this;
-    }
+	default WorldServer asMinecraftWorld() {
+		return (WorldServer) this;
+	}
 
 }

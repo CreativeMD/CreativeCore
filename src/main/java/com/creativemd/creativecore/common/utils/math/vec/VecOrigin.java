@@ -3,31 +3,27 @@ package com.creativemd.creativecore.common.utils.math.vec;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 public class VecOrigin implements IVecOrigin {
-	
-	public VecOrigin(Vector3d center)
-	{
+
+	public VecOrigin(Vector3d center) {
 		this.center = center;
 	}
-	
+
 	protected boolean rotated = false;
-	
+
 	public final Vector3d center;
 	private Vector3d translation = new Vector3d(0, 0, 0);
 	private Matrix3d rotation = MatrixUtils.createIdentityMatrix();
 	private Matrix3d rotationInv = rotation;
-	
+
 	protected double rotX;
 	protected double rotY;
 	protected double rotZ;
-	
+
 	protected double offsetX;
 	protected double offsetY;
 	protected double offsetZ;
-	
+
 	@Override
 	public double offX() {
 		return offsetX;
@@ -62,16 +58,14 @@ public class VecOrigin implements IVecOrigin {
 	public boolean isRotated() {
 		return rotated;
 	}
-	
-	protected void updateRotated()
-	{
+
+	protected void updateRotated() {
 		rotated = rotX % 360 != 0 || rotY % 360 != 0 || rotZ % 360 != 0;
 		rotation = MatrixUtils.createRotationMatrix(rotX, rotY, rotZ);
 		rotationInv.invert(rotation);
 	}
-	
-	protected void updateTranslation()
-	{
+
+	protected void updateTranslation() {
 		translation.set(offsetX, offsetY, offsetZ);
 	}
 
@@ -92,7 +86,7 @@ public class VecOrigin implements IVecOrigin {
 		this.offsetZ = value;
 		updateTranslation();
 	}
-	
+
 	@Override
 	public void off(double x, double y, double z) {
 		this.offsetX = x;
@@ -118,7 +112,7 @@ public class VecOrigin implements IVecOrigin {
 		this.rotZ = value;
 		updateRotated();
 	}
-	
+
 	@Override
 	public void rot(double x, double y, double z) {
 		this.rotX = x;
@@ -141,10 +135,10 @@ public class VecOrigin implements IVecOrigin {
 	public Matrix3d rotationInv() {
 		return rotationInv;
 	}
-	
+
 	@Override
 	public Vector3d translation() {
 		return translation;
 	}
-	
+
 }

@@ -8,19 +8,19 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class BlockUpdatePacket extends CreativeCorePacket{
-	
+public class BlockUpdatePacket extends CreativeCorePacket {
+
 	public BlockUpdatePacket() {
-		
+
 	}
-	
+
 	public BlockPos pos;
 	public NBTTagCompound nbt;
-	
+
 	public BlockUpdatePacket(TileEntity te, NBTTagCompound nbt) {
 		this(te.getPos(), nbt);
 	}
-	
+
 	public BlockUpdatePacket(BlockPos pos, NBTTagCompound nbt) {
 		this.pos = pos;
 		this.nbt = nbt;
@@ -40,14 +40,13 @@ public class BlockUpdatePacket extends CreativeCorePacket{
 
 	@Override
 	public void executeClient(EntityPlayer player) {
-		
+
 	}
 
 	@Override
 	public void executeServer(EntityPlayer player) {
 		TileEntity te = player.world.getTileEntity(pos);
-		if(te instanceof TileEntityCreative)
-		{
+		if (te instanceof TileEntityCreative) {
 			((TileEntityCreative) te).receiveUpdatePacket(nbt);
 		}
 	}

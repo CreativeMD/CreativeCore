@@ -2,7 +2,6 @@ package com.creativemd.creativecore.common.utils.stack;
 
 import java.util.ArrayList;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -10,20 +9,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoItem extends InfoStack {
-	
+
 	public Item item;
-	
-	public InfoItem(Item item, int stackSize)
-	{
+
+	public InfoItem(Item item, int stackSize) {
 		super(stackSize);
 		this.item = item;
 	}
-	
-	public InfoItem(Item item)
-	{
+
+	public InfoItem(Item item) {
 		this(item, 1);
 	}
-	
+
 	public InfoItem() {
 		super();
 	}
@@ -31,7 +28,7 @@ public class InfoItem extends InfoStack {
 	@Override
 	protected void writeToNBTExtra(NBTTagCompound nbt) {
 		ResourceLocation location = item.REGISTRY.getNameForObject(item);
-		if(location != null)
+		if (location != null)
 			nbt.setString("item", location.toString());
 		else
 			System.out.println("Invalid InfoBlock entry. Item does not exists");
@@ -44,9 +41,9 @@ public class InfoItem extends InfoStack {
 
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
-		if(info instanceof InfoItem)
+		if (info instanceof InfoItem)
 			return ((InfoItem) info).item == item;
-		if(info instanceof InfoItemStack)
+		if (info instanceof InfoItemStack)
 			return item == ((InfoItemStack) info).stack.getItem();
 		return false;
 	}
@@ -70,7 +67,7 @@ public class InfoItem extends InfoStack {
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoItem && ((InfoItem) object).item == this.item;
 	}
-	
+
 	@Override
 	public ArrayList<ItemStack> getAllPossibleItemStacks() {
 		ArrayList<ItemStack> stacks = new ArrayList<>();

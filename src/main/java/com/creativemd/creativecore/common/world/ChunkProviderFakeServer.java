@@ -1,7 +1,5 @@
 package com.creativemd.creativecore.common.world;
 
-import javax.annotation.Nullable;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.common.interfaces.world.gen.IMixinChunkProviderServer;
@@ -10,7 +8,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.IChunkLoader;
-import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.Optional.Interface;
 
@@ -18,23 +15,21 @@ import net.minecraftforge.fml.common.Optional.Interface;
 public class ChunkProviderFakeServer extends ChunkProviderFake implements IMixinChunkProviderServer {
 
 	private static final Logger LOGGER = LogManager.getLogger();
-	
+
 	public ChunkProviderFakeServer(WorldFakeServer worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn) {
 		super(worldObjIn, chunkLoaderIn, chunkGeneratorIn);
 	}
-	
+
 	@Override
-	public boolean tick()
-	{
+	public boolean tick() {
 		return false;
 	}
-	
+
 	@Override
-	public boolean canSave()
-    {
-        return false;
-    }
-	
+	public boolean canSave() {
+		return false;
+	}
+
 	@Override
 	public boolean getForceChunkRequests() {
 		return false;
@@ -42,24 +37,24 @@ public class ChunkProviderFakeServer extends ChunkProviderFake implements IMixin
 
 	@Override
 	public void setMaxChunkUnloads(int maxUnloads) {
-		
+
 	}
 
 	@Override
 	public void setDenyChunkRequests(boolean flag) {
-		
+
 	}
 
 	@Override
 	public void setForceChunkRequests(boolean flag) {
-		
+
 	}
 
 	@Override
 	public Chunk getLoadedChunkWithoutMarkingActive(int x, int z) {
 		long i = ChunkPos.asLong(x, z);
-        Chunk chunk = (Chunk)this.id2ChunkMap.get(i);
-        return chunk;
+		Chunk chunk = (Chunk) this.id2ChunkMap.get(i);
+		return chunk;
 	}
 
 	@Override

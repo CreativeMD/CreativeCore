@@ -10,19 +10,17 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GuiLayerPacket extends CreativeCorePacket{
-	
+public class GuiLayerPacket extends CreativeCorePacket {
+
 	public NBTTagCompound nbt;
 	public int layer;
 	public boolean closed;
-	
-	public GuiLayerPacket()
-	{
-		
+
+	public GuiLayerPacket() {
+
 	}
-	
-	public GuiLayerPacket(NBTTagCompound nbt, int layer, boolean closed)
-	{
+
+	public GuiLayerPacket(NBTTagCompound nbt, int layer, boolean closed) {
 		this.nbt = nbt;
 		this.layer = layer;
 		this.closed = closed;
@@ -45,24 +43,22 @@ public class GuiLayerPacket extends CreativeCorePacket{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
-		if(player.openContainer instanceof ContainerSub)
-		{
-			if(closed)
+		if (player.openContainer instanceof ContainerSub) {
+			if (closed)
 				((ContainerSub) player.openContainer).gui.getLayers().get(layer).closeLayer(nbt, true);
 			else
 				((ContainerSub) player.openContainer).gui.getLayers().get(layer).openNewLayer(nbt, true);
-			
+
 		}
 	}
 
 	@Override
 	public void executeServer(EntityPlayer player) {
-		if(player.openContainer instanceof ContainerSub)
-		{
-			if(closed)
-				((ContainerSub) player.openContainer).layers.get(layer).closeLayer(nbt, true);	
+		if (player.openContainer instanceof ContainerSub) {
+			if (closed)
+				((ContainerSub) player.openContainer).layers.get(layer).closeLayer(nbt, true);
 			else
-				((ContainerSub) player.openContainer).layers.get(layer).openNewLayer(nbt, true);	
+				((ContainerSub) player.openContainer).layers.get(layer).openNewLayer(nbt, true);
 		}
 	}
 

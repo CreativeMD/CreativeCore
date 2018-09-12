@@ -8,20 +8,18 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoOre extends InfoStack {
-	
+
 	public String ore;
-	
-	public InfoOre(String ore, int stackSize)
-	{
+
+	public InfoOre(String ore, int stackSize) {
 		super(stackSize);
 		this.ore = ore;
 	}
-	
-	public InfoOre(String ore)
-	{
+
+	public InfoOre(String ore) {
 		this(ore, 1);
 	}
-	
+
 	public InfoOre() {
 		super();
 	}
@@ -38,7 +36,7 @@ public class InfoOre extends InfoStack {
 
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
-		if(info instanceof InfoOre)
+		if (info instanceof InfoOre)
 			return ((InfoOre) info).ore.equals(ore);
 		return false;
 	}
@@ -51,10 +49,9 @@ public class InfoOre extends InfoStack {
 	@Override
 	public ItemStack getItemStack(int stacksize) {
 		List<ItemStack> stacks = OreDictionary.getOres(ore);
-		if(stacks.size() > 0)
-		{
+		if (stacks.size() > 0) {
 			ItemStack stack = stacks.get(0).copy();
-			if(stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+			if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 				stack.setItemDamage(0);
 			stack.setCount(stacksize);
 			return stack;
@@ -66,7 +63,7 @@ public class InfoOre extends InfoStack {
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		int[] ores = OreDictionary.getOreIDs(stack);
 		for (int i = 0; i < ores.length; i++)
-			if(OreDictionary.getOreName(ores[i]).equals(ore))
+			if (OreDictionary.getOreName(ores[i]).equals(ore))
 				return true;
 		return false;
 	}
@@ -75,7 +72,7 @@ public class InfoOre extends InfoStack {
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoOre && ((InfoOre) object).ore.equals(ore);
 	}
-	
+
 	@Override
 	public ArrayList<ItemStack> getAllPossibleItemStacks() {
 		return new ArrayList<>(OreDictionary.getOres(ore));

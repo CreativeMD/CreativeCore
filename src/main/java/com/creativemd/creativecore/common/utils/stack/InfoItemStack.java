@@ -4,30 +4,26 @@ import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoItemStack extends InfoStack {
-	
+
 	public ItemStack stack;
 	public boolean needNBT;
-	
-	public InfoItemStack(ItemStack stack, boolean needNBT, int stackSize)
-	{
+
+	public InfoItemStack(ItemStack stack, boolean needNBT, int stackSize) {
 		super(stackSize);
 		this.stack = stack;
 		this.needNBT = needNBT;
 	}
-	
-	public InfoItemStack(ItemStack stack, int stackSize)
-	{
+
+	public InfoItemStack(ItemStack stack, int stackSize) {
 		this(stack, stack.hasTagCompound(), stackSize);
 	}
-	
-	public InfoItemStack(ItemStack stack)
-	{
+
+	public InfoItemStack(ItemStack stack) {
 		this(stack, stack.getCount());
 	}
-	
+
 	public InfoItemStack() {
 		super();
 	}
@@ -46,17 +42,15 @@ public class InfoItemStack extends InfoStack {
 
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
-		if(info instanceof InfoItemStack)
-		{
-			if(((InfoItemStack) info).stack.getItem() != stack.getItem())
+		if (info instanceof InfoItemStack) {
+			if (((InfoItemStack) info).stack.getItem() != stack.getItem())
 				return false;
-			if(((InfoItemStack) info).stack.getItemDamage() != stack.getItemDamage())
+			if (((InfoItemStack) info).stack.getItemDamage() != stack.getItemDamage())
 				return false;
-			if(((InfoItemStack) info).needNBT || this.needNBT)
-			{
-				if(((InfoItemStack) info).stack.getTagCompound() == null && stack.getTagCompound() == null)
+			if (((InfoItemStack) info).needNBT || this.needNBT) {
+				if (((InfoItemStack) info).stack.getTagCompound() == null && stack.getTagCompound() == null)
 					return true;
-				if(((InfoItemStack) info).stack.getTagCompound() == null || stack.getTagCompound() == null)
+				if (((InfoItemStack) info).stack.getTagCompound() == null || stack.getTagCompound() == null)
 					return false;
 				return ((InfoItemStack) info).stack.getTagCompound().equals(stack.getTagCompound());
 			}
@@ -73,22 +67,21 @@ public class InfoItemStack extends InfoStack {
 	@Override
 	public ItemStack getItemStack(int stacksize) {
 		ItemStack stack = new ItemStack(this.stack.getItem(), stacksize, this.stack.getItemDamage());
-		if(needNBT && this.stack.hasTagCompound())
+		if (needNBT && this.stack.hasTagCompound())
 			stack.setTagCompound((NBTTagCompound) this.stack.getTagCompound().copy());
 		return stack;
 	}
 
 	@Override
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
-		if(stack.getItem() != this.stack.getItem())
+		if (stack.getItem() != this.stack.getItem())
 			return false;
-		if(stack.getItemDamage() != this.stack.getItemDamage())
+		if (stack.getItemDamage() != this.stack.getItemDamage())
 			return false;
-		if(needNBT)
-		{
-			if(stack.getTagCompound() == this.stack.getTagCompound())
+		if (needNBT) {
+			if (stack.getTagCompound() == this.stack.getTagCompound())
 				return true;
-			if(stack.getTagCompound() != null && this.stack.getTagCompound() != null)
+			if (stack.getTagCompound() != null && this.stack.getTagCompound() != null)
 				return stack.getTagCompound().equals(this.stack.getTagCompound());
 			return false;
 		}

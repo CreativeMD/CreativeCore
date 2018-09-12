@@ -1,12 +1,8 @@
 package com.creativemd.creativecore.common.utils.math;
 
-import java.util.ArrayList;
-
-import javax.vecmath.Matrix3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Tuple3f;
 
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.Vec3i;
 

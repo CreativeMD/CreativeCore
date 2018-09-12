@@ -4,29 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoContainOre extends InfoOre {
-	
+
 	public InfoContainOre(String name) {
 		this(name, 1);
 	}
-	
-	public InfoContainOre(String name, int stackSize)
-	{
+
+	public InfoContainOre(String name, int stackSize) {
 		super(name.toLowerCase(), stackSize);
 	}
-	
+
 	public InfoContainOre() {
 		super();
 	}
 
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
-		if(equalsIgnoreSize(info))
+		if (equalsIgnoreSize(info))
 			return true;
-		if(info instanceof InfoOre)
+		if (info instanceof InfoOre)
 			return ((InfoOre) info).ore.toLowerCase().contains(ore);
 		return false;
 	}
@@ -40,13 +38,11 @@ public class InfoContainOre extends InfoOre {
 	public ItemStack getItemStack(int stacksize) {
 		String[] names = OreDictionary.getOreNames();
 		for (int i = 0; i < names.length; i++) {
-			if(names[i].toLowerCase().contains(ore))
-			{
+			if (names[i].toLowerCase().contains(ore)) {
 				List<ItemStack> stacks = OreDictionary.getOres(names[i]);
-				if(stacks.size() > 0)
-				{
+				if (stacks.size() > 0) {
 					ItemStack stack = stacks.get(0).copy();
-					if(stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+					if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
 						stack.setItemDamage(0);
 					stack.setCount(stacksize);
 					return stack;
@@ -60,7 +56,7 @@ public class InfoContainOre extends InfoOre {
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		int[] ores = OreDictionary.getOreIDs(stack);
 		for (int j = 0; j < ores.length; j++) {
-			if(OreDictionary.getOreName(ores[j]).toLowerCase().contains(ore))
+			if (OreDictionary.getOreName(ores[j]).toLowerCase().contains(ore))
 				return true;
 		}
 		return false;
@@ -70,13 +66,13 @@ public class InfoContainOre extends InfoOre {
 	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoContainOre && ((InfoContainOre) object).ore.equals(ore);
 	}
-	
+
 	@Override
 	public ArrayList<ItemStack> getAllPossibleItemStacks() {
 		ArrayList<ItemStack> result = new ArrayList<>();
 		List<ItemStack> stacks = getAllExistingItems();
 		for (int i = 0; i < stacks.size(); i++) {
-			if(isInstanceIgnoreSize(stacks.get(i)))
+			if (isInstanceIgnoreSize(stacks.get(i)))
 				result.add(stacks.get(i));
 		}
 		return result;

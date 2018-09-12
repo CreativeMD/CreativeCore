@@ -9,20 +9,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class InfoBlock extends InfoStack {
-	
+
 	public Block block;
-	
-	public InfoBlock(Block block, int stackSize)
-	{
+
+	public InfoBlock(Block block, int stackSize) {
 		super(stackSize);
 		this.block = block;
 	}
-	
-	public InfoBlock(Block block)
-	{
+
+	public InfoBlock(Block block) {
 		this(block, 1);
 	}
-	
+
 	public InfoBlock() {
 		super();
 	}
@@ -30,7 +28,7 @@ public class InfoBlock extends InfoStack {
 	@Override
 	protected void writeToNBTExtra(NBTTagCompound nbt) {
 		ResourceLocation location = Block.REGISTRY.getNameForObject(block);
-		if(location != null)
+		if (location != null)
 			nbt.setString("block", location.toString());
 		else
 			System.out.println("Invalid InfoBlock entry. Block does not exists");
@@ -43,9 +41,9 @@ public class InfoBlock extends InfoStack {
 
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
-		if(info instanceof InfoBlock)
+		if (info instanceof InfoBlock)
 			return ((InfoBlock) info).block == block;
-		if(info instanceof InfoItemStack)
+		if (info instanceof InfoItemStack)
 			return block == Block.getBlockFromItem(((InfoItemStack) info).stack.getItem());
 		return false;
 	}
@@ -64,10 +62,9 @@ public class InfoBlock extends InfoStack {
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		return block == Block.getBlockFromItem(stack.getItem());
 	}
-	
+
 	@Override
-	public boolean equalsIgnoreSize(Object object)
-	{
+	public boolean equalsIgnoreSize(Object object) {
 		return object instanceof InfoBlock && ((InfoBlock) object).block == this.block;
 	}
 

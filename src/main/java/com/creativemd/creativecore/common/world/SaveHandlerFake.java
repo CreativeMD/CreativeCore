@@ -16,9 +16,9 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 
 public class SaveHandlerFake implements ISaveHandler {
-	
+
 	public WorldInfo info;
-	
+
 	public SaveHandlerFake(WorldInfo info) {
 		this.info = info;
 	}
@@ -30,31 +30,31 @@ public class SaveHandlerFake implements ISaveHandler {
 
 	@Override
 	public void checkSessionLock() throws MinecraftException {
-		
+
 	}
 
 	@Override
 	public IChunkLoader getChunkLoader(WorldProvider provider) {
 		return new IChunkLoader() {
-			
+
 			@Override
 			public void saveExtraChunkData(World worldIn, Chunk chunkIn) throws IOException {
-				
+
 			}
-			
+
 			@Override
 			public void saveChunk(World worldIn, Chunk chunkIn) throws MinecraftException, IOException {
-				
+
 			}
-			
+
 			@Override
 			public Chunk loadChunk(World worldIn, int x, int z) throws IOException {
 				return new Chunk(worldIn, x, z);
 			}
-			
+
 			@Override
 			public void chunkTick() {
-				
+
 			}
 
 			@Override
@@ -64,35 +64,35 @@ public class SaveHandlerFake implements ISaveHandler {
 
 			@Override
 			public void flush() {
-				
+
 			}
 		};
 	}
 
 	@Override
 	public void saveWorldInfoWithPlayer(WorldInfo worldInformation, NBTTagCompound tagCompound) {
-		
+
 	}
 
 	@Override
 	public void saveWorldInfo(WorldInfo worldInformation) {
-		
+
 	}
 
 	@Override
 	public IPlayerFileData getPlayerNBTManager() {
 		return new IPlayerFileData() {
-			
+
 			@Override
 			public void writePlayerData(EntityPlayer player) {
-				
+
 			}
-			
+
 			@Override
 			public NBTTagCompound readPlayerData(EntityPlayer player) {
 				return new NBTTagCompound();
 			}
-			
+
 			@Override
 			public String[] getAvailablePlayerDat() {
 				return new String[0];
@@ -102,7 +102,7 @@ public class SaveHandlerFake implements ISaveHandler {
 
 	@Override
 	public void flush() {
-		
+
 	}
 
 	@Override
