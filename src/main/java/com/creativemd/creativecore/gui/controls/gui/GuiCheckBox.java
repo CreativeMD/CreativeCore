@@ -6,6 +6,7 @@ import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
+import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
 import net.minecraft.init.SoundEvents;
 
@@ -57,6 +58,7 @@ public class GuiCheckBox extends GuiControl {
 	public boolean mousePressed(int posX, int posY, int button) {
 		playSound(SoundEvents.UI_BUTTON_CLICK);
 		this.value = !value;
+		raiseEvent(new GuiControlChangedEvent(this));
 		return true;
 	}
 	
