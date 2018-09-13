@@ -31,6 +31,10 @@ public class GuiAnalogeSlider extends GuiControl {
 		return Math.round(value * 100F) / 100F + "";
 	}
 	
+	public String getTextfieldValue() {
+		return getTextByValue();
+	}
+	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		
@@ -68,7 +72,7 @@ public class GuiAnalogeSlider extends GuiControl {
 	}
 	
 	protected GuiTextfield createTextfield() {
-		return new GuiTextfield(getTextByValue(), 0, 0, width - getContentOffset() * 8, height - getContentOffset() * 8).setFloatOnly();
+		return new GuiTextfield(getTextfieldValue(), 0, 0, width - getContentOffset() * 8, height - getContentOffset() * 8).setFloatOnly();
 	}
 	
 	public void closeTextField() {

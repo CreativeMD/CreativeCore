@@ -12,6 +12,11 @@ public class GuiSteppedSlider extends GuiAnalogeSlider {
 	}
 	
 	@Override
+	public String getTextfieldValue() {
+		return ((int) value) + "";
+	}
+	
+	@Override
 	public void mouseMove(int posX, int posY, int button) {
 		super.mouseMove(posX, posY, button);
 		value = (int) value;
