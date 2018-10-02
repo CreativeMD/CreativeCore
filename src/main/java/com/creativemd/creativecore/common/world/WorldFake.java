@@ -4,6 +4,7 @@ import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldFake extends World implements IFakeWorld {
 	
+	public Entity parent;
 	public final World parentWorld;
 	public IVecOrigin origin;
 	
@@ -30,8 +32,8 @@ public class WorldFake extends World implements IFakeWorld {
 	
 	protected WorldFake(World world) {
 		super(new SaveHandlerFake(world.getWorldInfo()), world.getWorldInfo(), world.provider, new Profiler(), world.isRemote);
-		chunkProvider = createChunkProvider();
-		parentWorld = world;
+		this.chunkProvider = createChunkProvider();
+		this.parentWorld = world;
 	}
 	
 	@Override

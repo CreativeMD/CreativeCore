@@ -35,18 +35,14 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer {
 	public IVecOrigin origin;
 	
 	protected WorldFakeServer(WorldServer world) {
-		/* super(world.getMinecraftServer(), new SaveHandlerFake(world.getWorldInfo()), world.getWorldInfo(), DimensionType.OVERWORLD.getId(), new Profiler()); */
+		/* super(world.getMinecraftServer(), new SaveHandlerFake(world.getWorldInfo()),
+		 * world.getWorldInfo(), DimensionType.OVERWORLD.getId(), new Profiler()); */
 		super(world);
-		chunkProvider = createChunkProvider();
-		parentWorld = world;
+		this.chunkProvider = createChunkProvider();
+		this.parentWorld = world;
 	}
 	
-	/* @Override
-	 * public World init()
-	 * {
-	 * this.initCapabilities();
-	 * return this;
-	 * }
+	/* @Override public World init() { this.initCapabilities(); return this; }
 	 * 
 	 * @Override
 	 * protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
@@ -77,9 +73,8 @@ public class WorldFakeServer extends WorldFake implements IMixinWorldServer {
 	 * {
 	 * Vector3d pos = new Vector3d(xCoord, yCoord, zCoord);
 	 * origin.transformPointToWorld(pos);
-	 * ((IWorldEventListener)this.eventListeners.get(i)).spawnParticle(particleID, ignoreRange, pos.x, pos.y, pos.z, xSpeed, ySpeed, zSpeed, parameters);
-	 * }
-	 * } */
+	 * ((IWorldEventListener)this.eventListeners.get(i)).spawnParticle(particleID,
+	 * ignoreRange, pos.x, pos.y, pos.z, xSpeed, ySpeed, zSpeed, parameters); } } */
 	
 	@Override
 	protected IChunkProvider createChunkProvider() {
