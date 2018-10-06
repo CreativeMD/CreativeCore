@@ -8,10 +8,6 @@ import org.lwjgl.util.Color;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiControl;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
-import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
-import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
-
-import net.minecraft.entity.player.EntityPlayer;
 
 public class GuiListBox extends GuiScrollBox {
 	
@@ -25,15 +21,13 @@ public class GuiListBox extends GuiScrollBox {
 		reloadControls();
 	}
 	
-	public String getSelected()
-	{
-		if(selected != -1)
+	public String getSelected() {
+		if (selected != -1)
 			return get(selected);
 		return "";
 	}
 	
-	public void clear()
-	{
+	public void clear() {
 		lines.clear();
 		selected = -1;
 		maxScroll = 0;
@@ -41,56 +35,48 @@ public class GuiListBox extends GuiScrollBox {
 		reloadControls();
 	}
 	
-	public int size()
-	{
+	public int size() {
 		return lines.size();
 	}
 	
-	public String get(int id)
-	{
+	public String get(int id) {
 		return lines.get(id);
 	}
 	
-	public void add(String input)
-	{
+	public void add(String input) {
 		lines.add(input);
 		reloadControls();
 	}
 	
-	public void remove(int id)
-	{
+	public void remove(int id) {
 		lines.remove(id);
 		reloadControls();
 	}
 	
-	public void onLineClicked(GuiControl control)
-	{
+	public void onLineClicked(GuiControl control) {
 		int index = controls.indexOf(control);
 		
-		if(index != -1)
-		{
-			if(selected != -1 && selected < controls.size())
-				((GuiLabel)controls.get(selected)).color = 14737632;
+		if (index != -1) {
+			if (selected != -1 && selected < controls.size())
+				((GuiLabel) controls.get(selected)).color = 14737632;
 			selected = index;
-			((GuiLabel)controls.get(selected)).color = 16777000;
+			((GuiLabel) controls.get(selected)).color = 16777000;
 			
 			onSelectionChange();
 		}
 	}
 	
-	public void reloadControls()
-	{
+	public void reloadControls() {
 		controls.clear();
 		for (int i = 0; i < lines.size(); i++) {
 			int color = 14737632;
-			if(i == selected)
+			if (i == selected)
 				color = 16777000;
-			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 0, i*15, width-scrollbarWidth-2-getContentOffset()*2, 8, color) {
+			GuiClickableLabel label = new GuiClickableLabel(lines.get(i), 0, i * 15, width - scrollbarWidth - 2 - getContentOffset() * 2, 8, color) {
 				
 				@Override
-				public int getColor()
-				{
-					if(isMouseOver() && color != 16777000)
+				public int getColor() {
+					if (isMouseOver() && color != 16777000)
 						return ColorUtils.RGBAToInt(new Color(255, 255, 100));
 					return color;
 				}
@@ -105,8 +91,7 @@ public class GuiListBox extends GuiScrollBox {
 		refreshControls();
 	}
 	
-	public void onSelectionChange()
-	{
+	public void onSelectionChange() {
 		raiseEvent(new GuiControlChangedEvent(this));
 	}
 }

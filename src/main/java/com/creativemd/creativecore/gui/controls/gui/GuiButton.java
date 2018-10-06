@@ -3,20 +3,17 @@ package com.creativemd.creativecore.gui.controls.gui;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 
-public abstract class GuiButton extends GuiClickableLabel{
+public abstract class GuiButton extends GuiClickableLabel {
 	
-	public GuiButton(String caption, int x, int y)
-	{
+	public GuiButton(String caption, int x, int y) {
 		this(caption, x, y, GuiRenderHelper.instance.getStringWidth(caption));
 	}
 	
-	public GuiButton(String caption, int x, int y, int width)
-	{
+	public GuiButton(String caption, int x, int y, int width) {
 		this(caption, caption, x, y, width, 14);
 	}
 	
-	public GuiButton(String name, String caption, int x, int y, int width)
-	{
+	public GuiButton(String name, String caption, int x, int y, int width) {
 		this(name, caption, x, y, width, 14);
 	}
 	
@@ -29,14 +26,12 @@ public abstract class GuiButton extends GuiClickableLabel{
 	}
 	
 	@Override
-	public boolean hasBorder()
-	{
+	public boolean hasBorder() {
 		return true;
 	}
 	
 	@Override
-	public boolean hasBackground()
-	{
+	public boolean hasBackground() {
 		return true;
 	}
 	

@@ -5,7 +5,6 @@ import javax.vecmath.Vector3d;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.math.Vec3d;
 
 public class Ray2d {
 	
@@ -36,40 +35,34 @@ public class Ray2d {
 		this.directionTwo = directionTwo;
 	}
 	
-	public double getOrigin(Axis axis)
-	{
-		if(one == axis)
+	public double getOrigin(Axis axis) {
+		if (one == axis)
 			return originOne;
 		return originTwo;
 	}
 	
-	public double getDirection(Axis axis)
-	{
-		if(one == axis)
+	public double getDirection(Axis axis) {
+		if (one == axis)
 			return directionOne;
 		return directionTwo;
 	}
 	
-	public Axis getOther(Axis axis)
-	{
-		if(one == axis)
+	public Axis getOther(Axis axis) {
+		if (one == axis)
 			return two;
 		return one;
 	}
 	
-	public double get(Axis axis, double value)
-	{
+	public double get(Axis axis, double value) {
 		Axis other = getOther(axis);
-		return getOrigin(other) + getDirection(other) * (value - getOrigin(axis))/getDirection(axis);
+		return getOrigin(other) + getDirection(other) * (value - getOrigin(axis)) / getDirection(axis);
 	}
 	
-	public boolean isCoordinateOnLine(int one, int two)
-	{
+	public boolean isCoordinateOnLine(int one, int two) {
 		return get(this.one, one) == two;
 	}
 	
-	public boolean isCoordinateToTheRight(int one, int two)
-	{
+	public boolean isCoordinateToTheRight(int one, int two) {
 		double tempOne = one - originOne;
 		double tempTwo = two - originTwo;
 		
@@ -77,13 +70,12 @@ public class Ray2d {
 		
 		return directionOne * tempTwo - directionTwo * tempOne < 0;
 		
-				//d=(x−x1)(y2−y1)−(y−y1)(x2−x1)
-				//If d<0d<0 then the point lies on one side of the line, and if d>0d>0 then it lies on the other side. If d=0d=0 then the point lies exactly line.
+		//d=(x−x1)(y2−y1)−(y−y1)(x2−x1)
+		//If d<0d<0 then the point lies on one side of the line, and if d>0d>0 then it lies on the other side. If d=0d=0 then the point lies exactly line.
 	}
 	
-	public Vector3d intersect(Ray2d line, int thirdValue)
-	{
-		if(directionOne * line.directionTwo - directionTwo * line.directionOne == 0)
+	public Vector3d intersect(Ray2d line, int thirdValue) {
+		if (directionOne * line.directionTwo - directionTwo * line.directionOne == 0)
 			return null;
 		
 		Vector3d vec = new Vector3d(thirdValue, thirdValue, thirdValue);

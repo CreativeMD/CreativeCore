@@ -21,24 +21,21 @@ public abstract class CreativeTransformer implements IClassTransformer {
 	
 	protected abstract void initTransformers();
 	
-	protected void addTransformer(Transformer transformer)
-	{
+	protected void addTransformer(Transformer transformer) {
 		transformers.add(transformer);
 	}
 	
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
-		if(name.contains("com.creativemd"))
+		if (name.contains("com.creativemd"))
 			return basicClass;
-		return transform(transformedName, basicClass);		
+		return transform(transformedName, basicClass);
 	}
 	
-	public byte[] transform(String name, byte[] basicClass)
-	{
+	public byte[] transform(String name, byte[] basicClass) {
 		int i = 0;
 		while (i < transformers.size()) {
-			if(transformers.get(i).is(name))
-			{
+			if (transformers.get(i).is(name)) {
 				ClassNode classNode = new ClassNode();
 				ClassReader classReader = new ClassReader(basicClass);
 				classReader.accept(classNode, 0);
@@ -53,10 +50,10 @@ public abstract class CreativeTransformer implements IClassTransformer {
 				transformers.get(i).done();
 				i++;
 				//transformers.remove(i);
-			}else
+			} else
 				i++;
 		}
 		return basicClass;
 	}
-
+	
 }

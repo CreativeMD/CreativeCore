@@ -19,11 +19,9 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
 	}
 	
 	@Override
-	public void setValue(float value)
-	{
-		super.setValue((int) value); 
-		if(part != null)
-		{
+	public void setValue(float value) {
+		super.setValue((int) value);
+		if (part != null) {
 			part.setColor(picker.color, (int) this.value);
 			picker.onColorChanged();
 		}
@@ -31,15 +29,13 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
 	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
-		if(part == ColorPart.ALPHA)
-		{
+		if (part == ColorPart.ALPHA) {
 			Color startColor = new Color(picker.color);
 			startColor.setAlpha(0);
 			Color endColor = new Color(picker.color);
 			endColor.setAlpha(255);
 			helper.drawHorizontalGradientRect(0, 0, width, height, ColorUtils.RGBAToInt(startColor), ColorUtils.RGBAToInt(endColor));
-		}
-		else
+		} else
 			helper.drawHorizontalChannelMaskGradientRect(0, 0, width, height, ColorUtils.RGBAToInt(picker.color), part.getBrightest());
 		
 		super.renderContent(helper, style, width, height);

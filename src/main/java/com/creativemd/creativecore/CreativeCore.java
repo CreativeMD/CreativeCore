@@ -1,7 +1,5 @@
 package com.creativemd.creativecore;
 
-import java.util.Arrays;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,8 +9,8 @@ import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
-import com.creativemd.creativecore.common.packet.CreativeTestPacket;
 import com.creativemd.creativecore.common.packet.CreativeSplittedMessageHandler;
+import com.creativemd.creativecore.common.packet.CreativeTestPacket;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.SplittedPacketReceiver;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
@@ -21,7 +19,6 @@ import com.creativemd.creativecore.common.packet.gui.GuiNBTPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.creativecore.common.utils.stack.InfoStack;
 import com.creativemd.creativecore.core.CreativeCoreClient;
 import com.creativemd.creativecore.event.CreativeTickHandler;
 import com.creativemd.creativecore.gui.container.SubContainer;
@@ -38,8 +35,6 @@ import com.creativemd.creativecore.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.creativecore.gui.premade.SubContainerEmpty;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,24 +43,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore",acceptedMinecraftVersions="")
+@Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore", acceptedMinecraftVersions = "")
 public class CreativeCore {
 	
 	public static final String modid = "creativecore";
@@ -80,26 +71,22 @@ public class CreativeCore {
 	public static CreativeTickHandler guiTickHandler = new CreativeTickHandler();
 	
 	@EventHandler
-	public void onServerStarting(FMLServerStartingEvent event)
-	{
+	public void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new GuiCommand());
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void loadClientSide()
-	{
+	public void loadClientSide() {
 		CreativeCoreClient.doClientThings();
 	}
 	
 	@EventHandler
-	public void PreInit(FMLPreInitializationEvent event)
-	{
+	public void PreInit(FMLPreInitializationEvent event) {
 		event.getModMetadata().version = version;
 	}
 	
 	@EventHandler
-    public void Init(FMLInitializationEvent event)
-    {
+	public void Init(FMLInitializationEvent event) {
 		network = NetworkRegistry.INSTANCE.newSimpleChannel("creativemd");
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.CLIENT);
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
@@ -108,7 +95,7 @@ public class CreativeCore {
 		
 		CreativeCorePacket.registerPacket(CreativeTestPacket.class, "CCTest");
 		
-		if(FMLCommonHandler.instance().getSide().isClient())
+		if (FMLCommonHandler.instance().getSide().isClient())
 			loadClientSide();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
@@ -145,12 +132,10 @@ public class CreativeCore {
 					}
 					
 					@CustomEventSubscribe
-					public void clicked(GuiControlClickEvent event)
-					{
-						if(event.source.is("bad?"))
-						{
+					public void clicked(GuiControlClickEvent event) {
+						if (event.source.is("bad?")) {
 							((GuiProgressBar) get("progress")).pos += 1;
-							if(((GuiProgressBar) get("progress")).pos > ((GuiProgressBar) get("progress")).max)
+							if (((GuiProgressBar) get("progress")).pos > ((GuiProgressBar) get("progress")).max)
 								((GuiProgressBar) get("progress")).pos = 0;
 						}
 					}
@@ -176,6 +161,6 @@ public class CreativeCore {
 		MinecraftForge.EVENT_BUS.register(guiTickHandler);
 		
 		//if(Loader.isModLoaded("NotEnoughItems") && FMLCommonHandler.instance().getEffectiveSide().isClient())
-			//NEIRecipeInfoHandler.load();
-    }
+		//NEIRecipeInfoHandler.load();
+	}
 }

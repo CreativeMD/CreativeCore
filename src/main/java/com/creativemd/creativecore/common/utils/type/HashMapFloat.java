@@ -1,6 +1,5 @@
 package com.creativemd.creativecore.common.utils.type;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,15 +9,14 @@ public class HashMapFloat<K> extends HashMap<K, Float> {
 		super();
 	}
 	
-	public HashMapFloat(Map<? extends K, ? extends Float> paramMap)
-	{
+	public HashMapFloat(Map<? extends K, ? extends Float> paramMap) {
 		super(paramMap);
 	}
 	
 	@Override
 	public Float put(K paramK, Float paramV) {
 		Float value = get(paramK);
-		if(value != null)
+		if (value != null)
 			value += paramV;
 		return super.put(paramK, value);
 	}

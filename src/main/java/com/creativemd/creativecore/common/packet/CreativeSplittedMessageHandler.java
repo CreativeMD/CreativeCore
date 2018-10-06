@@ -2,16 +2,13 @@ package com.creativemd.creativecore.common.packet;
 
 import java.util.UUID;
 
-import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
-import com.creativemd.creativecore.common.packet.PacketReciever.PacketKey;
-import com.creativemd.creativecore.common.packet.PacketReciever.PacketValue;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-public class CreativeSplittedMessageHandler implements IMessage{
+public class CreativeSplittedMessageHandler implements IMessage {
 	
 	public CreativeSplittedMessageHandler() {
 		
@@ -33,7 +30,7 @@ public class CreativeSplittedMessageHandler implements IMessage{
 	public int index;
 	public int length;
 	public MessageType type;
-
+	
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		isLast = buf.readBoolean();
@@ -45,7 +42,7 @@ public class CreativeSplittedMessageHandler implements IMessage{
 		buf.readBytes(data);
 		buffer.writeBytes(data);
 	}
-
+	
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeBoolean(isLast);
@@ -54,5 +51,5 @@ public class CreativeSplittedMessageHandler implements IMessage{
 		buf.writeInt(length);
 		buf.writeBytes(buffer, index, length);
 	}
-
+	
 }

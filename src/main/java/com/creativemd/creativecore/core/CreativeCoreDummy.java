@@ -14,7 +14,7 @@ public class CreativeCoreDummy extends DummyModContainer {
 	public static final String version = "1.0.0";
 	
 	public CreativeCoreDummy() {
-
+		
 		super(new ModMetadata());
 		ModMetadata meta = getMetadata();
 		meta.modId = modid;

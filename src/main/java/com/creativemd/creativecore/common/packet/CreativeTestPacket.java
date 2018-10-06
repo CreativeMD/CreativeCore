@@ -9,7 +9,7 @@ public class CreativeTestPacket extends CreativeCorePacket {
 	public void writeBytes(ByteBuf buf) {
 		byte[] bytes = new byte[3400000];
 		for (int i = 0; i < bytes.length; i++) {
-			bytes[i] = (byte) (Math.random()*Byte.MAX_VALUE);
+			bytes[i] = (byte) (Math.random() * Byte.MAX_VALUE);
 		}
 		buf.writeBytes(bytes);
 	}

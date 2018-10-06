@@ -3,7 +3,6 @@ package com.creativemd.creativecore.gui.client.style;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 
 public class TextureDisplayStyle extends DisplayStyle {
@@ -17,7 +16,7 @@ public class TextureDisplayStyle extends DisplayStyle {
 		this.u = u;
 		this.v = v;
 	}
-
+	
 	@Override
 	public void renderStyle(GuiRenderHelper helper, int width, int height) {
 		GlStateManager.pushMatrix();
@@ -31,5 +30,5 @@ public class TextureDisplayStyle extends DisplayStyle {
 		helper.drawTexturedModalRect(location, 0, 0, u, v, width, height);
 		GlStateManager.popMatrix();
 	}
-
+	
 }

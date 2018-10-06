@@ -1,7 +1,6 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
 import com.creativemd.creativecore.client.avatar.Avatar;
-import com.creativemd.creativecore.gui.GuiRenderHelper;
 
 public class GuiAvatarLabel extends GuiAvatarLabelClickable {
 	
@@ -12,8 +11,9 @@ public class GuiAvatarLabel extends GuiAvatarLabelClickable {
 	public GuiAvatarLabel(String title, int x, int y, int color, Avatar avatar) {
 		this(title, title, x, y, color, avatar);
 	}
-
+	
 	@Override
-	public void onClicked(int x, int y, int button) {}
+	public void onClicked(int x, int y, int button) {
+	}
 	
 }

@@ -3,7 +3,7 @@ package com.creativemd.creativecore.gui.controls.gui;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
-public class GuiStateButton extends GuiButton{
+public class GuiStateButton extends GuiButton {
 	
 	public String[] states;
 	
@@ -33,39 +33,35 @@ public class GuiStateButton extends GuiButton{
 		this(name, states[index], x, y, GuiRenderHelper.instance.getStringWidth(states[index]), states);
 	}
 	
-	public void setState(int index)
-	{
+	public void setState(int index) {
 		this.caption = states[index];
 	}
 	
-	public int getState()
-	{
+	public int getState() {
 		for (int i = 0; i < states.length; i++) {
-			if(states[i].equals(caption))
+			if (states[i].equals(caption))
 				return i;
 		}
 		return -1;
 	}
 	
-	public void previousState()
-	{
+	public void previousState() {
 		int state = getState();
 		state--;
-		if(state < 0)
-			state = states.length-1;
-		if(state >= states.length)
+		if (state < 0)
+			state = states.length - 1;
+		if (state >= states.length)
 			state = 0;
 		setState(state);
 		raiseEvent(new GuiControlChangedEvent(this));
 	}
 	
-	public void nextState()
-	{
+	public void nextState() {
 		int state = getState();
 		state++;
-		if(state < 0)
-			state = states.length-1;
-		if(state >= states.length)
+		if (state < 0)
+			state = states.length - 1;
+		if (state >= states.length)
 			state = 0;
 		setState(state);
 		raiseEvent(new GuiControlChangedEvent(this));
@@ -77,18 +73,15 @@ public class GuiStateButton extends GuiButton{
 	}
 	
 	@Override
-	public boolean mousePressed(int posX, int posY, int button)
-	{
-		if(super.mousePressed(posX, posY, button))
-		{
-			if(button == 1)
+	public boolean mousePressed(int posX, int posY, int button) {
+		if (super.mousePressed(posX, posY, button)) {
+			if (button == 1)
 				previousState();
 			else
 				nextState();
 			return true;
 		}
-		return false;			
+		return false;
 	}
 	
-
 }

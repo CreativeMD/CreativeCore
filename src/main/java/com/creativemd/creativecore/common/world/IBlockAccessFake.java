@@ -14,62 +14,60 @@ public class IBlockAccessFake implements IBlockAccess {
 	public BlockPos pos;
 	public IBlockState fakeState;
 	
-	public IBlockAccessFake()
-	{
+	public IBlockAccessFake() {
 		
 	}
 	
-	public void set(IBlockAccess world, BlockPos pos, IBlockState fakeState)
-	{
+	public void set(IBlockAccess world, BlockPos pos, IBlockState fakeState) {
 		this.parent = world;
 		this.pos = pos;
 		this.fakeState = fakeState;
 	}
-
+	
 	@Override
 	public TileEntity getTileEntity(BlockPos pos) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return null;
 		return parent.getTileEntity(pos);
 	}
-
+	
 	@Override
 	public int getCombinedLight(BlockPos pos, int lightValue) {
 		return parent.getCombinedLight(pos, lightValue);
 	}
-
+	
 	@Override
 	public IBlockState getBlockState(BlockPos pos) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return fakeState;
 		return parent.getBlockState(pos);
 	}
-
+	
 	@Override
 	public boolean isAirBlock(BlockPos pos) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return fakeState.getBlock().isAir(fakeState, this, pos);
 		return parent.isAirBlock(pos);
 	}
-
+	
 	@Override
 	public Biome getBiome(BlockPos pos) {
 		return parent.getBiome(pos);
 	}
-
+	
 	@Override
 	public int getStrongPower(BlockPos pos, EnumFacing direction) {
 		return parent.getStrongPower(pos, direction);
 	}
-
+	
 	@Override
 	public WorldType getWorldType() {
 		return parent.getWorldType();
 	}
-
+	
 	@Override
 	public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
-		if(pos.equals(this.pos))
+		if (pos.equals(this.pos))
 			return fakeState.isSideSolid(this, pos, side);
 		return parent.isSideSolid(pos, side, _default);
 	}

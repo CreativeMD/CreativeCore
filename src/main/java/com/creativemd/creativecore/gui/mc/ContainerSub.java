@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerSub extends Container{
+public class ContainerSub extends Container {
 	
 	public ArrayList<SubContainer> layers;
 	
@@ -22,8 +22,7 @@ public class ContainerSub extends Container{
 	
 	private boolean first = true;
 	
-	public ContainerSub(EntityPlayer player, SubContainer subContainer)
-	{
+	public ContainerSub(EntityPlayer player, SubContainer subContainer) {
 		layers = new ArrayList<SubContainer>();
 		
 		subContainer.container = this;
@@ -32,44 +31,38 @@ public class ContainerSub extends Container{
 		
 	}
 	
-	
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {
 		return true;
 	}
 	
-	public SubContainer getTopLayer()
-	{
-		return layers.get(layers.size()-1);
+	public SubContainer getTopLayer() {
+		return layers.get(layers.size() - 1);
 	}
 	
-	public boolean isTopLayer(SubContainer container)
-	{
+	public boolean isTopLayer(SubContainer container) {
 		return getTopLayer() == container;
 	}
 	
 	@Override
-	public void detectAndSendChanges()
-    {
+	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
 		for (int i = 0; i < layers.size(); i++) {
-			if(first)
-			{
+			if (first) {
 				layers.get(i).onOpened();
 				first = false;
 			}
 			layers.get(i).onTick();
 		}
-    }
+	}
 	
 	@Override
-	public void onContainerClosed(EntityPlayer player)
-    {
-        super.onContainerClosed(player);
-        for (int i = 0; i < layers.size(); i++) {
+	public void onContainerClosed(EntityPlayer player) {
+		super.onContainerClosed(player);
+		for (int i = 0; i < layers.size(); i++) {
 			layers.get(i).onClosed();
 		}
-        GuiHandler.openContainers.remove(this);
-    }
-
+		GuiHandler.openContainers.remove(this);
+	}
+	
 }

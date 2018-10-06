@@ -7,7 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class SlotInput extends Slot{
+public class SlotInput extends Slot {
 	
 	public InfoStack input;
 	
@@ -17,17 +17,15 @@ public class SlotInput extends Slot{
 	}
 	
 	@Override
-	public boolean canTakeStack(EntityPlayer player)
-	{
+	public boolean canTakeStack(EntityPlayer player) {
 		return true;
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack stack)
-	{
-		if(input == null)
+	public boolean isItemValid(ItemStack stack) {
+		if (input == null)
 			return false;
 		return input.isInstanceIgnoreSize(stack);
 	}
-
+	
 }

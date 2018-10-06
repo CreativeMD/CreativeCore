@@ -5,5 +5,5 @@ public interface IRecipeInfo {
 	public Object[] getInput();
 	
 	public int getWidth();
-
+	
 }

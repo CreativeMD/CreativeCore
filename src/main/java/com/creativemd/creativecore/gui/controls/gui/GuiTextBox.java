@@ -21,25 +21,21 @@ public class GuiTextBox extends GuiControl {
 		this(name, text, x, y, width, ColorUtils.WHITE);
 	}
 	
-	public void setText(String text)
-	{
-		while (text != null && text.endsWith("\n"))
-        {
-            text = text.substring(0, text.length() - 1);
-        }
+	public void setText(String text) {
+		while (text != null && text.endsWith("\n")) {
+			text = text.substring(0, text.length() - 1);
+		}
 		this.text = text.replace("\\n", "" + '\n');
 	}
-	
 	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		int y = 0;
-		for (String s : font.listFormattedStringToWidth(text, width))
-        {
-            font.drawString(s, 0, y, color, true);
-            y += font.FONT_HEIGHT;
-        }
-		this.height = y + getContentOffset()*2;
+		for (String s : font.listFormattedStringToWidth(text, width)) {
+			font.drawString(s, 0, y, color, true);
+			y += font.FONT_HEIGHT;
+		}
+		this.height = y + getContentOffset() * 2;
 	}
-
+	
 }

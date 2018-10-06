@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.creativemd.creativecore.gui.GuiControl;
 
-public class GuiToolTipEvent extends GuiControlEvent{
+public class GuiToolTipEvent extends GuiControlEvent {
 	
 	public ArrayList<String> tooltip;
 	
@@ -12,10 +12,10 @@ public class GuiToolTipEvent extends GuiControlEvent{
 		super(source);
 		this.tooltip = tooltip;
 	}
-
+	
 	@Override
 	public boolean isCancelable() {
 		return true;
 	}
-
+	
 }

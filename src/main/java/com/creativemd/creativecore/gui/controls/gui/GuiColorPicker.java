@@ -1,6 +1,5 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
-import org.lwjgl.input.Mouse;
 import org.lwjgl.util.Color;
 
 import com.creativemd.creativecore.common.utils.mc.ColorUtils.ColorPart;
@@ -81,8 +80,7 @@ public class GuiColorPicker extends GuiParent {
 			
 		});
 		
-		if(hasAlpha)
-		{
+		if (hasAlpha) {
 			
 			addControl(new GuiButtonHold("a-", "<", 0, 30, 1, 5) {
 				
@@ -104,14 +102,13 @@ public class GuiColorPicker extends GuiParent {
 				}
 				
 			});
-		}else
+		} else
 			color.setAlpha(255);
 		
 		addControl(new GuiColoredSteppedSlider("r", 8, 0, 84, 5, this, ColorPart.RED).setStyle(defaultStyle));
 		addControl(new GuiColoredSteppedSlider("g", 8, 10, 84, 5, this, ColorPart.GREEN).setStyle(defaultStyle));
 		addControl(new GuiColoredSteppedSlider("b", 8, 20, 84, 5, this, ColorPart.BLUE).setStyle(defaultStyle));
-		if(hasAlpha)
-		{
+		if (hasAlpha) {
 			GuiColoredSteppedSlider alpha = new GuiColoredSteppedSlider("a", 8, 30, 84, 5, this, ColorPart.ALPHA);
 			alpha.minValue = alphaMin;
 			addControl(alpha.setStyle(defaultStyle));
@@ -120,9 +117,8 @@ public class GuiColorPicker extends GuiParent {
 		
 	}
 	
-	public void onColorChanged()
-	{
+	public void onColorChanged() {
 		raiseEvent(new GuiControlChangedEvent(this));
 	}
-
+	
 }

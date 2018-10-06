@@ -1,13 +1,8 @@
 package com.creativemd.creativecore.gui;
 
-import com.creativemd.creativecore.common.packet.PacketHandler;
-import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
 import com.creativemd.creativecore.gui.container.ContainerParent;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -19,15 +14,13 @@ public abstract class ContainerControl extends CoreControl {
 	
 	//================Helper================
 	
-	public ContainerParent getParent()
-	{
+	public ContainerParent getParent() {
 		return (ContainerParent) parent;
 	}
 	
 	//================Packets================	
 	
-	public void sendUpdate()
-	{
+	public void sendUpdate() {
 		getParent().updateEqualContainers();
 		
 		NBTTagCompound nbt = new NBTTagCompound();
@@ -35,9 +28,8 @@ public abstract class ContainerControl extends CoreControl {
 		sendPacket(nbt);
 	}
 	
-	public void sendPacket(NBTTagCompound nbt)
-	{
-		if(parent != null)
+	public void sendPacket(NBTTagCompound nbt) {
+		if (parent != null)
 			getParent().sendNBTUpdate(this, nbt);
 	}
 	
@@ -45,8 +37,7 @@ public abstract class ContainerControl extends CoreControl {
 	
 	public abstract void writeToNBTUpdate(NBTTagCompound nbt);
 	
-	public void receivePacket(NBTTagCompound nbt)
-	{
+	public void receivePacket(NBTTagCompound nbt) {
 		onPacketReceive(nbt);
 	}
 	
@@ -61,9 +52,8 @@ public abstract class ContainerControl extends CoreControl {
 	protected abstract GuiControl createGuiControl();
 	
 	@SideOnly(Side.CLIENT)
-	public GuiControl getGuiControl()
-	{
-		if(guiControl == null)
+	public GuiControl getGuiControl() {
+		if (guiControl == null)
 			guiControl = createGuiControl();
 		return guiControl;
 	}

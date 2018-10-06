@@ -2,7 +2,7 @@ package com.creativemd.creativecore.gui.event.gui;
 
 import com.creativemd.creativecore.gui.GuiControl;
 
-public class GuiControlClickEvent extends GuiControlEvent{
+public class GuiControlClickEvent extends GuiControlEvent {
 	
 	public int mouseX;
 	public int mouseY;
@@ -12,10 +12,10 @@ public class GuiControlClickEvent extends GuiControlEvent{
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
 	}
-
+	
 	@Override
 	public boolean isCancelable() {
 		return false;
 	}
-
+	
 }

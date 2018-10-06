@@ -30,18 +30,19 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
 public interface IMixinChunkProviderServer {
-
-    boolean getForceChunkRequests();
-
-    void setMaxChunkUnloads(int maxUnloads);
-
-    void setDenyChunkRequests(boolean flag);
-
-    void setForceChunkRequests(boolean flag);
-
-    @Nullable Chunk getLoadedChunkWithoutMarkingActive(int x, int z);
-
-    long getChunkUnloadDelay();
-
-    WorldServer getWorld();
+	
+	boolean getForceChunkRequests();
+	
+	void setMaxChunkUnloads(int maxUnloads);
+	
+	void setDenyChunkRequests(boolean flag);
+	
+	void setForceChunkRequests(boolean flag);
+	
+	@Nullable
+	Chunk getLoadedChunkWithoutMarkingActive(int x, int z);
+	
+	long getChunkUnloadDelay();
+	
+	WorldServer getWorld();
 }

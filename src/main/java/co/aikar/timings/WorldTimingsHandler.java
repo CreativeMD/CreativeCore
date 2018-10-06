@@ -24,12 +24,9 @@
  */
 package co.aikar.timings;
 
-import net.minecraft.world.World;
-
 /**
  * Set of timers per world, to track world specific Timings.
  */
 public class WorldTimingsHandler {
-
-    
+	
 }

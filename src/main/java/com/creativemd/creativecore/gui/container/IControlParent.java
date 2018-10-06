@@ -1,10 +1,9 @@
 package com.creativemd.creativecore.gui.container;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.creativemd.creativecore.gui.CoreControl;
-import com.creativemd.creativecore.gui.event.ControlEvent;
+
 import net.minecraft.entity.player.EntityPlayer;
 
 public interface IControlParent {
@@ -19,56 +18,50 @@ public interface IControlParent {
 	
 	public EntityPlayer getPlayer();
 	
-	public default void removeControls(String... exclude)
-	{
+	public default void removeControls(String... exclude) {
 		List controls = getControls();
 		int i = 0;
-		while (i < controls.size()){
+		while (i < controls.size()) {
 			boolean canBeDeleted = true;
-			if(controls.get(i) instanceof CoreControl)
-				for(int j = 0; j < exclude.length; j++)
-					if(((CoreControl) controls.get(i)).name.contains(exclude[j]))
-					{
+			if (controls.get(i) instanceof CoreControl)
+				for (int j = 0; j < exclude.length; j++)
+					if (((CoreControl) controls.get(i)).name.contains(exclude[j])) {
 						canBeDeleted = false;
 						break;
 					}
-			if(canBeDeleted)
+			if (canBeDeleted)
 				controls.remove(i);
 			else
 				i++;
 		}
 	}
 	
-	public default void moveControlBehind(CoreControl control, CoreControl controlInBack)
-	{
+	public default void moveControlBehind(CoreControl control, CoreControl controlInBack) {
 		List controls = getControls();
-		if(controls.contains(controlInBack) && controls.remove(control) && controls.indexOf(controlInBack)+1 < controls.size())
-			controls.add(controls.indexOf(controlInBack)+1, control);
+		if (controls.contains(controlInBack) && controls.remove(control) && controls.indexOf(controlInBack) + 1 < controls.size())
+			controls.add(controls.indexOf(controlInBack) + 1, control);
 		else
-			moveControlToBottom(control);		
+			moveControlToBottom(control);
 		refreshControls();
 	}
 	
-	public default void moveControlAbove(CoreControl control, CoreControl controlInFront)
-	{
+	public default void moveControlAbove(CoreControl control, CoreControl controlInFront) {
 		List controls = getControls();
-		if(controls.contains(controlInFront) && controls.remove(control))
+		if (controls.contains(controlInFront) && controls.remove(control))
 			controls.add(controls.indexOf(controlInFront), control);
 		refreshControls();
 	}
 	
-	public default void moveControlToTop(CoreControl control)
-	{
+	public default void moveControlToTop(CoreControl control) {
 		List controls = getControls();
-		if(controls.remove(control))
+		if (controls.remove(control))
 			controls.add(1, control);
 		refreshControls();
 	}
 	
-	public default void moveControlToBottom(CoreControl control)
-	{
+	public default void moveControlToBottom(CoreControl control) {
 		List controls = getControls();
-		if(controls.remove(control))
+		if (controls.remove(control))
 			controls.add(control);
 		refreshControls();
 	}

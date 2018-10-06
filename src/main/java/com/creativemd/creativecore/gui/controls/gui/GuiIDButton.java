@@ -8,8 +8,9 @@ public class GuiIDButton extends GuiButton {
 		super(caption, x, y);
 		this.id = id;
 	}
-
+	
 	@Override
-	public void onClicked(int x, int y, int button) {}
-
+	public void onClicked(int x, int y, int button) {
+	}
+	
 }

@@ -3,13 +3,9 @@ package com.creativemd.creativecore.common.utils.math.vec;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 public class VecOrigin implements IVecOrigin {
 	
-	public VecOrigin(Vector3d center)
-	{
+	public VecOrigin(Vector3d center) {
 		this.center = center;
 	}
 	
@@ -32,61 +28,59 @@ public class VecOrigin implements IVecOrigin {
 	public double offX() {
 		return offsetX;
 	}
-
+	
 	@Override
 	public double offY() {
 		return offsetY;
 	}
-
+	
 	@Override
 	public double offZ() {
 		return offsetZ;
 	}
-
+	
 	@Override
 	public double rotX() {
 		return rotX;
 	}
-
+	
 	@Override
 	public double rotY() {
 		return rotY;
 	}
-
+	
 	@Override
 	public double rotZ() {
 		return rotZ;
 	}
-
+	
 	@Override
 	public boolean isRotated() {
 		return rotated;
 	}
 	
-	protected void updateRotated()
-	{
+	protected void updateRotated() {
 		rotated = rotX % 360 != 0 || rotY % 360 != 0 || rotZ % 360 != 0;
 		rotation = MatrixUtils.createRotationMatrix(rotX, rotY, rotZ);
 		rotationInv.invert(rotation);
 	}
 	
-	protected void updateTranslation()
-	{
+	protected void updateTranslation() {
 		translation.set(offsetX, offsetY, offsetZ);
 	}
-
+	
 	@Override
 	public void offX(double value) {
 		this.offsetX = value;
 		updateTranslation();
 	}
-
+	
 	@Override
 	public void offY(double value) {
 		this.offsetY = value;
 		updateTranslation();
 	}
-
+	
 	@Override
 	public void offZ(double value) {
 		this.offsetZ = value;
@@ -100,19 +94,19 @@ public class VecOrigin implements IVecOrigin {
 		this.offsetZ = z;
 		updateTranslation();
 	}
-
+	
 	@Override
 	public void rotX(double value) {
 		this.rotX = value;
 		updateRotated();
 	}
-
+	
 	@Override
 	public void rotY(double value) {
 		this.rotY = value;
 		updateRotated();
 	}
-
+	
 	@Override
 	public void rotZ(double value) {
 		this.rotZ = value;
@@ -126,17 +120,17 @@ public class VecOrigin implements IVecOrigin {
 		this.rotZ = z;
 		updateRotated();
 	}
-
+	
 	@Override
 	public Vector3d center() {
 		return center;
 	}
-
+	
 	@Override
 	public Matrix3d rotation() {
 		return rotation;
 	}
-
+	
 	@Override
 	public Matrix3d rotationInv() {
 		return rotationInv;

@@ -17,13 +17,11 @@ public abstract class CoreControl {
 	
 	private int id = -1;
 	
-	public void setID(int id)
-	{
+	public void setID(int id) {
 		this.id = id;
 	}
 	
-	public int getID()
-	{
+	public int getID() {
 		return id;
 	}
 	
@@ -41,103 +39,92 @@ public abstract class CoreControl {
 	
 	//================Events================
 	
-	public void onOpened() {}
+	public void onOpened() {
+	}
 	
-	public void onClosed() {}
+	public void onClosed() {
+	}
 	
-	public void onTick() {}
+	public void onTick() {
+	}
 	
 	//================Various Helper Methods================
 	
-	public boolean is(String... name)
-	{
+	public boolean is(String... name) {
 		for (int i = 0; i < name.length; i++) {
-			if(this.name.equalsIgnoreCase(name[i]))
+			if (this.name.equalsIgnoreCase(name[i]))
 				return true;
 		}
 		return false;
 	}
 	
-	public boolean hasParent()
-	{
+	public boolean hasParent() {
 		return parent != null;
 	}
 	
-	public EntityPlayer getPlayer()
-	{
-		if(hasParent())
+	public EntityPlayer getPlayer() {
+		if (hasParent())
 			return parent.getPlayer();
 		return null;
 	}
 	
-	public boolean isRemote()
-	{
+	public boolean isRemote() {
 		return getPlayer().world.isRemote;
 	}
 	
 	//================Internal Events================
 	
-	public boolean raiseEvent(ControlEvent event)
-	{
-		if(parent != null)
+	public boolean raiseEvent(ControlEvent event) {
+		if (parent != null)
 			return ((CoreControl) parent).raiseEvent(event);
 		return false;
 	}
 	
-	public void addListener(Object listener)
-	{
-		if(parent != null)
+	public void addListener(Object listener) {
+		if (parent != null)
 			((CoreControl) parent).addListener(listener);
 	}
 	
-	public void removeListener(Object listener)
-	{
-		if(parent != null)
+	public void removeListener(Object listener) {
+		if (parent != null)
 			((CoreControl) parent).removeListener(listener);
 	}
 	
 	//================Interaction================
 	
-	public boolean isInteractable()
-	{
+	public boolean isInteractable() {
 		return enabled && (hasParent() ? ((CoreControl) parent).isInteractable() : true);
 	}
 	
 	//================SORTING================
 	
-	public void moveControlAbove(CoreControl controlInBack)
-	{
-		if(hasParent())
+	public void moveControlAbove(CoreControl controlInBack) {
+		if (hasParent())
 			parent.moveControlAbove(this, controlInBack);
 	}
 	
-	public void moveControlBehind(CoreControl controlInFront)
-	{
-		if(hasParent())
+	public void moveControlBehind(CoreControl controlInFront) {
+		if (hasParent())
 			parent.moveControlBehind(this, controlInFront);
 	}
 	
-	public void moveControlToBottom()
-	{
-		if(hasParent())
+	public void moveControlToBottom() {
+		if (hasParent())
 			parent.moveControlToBottom(this);
 	}
 	
-	public void moveControlToTop()
-	{
-		if(hasParent())
+	public void moveControlToTop() {
+		if (hasParent())
 			parent.moveControlToTop(this);
 	}
 	
 	//================Static Helpers================
 	
-	public static String translate(String text)
-	{
+	public static String translate(String text) {
 		return I18n.translateToLocal(text);
 	}
 	
-	public static List<String> translate(List<String> lines)
-	{
+	public static List<String> translate(List<String> lines) {
 		for (int i = 0; i < lines.size(); i++) {
 			lines.set(i, translate(lines.get(i)));
 		}

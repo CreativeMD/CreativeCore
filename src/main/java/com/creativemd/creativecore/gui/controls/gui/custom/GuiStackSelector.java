@@ -1,16 +1,7 @@
 package com.creativemd.creativecore.gui.controls.gui.custom;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
-import javax.vecmath.Vector4d;
-
-import org.lwjgl.opengl.GL11;
-
-import com.creativemd.creativecore.client.avatar.Avatar;
-import com.creativemd.creativecore.client.avatar.AvatarItemStack;
 import com.creativemd.creativecore.common.utils.type.HashMapList;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
@@ -18,14 +9,10 @@ import com.creativemd.creativecore.gui.controls.gui.GuiComboBox;
 import com.creativemd.creativecore.gui.controls.gui.GuiComboBoxExtension;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 
 public abstract class GuiStackSelector extends GuiComboBox {
 	
@@ -34,8 +21,7 @@ public abstract class GuiStackSelector extends GuiComboBox {
 	public EntityPlayer player;
 	public boolean searchBar;
 	
-	public GuiStackSelector(String name, int x, int y, int width, EntityPlayer player, boolean searchBar)
-	{
+	public GuiStackSelector(String name, int x, int y, int width, EntityPlayer player, boolean searchBar) {
 		super(name, x, y, width, new ArrayList<String>());
 		this.searchBar = searchBar;
 		this.player = player;
@@ -43,13 +29,10 @@ public abstract class GuiStackSelector extends GuiComboBox {
 		selectFirst();
 	}
 	
-	public boolean selectFirst()
-	{
-		if(stacks != null)
-		{
+	public boolean selectFirst() {
+		if (stacks != null) {
 			ItemStack first = stacks.getFirst();
-			if(first != null)
-			{
+			if (first != null) {
 				setSelected(first);
 				return true;
 			}
@@ -64,21 +47,18 @@ public abstract class GuiStackSelector extends GuiComboBox {
 	
 	protected abstract HashMapList<String, ItemStack> collectItems();
 	
-	public void updateCollectedStacks()
-	{
+	public void updateCollectedStacks() {
 		stacks = collectItems();
 	}
 	
 	protected ItemStack selected = ItemStack.EMPTY;
 	
-	public boolean setSelected(ItemStack stack)
-	{
-		if(stacks.contains(stack))
-		{
+	public boolean setSelected(ItemStack stack) {
+		if (stacks.contains(stack)) {
 			String display;
-			try{
+			try {
 				display = stack.getDisplayName();
-			}catch(Exception e){
+			} catch (Exception e) {
 				display = Item.REGISTRY.getNameForObject(stack.getItem()).toString();
 			}
 			caption = display;
@@ -89,20 +69,17 @@ public abstract class GuiStackSelector extends GuiComboBox {
 		return false;
 	}
 	
-	public HashMapList<String, ItemStack> getStacks()
-	{
+	public HashMapList<String, ItemStack> getStacks() {
 		return stacks;
 	}
 	
-	public ItemStack getSelected()
-	{
+	public ItemStack getSelected() {
 		return selected;
 	}
 	
 	@Override
-	protected int getAdditionalSize()
-	{
-		return 16+6;
+	protected int getAdditionalSize() {
+		return 16 + 6;
 	}
 	
 	@Override
@@ -110,23 +87,20 @@ public abstract class GuiStackSelector extends GuiComboBox {
 		super.renderContent(helper, style, width, height);
 		
 		ItemStack stack = getSelected();
-		if(!stack.isEmpty())
-		{
+		if (!stack.isEmpty()) {
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(width/2-(helper.getStringWidth(caption)+getAdditionalSize())/2, height/2-16/2, 0);
+			GlStateManager.translate(width / 2 - (helper.getStringWidth(caption) + getAdditionalSize()) / 2, height / 2 - 16 / 2, 0);
 			helper.drawItemStack(stack, 0, 0, 16, 16);
 			GlStateManager.popMatrix();
 		}
 	}
 	
 	@Override
-	protected GuiComboBoxExtension createBox()
-	{
-		return new GuiStackSelectorExtension(name + "extension", getPlayer(), posX, posY+height, width-getContentOffset()*2, 80, this);
+	protected GuiComboBoxExtension createBox() {
+		return new GuiStackSelectorExtension(name + "extension", getPlayer(), posX, posY + height, width - getContentOffset() * 2, 80, this);
 	}
 	
-	public boolean select(String line)
-	{
+	public boolean select(String line) {
 		return false;
 	}
 	

@@ -1,14 +1,9 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.vecmath.Vector2d;
 
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 
 public class GuiComboBoxExtension extends GuiListBox {
@@ -23,22 +18,18 @@ public class GuiComboBoxExtension extends GuiListBox {
 	}
 	
 	@Override
-	public Vec3d getCenterOffset()
-	{
-		return new Vec3d(width/2, -comboBox.height/2, 0);
+	public Vec3d getCenterOffset() {
+		return new Vec3d(width / 2, -comboBox.height / 2, 0);
 	}
 	
-	public void onLoseFocus()
-	{
-		if(!comboBox.isMouseOver() && !isMouseOver())
+	public void onLoseFocus() {
+		if (!comboBox.isMouseOver() && !isMouseOver())
 			comboBox.closeBox();
 	}
 	
 	@Override
-	public void onSelectionChange()
-	{
-		if(selected != -1 && selected < lines.size())
-		{
+	public void onSelectionChange() {
+		if (selected != -1 && selected < lines.size()) {
 			comboBox.caption = lines.get(selected);
 			comboBox.index = selected;
 			comboBox.raiseEvent(new GuiControlChangedEvent(comboBox));
@@ -47,9 +38,8 @@ public class GuiComboBoxExtension extends GuiListBox {
 	}
 	
 	@Override
-	public boolean canOverlap()
-	{
+	public boolean canOverlap() {
 		return true;
 	}
-
+	
 }

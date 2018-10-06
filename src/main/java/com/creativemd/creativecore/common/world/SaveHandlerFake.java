@@ -22,17 +22,17 @@ public class SaveHandlerFake implements ISaveHandler {
 	public SaveHandlerFake(WorldInfo info) {
 		this.info = info;
 	}
-
+	
 	@Override
 	public WorldInfo loadWorldInfo() {
 		return info;
 	}
-
+	
 	@Override
 	public void checkSessionLock() throws MinecraftException {
 		
 	}
-
+	
 	@Override
 	public IChunkLoader getChunkLoader(WorldProvider provider) {
 		return new IChunkLoader() {
@@ -61,24 +61,24 @@ public class SaveHandlerFake implements ISaveHandler {
 			public void chunkTick() {
 				
 			}
-
+			
 			@Override
 			public boolean isChunkGeneratedAt(int x, int z) {
 				return true;
 			}
 		};
 	}
-
+	
 	@Override
 	public void saveWorldInfoWithPlayer(WorldInfo worldInformation, NBTTagCompound tagCompound) {
 		
 	}
-
+	
 	@Override
 	public void saveWorldInfo(WorldInfo worldInformation) {
 		
 	}
-
+	
 	@Override
 	public IPlayerFileData getPlayerNBTManager() {
 		return new IPlayerFileData() {
@@ -99,25 +99,25 @@ public class SaveHandlerFake implements ISaveHandler {
 			}
 		};
 	}
-
+	
 	@Override
 	public void flush() {
 		
 	}
-
+	
 	@Override
 	public File getWorldDirectory() {
 		return null;
 	}
-
+	
 	@Override
 	public File getMapFileFromName(String mapName) {
 		return null;
 	}
-
+	
 	@Override
 	public TemplateManager getStructureTemplateManager() {
 		return null;
 	}
-
+	
 }

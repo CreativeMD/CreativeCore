@@ -10,33 +10,29 @@ public abstract class Graph {
 		this.points = points;
 	}
 	
-	public Float getPreviousPointX(float below)
-	{
+	public Float getPreviousPointX(float below) {
 		Float next = null;
 		for (Float point : points.keySet()) {
-			if(point <= below && (next == null || point > next))
+			if (point <= below && (next == null || point > next))
 				next = point;
 		}
 		return next;
 	}
 	
-	public Float getNextPointX(float above)
-	{
+	public Float getNextPointX(float above) {
 		Float next = null;
 		for (Float point : points.keySet()) {
-			if(point >= above && (next == null || point < next))
+			if (point >= above && (next == null || point < next))
 				next = point;
 		}
 		return next;
 	}
 	
-	public float getLastPointX()
-	{
+	public float getLastPointX() {
 		return getPreviousPointX(Float.MAX_VALUE);
 	}
 	
-	public float getFirstPointX()
-	{
+	public float getFirstPointX() {
 		return getNextPointX(Float.MIN_VALUE);
 	}
 	

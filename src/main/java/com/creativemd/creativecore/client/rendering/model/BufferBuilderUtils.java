@@ -26,10 +26,9 @@ public class BufferBuilderUtils {
 	public static Field rawShortBufferField = ReflectionHelper.findField(VertexBuffer.class, "rawShortBuffer", "field_181676_c");
 	public static Field vertexCountField = ReflectionHelper.findField(VertexBuffer.class, "vertexCount", "field_178997_d");
 	
-	public static Method growBuffer = ReflectionHelper.findMethod(VertexBuffer.class, "growBuffer",  "func_181670_b", int.class);
+	public static Method growBuffer = ReflectionHelper.findMethod(VertexBuffer.class, "growBuffer", "func_181670_b", int.class);
 	
-	public static void growBuffer(VertexBuffer builder, int size)
-	{
+	public static void growBuffer(VertexBuffer builder, int size) {
 		try {
 			growBuffer.invoke(builder, size);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
@@ -37,42 +36,38 @@ public class BufferBuilderUtils {
 		}
 	}
 	
-	public static void growBufferSmall(VertexBuffer builder, int size)
-	{
+	public static void growBufferSmall(VertexBuffer builder, int size) {
 		try {
 			ByteBuffer oldByteBuffer = builder.getByteBuffer();
 			IntBuffer intBuffer = (IntBuffer) rawIntBufferField.get(builder);
-		
-			if (MathHelper.roundUp(size, 4) / 4 > intBuffer.remaining() || vertexCountField.getInt(builder) * builder.getVertexFormat().getNextOffset() + size > oldByteBuffer.capacity())
-	        {
-	            int i = oldByteBuffer.capacity();
-	            int j = i + size;
-	            System.out.println("Made buffer grow buffer: Old size " + Integer.valueOf(i) + " bytes, new size " + Integer.valueOf(j) + " bytes.");
-	            LOGGER.debug("Needed to grow BufferBuilder buffer: Old size {} bytes, new size {} bytes.", Integer.valueOf(i), Integer.valueOf(j));
-	            int k = intBuffer.position();
-	            ByteBuffer byteBuffer = GLAllocation.createDirectByteBuffer(j);
-	            oldByteBuffer.position(0);
-	            byteBuffer.put(oldByteBuffer);
-	            byteBuffer.rewind();
-	            byteBufferField.set(builder, (ByteBuffer) byteBuffer);
-	            rawFloatBufferField.set(builder, (FloatBuffer) byteBuffer.asFloatBuffer().asReadOnlyBuffer());
-	            rawIntBufferField.set(builder, (IntBuffer) byteBuffer.asIntBuffer());
-	            ((IntBuffer) rawIntBufferField.get(builder)).position(k);
-	            rawShortBufferField.set(builder, (ShortBuffer) byteBuffer.asShortBuffer());
-	            ((ShortBuffer) rawShortBufferField.get(builder)).position(k << 1);
-	        }
+			
+			if (MathHelper.roundUp(size, 4) / 4 > intBuffer.remaining() || vertexCountField.getInt(builder) * builder.getVertexFormat().getNextOffset() + size > oldByteBuffer.capacity()) {
+				int i = oldByteBuffer.capacity();
+				int j = i + size;
+				System.out.println("Made buffer grow buffer: Old size " + Integer.valueOf(i) + " bytes, new size " + Integer.valueOf(j) + " bytes.");
+				LOGGER.debug("Needed to grow BufferBuilder buffer: Old size {} bytes, new size {} bytes.", Integer.valueOf(i), Integer.valueOf(j));
+				int k = intBuffer.position();
+				ByteBuffer byteBuffer = GLAllocation.createDirectByteBuffer(j);
+				oldByteBuffer.position(0);
+				byteBuffer.put(oldByteBuffer);
+				byteBuffer.rewind();
+				byteBufferField.set(builder, (ByteBuffer) byteBuffer);
+				rawFloatBufferField.set(builder, (FloatBuffer) byteBuffer.asFloatBuffer().asReadOnlyBuffer());
+				rawIntBufferField.set(builder, (IntBuffer) byteBuffer.asIntBuffer());
+				((IntBuffer) rawIntBufferField.get(builder)).position(k);
+				rawShortBufferField.set(builder, (ShortBuffer) byteBuffer.asShortBuffer());
+				((ShortBuffer) rawShortBufferField.get(builder)).position(k << 1);
+			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static int getBufferSize(VertexBuffer builder)
-	{
+	public static int getBufferSize(VertexBuffer builder) {
 		return builder.getVertexFormat().getIntegerSize() * builder.getVertexCount();
 	}
 	
-	public static void addVertexDataSmall(VertexBuffer builder, int[] vertexData)
-	{
+	public static void addVertexDataSmall(VertexBuffer builder, int[] vertexData) {
 		growBufferSmall(builder, vertexData.length * 4 + builder.getVertexFormat().getNextOffset());
 		try {
 			IntBuffer intBuffer = (IntBuffer) rawIntBufferField.get(builder);
@@ -84,8 +79,7 @@ public class BufferBuilderUtils {
 		}
 	}
 	
-	public static void addBuffer(VertexBuffer buffer, VertexBuffer toAdd)
-	{
+	public static void addBuffer(VertexBuffer buffer, VertexBuffer toAdd) {
 		int size = toAdd.getVertexFormat().getIntegerSize() * toAdd.getVertexCount();
 		try {
 			IntBuffer rawIntBuffer = (IntBuffer) rawIntBufferField.get(toAdd);
@@ -94,10 +88,10 @@ public class BufferBuilderUtils {
 			
 			growBuffer(buffer, size);
 			IntBuffer chunkIntBuffer = (IntBuffer) rawIntBufferField.get(buffer);
-	        chunkIntBuffer.position(getBufferSize(buffer));
-	        chunkIntBuffer.put(rawIntBuffer);
-	        
-	        vertexCountField.setInt(buffer, vertexCountField.getInt(buffer) + size / buffer.getVertexFormat().getIntegerSize());
+			chunkIntBuffer.position(getBufferSize(buffer));
+			chunkIntBuffer.put(rawIntBuffer);
+			
+			vertexCountField.setInt(buffer, vertexCountField.getInt(buffer) + size / buffer.getVertexFormat().getIntegerSize());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
