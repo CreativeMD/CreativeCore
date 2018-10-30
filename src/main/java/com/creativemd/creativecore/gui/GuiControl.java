@@ -221,9 +221,9 @@ public abstract class GuiControl extends CoreControl {
 		GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
 		
-		GL11.glColorMask(false, false, false, false);
+		GlStateManager.colorMask(false, false, false, false);
 		contentRect.mergeRects(maximumRect).renderRect(helper, new Color(0, 0, 0, 255));
-		GL11.glColorMask(true, true, true, true);
+		GlStateManager.colorMask(true, true, true, true);
 	}
 	
 	public void renderControl(GuiRenderHelper helper, float scale, Rect relativeMaximumRect) {

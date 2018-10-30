@@ -37,8 +37,7 @@ public class SlotControl extends ContainerControl {
 	
 	@Override
 	public void onTick() {
-		if (!isRemote() && !ItemStack.areItemStacksEqual(lastSended, slot.getStack())) // || (lastSended != null && slot.getHasStack() && lastSended.stackSize != slot.getStack().stackSize))
-		{
+		if (!isRemote() && !ItemStack.areItemStacksEqual(lastSended, slot.getStack())) {
 			sendUpdate();
 			raiseEvent(new SlotChangeEvent(this));
 			

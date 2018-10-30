@@ -101,10 +101,8 @@ public class GuiContainerSub extends GuiContainer {
 			++scaleFactor;
 		}
 		
-		/* if (flag && this.scaleFactor % 2 != 0 && this.scaleFactor != 1)
-		 * {
-		 * --this.scaleFactor;
-		 * } */
+		/* if (flag && this.scaleFactor % 2 != 0 && this.scaleFactor != 1) {
+		 * --this.scaleFactor; } */
 		return scaleFactor;
 	}
 	
@@ -164,24 +162,6 @@ public class GuiContainerSub extends GuiContainer {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			
 			layers.get(i).renderControl(GuiRenderHelper.instance, 1F, GuiControl.getScreenRect());
-			
-			/* GlStateManager.pushMatrix();
-			 * GL11.glEnable(GL11.GL_STENCIL_TEST);
-			 * GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
-			 * GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
-			 * 
-			 * GuiControl.defaultStyle.getBorder(layers.get(i)).renderStyle(GuiRenderHelper.instance, 100, 100);
-			 * GuiControl.defaultStyle.getBackground(layers.get(i)).renderStyle(10, 10, GuiRenderHelper.instance, 85, 85);
-			 * GuiRenderHelper.instance.font.drawStringWithShadow("Hey", 20, 20, ColorUtils.WHITE);
-			 * 
-			 * GuiRenderHelper.instance.drawItemStack(new ItemStack(Blocks.REDSTONE_TORCH), 8, 8, 16, 16);
-			 * GuiRenderHelper.instance.drawItemStack(new ItemStack(Blocks.CRAFTING_TABLE), 40, 40, (int) (Math.sin(Math.toRadians(System.nanoTime()/10000000D))*16+30), (int)
-			 * (Math.sin(Math.toRadians(System.nanoTime()/10000000D))*16+30));
-			 * GuiRenderHelper.instance.drawItemStack(new ItemStack(Blocks.FURNACE), 8, 48, 16, 16);
-			 * 
-			 * //GuiControl.defaultStyle.getDisableEffect(layers.get(i)).renderStyle(10, 10, GuiRenderHelper.instance, 85, 85);
-			 * GL11.glDisable(GL11.GL_STENCIL_TEST);
-			 * GlStateManager.popMatrix(); */
 			
 			GlStateManager.popMatrix();
 			
