@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.common.interfaces.world.gen.IMixinChunkProviderServer;
 
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.IChunkLoader;
@@ -16,7 +17,7 @@ public class ChunkProviderFakeServer extends ChunkProviderFake implements IMixin
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	
-	public ChunkProviderFakeServer(WorldFakeServer worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn) {
+	public ChunkProviderFakeServer(World worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn) {
 		super(worldObjIn, chunkLoaderIn, chunkGeneratorIn);
 	}
 	

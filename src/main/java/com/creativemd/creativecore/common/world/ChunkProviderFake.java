@@ -35,10 +35,10 @@ public class ChunkProviderFake implements IChunkProvider {
 	public final IChunkGenerator chunkGenerator;
 	public final IChunkLoader chunkLoader;
 	public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap(8192);
-	public final WorldFake worldObj;
+	public final World worldObj;
 	private Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 	
-	public ChunkProviderFake(WorldFake worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn) {
+	public ChunkProviderFake(World worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn) {
 		this.worldObj = worldObjIn;
 		this.chunkLoader = chunkLoaderIn;
 		this.chunkGenerator = chunkGeneratorIn;
@@ -92,8 +92,7 @@ public class ChunkProviderFake implements IChunkProvider {
 			chunk = this.loadChunkFromFile(x, z);
 			this.id2ChunkMap.put(ChunkPos.asLong(x, z), chunk);
 		}
-		/*
-		 * chunk = net.minecraftforge.common.ForgeChunkManager.fetchDormantChunk(pos,
+		/* chunk = net.minecraftforge.common.ForgeChunkManager.fetchDormantChunk(pos,
 		 * this.worldObj); if (chunk != null || !(this.chunkLoader instanceof
 		 * net.minecraft.world.chunk.storage.AnvilChunkLoader)) { if
 		 * (!loadingChunks.add(pos)) net.minecraftforge.fml.common.FMLLog.
@@ -115,8 +114,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		 * worldObj, loader, this, x, z, runnable); return null; } } }
 		 * 
 		 * // If we didn't load the chunk async and have a callback run it now if
-		 * (runnable != null) runnable.run();
-		 */
+		 * (runnable != null) runnable.run(); */
 		return chunk;
 	}
 	
@@ -211,8 +209,7 @@ public class ChunkProviderFake implements IChunkProvider {
 	 * unload every such chunk.
 	 */
 	public boolean unloadQueuedChunks() {
-		/*
-		 * if (!this.worldObj.disableLevelSaving) { if
+		/* if (!this.worldObj.disableLevelSaving) { if
 		 * (!this.droppedChunksSet.isEmpty()) { for (ChunkPos forced :
 		 * this.worldObj.getPersistentChunks().keySet()) {
 		 * this.droppedChunksSet.remove(ChunkPos.chunkXZ2Int(forced.chunkXPos,
@@ -236,8 +233,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		 * net.minecraftforge.common.DimensionManager.unloadWorld(this.worldObj.provider
 		 * .getDimension()); break; } } } }
 		 * 
-		 * this.chunkLoader.chunkTick(); }
-		 */
+		 * this.chunkLoader.chunkTick(); } */
 		
 		return false;
 	}

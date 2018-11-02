@@ -13,8 +13,6 @@ import org.spongepowered.common.interfaces.world.IMixinWorldServer;
 import org.spongepowered.common.world.gen.SpongeChunkGenerator;
 import org.spongepowered.common.world.gen.SpongeWorldGenerator;
 
-import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
-
 import co.aikar.timings.WorldTimingsHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -22,58 +20,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.Optional.Interface;
 
 @Interface(modid = "sponge", iface = "org.spongepowered.common.interfaces.world.IMixinWorldServer")
-public class WorldFakeServer extends WorldFake implements IMixinWorldServer {
+public class SubWorldServer extends SubWorld implements IMixinWorldServer {
 	
-	public final World parentWorld;
-	public IVecOrigin origin;
-	
-	protected WorldFakeServer(WorldServer world) {
-		/* super(world.getMinecraftServer(), new SaveHandlerFake(world.getWorldInfo()),
-		 * world.getWorldInfo(), DimensionType.OVERWORLD.getId(), new Profiler()); */
+	protected SubWorldServer(WorldServer world) {
 		super(world);
 		this.chunkProvider = createChunkProvider();
-		this.parentWorld = world;
 	}
-	
-	/* @Override public World init() { this.initCapabilities(); return this; }
-	 * 
-	 * @Override protected boolean isChunkLoaded(int x, int z, boolean allowEmpty) {
-	 * return ((ChunkProviderFakeServer) getChunkProvider()).chunkExists(x, z); }
-	 * 
-	 * @Override public void spawnParticle(EnumParticleTypes particleType, double
-	 * xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double
-	 * zSpeed, int... parameters) { this.spawnParticle(particleType.getParticleID(),
-	 * particleType.getShouldIgnoreRange(), xCoord, yCoord, zCoord, xSpeed, ySpeed,
-	 * zSpeed, parameters); }
-	 * 
-	 * @Override public void spawnAlwaysVisibleParticle(int p_190523_1_, double
-	 * p_190523_2_, double p_190523_4_, double p_190523_6_, double p_190523_8_,
-	 * double p_190523_10_, double p_190523_12_, int... p_190523_14_) { for (int i =
-	 * 0; i < this.eventListeners.size(); ++i) { Vector3d pos = new
-	 * Vector3d(p_190523_2_, p_190523_4_, p_190523_6_);
-	 * origin.transformPointToWorld(pos);
-	 * ((IWorldEventListener)this.eventListeners.get(i)).spawnParticle(p_190523_1_,
-	 * false, true, pos.x, pos.y, pos.z, p_190523_8_, p_190523_10_, p_190523_12_,
-	 * p_190523_14_); } }
-	 * 
-	 * private void spawnParticle(int particleID, boolean ignoreRange, double
-	 * xCoord, double yCoord, double zCoord, double xSpeed, double ySpeed, double
-	 * zSpeed, int... parameters) { for (int i = 0; i < this.eventListeners.size();
-	 * ++i) { Vector3d pos = new Vector3d(xCoord, yCoord, zCoord);
-	 * origin.transformPointToWorld(pos);
-	 * ((IWorldEventListener)this.eventListeners.get(i)).spawnParticle(particleID,
-	 * ignoreRange, pos.x, pos.y, pos.z, xSpeed, ySpeed, zSpeed, parameters); } } */
 	
 	@Override
 	protected IChunkProvider createChunkProvider() {
-		return new ChunkProviderFakeServer((WorldFakeServer) this, this.saveHandler.getChunkLoader(provider), provider.createChunkGenerator());
+		return new ChunkProviderFakeServer((SubWorldServer) this, this.saveHandler.getChunkLoader(provider), provider.createChunkGenerator());
 	}
 	
 	@Override
