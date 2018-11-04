@@ -157,7 +157,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	@Override
 	public Vec3d getMousePos() {
 		if (parent != null)
-			return getParent().getMousePos().addVector(-getOffsetX() - this.posX, -getOffsetY() - this.posY, 0);
+			return getParent().getMousePos().addVector(-getContentOffset() - getOffsetX() - this.posX, -getContentOffset() - getOffsetY() - this.posY, 0);
 		ScaledResolution scaledresolution = new ScaledResolution(mc);
 		int i = scaledresolution.getScaledWidth();
 		int j = scaledresolution.getScaledHeight();
