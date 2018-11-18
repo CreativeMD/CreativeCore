@@ -51,6 +51,7 @@ public class FakeWorld extends CreativeWorld {
 	
 	protected FakeWorld(MinecraftServer server, WorldInfo info, WorldProvider provider, boolean isRemote) {
 		super(new SaveHandlerFake(info), info, provider, new Profiler(), isRemote);
+		provider.setWorld(this);
 		this.chunkProvider = createChunkProvider();
 		this.server = server;
 	}

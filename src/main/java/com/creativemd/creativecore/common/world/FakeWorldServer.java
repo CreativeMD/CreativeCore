@@ -32,7 +32,6 @@ public class FakeWorldServer extends FakeWorld implements IMixinWorldServer {
 	
 	protected FakeWorldServer(MinecraftServer server, WorldInfo info, WorldProvider provider, boolean isRemote) {
 		super(server, info, provider, isRemote);
-		this.chunkProvider = createChunkProvider();
 	}
 	
 	@Override
