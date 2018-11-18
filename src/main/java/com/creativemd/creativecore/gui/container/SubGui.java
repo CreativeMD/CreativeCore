@@ -159,6 +159,18 @@ public abstract class SubGui extends GuiParent {
 		return false;
 	}
 	
+	// ================Positioning================
+	
+	@Override
+	public int getPixelOffsetX() {
+		return gui.getGuiLeft() + getContentOffset();
+	}
+	
+	@Override
+	public int getPixelOffsetY() {
+		return gui.getGuiTop() + getContentOffset();
+	}
+	
 	// ================NETWORK================
 	
 	/* public void readFromOpeningNBT(NBTTagCompound nbt){} */

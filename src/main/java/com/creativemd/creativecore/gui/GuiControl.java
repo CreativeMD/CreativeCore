@@ -16,6 +16,7 @@ import com.creativemd.creativecore.gui.event.gui.GuiToolTipEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -184,6 +185,25 @@ public abstract class GuiControl extends CoreControl {
 	
 	public boolean isVisibleInsideRect(int x, int y, int width, int height, float scale) {
 		return (this.posX + this.width) * scale >= x * scale && this.posX * scale <= x * scale + width && (this.posY + this.height) * scale >= y * scale && this.posY * scale <= y * scale + height;
+	}
+	
+	public int getGuiScale() {
+		ScaledResolution resolution = new ScaledResolution(mc);
+		return resolution.getScaleFactor();
+	}
+	
+	public int getPixelOffsetX() {
+		int x = posX + getContentOffset();
+		if (hasParent())
+			x += ((GuiControl) parent).getPixelOffsetX();
+		return x;
+	}
+	
+	public int getPixelOffsetY() {
+		int y = posY + getContentOffset();
+		if (hasParent())
+			y += ((GuiControl) parent).getPixelOffsetY();
+		return y;
 	}
 	
 	// ================Render================

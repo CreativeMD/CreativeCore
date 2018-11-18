@@ -294,15 +294,13 @@ public class GuiRenderHelper {
 			return;
 		GlStateManager.pushMatrix();
 		
-		/*
-		 * GlStateManager.enableRescaleNormal(); GlStateManager.enableBlend(); int k =
+		/* GlStateManager.enableRescaleNormal(); GlStateManager.enableBlend(); int k =
 		 * 240; int l = 240;
 		 * OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)k,
 		 * (float)l);
 		 * GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
 		 * GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-		 * GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		 */
+		 * GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO); */
 		RenderHelper.enableGUIStandardItemLighting();
 		
 		GlStateManager.translate(x + 8, y + 8, 0);

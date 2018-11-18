@@ -75,13 +75,11 @@ public class CreativeBakedModel implements IBakedModel {
 		return getBlockQuads(state, side, rand, false);
 	}
 	
-	/*
-	 * public static boolean doesBlockHaveColor(Block block) {
+	/* public static boolean doesBlockHaveColor(Block block) {
 	 * if(block.getBlockLayer() == BlockRenderLayer.CUTOUT_MIPPED) return true;
 	 * Map<IRegistryDelegate<Block>, IBlockColor> blockColorMap =
 	 * ReflectionHelper.getPrivateValue(BlockColors.class, mc.getBlockColors(),
-	 * "blockColorMap"); return blockColorMap.containsKey(block.delegate); }
-	 */
+	 * "blockColorMap"); return blockColorMap.containsKey(block.delegate); } */
 	
 	public static List<BakedQuad> getBlockQuads(List<? extends RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
 		for (int i = 0; i < cubes.size(); i++) {
@@ -129,8 +127,7 @@ public class CreativeBakedModel implements IBakedModel {
 		return cube.getBakedQuad(world, pos, offset, state, blockModel, side, layer, rand, overrideTint, -1);
 	}
 	
-	/*
-	 * public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject
+	/* public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject
 	 * uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long
 	 * rand, boolean overrideTint, int defaultColor) { List<BakedQuad> blockQuads =
 	 * blockModel.getQuads(state, side, rand); if(blockQuads.isEmpty()) return
@@ -180,8 +177,7 @@ public class CreativeBakedModel implements IBakedModel {
 	 * Float.floatToRawIntBits(quad.getSprite().getInterpolatedU(u));
 	 * quad.getVertexData()[uvIndex + 1] =
 	 * Float.floatToRawIntBits(quad.getSprite().getInterpolatedV(v)); }
-	 * quads.add(quad); } return quads; }
-	 */
+	 * quads.add(quad); } return quads; } */
 	
 	public static List<BakedQuad> getBlockQuads(IBlockState state, EnumFacing side, long rand, boolean threaded) {
 		// long time = System.nanoTime();
