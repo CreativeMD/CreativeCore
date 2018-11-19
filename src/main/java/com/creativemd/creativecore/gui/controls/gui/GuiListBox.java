@@ -31,7 +31,7 @@ public class GuiListBox extends GuiScrollBox {
 		lines.clear();
 		selected = -1;
 		maxScroll = 0;
-		scrolled = 0;
+		scrolled.setStart(0);
 		reloadControls();
 	}
 	

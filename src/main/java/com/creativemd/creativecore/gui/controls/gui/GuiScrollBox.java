@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.gui.controls.gui;
 
+import com.creativemd.creativecore.common.utils.math.SmoothValue;
 import com.creativemd.creativecore.gui.GuiRenderHelper;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.container.GuiParent;
@@ -9,11 +10,7 @@ import net.minecraft.init.SoundEvents;
 public class GuiScrollBox extends GuiParent {
 	
 	public int maxScroll = 0;
-	public int aimedScrolled = 0;
-	public double scrolled = 0;
-	public double beforeScrolled = 0;
-	public static final long scrollTime = 200;
-	public long scrollMS = 0;
+	public SmoothValue scrolled = new SmoothValue(200);
 	public float scaleFactor;
 	public boolean dragged;
 	public int scrollbarWidth = 6;
@@ -35,24 +32,22 @@ public class GuiScrollBox extends GuiParent {
 	
 	@Override
 	protected double getOffsetY() {
-		return -scrolled;
+		return -scrolled.current();
 	}
 	
 	public void onScrolled() {
-		if (this.aimedScrolled < 0)
-			this.aimedScrolled = 0;
-		if (this.aimedScrolled > maxScroll)
-			this.aimedScrolled = maxScroll;
+		if (this.scrolled.aimed() < 0)
+			this.scrolled.set(0);
+		if (this.scrolled.aimed() > maxScroll)
+			this.scrolled.set(maxScroll);
 	}
 	
 	@Override
 	public boolean mouseScrolled(int x, int y, int scrolled) {
 		if (super.mouseScrolled(x, y, scrolled))
 			return true;
-		scrollMS = System.currentTimeMillis();
-		this.aimedScrolled -= scrolled * 20;
+		this.scrolled.set(this.scrolled.aimed() - scrolled * 20);
 		onScrolled();
-		beforeScrolled = this.scrolled;
 		return true;
 	}
 	
@@ -70,14 +65,9 @@ public class GuiScrollBox extends GuiParent {
 	public void mouseMove(int x, int y, int button) {
 		if (dragged) {
 			double percent = (double) (y - this.posY) / (double) (height);
-			aimedScrolled = (int) (percent * maxScroll);
-			scrollMS = System.currentTimeMillis();
-			
+			this.scrolled.set((int) (percent * maxScroll));
 			onScrolled();
-			beforeScrolled = scrolled;
-			/*
-			 * scrolled = aimedScrolled; beforeScrolled = scrolled;
-			 */
+			/* scrolled = aimedScrolled; beforeScrolled = scrolled; */
 		}
 		super.mouseMove(x, y, button);
 	}
@@ -98,19 +88,12 @@ public class GuiScrollBox extends GuiParent {
 		style.getBorder(this).renderStyle(width - scrollbarWidth, 0, helper, scrollbarWidth, height);
 		style.getMouseOverBackground(this).renderStyle(width - scrollbarWidth + 1, 0, helper, scrollbarWidth - 1, height);
 		
-		if (scrollMS != 0) {
-			if (scrollMS + scrollTime <= System.currentTimeMillis()) {
-				scrolled = aimedScrolled;
-				beforeScrolled = scrolled;
-				scrollMS = 0;
-			} else
-				scrolled = beforeScrolled + (aimedScrolled - beforeScrolled) * ((System.currentTimeMillis() - scrollMS) / (double) scrollTime);
-		}
+		scrolled.tick();
 		
 		int scrollThingHeight = Math.max(10, Math.min(height, lastRenderedHeight / height / height));
 		if (lastRenderedHeight < height)
 			scrollThingHeight = height;
-		double percent = (double) scrolled / (double) maxScroll;
+		double percent = scrolled.current() / (double) maxScroll;
 		// style.getBorder(this).renderStyle(width-scrollbarWidth+1, (int)
 		// (percent*(height-scrollThingHeight)), helper, scrollbarWidth-1,
 		// scrollThingHeight);
