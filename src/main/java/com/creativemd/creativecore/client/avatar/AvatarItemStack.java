@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.client.avatar;
 
-import com.creativemd.creativecore.gui.GuiRenderHelper;
+import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 
 import net.minecraft.item.ItemStack;
 

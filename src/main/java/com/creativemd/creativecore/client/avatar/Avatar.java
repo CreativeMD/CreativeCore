@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.client.avatar;
 
-import com.creativemd.creativecore.gui.GuiRenderHelper;
+import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

@@ -1,13 +1,13 @@
 package com.creativemd.creativecore.common.packet.gui;
 
+import com.creativemd.creativecore.common.gui.container.SubContainer;
+import com.creativemd.creativecore.common.gui.container.SubGui;
+import com.creativemd.creativecore.common.gui.mc.ContainerSub;
+import com.creativemd.creativecore.common.gui.mc.GuiContainerSub;
+import com.creativemd.creativecore.common.gui.opener.CustomGuiHandler;
+import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.PacketHandler;
-import com.creativemd.creativecore.gui.container.SubContainer;
-import com.creativemd.creativecore.gui.container.SubGui;
-import com.creativemd.creativecore.gui.mc.ContainerSub;
-import com.creativemd.creativecore.gui.mc.GuiContainerSub;
-import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
-import com.creativemd.creativecore.gui.opener.GuiHandler;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

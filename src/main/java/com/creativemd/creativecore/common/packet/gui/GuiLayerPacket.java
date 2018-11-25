@@ -1,7 +1,7 @@
 package com.creativemd.creativecore.common.packet.gui;
 
+import com.creativemd.creativecore.common.gui.mc.ContainerSub;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
-import com.creativemd.creativecore.gui.mc.ContainerSub;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;

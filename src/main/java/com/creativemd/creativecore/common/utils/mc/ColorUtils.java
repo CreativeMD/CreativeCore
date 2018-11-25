@@ -80,7 +80,7 @@ public class ColorUtils {
 		public abstract int getBrightest();
 	}
 	
-	public static int WHITE = -1;
+	public static final int WHITE = -1;
 	
 	public static int getAlpha(int color) {
 		return color >> 24 & 255;
