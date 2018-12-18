@@ -8,40 +8,40 @@ import net.minecraft.util.math.Vec3i;
 
 public enum Rotation {
 	
-	X_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0, 0, 0, -1, 0, 1, 0)) {
+	X_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0, 0, 0, -1, 0, 1, 0), true) {
 		@Override
 		public Rotation getOpposite() {
 			return X_COUNTER_CLOCKWISE;
 		}
 	},
 	
-	X_COUNTER_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0, 0, 0, 1, 0, -1, 0)) {
+	X_COUNTER_CLOCKWISE(Axis.X, new RotationMatrix(1, 0, 0, 0, 0, 1, 0, -1, 0), false) {
 		@Override
 		public Rotation getOpposite() {
 			return X_CLOCKWISE;
 		}
 	},
 	
-	Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1, 0, 1, 0, -1, 0, 0)) {
+	Y_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, 1, 0, 1, 0, -1, 0, 0), true) {
 		@Override
 		public Rotation getOpposite() {
 			return Rotation.Y_COUNTER_CLOCKWISE;
 		}
 	},
-	Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1, 0, 1, 0, 1, 0, 0)) {
+	Y_COUNTER_CLOCKWISE(Axis.Y, new RotationMatrix(0, 0, -1, 0, 1, 0, 1, 0, 0), false) {
 		@Override
 		public Rotation getOpposite() {
 			return Rotation.Y_CLOCKWISE;
 		}
 	},
 	
-	Z_CLOCKWISE(Axis.Z, new RotationMatrix(0, -1, 0, 1, 0, 0, 0, 0, 1)) {
+	Z_CLOCKWISE(Axis.Z, new RotationMatrix(0, -1, 0, 1, 0, 0, 0, 0, 1), true) {
 		@Override
 		public Rotation getOpposite() {
 			return Rotation.Z_COUNTER_CLOCKWISE;
 		}
 	},
-	Z_COUNTER_CLOCKWISE(Axis.Z, new RotationMatrix(0, 1, 0, -1, 0, 0, 0, 0, 1)) {
+	Z_COUNTER_CLOCKWISE(Axis.Z, new RotationMatrix(0, 1, 0, -1, 0, 0, 0, 0, 1), false) {
 		@Override
 		public Rotation getOpposite() {
 			return Z_CLOCKWISE;
@@ -61,11 +61,15 @@ public enum Rotation {
 	}
 	
 	public final Axis axis;
-	private RotationMatrix rotationMatrix;
+	public final int direction;
+	public final boolean clockwise;
+	private final RotationMatrix rotationMatrix;
 	
-	private Rotation(Axis axis, RotationMatrix matrix) {
+	private Rotation(Axis axis, RotationMatrix matrix, boolean clockwise) {
 		this.rotationMatrix = matrix;
 		this.axis = axis;
+		this.clockwise = clockwise;
+		this.direction = clockwise ? 1 : -1;
 	}
 	
 	public RotationMatrix getMatrix() {

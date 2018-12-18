@@ -182,7 +182,7 @@ public class RotationUtils {
 		return axis;
 	}
 	
-	public static Axis rotateAxis(Axis axis, Rotation rotation) {
+	public static Axis rotate(Axis axis, Rotation rotation) {
 		if (axis == rotation.axis)
 			return axis;
 		
@@ -203,7 +203,17 @@ public class RotationUtils {
 		return axis;
 	}
 	
-	public static EnumFacing rotateFacing(EnumFacing facing, Rotation rotation) {
+	public static Rotation rotate(Rotation rotation, Rotation by) {
+		if (rotation.axis == by.axis)
+			return rotation;
+		return Rotation.getRotation(RotationUtils.getDifferentAxis(rotation.axis, by.axis), rotation.clockwise != by.clockwise);
+	}
+	
+	public static Rotation flip(Rotation rotation, Axis axis) {
+		return rotation.axis == axis ? rotation.getOpposite() : rotation;
+	}
+	
+	public static EnumFacing rotate(EnumFacing facing, Rotation rotation) {
 		Vec3i rotatedNormal = new Vec3i(rotation.getMatrix().getX(facing.getDirectionVec()), rotation.getMatrix().getY(facing.getDirectionVec()), rotation.getMatrix().getZ(facing.getDirectionVec()));
 		for (EnumFacing rotated : EnumFacing.VALUES) {
 			if (rotated.getDirectionVec().equals(rotatedNormal))
@@ -212,15 +222,15 @@ public class RotationUtils {
 		return facing;
 	}
 	
-	public static Vec3i rotateVec(Vec3i vec, Rotation rotation) {
+	public static Vec3i rotate(Vec3i vec, Rotation rotation) {
 		return rotation.getMatrix().transform(vec);
 	}
 	
-	public static void rotateVec(Vector3f vector, Rotation rotation) {
+	public static void rotate(Vector3f vector, Rotation rotation) {
 		rotation.getMatrix().transform(vector);
 	}
 	
-	public static void rotateVec(Vector3d vector, Rotation rotation) {
+	public static void rotate(Vector3d vector, Rotation rotation) {
 		rotation.getMatrix().transform(vector);
 	}
 	

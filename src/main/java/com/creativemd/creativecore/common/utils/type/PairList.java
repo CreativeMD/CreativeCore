@@ -11,6 +11,8 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
+
 public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 	
 	public PairList() {
@@ -23,12 +25,15 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 	}
 	
 	protected HashMap<K, Integer> keyIndex = new HashMap<>();
+	protected List<V> values = new ArrayList<>();
 	
 	protected void updateEntireMap() {
 		keyIndex.clear();
+		values.clear();
 		
 		for (int i = 0; i < size(); i++) {
 			keyIndex.put(this.get(i).key, i);
+			values.add(this.get(i).value);
 		}
 	}
 	
@@ -41,6 +46,7 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 		
 		if (super.add(e)) {
 			keyIndex.put(e.key, size() - 1);
+			values.add(e.value);
 			return true;
 		}
 		return false;
@@ -73,6 +79,7 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 			for (int i = 0; i < c.size(); i++) {
 				int index = sizeBefore + i;
 				keyIndex.put(this.get(index).key, index);
+				values.add(this.get(index).value);
 			}
 			return true;
 		}
@@ -151,6 +158,7 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 	public void clear() {
 		super.clear();
 		keyIndex.clear();
+		values.clear();
 	}
 	
 	@Override
@@ -165,6 +173,7 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 		if (old != null) {
 			keyIndex.remove(old.key);
 			keyIndex.put(element.key, index);
+			values.set(index, element.value);
 		}
 		return old;
 	}
@@ -191,11 +200,7 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 	}
 	
 	public List<V> values() {
-		List<V> values = new ArrayList<>();
-		for (Pair<K, V> pair : this) {
-			values.add(pair.value);
-		}
-		return values;
+		return ImmutableList.copyOf(values);
 	}
 	
 	public Set<K> keys() {

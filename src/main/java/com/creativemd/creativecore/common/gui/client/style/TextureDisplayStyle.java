@@ -21,7 +21,7 @@ public class TextureDisplayStyle extends DisplayStyle {
 	public void renderStyle(GuiRenderHelper helper, int width, int height) {
 		GlStateManager.pushMatrix();
 		GlStateManager.enableBlend();
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		colorize();
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 		GlStateManager.enableAlpha();
@@ -29,6 +29,10 @@ public class TextureDisplayStyle extends DisplayStyle {
 		GlStateManager.enableTexture2D();
 		helper.drawTexturedModalRect(location, 0, 0, u, v, width, height);
 		GlStateManager.popMatrix();
+	}
+	
+	protected void colorize() {
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
 }
