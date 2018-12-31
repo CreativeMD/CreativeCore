@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils.type;
+package com.creativemd.creativecore.common.utils.math.graph;
 
 import java.util.HashMap;
 
