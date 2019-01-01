@@ -23,10 +23,8 @@ public class GuiTextfield extends GuiFocusControl {
 	/** also selStart **/
 	public int cursorPosition;
 	
-	/**
-	 * The current character index that should be used as start of the rendered
-	 * text.
-	 */
+	/** The current character index that should be used as start of the rendered
+	 * text. */
 	private int scrollOffset = 0;
 	
 	public int maxLength = 32;
@@ -115,6 +113,9 @@ public class GuiTextfield extends GuiFocusControl {
 		int j = this.cursorPosition < this.selEnd ? this.selEnd : this.cursorPosition;
 		int k = this.maxLength - this.text.length() - (i - this.selEnd);
 		boolean flag = false;
+		
+		if (k < 0 && this.maxLength < this.text.length())
+			k = 0;
 		
 		if (this.text.length() > 0) {
 			s1 = s1 + this.text.substring(0, i);
