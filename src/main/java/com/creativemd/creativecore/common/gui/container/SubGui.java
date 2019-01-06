@@ -102,7 +102,7 @@ public abstract class SubGui extends GuiParent {
 			for (int i = 0; i < buttons.length; i++) {
 				buttons[i] = nbt.getString("b" + i);
 			}
-			return new SubGuiDialog(nbt.getString("text"), buttons);
+			return new SubGuiDialog(nbt.getString("text").split("\n"), buttons);
 		}
 		return null;
 	}

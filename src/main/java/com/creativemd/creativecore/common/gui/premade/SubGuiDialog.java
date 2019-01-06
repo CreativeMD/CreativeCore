@@ -4,25 +4,31 @@ import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SubGuiDialog extends SubGui {
 	
 	public String[] buttons;
-	public String text;
+	public String[] lines;
 	
-	public SubGuiDialog(String text, String[] buttons) {
-		super("dialog", Math.max(GuiRenderHelper.instance.getStringWidth(text) + 20, buttons.length * 30 + 20), 60);
-		this.text = text;
+	public SubGuiDialog(String[] lines, String[] buttons) {
+		super("dialog", Math.max(GuiRenderHelper.instance.getStringWidth(lines) + 20, buttons.length * 30 + 20), lines.length * 20 + 40);
+		this.lines = lines;
 		this.buttons = buttons;
 	}
 	
 	@Override
 	public void createControls() {
-		controls.add(new GuiLabel(text, 0, 5));
+		int height = 5;
+		for (int i = 0; i < lines.length; i++) {
+			controls.add(new GuiLabel(lines[i], 0, height, width - getContentOffset() * 2, GuiRenderHelper.instance.getFontHeight(), ColorUtils.WHITE));
+			height += 20;
+		}
+		
 		for (int i = 0; i < buttons.length; i++) {
-			controls.add(new GuiButton(buttons[i], 30 * i + (width / 2 - buttons.length * 30 / 2), 30, 24) {
+			controls.add(new GuiButton(buttons[i], 30 * i + (width / 2 - buttons.length * 30 / 2), height + 5, 24) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
@@ -36,7 +42,7 @@ public class SubGuiDialog extends SubGui {
 	
 	public void saveData(NBTTagCompound nbt) {
 		nbt.setBoolean("dialog", true);
-		nbt.setString("text", text);
+		nbt.setString("text", String.join("\n", lines));
 		nbt.setInteger("count", buttons.length);
 		for (int i = 0; i < buttons.length; i++) {
 			nbt.setString("b" + i, buttons[i]);

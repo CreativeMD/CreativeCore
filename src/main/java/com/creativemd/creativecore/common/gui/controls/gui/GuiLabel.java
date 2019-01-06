@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.gui.controls.gui;
 import com.creativemd.creativecore.common.gui.GuiControl;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.client.style.Style;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 public class GuiLabel extends GuiControl {
 	
@@ -10,11 +11,11 @@ public class GuiLabel extends GuiControl {
 	public int color;
 	
 	public GuiLabel(String caption, int x, int y) {
-		this(caption, x, y, 14737632);
+		this(caption, x, y, ColorUtils.WHITE);
 	}
 	
 	public GuiLabel(String name, String caption, int x, int y) {
-		this(name, caption, x, y, 14737632);
+		this(name, caption, x, y, ColorUtils.WHITE);
 	}
 	
 	public GuiLabel(String name, String caption, int x, int y, int color) {
