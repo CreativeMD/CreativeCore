@@ -267,6 +267,14 @@ public class GuiRenderHelper {
 		return font.getStringWidth(text);
 	}
 	
+	public int getStringWidth(String[] lines) {
+		int width = 0;
+		for (int i = 0; i < lines.length; i++) {
+			width = Math.max(width, font.getStringWidth(lines[i]));
+		}
+		return width;
+	}
+	
 	public int drawStringWithShadow(String text, int width, int height, int color) {
 		return drawStringWithShadow(text, 0, 0, width, height, color);
 	}

@@ -28,7 +28,7 @@ public class Style {
 	}
 	
 	public DisplayStyle getBorder(GuiControl control) {
-		return border;
+		return control != null ? control.getBorderDisplay(border) : border;
 	}
 	
 	public DisplayStyle getMouseOverBackground(GuiControl control) {

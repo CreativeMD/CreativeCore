@@ -2,6 +2,7 @@ package com.creativemd.creativecore.common.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.vecmath.Vector2d;
 
@@ -9,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Color;
 
 import com.creativemd.creativecore.CreativeCore;
+import com.creativemd.creativecore.common.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.container.GuiParent;
 import com.creativemd.creativecore.common.gui.event.gui.GuiToolTipEvent;
@@ -134,6 +136,10 @@ public abstract class GuiControl extends CoreControl {
 		return getDefaultStyle();
 	}
 	
+	public DisplayStyle getBorderDisplay(DisplayStyle display) {
+		return display;
+	}
+	
 	public boolean hasBorder() {
 		return true;
 	}
@@ -153,7 +159,7 @@ public abstract class GuiControl extends CoreControl {
 	// ================Tooltip================
 	
 	public GuiToolTipEvent getToolTipEvent() {
-		ArrayList<String> toolTip = getTooltip();
+		List<String> toolTip = getTooltip();
 		if (customTooltip != null)
 			if (toolTip == null)
 				toolTip = new ArrayList<>(customTooltip);
@@ -164,19 +170,17 @@ public abstract class GuiControl extends CoreControl {
 		return null;
 	}
 	
-	public ArrayList<String> getTooltip() {
+	public List<String> getTooltip() {
 		return null;
 	}
 	
 	// ================Positioning================
 	
-	/**
-	 * Returns relative positions to (posX/posY)
+	/** Returns relative positions to (posX/posY)
 	 * 
-	 * @return relative positions to (posX/posY)
-	 */
+	 * @return relative positions to (posX/posY) */
 	public Vec3d getCenterOffset() {
-		return new Vec3d(width / 2, height / 2, 0);
+		return new Vec3d(width / 2D, height / 2D, 0);
 	}
 	
 	public int getContentOffset() {
