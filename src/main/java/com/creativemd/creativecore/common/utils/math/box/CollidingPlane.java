@@ -86,7 +86,7 @@ public class CollidingPlane {
 				table.transformInverted(start, startT);
 			}
 			
-			if (value <= startT)
+			if (value != null && value <= startT)
 				return null;
 			
 			Double t = searchBetweenSimple(value, toCheck, center, start, temp, startT, endT, table, 0);
