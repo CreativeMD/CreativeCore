@@ -207,6 +207,18 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 		return keyIndex.keySet();
 	}
 	
+	public Pair<K, V> getFirst() {
+		if (isEmpty())
+			return null;
+		return get(0);
+	}
+	
+	public Pair<K, V> getLast() {
+		if (isEmpty())
+			return null;
+		return get(size() - 1);
+	}
+	
 	@Nullable
 	public V getValue(K key) {
 		Integer index = keyIndex.get(key);
