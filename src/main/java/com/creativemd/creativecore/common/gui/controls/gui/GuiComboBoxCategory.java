@@ -44,8 +44,8 @@ public class GuiComboBoxCategory<T> extends GuiLabel {
 				currentIndex += pair.value.size();
 			else {
 				caption = translate(pair.value.get(index - currentIndex).key);
-				raiseEvent(new GuiControlChangedEvent(this));
 				this.index = index;
+				raiseEvent(new GuiControlChangedEvent(this));
 				return true;
 			}
 		}

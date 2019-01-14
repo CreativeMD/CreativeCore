@@ -2,7 +2,6 @@ package com.creativemd.creativecore.common.gui.controls.gui;
 
 import org.lwjgl.util.Color;
 
-import com.creativemd.creativecore.common.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.common.utils.type.Pair;
 import com.creativemd.creativecore.common.utils.type.PairList;
@@ -72,10 +71,8 @@ public class GuiComboBoxExtensionCategory<T> extends GuiScrollBox {
 	}
 	
 	public void onSelectionChange(int index) {
-		if (index != -1) {
+		if (index != -1)
 			comboBox.select(index);
-			comboBox.raiseEvent(new GuiControlChangedEvent(comboBox));
-		}
 		comboBox.closeBox();
 	}
 	
