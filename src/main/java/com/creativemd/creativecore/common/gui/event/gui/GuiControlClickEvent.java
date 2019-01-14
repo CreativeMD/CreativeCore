@@ -6,11 +6,13 @@ public class GuiControlClickEvent extends GuiControlEvent {
 	
 	public int mouseX;
 	public int mouseY;
+	public int button;
 	
-	public GuiControlClickEvent(GuiControl source, int mouseX, int mouseY) {
+	public GuiControlClickEvent(GuiControl source, int mouseX, int mouseY, int button) {
 		super(source);
 		this.mouseX = mouseX;
 		this.mouseY = mouseY;
+		this.button = button;
 	}
 	
 	@Override

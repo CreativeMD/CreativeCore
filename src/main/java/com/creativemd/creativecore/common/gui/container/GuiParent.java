@@ -48,6 +48,26 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		controls.add(control);
 	}
 	
+	public boolean removeControl(GuiControl control) {
+		int index = controls.indexOf(control);
+		if (index != -1) {
+			controls.remove(index);
+			for (int i = index; i < controls.size(); i++) {
+				updateControl(control, i);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public SubGui getOrigin() {
+		if (parent instanceof SubGui)
+			return (SubGui) parent;
+		if (parent != null)
+			return ((GuiParent) parent).getOrigin();
+		return null;
+	}
+	
 	// ================Rendering================
 	
 	protected int lastRenderedHeight = 0;
@@ -223,6 +243,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		return false;
 	}
 	
+	protected void clickControl(GuiControl control, int x, int y, int button) {
+		raiseEvent(new GuiControlClickEvent(control, x, y, button));
+	}
+	
 	@Override
 	public boolean mousePressed(int x, int y, int button) {
 		boolean result = false;
@@ -231,7 +255,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			GuiControl control = controls.get(i);
 			Vec3d pos = control.rotateMouseVec(mouse);
 			if (!result && control.isInteractable() && control.isMouseOver((int) pos.x, (int) pos.y) && control.mousePressed((int) pos.x, (int) pos.y, button)) {
-				raiseEvent(new GuiControlClickEvent(control, x, y));
+				clickControl(control, x, y, button);
 				result = true;
 			} else
 				control.onLoseFocus();
