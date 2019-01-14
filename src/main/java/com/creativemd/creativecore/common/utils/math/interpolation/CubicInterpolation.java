@@ -7,7 +7,7 @@ public class CubicInterpolation<T extends Vec> extends Interpolation<T> {
 	public T beginVec;
 	public T endVec;
 	
-	public CubicInterpolation(Double[] times, T[] points) {
+	public CubicInterpolation(double[] times, T[] points) {
 		super(times, points);
 		beginVec = (T) points[0].add(points[0].sub(points[1]));
 		endVec = (T) points[points.length - 1].add(points[points.length - 1].sub(points[points.length - 2]));

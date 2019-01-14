@@ -13,7 +13,7 @@ public abstract class Interpolation<T extends Vec> {
 	protected ArrayList<T> pointVecs = new ArrayList<>();
 	private final Class classOfT;
 	
-	public Interpolation(Double[] times, T[] points) {
+	public Interpolation(double[] times, T[] points) {
 		if (points.length < 2)
 			throw new IllegalArgumentException("At least two points are needed!");
 		
