@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -13,11 +14,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.n247s.api.eventapi.EventApi;
 
-/**
- * The default CallHandler of the EventApi.<br>
+/** The default CallHandler of the EventApi.<br>
  * Its recommended to use this class for a custom CallHanlder, since it has
- * pre-made CallMethods at your disposal.
- */
+ * pre-made CallMethods at your disposal. */
 public class EventApiCallHandler extends CallHandler {
 	
 	private static final Logger log = EventApi.logger;
@@ -26,11 +25,9 @@ public class EventApiCallHandler extends CallHandler {
 		super(eventType);
 	}
 	
-	/**
-	 * By default this version of CallIntances will be used, though when you want to
+	/** By default this version of CallIntances will be used, though when you want to
 	 * use a using a Custom CallHandler, you can Extend this Class to use the other
-	 * preMade Methods.
-	 */
+	 * preMade Methods. */
 	@Override
 	protected boolean CallInstances(EventType eventType) {
 		boolean isCanceled = false;
@@ -42,10 +39,8 @@ public class EventApiCallHandler extends CallHandler {
 		return isCanceled;
 	}
 	
-	/**
-	 * @param blackList
-	 *            - List with Classes/instances that should not be Called.
-	 */
+	/** @param blackList
+	 *            - List with Classes/instances that should not be Called. */
 	protected boolean CallInstancesWithBlackList(EventType eventTypeInstance, List blackList) {
 		try {
 			for (int i = 0; i < 5; i++) {
@@ -88,13 +83,13 @@ public class EventApiCallHandler extends CallHandler {
 				}
 			}
 		} catch (Exception e) {
-			log.catching(e);
+			if (!(e instanceof ConcurrentModificationException))
+				log.catching(e);
 		}
 		return eventTypeInstance.isCanceled();
 	}
 	
-	/**
-	 * @param orderList
+	/** @param orderList
 	 *            - List with Classes and instances that should be called in a the
 	 *            specific given order(ascending). Note that all Classes/instances
 	 *            that are not included in the list will be called afterwards in
@@ -105,8 +100,7 @@ public class EventApiCallHandler extends CallHandler {
 	 * @throws IllegalArgumentException
 	 *             - If a CustomEventSubscribed Method contains more than one
 	 *             parameter, or if the parameter is not an instance of
-	 *             EventType.class.
-	 */
+	 *             EventType.class. */
 	protected boolean CallInstancesInOrder(EventType eventTypeInstance, List orderList) {
 		List calledInstanceList = new ArrayList();
 		
@@ -157,8 +151,7 @@ public class EventApiCallHandler extends CallHandler {
 		return eventTypeInstance.isCanceled();
 	}
 	
-	/**
-	 * @param orderList
+	/** @param orderList
 	 *            - List with Classes/instances that should be called in a the
 	 *            specific given order(ascending). Note that all Classes/instances
 	 *            that are not included in the list will be called afterwards in
@@ -170,8 +163,7 @@ public class EventApiCallHandler extends CallHandler {
 	 * @throws IllegalArgumentException
 	 *             - If a CustomEventSubscribed Method contains more than one
 	 *             parameter, or if the parameter is not an instance of
-	 *             EventType.class.
-	 */
+	 *             EventType.class. */
 	protected boolean CallInstancesInOrderWithBlackList(EventType eventTypeInstance, List orderList, List blackList) {
 		List calledInstanceList = new ArrayList();
 		
@@ -232,9 +224,7 @@ public class EventApiCallHandler extends CallHandler {
 		return eventTypeInstance.isCanceled();
 	}
 	
-	/**
-	 * 
-	 * @param whiteList
+	/** @param whiteList
 	 */
 	protected boolean CallInstancesWithWhiteList(EventType eventTypeInstance, List whiteList) {
 		try {
@@ -281,8 +271,7 @@ public class EventApiCallHandler extends CallHandler {
 		return eventTypeInstance.isCanceled();
 	}
 	
-	/**
-	 * This calls the given eventMethod with the given parameters on the given
+	/** This calls the given eventMethod with the given parameters on the given
 	 * ObjectInstance.
 	 * 
 	 * @param method
@@ -296,7 +285,6 @@ public class EventApiCallHandler extends CallHandler {
 	 * @throws InvocationTargetException
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
-	 * 
 	 */
 	protected void callEventMethod(Method method, Object instance, Object... methodArguments) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		method.setAccessible(true);
