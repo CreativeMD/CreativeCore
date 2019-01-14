@@ -204,9 +204,9 @@ public class RotationUtils {
 	}
 	
 	public static Rotation rotate(Rotation rotation, Rotation by) {
-		if (rotation.axis == by.axis)
-			return rotation;
-		return Rotation.getRotation(RotationUtils.getDifferentAxis(rotation.axis, by.axis), rotation.clockwise != by.clockwise);
+		Vector3d vec = rotation.getVec();
+		by.getMatrix().transform(vec);
+		return Rotation.getRotation(vec);
 	}
 	
 	public static Rotation flip(Rotation rotation, Axis axis) {
