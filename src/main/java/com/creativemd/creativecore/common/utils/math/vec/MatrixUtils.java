@@ -17,9 +17,9 @@ public class MatrixUtils {
 	}
 	
 	public static Matrix3d createRotationMatrix(double rotX, double rotY, double rotZ) {
-		Matrix3d matrix = createRotationMatrixZ(rotZ);
+		Matrix3d matrix = createRotationMatrixX(rotX);
 		matrix.mul(createRotationMatrixY(rotY));
-		matrix.mul(createRotationMatrixX(rotX));
+		matrix.mul(createRotationMatrixZ(rotZ));
 		return matrix;
 	}
 	
@@ -51,15 +51,15 @@ public class MatrixUtils {
 	
 	private static Matrix4d createRotationMatrixAndTranslationRadians(double x, double y, double z, double rotX, double rotY, double rotZ) {
 		Matrix4d matrix = new Matrix4d();
-		if (rotZ != 0)
-			matrix.rotZ(rotZ);
+		if (rotX != 0)
+			matrix.rotX(rotX);
 		else
 			matrix.setIdentity();
 		
 		if (rotY != 0)
 			mul(matrix, createRotationMatrixYRadians(rotY));
-		if (rotX != 0)
-			mul(matrix, createRotationMatrixXRadians(rotX));
+		if (rotZ != 0)
+			mul(matrix, createRotationMatrixZRadians(rotZ));
 		
 		matrix.m03 = x;
 		matrix.m13 = y;
@@ -70,15 +70,15 @@ public class MatrixUtils {
 	
 	public static Matrix4d createRotationMatrixAndTranslation(double x, double y, double z, double rotX, double rotY, double rotZ) {
 		Matrix4d matrix = new Matrix4d();
-		if (rotZ != 0)
-			matrix.rotZ(Math.toRadians(rotZ));
+		if (rotX != 0)
+			matrix.rotX(Math.toRadians(rotX));
 		else
 			matrix.setIdentity();
 		
 		if (rotY != 0)
 			mul(matrix, createRotationMatrixY(rotY));
-		if (rotX != 0)
-			mul(matrix, createRotationMatrixX(rotX));
+		if (rotZ != 0)
+			mul(matrix, createRotationMatrixZ(rotZ));
 		
 		matrix.m03 = x;
 		matrix.m13 = y;
