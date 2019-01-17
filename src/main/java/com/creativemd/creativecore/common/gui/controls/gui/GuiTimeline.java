@@ -42,7 +42,6 @@ public class GuiTimeline extends GuiParent {
 	public GuiTimeline(String name, int x, int y, int width, int height, int duration, List<TimelineChannel> channels) {
 		super(name, x, y, width, height);
 		marginWidth = 0;
-		setDuration(duration);
 		this.channels = channels;
 		int i = 0;
 		for (TimelineChannel channel : channels) {
@@ -53,7 +52,7 @@ public class GuiTimeline extends GuiParent {
 			}
 			i++;
 		}
-		adjustKeysPositionX();
+		setDuration(duration);
 	}
 	
 	public GuiTimeline setSidebarWidth(int width) {
@@ -168,7 +167,12 @@ public class GuiTimeline extends GuiParent {
 		this.duration = duration;
 		scrollX.setStart(0);
 		scrollY.setStart(0);
+		adjustKeysPositionX();
 		return this;
+	}
+	
+	public int getDuration() {
+		return duration;
 	}
 	
 	@Override
@@ -322,7 +326,7 @@ public class GuiTimeline extends GuiParent {
 			if (channelId >= 0) {
 				TimelineChannel channel = channels.get(channelId);
 				int tick = getTickAt((int) x);
-				lines.add("" + tick + ". " + channel.name + ": " + channel.getValueAt(tick));
+				lines.add("" + tick + ". " + channel.name + ": " + (Math.round(channel.getValueAt(tick) * 100) / 100));
 			}
 		}
 		return lines;
