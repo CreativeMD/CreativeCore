@@ -1,7 +1,6 @@
-package com.creativemd.creativecore.common.gui.controls.gui;
+package com.creativemd.creativecore.common.gui.controls.gui.timeline;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.creativemd.creativecore.common.gui.GuiControl;
@@ -13,8 +12,6 @@ import com.creativemd.creativecore.common.gui.container.GuiParent;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlEvent;
 import com.creativemd.creativecore.common.utils.math.SmoothValue;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.creativecore.common.utils.type.Pair;
-import com.creativemd.creativecore.common.utils.type.PairList;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -46,9 +43,9 @@ public class GuiTimeline extends GuiParent {
 		int i = 0;
 		for (TimelineChannel channel : channels) {
 			channel.index = i;
-			for (KeyControl control : channel.controls) {
-				adjustKeyPositionY(control);
-				addControl(control);
+			for (Object control : channel.controls) {
+				adjustKeyPositionY((KeyControl) control);
+				addControl((GuiControl) control);
 			}
 			i++;
 		}
@@ -71,8 +68,8 @@ public class GuiTimeline extends GuiParent {
 	public void adjustKeysPositionX() {
 		double tickWidth = getTickWidth();
 		for (TimelineChannel channel : channels) {
-			for (KeyControl control : channel.controls) {
-				control.posX = (int) (control.tick * tickWidth) - control.width / 2;
+			for (Object control : channel.controls) {
+				((KeyControl) control).posX = (int) (((KeyControl) control).tick * tickWidth) - ((KeyControl) control).width / 2;
 			}
 		}
 	}
@@ -326,152 +323,10 @@ public class GuiTimeline extends GuiParent {
 			if (channelId >= 0) {
 				TimelineChannel channel = channels.get(channelId);
 				int tick = getTickAt((int) x);
-				lines.add("" + tick + ". " + channel.name + ": " + (Math.round(channel.getValueAt(tick) * 100) / 100));
+				lines.add("" + tick + ". " + channel.name + ": " + channel.getValueAt(tick));
 			}
 		}
 		return lines;
-	}
-	
-	public static class TimelineChannel {
-		
-		public int index;
-		public String name;
-		public List<KeyControl> controls = new ArrayList<>();
-		
-		public TimelineChannel(String name) {
-			this.name = name;
-		}
-		
-		public TimelineChannel addKeys(PairList<Integer, Double> keys) {
-			if (keys == null || keys.isEmpty())
-				return this;
-			for (Pair<Integer, Double> pair : keys) {
-				addKey(pair.key, pair.value);
-			}
-			return this;
-		}
-		
-		public KeyControl addKey(int tick, double value) {
-			KeyControl control = new KeyControl(this, controls.size(), tick, value);
-			for (int i = 0; i < controls.size(); i++) {
-				KeyControl other = controls.get(i);
-				
-				if (other.tick == tick)
-					return other;
-				
-				if (other.tick > tick) {
-					controls.add(i, control);
-					return control;
-				}
-			}
-			controls.add(control);
-			return control;
-		}
-		
-		public void removeKey(KeyControl control) {
-			controls.remove(control);
-		}
-		
-		public void movedKey(KeyControl control) {
-			Collections.sort(controls);
-		}
-		
-		public boolean isSpaceFor(KeyControl control, int tick) {
-			for (int i = 0; i < controls.size(); i++) {
-				int otherTick = controls.get(i).tick;
-				if (otherTick == tick)
-					return false;
-				if (otherTick > tick)
-					return true;
-			}
-			return true;
-		}
-		
-		public double getValueAt(int tick) {
-			if (controls.isEmpty())
-				return 0;
-			
-			int higher = controls.size();
-			for (int i = 0; i < controls.size(); i++) {
-				int otherTick = controls.get(i).tick;
-				if (otherTick == tick)
-					return controls.get(i).value;
-				if (otherTick > tick) {
-					higher = i;
-					break;
-				}
-			}
-			
-			if (higher == 0 || higher == controls.size())
-				return controls.get(higher == 0 ? 0 : controls.size() - 1).value;
-			
-			KeyControl before = controls.get(higher - 1);
-			KeyControl after = controls.get(higher);
-			double percentage = (double) (tick - before.tick) / (after.tick - before.tick);
-			return Math.round(((after.value - before.value) * percentage + before.value) * 100) / 100;
-		}
-		
-		public PairList<Integer, Double> getPairs() {
-			if (controls.isEmpty())
-				return null;
-			PairList<Integer, Double> list = new PairList<>();
-			for (KeyControl control : controls) {
-				list.add(control.tick, control.value);
-			}
-			return list;
-		}
-	}
-	
-	public static class KeyControl extends GuiControl implements Comparable<KeyControl> {
-		
-		public TimelineChannel channel;
-		public int tick;
-		public boolean selected = false;
-		public double value;
-		
-		public KeyControl(TimelineChannel channel, int index, int tick, double value) {
-			super("" + index + ".", 0, 0, 0, 0);
-			this.channel = channel;
-			this.rotation = 45;
-			this.tick = tick;
-			this.value = value;
-		}
-		
-		@Override
-		public DisplayStyle getBorderDisplay(DisplayStyle display) {
-			if (selected)
-				return new ColoredDisplayStyle(40, 40, 140);
-			if (isMouseOver())
-				return new ColoredDisplayStyle(20, 20, 20);
-			return super.getBorderDisplay(display);
-		}
-		
-		@Override
-		protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
-			
-		}
-		
-		@Override
-		public boolean mousePressed(int x, int y, int button) {
-			return true;
-		}
-		
-		@Override
-		public List<String> getTooltip() {
-			List<String> tooltip = new ArrayList<>();
-			tooltip.add("" + value);
-			return tooltip;
-		}
-		
-		public void removeKey() {
-			channel.removeKey(this);
-			getParent().removeControl(this);
-		}
-		
-		@Override
-		public int compareTo(KeyControl o) {
-			return Integer.compare(this.tick, o.tick);
-		}
 	}
 	
 	public static class KeySelectedEvent extends GuiControlEvent {

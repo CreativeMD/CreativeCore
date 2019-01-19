@@ -82,6 +82,11 @@ public abstract class GuiControl extends CoreControl {
 		return this;
 	}
 	
+	public GuiControl setVisible(boolean value) {
+		this.visible = value;
+		return this;
+	}
+	
 	// ================Interaction================
 	
 	@Override

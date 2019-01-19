@@ -9,6 +9,7 @@ public class Style {
 	public static Style liteStyleNoHighlight = new Style("defaultNoHigh", new ColoredDisplayStyle(0, 0, 0), new ColoredDisplayStyle(90, 90, 90), new ColoredDisplayStyle(90, 90, 90), new ColoredDisplayStyle(198, 198, 198), new ColoredDisplayStyle(0, 0, 0, 100));
 	
 	public static Style emptyStyle = new Style("empty", DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay);
+	public static Style emptyStyleDisabled = new Style("emptyDisabled", DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, new ColoredDisplayStyle(0, 0, 0, 100));
 	
 	public final String name;
 	
