@@ -64,6 +64,11 @@ public class ChunkProviderFakeServer extends ChunkProviderFake implements IMixin
 	}
 	
 	@Override
+	public boolean markLoaded() {
+		return false;
+	}
+	
+	@Override
 	public WorldServer getWorld() {
 		throw new RuntimeException("This is not a WorldServer provider!");
 	}

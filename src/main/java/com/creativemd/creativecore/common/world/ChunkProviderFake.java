@@ -48,19 +48,20 @@ public class ChunkProviderFake implements IChunkProvider {
 		return this.id2ChunkMap.values();
 	}
 	
-	/**
-	 * Unloads a chunk
-	 */
+	/** Unloads a chunk */
 	public void unload(Chunk chunkIn) {
 		if (this.worldObj.provider.canDropChunk(chunkIn.x, chunkIn.z)) {
 			this.droppedChunksSet.add(Long.valueOf(ChunkPos.asLong(chunkIn.x, chunkIn.z)));
-			chunkIn.markLoaded(false);
+			if (markLoaded())
+				chunkIn.markLoaded(false);
 		}
 	}
 	
-	/**
-	 * marks all chunks for unload, ignoring those near the spawn
-	 */
+	public boolean markLoaded() {
+		return true;
+	}
+	
+	/** marks all chunks for unload, ignoring those near the spawn */
 	public void unloadAllChunks() {
 		for (Chunk chunk : this.id2ChunkMap.values()) {
 			this.unload(chunk);
@@ -72,7 +73,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		long i = ChunkPos.asLong(x, z);
 		Chunk chunk = (Chunk) this.id2ChunkMap.get(i);
 		
-		if (worldObj.isRemote && chunk != null) {
+		if (worldObj.isRemote && chunk != null && markLoaded()) {
 			chunk.markLoaded(false);
 		}
 		
@@ -204,10 +205,8 @@ public class ChunkProviderFake implements IChunkProvider {
 		return true;
 	}
 	
-	/**
-	 * Unloads chunks that are marked to be unloaded. This is not guaranteed to
-	 * unload every such chunk.
-	 */
+	/** Unloads chunks that are marked to be unloaded. This is not guaranteed to
+	 * unload every such chunk. */
 	public boolean unloadQueuedChunks() {
 		/* if (!this.worldObj.disableLevelSaving) { if
 		 * (!this.droppedChunksSet.isEmpty()) { for (ChunkPos forced :
@@ -238,16 +237,12 @@ public class ChunkProviderFake implements IChunkProvider {
 		return false;
 	}
 	
-	/**
-	 * Returns if the IChunkProvider supports saving.
-	 */
+	/** Returns if the IChunkProvider supports saving. */
 	public boolean canSave() {
 		return false; // !this.worldObj.disableLevelSaving;
 	}
 	
-	/**
-	 * Converts the instance data to a readable string.
-	 */
+	/** Converts the instance data to a readable string. */
 	public String makeString() {
 		return "ServerChunkCache: " + this.id2ChunkMap.size() + " Drop: " + this.droppedChunksSet.size();
 	}
@@ -265,9 +260,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		return this.id2ChunkMap.size();
 	}
 	
-	/**
-	 * Checks to see if a chunk exists at x, z
-	 */
+	/** Checks to see if a chunk exists at x, z */
 	public boolean chunkExists(int x, int z) {
 		return this.id2ChunkMap.containsKey(ChunkPos.asLong(x, z));
 	}
