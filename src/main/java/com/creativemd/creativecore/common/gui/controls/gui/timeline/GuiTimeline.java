@@ -15,6 +15,7 @@ import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -143,6 +144,7 @@ public class GuiTimeline extends GuiParent {
 			movedSelected = false;
 			movedStart = x;
 			raiseEvent(new KeySelectedEvent(selected));
+			playSound(SoundEvents.UI_BUTTON_CLICK);
 		}
 		super.clickControl(control, x, y, button);
 	}
