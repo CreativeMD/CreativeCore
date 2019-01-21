@@ -12,6 +12,7 @@ import com.creativemd.creativecore.common.gui.client.style.Style;
 public class KeyControl<T> extends GuiControl implements Comparable<KeyControl> {
 	
 	public TimelineChannel channel;
+	public boolean modifiable = true;
 	public int tick;
 	public boolean selected = false;
 	public T value;
@@ -26,6 +27,11 @@ public class KeyControl<T> extends GuiControl implements Comparable<KeyControl> 
 	
 	@Override
 	public DisplayStyle getBorderDisplay(DisplayStyle display) {
+		if (!modifiable)
+			if (selected)
+				return new ColoredDisplayStyle(140, 140, 40);
+			else
+				return new ColoredDisplayStyle(200, 200, 100);
 		if (selected)
 			return new ColoredDisplayStyle(40, 40, 140);
 		if (isMouseOver())

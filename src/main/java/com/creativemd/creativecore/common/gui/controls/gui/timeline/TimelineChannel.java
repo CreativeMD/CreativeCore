@@ -26,6 +26,12 @@ public abstract class TimelineChannel<T> {
 		return this;
 	}
 	
+	public TimelineChannel<T> addKeyFixed(int tick, T value) {
+		KeyControl control = this.addKey(tick, value);
+		control.modifiable = false;
+		return this;
+	}
+	
 	public KeyControl addKey(int tick, T value) {
 		KeyControl control = new KeyControl(this, controls.size(), tick, value);
 		for (int i = 0; i < controls.size(); i++) {
@@ -93,10 +99,15 @@ public abstract class TimelineChannel<T> {
 	public PairList<Integer, T> getPairs() {
 		if (controls.isEmpty())
 			return null;
+		boolean fixed = true;
 		PairList<Integer, T> list = new PairList<>();
 		for (KeyControl<T> control : controls) {
+			if (control.modifiable)
+				fixed = false;
 			list.add(control.tick, control.value);
 		}
+		if (fixed)
+			return null;
 		return list;
 	}
 	

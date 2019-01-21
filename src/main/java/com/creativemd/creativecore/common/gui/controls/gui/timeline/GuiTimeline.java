@@ -138,11 +138,15 @@ public class GuiTimeline extends GuiParent {
 				return;
 			}
 			
-			dragged = (KeyControl) control;
-			dragged.selected = true;
-			selected = dragged;
-			movedSelected = false;
-			movedStart = x;
+			selected = (KeyControl) control;
+			selected.selected = true;
+			
+			if (selected.modifiable) {
+				dragged = (KeyControl) control;
+				movedSelected = false;
+				movedStart = x;
+			}
+			
 			raiseEvent(new KeySelectedEvent(selected));
 			playSound(SoundEvents.UI_BUTTON_CLICK);
 		}
