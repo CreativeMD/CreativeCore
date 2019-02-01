@@ -45,7 +45,7 @@ public class InfoItemStack extends InfoStack {
 		if (info instanceof InfoItemStack) {
 			if (((InfoItemStack) info).stack.getItem() != stack.getItem())
 				return false;
-			if (((InfoItemStack) info).stack.getItemDamage() != stack.getItemDamage())
+			if (((InfoItemStack) info).stack.getMetadata() != stack.getMetadata())
 				return false;
 			if (((InfoItemStack) info).needNBT || this.needNBT) {
 				if (((InfoItemStack) info).stack.getTagCompound() == null && stack.getTagCompound() == null)
@@ -66,7 +66,7 @@ public class InfoItemStack extends InfoStack {
 	
 	@Override
 	public ItemStack getItemStack(int stacksize) {
-		ItemStack stack = new ItemStack(this.stack.getItem(), stacksize, this.stack.getItemDamage());
+		ItemStack stack = new ItemStack(this.stack.getItem(), stacksize, this.stack.getMetadata());
 		if (needNBT && this.stack.hasTagCompound())
 			stack.setTagCompound((NBTTagCompound) this.stack.getTagCompound().copy());
 		return stack;
@@ -76,7 +76,7 @@ public class InfoItemStack extends InfoStack {
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		if (stack.getItem() != this.stack.getItem())
 			return false;
-		if (stack.getItemDamage() != this.stack.getItemDamage())
+		if (stack.getMetadata() != this.stack.getMetadata())
 			return false;
 		if (needNBT) {
 			if (stack.getTagCompound() == this.stack.getTagCompound())

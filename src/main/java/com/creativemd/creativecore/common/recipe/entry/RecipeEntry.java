@@ -30,7 +30,7 @@ public abstract class RecipeEntry {
 			ItemStack input = (ItemStack) object;
 			if (stack.getItem() != input.getItem())
 				return false;
-			if (stack.getItemDamage() != input.getItemDamage())
+			if (stack.getMetadata() != input.getMetadata())
 				return false;
 			if (stack.getTagCompound() != input.getTagCompound())
 				if (stack.hasTagCompound() && input.hasTagCompound())

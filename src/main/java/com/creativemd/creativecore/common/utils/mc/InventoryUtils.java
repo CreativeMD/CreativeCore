@@ -65,6 +65,7 @@ public class InventoryUtils {
 	}
 	
 	public static boolean isItemStackEqual(ItemStack stackA, ItemStack stackB) {
+		
 		if (stackA.isEmpty() && stackB.isEmpty())
 			return true;
 		
@@ -74,7 +75,7 @@ public class InventoryUtils {
 		if (stackA.getItem() != stackB.getItem())
 			return false;
 		
-		if (stackA.getItemDamage() != stackB.getItemDamage())
+		if (stackA.isItemEqual(stackB))
 			return false;
 		
 		if (!stackA.hasTagCompound() && stackB.hasTagCompound())
@@ -227,9 +228,9 @@ public class InventoryUtils {
 					if (id0 > id1)
 						return 1;
 					
-					if (arg0.getItemDamage() < arg1.getItemDamage())
+					if (arg0.getMetadata() < arg1.getMetadata())
 						return -1;
-					if (arg0.getItemDamage() > arg1.getItemDamage())
+					if (arg0.getMetadata() > arg1.getMetadata())
 						return 1;
 					
 					return arg0.getDisplayName().compareToIgnoreCase(arg1.getDisplayName());

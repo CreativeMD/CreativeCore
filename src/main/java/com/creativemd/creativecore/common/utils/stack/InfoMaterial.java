@@ -58,7 +58,7 @@ public class InfoMaterial extends InfoStack {
 		if (info instanceof InfoItemStack) {
 			Block block = Block.getBlockFromItem(((InfoItemStack) info).stack.getItem());
 			if (block != null)
-				return block.getStateFromMeta(((InfoItemStack) info).stack.getItemDamage()).getMaterial() == material;
+				return block.getStateFromMeta(((InfoItemStack) info).stack.getMetadata()).getMaterial() == material;
 		}
 		return false;
 	}
@@ -92,7 +92,7 @@ public class InfoMaterial extends InfoStack {
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		Block block = Block.getBlockFromItem(stack.getItem());
 		if (block != null && !(block instanceof BlockAir))
-			return block.getStateFromMeta(stack.getItemDamage()).getMaterial() == material;
+			return block.getStateFromMeta(stack.getMetadata()).getMaterial() == material;
 		return false;
 	}
 	

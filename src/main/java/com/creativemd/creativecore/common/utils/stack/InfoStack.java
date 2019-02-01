@@ -131,7 +131,7 @@ public abstract class InfoStack extends Ingredient {
 			@Override
 			public InfoStack parseObject(Object object) {
 				if (object instanceof ItemStack) {
-					if (((ItemStack) object).getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+					if (((ItemStack) object).getMetadata() == OreDictionary.WILDCARD_VALUE) {
 						if (((ItemStack) object).getItem() instanceof ItemBlock)
 							return new InfoBlock(Block.getBlockFromItem(((ItemStack) object).getItem()));
 						else
@@ -262,13 +262,11 @@ public abstract class InfoStack extends Ingredient {
 		return getItemStack(stackSize);
 	}
 	
-	/**
-	 * Please don't use it often since some InfoStacks need to iterate through all
+	/** Please don't use it often since some InfoStacks need to iterate through all
 	 * blocks and items
 	 * 
 	 * @return All possible ItemStacks, also using
-	 *         {@link #OreDictionary.WILDCARD_VALUE}
-	 */
+	 *         {@link #OreDictionary.WILDCARD_VALUE} */
 	public abstract ArrayList<ItemStack> getAllPossibleItemStacks();
 	
 	public abstract ItemStack getItemStack(int stacksize);

@@ -42,7 +42,7 @@ public class InfoContainOre extends InfoOre {
 				List<ItemStack> stacks = OreDictionary.getOres(names[i]);
 				if (stacks.size() > 0) {
 					ItemStack stack = stacks.get(0).copy();
-					if (stack.getItemDamage() == OreDictionary.WILDCARD_VALUE)
+					if (stack.getMetadata() == OreDictionary.WILDCARD_VALUE)
 						stack.setItemDamage(0);
 					stack.setCount(stacksize);
 					return stack;
