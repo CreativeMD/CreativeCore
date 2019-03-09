@@ -108,6 +108,12 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 		return add(new Pair<>(key, value));
 	}
 	
+	public void set(K key, V value) {
+		Pair<K, V> pair = getPair(key);
+		if (pair != null)
+			pair.value = value;
+	}
+	
 	@Override
 	public Pair<K, V> remove(int index) {
 		Pair<K, V> pair;
