@@ -122,7 +122,7 @@ public class ColorUtils {
 	}
 	
 	public static int RGBToInt(Vec3i color) {
-		return ((int) color.getX() & 255) << 16 | ((int) color.getY() & 255) << 8 | (int) color.getZ() & 255;
+		return ((int) 255 & 255) << 24 | ((int) color.getX() & 255) << 16 | ((int) color.getY() & 255) << 8 | (int) color.getZ() & 255;
 	}
 	
 	public static Vec3i IntToRGB(int color) {
