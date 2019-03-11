@@ -11,6 +11,7 @@ import com.creativemd.creativecore.common.gui.GuiControl;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.Rect;
 import com.creativemd.creativecore.common.gui.client.style.Style;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiFocusControl;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.common.gui.event.gui.GuiToolTipEvent;
 
@@ -190,6 +191,21 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		x -= movex;
 		y -= movey;
 		return new Vec3d(x - getContentOffset() - getOffsetX(), y - getContentOffset() - getOffsetY(), 0);
+	}
+	
+	public boolean isAnyControlFocused() {
+		return getFocusedControl() != null;
+	}
+	
+	public GuiControl getFocusedControl() {
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control instanceof GuiFocusControl && ((GuiFocusControl) control).focused)
+				return control;
+		}
+		if (getParent() != null)
+			return getParent().getFocusedControl();
+		return null;
 	}
 	
 	// ================Custom Events================
