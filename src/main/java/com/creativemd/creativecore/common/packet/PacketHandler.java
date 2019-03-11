@@ -77,9 +77,9 @@ public class PacketHandler {
 		sendQueuedMessage(player);
 	}
 	
-	public static void sendPacketToPlayers(CreativeCorePacket packet, List<EntityPlayerMP> players) {
-		for (int i = 0; i < players.size(); i++) {
-			sendPacketToPlayer(packet, players.get(i));
+	public static void sendPacketToPlayers(CreativeCorePacket packet, Iterable<? extends EntityPlayer> players) {
+		for (EntityPlayer player : players) {
+			sendPacketToPlayer(packet, (EntityPlayerMP) player);
 		}
 	}
 	
