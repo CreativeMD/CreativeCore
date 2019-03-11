@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.utils.mc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
@@ -64,6 +65,28 @@ public class InventoryUtils {
 		return basic;
 	}
 	
+	public static List<ItemStack> asList(IInventory inventory) {
+		List<ItemStack> stacks = new ArrayList<>();
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (!stack.isEmpty())
+				stacks.add(stack);
+		}
+		
+		return stacks;
+	}
+	
+	public static List<ItemStack> copy(IInventory inventory) {
+		List<ItemStack> stacks = new ArrayList<>();
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (!stack.isEmpty())
+				stacks.add(stack.copy());
+		}
+		
+		return stacks;
+	}
+	
 	public static boolean isItemStackEqual(ItemStack stackA, ItemStack stackB) {
 		
 		if (stackA.isEmpty() && stackB.isEmpty())
@@ -75,7 +98,7 @@ public class InventoryUtils {
 		if (stackA.getItem() != stackB.getItem())
 			return false;
 		
-		if (stackA.isItemEqual(stackB))
+		if (!stackA.isItemEqual(stackB))
 			return false;
 		
 		if (!stackA.hasTagCompound() && stackB.hasTagCompound())
@@ -85,19 +108,35 @@ public class InventoryUtils {
 	}
 	
 	public static boolean consumeItemStack(IInventory inventory, ItemStack stack) {
-		if (getAmount(inventory, stack) >= stack.getCount()) {
-			for (int i = 0; i < inventory.getSizeInventory(); i++) {
-				if (isItemStackEqual(inventory.getStackInSlot(i), stack)) {
-					int amount = Math.min(stack.getCount(), inventory.getStackInSlot(i).getCount());
-					if (amount > 0) {
-						inventory.getStackInSlot(i).shrink(amount);
-						if (inventory.getStackInSlot(i).isEmpty())
-							inventory.setInventorySlotContents(i, ItemStack.EMPTY);
-						stack.shrink(amount);
-					}
-					if (stack.isEmpty())
-						return true;
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			if (isItemStackEqual(inventory.getStackInSlot(i), stack)) {
+				int amount = Math.min(stack.getCount(), inventory.getStackInSlot(i).getCount());
+				if (amount > 0) {
+					inventory.getStackInSlot(i).shrink(amount);
+					stack.shrink(amount);
 				}
+				if (stack.isEmpty())
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean consumeItemStack(List<ItemStack> inventory, ItemStack stack) {
+		for (Iterator iterator = inventory.iterator(); iterator.hasNext();) {
+			ItemStack invStack = (ItemStack) iterator.next();
+			if (isItemStackEqual(invStack, stack)) {
+				int amount = Math.min(stack.getCount(), invStack.getCount());
+				if (amount > 0) {
+					invStack.shrink(amount);
+					stack.shrink(amount);
+				}
+				
+				if (invStack.isEmpty())
+					iterator.remove();
+				
+				if (stack.isEmpty())
+					return true;
 			}
 		}
 		return false;
