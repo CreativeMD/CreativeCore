@@ -18,6 +18,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class OptifineHelper {
@@ -25,6 +26,8 @@ public class OptifineHelper {
 	private static boolean active = FMLClientHandler.instance().hasOptifine();
 	
 	private static Minecraft mc = Minecraft.getMinecraft();
+	
+	private static boolean ltInstalled = Loader.isModLoaded("littletiles");
 	
 	private static ThreadLocal<Object> renderEnv;
 	
@@ -105,7 +108,8 @@ public class OptifineHelper {
 		if (!active || world == null || layer == null)
 			return quads;
 		try {
-			quads = (List<BakedQuad>) getCustomizedQuads.invoke(null, quads, world, state, pos, facing, layer, rand, getEnv(world, state, pos));
+			if (ltInstalled)
+				quads = (List<BakedQuad>) getCustomizedQuads.invoke(null, quads, world, state, pos, facing, layer, rand, getEnv(world, state, pos));
 			
 			int size = quads.size();
 			for (int i = 0; i < size; i++) {
