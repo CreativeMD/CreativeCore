@@ -194,17 +194,22 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	}
 	
 	public boolean isAnyControlFocused() {
-		return getFocusedControl() != null;
+		return getFocusedControl(true) != null;
 	}
 	
-	public GuiControl getFocusedControl() {
+	public GuiControl getFocusedControl(boolean parent) {
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
+			if (control instanceof GuiParent) {
+				GuiControl focused = ((GuiParent) control).getFocusedControl(false);
+				if (focused != null)
+					return focused;
+			}
 			if (control instanceof GuiFocusControl && ((GuiFocusControl) control).focused)
 				return control;
 		}
-		if (getParent() != null)
-			return getParent().getFocusedControl();
+		if (parent && getParent() != null)
+			return getParent().getFocusedControl(true);
 		return null;
 	}
 	
