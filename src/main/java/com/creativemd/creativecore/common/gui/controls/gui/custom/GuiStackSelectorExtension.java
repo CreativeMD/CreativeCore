@@ -48,7 +48,7 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 		if (search != null && !search.equals("")) {
 			for (Entry<String, ArrayList<ItemStack>> entry : ((GuiStackSelector) comboBox).getStacks().entrySet()) {
 				for (ItemStack stack : entry.getValue()) {
-					if (GuiStackSelectorAll.SearchSelector.getItemName(stack).toLowerCase().contains(search))
+					if (GuiStackSelectorAll.contains(search, stack))
 						stacks.add(entry.getKey(), stack);
 				}
 			}

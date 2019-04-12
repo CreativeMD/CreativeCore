@@ -9,6 +9,7 @@ import com.creativemd.creativecore.common.utils.type.HashMapList;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -139,25 +140,10 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 	
 	public static class SearchSelector extends StackSelector {
 		
-		public static String getItemName(ItemStack stack) {
-			String itemName = "";
-			try {
-				itemName = stack.getDisplayName();
-			} catch (Exception e) {
-				if (Block.getBlockFromItem(stack.getItem()) != null)
-					itemName = Block.REGISTRY.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString();
-				else
-					itemName = Item.REGISTRY.getNameForObject(stack.getItem()).toString();
-			}
-			return itemName;
-		}
-		
 		public String search = "";
 		
 		public boolean allow(ItemStack stack) {
-			if (search.equals(""))
-				return true;
-			return getItemName(stack).toLowerCase().contains(search);
+			return contains(search, stack);
 		}
 		
 	}
@@ -171,6 +157,31 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 			return false;
 		}
 		
+	}
+	
+	public static boolean contains(String search, ItemStack stack) {
+		if (search.equals(""))
+			return true;
+		if (getItemName(stack).toLowerCase().contains(search))
+			return true;
+		for (String line : stack.getTooltip(null, TooltipFlags.NORMAL))
+			if (line.toLowerCase().contains(search))
+				return true;
+			
+		return false;
+	}
+	
+	public static String getItemName(ItemStack stack) {
+		String itemName = "";
+		try {
+			itemName = stack.getDisplayName();
+		} catch (Exception e) {
+			if (Block.getBlockFromItem(stack.getItem()) != null)
+				itemName = Block.REGISTRY.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString();
+			else
+				itemName = Item.REGISTRY.getNameForObject(stack.getItem()).toString();
+		}
+		return itemName;
 	}
 	
 }
