@@ -9,6 +9,7 @@ import com.creativemd.creativecore.common.gui.client.style.ColoredDisplayStyle;
 import com.creativemd.creativecore.common.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.container.GuiParent;
+import com.creativemd.creativecore.common.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlEvent;
 import com.creativemd.creativecore.common.utils.math.SmoothValue;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
@@ -31,14 +32,16 @@ public class GuiTimeline extends GuiParent {
 	
 	public DisplayStyle timelineBackground = new ColoredDisplayStyle(255, 255, 255);
 	
+	public IAnimationHandler handler;
 	public List<TimelineChannel> channels;
 	public int sidebarWidth = 50;
 	private int channelHeight = 10;
 	private int timelineHeight = 11;
 	protected KeyControl dragged = null;
 	
-	public GuiTimeline(String name, int x, int y, int width, int height, int duration, List<TimelineChannel> channels) {
+	public GuiTimeline(String name, int x, int y, int width, int height, int duration, List<TimelineChannel> channels, IAnimationHandler handler) {
 		super(name, x, y, width, height);
+		this.handler = handler;
 		marginWidth = 0;
 		this.channels = channels;
 		int i = 0;
@@ -93,7 +96,8 @@ public class GuiTimeline extends GuiParent {
 					adjustKeyPositionX(dragged);
 				}
 			}
-		}
+		} else if (draggedTimeline)
+			handler.set(MathHelper.clamp((int) ((x - sidebarWidth + getTickWidth() / 2 + scrollX.current()) / getTickWidth()), 0, (int) duration));
 		
 		super.mouseMove(x, y, button);
 	}
@@ -101,6 +105,8 @@ public class GuiTimeline extends GuiParent {
 	private KeyControl selected = null;
 	private boolean movedSelected = false;
 	private int movedStart = 0;
+	
+	private boolean draggedTimeline = false;
 	
 	@Override
 	public boolean mousePressed(int x, int y, int button) {
@@ -114,15 +120,23 @@ public class GuiTimeline extends GuiParent {
 			}
 		}
 		
-		if (!result && selected == null && button == 1) {
+		if (!result && selected == null) {
 			int channel = getChannelAt(y);
-			if (channel != -1) {
+			if (channel != -1 && button == 1) {
 				int tick = getTickAt(x);
 				KeyControl control = channels.get(channel).addKey(tick, channels.get(channel).getValueAt(tick));
 				adjustKeyPositionX(control);
 				adjustKeyPositionY(control);
 				addControl(control);
+				raiseEvent(new GuiControlChangedEvent(this));
+			} else if (channel != -1) {
+				int tick = getTickAt(x);
+				if (tick > 0 && tick < duration) {
+					handler.set(tick);
+					draggedTimeline = true;
+				}
 			}
+			
 		}
 		
 		return result;
@@ -135,6 +149,7 @@ public class GuiTimeline extends GuiParent {
 			if (button == 1) {
 				((KeyControl) control).removeKey();
 				selected = null;
+				raiseEvent(new GuiControlChangedEvent(this));
 				return;
 			}
 			
@@ -159,7 +174,10 @@ public class GuiTimeline extends GuiParent {
 		if (dragged != null) {
 			dragged.channel.movedKey(dragged);
 			dragged = null;
+			raiseEvent(new GuiControlChangedEvent(this));
 		}
+		
+		draggedTimeline = false;
 	}
 	
 	public GuiTimeline setDuration(int duration) {
@@ -171,6 +189,7 @@ public class GuiTimeline extends GuiParent {
 		scrollX.setStart(0);
 		scrollY.setStart(0);
 		adjustKeysPositionX();
+		raiseEvent(new GuiControlChangedEvent(this));
 		return this;
 	}
 	
@@ -279,6 +298,12 @@ public class GuiTimeline extends GuiParent {
 		int stamps = ticks / smallestStep;
 		int begin = Math.max(0, stepOffset);
 		int end = stepOffset + stamps + 1;
+		
+		GlStateManager.pushMatrix();
+		int pointerWidth = Math.max((int) tickWidth, 1);
+		GlStateManager.translate(tickWidth * handler.get() - pointerWidth / 2D - scrollX.current(), -timelineHeight, 0);
+		new ColoredDisplayStyle(200, 200, 0, 150).renderStyle(helper, pointerWidth, timelineHeight);
+		GlStateManager.popMatrix();
 		
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(-scrollX.current() + begin * stepWidth, -2, 0);
