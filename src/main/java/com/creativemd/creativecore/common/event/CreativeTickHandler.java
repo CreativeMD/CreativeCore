@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
@@ -46,6 +47,16 @@ public class CreativeTickHandler {
 	
 	@SideOnly(Side.CLIENT)
 	public static ArrayList<CreativeCoreEventBus> ClientEvents;
+	
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onTick(ClientTickEvent tick) {
+		if (tick.phase == Phase.START) {
+			Minecraft mc = Minecraft.getMinecraft();
+			if (mc.player != null && mc.player.openContainer instanceof ContainerSub && ((ContainerSub) mc.player.openContainer).gui != null)
+				((GuiContainerSub) ((ContainerSub) mc.player.openContainer).gui).onTick();
+		}
+	}
 	
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent

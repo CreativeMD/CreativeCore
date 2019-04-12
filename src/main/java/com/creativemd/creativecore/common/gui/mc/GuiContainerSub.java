@@ -130,11 +130,16 @@ public class GuiContainerSub extends GuiContainer {
 		
 	}
 	
+	public void onTick() {
+		
+		for (int i = 0; i < layers.size(); i++)
+			layers.get(i).onTick();
+		
+	}
+	
 	@Override
 	public void drawGuiContainerForegroundLayer(int par1, int par2) {
 		for (int i = 0; i < layers.size(); i++) {
-			
-			layers.get(i).onTick();
 			
 			GL11.glDisable(GL11.GL_STENCIL_TEST);
 			GL11.glStencilMask(~0);
