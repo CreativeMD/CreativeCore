@@ -55,7 +55,7 @@ public interface IControlParent {
 	public default void moveControlToTop(CoreControl control) {
 		List controls = getControls();
 		if (controls.remove(control))
-			controls.add(1, control);
+			controls.add(0, control);
 		refreshControls();
 	}
 	
