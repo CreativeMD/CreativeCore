@@ -75,12 +75,6 @@ public class CreativeBakedModel implements IBakedModel {
 		return getBlockQuads(state, side, rand, false);
 	}
 	
-	/* public static boolean doesBlockHaveColor(Block block) {
-	 * if(block.getBlockLayer() == BlockRenderLayer.CUTOUT_MIPPED) return true;
-	 * Map<IRegistryDelegate<Block>, IBlockColor> blockColorMap =
-	 * ReflectionHelper.getPrivateValue(BlockColors.class, mc.getBlockColors(),
-	 * "blockColorMap"); return blockColorMap.containsKey(block.delegate); } */
-	
 	public static List<BakedQuad> getBlockQuads(List<? extends RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
 		for (int i = 0; i < cubes.size(); i++) {
 			RenderCubeObject cube = cubes.get(i);
@@ -118,7 +112,7 @@ public class CreativeBakedModel implements IBakedModel {
 			baked.addAll(cube.getBakedQuad(te != null ? te.getWorld() : null, te != null ? te.getPos() : null, cube.getOffset(), newState, blockModel, side, layer, rand, true, defaultColor));
 		}
 		
-		if (baked.size() > 0)
+		if (baked.size() > 0 && renderer != null)
 			renderer.saveCachedModel(side, layer, baked, state, te, stack, threaded);
 		return baked;
 	}
@@ -127,60 +121,7 @@ public class CreativeBakedModel implements IBakedModel {
 		return cube.getBakedQuad(world, pos, offset, state, blockModel, side, layer, rand, overrideTint, -1);
 	}
 	
-	/* public static List<BakedQuad> getBakedQuad(RenderCubeObject cube, CubeObject
-	 * uvCube, IBlockState state, IBakedModel blockModel, EnumFacing side, long
-	 * rand, boolean overrideTint, int defaultColor) { List<BakedQuad> blockQuads =
-	 * blockModel.getQuads(state, side, rand); if(blockQuads.isEmpty()) return
-	 * Collections.emptyList();
-	 * 
-	 * List<BakedQuad> quads = new ArrayList<>();
-	 * 
-	 * int color = cube.color != -1 ? cube.color : defaultColor; for(int i = 0; i <
-	 * blockQuads.size(); i++) { BakedQuad quad = new
-	 * CreativeBakedQuad(blockQuads.get(i), cube, color, overrideTint &&
-	 * (defaultColor == -1 || blockQuads.get(i).hasTintIndex()) && color != -1,
-	 * side); EnumFacing facing = side;
-	 * 
-	 * EnumFaceDirection direction = EnumFaceDirection.getFacing(facing);
-	 * 
-	 * for (int k = 0; k < 4; k++) { VertexInformation vertex =
-	 * direction.getVertexInformation(k);
-	 * 
-	 * int index = k * quad.getFormat().getIntegerSize(); float newX =
-	 * cube.getVertexInformationPosition(vertex.xIndex); float newY =
-	 * cube.getVertexInformationPosition(vertex.yIndex); float newZ =
-	 * cube.getVertexInformationPosition(vertex.zIndex);
-	 * 
-	 * quad.getVertexData()[index] = Float.floatToIntBits(newX);
-	 * quad.getVertexData()[index+1] = Float.floatToIntBits(newY);
-	 * quad.getVertexData()[index+2] = Float.floatToIntBits(newZ);
-	 * 
-	 * if(cube.keepVU) continue;
-	 * 
-	 * int uvIndex = index + quad.getFormat().getUvOffsetById(0) / 4;
-	 * 
-	 * newX = uvCube.getVertexInformationPosition(vertex.xIndex); newY =
-	 * uvCube.getVertexInformationPosition(vertex.yIndex); newZ =
-	 * uvCube.getVertexInformationPosition(vertex.zIndex);
-	 * 
-	 * float uMin = 0; float uMax = 1; float vMin = 0; float vMax = 1;
-	 * 
-	 * float u = uMin; float v = vMin; switch(facing) { case EAST: newY = vMax-newY;
-	 * newZ = uMax-newZ; case WEST: if(facing == EnumFacing.WEST) newY = vMax-newY;
-	 * u = newZ; v = newY; break; case DOWN: newZ = vMax-newZ; case UP: u = newX; v
-	 * = newZ; break; case NORTH: newY = vMax-newY; newX = uMax-newX; case SOUTH:
-	 * if(facing == EnumFacing.SOUTH) newY = vMax-newY; u = newX; v = newY; break; }
-	 * 
-	 * u *= 16; v *= 16;
-	 * 
-	 * quad.getVertexData()[uvIndex] =
-	 * Float.floatToRawIntBits(quad.getSprite().getInterpolatedU(u));
-	 * quad.getVertexData()[uvIndex + 1] =
-	 * Float.floatToRawIntBits(quad.getSprite().getInterpolatedV(v)); }
-	 * quads.add(quad); } return quads; } */
-	
 	public static List<BakedQuad> getBlockQuads(IBlockState state, EnumFacing side, long rand, boolean threaded) {
-		// long time = System.nanoTime();
 		ArrayList<BakedQuad> baked = new ArrayList<>();
 		
 		Block renderBlock = null;
@@ -209,7 +150,6 @@ public class CreativeBakedModel implements IBakedModel {
 		if (renderer != null) {
 			List<BakedQuad> cached = renderer.getCachedModel(side, layer, state, te, stack, threaded);
 			if (cached != null) {
-				// System.out.println("done in " + (System.nanoTime()-time));
 				return cached;
 			}
 			cubes = renderer.getRenderingCubes(state, te, stack);
@@ -218,7 +158,6 @@ public class CreativeBakedModel implements IBakedModel {
 		if (cubes != null) {
 			return getBlockQuads(cubes, baked, renderer, side, state, layer, renderBlock, te, rand, stack, threaded);
 		}
-		// System.out.println("Rerendered everything in " + (System.nanoTime()-time));
 		return baked;
 	}
 	
@@ -266,7 +205,6 @@ public class CreativeBakedModel implements IBakedModel {
 		builder.put(TransformType.THIRD_PERSON_LEFT_HAND, leftify(thirdperson));
 		builder.put(TransformType.FIRST_PERSON_RIGHT_HAND, get(0, 0, 0, 0, 45, 0, 0.4f));
 		builder.put(TransformType.FIRST_PERSON_LEFT_HAND, get(0, 0, 0, 0, 225, 0, 0.4f));
-		// ret.state = Optional.<IModelState>of(new SimpleModelState(builder.build()));
 		IModelState perState = new SimpleModelState(ImmutableMap.copyOf(builder.build()));
 		baseState = perState.apply(Optional.empty()).orElse(TRSRTransformation.identity());
 		cameraTransforms = ImmutableMap.copyOf(builder.build());
@@ -289,14 +227,11 @@ public class CreativeBakedModel implements IBakedModel {
 				renderer.applyCustomOpenGLHackery(lastItemStack, cameraTransformType);
 		}
 		
-		// Pair<? extends IBakedModel, Matrix4f> pair = ((IPerspectiveAwareModel)
-		// mc.getBlockRendererDispatcher().getModelForState(Blocks.PLANKS.getDefaultState())).handlePerspective(cameraTransformType);
 		TRSRTransformation tr = cameraTransforms.get(cameraTransformType);
 		Matrix4f mat = null;
 		if (tr != null && !tr.equals(TRSRTransformation.identity()))
 			mat = TRSRTransformation.blockCornerToCenter(tr).getMatrix();
 		return Pair.of(this, mat);
-		// return Pair.of(this, cameraTransforms.get(cameraTransformType).getMatrix());
 	}
 	
 	@Override
