@@ -13,7 +13,7 @@ public class GuiComboBoxExtension extends GuiListBox {
 	public GuiComboBoxExtension(String name, GuiComboBox comboBox, int x, int y, int width, int height, List<String> lines) {
 		super(name, x, y, width, height, lines);
 		this.comboBox = comboBox;
-		this.selected = lines.indexOf(comboBox.caption);
+		this.selected = comboBox.index;
 		reloadControls();
 	}
 	

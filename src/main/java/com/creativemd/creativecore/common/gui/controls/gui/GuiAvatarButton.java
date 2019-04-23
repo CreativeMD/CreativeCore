@@ -12,7 +12,7 @@ public abstract class GuiAvatarButton extends GuiAvatarLabelClickable {
 	}
 	
 	public GuiAvatarButton(String name, String caption, int x, int y, int width, int height, Avatar avatar) {
-		super(name, caption, x, y, ColorUtils.WHITE, avatar);
+		super(name, caption, x, y, ColorUtils.WHITE, avatar, true);
 		this.width = width + getContentOffset() * 2;
 		this.height = height + getContentOffset() * 2;
 	}

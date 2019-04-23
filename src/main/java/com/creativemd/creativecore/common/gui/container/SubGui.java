@@ -4,7 +4,9 @@ import com.creativemd.creativecore.common.event.CreativeCoreEventBus;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.event.ControlEvent;
+import com.creativemd.creativecore.common.gui.mc.ContainerSub;
 import com.creativemd.creativecore.common.gui.mc.GuiContainerSub;
+import com.creativemd.creativecore.common.gui.premade.SubContainerEmpty;
 import com.creativemd.creativecore.common.gui.premade.SubGuiDialog;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
@@ -45,6 +47,18 @@ public abstract class SubGui extends GuiParent {
 	
 	public int getLayerID() {
 		return gui.getLayers().indexOf(this);
+	}
+	
+	public void openNonSyncedLayer(SubGui gui) {
+		gui.container = new SubContainerEmpty(getPlayer());
+		gui.container.container = (ContainerSub) this.gui.inventorySlots;
+		gui.gui = this.gui;
+		gui.onOpened();
+		this.gui.addLayer(gui);
+		
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setBoolean("newNonSyncedLayer", true);
+		sendPacketToServer(nbt);
 	}
 	
 	public void openNewLayer(NBTTagCompound nbt) {

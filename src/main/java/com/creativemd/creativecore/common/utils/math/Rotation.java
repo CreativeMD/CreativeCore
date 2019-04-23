@@ -92,6 +92,30 @@ public enum Rotation {
 		RotationUtils.setValue(vec, direction, axis);
 	}
 	
+	public boolean negativeX() {
+		return rotationMatrix.m00 != 0 ? rotationMatrix.m00 < 0 : (rotationMatrix.m01 != 0 ? rotationMatrix.m01 < 0 : rotationMatrix.m02 < 0);
+	}
+	
+	public <T> T getX(T x, T y, T z) {
+		return rotationMatrix.m00 != 0 ? x : (rotationMatrix.m01 != 0 ? y : z);
+	}
+	
+	public boolean negativeY() {
+		return rotationMatrix.m10 != 0 ? rotationMatrix.m10 < 0 : (rotationMatrix.m11 != 0 ? rotationMatrix.m11 < 0 : rotationMatrix.m12 < 0);
+	}
+	
+	public <T> T getY(T x, T y, T z) {
+		return rotationMatrix.m10 != 0 ? x : (rotationMatrix.m11 != 0 ? y : z);
+	}
+	
+	public boolean negativeZ() {
+		return rotationMatrix.m20 != 0 ? rotationMatrix.m20 < 0 : (rotationMatrix.m21 != 0 ? rotationMatrix.m21 < 0 : rotationMatrix.m22 < 0);
+	}
+	
+	public <T> T getZ(T x, T y, T z) {
+		return rotationMatrix.m20 != 0 ? x : (rotationMatrix.m21 != 0 ? y : z);
+	}
+	
 	public Vector3d getVec() {
 		return new Vector3d(vec);
 	}

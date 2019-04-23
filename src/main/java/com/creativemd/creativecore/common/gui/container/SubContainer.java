@@ -132,6 +132,17 @@ public abstract class SubContainer extends ContainerParent {
 		}
 	}
 	
+	@Override
+	public void receivePacket(NBTTagCompound nbt) {
+		if (nbt.getBoolean("newNonSyncedLayer")) {
+			SubContainer newContainer = new SubContainerEmpty(player);
+			newContainer.container = container;
+			container.layers.add(newContainer);
+			return;
+		}
+		super.receivePacket(nbt);
+	}
+	
 	// ================Helper================
 	
 	@Override
@@ -144,11 +155,9 @@ public abstract class SubContainer extends ContainerParent {
 	public abstract void createControls();
 	
 	// ================Controls================
-	/**
-	 * If two players are looking into the same inventory (TileEntity). NOTE: Does
+	/** If two players are looking into the same inventory (TileEntity). NOTE: Does
 	 * only work for tileEntities because it uses the coordinates to identify a
-	 * container
-	 */
+	 * container */
 	@Override
 	public void updateEqualContainers() {
 		
