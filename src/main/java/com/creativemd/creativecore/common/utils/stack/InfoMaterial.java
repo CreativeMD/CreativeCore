@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,17 +49,25 @@ public class InfoMaterial extends InfoStack {
 			material = block.getDefaultState().getMaterial();
 	}
 	
+	public IBlockState getBlockState(ItemStack stack) {
+		Block block = Block.getBlockFromItem(stack.getItem());
+		try {
+			if (block != null)
+				return block.getStateFromMeta(stack.getMetadata());
+			return null;
+		} catch (Exception e) {
+			return block.getDefaultState();
+		}
+	}
+	
 	@Override
 	public boolean isInstanceIgnoreSize(InfoStack info) {
 		if (info instanceof InfoMaterial)
 			return ((InfoMaterial) info).material == material;
 		if (info instanceof InfoBlock)
 			return ((InfoBlock) info).block.getDefaultState().getMaterial() == material;
-		if (info instanceof InfoItemStack) {
-			Block block = Block.getBlockFromItem(((InfoItemStack) info).stack.getItem());
-			if (block != null)
-				return block.getStateFromMeta(((InfoItemStack) info).stack.getMetadata()).getMaterial() == material;
-		}
+		if (info instanceof InfoItemStack)
+			return getBlockState(((InfoItemStack) info).stack).getMaterial() == material;
 		return false;
 	}
 	
@@ -90,10 +98,7 @@ public class InfoMaterial extends InfoStack {
 	
 	@Override
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
-		Block block = Block.getBlockFromItem(stack.getItem());
-		if (block != null && !(block instanceof BlockAir))
-			return block.getStateFromMeta(stack.getMetadata()).getMaterial() == material;
-		return false;
+		return getBlockState(stack).getMaterial() == material;
 	}
 	
 	@Override
