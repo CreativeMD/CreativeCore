@@ -102,4 +102,10 @@ public class SubWorld extends CreativeWorld {
 		return parentWorld;
 	}
 	
+	public World getRealWorld() {
+		if (parentWorld instanceof SubWorld)
+			return ((SubWorld) parentWorld).getRealWorld();
+		return parentWorld;
+	}
+	
 }
