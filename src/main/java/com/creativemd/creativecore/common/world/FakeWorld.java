@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.world;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
+import com.creativemd.creativecore.common.utils.math.vec.VecOrigin;
 
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
@@ -108,8 +109,8 @@ public class FakeWorld extends CreativeWorld {
 	}
 	
 	@Override
-	public void setOrigin(IVecOrigin origin) {
-		this.origin = origin;
+	public void setOrigin(Vector3d vec) {
+		this.origin = new VecOrigin(vec);
 	}
 	
 	@Override

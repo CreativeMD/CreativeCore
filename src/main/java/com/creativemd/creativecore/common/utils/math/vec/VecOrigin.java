@@ -11,7 +11,7 @@ public class VecOrigin implements IVecOrigin {
 	
 	protected boolean rotated = false;
 	
-	public final Vector3d center;
+	private Vector3d center;
 	private Vector3d translation = new Vector3d(0, 0, 0);
 	private Matrix3d rotation = MatrixUtils.createIdentityMatrix();
 	private Matrix3d rotationInv = rotation;
@@ -139,6 +139,11 @@ public class VecOrigin implements IVecOrigin {
 	@Override
 	public Vector3d translation() {
 		return translation;
+	}
+	
+	@Override
+	public void setCenter(Vector3d vec) {
+		this.center.set(vec);
 	}
 	
 }

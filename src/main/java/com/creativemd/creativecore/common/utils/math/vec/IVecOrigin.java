@@ -43,6 +43,8 @@ public interface IVecOrigin {
 	
 	public Vector3d center();
 	
+	public void setCenter(Vector3d vec);
+	
 	public Matrix3d rotation();
 	
 	public Matrix3d rotationInv();
@@ -75,11 +77,8 @@ public interface IVecOrigin {
 		
 		for (int i = 0; i < BoxUtils.BoxCorner.values().length; i++) {
 			Vector3d vec = BoxCorner.values()[i].getVector(box);
-			vec.sub(center());
-			rotation().transform(vec);
-			vec.add(center());
 			
-			vec.add(translation());
+			transformPointToWorld(vec);
 			
 			minX = Math.min(minX, vec.x);
 			minY = Math.min(minY, vec.y);
@@ -103,11 +102,7 @@ public interface IVecOrigin {
 		for (int i = 0; i < BoxUtils.BoxCorner.values().length; i++) {
 			Vector3d vec = BoxCorner.values()[i].getVector(box);
 			
-			vec.sub(translation());
-			
-			vec.sub(center());
-			rotationInv().transform(vec);
-			vec.add(center());
+			transformPointToFakeWorld(vec);
 			
 			minX = Math.min(minX, vec.x);
 			minY = Math.min(minY, vec.y);

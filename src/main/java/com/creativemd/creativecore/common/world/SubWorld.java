@@ -2,7 +2,9 @@ package com.creativemd.creativecore.common.world;
 
 import javax.vecmath.Vector3d;
 
+import com.creativemd.creativecore.common.utils.math.vec.ChildVecOrigin;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
+import com.creativemd.creativecore.common.utils.math.vec.VecOrigin;
 
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
@@ -88,8 +90,10 @@ public class SubWorld extends CreativeWorld {
 	}
 	
 	@Override
-	public void setOrigin(IVecOrigin origin) {
-		this.origin = origin;
+	public void setOrigin(Vector3d center) {
+		if (parentWorld instanceof IOrientatedWorld)
+			this.origin = new ChildVecOrigin(((IOrientatedWorld) parentWorld).getOrigin(), center);
+		this.origin = new VecOrigin(center);
 	}
 	
 	@Override
