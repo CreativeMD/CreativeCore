@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -70,6 +72,14 @@ public abstract class CreativeCorePacket {
 	
 	public static BlockPos readPos(ByteBuf buf) {
 		return new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+	}
+	
+	public static void writeState(ByteBuf buf, IBlockState state) {
+		buf.writeInt(Block.getStateId(state));
+	}
+	
+	public static IBlockState readState(ByteBuf buf) {
+		return Block.getStateById(buf.readInt());
 	}
 	
 	public static void writeNBT(ByteBuf buf, NBTTagCompound nbt) {
