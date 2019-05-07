@@ -8,6 +8,7 @@ import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
 
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
 public interface IVecOrigin {
 	
@@ -65,6 +66,18 @@ public interface IVecOrigin {
 		vec.sub(center());
 		rotationInv().transform(vec);
 		vec.add(center());
+	}
+	
+	public default Vec3d transformPointToWorld(Vec3d vec) {
+		Vector3d real = new Vector3d(vec.x, vec.y, vec.z);
+		transformPointToWorld(real);
+		return new Vec3d(real.x, real.y, real.z);
+	}
+	
+	public default Vec3d transformPointToFakeWorld(Vec3d vec) {
+		Vector3d real = new Vector3d(vec.x, vec.y, vec.z);
+		transformPointToFakeWorld(real);
+		return new Vec3d(real.x, real.y, real.z);
 	}
 	
 	public default AxisAlignedBB getAxisAlignedBox(AxisAlignedBB box) {
