@@ -8,22 +8,21 @@ import net.minecraft.item.ItemStack;
 public abstract class SubContainerHeldItem extends SubContainer {
 	
 	public ItemStack stack;
-	public int currentIndex;
+	public int index;
 	
-	public SubContainerHeldItem(EntityPlayer player) {
+	public SubContainerHeldItem(EntityPlayer player, ItemStack stack, int index) {
 		super(player);
-		this.currentIndex = player.inventory.currentItem;
-		this.stack = player.getHeldItemMainhand();
+		this.stack = stack;
 	}
 	
 	@Override
 	public void addPlayerSlotsToContainer(EntityPlayer player) {
-		addPlayerSlotsToContainer(player, currentIndex);
+		addPlayerSlotsToContainer(player, index);
 	}
 	
 	@Override
 	public void addPlayerSlotsToContainer(EntityPlayer player, int x, int y) {
-		addPlayerSlotsToContainer(player, x, y, currentIndex);
+		addPlayerSlotsToContainer(player, x, y, index);
 	}
 	
 }
