@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.common.packet;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -14,6 +15,11 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.EnumConnectionState;
+import net.minecraft.network.EnumPacketDirection;
+import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -143,6 +149,29 @@ public abstract class CreativeCorePacket {
 	
 	public static void writeFacing(ByteBuf buf, EnumFacing facing) {
 		buf.writeInt(facing.getIndex());
+	}
+	
+	public static void writePacket(ByteBuf buf, Packet<?> packet) {
+		EnumConnectionState state = EnumConnectionState.getFromPacket(packet);
+		buf.writeInt(state.getId());
+		try {
+			buf.writeInt(state.getPacketId(EnumPacketDirection.SERVERBOUND, packet));
+			packet.writePacketData(new PacketBuffer(buf));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static Packet<?> readPacket(ByteBuf buf) {
+		Packet<?> packet;
+		EnumConnectionState state = EnumConnectionState.getById(buf.readInt());
+		try {
+			packet = (SPacketUpdateTileEntity) state.getPacket(EnumPacketDirection.SERVERBOUND, buf.readInt());
+			packet.readPacketData(new PacketBuffer(buf));
+		} catch (InstantiationException | IllegalAccessException | IOException e) {
+			throw new RuntimeException(e);
+		}
+		return packet;
 	}
 	
 	/*
