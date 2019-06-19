@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SubWorld extends CreativeWorld {
 	
-	public final World parentWorld;
+	public World parentWorld;
 	public IVecOrigin origin;
 	
 	@SideOnly(Side.CLIENT)
@@ -93,7 +93,8 @@ public class SubWorld extends CreativeWorld {
 	public void setOrigin(Vector3d center) {
 		if (parentWorld instanceof IOrientatedWorld)
 			this.origin = new ChildVecOrigin(((IOrientatedWorld) parentWorld).getOrigin(), center);
-		this.origin = new VecOrigin(center);
+		else
+			this.origin = new VecOrigin(center);
 	}
 	
 	@Override

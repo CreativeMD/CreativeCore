@@ -16,6 +16,11 @@ public class UUIDSupplier {
 		this.uuid = uuid;
 	}
 	
+	public UUIDSupplier(UUID original, UUID uuid) {
+		this.original = original;
+		this.uuid = uuid;
+	}
+	
 	public UUID original() {
 		return original;
 	}

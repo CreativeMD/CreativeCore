@@ -111,17 +111,21 @@ public class BoxUtils {
 		}
 	}
 	
-	public static AxisAlignedBB getRotatedSurrounding(AxisAlignedBB box, Vector3d rotationCenter, Matrix3d initRotation, Vector3d initTranslation, Matrix3d addRotX, double rotX, Matrix3d addRotY, double rotY, Matrix3d addRotZ, double rotZ, Vector3d additionalTranslation) {
+	public static AxisAlignedBB getRotatedSurrounding(AxisAlignedBB box, IVecOrigin origin, Matrix3d addRotX, double rotX, Matrix3d addRotY, double rotY, Matrix3d addRotZ, double rotZ, Vector3d additionalTranslation) {
 		Vector3d[] corners = getCorners(box);
 		
 		Box bb = new Box();
 		
 		for (int i = 0; i < corners.length; i++) {
 			Vector3d vec = corners[i];
-			vec.sub(rotationCenter);
 			
 			// Apply initial rotation
-			initRotation.transform(vec);
+			origin.transformPointToWorld(vec);
+			
+			// Remove translation
+			vec.sub(origin.translation());
+			
+			vec.sub(origin.center());
 			bb.include(vec);
 			
 			// Additional rotation and translation
@@ -135,45 +139,20 @@ public class BoxUtils {
 			bb.include(vec);
 		}
 		
-		bb.translate(rotationCenter);
-		bb.translate(initTranslation);
+		bb.translate(origin.center());
+		bb.translate(origin.translation());
 		
 		return bb.getAxisBB();
 	}
 	
-	public static Vector3d[] getRotatedCorners(AxisAlignedBB box, Vector3d rotationCenter, Matrix3d rotation, Vector3d translation) {
+	public static Vector3d[] getRotatedCorners(AxisAlignedBB box, IVecOrigin origin) {
 		Vector3d[] corners = getCorners(box);
 		for (int i = 0; i < corners.length; i++) {
 			Vector3d vec = corners[i];
-			vec.sub(rotationCenter);
-			rotation.transform(vec);
-			vec.add(rotationCenter);
-			
-			vec.add(translation);
+			origin.transformPointToWorld(vec);
 		}
 		return corners;
 	}
-	
-	/*
-	 * public static AxisAlignedBB getRotated(AxisAlignedBB box, Vector3d
-	 * rotationCenter, Matrix3d rotation, Vector3d translation) { Vector3d[] corners
-	 * = getCorners(box);
-	 * 
-	 * double minX = Double.MAX_VALUE; double minY = Double.MAX_VALUE; double minZ =
-	 * Double.MAX_VALUE; double maxX = -Double.MAX_VALUE; double maxY =
-	 * -Double.MAX_VALUE; double maxZ = -Double.MAX_VALUE;
-	 * 
-	 * for (int i = 0; i < corners.length; i++) { Vector3d vec = corners[i];
-	 * vec.sub(rotationCenter); rotation.transform(vec); vec.add(rotationCenter);
-	 * 
-	 * vec.add(translation);
-	 * 
-	 * minX = Math.min(minX, vec.x); minY = Math.min(minY, vec.y); minZ =
-	 * Math.min(minZ, vec.z); maxX = Math.max(maxX, vec.x); maxY = Math.max(maxY,
-	 * vec.y); maxZ = Math.max(maxZ, vec.z); }
-	 * 
-	 * return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ); }
-	 */
 	
 	public static Vector3d[] getOuterCorner(EnumFacing facing, IVecOrigin origin, AxisAlignedBB box) {
 		Vector3d[] corners = getCorners(box);
@@ -183,17 +162,9 @@ public class BoxUtils {
 		BoxCorner selected = null;
 		Axis axis = facing.getAxis();
 		
-		Matrix3d rotation = origin.rotation();
-		Vector3d rotationCenter = origin.center();
-		Vector3d translation = origin.translation();
-		
 		for (int i = 0; i < corners.length; i++) {
 			Vector3d vec = corners[i];
-			vec.sub(rotationCenter);
-			rotation.transform(vec);
-			vec.add(rotationCenter);
-			
-			vec.add(translation);
+			origin.transformPointToWorld(vec);
 			
 			double vectorValue = RotationUtils.get(axis, vec);
 			if (selected == null || (positive ? vectorValue > value : vectorValue < value)) {
@@ -202,7 +173,8 @@ public class BoxUtils {
 			}
 		}
 		
-		return new Vector3d[] { corners[selected.ordinal()], corners[selected.neighborOne.ordinal()], corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree.ordinal()] };
+		return new Vector3d[] { corners[selected.ordinal()], corners[selected.neighborOne.ordinal()],
+		        corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree.ordinal()] };
 	}
 	
 	private static class Box {

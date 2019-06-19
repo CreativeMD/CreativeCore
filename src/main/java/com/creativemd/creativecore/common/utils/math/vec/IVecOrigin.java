@@ -3,12 +3,19 @@ package com.creativemd.creativecore.common.utils.math.vec;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
+import org.lwjgl.opengl.GL11;
+
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
 
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IVecOrigin {
 	
@@ -23,6 +30,18 @@ public interface IVecOrigin {
 	public double rotY();
 	
 	public double rotZ();
+	
+	public double offXLast();
+	
+	public double offYLast();
+	
+	public double offZLast();
+	
+	public double rotXLast();
+	
+	public double rotYLast();
+	
+	public double rotZLast();
 	
 	public boolean isRotated();
 	
@@ -51,6 +70,8 @@ public interface IVecOrigin {
 	public Matrix3d rotationInv();
 	
 	public Vector3d translation();
+	
+	public void tick();
 	
 	public default void transformPointToWorld(Vector3d vec) {
 		vec.sub(center());
@@ -126,6 +147,39 @@ public interface IVecOrigin {
 		}
 		
 		return new OrientatedBoundingBox(this, minX, minY, minZ, maxX, maxY, maxZ);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public default void setupRenderingInternal(Entity entity, float partialTicks) {
+		double rotX = rotXLast() + (rotX() - rotXLast()) * (double) partialTicks;
+		double rotY = rotYLast() + (rotY() - rotYLast()) * (double) partialTicks;
+		double rotZ = rotZLast() + (rotZ() - rotZLast()) * (double) partialTicks;
+		
+		double offX = offXLast() + (offX() - offXLast()) * (double) partialTicks;
+		double offY = offYLast() + (offY() - offYLast()) * (double) partialTicks;
+		double offZ = offZLast() + (offZ() - offZLast()) * (double) partialTicks;
+		
+		Vector3d rotationCenter = center();
+		
+		GlStateManager.translate(offX, offY, offZ);
+		
+		GlStateManager.translate(rotationCenter.x, rotationCenter.y, rotationCenter.z);
+		
+		GL11.glRotated(rotX, 1, 0, 0);
+		GL11.glRotated(rotY, 0, 1, 0);
+		GL11.glRotated(rotZ, 0, 0, 1);
+		
+		GlStateManager.translate(-rotationCenter.x, -rotationCenter.y, -rotationCenter.z);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public default void setupRendering(Entity entity, float partialTicks) {
+		GlStateManager.translate(-TileEntityRendererDispatcher.staticPlayerX, -TileEntityRendererDispatcher.staticPlayerY, -TileEntityRendererDispatcher.staticPlayerZ);
+		setupRenderingInternal(entity, partialTicks);
+	}
+	
+	public default boolean hasChanged() {
+		return offXLast() != offX() || offYLast() != offY() || offZLast() != offZ() || rotXLast() != rotX() || rotYLast() != rotY() || rotZLast() != rotZ();
 	}
 	
 }

@@ -19,10 +19,16 @@ public class VecOrigin implements IVecOrigin {
 	protected double rotX;
 	protected double rotY;
 	protected double rotZ;
+	protected double rotXLast;
+	protected double rotYLast;
+	protected double rotZLast;
 	
 	protected double offsetX;
 	protected double offsetY;
 	protected double offsetZ;
+	protected double offsetXLast;
+	protected double offsetYLast;
+	protected double offsetZLast;
 	
 	@Override
 	public double offX() {
@@ -144,6 +150,46 @@ public class VecOrigin implements IVecOrigin {
 	@Override
 	public void setCenter(Vector3d vec) {
 		this.center.set(vec);
+	}
+	
+	@Override
+	public double offXLast() {
+		return offsetXLast;
+	}
+	
+	@Override
+	public double offYLast() {
+		return offsetYLast;
+	}
+	
+	@Override
+	public double offZLast() {
+		return offsetZLast;
+	}
+	
+	@Override
+	public double rotXLast() {
+		return rotXLast;
+	}
+	
+	@Override
+	public double rotYLast() {
+		return rotYLast;
+	}
+	
+	@Override
+	public double rotZLast() {
+		return rotZLast;
+	}
+	
+	@Override
+	public void tick() {
+		rotXLast = rotX;
+		rotYLast = rotY;
+		rotZLast = rotZ;
+		offsetXLast = offsetX;
+		offsetYLast = offsetY;
+		offsetZLast = offsetZ;
 	}
 	
 }
