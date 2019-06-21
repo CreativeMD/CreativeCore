@@ -506,4 +506,20 @@ public class GuiTextfield extends GuiFocusControl {
 		}
 	}
 	
+	public float parseFloat() {
+		try {
+			return Float.parseFloat(text);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+	
+	public int parseInteger() {
+		try {
+			return Integer.parseInt(text);
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+	
 }
