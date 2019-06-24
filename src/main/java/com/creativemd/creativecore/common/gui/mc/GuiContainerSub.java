@@ -168,12 +168,14 @@ public class GuiContainerSub extends GuiContainer {
 			
 			layers.get(i).renderControl(GuiRenderHelper.instance, 1F, GuiControl.getScreenRect());
 			
-			GlStateManager.popMatrix();
+			if (i == layers.size() - 1) {
+				Vec3d mouse = layers.get(i).getMousePos();
+				GuiToolTipEvent event = layers.get(i).getToolTipEvent();
+				if (event != null && layers.get(i).raiseEvent(event))
+					this.drawHoveringText(event.tooltip, (int) mouse.x, (int) mouse.y, GuiRenderHelper.instance.font);
+			}
 			
-			Vec3d mouse = layers.get(i).getMousePos();
-			GuiToolTipEvent event = layers.get(i).getToolTipEvent();
-			if (event != null && layers.get(i).raiseEvent(event))
-				this.drawHoveringText(event.tooltip, (int) mouse.x, (int) mouse.y, GuiRenderHelper.instance.font);
+			GlStateManager.popMatrix();
 		}
 	}
 	
