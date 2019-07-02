@@ -38,7 +38,7 @@ public abstract class TimelineChannel<T> {
 			KeyControl other = controls.get(i);
 			
 			if (other.tick == tick)
-				return other;
+				return null;
 			
 			if (other.tick > tick) {
 				controls.add(i, control);
@@ -119,8 +119,8 @@ public abstract class TimelineChannel<T> {
 		
 		@Override
 		protected Integer getValueAt(KeyControl<Integer> before, KeyControl<Integer> after, double percentage) {
-			int dif = (int) after.value - (int) before.value;
-			double current = dif * percentage + ((int) before.value);
+			int dif = after.value - before.value;
+			double current = dif * percentage + (before.value);
 			return (int) current;
 		}
 		

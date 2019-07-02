@@ -97,7 +97,7 @@ public class GuiTimeline extends GuiParent {
 				}
 			}
 		} else if (draggedTimeline)
-			handler.set(MathHelper.clamp((int) ((x - sidebarWidth + getTickWidth() / 2 + scrollX.current()) / getTickWidth()), 0, (int) duration));
+			handler.set(MathHelper.clamp((int) ((x - sidebarWidth + getTickWidth() / 2 + scrollX.current()) / getTickWidth()), 0, duration));
 		
 		super.mouseMove(x, y, button);
 	}
@@ -125,6 +125,8 @@ public class GuiTimeline extends GuiParent {
 			if (channel != -1 && button == 1) {
 				int tick = getTickAt(x);
 				KeyControl control = channels.get(channel).addKey(tick, channels.get(channel).getValueAt(tick));
+				if (control == null)
+					return result;
 				adjustKeyPositionX(control);
 				adjustKeyPositionY(control);
 				addControl(control);
@@ -147,6 +149,8 @@ public class GuiTimeline extends GuiParent {
 		if (control instanceof KeyControl) {
 			
 			if (button == 1) {
+				if (!((KeyControl) control).modifiable)
+					return;
 				((KeyControl) control).removeKey();
 				selected = null;
 				raiseEvent(new GuiControlChangedEvent(this));
@@ -226,13 +230,13 @@ public class GuiTimeline extends GuiParent {
 	public int getTickAt(int x) {
 		if (x <= sidebarWidth)
 			return -1;
-		return MathHelper.clamp((int) ((x - sidebarWidth + getTickWidth() / 2 + scrollX.current()) / getTickWidth()), 0, (int) duration);
+		return MathHelper.clamp((int) ((x - sidebarWidth + getTickWidth() / 2 + scrollX.current()) / getTickWidth()), 0, duration);
 	}
 	
 	public int getTickAtAimed(int x) {
 		if (x <= sidebarWidth)
 			return -1;
-		return MathHelper.clamp((int) ((x - sidebarWidth + getTickWidth() / 2 + scrollX.aimed()) / getTickWidthAimed()), 0, (int) duration);
+		return MathHelper.clamp((int) ((x - sidebarWidth + getTickWidth() / 2 + scrollX.aimed()) / getTickWidthAimed()), 0, duration);
 	}
 	
 	private double lastZoom = 0;
