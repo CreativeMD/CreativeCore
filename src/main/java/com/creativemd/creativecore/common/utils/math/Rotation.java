@@ -92,6 +92,60 @@ public enum Rotation {
 		RotationUtils.setValue(vec, direction, axis);
 	}
 	
+	public boolean getRotatedComponentPositive(Axis axis) {
+		switch (axis) {
+		case X:
+			if (rotationMatrix.m00 != 0)
+				return rotationMatrix.m00 > 0;
+			else if (rotationMatrix.m10 != 0)
+				return rotationMatrix.m10 > 0;
+			else
+				return rotationMatrix.m20 > 0;
+		case Y:
+			if (rotationMatrix.m01 != 0)
+				return rotationMatrix.m01 > 0;
+			else if (rotationMatrix.m11 != 0)
+				return rotationMatrix.m11 > 0;
+			else
+				return rotationMatrix.m21 > 0;
+		case Z:
+			if (rotationMatrix.m02 != 0)
+				return rotationMatrix.m02 > 0;
+			else if (rotationMatrix.m12 != 0)
+				return rotationMatrix.m12 > 0;
+			else
+				return rotationMatrix.m22 > 0;
+		}
+		return true;
+	}
+	
+	public Axis getRotatedComponent(Axis axis) {
+		switch (axis) {
+		case X:
+			if (rotationMatrix.m00 != 0)
+				return Axis.X;
+			else if (rotationMatrix.m10 != 0)
+				return Axis.Y;
+			else
+				return Axis.Z;
+		case Y:
+			if (rotationMatrix.m01 != 0)
+				return Axis.X;
+			else if (rotationMatrix.m11 != 0)
+				return Axis.Y;
+			else
+				return Axis.Z;
+		case Z:
+			if (rotationMatrix.m02 != 0)
+				return Axis.X;
+			else if (rotationMatrix.m12 != 0)
+				return Axis.Y;
+			else
+				return Axis.Z;
+		}
+		return axis;
+	}
+	
 	public boolean negativeX() {
 		return rotationMatrix.m00 != 0 ? rotationMatrix.m00 < 0 : (rotationMatrix.m01 != 0 ? rotationMatrix.m01 < 0 : rotationMatrix.m02 < 0);
 	}
