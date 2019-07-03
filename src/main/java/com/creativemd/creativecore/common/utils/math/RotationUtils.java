@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
@@ -223,6 +224,10 @@ public class RotationUtils {
 	}
 	
 	public static Vec3i rotate(Vec3i vec, Rotation rotation) {
+		return rotation.getMatrix().transform(vec);
+	}
+	
+	public static BlockPos rotate(BlockPos vec, Rotation rotation) {
 		return rotation.getMatrix().transform(vec);
 	}
 	

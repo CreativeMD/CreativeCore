@@ -5,6 +5,7 @@ import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3d;
 
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
 public enum Rotation {
@@ -266,6 +267,13 @@ public enum Rotation {
 		
 		public long getZ(long x, long y, long z) {
 			return x * m20 + y * m21 + z * m22;
+		}
+		
+		public BlockPos transform(BlockPos vec) {
+			int x = vec.getX() * m00 + vec.getY() * m01 + vec.getZ() * m02;
+			int y = vec.getX() * m10 + vec.getY() * m11 + vec.getZ() * m12;
+			int z = vec.getX() * m20 + vec.getY() * m21 + vec.getZ() * m22;
+			return new BlockPos(x, y, z);
 		}
 		
 		public Vec3i transform(Vec3i vec) {
