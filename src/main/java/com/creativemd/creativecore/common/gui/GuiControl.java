@@ -13,6 +13,7 @@ import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.container.GuiParent;
+import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.event.gui.GuiToolTipEvent;
 
 import net.minecraft.client.Minecraft;
@@ -116,6 +117,12 @@ public abstract class GuiControl extends CoreControl {
 	}
 	
 	// ================Helper================
+	
+	public SubGui getGui() {
+		if (parent != null)
+			return ((GuiControl) parent).getGui();
+		return this instanceof SubGui ? (SubGui) this : null;
+	}
 	
 	public GuiParent getParent() {
 		return (GuiParent) parent;

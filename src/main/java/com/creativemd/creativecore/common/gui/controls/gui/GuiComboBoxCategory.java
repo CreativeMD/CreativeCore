@@ -74,13 +74,15 @@ public class GuiComboBoxCategory<T> extends GuiLabel {
 	
 	public void openBox() {
 		this.extension = createBox();
-		getParent().controls.add(extension);
+		getGui().controls.add(extension);
 		
-		extension.parent = parent;
+		extension.parent = getGui();
 		extension.moveControlToTop();
 		extension.onOpened();
-		parent.refreshControls();
+		getGui().refreshControls();
 		extension.rotation = rotation;
+		extension.posX = getPixelOffsetX() - getGui().getPixelOffsetX() - getContentOffset();
+		extension.posY = getPixelOffsetY() - getGui().getPixelOffsetY() - getContentOffset() + height;
 		
 		if (extension.posY + extension.height > getParent().height && this.posY >= extension.height)
 			extension.posY -= this.height + extension.height;
@@ -92,7 +94,7 @@ public class GuiComboBoxCategory<T> extends GuiLabel {
 	
 	public void closeBox() {
 		if (extension != null) {
-			getParent().controls.remove(extension);
+			getGui().controls.remove(extension);
 			extension = null;
 		}
 	}

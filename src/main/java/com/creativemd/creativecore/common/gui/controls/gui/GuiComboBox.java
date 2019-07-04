@@ -25,6 +25,15 @@ public class GuiComboBox extends GuiLabel {
 		this.lines = lines;
 	}
 	
+	public boolean select(int index) {
+		if (index != -1) {
+			caption = lines.get(index);
+			raiseEvent(new GuiControlChangedEvent(this));
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean select(String line) {
 		
 		index = lines.indexOf(line);
@@ -58,13 +67,15 @@ public class GuiComboBox extends GuiLabel {
 	
 	public void openBox() {
 		this.extension = createBox();
-		getParent().controls.add(extension);
+		getGui().controls.add(extension);
 		
-		extension.parent = parent;
+		extension.parent = getGui();
 		extension.moveControlToTop();
 		extension.onOpened();
-		parent.refreshControls();
+		getGui().refreshControls();
 		extension.rotation = rotation;
+		extension.posX = getPixelOffsetX() - getGui().getPixelOffsetX() - getContentOffset();
+		extension.posY = getPixelOffsetY() - getGui().getPixelOffsetY() - getContentOffset() + height;
 		
 		if (extension.posY + extension.height > getParent().height && this.posY >= extension.height)
 			extension.posY -= this.height + extension.height;
@@ -76,7 +87,7 @@ public class GuiComboBox extends GuiLabel {
 	
 	public void closeBox() {
 		if (extension != null) {
-			getParent().controls.remove(extension);
+			getGui().controls.remove(extension);
 			extension = null;
 		}
 	}
