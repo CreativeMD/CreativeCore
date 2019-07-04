@@ -31,7 +31,7 @@ public class GuiScrollBox extends GuiParent {
 	}
 	
 	@Override
-	protected double getOffsetY() {
+	public double getOffsetY() {
 		return -scrolled.current();
 	}
 	
@@ -93,7 +93,7 @@ public class GuiScrollBox extends GuiParent {
 		int scrollThingHeight = Math.max(10, Math.min(height, lastRenderedHeight / height / height));
 		if (lastRenderedHeight < height)
 			scrollThingHeight = height;
-		double percent = scrolled.current() / (double) maxScroll;
+		double percent = scrolled.current() / maxScroll;
 		// style.getBorder(this).renderStyle(width-scrollbarWidth+1, (int)
 		// (percent*(height-scrollThingHeight)), helper, scrollbarWidth-1,
 		// scrollThingHeight);

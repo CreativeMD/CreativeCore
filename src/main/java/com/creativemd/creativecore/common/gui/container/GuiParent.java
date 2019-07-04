@@ -77,11 +77,11 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		return 1F;
 	}
 	
-	protected double getOffsetY() {
+	public double getOffsetY() {
 		return 0;
 	}
 	
-	protected double getOffsetX() {
+	public double getOffsetX() {
 		return 0;
 	}
 	
@@ -169,6 +169,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	
 	// ================Interaction================
 	
+	@Override
 	public boolean isMouseOver() {
 		if (parent != null)
 			return super.isMouseOver();
@@ -329,6 +330,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	
 	// ================Tooltip================
 	
+	@Override
 	public GuiToolTipEvent getToolTipEvent() {
 		GuiToolTipEvent event = super.getToolTipEvent();
 		if (event != null)

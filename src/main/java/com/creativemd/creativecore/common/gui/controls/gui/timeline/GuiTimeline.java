@@ -79,7 +79,7 @@ public class GuiTimeline extends GuiParent {
 	}
 	
 	@Override
-	protected double getOffsetX() {
+	public double getOffsetX() {
 		return sidebarWidth - scrollX.current();
 	}
 	

@@ -210,15 +210,21 @@ public abstract class GuiControl extends CoreControl {
 	
 	public int getPixelOffsetX() {
 		int x = posX + getContentOffset();
-		if (hasParent())
+		if (hasParent()) {
+			if (parent instanceof GuiParent)
+				x += ((GuiParent) parent).getOffsetX();
 			x += ((GuiControl) parent).getPixelOffsetX();
+		}
 		return x;
 	}
 	
 	public int getPixelOffsetY() {
 		int y = posY + getContentOffset();
-		if (hasParent())
+		if (hasParent()) {
+			if (parent instanceof GuiParent)
+				y += ((GuiParent) parent).getOffsetY();
 			y += ((GuiControl) parent).getPixelOffsetY();
+		}
 		return y;
 	}
 	
