@@ -15,14 +15,15 @@ public class ChildVecOrigin extends VecOrigin {
 	
 	@Override
 	public void transformPointToWorld(Vector3d vec) {
-		parent.transformPointToWorld(vec);
 		super.transformPointToWorld(vec);
+		parent.transformPointToWorld(vec);
 	}
 	
 	@Override
 	public void transformPointToFakeWorld(Vector3d vec) {
-		super.transformPointToFakeWorld(vec);
 		parent.transformPointToFakeWorld(vec);
+		super.transformPointToFakeWorld(vec);
+		
 	}
 	
 	@Override
