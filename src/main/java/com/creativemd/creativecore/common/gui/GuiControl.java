@@ -290,14 +290,12 @@ public abstract class GuiControl extends CoreControl {
 		
 		GlStateManager.translate(marginWidth, marginWidth, 0);
 		
-		GL11.glEnable(GL11.GL_STENCIL_TEST);
-		
-		// prepareContentStencil(helper, relativeMaximumRect);
-		
-		// prepareStencil(x, y, scale, helper, maxWidth, maxHeight);
-		
-		GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
-		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+		if (!canOverlap()) {
+			GL11.glEnable(GL11.GL_STENCIL_TEST);
+			GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
+			GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
+		} else
+			GL11.glDisable(GL11.GL_STENCIL_TEST);
 		
 		renderContent(helper, style, width - spaceUsed * 2, height - spaceUsed * 2, relativeMaximumRect);
 		

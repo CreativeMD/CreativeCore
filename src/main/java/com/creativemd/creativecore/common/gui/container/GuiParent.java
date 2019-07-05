@@ -106,7 +106,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		for (int i = controls.size() - 1; i >= 0; i--) {
 			GuiControl control = controls.get(i);
 			
-			if (control.visible && control.isVisibleInsideRect((int) -xOffset, (int) -yOffset, width, height, scale)) {
+			if (control.visible && (control.canOverlap() || control.isVisibleInsideRect((int) -xOffset, (int) -yOffset, width, height, scale))) {
 				if (control.canOverlap())
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
 				else {
@@ -119,11 +119,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 				
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(xOffset, yOffset, 0);
-				control.renderControl(helper, scale, newRect.getOffsetRect((int) -xOffset - control.posX - control.getContentOffset(), (int) -yOffset - control.posY - control.getContentOffset()));
+				control.renderControl(helper, scale, control.canOverlap() ? getScreenRect() : newRect.getOffsetRect((int) -xOffset - control.posX - control.getContentOffset(), (int) -yOffset - control.posY - control.getContentOffset()));
 				GlStateManager.popMatrix();
 				
-				if (!control.canOverlap())
-					GL11.glDisable(GL11.GL_STENCIL_TEST);
+				GL11.glDisable(GL11.GL_STENCIL_TEST);
 			}
 			
 			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.posY + control.height) * scale);
