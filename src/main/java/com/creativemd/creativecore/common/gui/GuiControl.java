@@ -256,15 +256,13 @@ public abstract class GuiControl extends CoreControl {
 	protected void prepareContentStencil(GuiRenderHelper helper, Rect maximumRect) {
 		int spaceUsed = borderWidth + marginWidth;
 		
-		Rect contentRect = getRect();
-		
 		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 		
 		GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_REPLACE, GL11.GL_REPLACE);
 		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
 		
 		GlStateManager.colorMask(false, false, false, false);
-		contentRect.mergeRects(maximumRect).renderRect(helper, new Color(0, 0, 0, 255));
+		maximumRect.renderRect(helper, new Color(0, 0, 0, 255));
 		GlStateManager.colorMask(true, true, true, true);
 	}
 	

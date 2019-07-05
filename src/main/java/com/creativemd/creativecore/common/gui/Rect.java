@@ -32,4 +32,13 @@ public class Rect {
 		return new Rect(minX + x, minY + y, maxX + x, maxY + y);
 	}
 	
+	public void scale(float scale) {
+		if (scale == 1)
+			return;
+		minX *= scale;
+		minY *= scale;
+		maxX *= scale;
+		maxY *= scale;
+	}
+	
 }

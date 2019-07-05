@@ -101,6 +101,8 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		
 		lastRenderedHeight = 0;
 		
+		newRect.scale(scale);
+		
 		for (int i = controls.size() - 1; i >= 0; i--) {
 			GuiControl control = controls.get(i);
 			
@@ -109,7 +111,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 					GL11.glDisable(GL11.GL_STENCIL_TEST);
 				else {
 					GL11.glEnable(GL11.GL_STENCIL_TEST);
-					prepareContentStencil(helper, relativeMaximumRect);
+					prepareContentStencil(helper, newRect);
 					
 					GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
 					GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
@@ -117,7 +119,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 				
 				GlStateManager.pushMatrix();
 				GlStateManager.translate(xOffset, yOffset, 0);
-				control.renderControl(helper, scale, newRect.getOffsetRect((int) xOffset, (int) yOffset));
+				control.renderControl(helper, scale, newRect.getOffsetRect((int) -xOffset - control.posX - control.getContentOffset(), (int) -yOffset - control.posY - control.getContentOffset()));
 				GlStateManager.popMatrix();
 				
 				if (!control.canOverlap())
@@ -130,7 +132,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		
 		GL11.glEnable(GL11.GL_STENCIL_TEST);
 		
-		prepareContentStencil(helper, relativeMaximumRect);
+		prepareContentStencil(helper, newRect);
 		
 		GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_KEEP);
 		GL11.glStencilFunc(GL11.GL_EQUAL, 0x1, 0x1);
