@@ -32,4 +32,8 @@ public class ChildVecOrigin extends VecOrigin {
 		super.setupRenderingInternal(entity, partialTicks);
 	}
 	
+	@Override
+	public boolean hasChanged() {
+		return super.hasChanged() || parent.hasChanged();
+	}
 }
