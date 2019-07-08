@@ -16,6 +16,7 @@ public abstract class CreativeWorld extends World implements IOrientatedWorld {
 	public Entity parent;
 	@SideOnly(Side.CLIENT)
 	public IRenderChunkSupplier renderChunkSupplier;
+	public boolean hasChanged = false;
 	
 	protected CreativeWorld(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client) {
 		super(saveHandlerIn, info, providerIn, profilerIn, client);
