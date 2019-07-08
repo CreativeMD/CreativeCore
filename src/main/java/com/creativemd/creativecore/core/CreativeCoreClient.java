@@ -30,6 +30,8 @@ public class CreativeCoreClient {
 	public static Minecraft mc = Minecraft.getMinecraft();
 	
 	public static float getRenderPartialTicks() {
+		if (mc.isGamePaused())
+			return 1.0F;
 		return mc.getRenderPartialTicks();
 	}
 	
