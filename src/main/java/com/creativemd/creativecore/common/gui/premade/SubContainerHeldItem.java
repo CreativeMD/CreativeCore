@@ -12,6 +12,7 @@ public abstract class SubContainerHeldItem extends SubContainer {
 	
 	public SubContainerHeldItem(EntityPlayer player, ItemStack stack, int index) {
 		super(player);
+		this.index = index;
 		this.stack = stack;
 	}
 	
