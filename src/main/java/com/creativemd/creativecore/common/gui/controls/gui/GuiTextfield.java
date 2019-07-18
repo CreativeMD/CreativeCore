@@ -49,6 +49,7 @@ public class GuiTextfield extends GuiFocusControl {
 	public GuiTextfield(String name, String text, int x, int y, int width, int height) {
 		super(name, x, y, width, height);
 		this.text = text;
+		this.focused = true;
 	}
 	
 	public GuiTextfield setFloatOnly() {
