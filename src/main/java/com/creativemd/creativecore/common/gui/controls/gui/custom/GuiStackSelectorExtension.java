@@ -67,6 +67,7 @@ public class GuiStackSelectorExtension extends GuiComboBoxExtension {
 				textfield = new GuiTextfield("searchBar", search == null ? "" : search, 3, height, width - 20, 10);
 			controls.add(textfield);
 			height += textfield.height;
+			textfield.focused = true;
 		}
 		
 		for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
