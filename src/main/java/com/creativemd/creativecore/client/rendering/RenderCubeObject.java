@@ -63,16 +63,17 @@ public class RenderCubeObject extends CubeObject {
 	private EnumSideRender renderSouth = EnumSideRender.INSIDE_RENDERED;
 	private EnumSideRender renderNorth = EnumSideRender.INSIDE_RENDERED;
 	
-	private List<BakedQuad> quadEast = null;
-	private List<BakedQuad> quadWest = null;
-	private List<BakedQuad> quadUp = null;
-	private List<BakedQuad> quadDown = null;
-	private List<BakedQuad> quadSouth = null;
-	private List<BakedQuad> quadNorth = null;
+	private Object quadEast = null;
+	private Object quadWest = null;
+	private Object quadUp = null;
+	private Object quadDown = null;
+	private Object quadSouth = null;
+	private Object quadNorth = null;
 	
 	public boolean doesNeedQuadUpdate = true;
 	
-	public void setQuad(EnumFacing facing, List<BakedQuad> quad) {
+	public void setQuad(EnumFacing facing, List<BakedQuad> quads) {
+		Object quad = quads == null || quads.isEmpty() ? null : quads.size() == 1 ? quads.get(0) : quads;
 		switch (facing) {
 		case DOWN:
 			quadDown = quad;
@@ -95,7 +96,7 @@ public class RenderCubeObject extends CubeObject {
 		}
 	}
 	
-	public List<BakedQuad> getQuad(EnumFacing facing) {
+	public Object getQuad(EnumFacing facing) {
 		switch (facing) {
 		case DOWN:
 			return quadDown;
@@ -116,17 +117,17 @@ public class RenderCubeObject extends CubeObject {
 	public int getQuads() {
 		int quads = 0;
 		if (quadUp != null)
-			quads += quadUp.size();
+			quads += quadUp instanceof List ? ((List) quadUp).size() : 1;
 		if (quadDown != null)
-			quads += quadDown.size();
+			quads += quadDown instanceof List ? ((List) quadDown).size() : 1;
 		if (quadEast != null)
-			quads += quadEast.size();
+			quads += quadEast instanceof List ? ((List) quadEast).size() : 1;
 		if (quadWest != null)
-			quads += quadWest.size();
+			quads += quadWest instanceof List ? ((List) quadWest).size() : 1;
 		if (quadSouth != null)
-			quads += quadSouth.size();
+			quads += quadSouth instanceof List ? ((List) quadSouth).size() : 1;
 		if (quadNorth != null)
-			quads += quadNorth.size();
+			quads += quadNorth instanceof List ? ((List) quadNorth).size() : 1;
 		return quads;
 	}
 	
@@ -152,6 +153,7 @@ public class RenderCubeObject extends CubeObject {
 		this.meta = meta;
 	}
 	
+	@Override
 	protected void applyExtraCubeData(CubeObject cube) {
 		if (cube instanceof RenderCubeObject) {
 			this.block = ((RenderCubeObject) cube).block;
@@ -395,6 +397,16 @@ public class RenderCubeObject extends CubeObject {
 			quads.add(quad);
 		}
 		return quads;
+	}
+	
+	public void deleteQuadCache() {
+		doesNeedQuadUpdate = true;
+		quadEast = null;
+		quadWest = null;
+		quadUp = null;
+		quadDown = null;
+		quadSouth = null;
+		quadNorth = null;
 	}
 	
 }
