@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
@@ -51,11 +50,11 @@ public class BufferBuilderUtils {
 				oldByteBuffer.position(0);
 				byteBuffer.put(oldByteBuffer);
 				byteBuffer.rewind();
-				byteBufferField.set(builder, (ByteBuffer) byteBuffer);
-				rawFloatBufferField.set(builder, (FloatBuffer) byteBuffer.asFloatBuffer().asReadOnlyBuffer());
-				rawIntBufferField.set(builder, (IntBuffer) byteBuffer.asIntBuffer());
+				byteBufferField.set(builder, byteBuffer);
+				rawFloatBufferField.set(builder, byteBuffer.asFloatBuffer().asReadOnlyBuffer());
+				rawIntBufferField.set(builder, byteBuffer.asIntBuffer());
 				((IntBuffer) rawIntBufferField.get(builder)).position(k);
-				rawShortBufferField.set(builder, (ShortBuffer) byteBuffer.asShortBuffer());
+				rawShortBufferField.set(builder, byteBuffer.asShortBuffer());
 				((ShortBuffer) rawShortBufferField.get(builder)).position(k << 1);
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -86,12 +85,12 @@ public class BufferBuilderUtils {
 			rawIntBuffer.rewind();
 			rawIntBuffer.limit(size);
 			
-			growBuffer(buffer, size);
+			//growBuffer(buffer, size + buffer.getVertexFormat().getNextOffset());
 			IntBuffer chunkIntBuffer = (IntBuffer) rawIntBufferField.get(buffer);
 			chunkIntBuffer.position(getBufferSize(buffer));
 			chunkIntBuffer.put(rawIntBuffer);
 			
-			vertexCountField.setInt(buffer, vertexCountField.getInt(buffer) + size / buffer.getVertexFormat().getIntegerSize());
+			vertexCountField.setInt(buffer, buffer.getVertexCount() + toAdd.getVertexCount());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
