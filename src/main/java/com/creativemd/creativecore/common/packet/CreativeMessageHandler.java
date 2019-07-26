@@ -49,7 +49,7 @@ public class CreativeMessageHandler implements IMessage {
 			amount = buf.readInt();
 			uuid = UUID.fromString(CreativeCorePacket.readString(buf));
 			int length = buf.readInt();
-			content = ByteBufAllocator.DEFAULT.buffer();
+			content = ByteBufAllocator.DEFAULT.directBuffer();
 			byte[] data = new byte[length];
 			buf.readBytes(data);
 			content.writeBytes(data);
@@ -58,7 +58,7 @@ public class CreativeMessageHandler implements IMessage {
 	
 	@Override
 	public void toBytes(ByteBuf buf) {
-		content = ByteBufAllocator.DEFAULT.buffer();
+		content = ByteBufAllocator.DEFAULT.directBuffer();
 		packet.writeBytes(content);
 		int packetSize = 31767;
 		if (type.getSide().isServer())

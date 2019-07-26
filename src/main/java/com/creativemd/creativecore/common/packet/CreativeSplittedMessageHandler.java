@@ -36,7 +36,7 @@ public class CreativeSplittedMessageHandler implements IMessage {
 		isLast = buf.readBoolean();
 		packetID = CreativeCorePacket.readString(buf);
 		uuid = UUID.fromString(CreativeCorePacket.readString(buf));
-		buffer = ByteBufAllocator.DEFAULT.buffer();
+		buffer = ByteBufAllocator.DEFAULT.directBuffer();
 		length = buf.readInt();
 		byte[] data = new byte[length];
 		buf.readBytes(data);
