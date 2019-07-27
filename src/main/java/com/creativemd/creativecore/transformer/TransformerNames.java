@@ -41,6 +41,9 @@ public class TransformerNames {
 				}
 			}
 			
+			bf.close();
+			reader.close();
+			
 			classes.sort(new Comparator<ClassName>() {
 				
 				@Override
