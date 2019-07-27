@@ -56,23 +56,23 @@ public class GuiRenderHelper {
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		
-		vertexbuffer.pos((double) x + widthThird, (double) y, 0).color(0, 0, 0, 0).endVertex();
-		vertexbuffer.pos((double) x, (double) y, 0).color(0, 0, 0, 0).endVertex();
-		vertexbuffer.pos((double) x, (double) y + heightThird, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos((double) x + widthThird, y, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos(x, y, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos(x, (double) y + heightThird, 0).color(0, 0, 0, 0).endVertex();
 		vertexbuffer.pos((double) x + widthThird, (double) y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
 		
 		vertexbuffer.pos((double) x + widthThird, (double) y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
-		vertexbuffer.pos((double) x, (double) y + heightThird, 0).color(0, 0, 0, 0).endVertex();
-		vertexbuffer.pos((double) x, (double) y + heightThird * 2, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos(x, (double) y + heightThird, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos(x, (double) y + heightThird * 2, 0).color(0, 0, 0, 0).endVertex();
 		vertexbuffer.pos((double) x + widthThird, (double) y + heightThird * 2, 0).color(0, 0, 0, alpha).endVertex();
 		
 		vertexbuffer.pos((double) x + widthThird, (double) y + heightThird * 3, 0).color(0, 0, 0, 0).endVertex();
 		vertexbuffer.pos((double) x + widthThird, (double) y + heightThird * 2, 0).color(0, 0, 0, alpha).endVertex();
-		vertexbuffer.pos((double) x, (double) y + heightThird * 2, 0).color(0, 0, 0, 0).endVertex();
-		vertexbuffer.pos((double) x, (double) y + heightThird * 3, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos(x, (double) y + heightThird * 2, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos(x, (double) y + heightThird * 3, 0).color(0, 0, 0, 0).endVertex();
 		
-		vertexbuffer.pos((double) x + widthThird * 2, (double) y, 0).color(0, 0, 0, 0).endVertex();
-		vertexbuffer.pos((double) x + widthThird, (double) y, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos((double) x + widthThird * 2, y, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos((double) x + widthThird, y, 0).color(0, 0, 0, 0).endVertex();
 		vertexbuffer.pos((double) x + widthThird, (double) y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
 		vertexbuffer.pos((double) x + widthThird * 2, (double) y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
 		
@@ -86,10 +86,10 @@ public class GuiRenderHelper {
 		vertexbuffer.pos((double) x + widthThird, (double) y + heightThird * 3, 0).color(0, 0, 0, 0).endVertex();
 		vertexbuffer.pos((double) x + widthThird * 2, (double) y + heightThird * 3, 0).color(0, 0, 0, 0).endVertex();
 		
-		vertexbuffer.pos((double) x + widthThird * 2, (double) y, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos((double) x + widthThird * 2, y, 0).color(0, 0, 0, 0).endVertex();
 		vertexbuffer.pos((double) x + widthThird * 2, (double) y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
 		vertexbuffer.pos((double) x + widthThird * 3, (double) y + heightThird, 0).color(0, 0, 0, 0).endVertex();
-		vertexbuffer.pos((double) x + widthThird * 3, (double) y, 0).color(0, 0, 0, 0).endVertex();
+		vertexbuffer.pos((double) x + widthThird * 3, y, 0).color(0, 0, 0, 0).endVertex();
 		
 		vertexbuffer.pos((double) x + widthThird * 3, (double) y + heightThird, 0).color(0, 0, 0, 0).endVertex();
 		vertexbuffer.pos((double) x + widthThird * 2, (double) y + heightThird, 0).color(0, 0, 0, alpha).endVertex();
@@ -113,10 +113,10 @@ public class GuiRenderHelper {
 	}
 	
 	public void drawRect(double left, double top, double right, double bottom, int startColor) {
-		float f = (float) (startColor >> 24 & 255) / 255.0F;
-		float f1 = (float) (startColor >> 16 & 255) / 255.0F;
-		float f2 = (float) (startColor >> 8 & 255) / 255.0F;
-		float f3 = (float) (startColor & 255) / 255.0F;
+		float f = (startColor >> 24 & 255) / 255.0F;
+		float f1 = (startColor >> 16 & 255) / 255.0F;
+		float f2 = (startColor >> 8 & 255) / 255.0F;
+		float f3 = (startColor & 255) / 255.0F;
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
@@ -125,10 +125,10 @@ public class GuiRenderHelper {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vertexbuffer.pos((double) right, (double) top, 0).color(f1, f2, f3, f).endVertex();
-		vertexbuffer.pos((double) left, (double) top, 0).color(f1, f2, f3, f).endVertex();
-		vertexbuffer.pos((double) left, (double) bottom, 0).color(f1, f2, f3, f).endVertex();
-		vertexbuffer.pos((double) right, (double) bottom, 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos(right, top, 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos(left, bottom, 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos(right, bottom, 0).color(f1, f2, f3, f).endVertex();
 		tessellator.draw();
 		GlStateManager.shadeModel(7424);
 		GlStateManager.disableBlend();
@@ -137,14 +137,14 @@ public class GuiRenderHelper {
 	}
 	
 	public void drawHorizontalGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
-		float f = (float) (startColor >> 24 & 255) / 255.0F;
-		float f1 = (float) (startColor >> 16 & 255) / 255.0F;
-		float f2 = (float) (startColor >> 8 & 255) / 255.0F;
-		float f3 = (float) (startColor & 255) / 255.0F;
-		float f4 = (float) (endColor >> 24 & 255) / 255.0F;
-		float f5 = (float) (endColor >> 16 & 255) / 255.0F;
-		float f6 = (float) (endColor >> 8 & 255) / 255.0F;
-		float f7 = (float) (endColor & 255) / 255.0F;
+		float f = (startColor >> 24 & 255) / 255.0F;
+		float f1 = (startColor >> 16 & 255) / 255.0F;
+		float f2 = (startColor >> 8 & 255) / 255.0F;
+		float f3 = (startColor & 255) / 255.0F;
+		float f4 = (endColor >> 24 & 255) / 255.0F;
+		float f5 = (endColor >> 16 & 255) / 255.0F;
+		float f6 = (endColor >> 8 & 255) / 255.0F;
+		float f7 = (endColor & 255) / 255.0F;
 		GlStateManager.disableTexture2D();
 		GlStateManager.enableBlend();
 		GlStateManager.disableAlpha();
@@ -153,10 +153,10 @@ public class GuiRenderHelper {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
 		vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		vertexbuffer.pos((double) right, (double) top, 0).color(f5, f6, f7, f4).endVertex();
-		vertexbuffer.pos((double) left, (double) top, 0).color(f1, f2, f3, f).endVertex();
-		vertexbuffer.pos((double) left, (double) bottom, 0).color(f1, f2, f3, f).endVertex();
-		vertexbuffer.pos((double) right, (double) bottom, 0).color(f5, f6, f7, f4).endVertex();
+		vertexbuffer.pos(right, top, 0).color(f5, f6, f7, f4).endVertex();
+		vertexbuffer.pos(left, top, 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos(left, bottom, 0).color(f1, f2, f3, f).endVertex();
+		vertexbuffer.pos(right, bottom, 0).color(f5, f6, f7, f4).endVertex();
 		tessellator.draw();
 		GlStateManager.shadeModel(7424);
 		GlStateManager.disableBlend();
@@ -169,16 +169,34 @@ public class GuiRenderHelper {
 		drawTexturedModalRect(x, y, textureX, textureY, width, height);
 	}
 	
+	public void drawTexturedModalRect(ResourceLocation location, int x, int y, int textureX, int textureY, int width, int height, int textureW, int textureH) {
+		this.mc.getTextureManager().bindTexture(location);
+		drawTexturedModalRect(x, y, textureX, textureY, width, height, textureW, textureH);
+	}
+	
 	public void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height) {
 		float f = 0.00390625F;
 		float f1 = 0.00390625F;
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-		bufferbuilder.pos((double) (x + 0), (double) (y + height), (double) 0).tex((double) ((float) (textureX + 0) * 0.00390625F), (double) ((float) (textureY + height) * 0.00390625F)).endVertex();
-		bufferbuilder.pos((double) (x + width), (double) (y + height), (double) 0).tex((double) ((float) (textureX + width) * 0.00390625F), (double) ((float) (textureY + height) * 0.00390625F)).endVertex();
-		bufferbuilder.pos((double) (x + width), (double) (y + 0), (double) 0).tex((double) ((float) (textureX + width) * 0.00390625F), (double) ((float) (textureY + 0) * 0.00390625F)).endVertex();
-		bufferbuilder.pos((double) (x + 0), (double) (y + 0), (double) 0).tex((double) ((float) (textureX + 0) * 0.00390625F), (double) ((float) (textureY + 0) * 0.00390625F)).endVertex();
+		bufferbuilder.pos(x + 0, y + height, 0).tex((textureX + 0) * 0.00390625F, (textureY + height) * 0.00390625F).endVertex();
+		bufferbuilder.pos(x + width, y + height, 0).tex((textureX + width) * 0.00390625F, (textureY + height) * 0.00390625F).endVertex();
+		bufferbuilder.pos(x + width, y + 0, 0).tex((textureX + width) * 0.00390625F, (textureY + 0) * 0.00390625F).endVertex();
+		bufferbuilder.pos(x + 0, y + 0, 0).tex((textureX + 0) * 0.00390625F, (textureY + 0) * 0.00390625F).endVertex();
+		tessellator.draw();
+	}
+	
+	public void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height, int textureW, int textureH) {
+		float f = 0.00390625F;
+		float f1 = 0.00390625F;
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(x + 0, y + height, 0).tex((textureX + 0) * 0.00390625F, (textureY + textureH) * 0.00390625F).endVertex();
+		bufferbuilder.pos(x + width, y + height, 0).tex((textureX + textureW) * 0.00390625F, (textureY + textureH) * 0.00390625F).endVertex();
+		bufferbuilder.pos(x + width, y + 0, 0).tex((textureX + textureW) * 0.00390625F, (textureY + 0) * 0.00390625F).endVertex();
+		bufferbuilder.pos(x + 0, y + 0, 0).tex((textureX + 0) * 0.00390625F, (textureY + 0) * 0.00390625F).endVertex();
 		tessellator.draw();
 	}
 	
@@ -194,10 +212,10 @@ public class GuiRenderHelper {
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.color(color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-		bufferbuilder.pos((double) x, (double) height, 0.0D).endVertex();
-		bufferbuilder.pos((double) width, (double) height, 0.0D).endVertex();
-		bufferbuilder.pos((double) width, (double) y, 0.0D).endVertex();
-		bufferbuilder.pos((double) x, (double) y, 0.0D).endVertex();
+		bufferbuilder.pos(x, height, 0.0D).endVertex();
+		bufferbuilder.pos(width, height, 0.0D).endVertex();
+		bufferbuilder.pos(width, y, 0.0D).endVertex();
+		bufferbuilder.pos(x, y, 0.0D).endVertex();
 		tessellator.draw();
 		GlStateManager.enableTexture2D();
 		GlStateManager.disableBlend();
@@ -212,9 +230,9 @@ public class GuiRenderHelper {
 		GlStateManager.color(color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
 		// GlStateManager.color(1, 1, 1, 1);
 		vertexbuffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION);
-		vertexbuffer.pos((double) x1, (double) y1, 0.0D).endVertex();
-		vertexbuffer.pos((double) y3, (double) y3, 0.0D).endVertex();
-		vertexbuffer.pos((double) x2, (double) y2, 0.0D).endVertex();
+		vertexbuffer.pos(x1, y1, 0.0D).endVertex();
+		vertexbuffer.pos(y3, y3, 0.0D).endVertex();
+		vertexbuffer.pos(x2, y2, 0.0D).endVertex();
 		// vertexbuffer.pos((double)x1, (double)y3, 0.0D).endVertex();
 		tessellator.draw();
 		GlStateManager.enableTexture2D();
@@ -302,7 +320,7 @@ public class GuiRenderHelper {
 			GlStateManager.scale(0.5, 0.5, 0.5);
 			GlStateManager.translate(-font.FONT_HEIGHT / 2, -fontWidth / 2, 0);
 			fontWidth /= 2;
-			font.drawStringWithShadow(s, (float) (x + 19 - 2 - fontWidth), (float) (y + 6 + 5), 16777215);
+			font.drawStringWithShadow(s, x + 19 - 2 - fontWidth, y + 6 + 5, 16777215);
 			
 			GlStateManager.enableLighting();
 			GlStateManager.enableDepth();
