@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.chunk.RenderChunk;
@@ -34,10 +35,12 @@ public class OptifineHelper {
 	private static boolean loadedOptifineReflections = false;
 	private static Method getCustomizedQuads;
 	private static Method getCustomizedModel;
-	private static Class renderEnvClass;
+	public static Class renderEnvClass;
 	private static Class blockModelCustomizer;
 	private static Constructor<?> renderEnvConstructor;
 	private static Method resetEnv;
+	private static Method getEnv;
+	private static Method getAoFace;
 	private static Method getColorMultiplier;
 	private static Field isEmissive;
 	private static Method getQuadEmissive;
@@ -48,6 +51,7 @@ public class OptifineHelper {
 			renderEnvClass = Class.forName("net.optifine.render.RenderEnv");
 			renderEnvConstructor = renderEnvClass.getConstructor(IBlockAccess.class, IBlockState.class, BlockPos.class);
 			resetEnv = ReflectionHelper.findMethod(renderEnvClass, "reset", "reset", IBlockAccess.class, IBlockState.class, BlockPos.class);
+			getAoFace = ReflectionHelper.findMethod(renderEnvClass, "getAoFace", "getAoFace");
 			blockModelCustomizer = Class.forName("net.optifine.model.BlockModelCustomizer");
 			getCustomizedModel = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderModel", "getRenderModel", IBakedModel.class, IBlockState.class, renderEnvClass);
 			getCustomizedQuads = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderQuads", "getRenderQuads", List.class, IBlockAccess.class, IBlockState.class, BlockPos.class, EnumFacing.class, BlockRenderLayer.class, long.class, renderEnvClass);
@@ -76,6 +80,8 @@ public class OptifineHelper {
 			isEmissive = ReflectionHelper.findField(TextureAtlasSprite.class, "isEmissive");
 			
 			getQuadEmissive = ReflectionHelper.findMethod(BakedQuad.class, "getQuadEmissive", "getQuadEmissive");
+			
+			getEnv = ReflectionHelper.findMethod(BufferBuilder.class, "getRenderEnv", "getRenderEnv", IBlockAccess.class, IBlockState.class, BlockPos.class);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
 			active = false;
 			e.printStackTrace();
@@ -93,7 +99,16 @@ public class OptifineHelper {
 		}
 	}
 	
-	private static Object getEnv(IBlockAccess world, IBlockState state, BlockPos pos) {
+	public static Object getEnv(BufferBuilder builder, IBlockAccess world, IBlockState state, BlockPos pos) {
+		try {
+			return getEnv.invoke(builder, world, state, pos);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static Object getEnv(IBlockAccess world, IBlockState state, BlockPos pos) {
 		try {
 			Object env = renderEnv.get();
 			resetEnv.invoke(env, world, state, pos);
@@ -132,6 +147,15 @@ public class OptifineHelper {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public static Object getAoFace(Object renderEnv) {
+		try {
+			return getAoFace.invoke(renderEnv);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static boolean isActive() {
