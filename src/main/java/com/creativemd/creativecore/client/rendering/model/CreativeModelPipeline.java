@@ -12,6 +12,7 @@ import org.lwjgl.util.Color;
 import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
 import com.creativemd.creativecore.client.rendering.RenderCubeObject;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
+import com.creativemd.creativecore.common.utils.type.SingletonList;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -73,14 +74,21 @@ public class CreativeModelPipeline {
 		throw new RuntimeException("Could not create ambient occlusion face!");
 	}
 	
+	public static ThreadLocal<SingletonList<BakedQuad>> singletonList = ThreadLocal.withInitial(() -> new SingletonList(null));
+	
 	public static void renderBlockFaceSmooth(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, float[] afloat, EnumFacing facing, BitSet set, Object ambientOcclusionFace, RenderCubeObject cube) {
 		try {
-			if (FMLClientHandler.instance().hasOptifine())
-				renderQuadsSmoothMethod.invoke(renderer, world, state, pos, buffer, quads, ambientOcclusionFace);
-			else
-				renderQuadsSmoothMethod.invoke(renderer, world, state, pos, buffer, quads, afloat, set, ambientOcclusionFace);
-			
-			overwriteColor(world, state, pos, buffer, layer, quads, cube, ambientOcclusionFace);
+			SingletonList<BakedQuad> list = singletonList.get();
+			for (int i = 0; i < quads.size(); i++) {
+				List<BakedQuad> singleQuad = quads instanceof SingletonList ? quads : list.setElement(quads.get(i));
+				if (FMLClientHandler.instance().hasOptifine())
+					renderQuadsSmoothMethod.invoke(renderer, world, state, pos, buffer, singleQuad, ambientOcclusionFace);
+				else
+					renderQuadsSmoothMethod.invoke(renderer, world, state, pos, buffer, singleQuad, afloat, set, ambientOcclusionFace);
+				
+				overwriteColor(world, state, pos, buffer, layer, singleQuad, cube, ambientOcclusionFace);
+			}
+			list.setElement(null);
 			
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
@@ -88,14 +96,19 @@ public class CreativeModelPipeline {
 	}
 	
 	public static void renderBlockFaceFlat(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, EnumFacing facing, BitSet set, RenderCubeObject cube) {
-		int i = state.getPackedLightmapCoords(world, pos.offset(facing));
+		int light = state.getPackedLightmapCoords(world, pos.offset(facing));
 		try {
-			if (FMLClientHandler.instance().hasOptifine())
-				renderQuadsFlatMethod.invoke(renderer, world, state, pos, i, false, buffer, quads, OptifineHelper.getEnv(buffer, world, state, pos));
-			else
-				renderQuadsFlatMethod.invoke(renderer, world, state, pos, i, false, buffer, quads, set);
-			
-			overwriteColor(world, state, pos, buffer, layer, quads, cube, null);
+			SingletonList<BakedQuad> list = singletonList.get();
+			for (int i = 0; i < quads.size(); i++) {
+				List<BakedQuad> singleQuad = quads instanceof SingletonList ? quads : list.setElement(quads.get(i));
+				if (FMLClientHandler.instance().hasOptifine())
+					renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, quads, OptifineHelper.getEnv(buffer, world, state, pos));
+				else
+					renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, quads, set);
+				
+				overwriteColor(world, state, pos, buffer, layer, quads, cube, null);
+			}
+			list.setElement(null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}

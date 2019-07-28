@@ -22,8 +22,9 @@ public class SingletonList<E> extends AbstractList<E> implements RandomAccess, S
 		element = obj;
 	}
 	
-	public void setElement(E element) {
+	public SingletonList<E> setElement(E element) {
 		this.element = element;
+		return this;
 	}
 	
 	@Override
