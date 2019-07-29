@@ -66,6 +66,15 @@ public class BufferBuilderUtils {
 		return builder.getVertexFormat().getIntegerSize() * builder.getVertexCount();
 	}
 	
+	public static int get(BufferBuilder builder, int index) {
+		try {
+			return ((IntBuffer) rawIntBufferField.get(builder)).get(index);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
 	public static void addVertexDataSmall(BufferBuilder builder, int[] vertexData) {
 		growBufferSmall(builder, vertexData.length * 4 + builder.getVertexFormat().getNextOffset());
 		try {
