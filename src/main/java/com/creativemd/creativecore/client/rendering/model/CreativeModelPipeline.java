@@ -51,6 +51,7 @@ public class CreativeModelPipeline {
 					break;
 				}
 			ambientOcclusionFaceClassConstructor = ambientOcclusionFaceClass.getConstructor(BlockModelRenderer.class);
+			ambientOcclusionFaceClassConstructor.setAccessible(true);
 			vertexColorMultiplierField = ReflectionHelper.findField(ambientOcclusionFaceClass, "vertexColorMultiplier", "field_178206_b");
 			
 			if (FMLClientHandler.instance().hasOptifine()) {
@@ -102,11 +103,11 @@ public class CreativeModelPipeline {
 			for (int i = 0; i < quads.size(); i++) {
 				List<BakedQuad> singleQuad = quads instanceof SingletonList ? quads : list.setElement(quads.get(i));
 				if (FMLClientHandler.instance().hasOptifine())
-					renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, quads, OptifineHelper.getEnv(buffer, world, state, pos));
+					renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, singleQuad, OptifineHelper.getEnv(buffer, world, state, pos));
 				else
-					renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, quads, set);
+					renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, singleQuad, set);
 				
-				overwriteColor(world, state, pos, buffer, layer, quads, cube, null);
+				overwriteColor(world, state, pos, buffer, layer, singleQuad, cube, null);
 			}
 			list.setElement(null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
