@@ -138,6 +138,32 @@ public class GuiContainerSub extends GuiContainer {
 	}
 	
 	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		
+		if (layers.isEmpty())
+			return;
+		
+		int i = layers.size() - 1;
+		GlStateManager.pushMatrix();
+		
+		int k = guiLeft;
+		int l = guiTop;
+		int offX = (this.width - layers.get(i).width) / 2 - k;
+		int offY = (this.height - layers.get(i).height) / 2 - l;
+		GlStateManager.translate(k, l, 0);
+		
+		GlStateManager.translate(offX, offY, 0);
+		
+		Vec3d mouse = layers.get(i).getMousePos();
+		GuiToolTipEvent event = layers.get(i).getToolTipEvent();
+		if (event != null && layers.get(i).raiseEvent(event))
+			this.drawHoveringText(event.tooltip, (int) mouse.x, (int) mouse.y, GuiRenderHelper.instance.font);
+		
+		GlStateManager.popMatrix();
+	}
+	
+	@Override
 	public void drawGuiContainerForegroundLayer(int par1, int par2) {
 		for (int i = 0; i < layers.size(); i++) {
 			
@@ -167,13 +193,6 @@ public class GuiContainerSub extends GuiContainer {
 			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			
 			layers.get(i).renderControl(GuiRenderHelper.instance, 1F, GuiControl.getScreenRect());
-			
-			if (i == layers.size() - 1) {
-				Vec3d mouse = layers.get(i).getMousePos();
-				GuiToolTipEvent event = layers.get(i).getToolTipEvent();
-				if (event != null && layers.get(i).raiseEvent(event))
-					this.drawHoveringText(event.tooltip, (int) mouse.x, (int) mouse.y, GuiRenderHelper.instance.font);
-			}
 			
 			GlStateManager.popMatrix();
 		}
