@@ -35,6 +35,7 @@ import net.minecraftforge.client.model.pipeline.VertexLighterSmoothAo;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 
 public class CreativeModelPipeline {
 	
@@ -51,8 +52,7 @@ public class CreativeModelPipeline {
 	private static Field lighterSmoothField;
 	private static Field wrFlatField;
 	private static Field wrSmoothField;
-	private static Field lastRendererFlat;
-	private static Field lastRendererSmooth;
+	private static Method setBufferMethod;
 	private static Field blockInfoField;
 	
 	static {
@@ -77,11 +77,15 @@ public class CreativeModelPipeline {
 			
 			lighterFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lighterFlat");
 			lighterSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lighterSmooth");
-			wrFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "wrFlat");
-			wrSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "wrSmooth");
-			lastRendererFlat = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lastRendererFlat");
-			lastRendererSmooth = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lastRendererSmooth");
+			wrFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "wrFlat", "consumerFlat");
+			wrSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "wrSmooth", "consumerSmooth");
+			try {
+				setBufferMethod = ReflectionHelper.findMethod(VertexBufferConsumer.class, "setBuffer", "setBuffer", BufferBuilder.class);
+			} catch (UnableToFindMethodException e) {
+				setBufferMethod = null;
+			}
 			blockInfoField = ReflectionHelper.findField(VertexLighterFlat.class, "blockInfo");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -104,15 +108,16 @@ public class CreativeModelPipeline {
 			for (int i = 0; i < quads.size(); i++) {
 				
 				if (ForgeModContainer.forgeLightPipelineEnabled) {
-					ThreadLocal<BufferBuilder> lastRenderer = (ThreadLocal<BufferBuilder>) lastRendererSmooth.get(renderer);
 					ThreadLocal<VertexBufferConsumer> wrSmooth = (ThreadLocal<VertexBufferConsumer>) wrSmoothField.get(renderer);
 					ThreadLocal<VertexLighterSmoothAo> lighterSmooth = (ThreadLocal<VertexLighterSmoothAo>) lighterSmoothField.get(renderer);
-					if (buffer != lastRenderer.get()) {
-						lastRenderer.set(buffer);
-						VertexBufferConsumer newCons = new VertexBufferConsumer(buffer);
+					
+					VertexBufferConsumer newCons = wrSmooth.get();
+					if (setBufferMethod == null) {
+						newCons = new VertexBufferConsumer(buffer);
 						wrSmooth.set(newCons);
-						lighterSmooth.get().setParent(newCons);
-					}
+					} else
+						setBufferMethod.invoke(newCons, buffer);
+					lighterSmooth.get().setParent(newCons);
 					wrSmooth.get().setOffset(pos);
 					
 					VertexLighterSmoothAo lighter = lighterSmooth.get();
@@ -121,9 +126,9 @@ public class CreativeModelPipeline {
 					lighter.setBlockPos(pos);
 					lighter.updateBlockInfo();
 					
-					quads.get(0).pipe(lighter);
+					quads.get(i).pipe(lighter);
 					
-					overwriteColor(world, state, pos, buffer, layer, quads.get(0), cube, null, lighter);
+					overwriteColor(world, state, pos, buffer, layer, quads.get(i), cube, null, lighter);
 				} else {
 					SingletonList<BakedQuad> singleQuad = quads instanceof SingletonList ? (SingletonList<BakedQuad>) quads : list.setElement(quads.get(i));
 					if (FMLClientHandler.instance().hasOptifine())
@@ -145,30 +150,32 @@ public class CreativeModelPipeline {
 	public static void renderBlockFaceFlat(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, EnumFacing facing, BitSet set, RenderCubeObject cube, Object renderEnv) {
 		int light = state.getPackedLightmapCoords(world, pos.offset(facing));
 		try {
-			if (ForgeModContainer.forgeLightPipelineEnabled) {
-				ThreadLocal<BufferBuilder> lastRenderer = (ThreadLocal<BufferBuilder>) lastRendererFlat.get(renderer);
-				ThreadLocal<VertexBufferConsumer> wrFlat = (ThreadLocal<VertexBufferConsumer>) wrFlatField.get(renderer);
-				ThreadLocal<VertexLighterFlat> lighterFlat = (ThreadLocal<VertexLighterFlat>) lighterFlatField.get(renderer);
-				if (buffer != lastRenderer.get()) {
-					lastRenderer.set(buffer);
-					VertexBufferConsumer newCons = new VertexBufferConsumer(buffer);
-					wrFlat.set(newCons);
+			
+			for (int i = 0; i < quads.size(); i++) {
+				if (ForgeModContainer.forgeLightPipelineEnabled) {
+					ThreadLocal<VertexBufferConsumer> wrFlat = (ThreadLocal<VertexBufferConsumer>) wrFlatField.get(renderer);
+					ThreadLocal<VertexLighterFlat> lighterFlat = (ThreadLocal<VertexLighterFlat>) lighterFlatField.get(renderer);
+					
+					VertexBufferConsumer newCons = wrFlat.get();
+					if (setBufferMethod == null) {
+						newCons = new VertexBufferConsumer(buffer);
+						wrFlat.set(newCons);
+					} else
+						setBufferMethod.invoke(newCons, buffer);
 					lighterFlat.get().setParent(newCons);
-				}
-				wrFlat.get().setOffset(pos);
-				
-				VertexLighterFlat lighter = lighterFlat.get();
-				lighter.setWorld(world);
-				lighter.setState(state);
-				lighter.setBlockPos(pos);
-				lighter.updateBlockInfo();
-				
-				quads.get(0).pipe(lighter);
-				
-				overwriteColor(world, state, pos, buffer, layer, quads.get(0), cube, null, null);
-			} else {
-				SingletonList<BakedQuad> list = singletonList.get();
-				for (int i = 0; i < quads.size(); i++) {
+					wrFlat.get().setOffset(pos);
+					
+					VertexLighterFlat lighter = lighterFlat.get();
+					lighter.setWorld(world);
+					lighter.setState(state);
+					lighter.setBlockPos(pos);
+					lighter.updateBlockInfo();
+					
+					quads.get(i).pipe(lighter);
+					
+					overwriteColor(world, state, pos, buffer, layer, quads.get(i), cube, null, null);
+				} else {
+					SingletonList<BakedQuad> list = singletonList.get();
 					List<BakedQuad> singleQuad = quads instanceof SingletonList ? quads : list.setElement(quads.get(i));
 					if (FMLClientHandler.instance().hasOptifine())
 						renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, singleQuad, renderEnv);
@@ -176,8 +183,9 @@ public class CreativeModelPipeline {
 						renderQuadsFlatMethod.invoke(renderer, world, state, pos, light, false, buffer, singleQuad, set);
 					
 					overwriteColor(world, state, pos, buffer, layer, singleQuad.get(0), cube, null, null);
+					list.setElement(null);
 				}
-				list.setElement(null);
+				
 			}
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
@@ -222,7 +230,7 @@ public class CreativeModelPipeline {
 			if (EntityRenderer.anaglyphEnable)
 				multiplier = TextureUtil.anaglyphColor(multiplier);
 		}
-		if (tint != -1 && multiplier != -1) {
+		if (tint != -1 && cube.color != -1) {
 			float r = (multiplier >> 16 & 255) / 255F;
 			float g = (multiplier >> 8 & 255) / 255F;
 			float b = (multiplier & 255) / 255F;
