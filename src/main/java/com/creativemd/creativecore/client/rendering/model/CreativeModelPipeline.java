@@ -105,31 +105,33 @@ public class CreativeModelPipeline {
 	public static void renderBlockFaceSmooth(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, float[] afloat, EnumFacing facing, BitSet set, Object ambientOcclusionFace, RenderCubeObject cube) {
 		try {
 			SingletonList<BakedQuad> list = singletonList.get();
-			for (int i = 0; i < quads.size(); i++) {
+			
+			if (ForgeModContainer.forgeLightPipelineEnabled) {
+				ThreadLocal<VertexBufferConsumer> wrSmooth = (ThreadLocal<VertexBufferConsumer>) wrSmoothField.get(renderer);
+				ThreadLocal<VertexLighterSmoothAo> lighterSmooth = (ThreadLocal<VertexLighterSmoothAo>) lighterSmoothField.get(renderer);
 				
-				if (ForgeModContainer.forgeLightPipelineEnabled) {
-					ThreadLocal<VertexBufferConsumer> wrSmooth = (ThreadLocal<VertexBufferConsumer>) wrSmoothField.get(renderer);
-					ThreadLocal<VertexLighterSmoothAo> lighterSmooth = (ThreadLocal<VertexLighterSmoothAo>) lighterSmoothField.get(renderer);
-					
-					VertexBufferConsumer newCons = wrSmooth.get();
-					if (setBufferMethod == null) {
-						newCons = new VertexBufferConsumer(buffer);
-						wrSmooth.set(newCons);
-					} else
-						setBufferMethod.invoke(newCons, buffer);
-					lighterSmooth.get().setParent(newCons);
-					wrSmooth.get().setOffset(pos);
-					
-					VertexLighterSmoothAo lighter = lighterSmooth.get();
-					lighter.setWorld(world);
-					lighter.setState(state);
-					lighter.setBlockPos(pos);
-					lighter.updateBlockInfo();
-					
+				VertexBufferConsumer newCons = wrSmooth.get();
+				if (setBufferMethod == null) {
+					newCons = new VertexBufferConsumer(buffer);
+					wrSmooth.set(newCons);
+				} else
+					setBufferMethod.invoke(newCons, buffer);
+				lighterSmooth.get().setParent(newCons);
+				wrSmooth.get().setOffset(pos);
+				
+				VertexLighterSmoothAo lighter = lighterSmooth.get();
+				lighter.setWorld(world);
+				lighter.setState(state);
+				lighter.setBlockPos(pos);
+				lighter.updateBlockInfo();
+				
+				for (int i = 0; i < quads.size(); i++) {
 					quads.get(i).pipe(lighter);
 					
 					overwriteColor(world, state, pos, buffer, layer, quads.get(i), cube, null, lighter);
-				} else {
+				}
+			} else {
+				for (int i = 0; i < quads.size(); i++) {
 					SingletonList<BakedQuad> singleQuad = quads instanceof SingletonList ? (SingletonList<BakedQuad>) quads : list.setElement(quads.get(i));
 					if (FMLClientHandler.instance().hasOptifine())
 						renderQuadsSmoothMethod.invoke(renderer, world, state, pos, buffer, singleQuad, ambientOcclusionFace);
@@ -151,30 +153,32 @@ public class CreativeModelPipeline {
 		int light = state.getPackedLightmapCoords(world, pos.offset(facing));
 		try {
 			
-			for (int i = 0; i < quads.size(); i++) {
-				if (ForgeModContainer.forgeLightPipelineEnabled) {
-					ThreadLocal<VertexBufferConsumer> wrFlat = (ThreadLocal<VertexBufferConsumer>) wrFlatField.get(renderer);
-					ThreadLocal<VertexLighterFlat> lighterFlat = (ThreadLocal<VertexLighterFlat>) lighterFlatField.get(renderer);
-					
-					VertexBufferConsumer newCons = wrFlat.get();
-					if (setBufferMethod == null) {
-						newCons = new VertexBufferConsumer(buffer);
-						wrFlat.set(newCons);
-					} else
-						setBufferMethod.invoke(newCons, buffer);
-					lighterFlat.get().setParent(newCons);
-					wrFlat.get().setOffset(pos);
-					
-					VertexLighterFlat lighter = lighterFlat.get();
-					lighter.setWorld(world);
-					lighter.setState(state);
-					lighter.setBlockPos(pos);
-					lighter.updateBlockInfo();
-					
+			if (ForgeModContainer.forgeLightPipelineEnabled) {
+				ThreadLocal<VertexBufferConsumer> wrFlat = (ThreadLocal<VertexBufferConsumer>) wrFlatField.get(renderer);
+				ThreadLocal<VertexLighterFlat> lighterFlat = (ThreadLocal<VertexLighterFlat>) lighterFlatField.get(renderer);
+				
+				VertexBufferConsumer newCons = wrFlat.get();
+				if (setBufferMethod == null) {
+					newCons = new VertexBufferConsumer(buffer);
+					wrFlat.set(newCons);
+				} else
+					setBufferMethod.invoke(newCons, buffer);
+				lighterFlat.get().setParent(newCons);
+				wrFlat.get().setOffset(pos);
+				
+				VertexLighterFlat lighter = lighterFlat.get();
+				lighter.setWorld(world);
+				lighter.setState(state);
+				lighter.setBlockPos(pos);
+				lighter.updateBlockInfo();
+				
+				for (int i = 0; i < quads.size(); i++) {
 					quads.get(i).pipe(lighter);
 					
 					overwriteColor(world, state, pos, buffer, layer, quads.get(i), cube, null, null);
-				} else {
+				}
+			} else {
+				for (int i = 0; i < quads.size(); i++) {
 					SingletonList<BakedQuad> list = singletonList.get();
 					List<BakedQuad> singleQuad = quads instanceof SingletonList ? quads : list.setElement(quads.get(i));
 					if (FMLClientHandler.instance().hasOptifine())
