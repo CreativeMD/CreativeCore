@@ -29,6 +29,7 @@ public class GuiColorPlate extends GuiControl {
 		super(name, x, y, width, height);
 		
 		this.marginWidth = 0;
+		this.backgroundPlate = new TextureStretchDisplayStyle(guiUtilsImage, 224, 240, 16, 16);
 		setColor(new Color(color.getX(), color.getY(), color.getZ()));
 	}
 	
