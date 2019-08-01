@@ -93,30 +93,36 @@ public class GuiSlotControl extends GuiControl {
 	}
 	
 	@Override
-	public ArrayList<String> getTooltip() {
-		ArrayList<String> tips = new ArrayList<String>();
-		if (slot.slot.getHasStack() && getPlayer().inventory.getItemStack().isEmpty()) {
-			List list = null;
+	public List<String> getTooltip() {
+		if (slot.slot.getHasStack() && getPlayer().inventory.getItemStack().isEmpty())
+			return getTooltip(slot.slot.getStack());
+		return null;
+	}
+	
+	public static List<String> getTooltip(ItemStack stack) {
+		if (stack.isEmpty())
+			return null;
+		
+		List<String> tips = new ArrayList<String>();
+		List<String> list = null;
+		try {
+			list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+			
+			for (int k = 0; k < list.size(); ++k) {
+				if (k == 0) {
+					list.set(k, stack.getRarity().rarityColor + list.get(k));
+				} else {
+					list.set(k, ChatFormatting.GRAY + list.get(k));
+				}
+				tips.add(list.get(k));
+			}
+		} catch (Exception e) {
 			try {
-				list = slot.slot.getStack().getTooltip(this.mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
-				
-				for (int k = 0; k < list.size(); ++k) {
-					if (k == 0) {
-						list.set(k, slot.slot.getStack().getRarity().rarityColor + (String) list.get(k));
-					} else {
-						list.set(k, ChatFormatting.GRAY + (String) list.get(k));
-					}
-					tips.add((String) list.get(k));
-				}
-			} catch (Exception e) {
-				ItemStack stack = slot.slot.getStack();
-				try {
-					tips.add(Item.REGISTRY.getNameForObject(stack.getItem()).toString());
-					tips.add("Damage: " + stack.getItemDamage());
-					tips.add("NBT: " + (stack.hasTagCompound() ? "null" : stack.getTagCompound().toString()));
-				} catch (Exception e2) {
-					tips.add("<ERRORED>");
-				}
+				tips.add(Item.REGISTRY.getNameForObject(stack.getItem()).toString());
+				tips.add("Damage: " + stack.getItemDamage());
+				tips.add("NBT: " + (stack.hasTagCompound() ? "null" : stack.getTagCompound().toString()));
+			} catch (Exception e2) {
+				tips.add("<ERRORED>");
 			}
 		}
 		return tips;

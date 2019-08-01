@@ -1,8 +1,12 @@
 package com.creativemd.creativecore.common.gui.controls.gui;
 
+import java.util.List;
+
 import com.creativemd.creativecore.client.avatar.Avatar;
+import com.creativemd.creativecore.client.avatar.AvatarItemStack;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.client.style.Style;
+import com.creativemd.creativecore.common.gui.controls.container.client.GuiSlotControl;
 
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -46,5 +50,12 @@ public abstract class GuiAvatarLabelClickable extends GuiClickableLabel {
 			avatar.handleRendering(helper, avatarSize, avatarSize);
 			GlStateManager.popMatrix();
 		}
+	}
+	
+	@Override
+	public List<String> getTooltip() {
+		if (avatar instanceof AvatarItemStack)
+			return GuiSlotControl.getTooltip(((AvatarItemStack) avatar).stack);
+		return super.getTooltip();
 	}
 }

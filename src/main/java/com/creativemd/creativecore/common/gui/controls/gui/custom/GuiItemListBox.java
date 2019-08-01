@@ -63,7 +63,6 @@ public class GuiItemListBox extends GuiListBox {
 						((GuiLabel) controls.get(selected)).color = 16777000;
 						
 						onSelectionChange();
-						
 					}
 				};
 				if (centered)
