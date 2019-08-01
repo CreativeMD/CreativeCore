@@ -19,7 +19,6 @@ import net.minecraft.network.EnumConnectionState;
 import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -31,7 +30,7 @@ public abstract class CreativeCorePacket {
 	
 	public static final HashMap<String, Class<? extends CreativeCorePacket>> packets = new HashMap<String, Class<? extends CreativeCorePacket>>();
 	
-	public static int maxPacketSize = 0x100000 - 1000;
+	public static int maxPacketSize = 1047576;
 	
 	public static void registerPacket(Class<? extends CreativeCorePacket> PacketClass, String id) {
 		packets.put(id, PacketClass);
@@ -166,7 +165,7 @@ public abstract class CreativeCorePacket {
 		Packet<?> packet;
 		EnumConnectionState state = EnumConnectionState.getById(buf.readInt());
 		try {
-			packet = (SPacketUpdateTileEntity) state.getPacket(EnumPacketDirection.SERVERBOUND, buf.readInt());
+			packet = state.getPacket(EnumPacketDirection.SERVERBOUND, buf.readInt());
 			packet.readPacketData(new PacketBuffer(buf));
 		} catch (InstantiationException | IllegalAccessException | IOException e) {
 			throw new RuntimeException(e);

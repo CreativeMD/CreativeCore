@@ -20,4 +20,14 @@ public class PlayerUtils {
 		return ((EntityPlayerMP) player).interactionManager.getGameType() == GameType.ADVENTURE;
 	}
 	
+	@SideOnly(Side.CLIENT)
+	private static GameType getGameTypeClient(EntityPlayer player) {
+		return Minecraft.getMinecraft().playerController.getCurrentGameType();
+	}
+	
+	public static GameType getGameType(EntityPlayer player) {
+		if (player.world.isRemote)
+			return getGameTypeClient(player);
+		return ((EntityPlayerMP) player).interactionManager.getGameType();
+	}
 }
