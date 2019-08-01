@@ -6,16 +6,27 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class TileEntityCreative extends TileEntity {
 	
+	private World tempWorld;
+	
 	public boolean isClientSide() {
 		if (world != null)
 			return world.isRemote;
-		return FMLCommonHandler.instance().getEffectiveSide().isClient();
+		return tempWorld.isRemote;
+	}
+	
+	@Override
+	protected void setWorldCreate(World worldIn) {
+		tempWorld = worldIn;
+	}
+	
+	public void deleteTempWorld() {
+		tempWorld = null;
 	}
 	
 	public void getDescriptionNBT(NBTTagCompound nbt) {
