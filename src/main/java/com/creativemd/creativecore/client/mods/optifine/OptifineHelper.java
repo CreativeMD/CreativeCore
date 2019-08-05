@@ -44,13 +44,22 @@ public class OptifineHelper {
 	private static Method getColorMultiplier;
 	private static Field isEmissive;
 	private static Method getQuadEmissive;
+	private static boolean newVersion = false;
 	
 	private static void loadOptifineReflections() {
 		try {
 			loadedOptifineReflections = true;
 			renderEnvClass = Class.forName("net.optifine.render.RenderEnv");
-			renderEnvConstructor = renderEnvClass.getConstructor(IBlockAccess.class, IBlockState.class, BlockPos.class);
-			resetEnv = ReflectionHelper.findMethod(renderEnvClass, "reset", "reset", IBlockAccess.class, IBlockState.class, BlockPos.class);
+			try {
+				renderEnvConstructor = renderEnvClass.getConstructor(IBlockAccess.class, IBlockState.class, BlockPos.class);
+				resetEnv = ReflectionHelper.findMethod(renderEnvClass, "reset", "reset", IBlockAccess.class, IBlockState.class, BlockPos.class);
+				getEnv = ReflectionHelper.findMethod(BufferBuilder.class, "getRenderEnv", "getRenderEnv", IBlockAccess.class, IBlockState.class, BlockPos.class);
+			} catch (NoSuchMethodException e) {
+				newVersion = true;
+				renderEnvConstructor = renderEnvClass.getConstructor(IBlockState.class, BlockPos.class);
+				resetEnv = ReflectionHelper.findMethod(renderEnvClass, "reset", "reset", IBlockState.class, BlockPos.class);
+				getEnv = ReflectionHelper.findMethod(BufferBuilder.class, "getRenderEnv", "getRenderEnv", IBlockState.class, BlockPos.class);
+			}
 			getAoFace = ReflectionHelper.findMethod(renderEnvClass, "getAoFace", "getAoFace");
 			blockModelCustomizer = Class.forName("net.optifine.model.BlockModelCustomizer");
 			getCustomizedModel = ReflectionHelper.findMethod(blockModelCustomizer, "getRenderModel", "getRenderModel", IBakedModel.class, IBlockState.class, renderEnvClass);
@@ -63,6 +72,8 @@ public class OptifineHelper {
 				@Override
 				public Object get() {
 					try {
+						if (newVersion)
+							return renderEnvConstructor.newInstance(null, null);
 						return renderEnvConstructor.newInstance(null, null, null);
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						throw new RuntimeException(e);
@@ -81,7 +92,6 @@ public class OptifineHelper {
 			
 			getQuadEmissive = ReflectionHelper.findMethod(BakedQuad.class, "getQuadEmissive", "getQuadEmissive");
 			
-			getEnv = ReflectionHelper.findMethod(BufferBuilder.class, "getRenderEnv", "getRenderEnv", IBlockAccess.class, IBlockState.class, BlockPos.class);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
 			active = false;
 			e.printStackTrace();
@@ -101,6 +111,8 @@ public class OptifineHelper {
 	
 	public static Object getEnv(BufferBuilder builder, IBlockAccess world, IBlockState state, BlockPos pos) {
 		try {
+			if (newVersion)
+				return getEnv.invoke(builder, state, pos);
 			return getEnv.invoke(builder, world, state, pos);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
@@ -111,7 +123,10 @@ public class OptifineHelper {
 	public static Object getEnv(IBlockAccess world, IBlockState state, BlockPos pos) {
 		try {
 			Object env = renderEnv.get();
-			resetEnv.invoke(env, world, state, pos);
+			if (newVersion)
+				resetEnv.invoke(env, state, pos);
+			else
+				resetEnv.invoke(env, world, state, pos);
 			return env;
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
