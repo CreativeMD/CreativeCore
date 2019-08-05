@@ -54,6 +54,7 @@ public class CreativeModelPipeline {
 	private static Field wrSmoothField;
 	private static Method setBufferMethod;
 	private static Field blockInfoField;
+	private static Field fullBlockInfoField;
 	
 	static {
 		try {
@@ -85,6 +86,7 @@ public class CreativeModelPipeline {
 				setBufferMethod = null;
 			}
 			blockInfoField = ReflectionHelper.findField(VertexLighterFlat.class, "blockInfo");
+			fullBlockInfoField = ReflectionHelper.findField(BlockInfo.class, "full");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,6 +126,8 @@ public class CreativeModelPipeline {
 				lighter.setState(state);
 				lighter.setBlockPos(pos);
 				lighter.updateBlockInfo();
+				
+				fullBlockInfoField.setBoolean(blockInfoField.get(lighter), false);
 				
 				for (int i = 0; i < quads.size(); i++) {
 					quads.get(i).pipe(lighter);
@@ -171,6 +175,8 @@ public class CreativeModelPipeline {
 				lighter.setState(state);
 				lighter.setBlockPos(pos);
 				lighter.updateBlockInfo();
+				
+				fullBlockInfoField.setBoolean(blockInfoField.get(lighter), false);
 				
 				for (int i = 0; i < quads.size(); i++) {
 					quads.get(i).pipe(lighter);
