@@ -68,15 +68,15 @@ public class ChunkProviderFake implements IChunkProvider {
 		}
 	}
 	
+	@Override
 	@Nullable
 	public Chunk getLoadedChunk(int x, int z) {
 		long i = ChunkPos.asLong(x, z);
-		Chunk chunk = (Chunk) this.id2ChunkMap.get(i);
+		Chunk chunk = this.id2ChunkMap.get(i);
 		
 		if (worldObj.isRemote && chunk != null && markLoaded()) {
-			chunk.markLoaded(false);
+			//chunk.markLoaded(false);
 		}
-		
 		return chunk;
 	}
 	
@@ -119,6 +119,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		return chunk;
 	}
 	
+	@Override
 	public Chunk provideChunk(int x, int z) {
 		Chunk chunk = this.loadChunk(x, z);
 		
@@ -130,7 +131,8 @@ public class ChunkProviderFake implements IChunkProvider {
 			} catch (Throwable throwable) {
 				CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception generating new chunk");
 				CrashReportCategory crashreportcategory = crashreport.makeCategory("Chunk to be generated");
-				crashreportcategory.addCrashSection("Location", String.format("%d,%d", new Object[] { Integer.valueOf(x), Integer.valueOf(z) }));
+				crashreportcategory.addCrashSection("Location", String.format("%d,%d", new Object[] {
+				        Integer.valueOf(x), Integer.valueOf(z) }));
 				crashreportcategory.addCrashSection("Position hash", Long.valueOf(i));
 				crashreportcategory.addCrashSection("Generator", this.chunkGenerator);
 				throw new ReportedException(crashreport);
@@ -153,10 +155,10 @@ public class ChunkProviderFake implements IChunkProvider {
 				chunk.setLastSaveTime(this.worldObj.getTotalWorldTime());
 				// this.chunkGenerator.recreateStructures(chunk, x, z);
 			}
-			
+			chunk.onLoad();
 			return chunk;
 		} catch (Exception exception) {
-			LOGGER.error((String) "Couldn\'t load chunk", (Throwable) exception);
+			LOGGER.error("Couldn\'t load chunk", exception);
 			return null;
 		}
 	}
@@ -165,7 +167,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		try {
 			this.chunkLoader.saveExtraChunkData(this.worldObj, chunkIn);
 		} catch (Exception exception) {
-			LOGGER.error((String) "Couldn\'t save entities", (Throwable) exception);
+			LOGGER.error("Couldn\'t save entities", exception);
 		}
 	}
 	
@@ -174,9 +176,9 @@ public class ChunkProviderFake implements IChunkProvider {
 			chunkIn.setLastSaveTime(this.worldObj.getTotalWorldTime());
 			this.chunkLoader.saveChunk(this.worldObj, chunkIn);
 		} catch (IOException ioexception) {
-			LOGGER.error((String) "Couldn\'t save chunk", (Throwable) ioexception);
+			LOGGER.error("Couldn\'t save chunk", ioexception);
 		} catch (MinecraftException minecraftexception) {
-			LOGGER.error((String) "Couldn\'t save chunk; already in use by another instance of Minecraft?", (Throwable) minecraftexception);
+			LOGGER.error("Couldn\'t save chunk; already in use by another instance of Minecraft?", minecraftexception);
 		}
 	}
 	
@@ -185,7 +187,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		List<Chunk> list = Lists.newArrayList(this.id2ChunkMap.values());
 		
 		for (int j = 0; j < ((List) list).size(); ++j) {
-			Chunk chunk = (Chunk) list.get(j);
+			Chunk chunk = list.get(j);
 			
 			if (p_186027_1_) {
 				this.saveChunkExtraData(chunk);
@@ -243,6 +245,7 @@ public class ChunkProviderFake implements IChunkProvider {
 	}
 	
 	/** Converts the instance data to a readable string. */
+	@Override
 	public String makeString() {
 		return "ServerChunkCache: " + this.id2ChunkMap.size() + " Drop: " + this.droppedChunksSet.size();
 	}
@@ -265,6 +268,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		return this.id2ChunkMap.containsKey(ChunkPos.asLong(x, z));
 	}
 	
+	@Override
 	public boolean isChunkGeneratedAt(int p_191062_1_, int p_191062_2_) {
 		return this.id2ChunkMap.containsKey(ChunkPos.asLong(p_191062_1_, p_191062_2_)) || this.chunkLoader.isChunkGeneratedAt(p_191062_1_, p_191062_2_);
 	}
