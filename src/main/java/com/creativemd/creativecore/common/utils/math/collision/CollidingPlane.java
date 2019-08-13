@@ -1,13 +1,16 @@
-package com.creativemd.creativecore.common.utils.math.box;
+package com.creativemd.creativecore.common.utils.math.collision;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
+import com.creativemd.creativecore.common.utils.math.box.BoxUtils;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxFace;
-import com.creativemd.creativecore.common.utils.math.vec.MatrixUtils.MatrixLookupTable;
+import com.creativemd.creativecore.common.utils.math.box.CreativeAxisAlignedBB;
+import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
+import com.creativemd.creativecore.common.utils.math.collision.MatrixUtils.MatrixLookupTable;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;

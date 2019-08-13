@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.utils.math.vec;
+package com.creativemd.creativecore.common.utils.math.collision;
 
 import java.util.HashMap;
 
@@ -7,6 +7,7 @@ import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
+import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 
 public class MatrixUtils {
 	

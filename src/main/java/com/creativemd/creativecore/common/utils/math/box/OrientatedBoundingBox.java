@@ -5,7 +5,7 @@ import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
-import com.creativemd.creativecore.common.utils.math.box.CollidingPlane.PlaneCache;
+import com.creativemd.creativecore.common.utils.math.collision.CollidingPlane.PlaneCache;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 import com.creativemd.creativecore.common.utils.math.vec.Ray2d;
 

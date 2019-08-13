@@ -3,6 +3,8 @@ package com.creativemd.creativecore.common.utils.math.vec;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Vector3d;
 
+import com.creativemd.creativecore.common.utils.math.collision.MatrixUtils;
+
 public class VecOrigin implements IVecOrigin {
 	
 	public VecOrigin(Vector3d center) {
