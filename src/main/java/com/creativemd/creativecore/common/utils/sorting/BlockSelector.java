@@ -68,10 +68,9 @@ public abstract class BlockSelector {
 		
 		@Override
 		public boolean is(Block block, int meta) {
-			for (Block searchBlock : blocks) {
+			for (Block searchBlock : blocks)
 				if (searchBlock == block)
 					return true;
-			}
 			return false;
 		}
 		
@@ -91,6 +90,24 @@ public abstract class BlockSelector {
 		public boolean is(Block block, int meta) {
 			return this.block == block && this.meta == meta;
 		}
+	}
+	
+	public static class BlockSelectorClass extends BlockSelector {
+		
+		public Class<? extends Block>[] classes;
+		
+		public BlockSelectorClass(Class<? extends Block>... classes) {
+			this.classes = classes;
+		}
+		
+		@Override
+		public boolean is(Block block, int meta) {
+			for (Class<? extends Block> clazz : classes)
+				if (clazz.isInstance(block))
+					return true;
+			return false;
+		}
+		
 	}
 	
 }
