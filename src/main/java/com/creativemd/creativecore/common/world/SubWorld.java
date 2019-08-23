@@ -9,7 +9,6 @@ import com.creativemd.creativecore.common.utils.math.vec.VecOrigin;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -43,7 +42,7 @@ public class SubWorld extends CreativeWorld {
 	
 	@Override
 	protected IChunkProvider createChunkProvider() {
-		return new ChunkProviderFake(this, this.saveHandler.getChunkLoader(provider), provider.createChunkGenerator());
+		return new ChunkProviderFake(this, this.saveHandler.getChunkLoader(provider), new ChunkGeneratorFake(this));
 	}
 	
 	@Override
@@ -62,7 +61,7 @@ public class SubWorld extends CreativeWorld {
 		origin.transformPointToWorld(pos);
 		parentWorld.spawnAlwaysVisibleParticle(p_190523_1_, pos.x, pos.y, pos.z, p_190523_8_, p_190523_10_, p_190523_12_, p_190523_14_);
 		for (int i = 0; i < this.eventListeners.size(); ++i) {
-			((IWorldEventListener) this.eventListeners.get(i)).spawnParticle(p_190523_1_, false, true, pos.x, pos.y, pos.z, p_190523_8_, p_190523_10_, p_190523_12_, p_190523_14_);
+			this.eventListeners.get(i).spawnParticle(p_190523_1_, false, true, pos.x, pos.y, pos.z, p_190523_8_, p_190523_10_, p_190523_12_, p_190523_14_);
 		}
 	}
 	
@@ -80,7 +79,7 @@ public class SubWorld extends CreativeWorld {
 		origin.transformPointToWorld(pos);
 		for (int i = 0; i < this.eventListeners.size(); ++i) {
 			
-			((IWorldEventListener) this.eventListeners.get(i)).spawnParticle(particleID, ignoreRange, pos.x, pos.y, pos.z, xSpeed, ySpeed, zSpeed, parameters);
+			this.eventListeners.get(i).spawnParticle(particleID, ignoreRange, pos.x, pos.y, pos.z, xSpeed, ySpeed, zSpeed, parameters);
 		}
 	}
 	

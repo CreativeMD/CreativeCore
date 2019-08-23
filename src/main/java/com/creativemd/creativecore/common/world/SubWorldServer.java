@@ -12,7 +12,7 @@ public class SubWorldServer extends SubWorld {
 	
 	@Override
 	protected IChunkProvider createChunkProvider() {
-		return new ChunkProviderFakeServer(this, this.saveHandler.getChunkLoader(provider), provider.createChunkGenerator());
+		return new ChunkProviderFakeServer(this, this.saveHandler.getChunkLoader(provider), new ChunkGeneratorFake(this));
 	}
 	
 }
