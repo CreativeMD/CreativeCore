@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
+import net.minecraft.util.Mirror;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -239,6 +240,58 @@ public class RotationUtils {
 		rotation.getMatrix().transform(vector);
 	}
 	
+	public static Vec3i flip(Vec3i vec, Axis axis) {
+		switch (axis) {
+		case X:
+			return new Vec3i(-vec.getX(), vec.getY(), vec.getZ());
+		case Y:
+			return new Vec3i(vec.getX(), -vec.getY(), vec.getZ());
+		case Z:
+			return new Vec3i(vec.getX(), vec.getY(), -vec.getZ());
+		}
+		return vec;
+	}
+	
+	public static BlockPos flip(BlockPos vec, Axis axis) {
+		switch (axis) {
+		case X:
+			return new BlockPos(-vec.getX(), vec.getY(), vec.getZ());
+		case Y:
+			return new BlockPos(vec.getX(), -vec.getY(), vec.getZ());
+		case Z:
+			return new BlockPos(vec.getX(), vec.getY(), -vec.getZ());
+		}
+		return vec;
+	}
+	
+	public static void flip(Vector3f vec, Axis axis) {
+		switch (axis) {
+		case X:
+			vec.x = -vec.x;
+			break;
+		case Y:
+			vec.y = -vec.y;
+			break;
+		case Z:
+			vec.z = -vec.z;
+			break;
+		}
+	}
+	
+	public static void flip(Vector3d vec, Axis axis) {
+		switch (axis) {
+		case X:
+			vec.x = -vec.x;
+			break;
+		case Y:
+			vec.y = -vec.y;
+			break;
+		case Z:
+			vec.z = -vec.z;
+			break;
+		}
+	}
+	
 	public static boolean isFacingPositive(int index) {
 		return index == 1 || index == 3 || index == 5;
 	}
@@ -394,6 +447,36 @@ public class RotationUtils {
 			return null;
 		}
 		
+	}
+	
+	public static Axis getMirrorAxis(Mirror mirrorIn) {
+		switch (mirrorIn) {
+		case FRONT_BACK:
+			return Axis.X;
+		case LEFT_RIGHT:
+			return Axis.Z;
+		default:
+			return null;
+		}
+	}
+	
+	public static Rotation getRotation(net.minecraft.util.Rotation rotationIn) {
+		switch (rotationIn) {
+		case CLOCKWISE_90:
+			return Rotation.Y_CLOCKWISE;
+		case CLOCKWISE_180:
+			return Rotation.Y_CLOCKWISE;
+		case COUNTERCLOCKWISE_90:
+			return Rotation.Y_COUNTER_CLOCKWISE;
+		default:
+			return null;
+		}
+	}
+	
+	public static int getRotationCount(net.minecraft.util.Rotation rotationIn) {
+		if (rotationIn == net.minecraft.util.Rotation.CLOCKWISE_180)
+			return 2;
+		return 1;
 	}
 	
 }
