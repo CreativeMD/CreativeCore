@@ -40,13 +40,7 @@ public abstract class TileEntityCreative extends TileEntity {
 	
 	@Override
 	public NBTTagCompound getUpdateTag() {
-		return super.getUpdateTag();
-		// return writeToNBT(new NBTTagCompound());
-	}
-	
-	@Override
-	public void handleUpdateTag(NBTTagCompound tag) {
-		this.readFromNBT(tag);
+		return writeToNBT(new NBTTagCompound());
 	}
 	
 	@Override
@@ -70,8 +64,6 @@ public abstract class TileEntityCreative extends TileEntity {
 			IBlockState state = world.getBlockState(pos);
 			world.notifyBlockUpdate(pos, state, state, 3);
 			world.markChunkDirty(getPos(), this);
-			// worldObj.markBlockForUpdate(pos);
-			// markDirty();
 		}
 	}
 	
