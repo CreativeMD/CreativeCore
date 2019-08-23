@@ -13,7 +13,7 @@ public class FakeWorldServer extends FakeWorld {
 	
 	@Override
 	protected IChunkProvider createChunkProvider() {
-		return new ChunkProviderFakeServer(this, this.saveHandler.getChunkLoader(provider), provider.createChunkGenerator());
+		return new ChunkProviderFakeServer(this, this.saveHandler.getChunkLoader(provider), new ChunkGeneratorFake(this));
 	}
 	
 }

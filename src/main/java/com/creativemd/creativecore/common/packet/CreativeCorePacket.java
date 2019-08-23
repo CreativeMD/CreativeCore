@@ -153,6 +153,7 @@ public abstract class CreativeCorePacket {
 	public static void writePacket(ByteBuf buf, Packet<?> packet) {
 		EnumConnectionState state = EnumConnectionState.getFromPacket(packet);
 		buf.writeInt(state.getId());
+		System.out.println(state);
 		try {
 			buf.writeInt(state.getPacketId(EnumPacketDirection.SERVERBOUND, packet));
 			packet.writePacketData(new PacketBuffer(buf));

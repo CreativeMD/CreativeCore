@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.world;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.IChunkLoader;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ChunkProviderFake implements IChunkProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -35,10 +37,10 @@ public class ChunkProviderFake implements IChunkProvider {
 	public final IChunkGenerator chunkGenerator;
 	public final IChunkLoader chunkLoader;
 	public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap(8192);
-	public final World worldObj;
+	public final CreativeWorld worldObj;
 	private Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 	
-	public ChunkProviderFake(World worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn) {
+	public ChunkProviderFake(CreativeWorld worldObjIn, IChunkLoader chunkLoaderIn, IChunkGenerator chunkGeneratorIn) {
 		this.worldObj = worldObjIn;
 		this.chunkLoader = chunkLoaderIn;
 		this.chunkGenerator = chunkGeneratorIn;
@@ -146,6 +148,8 @@ public class ChunkProviderFake implements IChunkProvider {
 		return chunk;
 	}
 	
+	private static Field loadedChunk = ReflectionHelper.findField(Chunk.class, "loaded", "field_76636_d");
+	
 	@Nullable
 	private Chunk loadChunkFromFile(int x, int z) {
 		try {
@@ -155,7 +159,8 @@ public class ChunkProviderFake implements IChunkProvider {
 				chunk.setLastSaveTime(this.worldObj.getTotalWorldTime());
 				// this.chunkGenerator.recreateStructures(chunk, x, z);
 			}
-			chunk.onLoad();
+			//chunk.onLoad();
+			loadedChunk.setBoolean(chunk, true);
 			return chunk;
 		} catch (Exception exception) {
 			LOGGER.error("Couldn\'t load chunk", exception);
