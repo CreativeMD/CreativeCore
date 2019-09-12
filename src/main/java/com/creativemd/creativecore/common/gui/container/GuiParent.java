@@ -85,6 +85,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		return 0;
 	}
 	
+	public boolean shouldRenderControl(GuiControl control, int index) {
+		return true;
+	}
+	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 	}
@@ -105,6 +109,9 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		
 		for (int i = controls.size() - 1; i >= 0; i--) {
 			GuiControl control = controls.get(i);
+			
+			if (!shouldRenderControl(control, i))
+				continue;
 			
 			if (control.visible && (control.canOverlap() || control.isVisibleInsideRect((int) -xOffset, (int) -yOffset, width, height, scale))) {
 				if (control.canOverlap())
