@@ -1,5 +1,7 @@
 package com.creativemd.creativecore.common.gui;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -15,10 +17,13 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,14 +33,14 @@ public class GuiRenderHelper {
 	public static GuiRenderHelper instance = new GuiRenderHelper(Minecraft.getMinecraft());
 	
 	public FontRenderer font;
-	public RenderItem itemRenderer;
+	public ExtendedRenderItem itemRenderer;
 	public static Minecraft mc = Minecraft.getMinecraft();
 	
 	public GuiRenderHelper(Minecraft mc) {
-		this(mc.fontRenderer, mc.getRenderItem());
+		this(mc.fontRenderer, new ExtendedRenderItem(mc));
 	}
 	
-	public GuiRenderHelper(FontRenderer font, RenderItem itemRenderer) {
+	public GuiRenderHelper(FontRenderer font, ExtendedRenderItem itemRenderer) {
 		this.font = font;
 		this.itemRenderer = itemRenderer;
 	}
@@ -335,6 +340,12 @@ public class GuiRenderHelper {
 		
 	}
 	
+	public void drawItemStack(ItemStack stack, int x, int y, int width, int height, int rotation, int color) {
+		itemRenderer.color = color;
+		drawItemStack(stack, x, y, width, height, rotation);
+		itemRenderer.color = -1;
+	}
+	
 	public void drawItemStack(ItemStack stack, int x, int y, int width, int height) {
 		drawItemStack(stack, x, y, width, height, 0);
 	}
@@ -343,28 +354,90 @@ public class GuiRenderHelper {
 		if (stack.isEmpty())
 			return;
 		GlStateManager.pushMatrix();
-		
-		/* GlStateManager.enableRescaleNormal(); GlStateManager.enableBlend(); int k =
-		 * 240; int l = 240;
-		 * OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)k,
-		 * (float)l);
-		 * GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-		 * GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-		 * GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO); */
 		RenderHelper.enableGUIStandardItemLighting();
 		
 		GlStateManager.translate(x + 8, y + 8, 0);
 		GlStateManager.rotate(rotation, 0, 0, 1);
 		GlStateManager.scale(width / 16D, height / 16D, 1);
 		GlStateManager.translate(-8, -8, -itemRenderer.zLevel - 50);
-		// GlStateManager.disableDepth();
 		GlStateManager.enableDepth();
 		itemRenderer.renderItemAndEffectIntoGUI(stack, 0, 0);
 		GlStateManager.disableDepth();
-		// GlStateManager.enableDepth();
-		// GlStateManager.enableLighting();
-		// RenderHelper.disableStandardItemLighting();
 		GlStateManager.popMatrix();
 		
+	}
+	
+	public static class ExtendedRenderItem extends RenderItem {
+		
+		private static final Method renderModel = ReflectionHelper.findMethod(RenderItem.class, "renderModel", "func_191967_a", IBakedModel.class, int.class, ItemStack.class);
+		private static final Method renderEffect = ReflectionHelper.findMethod(RenderItem.class, "renderEffect", "func_191966_a", IBakedModel.class);
+		
+		public ExtendedRenderItem(Minecraft mc) {
+			super(mc.renderEngine, ReflectionHelper.getPrivateValue(Minecraft.class, mc, "modelManager", "field_175617_aL"), mc.getItemColors());
+		}
+		
+		public int color = -1;
+		
+		@Override
+		protected void renderItemModelIntoGUI(ItemStack stack, int x, int y, IBakedModel bakedmodel) {
+			if (color == -1) {
+				super.renderItemModelIntoGUI(stack, x, y, bakedmodel);
+				return;
+			}
+			GlStateManager.pushMatrix();
+			mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+			mc.renderEngine.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+			GlStateManager.enableRescaleNormal();
+			GlStateManager.enableAlpha();
+			GlStateManager.alphaFunc(516, 0.1F);
+			this.setupGuiTransform2(x, y, bakedmodel.isGui3d());
+			bakedmodel = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(bakedmodel, ItemCameraTransforms.TransformType.GUI, false);
+			
+			if (!stack.isEmpty()) {
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+				
+				if (bakedmodel.isBuiltInRenderer()) {
+					GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+					GlStateManager.enableRescaleNormal();
+					stack.getItem().getTileEntityItemStackRenderer().renderByItem(stack);
+				} else {
+					try {
+						renderModel.invoke(this, bakedmodel, color, stack);
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						e.printStackTrace();
+					}
+					
+					if (stack.hasEffect()) {
+						try {
+							renderEffect.invoke(this, bakedmodel);
+						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				
+				GlStateManager.popMatrix();
+			}
+			GlStateManager.disableAlpha();
+			GlStateManager.disableRescaleNormal();
+			GlStateManager.disableLighting();
+			GlStateManager.popMatrix();
+			mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+			mc.renderEngine.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+		}
+		
+		private void setupGuiTransform2(int xPosition, int yPosition, boolean isGui3d) {
+			GlStateManager.translate(xPosition, yPosition, 100.0F + this.zLevel);
+			GlStateManager.translate(8.0F, 8.0F, 0.0F);
+			GlStateManager.scale(1.0F, -1.0F, 1.0F);
+			GlStateManager.scale(16.0F, 16.0F, 16.0F);
+			
+			if (isGui3d) {
+				GlStateManager.enableLighting();
+			} else {
+				GlStateManager.disableLighting();
+			}
+		}
 	}
 }
