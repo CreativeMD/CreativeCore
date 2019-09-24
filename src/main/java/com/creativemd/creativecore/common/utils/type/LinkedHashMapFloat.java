@@ -19,6 +19,8 @@ public class LinkedHashMapFloat<K> extends LinkedHashMap<K, Float> {
 		Float value = get(paramK);
 		if (value != null)
 			value += paramV;
+		else
+			value = paramV;
 		return super.put(paramK, value);
 	}
 	

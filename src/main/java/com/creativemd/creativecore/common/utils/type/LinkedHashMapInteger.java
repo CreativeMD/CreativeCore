@@ -19,6 +19,8 @@ public class LinkedHashMapInteger<K> extends LinkedHashMap<K, Integer> {
 		Integer value = get(paramK);
 		if (value != null)
 			value += paramV;
+		else
+			value = paramV;
 		return super.put(paramK, value);
 	}
 	

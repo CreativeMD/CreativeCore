@@ -19,6 +19,8 @@ public class LinkedHashMapDouble<K> extends LinkedHashMap<K, Double> {
 		Double value = get(paramK);
 		if (value != null)
 			value += paramV;
+		else
+			value = paramV;
 		return super.put(paramK, value);
 	}
 	

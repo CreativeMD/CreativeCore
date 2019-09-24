@@ -18,6 +18,8 @@ public class HashMapDouble<K> extends HashMap<K, Double> {
 		Double value = get(paramK);
 		if (value != null)
 			value += paramV;
+		else
+			value = paramV;
 		return super.put(paramK, value);
 	}
 	

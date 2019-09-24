@@ -18,6 +18,8 @@ public class HashMapFloat<K> extends HashMap<K, Float> {
 		Float value = get(paramK);
 		if (value != null)
 			value += paramV;
+		else
+			value = paramV;
 		return super.put(paramK, value);
 	}
 	
