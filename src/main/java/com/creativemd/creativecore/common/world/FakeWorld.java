@@ -122,4 +122,9 @@ public class FakeWorld extends CreativeWorld {
 		return null;
 	}
 	
+	@Override
+	public World getRealWorld() {
+		return null;
+	}
+	
 }

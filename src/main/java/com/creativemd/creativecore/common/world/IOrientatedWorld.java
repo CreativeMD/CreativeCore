@@ -12,6 +12,8 @@ public interface IOrientatedWorld {
 	
 	public World getParent();
 	
+	public World getRealWorld();
+	
 	public IVecOrigin getOrigin();
 	
 	public void setOrigin(Vector3d center);
