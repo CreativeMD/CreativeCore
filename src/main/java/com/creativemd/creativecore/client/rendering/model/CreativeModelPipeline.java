@@ -34,6 +34,7 @@ import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import net.minecraftforge.client.model.pipeline.VertexLighterSmoothAo;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 
@@ -78,8 +79,8 @@ public class CreativeModelPipeline {
 			
 			lighterFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lighterFlat");
 			lighterSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lighterSmooth");
-			wrFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "wrFlat", "consumerFlat");
-			wrSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "wrSmooth", "consumerSmooth");
+			wrFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, new String[] {"wrFlat", "consumerFlat"});
+			wrSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, new String[] {"wrSmooth", "consumerSmooth"});
 			try {
 				setBufferMethod = ReflectionHelper.findMethod(VertexBufferConsumer.class, "setBuffer", "setBuffer", BufferBuilder.class);
 			} catch (UnableToFindMethodException e) {
