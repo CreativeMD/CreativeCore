@@ -11,10 +11,12 @@ import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
 import com.google.common.base.Predicate;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class PacketHandler {
@@ -64,6 +66,7 @@ public class PacketHandler {
 	
 	public static void sendPacketToNearPlayers(World world, CreativeCorePacket packet, int distance, BlockPos pos) {
 		for (EntityPlayerMP entityplayermp : world.getPlayers(EntityPlayerMP.class, new Predicate<EntityPlayerMP>() {
+			@Override
 			public boolean apply(@Nullable EntityPlayerMP p_apply_1_) {
 				return p_apply_1_.getDistanceSq(pos) < Math.pow(distance, 2);
 			}
@@ -83,8 +86,14 @@ public class PacketHandler {
 		}
 	}
 	
+	public static void sendPacketToTrackingPlayersExcept(CreativeCorePacket packet, Entity entity, @Nullable EntityPlayer except, WorldServer world) {
+		for (EntityPlayer player : world.getEntityTracker().getTrackingPlayers(entity))
+			if (player != except)
+				sendPacketToPlayer(packet, (EntityPlayerMP) player);
+	}
+	
 	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, EntityPlayerMP player) {
-		Set<? extends EntityPlayer> players = ((EntityPlayerMP) player).getServerWorld().getEntityTracker().getTrackingPlayers(player);
+		Set<? extends EntityPlayer> players = player.getServerWorld().getEntityTracker().getTrackingPlayers(player);
 		for (Iterator iterator = players.iterator(); iterator.hasNext();) {
 			EntityPlayer entityPlayer = (EntityPlayer) iterator.next();
 			sendPacketToPlayer(packet, (EntityPlayerMP) entityPlayer);
