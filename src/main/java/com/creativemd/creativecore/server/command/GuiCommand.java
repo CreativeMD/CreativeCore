@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.command;
+package com.creativemd.creativecore.server.command;
 
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 

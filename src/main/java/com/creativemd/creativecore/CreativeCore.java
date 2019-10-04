@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.creativemd.creativecore.client.avatar.AvatarItemStack;
-import com.creativemd.creativecore.command.GuiCommand;
 import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.CreativeTickHandler;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
@@ -35,6 +34,7 @@ import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.core.CreativeCoreClient;
+import com.creativemd.creativecore.server.command.GuiCommand;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.entity.player.EntityPlayer;
