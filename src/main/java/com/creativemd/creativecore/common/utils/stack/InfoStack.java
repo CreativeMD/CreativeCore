@@ -204,6 +204,7 @@ public abstract class InfoStack extends Ingredient {
 		super(0);
 	}
 	
+	@Override
 	public ItemStack[] getMatchingStacks() {
 		return this.getAllPossibleItemStacks().toArray(new ItemStack[0]);
 	}
@@ -284,7 +285,7 @@ public abstract class InfoStack extends Ingredient {
 	
 	public abstract boolean equalsIgnoreSize(Object object);
 	
-	protected static Field displayOnCreativeTab = ReflectionHelper.findField(Block.class, "displayOnCreativeTab", "field_149772_a");
+	protected static Field displayOnCreativeTab = ReflectionHelper.findField(Block.class, new String[] { "displayOnCreativeTab", "field_149772_a" });
 	
 	protected static List<ItemStack> getAllExistingItems() {
 		NonNullList<ItemStack> stacks = NonNullList.create();

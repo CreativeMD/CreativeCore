@@ -34,7 +34,6 @@ import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import net.minecraftforge.client.model.pipeline.VertexLighterSmoothAo;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 
@@ -67,7 +66,7 @@ public class CreativeModelPipeline {
 					break;
 				}
 			ambientOcclusionFaceClassConstructor = ReflectionHelper.findConstructor(ambientOcclusionFaceClass, BlockModelRenderer.class);
-			vertexColorMultiplierField = ReflectionHelper.findField(ambientOcclusionFaceClass, "vertexColorMultiplier", "field_178206_b");
+			vertexColorMultiplierField = ReflectionHelper.findField(ambientOcclusionFaceClass, new String[] { "vertexColorMultiplier", "field_178206_b" });
 			
 			if (FMLClientHandler.instance().hasOptifine()) {
 				renderQuadsSmoothMethod = ReflectionHelper.findMethod(BlockModelRenderer.class, "renderQuadsSmooth", "renderQuadsSmooth", IBlockAccess.class, IBlockState.class, BlockPos.class, BufferBuilder.class, List.class, OptifineHelper.renderEnvClass);
@@ -79,8 +78,8 @@ public class CreativeModelPipeline {
 			
 			lighterFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lighterFlat");
 			lighterSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, "lighterSmooth");
-			wrFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, new String[] {"wrFlat", "consumerFlat"});
-			wrSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, new String[] {"wrSmooth", "consumerSmooth"});
+			wrFlatField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, new String[] { "wrFlat", "consumerFlat" });
+			wrSmoothField = ReflectionHelper.findField(ForgeBlockModelRenderer.class, new String[] { "wrSmooth", "consumerSmooth" });
 			try {
 				setBufferMethod = ReflectionHelper.findMethod(VertexBufferConsumer.class, "setBuffer", "setBuffer", BufferBuilder.class);
 			} catch (UnableToFindMethodException e) {

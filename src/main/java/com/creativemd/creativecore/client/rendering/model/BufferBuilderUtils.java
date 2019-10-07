@@ -19,11 +19,11 @@ public class BufferBuilderUtils {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 	
-	public static Field byteBufferField = ReflectionHelper.findField(BufferBuilder.class, "byteBuffer", "field_179001_a");
-	public static Field rawIntBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawIntBuffer", "field_178999_b");
-	public static Field rawFloatBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawFloatBuffer", "field_179000_c");
-	public static Field rawShortBufferField = ReflectionHelper.findField(BufferBuilder.class, "rawShortBuffer", "field_181676_c");
-	public static Field vertexCountField = ReflectionHelper.findField(BufferBuilder.class, "vertexCount", "field_178997_d");
+	public static Field byteBufferField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "byteBuffer", "field_179001_a" });
+	public static Field rawIntBufferField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "rawIntBuffer", "field_178999_b" });
+	public static Field rawFloatBufferField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "rawFloatBuffer", "field_179000_c" });
+	public static Field rawShortBufferField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "rawShortBuffer", "field_181676_c" });
+	public static Field vertexCountField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "vertexCount", "field_178997_d" });
 	
 	public static Method growBuffer = ReflectionHelper.findMethod(BufferBuilder.class, "growBuffer", "func_181670_b", int.class);
 	

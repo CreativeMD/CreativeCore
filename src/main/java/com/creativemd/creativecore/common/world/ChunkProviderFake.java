@@ -133,8 +133,7 @@ public class ChunkProviderFake implements IChunkProvider {
 			} catch (Throwable throwable) {
 				CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception generating new chunk");
 				CrashReportCategory crashreportcategory = crashreport.makeCategory("Chunk to be generated");
-				crashreportcategory.addCrashSection("Location", String.format("%d,%d", new Object[] {
-				        Integer.valueOf(x), Integer.valueOf(z) }));
+				crashreportcategory.addCrashSection("Location", String.format("%d,%d", new Object[] { Integer.valueOf(x), Integer.valueOf(z) }));
 				crashreportcategory.addCrashSection("Position hash", Long.valueOf(i));
 				crashreportcategory.addCrashSection("Generator", this.chunkGenerator);
 				throw new ReportedException(crashreport);
@@ -148,7 +147,7 @@ public class ChunkProviderFake implements IChunkProvider {
 		return chunk;
 	}
 	
-	private static Field loadedChunk = ReflectionHelper.findField(Chunk.class, "loaded", "field_76636_d");
+	private static Field loadedChunk = ReflectionHelper.findField(Chunk.class, new String[] { "loaded", "field_76636_d" });
 	
 	@Nullable
 	private Chunk loadChunkFromFile(int x, int z) {
