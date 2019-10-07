@@ -161,6 +161,8 @@ public class GuiContainerSub extends GuiContainer {
 			this.drawHoveringText(event.tooltip, (int) mouse.x, (int) mouse.y, GuiRenderHelper.instance.font);
 		
 		GlStateManager.popMatrix();
+		
+		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 	}
 	
 	@Override
