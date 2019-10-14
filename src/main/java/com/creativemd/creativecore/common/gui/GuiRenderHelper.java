@@ -373,7 +373,7 @@ public class GuiRenderHelper {
 		private static final Method renderEffect = ReflectionHelper.findMethod(RenderItem.class, "renderEffect", "func_191966_a", IBakedModel.class);
 		
 		public ExtendedRenderItem(Minecraft mc) {
-			super(mc.renderEngine, ReflectionHelper.getPrivateValue(Minecraft.class, mc, "modelManager", "field_175617_aL"), mc.getItemColors());
+			super(mc.renderEngine, ReflectionHelper.getPrivateValue(Minecraft.class, mc, new String[] { "modelManager", "field_175617_aL" }), mc.getItemColors());
 		}
 		
 		public int color = -1;
