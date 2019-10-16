@@ -148,7 +148,7 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 		
 	}
 	
-	public static class BlockSelector extends SearchSelector {
+	public static class GuiBlockSelector extends SearchSelector {
 		
 		@Override
 		public boolean allow(ItemStack stack) {
