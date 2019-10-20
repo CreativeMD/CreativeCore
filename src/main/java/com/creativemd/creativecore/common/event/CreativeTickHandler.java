@@ -3,7 +3,6 @@ package com.creativemd.creativecore.common.event;
 import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.gui.mc.ContainerSub;
-import com.creativemd.creativecore.common.gui.mc.GuiContainerSub;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -54,7 +53,7 @@ public class CreativeTickHandler {
 		if (tick.phase == Phase.START) {
 			Minecraft mc = Minecraft.getMinecraft();
 			if (mc.player != null && mc.player.openContainer instanceof ContainerSub && ((ContainerSub) mc.player.openContainer).gui != null)
-				((GuiContainerSub) ((ContainerSub) mc.player.openContainer).gui).onTick();
+				((ContainerSub) mc.player.openContainer).gui.onTick();
 		}
 	}
 	
@@ -78,11 +77,11 @@ public class CreativeTickHandler {
 			}
 		}
 		
-		if (mc.player != null && mc.player.openContainer instanceof ContainerSub && ((ContainerSub) mc.player.openContainer).gui != null) {
+		if (mc.player != null && mc.player.openContainer instanceof ContainerSub && ((ContainerSub) mc.player.openContainer).gui != null && mc.currentScreen != null) {
 			if (tick.phase == Phase.START) {
 				if (!changed)
 					defaultScale = mc.gameSettings.guiScale;
-				int maxScale = ((GuiContainerSub) ((ContainerSub) mc.player.openContainer).gui).getMaxScale(mc);
+				int maxScale = ((ContainerSub) mc.player.openContainer).gui.getMaxScale(mc);
 				int scale = Math.min(defaultScale, maxScale);
 				if (defaultScale == 0)
 					scale = maxScale;
