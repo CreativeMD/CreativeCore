@@ -82,6 +82,8 @@ public abstract class SubGui extends GuiParent {
 		gui.removeLayer(this);
 		if (gui.hasTopLayer())
 			gui.getTopLayer().onLayerClosed(this, nbt);
+		if (gui.getLayers().size() == 0)
+			mc.player.closeScreen();
 	}
 	
 	public void onLayerClosed(SubGui gui, NBTTagCompound nbt) {
@@ -229,6 +231,7 @@ public abstract class SubGui extends GuiParent {
 	
 	// ================CUSTOM EVENTS================
 	
+	@Override
 	public void onTick() {
 	}
 	
@@ -261,14 +264,17 @@ public abstract class SubGui extends GuiParent {
 	
 	// ================Internal Events================
 	
+	@Override
 	public boolean raiseEvent(ControlEvent event) {
 		return !eventBus.raiseEvent(event);
 	}
 	
+	@Override
 	public void addListener(Object listener) {
 		eventBus.RegisterEventListener(listener);
 	}
 	
+	@Override
 	public void removeListener(Object listener) {
 		eventBus.removeEventListener(listener);
 	}
