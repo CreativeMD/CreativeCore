@@ -13,6 +13,12 @@ public class FakeWorldServer extends FakeWorld {
 	
 	@Override
 	protected IChunkProvider createChunkProvider() {
+		try {
+			if (Class.forName("org.spongepowered.common.interfaces.world.gen.IMixinChunkProviderServer") != null)
+				return new ChunkProviderFakeServerSponge(this, this.saveHandler.getChunkLoader(provider), new ChunkGeneratorFake(this));
+		} catch (ClassNotFoundException e) {
+			
+		}
 		return new ChunkProviderFakeServer(this, this.saveHandler.getChunkLoader(provider), new ChunkGeneratorFake(this));
 	}
 	
