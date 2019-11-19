@@ -23,6 +23,10 @@ public class BoxUtils {
 		return a >= (b > 0 ? b - deviation : b + deviation);
 	}
 	
+	public static boolean insideRect(double one, double two, double minOne, double minTwo, double maxOne, double maxTwo) {
+		return one > minOne && one < maxOne && two > minTwo && two < maxTwo;
+	}
+	
 	public static Vector3d[] getCorners(AxisAlignedBB box) {
 		Vector3d[] corners = new Vector3d[BoxCorner.values().length];
 		for (int i = 0; i < corners.length; i++) {
@@ -154,27 +158,44 @@ public class BoxUtils {
 		return corners;
 	}
 	
-	public static Vector3d[] getOuterCorner(EnumFacing facing, IVecOrigin origin, AxisAlignedBB box) {
+	public static Vector3d[] getOuterCorner(EnumFacing facing, IVecOrigin origin, AxisAlignedBB box, double minOne, double minTwo, double maxOne, double maxTwo) {
 		Vector3d[] corners = getCorners(box);
 		
 		boolean positive = facing.getAxisDirection() == AxisDirection.POSITIVE;
+		Vector3d corner = null;
 		double value = 0;
 		BoxCorner selected = null;
+		Boolean inside = null;
 		Axis axis = facing.getAxis();
+		
+		Axis one = RotationUtils.getDifferentAxisFirst(axis);
+		Axis two = RotationUtils.getDifferentAxisSecond(axis);
 		
 		for (int i = 0; i < corners.length; i++) {
 			Vector3d vec = corners[i];
 			origin.transformPointToWorld(vec);
 			
 			double vectorValue = RotationUtils.get(axis, vec);
-			if (selected == null || (positive ? vectorValue > value : vectorValue < value)) {
+			if (selected == null || (positive ? vectorValue >= value : vectorValue <= value)) {
+				if (vectorValue == value) {
+					if (inside == null)
+						inside = insideRect(RotationUtils.get(one, corner), RotationUtils.get(two, corner), minOne, minTwo, maxOne, maxTwo);
+					if (inside)
+						continue;
+					
+					boolean otherInside = insideRect(RotationUtils.get(one, vec), RotationUtils.get(two, vec), minOne, minTwo, maxOne, maxTwo);
+					if (otherInside)
+						inside = true;
+					else
+						continue;
+				}
+				corner = vec;
 				selected = BoxCorner.values()[i];
 				value = vectorValue;
 			}
 		}
 		
-		return new Vector3d[] { corners[selected.ordinal()], corners[selected.neighborOne.ordinal()],
-		        corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree.ordinal()] };
+		return new Vector3d[] { corners[selected.ordinal()], corners[selected.neighborOne.ordinal()], corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree.ordinal()] };
 	}
 	
 	private static class Box {

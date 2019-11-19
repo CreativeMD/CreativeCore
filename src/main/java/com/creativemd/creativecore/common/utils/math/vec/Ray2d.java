@@ -58,6 +58,18 @@ public class Ray2d {
 		return getOrigin(other) + getDirection(other) * (value - getOrigin(axis)) / getDirection(axis);
 	}
 	
+	public Double getWithLimits(Axis axis, double value) {
+		return getWithLimits(axis, value, 0, 1);
+	}
+	
+	public Double getWithLimits(Axis axis, double value, double min, double max) {
+		Axis other = getOther(axis);
+		double position = (value - getOrigin(axis)) / getDirection(axis);
+		if (position < min || position > max)
+			return null;
+		return getOrigin(other) + getDirection(other) * position;
+	}
+	
 	public boolean isCoordinateOnLine(int one, int two) {
 		return get(this.one, one) == two;
 	}
@@ -80,7 +92,7 @@ public class Ray2d {
 			return null;
 		
 		Vector3d vec = new Vector3d(thirdValue, thirdValue, thirdValue);
-		double t = (((double) line.originTwo - originTwo) * line.directionOne + originOne * line.directionTwo - line.originOne * line.directionTwo) / (line.directionOne * directionTwo - directionOne * line.directionTwo);
+		double t = ((line.originTwo - originTwo) * line.directionOne + originOne * line.directionTwo - line.originOne * line.directionTwo) / (line.directionOne * directionTwo - directionOne * line.directionTwo);
 		RotationUtils.setValue(vec, originOne + t * directionOne, one);
 		RotationUtils.setValue(vec, originTwo + t * directionTwo, two);
 		return vec;
