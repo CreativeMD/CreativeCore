@@ -188,7 +188,8 @@ public class BoxUtils {
 						inside = true;
 					else
 						continue;
-				}
+				} else
+					inside = null;
 				corner = vec;
 				selected = BoxCorner.values()[i];
 				value = vectorValue;

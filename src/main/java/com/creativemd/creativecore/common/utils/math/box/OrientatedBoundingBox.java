@@ -227,9 +227,9 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 	/** @return -1 -> value is too small; 0 -> value is inside min and max; 1 ->
 	 *         value is too large */
 	private static int getCornerOffset(double value, double min, double max) {
-		if (value < min)
+		if (value <= min)
 			return -1;
-		else if (value > max)
+		else if (value >= max)
 			return 1;
 		return 0;
 	}
@@ -293,7 +293,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			
 			if (outerCornerOffsetOne == -1) {
 				Double coordinateTwo = line.getWithLimits(one, minOne);
-				if (coordinateTwo != null) {
+				if (coordinateTwo != null && coordinateTwo > minTwo && coordinateTwo < maxTwo) {
 					double valueAxis = axisStart + ((minOne - line.originOne) / line.directionOne) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
 					
@@ -304,7 +304,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				}
 			} else if (outerCornerOffsetOne == 1) {
 				Double coordinateTwo = line.getWithLimits(one, maxOne);
-				if (coordinateTwo != null) {
+				if (coordinateTwo != null && coordinateTwo > minTwo && coordinateTwo < maxTwo) {
 					double valueAxis = axisStart + ((maxOne - line.originOne) / line.directionOne) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
 					
@@ -317,7 +317,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			
 			if (outerCornerOffsetTwo == -1) {
 				Double coordinateOne = line.getWithLimits(two, minTwo);
-				if (coordinateOne != null) {
+				if (coordinateOne != null && coordinateOne > minOne && coordinateOne < maxOne) {
 					double valueAxis = axisStart + ((minTwo - line.originTwo) / line.directionTwo) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
 					
@@ -328,7 +328,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				}
 			} else if (outerCornerOffsetTwo == 1) {
 				Double coordinateOne = line.getWithLimits(two, maxTwo);
-				if (coordinateOne != null) {
+				if (coordinateOne != null && coordinateOne > minOne && coordinateOne < maxOne) {
 					double valueAxis = axisStart + ((maxTwo - line.originTwo) / line.directionTwo) * axisDirection;
 					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
 					
@@ -339,9 +339,6 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				}
 			}
 		}
-		
-		if (minDistance != Double.MAX_VALUE)
-			return minDistance;
 		
 		boolean minOneOffset = outerCornerOne > minOne;
 		boolean minTwoOffset = outerCornerTwo > minTwo;
