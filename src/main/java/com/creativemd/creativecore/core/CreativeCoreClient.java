@@ -36,7 +36,7 @@ public class CreativeCoreClient {
 	}
 	
 	public static void doClientThings() {
-		if (!mc.getFramebuffer().isStencilEnabled())
+		if (CreativeCoreConfig.rendering.useStencil && !mc.getFramebuffer().isStencilEnabled())
 			mc.getFramebuffer().enableStencil();
 		
 		ModelLoaderRegistry.registerLoader(new CreativeCustomModelLoader());
