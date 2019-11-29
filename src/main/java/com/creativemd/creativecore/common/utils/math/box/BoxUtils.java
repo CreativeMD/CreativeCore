@@ -6,6 +6,7 @@ import javax.vecmath.Vector3d;
 import com.creativemd.creativecore.common.utils.math.Rotation;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.RotationUtils.BooleanRotation;
+import com.creativemd.creativecore.common.utils.math.collision.CollisionCoordinator;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 
 import net.minecraft.util.EnumFacing;
@@ -48,103 +49,71 @@ public class BoxUtils {
 		}
 	}
 	
-	private static void includeMaxRotationInBox(Box box, Vector3d vec, Axis axis, Matrix3d matrix, double rotation, Vector3d additionalTranslation) {
-		if (matrix == null)
+	private static void includeMaxRotationInBox(Box box, Vector3d vec, Axis axis, CollisionCoordinator coordinator) {
+		double rotation = coordinator.getRotationDegree(axis);
+		if (rotation != 0)
 			return;
 		
+		Matrix3d matrix = coordinator.getRotationMatrix(axis);
 		Double length = null;
-		
 		BooleanRotation state = BooleanRotation.getRotationState(axis, vec);
 		
-		if (rotation > 0) {
-			double skipRotation = 90;
-			while (skipRotation < rotation && skipRotation < 360) {
-				EnumFacing facing = state.clockwiseMaxFacing();
+		boolean positive = rotation > 0;
+		int quarterRotation = 90;
+		
+		if (rotation >= 90) {
+			while (quarterRotation <= Math.abs(rotation) && quarterRotation < 360) {
+				EnumFacing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
 				
 				if (length == null)
 					length = lengthIgnoreAxis(vec, axis);
 				
 				box.include(facing, length);
-				if (additionalTranslation != null)
-					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
+				if (coordinator.translation != null)
+					box.include(facing, length + RotationUtils.get(facing.getAxis(), coordinator.translation));
 				
 				state = state.clockwise();
-				skipRotation += 90;
+				quarterRotation += 90;
 			}
+		}
+		
+		matrix.transform(vec);
+		box.include(vec);
+		
+		if (quarterRotation <= 360 && !state.is(vec)) {
+			EnumFacing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
 			
-			matrix.transform(vec);
+			if (length == null)
+				length = lengthIgnoreAxis(vec, axis);
 			
-			if (skipRotation < 360 && !state.is(vec)) {
-				EnumFacing facing = state.clockwiseMaxFacing();
-				
-				if (length == null)
-					length = lengthIgnoreAxis(vec, axis);
-				
-				box.include(facing, length);
-				if (additionalTranslation != null)
-					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
-			}
-		} else {
-			double skipRotation = -90;
-			while (skipRotation > rotation && skipRotation > -360) {
-				EnumFacing facing = state.counterMaxClockwiseFacing();
-				
-				if (length == null)
-					length = lengthIgnoreAxis(vec, axis);
-				
-				box.include(facing, length);
-				if (additionalTranslation != null)
-					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
-				
-				state = state.counterClockwise();
-				skipRotation -= 90;
-			}
-			
-			matrix.transform(vec);
-			
-			if (skipRotation > -360 && !state.is(vec)) {
-				EnumFacing facing = state.counterMaxClockwiseFacing();
-				
-				if (length == null)
-					length = lengthIgnoreAxis(vec, axis);
-				
-				box.include(facing, length);
-				if (additionalTranslation != null)
-					box.include(facing, length + RotationUtils.get(facing.getAxis(), additionalTranslation));
-			}
+			box.include(facing, length);
+			if (coordinator.translation != null)
+				box.include(facing, length + RotationUtils.get(facing.getAxis(), coordinator.translation));
 		}
 	}
 	
-	public static AxisAlignedBB getRotatedSurrounding(AxisAlignedBB box, IVecOrigin origin, Matrix3d addRotX, double rotX, Matrix3d addRotY, double rotY, Matrix3d addRotZ, double rotZ, Vector3d additionalTranslation) {
-		Vector3d[] corners = getCorners(box);
+	public static AxisAlignedBB getRotatedSurrounding(AxisAlignedBB boundingBox, CollisionCoordinator coordinator) {
+		Vector3d[] corners = getRotatedCorners(boundingBox, coordinator.origin);
 		
 		Box bb = new Box();
 		
 		for (int i = 0; i < corners.length; i++) {
 			Vector3d vec = corners[i];
 			
-			// Apply initial rotation
-			origin.transformPointToWorld(vec);
-			
-			// Remove translation
-			vec.sub(origin.translation());
-			
-			vec.sub(origin.center());
 			bb.include(vec);
 			
-			// Additional rotation and translation
-			includeMaxRotationInBox(bb, vec, Axis.X, addRotX, rotX, additionalTranslation);
-			includeMaxRotationInBox(bb, vec, Axis.Y, addRotY, rotY, additionalTranslation);
-			includeMaxRotationInBox(bb, vec, Axis.Z, addRotZ, rotZ, additionalTranslation);
-			
-			if (additionalTranslation != null)
-				vec.add(additionalTranslation);
-			
-			bb.include(vec);
+			if (coordinator.hasOnlyTranslation()) {
+				vec.add(coordinator.translation);
+				bb.include(vec);
+			} else {
+				includeMaxRotationInBox(bb, new Vector3d(vec), Axis.X, coordinator);
+				includeMaxRotationInBox(bb, new Vector3d(vec), Axis.Y, coordinator);
+				includeMaxRotationInBox(bb, new Vector3d(vec), Axis.Z, coordinator);
+				
+				coordinator.transform(vec, 1D);
+				bb.include(vec);
+			}
 		}
-		
-		bb.translate(origin.center());
-		bb.translate(origin.translation());
 		
 		return bb.getAxisBB();
 	}

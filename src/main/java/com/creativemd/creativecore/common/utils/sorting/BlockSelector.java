@@ -1,5 +1,7 @@
 package com.creativemd.creativecore.common.utils.sorting;
 
+import com.creativemd.creativecore.common.utils.mc.BlockUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -122,7 +124,7 @@ public abstract class BlockSelector {
 		
 		@Override
 		public boolean is(Block block, int meta) {
-			IBlockState state = block.getStateFromMeta(meta);
+			IBlockState state = BlockUtils.getState(block, meta);
 			for (IProperty iProperty : properties)
 				if (state.getPropertyKeys().contains(iProperty))
 					return true;

@@ -10,6 +10,7 @@ import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.box.CubeObject;
+import com.creativemd.creativecore.common.utils.mc.BlockUtils;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 import net.minecraft.block.Block;
@@ -184,14 +185,14 @@ public class RenderCubeObject extends CubeObject {
 	
 	public IBlockState getBlockState() {
 		if (meta != -1)
-			return block.getStateFromMeta(meta);
+			return BlockUtils.getState(block, meta);
 		else
 			return block.getDefaultState();
 	}
 	
 	public IBlockState getBlockState(Block block) {
 		if (meta != -1)
-			return block.getStateFromMeta(meta);
+			return BlockUtils.getState(block, meta);
 		else
 			return block.getDefaultState();
 	}

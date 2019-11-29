@@ -3,6 +3,8 @@ package com.creativemd.creativecore.common.utils.stack;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.creativemd.creativecore.common.utils.mc.BlockUtils;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -50,14 +52,7 @@ public class InfoMaterial extends InfoStack {
 	}
 	
 	public IBlockState getBlockState(ItemStack stack) {
-		Block block = Block.getBlockFromItem(stack.getItem());
-		try {
-			if (block != null)
-				return block.getStateFromMeta(stack.getMetadata());
-			return null;
-		} catch (Exception e) {
-			return block.getDefaultState();
-		}
+		return BlockUtils.getState(stack);
 	}
 	
 	@Override
