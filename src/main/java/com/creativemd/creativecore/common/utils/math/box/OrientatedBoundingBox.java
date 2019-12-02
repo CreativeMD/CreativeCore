@@ -526,86 +526,6 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		return box.minX < maxX && box.maxX > minX && box.minY < maxY && box.maxY > minY && box.minZ < maxZ && box.maxZ > minZ;
 	}
 	
-	/*
-	 * @Override public boolean contains(Vec3d vec) { if (vec.x > this.getRealMinX()
-	 * && vec.x < this.getRealMaxX()) { if (vec.y > this.getRealMinY() && vec.y <
-	 * this.getRealMaxY()) { return vec.z > this.getRealMinZ() && vec.z <
-	 * this.getRealMaxZ(); } else { return false; } } else { return false; } }
-	 */
-	
-	/*
-	 * @Override
-	 * 
-	 * @Nullable public RayTraceResult calculateIntercept(Vec3d vecA, Vec3d vecB) {
-	 * Vec3d vec3d = this.collideWithXPlane2(this.getRealMinX(), vecA, vecB);
-	 * EnumFacing enumfacing = EnumFacing.WEST; Vec3d vec3d1 =
-	 * this.collideWithXPlane2(this.getRealMaxX(), vecA, vecB);
-	 * 
-	 * if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) { vec3d = vec3d1;
-	 * enumfacing = EnumFacing.EAST; }
-	 * 
-	 * vec3d1 = this.collideWithYPlane2(this.getRealMinY(), vecA, vecB);
-	 * 
-	 * if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) { vec3d = vec3d1;
-	 * enumfacing = EnumFacing.DOWN; }
-	 * 
-	 * vec3d1 = this.collideWithYPlane2(this.getRealMaxY(), vecA, vecB);
-	 * 
-	 * if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) { vec3d = vec3d1;
-	 * enumfacing = EnumFacing.UP; }
-	 * 
-	 * vec3d1 = this.collideWithZPlane2(this.getRealMinZ(), vecA, vecB);
-	 * 
-	 * if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) { vec3d = vec3d1;
-	 * enumfacing = EnumFacing.NORTH; }
-	 * 
-	 * vec3d1 = this.collideWithZPlane2(this.getRealMaxZ(), vecA, vecB);
-	 * 
-	 * if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) { vec3d = vec3d1;
-	 * enumfacing = EnumFacing.SOUTH; }
-	 * 
-	 * return vec3d == null ? null : new RayTraceResult(vec3d, enumfacing); }
-	 * 
-	 * @Nullable
-	 * 
-	 * @VisibleForTesting protected Vec3d collideWithXPlane2(double p_186671_1_,
-	 * Vec3d p_186671_3_, Vec3d p_186671_4_) { Vec3d vec3d =
-	 * p_186671_3_.getIntermediateWithXValue(p_186671_4_, p_186671_1_); return vec3d
-	 * != null && this.intersectsWithYZ(vec3d) ? vec3d : null; }
-	 * 
-	 * @Nullable
-	 * 
-	 * @VisibleForTesting protected Vec3d collideWithYPlane2(double p_186663_1_,
-	 * Vec3d p_186663_3_, Vec3d p_186663_4_) { Vec3d vec3d =
-	 * p_186663_3_.getIntermediateWithYValue(p_186663_4_, p_186663_1_); return vec3d
-	 * != null && this.intersectsWithXZ(vec3d) ? vec3d : null; }
-	 * 
-	 * @Nullable
-	 * 
-	 * @VisibleForTesting protected Vec3d collideWithZPlane2(double p_186665_1_,
-	 * Vec3d p_186665_3_, Vec3d p_186665_4_) { Vec3d vec3d =
-	 * p_186665_3_.getIntermediateWithZValue(p_186665_4_, p_186665_1_); return vec3d
-	 * != null && this.intersectsWithXY(vec3d) ? vec3d : null; }
-	 * 
-	 * @Override
-	 * 
-	 * @VisibleForTesting public boolean intersectsWithYZ(Vec3d vec) { return vec.y
-	 * >= this.getRealMinY() && vec.y <= this.getRealMaxY() && vec.z >=
-	 * this.getRealMinZ() && vec.z <= this.getRealMaxZ(); }
-	 * 
-	 * @Override
-	 * 
-	 * @VisibleForTesting public boolean intersectsWithXZ(Vec3d vec) { return vec.x
-	 * >= this.getRealMinX() && vec.x <= this.getRealMaxX() && vec.z >=
-	 * this.getRealMinZ() && vec.z <= this.getRealMaxZ(); }
-	 * 
-	 * @Override
-	 * 
-	 * @VisibleForTesting public boolean intersectsWithXY(Vec3d vec) { return vec.x
-	 * >= this.getRealMinX() && vec.x <= this.getRealMaxX() && vec.y >=
-	 * this.getRealMinY() && vec.y <= this.getRealMaxY(); }
-	 */
-	
 	@Override
 	public String toString() {
 		return "box[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
@@ -642,34 +562,6 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			
 		if (scale <= minScale)
 			return minScale;
-		
-		/*
-		 * for(BoxCorner corner : BoxCorner.values()) { if(corner.x.getAxisDirection()
-		 * == AxisDirection.POSITIVE) { if(pushVec.x < 0) continue; } else {
-		 * if(pushVec.x > 0) continue; }
-		 * 
-		 * if(corner.y.getAxisDirection() == AxisDirection.POSITIVE) { if(pushVec.y < 0)
-		 * continue; } else { if(pushVec.y > 0) continue; }
-		 * 
-		 * if(corner.z.getAxisDirection() == AxisDirection.POSITIVE) { if(pushVec.z < 0)
-		 * continue; } else { if(pushVec.z > 0) continue; }
-		 * 
-		 * Vector3d cornerVec = getCornerVector3d(corner);
-		 * 
-		 * if(xPlane != null) { double tempScale =
-		 * xPlane.getIntersectingScale(cornerVec, pushVecInv); if(tempScale <= minScale)
-		 * return minScale; scale = Math.min(scale, tempScale); }
-		 * 
-		 * if(yPlane != null) { double tempScale =
-		 * yPlane.getIntersectingScale(cornerVec, pushVecInv); if(tempScale <= minScale)
-		 * return minScale; scale = Math.min(scale, tempScale); }
-		 * 
-		 * if(zPlane != null) { double tempScale =
-		 * zPlane.getIntersectingScale(cornerVec, pushVecInv); if(tempScale <= minScale)
-		 * return minScale; scale = Math.min(scale, tempScale); }
-		 * 
-		 * }
-		 */
 		
 		return scale;
 		
