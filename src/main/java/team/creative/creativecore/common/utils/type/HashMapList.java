@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class HashMapList<K, V> {
+public class HashMapList<K, V> implements Iterable<V> {
 	
 	private LinkedHashMap<K, ArrayList<V>> keys;
 	
@@ -151,6 +151,7 @@ public class HashMapList<K, V> {
 		return null;
 	}
 	
+	@Override
 	public Iterator<V> iterator() {
 		return new Iterator<V>() {
 			
