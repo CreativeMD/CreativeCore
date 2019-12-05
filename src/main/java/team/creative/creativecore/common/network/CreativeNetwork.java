@@ -6,11 +6,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +22,10 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class CreativeNetwork {
+	
+	private static PlayerEntity getClientPlayer() {
+		return Minecraft.getInstance().player;
+	}
 	
 	private final Logger logger;
 	private final String version;
@@ -43,7 +48,7 @@ public class CreativeNetwork {
 		}, (buffer) -> {
 			return handler.read(buffer);
 		}, (message, ctx) -> {
-			message.execute(ctx.get().getSender());
+			message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender());
 			ctx.get().setPacketHandled(true);
 		});
 		id++;
@@ -54,15 +59,15 @@ public class CreativeNetwork {
 	}
 	
 	public void sendToClient(CreativePacket message, ServerPlayerEntity player) {
-		this.instance.send(PacketDistributor.PLAYER.with((Supplier<ServerPlayerEntity>) player), message);
+		this.instance.send(PacketDistributor.PLAYER.with(() -> player), message);
 	}
 	
 	public void sendToClient(CreativePacket message, Chunk chunk) {
-		this.instance.send(PacketDistributor.TRACKING_CHUNK.with((Supplier<Chunk>) chunk), message);
+		this.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), message);
 	}
 	
-	public void sendToClient(CreativePacket message, Entity entity) {
-		this.instance.send(PacketDistributor.TRACKING_ENTITY.with((Supplier<Entity>) entity), message);
+	public void sendToClientTracking(CreativePacket message, Entity entity) {
+		this.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
 	}
 	
 	public void sendToClientAll(CreativePacket message) {
