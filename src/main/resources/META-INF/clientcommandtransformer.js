@@ -10,7 +10,7 @@ function initializeCoreMod() {
             },
             'transformer': function(method) {
 				var Opcodes = Java.type('org.objectweb.asm.Opcodes');
-				var asmapi = Java.type('net.minecraftforge.coremod.api.ASMAPI')
+				var asmapi = Java.type('net.minecraftforge.coremod.api.ASMAPI');
 				var InsnNode = Java.type('org.objectweb.asm.tree.InsnNode');
 				var FieldInsnNode = Java.type('org.objectweb.asm.tree.FieldInsnNode');
 				var VarInsnNode = Java.type('org.objectweb.asm.tree.VarInsnNode');
