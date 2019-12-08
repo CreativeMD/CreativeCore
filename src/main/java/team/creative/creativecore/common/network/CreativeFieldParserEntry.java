@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -32,7 +30,7 @@ public class CreativeFieldParserEntry {
 	
 	public CreativeFieldParserEntry(Field field, CreativeFieldParser parser) {
 		this.field = field;
-		this.nullable = field.isAnnotationPresent(Nullable.class);
+		this.nullable = field.isAnnotationPresent(CanBeNull.class);
 		this.parser = parser;
 	}
 	
