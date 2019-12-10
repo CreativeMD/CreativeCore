@@ -14,6 +14,7 @@ public class CreativeCore {
 	
 	public static final String MODID = "creativecore";
 	public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
+	public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
 	
 	public CreativeCore() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client);
