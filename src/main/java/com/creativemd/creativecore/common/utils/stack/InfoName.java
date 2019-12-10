@@ -71,7 +71,8 @@ public class InfoName extends InfoStack {
 	protected boolean isStackInstanceIgnoreSize(ItemStack stack) {
 		if (stack.getItem() instanceof ItemBlock)
 			return Block.REGISTRY.getNameForObject(Block.getBlockFromItem(stack.getItem())).toString().contains(name);
-		return Item.REGISTRY.getNameForObject(stack.getItem()).toString().contains(name);
+		ResourceLocation item = Item.REGISTRY.getNameForObject(stack.getItem());
+		return item != null ? item.toString().contains(name) : false;
 	}
 	
 	@Override
