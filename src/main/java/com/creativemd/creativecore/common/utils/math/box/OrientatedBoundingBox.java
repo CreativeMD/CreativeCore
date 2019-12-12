@@ -1,13 +1,15 @@
 package com.creativemd.creativecore.common.utils.math.box;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.collision.CollidingPlane.PlaneCache;
+import com.creativemd.creativecore.common.utils.math.collision.IntersectionHelper;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
-import com.creativemd.creativecore.common.utils.math.vec.Ray2d;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -234,12 +236,6 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		return 0;
 	}
 	
-	public static boolean isFurtherOrEqualThan(double value, double toCheck) {
-		if (value < 0)
-			return toCheck <= value;
-		return toCheck >= value;
-	}
-	
 	/** @return if result is negative there should be no collision */
 	public double calculateDistanceRotated(AxisAlignedBB other, Axis axis, double offset) {
 		boolean positive = offset > 0;
@@ -271,9 +267,9 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			return closestValue - RotationUtils.get(axis, outerCorner);
 		}
 		
-		double minDistance = Double.MAX_VALUE;
-		
 		Vector2d[] directions = new Vector2d[3];
+		
+		/* Calculate line intersection, not necessary anymore
 		
 		for (int i = 1; i <= 3; i++) { // Check all lines which connect to the outer corner
 			
@@ -343,11 +339,18 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		boolean minOneOffset = outerCornerOne > minOne;
 		boolean minTwoOffset = outerCornerTwo > minTwo;
 		boolean maxOneOffset = outerCornerOne > maxOne;
-		boolean maxTwoOffset = outerCornerTwo > maxTwo;
+		boolean maxTwoOffset = outerCornerTwo > maxTwo;*/
 		
-		Vector2d[] vectors = { new Vector2d(minOne - outerCornerOne, minTwo - outerCornerTwo), new Vector2d(maxOne - outerCornerOne, minTwo - outerCornerTwo), new Vector2d(minOne - outerCornerOne, maxTwo - outerCornerTwo), new Vector2d(maxOne - outerCornerOne, maxTwo - outerCornerTwo) };
+		double minDistance = Double.MAX_VALUE;
 		
-		for (int i = 0; i < 3; i++) { // Calculate faces
+		Vector2d[] vectors = { new Vector2d(minOne - outerCornerOne, minTwo - outerCornerTwo), new Vector2d(maxOne - outerCornerOne, minTwo - outerCornerTwo), new Vector2d(maxOne - outerCornerOne, maxTwo - outerCornerTwo), new Vector2d(minOne - outerCornerOne, maxTwo - outerCornerTwo) };
+		Vector2d[] vectorsRelative = { new Vector2d(), new Vector2d(), new Vector2d(), new Vector2d() };
+		
+		directions[0] = new Vector2d(RotationUtils.get(one, corners[1]) - outerCornerOne, RotationUtils.get(two, corners[1]) - outerCornerTwo);
+		directions[1] = new Vector2d(RotationUtils.get(one, corners[2]) - outerCornerOne, RotationUtils.get(two, corners[2]) - outerCornerTwo);
+		directions[2] = new Vector2d(RotationUtils.get(one, corners[3]) - outerCornerOne, RotationUtils.get(two, corners[3]) - outerCornerTwo);
+		
+		face_loop: for (int i = 0; i < 3; i++) { // Calculate faces
 			
 			int indexFirst = i;
 			int indexSecond = i == 2 ? 0 : i + 1;
@@ -363,22 +366,40 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				second = directions[indexSecond];
 			}
 			
-			for (int j = 0; j < vectors.length; j++) {
+			double firstAxisValue = RotationUtils.get(axis, corners[indexFirst + 1]);
+			double secondAxisValue = RotationUtils.get(axis, corners[indexSecond + 1]);
+			
+			boolean allInside = true;
+			
+			for (int j = 0; j < 4; j++) {
 				
 				Vector2d vector = vectors[j];
 				
-				if ((isFurtherOrEqualThan(vector.x, first.x) || isFurtherOrEqualThan(vector.x, second.x) || isFurtherOrEqualThan(vector.x, first.x + second.x)) && (isFurtherOrEqualThan(vector.y, first.y) || isFurtherOrEqualThan(vector.y, second.y) || isFurtherOrEqualThan(vector.y, first.y + second.y))) {
-					double t = (vector.x * second.y - vector.y * second.x) / (first.x * second.y - first.y * second.x);
-					if (t <= 0 || t >= 1 || Double.isNaN(t))
-						continue;
-					
-					double s = (vector.y - t * first.y) / second.y;
-					if (s <= 0 || s >= 1 || Double.isNaN(s))
-						continue;
-					
-					double valueAxis = outerCornerAxis + (RotationUtils.get(axis, corners[indexFirst + 1]) - outerCornerAxis) * t + (RotationUtils.get(axis, corners[indexSecond + 1]) - outerCornerAxis) * s;
-					double distance = positive ? valueAxis - closestValue : closestValue - valueAxis;
-					
+				double t = (vector.x * second.y - vector.y * second.x) / (first.x * second.y - first.y * second.x);
+				if (Double.isNaN(t))
+					return -1;
+				if (Double.isInfinite(t))
+					continue face_loop;
+				double s = (vector.y - t * first.y) / second.y;
+				if (Double.isNaN(s))
+					return -1;
+				if (Double.isInfinite(s))
+					continue face_loop;
+				
+				if (t <= 0 || t >= 1 || s <= 0 || s >= 1)
+					allInside = false;
+				vectorsRelative[j].set(t, s);
+			}
+			
+			if (allInside) {
+				for (int j = 0; j < vectorsRelative.length; j++) {
+					double distance = calculateDistanceFromPlane(positive, closestValue, vectorsRelative[j], firstAxisValue, secondAxisValue, outerCornerAxis);
+					minDistance = Math.min(distance, minDistance);
+				}
+			} else {
+				List<Vector2d> points = IntersectionHelper.getIntersectionShape(vectorsRelative);
+				for (int j = 0; j < points.size(); j++) {
+					double distance = calculateDistanceFromPlane(positive, closestValue, points.get(j), firstAxisValue, secondAxisValue, outerCornerAxis);
 					minDistance = Math.min(distance, minDistance);
 				}
 			}
@@ -389,6 +410,11 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 			return -1;
 		
 		return minDistance;
+	}
+	
+	public static double calculateDistanceFromPlane(boolean positive, double closestValue, Vector2d vec, double firstAxisValue, double secondAxisValue, double outerCornerAxis) {
+		double valueAxis = outerCornerAxis + (firstAxisValue - outerCornerAxis) * vec.x + (secondAxisValue - outerCornerAxis) * vec.y;
+		return positive ? valueAxis - closestValue : closestValue - valueAxis;
 	}
 	
 	public double calculateOffsetRotated(AxisAlignedBB other, Axis axis, double offset) {
