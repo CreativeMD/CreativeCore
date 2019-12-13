@@ -36,4 +36,9 @@ public class ChildVecOrigin extends VecOrigin {
 	public boolean hasChanged() {
 		return super.hasChanged() || parent.hasChanged();
 	}
+	
+	@Override
+	public IVecOrigin getParent() {
+		return parent;
+	}
 }

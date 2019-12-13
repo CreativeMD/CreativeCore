@@ -51,7 +51,7 @@ public class BoxUtils {
 	
 	private static void includeMaxRotationInBox(Box box, Vector3d vec, Axis axis, CollisionCoordinator coordinator) {
 		double rotation = coordinator.getRotationDegree(axis);
-		if (rotation != 0)
+		if (rotation == 0)
 			return;
 		
 		Matrix3d matrix = coordinator.getRotationMatrix(axis);
@@ -128,7 +128,7 @@ public class BoxUtils {
 	}
 	
 	public static Vector3d[] getOuterCorner(EnumFacing facing, IVecOrigin origin, AxisAlignedBB box, double minOne, double minTwo, double maxOne, double maxTwo) {
-		Vector3d[] corners = getCorners(box);
+		/*Vector3d[] corners = getCorners(box);
 		
 		boolean positive = facing.getAxisDirection() == AxisDirection.POSITIVE;
 		Vector3d corner = null;
@@ -160,6 +160,28 @@ public class BoxUtils {
 				} else
 					inside = null;
 				corner = vec;
+				selected = BoxCorner.values()[i];
+				value = vectorValue;
+			}
+		}
+		
+		return new Vector3d[] { corners[selected.ordinal()], corners[selected.neighborOne.ordinal()], corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree.ordinal()] };*/
+		Vector3d[] corners = getCorners(box);
+		
+		boolean positive = facing.getAxisDirection() == AxisDirection.POSITIVE;
+		double value = 0;
+		BoxCorner selected = null;
+		Axis axis = facing.getAxis();
+		
+		Axis one = RotationUtils.getDifferentAxisFirst(axis);
+		Axis two = RotationUtils.getDifferentAxisSecond(axis);
+		
+		for (int i = 0; i < corners.length; i++) {
+			Vector3d vec = corners[i];
+			origin.transformPointToWorld(vec);
+			
+			double vectorValue = RotationUtils.get(axis, vec);
+			if (selected == null || (positive ? vectorValue > value : vectorValue < value)) {
 				selected = BoxCorner.values()[i];
 				value = vectorValue;
 			}

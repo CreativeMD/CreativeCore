@@ -194,4 +194,8 @@ public class VecOrigin implements IVecOrigin {
 		offsetZLast = offsetZ;
 	}
 	
+	@Override
+	public IVecOrigin getParent() {
+		return null;
+	}
 }

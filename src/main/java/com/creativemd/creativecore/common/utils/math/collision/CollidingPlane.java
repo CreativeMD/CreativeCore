@@ -10,7 +10,6 @@ import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxFace;
 import com.creativemd.creativecore.common.utils.math.box.CreativeAxisAlignedBB;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
-import com.creativemd.creativecore.common.utils.math.collision.MatrixUtils.MatrixLookupTable;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;
@@ -46,28 +45,28 @@ public class CollidingPlane {
 	
 	public static final int accuracySteps = 10;
 	
-	public Double binarySearch(@Nullable Double value, AxisAlignedBB toCheck, double checkRadiusSquared, Vector3d center, MatrixLookupTable table) {
-		if (table.isSimple) {
-			Double t = searchBetweenSimple(value, toCheck, center, new Vector3d(center), new Vector3d(), 0, 1, table, 0);
-			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, table))
+	public Double binarySearch(@Nullable Double value, AxisAlignedBB toCheck, double checkRadiusSquared, Vector3d center, CollisionCoordinator coordinator) {
+		if (coordinator.isSimple) {
+			Double t = searchBetweenSimple(value, center, new Vector3d(center), new Vector3d(), 0, 1, coordinator, 0);
+			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, coordinator))
 				return t;
 			
 			return null;
-		} else if (table.hasOneRotation && !table.hasTranslation) {
-			int halfRotations = table.getNumberOfHalfRotations();
+		} else if (coordinator.hasOneRotation && !coordinator.hasTranslation) {
+			int halfRotations = coordinator.getNumberOfHalfRotations();
 			double halfRotationSize = 1D / halfRotations;
 			
 			Vector3d temp = new Vector3d();
 			Vector3d start = new Vector3d(center);
 			
-			Double t = searchBetweenSimple(value, toCheck, center, start, temp, 0, halfRotationSize, table, 0);
-			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, table))
+			Double t = searchBetweenSimple(value, center, start, temp, 0, halfRotationSize, coordinator, 0);
+			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, coordinator))
 				return t;
 			
 			start.set(center);
-			table.transformInverted(start, halfRotationSize);
-			t = searchBetweenSimple(value, toCheck, center, new Vector3d(center), temp, halfRotationSize, halfRotationSize * 2, table, 0);
-			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, table))
+			coordinator.transformInverted(start, halfRotationSize);
+			t = searchBetweenSimple(value, center, new Vector3d(center), temp, halfRotationSize, halfRotationSize * 2, coordinator, 0);
+			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, coordinator))
 				return t;
 			
 			return null;
@@ -78,7 +77,7 @@ public class CollidingPlane {
 		// the earliest hit
 		Vector3d start = new Vector3d(center);
 		Vector3d temp = new Vector3d();
-		int halfRotations = table.getNumberOfHalfRotations();
+		int halfRotations = coordinator.getNumberOfHalfRotations();
 		double halfRotationSize = 1D / halfRotations;
 		for (int i = 0; i < halfRotations; i++) {
 			double startT = halfRotationSize * i;
@@ -86,21 +85,21 @@ public class CollidingPlane {
 			
 			if (startT != 0) {
 				start.set(center);
-				table.transformInverted(start, startT);
+				coordinator.transformInverted(start, startT);
 			}
 			
 			if (value != null && value <= startT)
 				return null;
 			
-			Double t = searchBetweenSimple(value, toCheck, center, start, temp, startT, endT, table, 0);
-			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, table))
+			Double t = searchBetweenSimple(value, center, start, temp, startT, endT, coordinator, 0);
+			if (t != null && intersects(toCheck, checkRadiusSquared, center, t, coordinator))
 				return t;
 		}
 		
 		return null;
 	}
 	
-	protected Double searchBetweenSimple(@Nullable Double value, AxisAlignedBB toCheck, Vector3d center, Vector3d start, Vector3d temp, double startT, double endT, MatrixLookupTable table, int steps) {
+	protected Double searchBetweenSimple(@Nullable Double value, Vector3d center, Vector3d start, Vector3d temp, double startT, double endT, CollisionCoordinator coordinator, int steps) {
 		if (value != null && value < startT)
 			return null;
 		
@@ -109,7 +108,7 @@ public class CollidingPlane {
 			return startT;
 		
 		temp.set(center);
-		table.transformInverted(temp, endT);
+		coordinator.transformInverted(temp, endT);
 		Boolean afterFront = isInFront(temp);
 		if (afterFront == null)
 			return endT;
@@ -120,32 +119,31 @@ public class CollidingPlane {
 				double halfT = (startT + endT) / 2D;
 				
 				temp.set(center);
-				table.transformInverted(temp, halfT);
+				coordinator.transformInverted(temp, halfT);
 				
 				Boolean halfFront = isInFront(temp);
 				if (halfFront == null)
 					return halfT;
 				
 				if (beforeFront != halfFront)
-					return searchBetweenSimple(value, toCheck, center, start, temp, startT, halfT, table, steps);
-				return searchBetweenSimple(value, toCheck, center, temp, start, halfT, endT, table, steps);
+					return searchBetweenSimple(value, center, start, temp, startT, halfT, coordinator, steps);
+				return searchBetweenSimple(value, center, temp, start, halfT, endT, coordinator, steps);
 			}
 			return startT;
 		}
 		return null;
 	}
 	
-	public boolean intersects(AxisAlignedBB toCheck, double checkRadiusSquared, Vector3d center, double t, MatrixLookupTable table) {
-		if (bb.contains(center))
-			return true;
+	public boolean intersects(AxisAlignedBB toCheck, double checkRadiusSquared, Vector3d center, double t, CollisionCoordinator coordinator) {
+		Vector3d cachedCenter = new Vector3d(cache.center);
+		coordinator.origin.transformPointToWorld(cachedCenter);
+		coordinator.transform(cachedCenter, t);
+		cachedCenter.sub(center);
 		
-		Vector3d temp = new Vector3d(center);
-		temp.sub(cache.center);
-		if (temp.lengthSquared() >= checkRadiusSquared + cache.radiusSquared)
+		if (cachedCenter.lengthSquared() >= checkRadiusSquared + cache.radiusSquared)
 			return false;
 		
-		Matrix4d matrix = table.getInverted(t);
-		
+		Matrix4d matrix = coordinator.getInverted(t);
 		double minX = Double.MAX_VALUE;
 		double minY = Double.MAX_VALUE;
 		double minZ = Double.MAX_VALUE;
@@ -156,12 +154,8 @@ public class CollidingPlane {
 		for (int i = 0; i < BoxCorner.values().length; i++) {
 			Vector3d corner = BoxCorner.values()[i].getVector(toCheck);
 			
-			corner.sub(table.origin.translation());
-			corner.sub(table.rotationCenter);
-			table.origin.rotationInv().transform(corner);
-			corner.add(table.rotationCenter);
-			
-			table.transform(matrix, table.rotationCenter, corner);
+			coordinator.origin.transformPointToFakeWorld(corner);
+			coordinator.transform(matrix, corner);
 			
 			if (bb.contains(corner))
 				return true;
@@ -177,23 +171,23 @@ public class CollidingPlane {
 		return bb.minX < maxX && bb.maxX > minX && bb.minY < maxY && bb.maxY > minY && bb.minZ < maxZ && bb.maxZ > minZ;
 	}
 	
-	public static CollidingPlane[] getPlanes(CreativeAxisAlignedBB box, PlaneCache cache, MatrixLookupTable table) {
-		Vector3d[] corners = BoxUtils.getCorners(box);
+	public static CollidingPlane[] getPlanes(CreativeAxisAlignedBB box, PlaneCache cache, CollisionCoordinator coordinator) {
+		Vector3d[] corners = BoxUtils.getRotatedCorners(box, coordinator.origin);
 		
-		boolean east = table.x > 0;
-		boolean west = table.x < 0;
-		boolean up = table.y > 0;
-		boolean down = table.y < 0;
-		boolean south = table.z > 0;
-		boolean north = table.z < 0;
+		boolean east = coordinator.offX > 0;
+		boolean west = coordinator.offY < 0;
+		boolean up = coordinator.offY > 0;
+		boolean down = coordinator.offY < 0;
+		boolean south = coordinator.offZ > 0;
+		boolean north = coordinator.offZ < 0;
 		
-		if (table.hasRotY || table.hasRotZ)
+		if (coordinator.hasRotY || coordinator.hasRotZ)
 			east = west = true;
 		
-		if (table.hasRotX || table.hasRotZ)
+		if (coordinator.hasRotX || coordinator.hasRotZ)
 			up = down = true;
 		
-		if (table.hasRotX || table.hasRotY)
+		if (coordinator.hasRotX || coordinator.hasRotY)
 			south = north = true;
 		
 		CollidingPlane[] planes = new CollidingPlane[BooleanUtils.countTrue(east, west, up, down, south, north)];

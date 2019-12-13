@@ -73,6 +73,8 @@ public interface IVecOrigin {
 	
 	public void tick();
 	
+	public IVecOrigin getParent();
+	
 	public default void transformPointToWorld(Vector3d vec) {
 		vec.sub(center());
 		rotation().transform(vec);
@@ -151,13 +153,13 @@ public interface IVecOrigin {
 	
 	@SideOnly(Side.CLIENT)
 	public default void setupRenderingInternal(Entity entity, float partialTicks) {
-		double rotX = rotXLast() + (rotX() - rotXLast()) * (double) partialTicks;
-		double rotY = rotYLast() + (rotY() - rotYLast()) * (double) partialTicks;
-		double rotZ = rotZLast() + (rotZ() - rotZLast()) * (double) partialTicks;
+		double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
+		double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
+		double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
 		
-		double offX = offXLast() + (offX() - offXLast()) * (double) partialTicks;
-		double offY = offYLast() + (offY() - offYLast()) * (double) partialTicks;
-		double offZ = offZLast() + (offZ() - offZLast()) * (double) partialTicks;
+		double offX = offXLast() + (offX() - offXLast()) * partialTicks;
+		double offY = offYLast() + (offY() - offYLast()) * partialTicks;
+		double offZ = offZLast() + (offZ() - offZLast()) * partialTicks;
 		
 		Vector3d rotationCenter = center();
 		
