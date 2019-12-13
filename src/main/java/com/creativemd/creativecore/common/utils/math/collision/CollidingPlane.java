@@ -221,8 +221,8 @@ public class CollidingPlane {
 	}
 	
 	public static EnumFacing getDirection(OrientatedBoundingBox box, CollidingPlane[] planes, Vector3d center) {
-		if (box.contains(center))
-			return null;
+		//if (box.contains(center))
+		//return null;
 		
 		Boolean positiveX = null;
 		Boolean positiveY = null;
