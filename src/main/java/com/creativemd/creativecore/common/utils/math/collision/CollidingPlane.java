@@ -12,7 +12,6 @@ import com.creativemd.creativecore.common.utils.math.box.CreativeAxisAlignedBB;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
 
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 
 public class CollidingPlane {
@@ -220,82 +219,19 @@ public class CollidingPlane {
 		return planes;
 	}
 	
-	public static EnumFacing getDirection(OrientatedBoundingBox box, CollidingPlane[] planes, Vector3d center) {
-		//if (box.contains(center))
-		//return null;
+	public static EnumFacing getDirection(CollisionCoordinator coordinator, OrientatedBoundingBox box, Vector3d center) {
+		double x = (center.x - box.cache.center.x) / (box.maxX - box.minX);
+		double y = (center.y - box.cache.center.y) / (box.maxY - box.minY);
+		double z = (center.z - box.cache.center.z) / (box.maxZ - box.minZ);
 		
-		Boolean positiveX = null;
-		Boolean positiveY = null;
-		Boolean positiveZ = null;
-		
-		for (CollidingPlane plane : planes) {
-			Boolean result = plane.isInFront(center);
-			if (result == null || result)
-				switch (plane.facing.getAxis()) {
-				case X:
-					positiveX = plane.facing.getAxisDirection() == AxisDirection.POSITIVE;
-					break;
-				case Y:
-					positiveY = plane.facing.getAxisDirection() == AxisDirection.POSITIVE;
-					break;
-				case Z:
-					positiveZ = plane.facing.getAxisDirection() == AxisDirection.POSITIVE;
-					break;
-				default:
-					throw new InternalError("1 + 1 = 3");
-				}
-		}
-		
-		if (positiveX == null && positiveY == null && positiveZ == null)
-			return null;
-		
-		if (positiveY == null && positiveZ == null)
-			return positiveX == null ? null : (positiveX ? EnumFacing.EAST : EnumFacing.WEST);
-		if (positiveX == null && positiveZ == null)
-			return positiveY == null ? null : (positiveY ? EnumFacing.UP : EnumFacing.DOWN);
-		if (positiveX == null && positiveY == null)
-			return positiveZ == null ? null : (positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH);
-		
-		Vector3d relative = new Vector3d(center);
-		relative.sub(box.cache.center);
-		
-		Vector3d size = box.getSize3d();
-		size.normalize();
-		relative.x *= size.x;
-		relative.y *= size.y;
-		relative.z *= size.z;
-		
-		if (positiveX != null && positiveY != null && positiveZ != null) {
-			if (Math.abs(relative.x) > Math.abs(relative.y))
-				if (Math.abs(relative.x) > Math.abs(relative.z))
-					return positiveX ? EnumFacing.EAST : EnumFacing.WEST;
-				else
-					return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
-			else if (Math.abs(relative.y) > Math.abs(relative.z))
-				return positiveY ? EnumFacing.UP : EnumFacing.DOWN;
-			else
-				return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
-		}
-		
-		if (positiveX != null && positiveY != null)
-			if (Math.abs(relative.x) > Math.abs(relative.y))
-				return positiveX ? EnumFacing.EAST : EnumFacing.WEST;
-			else
-				return positiveY ? EnumFacing.UP : EnumFacing.DOWN;
-			
-		if (positiveY != null && positiveZ != null)
-			if (Math.abs(relative.y) > Math.abs(relative.z))
-				return positiveY ? EnumFacing.UP : EnumFacing.DOWN;
-			else
-				return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
-			
-		if (positiveX != null && positiveZ != null)
-			if (Math.abs(relative.x) > Math.abs(relative.z))
-				return positiveX ? EnumFacing.EAST : EnumFacing.WEST;
-			else
-				return positiveZ ? EnumFacing.SOUTH : EnumFacing.NORTH;
-			
-		throw new InternalError("Math has failed: 1 != 1");
+		boolean xy = Math.abs(x) > Math.abs(y);
+		boolean xz = Math.abs(x) > Math.abs(z);
+		boolean yz = Math.abs(y) > Math.abs(z);
+		if (xy && xz)
+			return x > 0 ? EnumFacing.EAST : EnumFacing.WEST;
+		else if (!xz && !yz)
+			return z > 0 ? EnumFacing.SOUTH : EnumFacing.NORTH;
+		return y > 0 ? EnumFacing.UP : EnumFacing.DOWN;
 	}
 	
 	public static class PlaneCache {
