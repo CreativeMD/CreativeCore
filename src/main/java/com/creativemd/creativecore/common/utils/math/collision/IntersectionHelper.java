@@ -1,11 +1,10 @@
 package com.creativemd.creativecore.common.utils.math.collision;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.vecmath.Vector2d;
-
-import scala.actors.threadpool.Arrays;
 
 /** @author N247S */
 public class IntersectionHelper {
