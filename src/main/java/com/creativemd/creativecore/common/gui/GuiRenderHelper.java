@@ -21,8 +21,10 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -369,19 +371,32 @@ public class GuiRenderHelper {
 	
 	public static class ExtendedRenderItem extends RenderItem {
 		
+		public RenderItem parent;
+		
 		private static final Method renderModel = ReflectionHelper.findMethod(RenderItem.class, "renderModel", "func_191967_a", IBakedModel.class, int.class, ItemStack.class);
 		private static final Method renderEffect = ReflectionHelper.findMethod(RenderItem.class, "renderEffect", "func_191966_a", IBakedModel.class);
+		private static final Method renderItemModelIntoGUI = ReflectionHelper.findMethod(RenderItem.class, "renderItemModelIntoGUI", "func_191962_a", ItemStack.class, int.class, int.class, IBakedModel.class);
 		
 		public ExtendedRenderItem(Minecraft mc) {
 			super(mc.renderEngine, ReflectionHelper.getPrivateValue(Minecraft.class, mc, new String[] { "modelManager", "field_175617_aL" }), mc.getItemColors());
+			this.parent = mc.getRenderItem();
 		}
 		
 		public int color = -1;
 		
 		@Override
+		public IBakedModel getItemModelWithOverrides(ItemStack stack, World worldIn, EntityLivingBase entitylivingbaseIn) {
+			return parent.getItemModelWithOverrides(stack, worldIn, entitylivingbaseIn);
+		}
+		
+		@Override
 		protected void renderItemModelIntoGUI(ItemStack stack, int x, int y, IBakedModel bakedmodel) {
 			if (color == -1) {
-				super.renderItemModelIntoGUI(stack, x, y, bakedmodel);
+				try {
+					renderItemModelIntoGUI.invoke(parent, stack, x, y, bakedmodel);
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					e.printStackTrace();
+				}
 				return;
 			}
 			GlStateManager.pushMatrix();
@@ -403,14 +418,14 @@ public class GuiRenderHelper {
 					stack.getItem().getTileEntityItemStackRenderer().renderByItem(stack);
 				} else {
 					try {
-						renderModel.invoke(this, bakedmodel, color, stack);
+						renderModel.invoke(parent, bakedmodel, color, stack);
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						e.printStackTrace();
 					}
 					
 					if (stack.hasEffect()) {
 						try {
-							renderEffect.invoke(this, bakedmodel);
+							renderEffect.invoke(parent, bakedmodel);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 							e.printStackTrace();
 						}
