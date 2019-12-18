@@ -375,14 +375,10 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				Vector2d vector = vectors[j];
 				
 				double t = (vector.x * second.y - vector.y * second.x) / (first.x * second.y - first.y * second.x);
-				if (Double.isNaN(t))
-					return -1;
-				if (Double.isInfinite(t))
+				if (Double.isNaN(t) || Double.isInfinite(t))
 					continue face_loop;
 				double s = (vector.y - t * first.y) / second.y;
-				if (Double.isNaN(s))
-					return -1;
-				if (Double.isInfinite(s))
+				if (Double.isNaN(s) || Double.isInfinite(s))
 					continue face_loop;
 				
 				if (t <= 0 || t >= 1 || s <= 0 || s >= 1)
