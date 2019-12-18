@@ -104,7 +104,7 @@ public class CreativeAxisAlignedBB extends AxisAlignedBB {
 		double d4 = Math.min(this.maxY, other.maxY);
 		double d5 = Math.min(this.maxZ, other.maxZ);
 		if (d0 < d3 && d1 < d4 && d2 < d5)
-			return (d3 - d0) * (d4 - d1) * (d5 - d2);
+			return Math.abs((d3 - d0) * (d4 - d1) * (d5 - d2));
 		return 0;
 	}
 	

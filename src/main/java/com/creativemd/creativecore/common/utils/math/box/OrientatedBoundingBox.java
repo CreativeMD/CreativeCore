@@ -2,7 +2,6 @@ package com.creativemd.creativecore.common.utils.math.box;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
@@ -561,8 +560,8 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		return new Vector3d(this.minX + (this.maxX - this.minX) * 0.5D, this.minY + (this.maxY - this.minY) * 0.5D, this.minZ + (this.maxZ - this.minZ) * 0.5D);
 	}
 	
-	public double getPushOutScale(double minScale, OrientatedBoundingBox fakeBox, AxisAlignedBB originalBox, Vector3d pushVec, Vector3d pushVecInv, @Nullable BoxPlane xPlane, @Nullable BoxPlane yPlane, @Nullable BoxPlane zPlane) {
-		double scale = Double.MAX_VALUE;
+	public double getPushOutScale(double minScale, OrientatedBoundingBox fakeBox, Vector3d pushVec) {
+		double scale = 0;
 		
 		boolean pushX = pushVec.x != 0;
 		boolean pushY = pushVec.y != 0;
@@ -570,21 +569,21 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		
 		if (pushX)
 			if (pushVec.x > 0)
-				scale = Math.min(scale, (this.maxX - fakeBox.minX) / pushVec.x);
+				scale = Math.max(scale, (this.maxX - fakeBox.minX) / pushVec.x);
 			else
-				scale = Math.min(scale, (this.minX - fakeBox.maxX) / pushVec.x);
+				scale = Math.max(scale, (this.minX - fakeBox.maxX) / pushVec.x);
 			
 		if (pushY)
 			if (pushVec.y > 0)
-				scale = Math.min(scale, (this.maxY - fakeBox.minY) / pushVec.y);
+				scale = Math.max(scale, (this.maxY - fakeBox.minY) / pushVec.y);
 			else
-				scale = Math.min(scale, (this.minY - fakeBox.maxY) / pushVec.y);
+				scale = Math.max(scale, (this.minY - fakeBox.maxY) / pushVec.y);
 			
 		if (pushZ)
 			if (pushVec.z > 0)
-				scale = Math.min(scale, (this.maxZ - fakeBox.minZ) / pushVec.z);
+				scale = Math.max(scale, (this.maxZ - fakeBox.minZ) / pushVec.z);
 			else
-				scale = Math.min(scale, (this.minZ - fakeBox.maxZ) / pushVec.z);
+				scale = Math.max(scale, (this.minZ - fakeBox.maxZ) / pushVec.z);
 			
 		if (scale <= minScale)
 			return minScale;

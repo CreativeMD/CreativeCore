@@ -153,8 +153,8 @@ public class CollidingPlane {
 		for (int i = 0; i < BoxCorner.values().length; i++) {
 			Vector3d corner = BoxCorner.values()[i].getVector(toCheck);
 			
-			coordinator.origin.transformPointToFakeWorld(corner);
 			coordinator.transform(matrix, corner);
+			coordinator.origin.transformPointToFakeWorld(corner);
 			
 			if (bb.contains(corner))
 				return true;
@@ -256,11 +256,10 @@ public class CollidingPlane {
 	}
 	
 	public static class PushCache {
-		
-		public OrientatedBoundingBox pushBox;
 		public EnumFacing facing;
+		public OrientatedBoundingBox pushBox;
 		
 		public AxisAlignedBB entityBox;
-		
+		public OrientatedBoundingBox entityBoxOrientated;
 	}
 }
