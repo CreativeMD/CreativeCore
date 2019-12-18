@@ -557,7 +557,7 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 	}
 	
 	public double getPushOutScale(double minScale, OrientatedBoundingBox fakeBox, Vector3d pushVec) {
-		double scale = 0;
+		double scale = Double.MAX_VALUE;
 		
 		boolean pushX = pushVec.x != 0;
 		boolean pushY = pushVec.y != 0;
@@ -565,21 +565,21 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		
 		if (pushX)
 			if (pushVec.x > 0)
-				scale = Math.max(scale, (this.maxX - fakeBox.minX) / pushVec.x);
+				scale = Math.min(scale, Math.abs((this.maxX - fakeBox.minX) / pushVec.x));
 			else
-				scale = Math.max(scale, (this.minX - fakeBox.maxX) / pushVec.x);
+				scale = Math.min(scale, Math.abs((this.minX - fakeBox.maxX) / pushVec.x));
 			
 		if (pushY)
 			if (pushVec.y > 0)
-				scale = Math.max(scale, (this.maxY - fakeBox.minY) / pushVec.y);
+				scale = Math.min(scale, Math.abs((this.maxY - fakeBox.minY) / pushVec.y));
 			else
-				scale = Math.max(scale, (this.minY - fakeBox.maxY) / pushVec.y);
+				scale = Math.min(scale, Math.abs((this.minY - fakeBox.maxY) / pushVec.y));
 			
 		if (pushZ)
 			if (pushVec.z > 0)
-				scale = Math.max(scale, (this.maxZ - fakeBox.minZ) / pushVec.z);
+				scale = Math.min(scale, Math.abs((this.maxZ - fakeBox.minZ) / pushVec.z));
 			else
-				scale = Math.max(scale, (this.minZ - fakeBox.maxZ) / pushVec.z);
+				scale = Math.min(scale, Math.abs((this.minZ - fakeBox.maxZ) / pushVec.z));
 			
 		if (scale <= minScale)
 			return minScale;
