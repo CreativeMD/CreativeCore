@@ -153,9 +153,8 @@ public abstract class CreativeCorePacket {
 	public static void writePacket(ByteBuf buf, Packet<?> packet) {
 		EnumConnectionState state = EnumConnectionState.getFromPacket(packet);
 		buf.writeInt(state.getId());
-		System.out.println(state);
 		try {
-			buf.writeInt(state.getPacketId(EnumPacketDirection.SERVERBOUND, packet));
+			buf.writeInt(state.getPacketId(EnumPacketDirection.CLIENTBOUND, packet));
 			packet.writePacketData(new PacketBuffer(buf));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -166,7 +165,7 @@ public abstract class CreativeCorePacket {
 		Packet<?> packet;
 		EnumConnectionState state = EnumConnectionState.getById(buf.readInt());
 		try {
-			packet = state.getPacket(EnumPacketDirection.SERVERBOUND, buf.readInt());
+			packet = state.getPacket(EnumPacketDirection.CLIENTBOUND, buf.readInt());
 			packet.readPacketData(new PacketBuffer(buf));
 		} catch (InstantiationException | IllegalAccessException | IOException e) {
 			throw new RuntimeException(e);
