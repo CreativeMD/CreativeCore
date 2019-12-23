@@ -3,9 +3,14 @@ package com.creativemd.creativecore.common.world;
 import com.creativemd.creativecore.client.rendering.IRenderChunkSupplier;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.crash.ICrashReportDetail;
 import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
@@ -28,10 +33,33 @@ public abstract class CreativeWorld extends World implements IOrientatedWorld {
 	}
 	
 	@Override
-	public void neighborChanged(BlockPos pos, Block blockIn, BlockPos fromPos) {
+	public void neighborChanged(BlockPos pos, final Block blockIn, BlockPos fromPos) {
 		if (preventNeighborUpdate)
 			return;
-		super.neighborChanged(pos, blockIn, fromPos);
+		if (this.isRemote) {
+			IBlockState iblockstate = this.getBlockState(pos);
+			
+			try {
+				iblockstate.neighborChanged(this, pos, blockIn, fromPos);
+			} catch (Throwable throwable) {
+				CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception while updating neighbours");
+				CrashReportCategory crashreportcategory = crashreport.makeCategory("Block being updated");
+				crashreportcategory.addDetail("Source block type", new ICrashReportDetail<String>() {
+					@Override
+					public String call() throws Exception {
+						try {
+							return String.format("ID #%d (%s // %s // %s)", Block.getIdFromBlock(blockIn), blockIn.getUnlocalizedName(), blockIn.getClass().getName(), blockIn.getRegistryName());
+						} catch (Throwable var2) {
+							return "ID #" + Block.getIdFromBlock(blockIn);
+						}
+					}
+				});
+				CrashReportCategory.addBlockInfo(crashreportcategory, pos, iblockstate);
+				throw new ReportedException(crashreport);
+			}
+		} else
+			super.neighborChanged(pos, blockIn, fromPos);
+		
 	}
 	
 	@Override
