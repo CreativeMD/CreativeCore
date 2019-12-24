@@ -43,8 +43,8 @@ public class BufferBuilderUtils {
 			if (MathHelper.roundUp(size, 4) / 4 > intBuffer.remaining() || vertexCountField.getInt(builder) * builder.getVertexFormat().getNextOffset() + size > oldByteBuffer.capacity()) {
 				int i = oldByteBuffer.capacity();
 				int j = i + size;
-				System.out.println("Made buffer grow buffer: Old size " + Integer.valueOf(i) + " bytes, new size " + Integer.valueOf(j) + " bytes.");
-				LOGGER.debug("Needed to grow BufferBuilder buffer: Old size {} bytes, new size {} bytes.", Integer.valueOf(i), Integer.valueOf(j));
+				//System.out.println("Made buffer grow buffer: Old size " + Integer.valueOf(i) + " bytes, new size " + Integer.valueOf(j) + " bytes.");
+				//LOGGER.debug("Needed to grow BufferBuilder buffer: Old size {} bytes, new size {} bytes.", Integer.valueOf(i), Integer.valueOf(j));
 				int k = intBuffer.position();
 				ByteBuffer byteBuffer = GLAllocation.createDirectByteBuffer(j);
 				oldByteBuffer.position(0);
