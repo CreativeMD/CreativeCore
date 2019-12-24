@@ -26,7 +26,7 @@ public class UUIDSupplier {
 	}
 	
 	public UUID next() {
-		this.uuid = new UUID(uuid.getMostSignificantBits() + 1, uuid.getLeastSignificantBits());
+		this.uuid = new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() + 1);
 		return uuid;
 	}
 	
