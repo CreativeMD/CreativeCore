@@ -19,7 +19,7 @@ public class GuiCheckBox extends GuiControl {
 	public String title;
 	
 	public GuiCheckBox(String name, String title, int x, int y, boolean value) {
-		super(name, x, y, checkBoxWidth + GuiRenderHelper.instance.getStringWidth(title) + 3, 15);
+		super(name, x, y, checkBoxWidth + GuiRenderHelper.instance.getStringWidth(title) + 3, 8);
 		this.value = value;
 		this.title = title;
 	}
@@ -30,7 +30,7 @@ public class GuiCheckBox extends GuiControl {
 	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
-		int yoffset = 3;
+		int yoffset = 0;
 		
 		if (!enabled)
 			style.getDisableEffect(this).renderStyle(0, yoffset, helper, checkBoxWidth, checkBoxWidth);
@@ -41,7 +41,7 @@ public class GuiCheckBox extends GuiControl {
 		if (value)
 			helper.font.drawString("x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : disabledColor);
 		
-		helper.font.drawStringWithShadow(title, checkBoxWidth + 3, 3, enabled ? ColorUtils.WHITE : disabledColor);
+		helper.font.drawStringWithShadow(title, checkBoxWidth + 3, yoffset, enabled ? ColorUtils.WHITE : disabledColor);
 	}
 	
 	@Override
