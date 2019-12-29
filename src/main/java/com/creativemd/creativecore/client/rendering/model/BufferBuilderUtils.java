@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
@@ -12,7 +13,9 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class BufferBuilderUtils {
@@ -26,6 +29,16 @@ public class BufferBuilderUtils {
 	public static Field vertexCountField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "vertexCount", "field_178997_d" });
 	
 	public static Method growBuffer = ReflectionHelper.findMethod(BufferBuilder.class, "growBuffer", "func_181670_b", int.class);
+	
+	private static Field quadSpritesField;
+	private static Field quadSpritesPrevField;
+	
+	static {
+		if (FMLClientHandler.instance().hasOptifine()) {
+			quadSpritesField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "quadSprites", "quadSprites" });
+			quadSpritesPrevField = ReflectionHelper.findField(BufferBuilder.class, new String[] { "quadSpritesPrev", "quadSpritesPrev" });
+		}
+	}
 	
 	public static void growBuffer(BufferBuilder builder, int size) {
 		try {
@@ -51,15 +64,38 @@ public class BufferBuilderUtils {
 				byteBuffer.put(oldByteBuffer);
 				byteBuffer.rewind();
 				byteBufferField.set(builder, byteBuffer);
-				rawFloatBufferField.set(builder, byteBuffer.asFloatBuffer().asReadOnlyBuffer());
+				FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+				if (!FMLClientHandler.instance().hasOptifine())
+					floatBuffer = floatBuffer.asReadOnlyBuffer();
+				rawFloatBufferField.set(builder, floatBuffer);
 				rawIntBufferField.set(builder, byteBuffer.asIntBuffer());
 				((IntBuffer) rawIntBufferField.get(builder)).position(k);
 				rawShortBufferField.set(builder, byteBuffer.asShortBuffer());
 				((ShortBuffer) rawShortBufferField.get(builder)).position(k << 1);
+				
+				if (FMLClientHandler.instance().hasOptifine()) {
+					TextureAtlasSprite[] sprites = (TextureAtlasSprite[]) quadSpritesField.get(builder);
+					if (sprites != null) {
+						int quadSize = getBufferQuadSize(builder);
+						TextureAtlasSprite[] newQuadSprites = new TextureAtlasSprite[quadSize];
+						quadSpritesField.set(builder, newQuadSprites);
+						System.arraycopy(sprites, 0, newQuadSprites, 0, Math.min(sprites.length, newQuadSprites.length));
+						quadSpritesPrevField.set(builder, null);
+					}
+				}
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static int getBufferQuadSize(BufferBuilder builder) {
+		try {
+			return ((IntBuffer) rawIntBufferField.get(builder)).capacity() * 4 / (builder.getVertexFormat().getIntegerSize() * 4);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 	public static int getBufferSize(BufferBuilder builder) {
