@@ -17,6 +17,7 @@ import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.event.gui.GuiToolTipEvent;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -339,6 +340,10 @@ public abstract class GuiControl extends CoreControl {
 	
 	public static Rect getScreenRect() {
 		return screenRect;
+	}
+	
+	public static void playSound(ISound sound) {
+		mc.getSoundHandler().playSound(sound);
 	}
 	
 	public static void playSound(SoundEvent event) {
