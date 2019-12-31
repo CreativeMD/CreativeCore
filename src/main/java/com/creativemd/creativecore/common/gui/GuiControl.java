@@ -350,6 +350,10 @@ public abstract class GuiControl extends CoreControl {
 		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(event, 1.0F));
 	}
 	
+	public static void playSound(SoundEvent event, float volume, float pitch) {
+		mc.getSoundHandler().playSound(PositionedSoundRecord.getRecord(event, pitch, volume));
+	}
+	
 	public static Vec3d getRotationAround(double angle, Vec3d pos, Vec3d center) {
 		Vector2d result = new Vector2d(pos.x, pos.y);
 		Vector2d newCenter = new Vector2d(center.x, center.y);

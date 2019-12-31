@@ -14,9 +14,11 @@ public class EntitySound extends MovingSound {
 	
 	public Entity entity;
 	
-	public EntitySound(SoundEvent soundIn, Entity entity, SoundCategory categoryIn) {
+	public EntitySound(SoundEvent soundIn, Entity entity, float volume, float pitch, SoundCategory categoryIn) {
 		super(soundIn, categoryIn);
 		this.entity = entity;
+		this.volume = volume;
+		this.pitch = pitch;
 	}
 	
 	@Override
