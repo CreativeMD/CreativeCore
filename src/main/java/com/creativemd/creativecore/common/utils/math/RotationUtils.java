@@ -479,4 +479,12 @@ public class RotationUtils {
 		return 1;
 	}
 	
+	public static AxisDirection getOffset(double d) {
+		if (d > 0)
+			return AxisDirection.POSITIVE;
+		else if (d < 0)
+			return AxisDirection.NEGATIVE;
+		return null;
+	}
+	
 }
