@@ -2,6 +2,8 @@ package com.creativemd.creativecore.common.utils.mc;
 
 import java.util.List;
 
+import com.creativemd.creativecore.common.world.CreativeWorld;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -36,6 +38,10 @@ public class WorldUtils {
 	public static void dropItem(World world, ItemStack stack, BlockPos pos) {
 		if (stack == null)
 			return;
+		if (world instanceof CreativeWorld) {
+			pos = ((CreativeWorld) world).transformToRealWorld(pos);
+			world = ((CreativeWorld) world).getRealWorld();
+		}
 		float f = 0.7F;
 		double d0 = world.rand.nextFloat() * f + (1.0F - f) * 0.5D;
 		double d1 = world.rand.nextFloat() * f + (1.0F - f) * 0.5D;
