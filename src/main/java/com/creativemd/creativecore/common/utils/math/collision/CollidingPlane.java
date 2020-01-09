@@ -110,7 +110,7 @@ public class CollidingPlane {
 		coordinator.transformInverted(temp, endT);
 		Boolean afterFront = isInFront(temp);
 		if (afterFront == null)
-			return Math.min(value, endT);
+			return value != null ? Math.min(value, endT) : endT;
 		
 		if (beforeFront != afterFront) {
 			if (steps < accuracySteps) {
@@ -122,7 +122,7 @@ public class CollidingPlane {
 				
 				Boolean halfFront = isInFront(temp);
 				if (halfFront == null)
-					return Math.min(value, halfT);
+					return value != null ? Math.min(value, halfT) : halfT;
 				
 				if (beforeFront != halfFront)
 					return searchBetweenSimple(value, center, start, temp, startT, halfT, coordinator, steps);
