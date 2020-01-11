@@ -19,10 +19,7 @@ public class HashMapList<K, V> {
 	
 	public HashMapList(HashMapList<K, V> object) {
 		this();
-		for (Iterator<Entry<K, ArrayList<V>>> iterator = object.entrySet().iterator(); iterator.hasNext();) {
-			Entry<K, ArrayList<V>> entry = iterator.next();
-			keys.put(entry.getKey(), new ArrayList<>(entry.getValue()));
-		}
+		addAll(object);
 	}
 	
 	public ArrayList<V> getValues(K key) {
@@ -63,6 +60,11 @@ public class HashMapList<K, V> {
 		if (list != null)
 			return list.contains(value);
 		return false;
+	}
+	
+	public void addAll(HashMapList<K, V> map) {
+		for (Entry<K, ArrayList<V>> entry : map.entrySet())
+			add(entry.getKey(), entry.getValue());
 	}
 	
 	public void add(K key, V[] values) {
