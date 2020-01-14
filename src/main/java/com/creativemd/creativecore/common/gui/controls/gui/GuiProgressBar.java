@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.creativemd.creativecore.common.gui.GuiControl;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.client.style.Style;
+import com.creativemd.creativecore.common.utils.tooltip.TooltipUtils;
 
 public class GuiProgressBar extends GuiControl {
 	
@@ -33,7 +34,7 @@ public class GuiProgressBar extends GuiControl {
 	public ArrayList<String> getTooltip() {
 		if (showToolTip) {
 			ArrayList<String> toolTip = new ArrayList<>();
-			toolTip.add(Math.round(this.pos) + "/" + Math.round(this.max) + " (" + (Math.round(getPercent() * 100)) + "%)");
+			toolTip.add(TooltipUtils.printNumber((int) Math.round(this.pos)) + "/" + TooltipUtils.printNumber((int) Math.round(this.max)) + " (" + (Math.round(getPercent() * 100)) + "%)");
 			return toolTip;
 		}
 		return null;
