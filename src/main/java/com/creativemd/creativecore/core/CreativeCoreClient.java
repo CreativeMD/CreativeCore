@@ -94,8 +94,9 @@ public class CreativeCoreClient {
 		
 		@Override
 		public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex) {
-			if (CreativeBakedQuad.lastRenderedQuad != null && CreativeBakedQuad.lastRenderedQuad.cube != null && CreativeBakedQuad.lastRenderedQuad.cube.block != null && CreativeBakedQuad.lastRenderedQuad.cube.block.getBlockLayer() == BlockRenderLayer.CUTOUT_MIPPED) {
-				IBlockState newState = CreativeBakedQuad.lastRenderedQuad.cube.getBlockState(CreativeBakedQuad.lastRenderedQuad.cube.block);
+			CreativeBakedQuad quad = CreativeBakedQuad.lastRenderedQuad.get();
+			if (quad != null && quad.cube != null && quad.cube.block != null && quad.cube.block.getBlockLayer() == BlockRenderLayer.CUTOUT_MIPPED) {
+				IBlockState newState = quad.cube.getBlockState(quad.cube.block);
 				return mc.getBlockColors().colorMultiplier(newState, worldIn, pos, tintIndex);
 				// return ColorUtils.WHITE;
 			}

@@ -10,7 +10,7 @@ import net.minecraft.util.EnumFacing;
 public class CreativeBakedQuad extends BakedQuad {
 	
 	public static TextureAtlasSprite missingSprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getTextureMap().getMissingSprite();
-	public static CreativeBakedQuad lastRenderedQuad = null;
+	public static ThreadLocal<CreativeBakedQuad> lastRenderedQuad = new ThreadLocal<>();
 	public final RenderCubeObject cube;
 	public boolean shouldOverrideColor;
 	
@@ -39,9 +39,9 @@ public class CreativeBakedQuad extends BakedQuad {
 	
 	@Override
 	public void pipe(net.minecraftforge.client.model.pipeline.IVertexConsumer consumer) {
-		lastRenderedQuad = this;
+		lastRenderedQuad.set(this);
 		net.minecraftforge.client.model.pipeline.LightUtil.putBakedQuad(consumer, this);
-		lastRenderedQuad = null;
+		lastRenderedQuad.set(null);
 	}
 	
 }
