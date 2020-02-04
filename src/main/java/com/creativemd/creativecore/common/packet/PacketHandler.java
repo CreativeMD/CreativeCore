@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
+import com.creativemd.creativecore.common.world.CreativeWorld;
+import com.creativemd.creativecore.common.world.IOrientatedWorld;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.Entity;
@@ -86,9 +88,29 @@ public class PacketHandler {
 		}
 	}
 	
-	public static void sendPacketToTrackingPlayersExcept(CreativeCorePacket packet, Entity entity, @Nullable EntityPlayer except, WorldServer world) {
+	public static void sendPacketToPlayers(CreativeCorePacket packet, Iterable<? extends EntityPlayer> players, @Nullable Predicate<EntityPlayer> predicate) {
+		for (EntityPlayer player : players)
+			if (predicate == null || predicate.apply(player))
+				sendPacketToPlayer(packet, (EntityPlayerMP) player);
+	}
+	
+	private static CreativeWorld getParentSubWorld(IOrientatedWorld world) {
+		if (world.getParent() instanceof IOrientatedWorld)
+			return getParentSubWorld((IOrientatedWorld) world.getParent());
+		return (CreativeWorld) world;
+	}
+	
+	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, World world, BlockPos pos, @Nullable Predicate<EntityPlayer> predicate) {
+		if (world instanceof IOrientatedWorld) {
+			CreativeWorld subWorld = getParentSubWorld((IOrientatedWorld) world);
+			sendPacketToTrackingPlayers(packet, subWorld.parent, (WorldServer) ((IOrientatedWorld) world).getRealWorld(), predicate);
+		} else
+			sendPacketToPlayers(packet, ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4).getWatchingPlayers());
+	}
+	
+	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, Entity entity, WorldServer world, @Nullable Predicate<EntityPlayer> predicate) {
 		for (EntityPlayer player : world.getEntityTracker().getTrackingPlayers(entity))
-			if (player != except)
+			if (predicate == null || predicate.apply(player))
 				sendPacketToPlayer(packet, (EntityPlayerMP) player);
 	}
 	
