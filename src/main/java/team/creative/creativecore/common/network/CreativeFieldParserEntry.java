@@ -140,7 +140,7 @@ public class CreativeFieldParserEntry {
 			
 			for (Entry<Predicate<Class<?>>, Class<? extends CreativeFieldParserSpecial>> pair : specialParsers.entrySet()) {
 				if (pair.getKey().test(classType))
-					return pair.getValue().getConstructor(Class.class).newInstance(classType);
+					return pair.getValue().getConstructor(Class.class, Type.class).newInstance(classType, genericType);
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
