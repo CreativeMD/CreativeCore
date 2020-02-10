@@ -1,6 +1,6 @@
 modLoader="javafml"
 loaderVersion="[24,)"
-#issueTrackerURL="https://github.com/CreativeMD/CreativeCore/issues"
+issueTrackerURL="https://github.com/CreativeMD/CreativeCore/issues"
 logoFile="creativecore.png"
 
 [[mods]]
