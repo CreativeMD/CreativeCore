@@ -1,7 +1,5 @@
 package team.creative.creativecore.client.command;
 
-import java.lang.reflect.Field;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
@@ -22,14 +20,11 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import team.creative.creativecore.CreativeCore;
 
 public class ClientCommandRegistry {
 	
 	private static Minecraft mc = Minecraft.getInstance();
-	
-	private static Field detailMessage = ObfuscationReflectionHelper.findField(Throwable.class, "detailMessage");
 	
 	private static CommandDispatcher<ISuggestionProvider> clientDispatcher = new CommandDispatcher<>();
 	private static CombinedCommandDispatcher<ISuggestionProvider> combined = null;
@@ -67,11 +62,8 @@ public class ClientCommandRegistry {
 				source.sendErrorMessage(commandexception.getComponent());
 				return 0;
 			} catch (CommandSyntaxException commandsyntaxexception) {
-				try {
-					if (detailMessage.get(commandsyntaxexception).equals("Unknown command"))
-						return -1;
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-				}
+				if (commandsyntaxexception.getType() == CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand())
+					return -1;
 				source.sendErrorMessage(TextComponentUtils.toTextComponent(commandsyntaxexception.getRawMessage()));
 				if (commandsyntaxexception.getInput() != null && commandsyntaxexception.getCursor() >= 0) {
 					int k = Math.min(commandsyntaxexception.getInput().length(), commandsyntaxexception.getCursor());
