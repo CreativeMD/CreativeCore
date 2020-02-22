@@ -15,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class GuiStackSelectorAll extends GuiStackSelector {
 	
@@ -86,11 +88,25 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 			for (ItemStack stack : player.inventory.mainInventory)
 				if (!stack.isEmpty() && selector.allow(stack))
 					tempStacks.add(stack.copy());
+				else if (stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+					collect(stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), tempStacks);
+				
 			stacks.add("selector.inventory", tempStacks);
 			
 			return stacks;
 		}
 		
+		protected void collect(IItemHandler inventory, List<ItemStack> stacks) {
+			for (int i = 0; i < inventory.getSlots(); i++) {
+				ItemStack stack = inventory.getStackInSlot(i);
+				if (!stack.isEmpty() && selector.allow(stack))
+					stacks.add(stack.copy());
+				else if (stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+					collect(stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), stacks);
+				
+			}
+			
+		}
 	}
 	
 	public static class CreativeCollector extends InventoryCollector {
@@ -142,6 +158,7 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 		
 		public String search = "";
 		
+		@Override
 		public boolean allow(ItemStack stack) {
 			return contains(search, stack);
 		}
