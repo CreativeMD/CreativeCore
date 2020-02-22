@@ -105,7 +105,7 @@ public class PacketHandler {
 			CreativeWorld subWorld = getParentSubWorld((IOrientatedWorld) world);
 			sendPacketToTrackingPlayers(packet, subWorld.parent, (WorldServer) ((IOrientatedWorld) world).getRealWorld(), predicate);
 		} else
-			sendPacketToPlayers(packet, ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4).getWatchingPlayers());
+			sendPacketToPlayers(packet, ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4).getWatchingPlayers(), predicate);
 	}
 	
 	public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, Entity entity, WorldServer world, @Nullable Predicate<EntityPlayer> predicate) {
