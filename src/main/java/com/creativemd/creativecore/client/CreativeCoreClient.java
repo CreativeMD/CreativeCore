@@ -1,5 +1,6 @@
-package com.creativemd.creativecore.core;
+package com.creativemd.creativecore.client;
 
+import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedModel;
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.client.rendering.model.CreativeCustomModelLoader;
@@ -36,7 +37,7 @@ public class CreativeCoreClient {
 	}
 	
 	public static void doClientThings() {
-		if (CreativeCoreConfig.rendering.useStencil && !mc.getFramebuffer().isStencilEnabled())
+		if (CreativeCore.config.useStencil && !mc.getFramebuffer().isStencilEnabled())
 			mc.getFramebuffer().enableStencil();
 		
 		ModelLoaderRegistry.registerLoader(new CreativeCustomModelLoader());

@@ -2,10 +2,11 @@ package com.creativemd.creativecore.common.packet;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.List;
 
 import com.creativemd.creativecore.common.utils.stack.InfoStack;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -28,28 +29,25 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class CreativeCorePacket {
 	
-	public static final HashMap<String, Class<? extends CreativeCorePacket>> packets = new HashMap<String, Class<? extends CreativeCorePacket>>();
+	private static Gson gson = new Gson();
+	private static final List<Class<? extends CreativeCorePacket>> packetTypes = new ArrayList<>();
 	
 	public static int maxPacketSize = 1047576;
 	
-	public static void registerPacket(Class<? extends CreativeCorePacket> PacketClass, String id) {
-		packets.put(id, PacketClass);
+	public static void registerPacket(Class<? extends CreativeCorePacket> clazz) {
+		packetTypes.add(clazz);
 	}
 	
-	public static Class<? extends CreativeCorePacket> getClassByID(String id) {
-		return packets.get(id);
+	public static Class<? extends CreativeCorePacket> getClass(int id) {
+		return packetTypes.get(id);
 	}
 	
-	public static String getIDByClass(Class<? extends CreativeCorePacket> packet) {
-		for (Entry<String, Class<? extends CreativeCorePacket>> entry : packets.entrySet()) {
-			if (entry.getValue() == packet)
-				return entry.getKey();
-		}
-		return "";
+	public static int getId(Class<? extends CreativeCorePacket> clazz) {
+		return packetTypes.indexOf(clazz);
 	}
 	
-	public static String getIDByClass(CreativeCorePacket packet) {
-		return getIDByClass(packet.getClass());
+	public static int getId(CreativeCorePacket packet) {
+		return getId(packet.getClass());
 	}
 	
 	public abstract void writeBytes(ByteBuf buf);
@@ -173,13 +171,13 @@ public abstract class CreativeCorePacket {
 		return packet;
 	}
 	
-	/*
-	 * public static void writeDirection(ByteBuf buf, ForgeDirection direction) {
-	 * buf.writeInt(RotationUtils.getIndex(direction)); }
-	 * 
-	 * public static ForgeDirection readDirection(ByteBuf buf) { return
-	 * ForgeDirection.getOrientation(buf.readInt()); }
-	 */
+	public static void writeJson(ByteBuf buf, JsonObject json) {
+		writeString(buf, json.toString());
+	}
+	
+	public static JsonObject readJson(ByteBuf buf) {
+		return gson.fromJson(readString(buf), JsonObject.class);
+	}
 	
 	public static void openContainerOnServer(EntityPlayerMP entityPlayerMP, Container container) {
 		entityPlayerMP.getNextWindowId();

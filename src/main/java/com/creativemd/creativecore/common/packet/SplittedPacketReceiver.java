@@ -17,7 +17,7 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
 		if (message instanceof CreativeSplittedMessageHandler) {
 			CreativeSplittedMessageHandler cm = (CreativeSplittedMessageHandler) message;
 			
-			PacketKey key = new PacketKey(cm.packetID, cm.uuid);
+			PacketKey key = new PacketKey(cm.packetId, cm.uuid);
 			PacketValue value = PacketReciever.clientSplittedPackets.get(key);
 			
 			if (value == null) {
@@ -58,8 +58,8 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
 			executeClient(message);
 		} else {
 			if (message instanceof CreativeSplittedMessageHandler) {
-				CreativeSplittedMessageHandler cm = (CreativeSplittedMessageHandler) message;
-				PacketKey key = new PacketKey(cm.packetID, cm.uuid);
+				CreativeSplittedMessageHandler cm = message;
+				PacketKey key = new PacketKey(cm.packetId, cm.uuid);
 				PacketValue value = PacketReciever.splittedPackets.get(key);
 				try {
 					if (value == null) {

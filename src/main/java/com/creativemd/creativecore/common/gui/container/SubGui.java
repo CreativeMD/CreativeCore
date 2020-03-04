@@ -1,12 +1,12 @@
 package com.creativemd.creativecore.common.gui.container;
 
+import javax.annotation.Nullable;
+
 import com.creativemd.creativecore.common.event.CreativeCoreEventBus;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.event.ControlEvent;
-import com.creativemd.creativecore.common.gui.mc.ContainerSub;
-import com.creativemd.creativecore.common.gui.mc.GuiContainerSub;
-import com.creativemd.creativecore.common.gui.premade.SubContainerEmpty;
+import com.creativemd.creativecore.common.gui.mc.IVanillaGUI;
 import com.creativemd.creativecore.common.gui.premade.SubGuiDialog;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
@@ -19,9 +19,9 @@ import net.minecraft.world.World;
 
 public abstract class SubGui extends GuiParent {
 	
+	@Nullable
 	public SubContainer container;
-	
-	public GuiContainerSub gui;
+	public IVanillaGUI gui;
 	
 	private CreativeCoreEventBus eventBus;
 	
@@ -49,7 +49,7 @@ public abstract class SubGui extends GuiParent {
 		return gui.getLayers().indexOf(this);
 	}
 	
-	public void openNonSyncedLayer(SubGui gui) {
+	/*public void openNonSyncedLayer(SubGui gui) {
 		gui.container = new SubContainerEmpty(getPlayer());
 		gui.container.container = (ContainerSub) this.gui.inventorySlots;
 		gui.gui = this.gui;
@@ -59,7 +59,7 @@ public abstract class SubGui extends GuiParent {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setBoolean("newNonSyncedLayer", true);
 		sendPacketToServer(nbt);
-	}
+	}*/
 	
 	public void openNewLayer(NBTTagCompound nbt) {
 		openNewLayer(nbt, false);
@@ -82,8 +82,7 @@ public abstract class SubGui extends GuiParent {
 		gui.removeLayer(this);
 		if (gui.hasTopLayer())
 			gui.getTopLayer().onLayerClosed(this, nbt);
-		if (gui.getLayers().size() == 0)
-			mc.player.closeScreen();
+		gui.onLayerClosed();
 	}
 	
 	public void onLayerClosed(SubGui gui, NBTTagCompound nbt) {
@@ -100,13 +99,13 @@ public abstract class SubGui extends GuiParent {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setBoolean("exit", true);
 		closeLayer(nbt);
-		if (gui.getLayers().size() == 0)
-			mc.player.closeScreen();
+		gui.onLayerClosed();
 	}
 	
 	public SubGui createLayer(World world, EntityPlayer player, NBTTagCompound nbt) {
 		SubGui layer = createLayerFromPacket(world, player, nbt);
-		layer.container = container.createLayerFromPacket(world, player, nbt);
+		if (container != null)
+			layer.container = container.createLayerFromPacket(world, player, nbt);
 		layer.gui = gui;
 		layer.onOpened();
 		return layer;

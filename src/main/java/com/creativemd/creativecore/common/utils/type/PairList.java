@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
@@ -209,8 +208,11 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 		return ImmutableList.copyOf(values);
 	}
 	
-	public Set<K> keys() {
-		return keyIndex.keySet();
+	public List<K> keys() {
+		List<K> keys = new ArrayList<>(size());
+		for (int i = 0; i < size(); i++)
+			keys.add(get(i).key);
+		return ImmutableList.copyOf(keys);
 	}
 	
 	public Pair<K, V> getFirst() {
@@ -229,7 +231,7 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 	public V getValue(K key) {
 		Integer index = keyIndex.get(key);
 		if (index != null)
-			return get((int) index).value;
+			return get(index).value;
 		return null;
 	}
 	
@@ -237,7 +239,7 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
 	public Pair<K, V> getPair(K key) {
 		Integer index = keyIndex.get(key);
 		if (index != null)
-			return get((int) index);
+			return get(index);
 		return null;
 	}
 	

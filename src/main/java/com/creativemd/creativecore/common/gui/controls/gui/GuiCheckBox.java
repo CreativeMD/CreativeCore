@@ -4,6 +4,8 @@ import org.lwjgl.util.Color;
 
 import com.creativemd.creativecore.common.gui.GuiControl;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
+import com.creativemd.creativecore.common.gui.client.style.ColoredDisplayStyle;
+import com.creativemd.creativecore.common.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
@@ -13,10 +15,12 @@ import net.minecraft.init.SoundEvents;
 public class GuiCheckBox extends GuiControl {
 	
 	public static final int disabledColor = ColorUtils.RGBAToInt(new Color(100, 100, 100));
+	public static final DisplayStyle partialStyle = new ColoredDisplayStyle(ColorUtils.WHITE);
 	public static final int checkBoxWidth = 7;
 	
 	public boolean value = false;
 	public String title;
+	public boolean partial = false;
 	
 	public GuiCheckBox(String name, String title, int x, int y, boolean value) {
 		super(name, x, y, checkBoxWidth + GuiRenderHelper.instance.getStringWidth(title) + 3, 8);
@@ -40,6 +44,8 @@ public class GuiCheckBox extends GuiControl {
 		
 		if (value)
 			helper.font.drawString("x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : disabledColor);
+		else if (partial)
+			partialStyle.renderStyle(2, yoffset + 2, helper, checkBoxWidth - 4, checkBoxWidth - 4);
 		
 		helper.font.drawStringWithShadow(title, checkBoxWidth + 3, yoffset, enabled ? ColorUtils.WHITE : disabledColor);
 	}

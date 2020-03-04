@@ -8,35 +8,38 @@ import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.common.gui.GuiControl;
 import com.creativemd.creativecore.common.gui.GuiRenderHelper;
-import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.event.gui.GuiToolTipEvent;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
+public class GuiScreenSub extends GuiScreen implements IVanillaGUI {
 	
-	protected ArrayList<SubGui> layers;
+	public final GuiScreen parentScreen;
+	protected ArrayList<SubGui> layers = new ArrayList<>();
 	
-	public GuiContainerSub(EntityPlayer player, SubGui gui, SubContainer container) {
-		super(new ContainerSub(player, container));
-		((ContainerSub) inventorySlots).gui = this;
-		Minecraft.getMinecraft().player.openContainer = this.inventorySlots;
-		
-		layers = new ArrayList<SubGui>();
-		gui.container = container;
+	/** The X size of the inventory window in pixels. */
+	protected int xSize = 176;
+	/** The Y size of the inventory window in pixels. */
+	protected int ySize = 166;
+	
+	/** Starting X position for the Gui. Inconsistent use for Gui backgrounds. */
+	protected int guiLeft;
+	/** Starting Y position for the Gui. Inconsistent use for Gui backgrounds. */
+	protected int guiTop;
+	
+	public GuiScreenSub(GuiScreen parentScreen, SubGui gui) {
+		this.parentScreen = parentScreen;
+		gui.container = null;
 		gui.gui = this;
-		container.addListener(gui);
 		this.layers.add(gui);
 		
-		container.onOpened();
 		resize();
 	}
 	
@@ -44,10 +47,13 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 	
 	@Override
 	public void initGui() {
-		super.initGui();
+		this.guiLeft = (this.width - this.xSize) / 2;
+		this.guiTop = (this.height - this.ySize) / 2;
+		
 		if (!isOpened) {
-			for (int i = 0; i < layers.size(); i++)
+			for (int i = 0; i < layers.size(); i++) {
 				layers.get(i).onOpened();
+			}
 			isOpened = true;
 		}
 	}
@@ -60,14 +66,12 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 	@Override
 	public void removeLayer(SubGui layer) {
 		layers.remove(layer);
-		((ContainerSub) inventorySlots).layers.remove(layer.container);
 		resize();
 	}
 	
 	@Override
 	public void addLayer(SubGui layer) {
 		layers.add(layer);
-		((ContainerSub) inventorySlots).layers.add(layer.container);
 		resize();
 	}
 	
@@ -137,17 +141,11 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 	}
 	
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		
-	}
-	
-	@Override
 	public void drawDefaultBackground() {
 		
 	}
 	
 	public void onTick() {
-		
 		for (int i = 0; i < layers.size(); i++)
 			layers.get(i).onTick();
 		
@@ -169,6 +167,8 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 		int offY = (this.height - layers.get(i).height) / 2 - l;
 		GlStateManager.translate(k, l, 0);
 		
+		drawGuiContainerForegroundLayer();
+		
 		GlStateManager.translate(offX, offY, 0);
 		
 		Vec3d mouse = layers.get(i).getMousePos();
@@ -181,8 +181,7 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 		GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
 	}
 	
-	@Override
-	public void drawGuiContainerForegroundLayer(int par1, int par2) {
+	public void drawGuiContainerForegroundLayer() {
 		for (int i = 0; i < layers.size(); i++) {
 			
 			GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -221,9 +220,14 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 	
 	@Override
 	public void onGuiClosed() {
-		for (int i = 0; i < layers.size(); i++) {
+		for (int i = 0; i < layers.size(); i++)
 			layers.get(i).onClosed();
-		}
+	}
+	
+	@Override
+	public void onLayerClosed() {
+		if (layers.isEmpty())
+			Minecraft.getMinecraft().displayGuiScreen(parentScreen);
 	}
 	
 	@Override
@@ -247,7 +251,6 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 		if (j != 0) {
 			Vec3d mouse = getTopLayer().getMousePos();
 			getTopLayer().mouseScrolled((int) mouse.x, (int) mouse.y, j > 0 ? 1 : -1);
-			// Mouse.setGrabbed(true);
 		}
 	}
 	
@@ -266,9 +269,6 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 	@Override
 	protected void mouseReleased(int x, int y, int button) {
 		super.mouseReleased(x, y, button);
-		// if(button > 0)
-		// onMouseMove(x, y, button);
-		// else
 		onMouseReleased(x, y, button);
 	}
 	
@@ -277,8 +277,12 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 	}
 	
 	@Override
-	public void onLayerClosed() {
-		if (layers.isEmpty())
-			mc.player.closeScreen();
+	public int getGuiLeft() {
+		return guiLeft;
+	}
+	
+	@Override
+	public int getGuiTop() {
+		return guiTop;
 	}
 }

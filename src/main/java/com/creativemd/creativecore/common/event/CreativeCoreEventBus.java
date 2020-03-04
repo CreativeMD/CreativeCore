@@ -13,11 +13,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class CreativeCoreEventBus extends EventBus {
 	public ArrayList<EventType> eventsToRaise = new ArrayList<EventType>();
 	
-	/**
-	 * Be very careful when creating your own EventBus! Only create one when you
+	/** Be very careful when creating your own EventBus! Only create one when you
 	 * really need to, since this is the most sensitive part of the
-	 * CustomEventSystem, messing up the system is rather easy achievable.
-	 */
+	 * CustomEventSystem, messing up the system is rather easy achievable. */
 	public CreativeCoreEventBus(boolean isClient) {
 		this.isClient = isClient;
 		if (isClient)
@@ -39,11 +37,9 @@ public class CreativeCoreEventBus extends EventBus {
 			CreativeTickHandler.ClientEvents.add(this);
 	}
 	
-	/**
-	 * @param eventType
+	/** @param eventType
 	 * @param force
-	 * @return - true if EventType is Canceled.
-	 */
+	 * @return - true if EventType is Canceled. */
 	public boolean raiseEvent(EventType event, boolean force) {
 		if (event.isCancelable() || force) {
 			if (!this.EventList.containsKey(event.getClass()))
@@ -62,13 +58,12 @@ public class CreativeCoreEventBus extends EventBus {
 				this.EventList.put(eventClass, new CreativeCoreCallHandler(eventClass));
 			return ((CreativeCoreCallHandler) this.EventList.get(eventClass)).CallInstances(eventType);
 		} catch (Exception e) {
-			CreativeCore.logger.catching(e);
+			CreativeCore.LOGGER.catching(e);
 		}
 		return false;
 	}
 	
-	/**
-	 * used to bind a custom CallHandler to a EventType.
+	/** used to bind a custom CallHandler to a EventType.
 	 * 
 	 * @param eventType
 	 * @param callHandler
@@ -79,9 +74,7 @@ public class CreativeCoreEventBus extends EventBus {
 		this.EventList.put(callHandler.getEventType(), callHandler);
 	}
 	
-	/**
-	 * Destroy the eventbus
-	 */
+	/** Destroy the eventbus */
 	public void removeAllEventListeners() {
 		for (Object value : this.EventList.values()) {
 			((CreativeCoreCallHandler) value).getInstanceMap().clear();
@@ -106,6 +99,6 @@ public class CreativeCoreEventBus extends EventBus {
 	public CallHandler getCallHandlerFromEventType(Class<? extends EventType> eventTypeClass) {
 		if (!this.EventList.containsKey(eventTypeClass))
 			this.EventList.put(eventTypeClass, new CreativeCoreCallHandler(eventTypeClass));
-		return (CallHandler) this.EventList.get(eventTypeClass);
+		return this.EventList.get(eventTypeClass);
 	}
 }

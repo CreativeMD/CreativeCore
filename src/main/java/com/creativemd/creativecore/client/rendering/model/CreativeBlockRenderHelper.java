@@ -2,7 +2,7 @@ package com.creativemd.creativecore.client.rendering.model;
 
 import java.util.HashMap;
 
-import com.creativemd.creativecore.core.CreativeCoreClient;
+import com.creativemd.creativecore.client.CreativeCoreClient;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

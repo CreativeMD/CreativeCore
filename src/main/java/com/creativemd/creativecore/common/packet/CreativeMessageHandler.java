@@ -5,7 +5,6 @@ import java.util.UUID;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -33,8 +32,8 @@ public class CreativeMessageHandler implements IMessage {
 	public void fromBytes(ByteBuf buf) {
 		isLast = buf.readBoolean();
 		
-		String id = CreativeCorePacket.readString(buf);
-		Class PacketClass = CreativeCorePacket.getClassByID(id);
+		int id = buf.readInt();
+		Class PacketClass = CreativeCorePacket.getClass(id);
 		packet = null;
 		try {
 			packet = (CreativeCorePacket) PacketClass.getConstructor().newInstance();
@@ -65,19 +64,19 @@ public class CreativeMessageHandler implements IMessage {
 			packetSize = CreativeCorePacket.maxPacketSize;
 		if (packetSize > content.writerIndex()) {
 			buf.writeBoolean(true);
-			ByteBufUtils.writeUTF8String(buf, CreativeCorePacket.getIDByClass(packet));
+			buf.writeInt(CreativeCorePacket.getId(packet));
 			buf.writeBytes(content);
 		} else {
 			// CREATE SPLITTED MESSAGES
 			amount = (int) Math.ceil((double) content.writerIndex() / (double) packetSize);
 			
 			uuid = UUID.randomUUID();
-			String id = CreativeCorePacket.getIDByClass(packet);
+			int id = CreativeCorePacket.getId(packet);
 			for (int i = 0; i < amount; i++) {
 				int length = Math.min(packetSize, content.writerIndex() - i * packetSize);
 				if (i == 0) {
 					buf.writeBoolean(false);
-					CreativeCorePacket.writeString(buf, id);
+					buf.writeInt(id);
 					buf.writeInt(amount);
 					CreativeCorePacket.writeString(buf, uuid.toString());
 					buf.writeInt(length);

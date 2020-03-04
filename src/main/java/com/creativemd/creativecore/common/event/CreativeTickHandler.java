@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.event;
 import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.gui.mc.ContainerSub;
+import com.creativemd.creativecore.common.gui.mc.IVanillaGUI;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -77,35 +78,32 @@ public class CreativeTickHandler {
 			}
 		}
 		
-		if (mc.player != null && mc.player.openContainer instanceof ContainerSub && ((ContainerSub) mc.player.openContainer).gui != null && mc.currentScreen != null) {
-			if (tick.phase == Phase.START) {
-				if (!changed)
-					defaultScale = mc.gameSettings.guiScale;
-				int maxScale = ((ContainerSub) mc.player.openContainer).gui.getMaxScale(mc);
-				int scale = Math.min(defaultScale, maxScale);
-				if (defaultScale == 0)
-					scale = maxScale;
-				if (scale != mc.gameSettings.guiScale) {
-					changed = true;
-					mc.gameSettings.guiScale = scale;
-					ScaledResolution scaledresolution = new ScaledResolution(mc);
-					int k = scaledresolution.getScaledWidth();
-					int l = scaledresolution.getScaledHeight();
-					// mc.getFramebuffer().isStencilEnabled()
-					mc.currentScreen.setWorldAndResolution(mc, k, l);
-					
-					// mc.loadingScreen = new LoadingScreenRenderer(mc);
-					// mc.updateFramebufferSize();
-				}
-			}
+		if (tick.phase == Phase.START && mc.currentScreen instanceof IVanillaGUI) {
+			IVanillaGUI gui = (IVanillaGUI) mc.currentScreen;
 			
-			// if(tick.phase == Phase.END)
-			// {
-			// mc.gameSettings.guiScale = defaultScale;
-			// }
+			if (!changed)
+				defaultScale = mc.gameSettings.guiScale;
+			int maxScale = gui.getMaxScale(mc);
+			int scale = Math.min(defaultScale, maxScale);
+			if (defaultScale == 0)
+				scale = maxScale;
+			if (scale != mc.gameSettings.guiScale) {
+				changed = true;
+				mc.gameSettings.guiScale = scale;
+				ScaledResolution scaledresolution = new ScaledResolution(mc);
+				int k = scaledresolution.getScaledWidth();
+				int l = scaledresolution.getScaledHeight();
+				mc.currentScreen.setWorldAndResolution(mc, k, l);
+			}
 		} else if (tick.phase == Phase.START && changed) {
 			changed = false;
 			mc.gameSettings.guiScale = defaultScale;
+			if (mc.currentScreen != null) {
+				ScaledResolution scaledresolution = new ScaledResolution(mc);
+				int k = scaledresolution.getScaledWidth();
+				int l = scaledresolution.getScaledHeight();
+				mc.currentScreen.setWorldAndResolution(mc, k, l);
+			}
 		}
 	}
 }

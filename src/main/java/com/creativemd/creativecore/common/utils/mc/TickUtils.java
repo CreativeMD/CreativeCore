@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.common.utils.mc;
 
-import com.creativemd.creativecore.core.CreativeCoreClient;
+import com.creativemd.creativecore.client.CreativeCoreClient;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;

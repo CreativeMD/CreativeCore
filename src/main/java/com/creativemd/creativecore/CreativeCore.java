@@ -3,7 +3,16 @@ package com.creativemd.creativecore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.creativemd.creativecore.client.CreativeCoreClient;
 import com.creativemd.creativecore.client.avatar.AvatarItemStack;
+import com.creativemd.creativecore.common.config.event.ConfigEventHandler;
+import com.creativemd.creativecore.common.config.gui.SubGuiClientSync;
+import com.creativemd.creativecore.common.config.gui.SubGuiConfig;
+import com.creativemd.creativecore.common.config.holder.CreativeConfigRegistry;
+import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
+import com.creativemd.creativecore.common.config.sync.ConfigurationChangePacket;
+import com.creativemd.creativecore.common.config.sync.ConfigurationClientPacket;
+import com.creativemd.creativecore.common.config.sync.ConfigurationPacket;
 import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.CreativeTickHandler;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
@@ -24,7 +33,6 @@ import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
 import com.creativemd.creativecore.common.packet.CreativeSplittedMessageHandler;
-import com.creativemd.creativecore.common.packet.CreativeTestPacket;
 import com.creativemd.creativecore.common.packet.PacketReciever;
 import com.creativemd.creativecore.common.packet.SplittedPacketReceiver;
 import com.creativemd.creativecore.common.packet.gui.ContainerControlUpdatePacket;
@@ -33,7 +41,7 @@ import com.creativemd.creativecore.common.packet.gui.GuiNBTPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.creativecore.core.CreativeCoreClient;
+import com.creativemd.creativecore.server.command.ConfigCommand;
 import com.creativemd.creativecore.server.command.GuiCommand;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
@@ -56,23 +64,28 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore", acceptedMinecraftVersions = "")
+@Mod(modid = CreativeCore.modid, version = CreativeCore.version, name = "CreativeCore", acceptedMinecraftVersions = "", guiFactory = "com.creativemd.creativecore.client.CreativeCoreSettings")
 public class CreativeCore {
 	
 	public static final String modid = "creativecore";
-	public static final String version = "1.9.9";
+	public static final String version = "1.10.0";
 	
 	@Instance(CreativeCore.modid)
 	public static CreativeCore instance = new CreativeCore();
 	
-	public static final Logger logger = LogManager.getLogger(CreativeCore.modid);
+	public static final Logger LOGGER = LogManager.getLogger(CreativeCore.modid);
 	
 	public static SimpleNetworkWrapper network;
 	public static CreativeTickHandler guiTickHandler = new CreativeTickHandler();
+	public static ConfigEventHandler configHandler;
+	public static CreativeCoreConfig config;
 	
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new GuiCommand());
+		event.registerServerCommand(new ConfigCommand());
+		
+		configHandler.serverStarting();
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -86,6 +99,11 @@ public class CreativeCore {
 	@EventHandler
 	public void PreInit(FMLPreInitializationEvent event) {
 		event.getModMetadata().version = version;
+		configHandler = new ConfigEventHandler(event.getModConfigurationDirectory(), LOGGER);
+		
+		config = new CreativeCoreConfig();
+		CreativeConfigRegistry.ROOT.registerFolder(modid).registerValue("rendering", config, ConfigSynchronization.CLIENT, false);
+		CreativeConfigRegistry.load(modid, Side.CLIENT);
 		
 		if (FMLCommonHandler.instance().getSide().isClient())
 			loadClientSide(false);
@@ -98,8 +116,6 @@ public class CreativeCore {
 		network.registerMessage(PacketReciever.class, CreativeMessageHandler.class, 0, Side.SERVER);
 		network.registerMessage(SplittedPacketReceiver.class, CreativeSplittedMessageHandler.class, 1, Side.CLIENT);
 		network.registerMessage(SplittedPacketReceiver.class, CreativeSplittedMessageHandler.class, 1, Side.SERVER);
-		
-		CreativeCorePacket.registerPacket(CreativeTestPacket.class, "CCTest");
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		
@@ -151,15 +167,48 @@ public class CreativeCore {
 			}
 		});
 		
+		GuiHandler.registerGuiHandler("config", new CustomGuiHandler() {
+			
+			@Override
+			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
+				return new SubContainerEmpty(player);
+			}
+			
+			@Override
+			@SideOnly(Side.CLIENT)
+			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt) {
+				return new SubGuiConfig(CreativeConfigRegistry.ROOT, Side.SERVER);
+			}
+			
+		});
+		
+		GuiHandler.registerGuiHandler("clientconfig", new CustomGuiHandler() {
+			
+			@Override
+			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
+				return new SubContainerEmpty(player);
+			}
+			
+			@Override
+			@SideOnly(Side.CLIENT)
+			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt) {
+				return new SubGuiClientSync(CreativeConfigRegistry.ROOT);
+			}
+			
+		});
+		
 		EntityRegistry.registerModEntity(new ResourceLocation(modid, "sit"), EntitySit.class, "Sit", 0, this, 250, 250, true);
 		
 		// Init Packets
-		CreativeCorePacket.registerPacket(GuiUpdatePacket.class, "guiupdatepacket");
-		CreativeCorePacket.registerPacket(GuiLayerPacket.class, "guilayerpacket");
-		CreativeCorePacket.registerPacket(OpenGuiPacket.class, "opengui");
-		CreativeCorePacket.registerPacket(BlockUpdatePacket.class, "blockupdatepacket");
-		CreativeCorePacket.registerPacket(ContainerControlUpdatePacket.class, "containercontrolpacket");
-		CreativeCorePacket.registerPacket(GuiNBTPacket.class, "guinbtpacket");
+		CreativeCorePacket.registerPacket(GuiUpdatePacket.class);
+		CreativeCorePacket.registerPacket(GuiLayerPacket.class);
+		CreativeCorePacket.registerPacket(OpenGuiPacket.class);
+		CreativeCorePacket.registerPacket(BlockUpdatePacket.class);
+		CreativeCorePacket.registerPacket(ContainerControlUpdatePacket.class);
+		CreativeCorePacket.registerPacket(GuiNBTPacket.class);
+		CreativeCorePacket.registerPacket(ConfigurationPacket.class);
+		CreativeCorePacket.registerPacket(ConfigurationChangePacket.class);
+		CreativeCorePacket.registerPacket(ConfigurationClientPacket.class);
 		
 		MinecraftForge.EVENT_BUS.register(guiTickHandler);
 		

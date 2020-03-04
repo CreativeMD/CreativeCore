@@ -120,6 +120,12 @@ public abstract class CoreControl {
 	
 	// ================Static Helpers================
 	
+	public static String translateOrDefault(String text, String defaultText) {
+		if (I18n.canTranslate(text))
+			translate(text);
+		return defaultText;
+	}
+	
 	public static String translate(String text) {
 		return I18n.translateToLocal(text);
 	}

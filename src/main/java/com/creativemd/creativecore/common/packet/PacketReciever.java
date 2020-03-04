@@ -72,7 +72,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 			CreativeMessageHandler cm = (CreativeMessageHandler) message;
 			
 			if (!cm.isLast) {
-				PacketKey key = new PacketKey(CreativeCorePacket.getIDByClass(cm.packet), cm.uuid);
+				PacketKey key = new PacketKey(CreativeCorePacket.getId(cm.packet), cm.uuid);
 				if (clientSplittedPackets.containsKey(key))
 					System.out.println("Something went wrong! Received another packet of the same type with the same uuid id! " + key);
 				else
@@ -98,10 +98,10 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 			executeClient(message);
 		} else {
 			if (message instanceof CreativeMessageHandler) {
-				CreativeMessageHandler cm = (CreativeMessageHandler) message;
+				CreativeMessageHandler cm = message;
 				
 				if (!cm.isLast) {
-					PacketKey key = new PacketKey(CreativeCorePacket.getIDByClass(cm.packet), cm.uuid);
+					PacketKey key = new PacketKey(CreativeCorePacket.getId(cm.packet), cm.uuid);
 					if (splittedPackets.containsKey(key))
 						System.out.println("Something went wrong! Received another packet of the same type with the same uuid id! " + key);
 					else
@@ -112,7 +112,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 							
 							@Override
 							public void run() {
-								((CreativeMessageHandler) message).packet.executeServer(ctx.getServerHandler().player);
+								message.packet.executeServer(ctx.getServerHandler().player);
 							}
 						});
 					}
@@ -124,11 +124,11 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 	
 	public static class PacketKey {
 		
-		public final String packetID;
+		public final int packetId;
 		public final UUID uuid;
 		
-		public PacketKey(String packetID, UUID uuid) {
-			this.packetID = packetID;
+		public PacketKey(int packetId, UUID uuid) {
+			this.packetId = packetId;
 			this.uuid = uuid;
 		}
 		
@@ -140,13 +140,13 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 		@Override
 		public boolean equals(Object object) {
 			if (object instanceof PacketKey)
-				return ((PacketKey) object).packetID.equals(packetID) && ((PacketKey) object).uuid.equals(uuid);
+				return ((PacketKey) object).packetId == packetId && ((PacketKey) object).uuid.equals(uuid);
 			return false;
 		}
 		
 		@Override
 		public String toString() {
-			return "[id=" + packetID + ",uuid=" + uuid + "]";
+			return "[id=" + packetId + ",uuid=" + uuid + "]";
 		}
 	}
 	
@@ -180,7 +180,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
 		public void receivePacket(ByteBuf toRead, int index, int length) throws IllegalAccessException {
 			received++;
 			if (received >= amount)
-				throw new IllegalAccessException("This packet received more parts than it should! packetID=" + CreativeCorePacket.getIDByClass(packet) + ", uuid=" + uuid);
+				throw new IllegalAccessException("This packet received more parts than it should! packetID=" + CreativeCorePacket.getId(packet) + ", uuid=" + uuid);
 			
 			buf.writeBytes(toRead, index, length);
 			lastReceivedPart = System.nanoTime();

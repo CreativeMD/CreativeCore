@@ -27,8 +27,10 @@ public class SubGuiDialog extends SubGui {
 			height += 20;
 		}
 		
+		int buttonWidth = 0;
+		GuiButton[] createdButtons = new GuiButton[buttons.length];
 		for (int i = 0; i < buttons.length; i++) {
-			controls.add(new GuiButton(buttons[i], 30 * i + (width / 2 - buttons.length * 30 / 2), height + 5, 24) {
+			GuiButton button = new GuiButton(buttons[i], 0, height + 5) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
@@ -36,7 +38,16 @@ public class SubGuiDialog extends SubGui {
 					nbt.setString("clicked", this.caption);
 					closeLayer(nbt);
 				}
-			});
+			};
+			buttonWidth += button.width + 2;
+			createdButtons[i] = button;
+			controls.add(button);
+		}
+		
+		int x = width / 2 - buttonWidth / 2 + 1;
+		for (int i = 0; i < createdButtons.length; i++) {
+			createdButtons[i].posX = x;
+			x += createdButtons[i].width + 2;
 		}
 	}
 	

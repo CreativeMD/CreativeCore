@@ -14,17 +14,17 @@ public class CreativeSplittedMessageHandler implements IMessage {
 		
 	}
 	
-	public CreativeSplittedMessageHandler(boolean isLast, String packetID, UUID uuid, ByteBuf buffer, int index, int length) {
+	public CreativeSplittedMessageHandler(boolean isLast, int packetId, UUID uuid, ByteBuf buffer, int index, int length) {
 		this.isLast = isLast;
 		this.buffer = buffer;
 		this.uuid = uuid;
 		this.index = index;
 		this.length = length;
-		this.packetID = packetID;
+		this.packetId = packetId;
 	}
 	
 	public boolean isLast;
-	public String packetID;
+	public int packetId;
 	public UUID uuid;
 	public ByteBuf buffer;
 	public int index;
@@ -34,7 +34,7 @@ public class CreativeSplittedMessageHandler implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		isLast = buf.readBoolean();
-		packetID = CreativeCorePacket.readString(buf);
+		packetId = buf.readInt();
 		uuid = UUID.fromString(CreativeCorePacket.readString(buf));
 		buffer = ByteBufAllocator.DEFAULT.directBuffer();
 		length = buf.readInt();
@@ -46,7 +46,7 @@ public class CreativeSplittedMessageHandler implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeBoolean(isLast);
-		CreativeCorePacket.writeString(buf, packetID);
+		buf.writeInt(packetId);
 		CreativeCorePacket.writeString(buf, uuid.toString());
 		buf.writeInt(length);
 		buf.writeBytes(buffer, index, length);
