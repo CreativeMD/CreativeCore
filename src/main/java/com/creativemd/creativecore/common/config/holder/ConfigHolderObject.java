@@ -62,17 +62,22 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
 	public class ConfigKeyField extends ConfigKey {
 		
 		public final Field field;
+		public final ConfigTypeConveration converation;
 		
 		public ConfigKeyField(Field field, String configName, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
 			super(field.getName(), configName, defaultValue, synchronization, requiresRestart);
 			this.field = field;
+			if (defaultValue instanceof ICreativeConfigHolder)
+				this.converation = null;
+			else
+				this.converation = ConfigTypeConveration.get(field.getType());
 		}
 		
 		@Override
 		public void set(Object object) {
 			try {
 				if (!(defaultValue instanceof ICreativeConfigHolder))
-					field.set(ConfigHolderObject.this.object, object);
+					field.set(ConfigHolderObject.this.object, converation.set(this, object));
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				throw new RuntimeException(e);
 			}

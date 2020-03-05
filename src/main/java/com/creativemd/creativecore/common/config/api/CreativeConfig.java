@@ -27,25 +27,19 @@ public @interface CreativeConfig {
 		
 		public int max();
 		
+		public boolean slider() default true;
+		
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.FIELD })
-	@interface DoubleRange {
+	@interface DecimalRange {
 		
 		public double min();
 		
 		public double max();
 		
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(value = { ElementType.FIELD })
-	@interface FloatRange {
-		
-		public float min();
-		
-		public float max();
+		public boolean slider() default true;
 		
 	}
 	

@@ -33,7 +33,7 @@ public class GuiConfigControl extends GuiParent {
 	}
 	
 	public void updateButton() {
-		this.resetButton.enabled = !field.isDefault(side) || (changed && !field.isDefault(converation.saveValue(this), side));
+		this.resetButton.enabled = !field.isDefault(side) || (changed && !field.isDefault(converation.save(this, field.getType(), field), side));
 	}
 	
 	@Override
@@ -52,7 +52,7 @@ public class GuiConfigControl extends GuiParent {
 	}
 	
 	public void init(JsonElement initalValue) {
-		converation.createControls(this);
+		converation.createControls(this, field, field.getType(), 100);
 		converation.loadValue(initalValue != null ? converation.readElement(field.getDefault(), false, initalValue, side) : field.get(), this);
 	}
 	
@@ -68,7 +68,7 @@ public class GuiConfigControl extends GuiParent {
 	}
 	
 	public JsonElement save() {
-		Object value = converation.saveValue(this);
+		Object value = converation.save(this, field.getType(), field);
 		if (!field.get().equals(value))
 			return converation.writeElement(value, field.getDefault(), true, side);
 		return null;

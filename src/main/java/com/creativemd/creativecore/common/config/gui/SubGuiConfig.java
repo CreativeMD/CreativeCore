@@ -105,7 +105,7 @@ public class SubGuiConfig extends SubGui {
 				if (!key.is(side))
 					continue;
 				
-				GuiLabel label = new GuiLabel(caption, offsetX, offsetY + 2);
+				GuiLabel label = new GuiLabel(caption + ":", offsetX, offsetY + 2);
 				
 				GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, 0, offsetY, 100, 14, side);
 				GuiButton resetButton = new GuiButton("r", offsetX + 390, offsetY, 14) {
@@ -118,7 +118,7 @@ public class SubGuiConfig extends SubGui {
 				config.setResetButton(resetButton);
 				int labelWidth = 200;
 				config.posX = label.posX + labelWidth + 2;
-				config.width = 470 - config.posX;
+				config.width = 380 - config.posX;
 				config.init(json != null ? json.get(key.name) : null);
 				box.addControl(label);
 				box.addControl(config);
