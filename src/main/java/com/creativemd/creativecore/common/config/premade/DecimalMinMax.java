@@ -32,4 +32,8 @@ public class DecimalMinMax implements ICreativeConfig {
 		}
 	}
 	
+	public double spanLength() {
+		return max - min;
+	}
+	
 }

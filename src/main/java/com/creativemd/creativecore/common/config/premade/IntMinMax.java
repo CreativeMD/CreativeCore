@@ -32,4 +32,8 @@ public class IntMinMax implements ICreativeConfig {
 		}
 	}
 	
+	public int spanLength() {
+		return max - min;
+	}
+	
 }
