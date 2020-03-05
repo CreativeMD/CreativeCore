@@ -19,7 +19,7 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
 	}
 	
 	@Override
-	public void setValue(float value) {
+	public void setValue(double value) {
 		super.setValue((int) value);
 		if (part != null) {
 			part.setColor(picker.color, (int) this.value);

@@ -31,7 +31,7 @@ public class GuiSteppedSlider extends GuiAnalogeSlider {
 	}
 	
 	@Override
-	public void setValue(float value) {
+	public void setValue(double value) {
 		super.setValue((int) value);
 	}
 	

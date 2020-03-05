@@ -11,15 +11,15 @@ import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import net.minecraft.init.SoundEvents;
 
 public class GuiAnalogeSlider extends GuiControl {
-	public float maxValue;
-	public float minValue;
-	public float value;
+	public double maxValue;
+	public double minValue;
+	public double value;
 	public boolean grabbedSlider;
 	public int sliderWidth = 4;
 	
 	protected GuiTextfield textfield = null;
 	
-	public GuiAnalogeSlider(String name, int x, int y, int width, int height, float value, float minValue, float maxValue) {
+	public GuiAnalogeSlider(String name, int x, int y, int width, int height, double value, double minValue, double maxValue) {
 		super(name, x, y, width, height);
 		this.marginWidth = 0;
 		this.minValue = minValue;
@@ -38,7 +38,7 @@ public class GuiAnalogeSlider extends GuiControl {
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
 		
-		float percent = getPercentage();
+		double percent = getPercentage();
 		
 		int posX = (int) ((this.width - (borderWidth * 2 + sliderWidth)) * percent);
 		style.getFace(this).renderStyle(posX, 0, helper, 4, height);
@@ -49,7 +49,7 @@ public class GuiAnalogeSlider extends GuiControl {
 			helper.drawStringWithShadow(getTextByValue(), width, height, ColorUtils.WHITE);
 	}
 	
-	public float getPercentage() {
+	public double getPercentage() {
 		return (this.value - this.minValue) / (this.maxValue - this.minValue);
 	}
 	
@@ -76,7 +76,7 @@ public class GuiAnalogeSlider extends GuiControl {
 	}
 	
 	public void closeTextField() {
-		float value = this.value;
+		double value = this.value;
 		try {
 			setValue(Float.parseFloat(textfield.text));
 			playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -98,7 +98,7 @@ public class GuiAnalogeSlider extends GuiControl {
 		return super.onKeyPressed(character, key);
 	}
 	
-	public void setValue(float value) {
+	public void setValue(double value) {
 		this.value = Math.max(minValue, value);
 		this.value = Math.min(maxValue, this.value);
 		
