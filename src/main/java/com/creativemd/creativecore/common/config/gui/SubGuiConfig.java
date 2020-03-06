@@ -113,9 +113,10 @@ public class SubGuiConfig extends SubGui {
 					@Override
 					public void onClicked(int x, int y, int button) {
 						config.reset();
+						SubGuiConfig.this.changed = true;
 					}
 				};
-				config.setResetButton(resetButton);
+				
 				int labelWidth = 200;
 				config.posX = label.posX + labelWidth + 2;
 				config.width = 380 - config.posX;
@@ -123,6 +124,7 @@ public class SubGuiConfig extends SubGui {
 				box.addControl(label);
 				box.addControl(config);
 				box.addControl(resetButton.setCustomTooltip("reset to default"));
+				config.setResetButton(resetButton);
 				offsetY += config.height + 1;
 			}
 			

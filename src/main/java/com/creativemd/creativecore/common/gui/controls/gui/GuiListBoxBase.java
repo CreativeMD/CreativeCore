@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.creativemd.creativecore.common.gui.GuiControl;
+import com.creativemd.creativecore.common.gui.event.gui.GuiControlChangedEvent;
 
 public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
 	
@@ -37,7 +38,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
 			if (modifiable) {
 				GuiButtonRemove button = removeButtons.get(i);
 				button.index = i;
-				button.posY = y;
+				button.posY = y + 3;
 			}
 			
 			control.posY = y;
@@ -53,6 +54,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
 			removeButtons.remove(index);
 		}
 		reloadPositions();
+		
+		raiseEvent(new GuiControlChangedEvent(this));
 	}
 	
 	public void clear() {
@@ -65,6 +68,20 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
 		content.clear();
 		if (modifiable)
 			removeButtons.clear();
+	}
+	
+	public void addAll(List<T> entries) {
+		for (T entry : entries) {
+			content.add(entry);
+			addControl(entry);
+			if (modifiable) {
+				GuiButtonRemove button = new GuiButtonRemove(content.size() - 1);
+				addControl(button);
+				removeButtons.add(button);
+			}
+		}
+		
+		reloadPositions();
 	}
 	
 	public void add(T entry) {
@@ -81,7 +98,12 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
 		else {
 			GuiControl before = content.get(content.size() - 2);
 			entry.posY = before.posY + before.height + space;
+			
+			if (modifiable)
+				removeButtons.get(removeButtons.size() - 1).posY = before.posY + before.height + space + 3;
 		}
+		
+		raiseEvent(new GuiControlChangedEvent(this));
 	}
 	
 	public boolean isEmpty() {
@@ -101,7 +123,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
 		public int index;
 		
 		public GuiButtonRemove(int index) {
-			super("x", GuiListBoxBase.this.width - 12, 0, 8, 8);
+			super("x", GuiListBoxBase.this.width - 25, 0, 8, 8);
 			this.index = index;
 		}
 		

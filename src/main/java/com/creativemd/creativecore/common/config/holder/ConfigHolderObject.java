@@ -94,6 +94,13 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
 			}
 		}
 		
+		@Override
+		protected boolean checkEqual(Object one, Object two) {
+			if (converation != null)
+				return converation.areEqual(one, two);
+			return super.checkEqual(one, two);
+		}
+		
 		public ConfigHolderObject getHolder() {
 			return ConfigHolderObject.this;
 		}

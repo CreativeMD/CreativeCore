@@ -45,16 +45,20 @@ public abstract class ConfigKey {
 	
 	public abstract Object get();
 	
+	protected boolean checkEqual(Object one, Object two) {
+		return one.equals(two);
+	}
+	
 	public boolean isDefault(Side side) {
 		if (defaultValue instanceof ICreativeConfigHolder)
 			return ((ICreativeConfigHolder) defaultValue).isDefault(side);
-		return defaultValue.equals(get());
+		return checkEqual(defaultValue, get());
 	}
 	
 	public boolean isDefault(Object value, Side side) {
 		if (defaultValue instanceof ICreativeConfigHolder)
 			return ((ICreativeConfigHolder) defaultValue).isDefault(side);
-		return defaultValue.equals(value);
+		return checkEqual(defaultValue, value);
 	}
 	
 	public void restoreDefault(Side side) {

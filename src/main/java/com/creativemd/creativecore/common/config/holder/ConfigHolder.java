@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.config.holder;
 import java.util.Collection;
 
 import com.creativemd.creativecore.common.config.ConfigTypeConveration;
+import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 import com.creativemd.creativecore.common.utils.type.PairList;
 import com.google.common.collect.ObjectArrays;
@@ -107,7 +108,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 		for (int i = 0; i < fields.size(); i++) {
 			T field = fields.get(i).value;
 			if (field.is(side) && json.has(field.name))
-				field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, json.get(field.name), side));
+				field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
 		}
 	}
 	
@@ -117,7 +118,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 		for (int i = 0; i < fields.size(); i++) {
 			T field = fields.get(i).value;
 			if (field.is(side) && (saveDefault || !field.isDefault(side)))
-				object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, side));
+				object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
 		}
 		return object;
 	}

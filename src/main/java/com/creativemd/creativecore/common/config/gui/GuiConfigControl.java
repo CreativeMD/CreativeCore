@@ -1,6 +1,5 @@
 package com.creativemd.creativecore.common.config.gui;
 
-import com.creativemd.creativecore.common.config.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
 import com.creativemd.creativecore.common.gui.container.GuiParent;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
@@ -12,18 +11,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiConfigControl extends GuiParent {
 	
-	public final ConfigTypeConveration converation;
 	public final ConfigKeyField field;
 	public final Side side;
 	private GuiButton resetButton;
-	
-	protected boolean changed = false;
 	
 	public GuiConfigControl(ConfigKeyField field, int x, int y, int width, int height, Side side) {
 		super(field.name, x, y, width, height);
 		this.field = field;
 		this.borderWidth = this.marginWidth = 0;
-		this.converation = ConfigTypeConveration.get(field.getType());
 		this.side = side;
 	}
 	
@@ -33,7 +28,7 @@ public class GuiConfigControl extends GuiParent {
 	}
 	
 	public void updateButton() {
-		this.resetButton.enabled = !field.isDefault(side) || (changed && !field.isDefault(converation.save(this, field.getType(), field), side));
+		this.resetButton.enabled = !field.isDefault(field.converation.save(this, field.getType(), field), side);
 	}
 	
 	@Override
@@ -52,25 +47,23 @@ public class GuiConfigControl extends GuiParent {
 	}
 	
 	public void init(JsonElement initalValue) {
-		converation.createControls(this, field, field.getType(), 100);
-		converation.loadValue(initalValue != null ? converation.readElement(field.getDefault(), false, initalValue, side) : field.get(), this);
+		field.converation.createControls(this, field, field.getType(), 100);
+		field.converation.loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, initalValue, side, field) : field.get(), this, field);
 	}
 	
 	public void reset() {
-		converation.loadValue(field.getDefault(), this);
-		changed = false;
+		field.converation.loadValue(field.getDefault(), this, field);
 		updateButton();
 	}
 	
 	public void changed() {
-		changed = true;
 		updateButton();
 	}
 	
 	public JsonElement save() {
-		Object value = converation.save(this, field.getType(), field);
+		Object value = field.converation.save(this, field.getType(), field);
 		if (!field.get().equals(value))
-			return converation.writeElement(value, field.getDefault(), true, side);
+			return field.converation.writeElement(value, field.getDefault(), true, side, field);
 		return null;
 	}
 	
