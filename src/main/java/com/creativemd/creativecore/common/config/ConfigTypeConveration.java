@@ -559,7 +559,7 @@ public abstract class ConfigTypeConveration<T> {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-				Object[] possibleValues = clazz.getDeclaringClass().getEnumConstants();
+				Object[] possibleValues = clazz.getEnumConstants();
 				List<String> lines = new ArrayList<>(possibleValues.length);
 				for (int i = 0; i < possibleValues.length; i++)
 					lines.add(((Enum) possibleValues[i]).name());
@@ -577,7 +577,7 @@ public abstract class ConfigTypeConveration<T> {
 			@SideOnly(Side.CLIENT)
 			protected Enum saveValue(GuiParent parent, Class clazz) {
 				GuiComboBox box = (GuiComboBox) parent.get("data");
-				return (Enum) clazz.getDeclaringClass().getEnumConstants()[box.index];
+				return (Enum) clazz.getEnumConstants()[box.index];
 			}
 			
 			@Override
