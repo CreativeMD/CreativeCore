@@ -83,15 +83,17 @@ public class GuiStackSelectorAll extends GuiStackSelector {
 		public HashMapList<String, ItemStack> collect(EntityPlayer player) {
 			HashMapList<String, ItemStack> stacks = new HashMapList<>();
 			
-			// Inventory
-			List<ItemStack> tempStacks = new ArrayList<>();
-			for (ItemStack stack : player.inventory.mainInventory)
-				if (!stack.isEmpty() && selector.allow(stack))
-					tempStacks.add(stack.copy());
-				else if (stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
-					collect(stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), tempStacks);
-				
-			stacks.add("selector.inventory", tempStacks);
+			if (player != null) {
+				// Inventory
+				List<ItemStack> tempStacks = new ArrayList<>();
+				for (ItemStack stack : player.inventory.mainInventory)
+					if (!stack.isEmpty() && selector.allow(stack))
+						tempStacks.add(stack.copy());
+					else if (stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+						collect(stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), tempStacks);
+					
+				stacks.add("selector.inventory", tempStacks);
+			}
 			
 			return stacks;
 		}

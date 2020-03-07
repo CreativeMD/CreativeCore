@@ -586,7 +586,7 @@ public abstract class ConfigTypeConveration<T> {
 			}
 		});
 		
-		registerSpecialType((x) -> List.class.isAssignableFrom(x), new ConfigTypeConveration<List>() {
+		registerSpecialType((x) -> x == List.class || x == ArrayList.class, new ConfigTypeConveration<List>() {
 			
 			@Override
 			public List readElement(List defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key) {

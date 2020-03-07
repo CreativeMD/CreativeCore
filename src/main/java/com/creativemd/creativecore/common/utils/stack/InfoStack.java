@@ -11,17 +11,29 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
+import com.creativemd.creativecore.common.config.ConfigTypeConveration;
+import com.creativemd.creativecore.common.config.gui.GuiInfoStackButton;
+import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
+import com.creativemd.creativecore.common.gui.container.GuiParent;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
 public abstract class InfoStack extends Ingredient {
@@ -181,6 +193,50 @@ public abstract class InfoStack extends Ingredient {
 		
 		registerType("name", InfoName.class);
 		registerType("fuel", InfoFuel.class);
+		
+		ConfigTypeConveration.registerSpecialType((x) -> InfoStack.class.isAssignableFrom(x), new ConfigTypeConveration.SimpleConfigTypeConveration<InfoStack>() {
+			
+			@Override
+			public InfoStack readElement(InfoStack defaultValue, boolean loadDefault, JsonElement element) {
+				if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
+					try {
+						return parseNBT(JsonToNBT.getTagFromJson(element.getAsString()));
+					} catch (NBTException e) {
+						e.printStackTrace();
+					}
+				return defaultValue;
+			}
+			
+			@Override
+			public JsonElement writeElement(InfoStack value, InfoStack defaultValue, boolean saveDefault) {
+				return new JsonPrimitive(value.writeToNBT(new NBTTagCompound()).toString());
+			}
+			
+			@Override
+			@SideOnly(Side.CLIENT)
+			public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
+				parent.addControl(new GuiInfoStackButton("data", 0, 0, Math.min(150, parent.width - 50), 14, new InfoBlock(Blocks.DIRT)));
+			}
+			
+			@Override
+			@SideOnly(Side.CLIENT)
+			public void loadValue(InfoStack value, GuiParent parent) {
+				GuiInfoStackButton button = (GuiInfoStackButton) parent.get("data");
+				button.set(value);
+			}
+			
+			@Override
+			@SideOnly(Side.CLIENT)
+			protected InfoStack saveValue(GuiParent parent, Class clazz) {
+				GuiInfoStackButton button = (GuiInfoStackButton) parent.get("data");
+				return button.get();
+			}
+			
+			@Override
+			public InfoStack set(ConfigKeyField key, InfoStack value) {
+				return value;
+			}
+		});
 	}
 	
 	public String getID() {

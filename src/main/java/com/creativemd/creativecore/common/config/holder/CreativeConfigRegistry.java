@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.config.holder;
 
 import com.creativemd.creativecore.CreativeCore;
+import com.creativemd.creativecore.common.config.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -15,12 +16,14 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
 	
 	@Override
 	public ConfigHolderDynamic registerValue(String key, Object defaultValue) {
-		throw new RuntimeException("Registry cannot contain values");
+		return registerValue(key, defaultValue, ConfigSynchronization.UNIVERSAL, false);
 	}
 	
 	@Override
 	public ConfigHolderDynamic registerValue(String key, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
-		throw new RuntimeException("Registry cannot contain values");
+		if (ConfigTypeConveration.has(defaultValue.getClass()))
+			throw new RuntimeException("Registry cannot contain values");
+		return super.registerValue(key, defaultValue, synchronization, requiresRestart);
 	}
 	
 	public ICreativeConfigHolder followPath(String[] path) {

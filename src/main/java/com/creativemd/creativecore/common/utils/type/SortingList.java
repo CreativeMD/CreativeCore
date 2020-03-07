@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.creativemd.creativecore.common.config.api.CreativeConfig;
 import com.creativemd.creativecore.common.utils.stack.InfoBlock;
 import com.creativemd.creativecore.common.utils.stack.InfoContainOre;
 import com.creativemd.creativecore.common.utils.stack.InfoItem;
@@ -22,9 +23,11 @@ import net.minecraft.item.ItemStack;
 
 public class SortingList implements List<InfoStack> {
 	
-	private ArrayList<InfoStack> entries = new ArrayList<>();
+	@CreativeConfig
+	public List<InfoStack> entries = new ArrayList<>();
 	
-	private boolean isWhitelist;
+	@CreativeConfig
+	public boolean isWhitelist;
 	
 	public SortingList(SortingList list) {
 		isWhitelist = list.isWhitelist;
@@ -59,26 +62,22 @@ public class SortingList implements List<InfoStack> {
 		isWhitelist = false;
 	}
 	
-	/**
-	 * The given array will be added to the list.
+	/** The given array will be added to the list.
 	 * 
 	 * @param objects
 	 *            the array can either contain a Material, a Block, an Item, an
-	 *            ItemStack or a String for the OreDictionary.
-	 */
+	 *            ItemStack or a String for the OreDictionary. */
 	public void addSortingObjects(Object... objects) {
 		for (int i = 0; i < objects.length; i++) {
 			addSortingObject(objects[i]);
 		}
 	}
 	
-	/**
-	 * The given parameter will be added to the list.
+	/** The given parameter will be added to the list.
 	 * 
 	 * @param object
 	 *            can either be a Material, a Block, an Item, an ItemStack or a
-	 *            String for the OreDictionary.
-	 */
+	 *            String for the OreDictionary. */
 	public void addSortingObject(Object object) {
 		if (object instanceof InfoStack) {
 			add((InfoStack) object);
@@ -89,76 +88,62 @@ public class SortingList implements List<InfoStack> {
 			add(info);
 	}
 	
-	/**
-	 * The given parameter will be added to the list.
+	/** The given parameter will be added to the list.
 	 * 
 	 * @param name
 	 *            relates to blocks/items which contains this pattern in their name.
-	 *            Example: "axe".
-	 */
+	 *            Example: "axe". */
 	public void addSortingByNameContains(String name) {
 		add(new InfoName(name));
 	}
 	
-	/**
-	 * The given parameter will be added to the list.
+	/** The given parameter will be added to the list.
 	 * 
 	 * @param name
 	 *            relates to ore which contains this pattern {@link #OreDictionary
-	 *            OreDictionary}. Examples: "ingot" or "iron".
-	 */
+	 *            OreDictionary}. Examples: "ingot" or "iron". */
 	public void addSortingByOreContains(String name) {
 		add(new InfoContainOre(name));
 	}
 	
-	/**
-	 * The given parameter will be added to the list.
+	/** The given parameter will be added to the list.
 	 * 
 	 * @param name
 	 *            relates to all objects which are connected to this ore inside the
-	 *            {@link #OreDictionary OreDictionary}. Example: "ingotIron".
-	 */
+	 *            {@link #OreDictionary OreDictionary}. Example: "ingotIron". */
 	public void addSortingByOre(String ore) {
 		add(new InfoOre(ore));
 	}
 	
-	/**
-	 * The given parameter will be added to the list.
+	/** The given parameter will be added to the list.
 	 * 
 	 * @param block
-	 *            relates to all equal Blocks.
-	 */
+	 *            relates to all equal Blocks. */
 	public void addSortingByBlock(Block block) {
 		add(new InfoBlock(block));
 	}
 	
-	/**
-	 * The given parameter will be added to the list.
+	/** The given parameter will be added to the list.
 	 * 
 	 * @param item
-	 *            relates to all equal Items.
-	 */
+	 *            relates to all equal Items. */
 	public void addSortingByItem(Item item) {
 		add(new InfoItem(item));
 	}
 	
-	/**
-	 * The given parameter will be added to the list. It is recommended to use
+	/** The given parameter will be added to the list. It is recommended to use
 	 * {@link #addSortingObject addSortingObject} instead.
 	 * 
 	 * @param stack
-	 *            relates to all equal ItemStacks.
-	 */
+	 *            relates to all equal ItemStacks. */
 	public void addSortingByItemStack(ItemStack stack) {
 		add(new InfoItemStack(stack));
 	}
 	
-	/**
-	 * The given parameter will be added to the list.
+	/** The given parameter will be added to the list.
 	 * 
 	 * @param material
-	 *            relates to all blocks which have the equal Material.
-	 */
+	 *            relates to all blocks which have the equal Material. */
 	public void addSortingByMaterial(Material material) {
 		add(new InfoMaterial(material));
 	}
@@ -184,8 +169,7 @@ public class SortingList implements List<InfoStack> {
 		return false;
 	}
 	
-	/**
-	 * If the given object can pass the test. Whitelist: if it can be found.
+	/** If the given object can pass the test. Whitelist: if it can be found.
 	 * Blacklist: if it cannot be found.
 	 * 
 	 * @param object
@@ -194,8 +178,7 @@ public class SortingList implements List<InfoStack> {
 		return canBeFoundInList(object) == isWhitelist;
 	}
 	
-	/**
-	 * If the given itemstack can pass the test. Whitelist: if it can be found.
+	/** If the given itemstack can pass the test. Whitelist: if it can be found.
 	 * Blacklist: if it cannot be found.
 	 * 
 	 * @param object

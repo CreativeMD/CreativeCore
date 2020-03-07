@@ -9,7 +9,6 @@ import com.creativemd.creativecore.common.config.event.ConfigEventHandler;
 import com.creativemd.creativecore.common.config.gui.SubGuiClientSync;
 import com.creativemd.creativecore.common.config.gui.SubGuiConfig;
 import com.creativemd.creativecore.common.config.holder.CreativeConfigRegistry;
-import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 import com.creativemd.creativecore.common.config.sync.ConfigurationChangePacket;
 import com.creativemd.creativecore.common.config.sync.ConfigurationClientPacket;
 import com.creativemd.creativecore.common.config.sync.ConfigurationPacket;
@@ -102,7 +101,7 @@ public class CreativeCore {
 		configHandler = new ConfigEventHandler(event.getModConfigurationDirectory(), LOGGER);
 		
 		config = new CreativeCoreConfig();
-		CreativeConfigRegistry.ROOT.registerFolder(modid).registerValue("rendering", config, ConfigSynchronization.CLIENT, false);
+		CreativeConfigRegistry.ROOT.registerValue(modid, config);
 		CreativeConfigRegistry.load(modid, Side.CLIENT);
 		
 		if (FMLCommonHandler.instance().getSide().isClient())
