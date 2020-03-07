@@ -191,12 +191,12 @@ public abstract class ConfigTypeConveration<T> {
 			@SideOnly(Side.CLIENT)
 			public void loadValue(Number value, GuiParent parent) {
 				GuiControl control = (GuiControl) parent.get("data");
-				if (control instanceof GuiAnalogeSlider) {
-					GuiAnalogeSlider button = (GuiAnalogeSlider) control;
-					button.setValue(value.doubleValue());
-				} else if (control instanceof GuiSteppedSlider) {
+				if (control instanceof GuiSteppedSlider) {
 					GuiSteppedSlider button = (GuiSteppedSlider) control;
 					button.setValue(value.intValue());
+				} else if (control instanceof GuiAnalogeSlider) {
+					GuiAnalogeSlider button = (GuiAnalogeSlider) control;
+					button.setValue(value.doubleValue());
 				} else {
 					GuiTextfield button = (GuiTextfield) control;
 					button.text = value.toString();
@@ -268,12 +268,12 @@ public abstract class ConfigTypeConveration<T> {
 				boolean decimal = isDecimal(clazz);
 				GuiControl control = (GuiControl) parent.get("data");
 				String text;
-				if (control instanceof GuiAnalogeSlider) {
-					GuiAnalogeSlider button = (GuiAnalogeSlider) control;
-					text = "" + button.value;
-				} else if (control instanceof GuiSteppedSlider) {
+				if (control instanceof GuiSteppedSlider) {
 					GuiSteppedSlider button = (GuiSteppedSlider) control;
 					text = "" + ((int) button.value);
+				} else if (control instanceof GuiAnalogeSlider) {
+					GuiAnalogeSlider button = (GuiAnalogeSlider) control;
+					text = "" + button.value;
 				} else {
 					GuiTextfield button = (GuiTextfield) control;
 					text = button.text;
