@@ -96,6 +96,8 @@ public class SubGuiClientSync extends SubGui {
 			
 			String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
 			if (key.content != null && key.content.get() instanceof ICreativeConfigHolder) {
+				if (((ICreativeConfigHolder) key.content.get()).isEmptyWithoutForce(Side.CLIENT))
+					continue;
 				box.addControl(new GuiButton(caption, offsetX, offsetY) {
 					
 					@Override

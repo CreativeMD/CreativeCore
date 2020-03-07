@@ -35,6 +35,8 @@ public interface ICreativeConfigHolder {
 	
 	public boolean isEmpty(Side side);
 	
+	public boolean isEmptyWithoutForce(Side side);
+	
 	public ConfigSynchronization synchronization();
 	
 }

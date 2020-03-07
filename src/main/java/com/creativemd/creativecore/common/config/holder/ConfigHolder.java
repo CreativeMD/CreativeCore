@@ -83,6 +83,19 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 	}
 	
 	@Override
+	public boolean isEmptyWithoutForce(Side side) {
+		for (int i = 0; i < fields.size(); i++) {
+			T field = fields.get(i).value;
+			if (field.get() instanceof ICreativeConfigHolder) {
+				if (!((ICreativeConfigHolder) field.get()).isEmptyWithoutForce(side))
+					return false;
+			} else if (field.isWithoutForce(side))
+				return false;
+		}
+		return true;
+	}
+	
+	@Override
 	public boolean isDefault(Side side) {
 		for (int i = 0; i < fields.size(); i++)
 			if (fields.get(i).value.is(side) && !fields.get(i).value.isDefault(side))
