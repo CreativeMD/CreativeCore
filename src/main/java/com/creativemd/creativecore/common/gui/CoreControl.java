@@ -126,6 +126,12 @@ public abstract class CoreControl {
 		return defaultText;
 	}
 	
+	public static String translateOrNull(String text) {
+		if (I18n.canTranslate(text))
+			return translate(text);
+		return null;
+	}
+	
 	public static String translate(String text) {
 		return I18n.translateToLocal(text);
 	}

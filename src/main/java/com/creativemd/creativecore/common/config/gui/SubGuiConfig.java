@@ -89,7 +89,8 @@ public class SubGuiConfig extends SubGui {
 			if (key.requiresRestart)
 				continue;
 			Object value = key.get();
-			String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.name + ".name"), key.name);
+			String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.name + ".name", key.name);
+			String comment = "config." + String.join(".", holder.path()) + "." + key.name + ".comment";
 			if (value instanceof ICreativeConfigHolder) {
 				if (!((ICreativeConfigHolder) value).isEmpty(side)) {
 					box.addControl(new GuiButton(caption, offsetX, offsetY, 100) {
@@ -98,7 +99,7 @@ public class SubGuiConfig extends SubGui {
 						public void onClicked(int x, int y, int button) {
 							loadHolder((ICreativeConfigHolder) value);
 						}
-					});
+					}.setLangTooltip(comment));
 					offsetY += 21;
 				}
 			} else {
@@ -121,7 +122,7 @@ public class SubGuiConfig extends SubGui {
 				config.posX = label.posX + labelWidth + 2;
 				config.width = 380 - config.posX;
 				config.init(json != null ? json.get(key.name) : null);
-				box.addControl(label);
+				box.addControl(label.setLangTooltip(comment));
 				box.addControl(config);
 				box.addControl(resetButton.setCustomTooltip("reset to default"));
 				config.setResetButton(resetButton);

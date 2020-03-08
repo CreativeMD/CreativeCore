@@ -79,6 +79,13 @@ public abstract class GuiControl extends CoreControl {
 		return this;
 	}
 	
+	public GuiControl setLangTooltip(String key) {
+		String translate = translateOrNull(key);
+		if (translate != null)
+			this.customTooltip = new ArrayList<>(Arrays.asList(translate.split("\\n")));
+		return this;
+	}
+	
 	public GuiControl setCustomTooltip(String... lines) {
 		this.customTooltip = new ArrayList<>(Arrays.asList(lines));
 		return this;
