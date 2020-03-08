@@ -29,12 +29,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonWriter;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ConfigEventHandler {
 	
@@ -59,8 +62,15 @@ public class ConfigEventHandler {
 	
 	@SubscribeEvent
 	public void playerLoggedIn(PlayerLoggedInEvent event) {
-		PacketHandler.sendPacketToPlayer(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (EntityPlayerMP) event.player);
-		syncAll((EntityPlayerMP) event.player);
+		if (!event.player.getServer().isSinglePlayer() || !isOwner(event.player.getServer())) {
+			PacketHandler.sendPacketToPlayer(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (EntityPlayerMP) event.player);
+			syncAll((EntityPlayerMP) event.player);
+		}
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public boolean isOwner(MinecraftServer server) {
+		return server.getServerOwner().equals(Minecraft.getMinecraft().getSession().getUsername());
 	}
 	
 	@SubscribeEvent
@@ -79,6 +89,7 @@ public class ConfigEventHandler {
 	
 	public void sync(ICreativeConfigHolder holder, EntityPlayerMP player) {
 		PacketHandler.sendPacketToPlayer(new ConfigurationPacket(holder), player);
+		
 	}
 	
 	public void syncAll() {
@@ -274,6 +285,11 @@ public class ConfigEventHandler {
 			for (ConfigKey key : ((ICreativeConfigHolder) object).fields())
 				if (key.isWithoutForce(Side.CLIENT))
 					enable(key);
+	}
+	
+	public boolean modFileExist(String modid, Side side) {
+		File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
+		return config.exists();
 	}
 	
 }
