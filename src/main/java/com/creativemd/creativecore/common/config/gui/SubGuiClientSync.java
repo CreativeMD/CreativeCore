@@ -45,8 +45,11 @@ public class SubGuiClientSync extends SubGui {
 			if (x.getDefault() instanceof ICreativeConfigHolder) {
 				List<ConfigKey> keys = new ArrayList<>();
 				for (ConfigKey key : ((ICreativeConfigHolder) x.getDefault()).fields())
-					if (key.isWithoutForce(Side.CLIENT))
-						keys.add(key);
+					if (key.isWithoutForce(Side.CLIENT)) {
+						Object object = key.get();
+						if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
+							keys.add(key);
+					}
 				return keys;
 			}
 			return null;
@@ -54,8 +57,11 @@ public class SubGuiClientSync extends SubGui {
 		
 		List<ConfigKey> keys = new ArrayList<>();
 		for (ConfigKey key : holder.fields())
-			if (key.isWithoutForce(Side.CLIENT))
-				keys.add(key);
+			if (key.isWithoutForce(Side.CLIENT)) {
+				Object object = key.get();
+				if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
+					keys.add(key);
+			}
 		this.tree = new CheckTree<>(keys, setter, getter, getChildren);
 		this.currentView = tree.root;
 	}
@@ -95,20 +101,20 @@ public class SubGuiClientSync extends SubGui {
 			box.addControl(new GuiTreeCheckBox(key, 2, offsetY + 3));
 			
 			String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
+			String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
 			if (key.content != null && key.content.get() instanceof ICreativeConfigHolder) {
-				if (((ICreativeConfigHolder) key.content.get()).isEmptyWithoutForce(Side.CLIENT))
-					continue;
+				
 				box.addControl(new GuiButton(caption, offsetX, offsetY) {
 					
 					@Override
 					public void onClicked(int x, int y, int button) {
 						load(key);
 					}
-				});
+				}.setLangTooltip(comment));
 				offsetY += 21;
 			} else {
 				GuiLabel label = new GuiLabel(caption, offsetX, offsetY + 2);
-				box.addControl(label);
+				box.addControl(label.setLangTooltip(comment));
 				offsetY += label.height + 1;
 			}
 			
