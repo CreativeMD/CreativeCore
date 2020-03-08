@@ -56,6 +56,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -83,7 +84,10 @@ public class CreativeCore {
 	public void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new GuiCommand());
 		event.registerServerCommand(new ConfigCommand());
-		
+	}
+	
+	@EventHandler
+	public void onBeforeServerStarting(FMLServerAboutToStartEvent event) {
 		configHandler.serverStarting();
 	}
 	
