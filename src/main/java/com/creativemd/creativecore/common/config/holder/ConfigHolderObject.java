@@ -59,6 +59,13 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
 			((ICreativeConfig) object).configured();
 	}
 	
+	@Override
+	protected void reset(Side side) {
+		super.reset(side);
+		if (object instanceof ICreativeConfig)
+			((ICreativeConfig) object).configured();
+	}
+	
 	public class ConfigKeyField extends ConfigKey {
 		
 		public final Field field;
