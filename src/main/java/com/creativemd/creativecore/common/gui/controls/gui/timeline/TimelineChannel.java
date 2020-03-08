@@ -18,8 +18,10 @@ public abstract class TimelineChannel<T> {
 	}
 	
 	public TimelineChannel addKeys(PairList<Integer, T> keys) {
-		if (keys == null || keys.isEmpty())
+		if (keys == null || keys.isEmpty()) {
+			addKey(0, getDefault());
 			return this;
+		}
 		for (Pair<Integer, T> pair : keys) {
 			addKey(pair.key, pair.value);
 		}
