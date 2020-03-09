@@ -109,9 +109,11 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 	}
 	
 	protected void reset(Side side) {
-		for (int i = 0; i < fields.size(); i++)
-			if (fields.get(i).value.is(side))
+		for (int i = 0; i < fields.size(); i++) {
+			T key = fields.get(i).value;
+			if (key.is(side) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
 				fields.get(i).value.restoreDefault(side);
+		}
 	}
 	
 	@Override
