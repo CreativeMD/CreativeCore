@@ -1,8 +1,8 @@
 package com.creativemd.creativecore.common.config.gui;
 
 import com.creativemd.creativecore.CreativeCore;
-import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
 import com.creativemd.creativecore.common.config.holder.ConfigKey;
+import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.config.holder.ICreativeConfigHolder;
 import com.creativemd.creativecore.common.config.sync.ConfigurationChangePacket;
 import com.creativemd.creativecore.common.gui.GuiControl;

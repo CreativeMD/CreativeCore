@@ -1,7 +1,6 @@
 package com.creativemd.creativecore.common.config.holder;
 
 import com.creativemd.creativecore.CreativeCore;
-import com.creativemd.creativecore.common.config.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,8 +20,6 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
 	
 	@Override
 	public ConfigHolderDynamic registerValue(String key, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
-		if (ConfigTypeConveration.has(defaultValue.getClass()))
-			throw new RuntimeException("Registry cannot contain values");
 		return super.registerValue(key, defaultValue, synchronization, requiresRestart);
 	}
 	
@@ -37,6 +34,10 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
 		}
 		
 		return this;
+	}
+	
+	public boolean removeField(String modid) {
+		return fields.removeKey(modid);
 	}
 	
 	public static void load(String modid, Side side) {

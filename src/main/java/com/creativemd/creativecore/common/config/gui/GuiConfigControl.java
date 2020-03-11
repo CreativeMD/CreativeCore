@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.common.config.gui;
 
-import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
+import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.gui.container.GuiParent;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
 import com.google.gson.JsonElement;

@@ -8,13 +8,14 @@ import java.util.List;
 import com.creativemd.creativecore.common.config.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.api.CreativeConfig;
 import com.creativemd.creativecore.common.config.api.ICreativeConfig;
-import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
+import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyFieldObject;
+import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 import com.google.gson.JsonObject;
 
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
+public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
 	
 	private static List<Field> collectFields(Class clazz, List<Field> fields) {
 		if (clazz.getSuperclass() != Object.class)
@@ -44,7 +45,7 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
 					else
 						name = config.name();
 					ConfigSynchronization fieldSync = synchronization != ConfigSynchronization.UNIVERSAL ? synchronization : config.type();
-					ConfigKeyField fieldKey = new ConfigKeyField(field, config.name(), ConfigTypeConveration.parseObject(this, fieldSync, name, field.get(object)), fieldSync, config.requiresRestart());
+					ConfigKeyFieldObject fieldKey = new ConfigKeyFieldObject(field, name, ConfigTypeConveration.parseObject(this, fieldSync, name, field.get(object)), fieldSync, config.requiresRestart());
 					this.fields.add(name, fieldKey);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					
@@ -66,46 +67,15 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
 			((ICreativeConfig) object).configured();
 	}
 	
-	public class ConfigKeyField extends ConfigKey {
+	public class ConfigKeyFieldObject extends ConfigKeyField {
 		
-		public final Field field;
-		public final ConfigTypeConveration converation;
-		
-		public ConfigKeyField(Field field, String configName, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
-			super(field.getName(), configName, defaultValue, synchronization, requiresRestart);
-			this.field = field;
-			if (defaultValue instanceof ICreativeConfigHolder)
-				this.converation = null;
-			else
-				this.converation = ConfigTypeConveration.get(field.getType());
+		public ConfigKeyFieldObject(Field field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
+			super(field, name, defaultValue, synchronization, requiresRestart);
 		}
 		
 		@Override
-		public void set(Object object) {
-			try {
-				if (!(defaultValue instanceof ICreativeConfigHolder))
-					field.set(ConfigHolderObject.this.object, converation.set(this, object));
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		@Override
-		public Object get() {
-			try {
-				if (defaultValue instanceof ICreativeConfigHolder)
-					return defaultValue;
-				return field.get(ConfigHolderObject.this.object);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		
-		@Override
-		protected boolean checkEqual(Object one, Object two) {
-			if (converation != null)
-				return converation.areEqual(one, two);
-			return super.checkEqual(one, two);
+		public Object getParent() {
+			return getHolder().object;
 		}
 		
 		public ConfigHolderObject getHolder() {

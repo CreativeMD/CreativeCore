@@ -13,7 +13,7 @@ import com.creativemd.creativecore.common.config.api.CreativeConfig;
 import com.creativemd.creativecore.common.config.gui.GuiConfigSubControl;
 import com.creativemd.creativecore.common.config.holder.ConfigHolderDynamic;
 import com.creativemd.creativecore.common.config.holder.ConfigHolderObject;
-import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
+import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.config.holder.ICreativeConfigHolder;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 import com.creativemd.creativecore.common.gui.GuiControl;

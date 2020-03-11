@@ -1,5 +1,8 @@
 package com.creativemd.creativecore.common.config.holder;
 
+import java.lang.reflect.Field;
+
+import com.creativemd.creativecore.common.config.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -111,6 +114,68 @@ public abstract class ConfigKey {
 			if (defaultValue instanceof ICreativeConfigHolder)
 				return defaultValue;
 			return value;
+		}
+		
+	}
+	
+	public static abstract class ConfigKeyField extends ConfigKey {
+		
+		public final Field field;
+		public final ConfigTypeConveration converation;
+		
+		public ConfigKeyField(Field field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
+			super(name, name, defaultValue, synchronization, requiresRestart);
+			this.field = field;
+			if (defaultValue instanceof ICreativeConfigHolder)
+				this.converation = null;
+			else
+				this.converation = ConfigTypeConveration.get(field.getType());
+		}
+		
+		public abstract Object getParent();
+		
+		@Override
+		public void set(Object object) {
+			try {
+				if (!(defaultValue instanceof ICreativeConfigHolder))
+					field.set(getParent(), converation.set(this, object));
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		@Override
+		public Object get() {
+			try {
+				if (defaultValue instanceof ICreativeConfigHolder)
+					return defaultValue;
+				return field.get(getParent());
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		@Override
+		protected boolean checkEqual(Object one, Object two) {
+			if (converation != null)
+				return converation.areEqual(one, two);
+			return super.checkEqual(one, two);
+		}
+		
+	}
+	
+	public static class ConfigKeyDynamicField extends ConfigKeyField {
+		
+		public final Object parent;
+		
+		public ConfigKeyDynamicField(Field field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart, Object parent) {
+			super(field, name, defaultValue, synchronization, requiresRestart);
+			this.parent = parent;
+		}
+		
+		@Override
+		public Object getParent() {
+			return parent;
 		}
 		
 	}

@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.common.config.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.gui.GuiInfoStackButton;
-import com.creativemd.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyField;
+import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.gui.container.GuiParent;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
