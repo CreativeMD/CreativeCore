@@ -447,10 +447,10 @@ public class GuiTextfield extends GuiFocusControl {
 		GlStateManager.enableColorLogic();
 		GlStateManager.colorLogicOp(GlStateManager.LogicOp.OR_REVERSE);
 		vertexbuffer.begin(7, DefaultVertexFormats.POSITION);
-		vertexbuffer.pos((double) startX, (double) endY, 0.0D).endVertex();
-		vertexbuffer.pos((double) endX, (double) endY, 0.0D).endVertex();
-		vertexbuffer.pos((double) endX, (double) startY, 0.0D).endVertex();
-		vertexbuffer.pos((double) startX, (double) startY, 0.0D).endVertex();
+		vertexbuffer.pos(startX, endY, 0.0D).endVertex();
+		vertexbuffer.pos(endX, endY, 0.0D).endVertex();
+		vertexbuffer.pos(endX, startY, 0.0D).endVertex();
+		vertexbuffer.pos(startX, startY, 0.0D).endVertex();
 		tessellator.draw();
 		GlStateManager.disableColorLogic();
 		GlStateManager.enableTexture2D();
@@ -461,7 +461,7 @@ public class GuiTextfield extends GuiFocusControl {
 		int i = this.enabled ? this.enabledColor : this.disabledColor;
 		int j = this.cursorPosition - this.scrollOffset;
 		int k = this.selEnd - this.scrollOffset;
-		String s = GuiRenderHelper.instance.font.trimStringToWidth(this.text.substring(this.scrollOffset), this.getWidth());
+		String s = GuiRenderHelper.instance.font.trimStringToWidth(this.text.substring(Math.max(0, this.scrollOffset)), this.getWidth());
 		boolean flag = j >= 0 && j <= s.length();
 		boolean flag1 = this.focused && this.cursorCounter / 6 % 2 == 0 && flag;
 		
