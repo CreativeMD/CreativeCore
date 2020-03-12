@@ -70,12 +70,12 @@ public abstract class ConfigTypeConveration<T> {
 		throw new RuntimeException("Could not find converation for " + typeClass.getName());
 	}
 	
-	public static Object read(Class typeClass, Object defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key) {
-		return get(typeClass).readElement(defaultValue, loadDefault, element, side, key);
+	public static Object read(Class typeClass, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+		return get(typeClass).readElement(defaultValue, loadDefault, ignoreRestart, element, side, key);
 	}
 	
-	public static JsonElement write(Class typeClass, Object value, Object defaultValue, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
-		return get(typeClass).writeElement(value, defaultValue, saveDefault, side, key);
+	public static JsonElement write(Class typeClass, Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+		return get(typeClass).writeElement(value, defaultValue, saveDefault, ignoreRestart, side, key);
 	}
 	
 	static {
@@ -356,17 +356,17 @@ public abstract class ConfigTypeConveration<T> {
 		registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
 			
 			@Override
-			public ConfigHolderObject readElement(ConfigHolderObject defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+			public ConfigHolderObject readElement(ConfigHolderObject defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
 				if (element.isJsonObject())
-					defaultValue.load(loadDefault, (JsonObject) element, side);
+					defaultValue.load(loadDefault, ignoreRestart, (JsonObject) element, side);
 				else
 					defaultValue.restoreDefault(side);
 				return defaultValue;
 			}
 			
 			@Override
-			public JsonElement writeElement(ConfigHolderObject value, ConfigHolderObject defaultValue, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
-				return value.save(saveDefault, side);
+			public JsonElement writeElement(ConfigHolderObject value, ConfigHolderObject defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+				return value.save(saveDefault, ignoreRestart, side);
 			}
 			
 			@Override
@@ -396,17 +396,17 @@ public abstract class ConfigTypeConveration<T> {
 		registerType(ConfigHolderDynamic.class, new ConfigTypeConveration<ConfigHolderDynamic>() {
 			
 			@Override
-			public ConfigHolderDynamic readElement(ConfigHolderDynamic defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+			public ConfigHolderDynamic readElement(ConfigHolderDynamic defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
 				if (element.isJsonObject())
-					defaultValue.load(loadDefault, (JsonObject) element, side);
+					defaultValue.load(loadDefault, ignoreRestart, (JsonObject) element, side);
 				else
 					defaultValue.restoreDefault(side);
 				return defaultValue;
 			}
 			
 			@Override
-			public JsonElement writeElement(ConfigHolderDynamic value, ConfigHolderDynamic defaultValue, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
-				return value.save(saveDefault, side);
+			public JsonElement writeElement(ConfigHolderDynamic value, ConfigHolderDynamic defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+				return value.save(saveDefault, ignoreRestart, side);
 			}
 			
 			@Override
@@ -443,24 +443,24 @@ public abstract class ConfigTypeConveration<T> {
 		}, new ConfigTypeConveration() {
 			
 			@Override
-			public Object readElement(Object defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+			public Object readElement(Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
 				if (element.isJsonArray()) {
 					JsonArray array = (JsonArray) element;
 					int size = Math.min(array.size(), Array.getLength(defaultValue));
 					Object object = Array.newInstance(defaultValue.getClass().getComponentType(), size);
 					for (int i = 0; i < size; i++)
-						Array.set(object, i, read(defaultValue.getClass().getComponentType(), Array.get(defaultValue, i), loadDefault, array.get(i), side, null));
+						Array.set(object, i, read(defaultValue.getClass().getComponentType(), Array.get(defaultValue, i), loadDefault, ignoreRestart, array.get(i), side, null));
 					return object;
 				}
 				return defaultValue;
 			}
 			
 			@Override
-			public JsonElement writeElement(Object value, Object defaultValue, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
+			public JsonElement writeElement(Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
 				int length = Array.getLength(value);
 				JsonArray array = new JsonArray();
 				for (int i = 0; i < length; i++)
-					array.add(write(value.getClass().getComponentType(), Array.get(value, i), Array.get(defaultValue, i), saveDefault, side, null));
+					array.add(write(value.getClass().getComponentType(), Array.get(value, i), Array.get(defaultValue, i), saveDefault, ignoreRestart, side, null));
 				return array;
 			}
 			
@@ -589,24 +589,24 @@ public abstract class ConfigTypeConveration<T> {
 		registerSpecialType((x) -> x == List.class || x == ArrayList.class, new ConfigTypeConveration<List>() {
 			
 			@Override
-			public List readElement(List defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+			public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
 				if (element.isJsonArray()) {
 					JsonArray array = (JsonArray) element;
 					Class clazz = getListType(key);
 					List list = new ArrayList<>(array.size());
 					for (int i = 0; i < array.size(); i++)
-						list.add(read(clazz, null, loadDefault, array.get(i), side, null));
+						list.add(read(clazz, null, loadDefault, ignoreRestart, array.get(i), side, null));
 					return list;
 				}
 				return defaultValue;
 			}
 			
 			@Override
-			public JsonElement writeElement(List value, List defaultValue, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
+			public JsonElement writeElement(List value, List defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
 				JsonArray array = new JsonArray();
 				Class clazz = getListType(key);
 				for (int i = 0; i < value.size(); i++)
-					array.add(write(clazz, value.get(i), null, saveDefault, side, null));
+					array.add(write(clazz, value.get(i), null, saveDefault, ignoreRestart, side, null));
 				return array;
 			}
 			
@@ -680,9 +680,9 @@ public abstract class ConfigTypeConveration<T> {
 		});
 	}
 	
-	public abstract T readElement(T defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key);
+	public abstract T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key);
 	
-	public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, Side side, @Nullable ConfigKeyField key);
+	public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key);
 	
 	@SideOnly(Side.CLIENT)
 	public abstract void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth);
@@ -716,14 +716,14 @@ public abstract class ConfigTypeConveration<T> {
 	public static abstract class SimpleConfigTypeConveration<T> extends ConfigTypeConveration<T> {
 		
 		@Override
-		public T readElement(T defaultValue, boolean loadDefault, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+		public T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
 			return readElement(defaultValue, loadDefault, element);
 		}
 		
 		public abstract T readElement(T defaultValue, boolean loadDefault, JsonElement element);
 		
 		@Override
-		public JsonElement writeElement(T value, T defaultValue, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
+		public JsonElement writeElement(T value, T defaultValue, boolean ignoreRestart, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
 			return writeElement(value, defaultValue, saveDefault);
 		}
 		

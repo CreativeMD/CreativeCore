@@ -54,8 +54,8 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
 	}
 	
 	@Override
-	public void load(boolean loadDefault, JsonObject json, Side side) {
-		super.load(loadDefault, json, side);
+	public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
+		super.load(loadDefault, ignoreRestart, json, side);
 		if (object instanceof ICreativeConfig)
 			((ICreativeConfig) object).configured();
 	}

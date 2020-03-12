@@ -45,7 +45,7 @@ public class ConfigurationChangePacket extends CreativeCorePacket {
 	@Override
 	public void executeServer(EntityPlayer player) {
 		if (player.canUseCommand(2, "")) {
-			CreativeConfigRegistry.ROOT.followPath(path).load(false, json, Side.SERVER);
+			CreativeConfigRegistry.ROOT.followPath(path).load(false, true, json, Side.SERVER);
 			CreativeCore.configHandler.save(Side.SERVER);
 			CreativeCore.configHandler.syncAll();
 		}

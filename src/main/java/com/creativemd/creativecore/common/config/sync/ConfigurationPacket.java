@@ -17,10 +17,12 @@ public class ConfigurationPacket extends CreativeCorePacket {
 	
 	public String[] path;
 	public JsonObject json;
+	public boolean ignoreRestart;
 	
-	public ConfigurationPacket(ICreativeConfigHolder holder) {
+	public ConfigurationPacket(ICreativeConfigHolder holder, boolean ignoreRestart) {
 		this.path = holder.path();
-		this.json = holder.save(false, Side.SERVER);
+		this.json = holder.save(false, ignoreRestart, Side.SERVER);
+		this.ignoreRestart = ignoreRestart;
 	}
 	
 	public ConfigurationPacket() {
@@ -31,6 +33,7 @@ public class ConfigurationPacket extends CreativeCorePacket {
 	public void writeBytes(ByteBuf buf) {
 		writeString(buf, String.join(".", path));
 		writeJson(buf, json);
+		buf.writeBoolean(ignoreRestart);
 	}
 	
 	@Override
@@ -38,13 +41,14 @@ public class ConfigurationPacket extends CreativeCorePacket {
 		String text = readString(buf);
 		path = text.isEmpty() ? new String[] {} : text.split(".");
 		json = readJson(buf);
+		ignoreRestart = buf.readBoolean();
 	}
 	
 	@Override
 	public void executeClient(EntityPlayer player) {
 		ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(path);
 		if (holder != null)
-			holder.load(true, json, Side.SERVER);
+			holder.load(true, ignoreRestart, json, Side.SERVER);
 		updateGui(player);
 	}
 	

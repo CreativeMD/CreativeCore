@@ -117,23 +117,23 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 	}
 	
 	@Override
-	public void load(boolean loadDefault, JsonObject json, Side side) {
+	public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
 		if (loadDefault)
 			reset(side);
 		for (int i = 0; i < fields.size(); i++) {
 			T field = fields.get(i).value;
-			if (field.is(side) && json.has(field.name))
-				field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+			if (field.is(side) && (!ignoreRestart || !field.requiresRestart) && json.has(field.name))
+				field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
 		}
 	}
 	
 	@Override
-	public JsonObject save(boolean saveDefault, Side side) {
+	public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side) {
 		JsonObject object = new JsonObject();
 		for (int i = 0; i < fields.size(); i++) {
 			T field = fields.get(i).value;
-			if (field.is(side) && (saveDefault || !field.isDefault(side)))
-				object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+			if (field.is(side) && (!ignoreRestart || !field.requiresRestart) && (saveDefault || !field.isDefault(side)))
+				object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, ignoreRestart, side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
 		}
 		return object;
 	}

@@ -169,7 +169,7 @@ public class SubGuiConfig extends SubGui {
 		if (side == Side.SERVER)
 			PacketHandler.sendPacketToServer(new ConfigurationChangePacket(rootHolder, ROOT));
 		else {
-			rootHolder.load(false, JsonUtils.get(ROOT, rootHolder.path()), Side.CLIENT);
+			rootHolder.load(false, true, JsonUtils.get(ROOT, rootHolder.path()), Side.CLIENT);
 			CreativeCore.configHandler.save(Side.CLIENT);
 		}
 	}

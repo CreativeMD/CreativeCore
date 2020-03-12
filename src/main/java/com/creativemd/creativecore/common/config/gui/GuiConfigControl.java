@@ -48,7 +48,7 @@ public class GuiConfigControl extends GuiParent {
 	
 	public void init(JsonElement initalValue) {
 		field.converation.createControls(this, field, field.getType(), 100);
-		field.converation.loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, initalValue, side, field) : field.get(), this, field);
+		field.converation.loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, false, initalValue, side, field) : field.get(), this, field);
 	}
 	
 	public void reset() {
@@ -63,7 +63,7 @@ public class GuiConfigControl extends GuiParent {
 	public JsonElement save() {
 		Object value = field.converation.save(this, field.getType(), field);
 		if (!field.get().equals(value))
-			return field.converation.writeElement(value, field.getDefault(), true, side, field);
+			return field.converation.writeElement(value, field.getDefault(), true, false, side, field);
 		return null;
 	}
 	

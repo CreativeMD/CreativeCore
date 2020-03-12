@@ -64,7 +64,7 @@ public class ConfigEventHandler {
 	public void playerLoggedIn(PlayerLoggedInEvent event) {
 		if (!event.player.getServer().isSinglePlayer() || !isOwner(event.player.getServer())) {
 			PacketHandler.sendPacketToPlayer(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (EntityPlayerMP) event.player);
-			syncAll((EntityPlayerMP) event.player);
+			PacketHandler.sendPacketToPlayer(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (EntityPlayerMP) event.player);
 		}
 	}
 	
@@ -84,11 +84,11 @@ public class ConfigEventHandler {
 	}
 	
 	public void sync(ICreativeConfigHolder holder) {
-		PacketHandler.sendPacketToAllPlayers(new ConfigurationPacket(holder));
+		PacketHandler.sendPacketToAllPlayers(new ConfigurationPacket(holder, true));
 	}
 	
 	public void sync(ICreativeConfigHolder holder, EntityPlayerMP player) {
-		PacketHandler.sendPacketToPlayer(new ConfigurationPacket(holder), player);
+		PacketHandler.sendPacketToPlayer(new ConfigurationPacket(holder, true), player);
 		
 	}
 	
@@ -130,7 +130,7 @@ public class ConfigEventHandler {
 			File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
 			if (object instanceof ICreativeConfigHolder || object == null) {
 				ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
-				JsonObject json = holder.save(true, side);
+				JsonObject json = holder.save(true, false, side);
 				JsonUtils.cleanUp(json);
 				
 				if (json.size() > 0) {
@@ -214,7 +214,7 @@ public class ConfigEventHandler {
 					JsonObject json = GSON.fromJson(reader, JsonObject.class);
 					if (json == null)
 						json = new JsonObject();
-					holder.load(true, json, side);
+					holder.load(true, false, json, side);
 				} catch (FileNotFoundException e) {
 					LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
 				}
