@@ -277,6 +277,11 @@ public class GuiScreenSub extends GuiScreen implements IVanillaGUI {
 	}
 	
 	@Override
+	public void sendChatMessage(String msg) {
+		this.sendChatMessage(msg, true);
+	}
+	
+	@Override
 	public int getGuiLeft() {
 		return guiLeft;
 	}

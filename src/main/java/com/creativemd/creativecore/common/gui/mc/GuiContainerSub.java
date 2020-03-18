@@ -281,4 +281,9 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 		if (layers.isEmpty())
 			mc.player.closeScreen();
 	}
+	
+	@Override
+	public void sendChatMessage(String msg) {
+		this.sendChatMessage(msg, true);
+	}
 }
