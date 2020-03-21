@@ -117,9 +117,8 @@ public class GuiTextfield extends GuiFocusControl {
 		if (k < 0 && this.maxLength < this.text.length())
 			k = 0;
 		
-		if (this.text.length() > 0) {
-			s1 = s1 + this.text.substring(0, i);
-		}
+		if (this.text.length() > 0)
+			s1 = s1 + this.text.substring(0, Math.min(i, text.length()));
 		
 		int l;
 		
