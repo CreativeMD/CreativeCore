@@ -60,13 +60,6 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
 			((ICreativeConfig) object).configured();
 	}
 	
-	@Override
-	protected void reset(Side side) {
-		super.reset(side);
-		if (object instanceof ICreativeConfig)
-			((ICreativeConfig) object).configured();
-	}
-	
 	public class ConfigKeyFieldObject extends ConfigKeyField {
 		
 		public ConfigKeyFieldObject(Field field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {

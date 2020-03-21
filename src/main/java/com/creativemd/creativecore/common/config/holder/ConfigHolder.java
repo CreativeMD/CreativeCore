@@ -105,25 +105,23 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 	
 	@Override
 	public void restoreDefault(Side side) {
-		reset(side);
-	}
-	
-	protected void reset(Side side) {
 		for (int i = 0; i < fields.size(); i++) {
 			T key = fields.get(i).value;
 			if (key.is(side) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
-				fields.get(i).value.restoreDefault(side);
+				key.restoreDefault(side);
 		}
 	}
 	
 	@Override
 	public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
-		if (loadDefault)
-			reset(side);
 		for (int i = 0; i < fields.size(); i++) {
 			T field = fields.get(i).value;
-			if (field.is(side) && (!ignoreRestart || !field.requiresRestart) && json.has(field.name))
-				field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+			if (field.is(side) && (!ignoreRestart || !field.requiresRestart))
+				if (json.has(field.name))
+					field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+				else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
+					field.restoreDefault(side);
+				
 		}
 	}
 	
