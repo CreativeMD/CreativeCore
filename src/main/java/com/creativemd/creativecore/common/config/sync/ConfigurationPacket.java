@@ -58,7 +58,7 @@ public class ConfigurationPacket extends CreativeCorePacket {
 	}
 	
 	public static void updateGui(EntityPlayer player) {
-		if (player.openContainer instanceof ContainerSub) {
+		if (player != null && player.openContainer instanceof ContainerSub) {
 			if (((ContainerSub) player.openContainer).gui.isOpen(SubGuiConfig.class) || ((ContainerSub) player.openContainer).gui.isOpen(SubGuiClientSync.class))
 				for (SubGui layer : ((ContainerSub) player.openContainer).gui.getLayers())
 					if (layer instanceof SubGuiConfig) {

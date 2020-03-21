@@ -30,12 +30,14 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent.ServerConnectionFromClientEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -61,10 +63,11 @@ public class ConfigEventHandler {
 	}
 	
 	@SubscribeEvent
-	public void playerLoggedIn(PlayerLoggedInEvent event) {
-		if (!event.player.getServer().isSinglePlayer() || !isOwner(event.player.getServer())) {
-			PacketHandler.sendPacketToPlayer(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (EntityPlayerMP) event.player);
-			PacketHandler.sendPacketToPlayer(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (EntityPlayerMP) event.player);
+	public void playerLoggedIn(ServerConnectionFromClientEvent event) {
+		EntityPlayer player = ((NetHandlerPlayServer) event.getHandler()).player;
+		if (!event.isLocal()) {
+			PacketHandler.sendPacketToPlayer(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (EntityPlayerMP) player);
+			PacketHandler.sendPacketToPlayer(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (EntityPlayerMP) player);
 		}
 	}
 	
