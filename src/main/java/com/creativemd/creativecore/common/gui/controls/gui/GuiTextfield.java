@@ -460,7 +460,7 @@ public class GuiTextfield extends GuiFocusControl {
 		int i = this.enabled ? this.enabledColor : this.disabledColor;
 		int j = this.cursorPosition - this.scrollOffset;
 		int k = this.selEnd - this.scrollOffset;
-		String s = GuiRenderHelper.instance.font.trimStringToWidth(this.text.substring(Math.max(0, this.scrollOffset)), this.getWidth());
+		String s = GuiRenderHelper.instance.font.trimStringToWidth(this.text.substring(Math.min(this.text.length() - 1, this.scrollOffset)), this.getWidth());
 		boolean flag = j >= 0 && j <= s.length();
 		boolean flag1 = this.focused && this.cursorCounter / 6 % 2 == 0 && flag;
 		
