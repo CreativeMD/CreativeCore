@@ -104,11 +104,11 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 	}
 	
 	@Override
-	public void restoreDefault(Side side) {
+	public void restoreDefault(Side side, boolean ignoreRestart) {
 		for (int i = 0; i < fields.size(); i++) {
 			T key = fields.get(i).value;
-			if (key.is(side) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
-				key.restoreDefault(side);
+			if (key.is(side) && (!ignoreRestart || !key.requiresRestart) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
+				key.restoreDefault(side, ignoreRestart);
 		}
 	}
 	
@@ -120,7 +120,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 				if (json.has(field.name))
 					field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
 				else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
-					field.restoreDefault(side);
+					field.restoreDefault(side, ignoreRestart);
 				
 		}
 	}

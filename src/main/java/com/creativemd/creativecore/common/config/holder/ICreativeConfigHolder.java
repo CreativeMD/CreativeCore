@@ -27,7 +27,7 @@ public interface ICreativeConfigHolder {
 	
 	public boolean isDefault(Side side);
 	
-	public void restoreDefault(Side side);
+	public void restoreDefault(Side side, boolean ignoreRestart);
 	
 	public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side);
 	

@@ -64,9 +64,9 @@ public abstract class ConfigKey {
 		return checkEqual(defaultValue, value);
 	}
 	
-	public void restoreDefault(Side side) {
+	public void restoreDefault(Side side, boolean ignoreRestart) {
 		if (defaultValue instanceof ICreativeConfigHolder)
-			((ICreativeConfigHolder) defaultValue).restoreDefault(side);
+			((ICreativeConfigHolder) defaultValue).restoreDefault(side, ignoreRestart);
 		else
 			set(defaultValue);
 	}

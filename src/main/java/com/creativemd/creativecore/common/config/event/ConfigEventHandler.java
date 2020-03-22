@@ -222,7 +222,7 @@ public class ConfigEventHandler {
 					LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
 				}
 			} else
-				holder.restoreDefault(side);
+				holder.restoreDefault(side, false);
 		}
 	}
 	

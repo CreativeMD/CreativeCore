@@ -360,7 +360,7 @@ public abstract class ConfigTypeConveration<T> {
 				if (element.isJsonObject())
 					defaultValue.load(loadDefault, ignoreRestart, (JsonObject) element, side);
 				else
-					defaultValue.restoreDefault(side);
+					defaultValue.restoreDefault(side, ignoreRestart);
 				return defaultValue;
 			}
 			
@@ -400,7 +400,7 @@ public abstract class ConfigTypeConveration<T> {
 				if (element.isJsonObject())
 					defaultValue.load(loadDefault, ignoreRestart, (JsonObject) element, side);
 				else
-					defaultValue.restoreDefault(side);
+					defaultValue.restoreDefault(side, ignoreRestart);
 				return defaultValue;
 			}
 			
