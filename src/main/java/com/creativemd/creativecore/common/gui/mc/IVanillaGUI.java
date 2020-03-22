@@ -35,5 +35,5 @@ public interface IVanillaGUI {
 	
 	public void onLayerClosed();
 	
-	public void sendChatMessage(String msg);
+	public void sendChat(String msg);
 }

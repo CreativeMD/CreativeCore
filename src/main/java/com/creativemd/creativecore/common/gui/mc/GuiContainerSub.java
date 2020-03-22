@@ -283,7 +283,7 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
 	}
 	
 	@Override
-	public void sendChatMessage(String msg) {
-		this.sendChatMessage(msg, true);
+	public void sendChat(String msg) {
+		this.sendChatMessage(msg);
 	}
 }
