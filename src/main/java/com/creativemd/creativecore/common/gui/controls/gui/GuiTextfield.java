@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.math.MathHelper;
 
 public class GuiTextfield extends GuiFocusControl {
 	
@@ -118,7 +119,7 @@ public class GuiTextfield extends GuiFocusControl {
 			k = 0;
 		
 		if (this.text.length() > 0)
-			s1 = s1 + this.text.substring(0, Math.min(i, text.length()));
+			s1 = s1 + this.text.substring(0, i);
 		
 		int l;
 		
@@ -236,56 +237,33 @@ public class GuiTextfield extends GuiFocusControl {
 	public void setSelectionPos(int p_146199_1_) {
 		int j = this.text.length();
 		
-		if (p_146199_1_ > j) {
-			p_146199_1_ = j;
-		}
-		
-		if (p_146199_1_ < 0) {
-			p_146199_1_ = 0;
-		}
-		
+		p_146199_1_ = MathHelper.clamp(p_146199_1_, 0, j);
 		this.selEnd = p_146199_1_;
 		
 		if (GuiRenderHelper.instance.font != null) {
-			if (this.scrollOffset > j) {
+			if (this.scrollOffset > j)
 				this.scrollOffset = j;
-			}
 			
 			int k = this.getWidth();
 			String s = GuiRenderHelper.instance.font.trimStringToWidth(this.text.substring(this.scrollOffset), k);
 			int l = s.length() + this.scrollOffset;
 			
-			if (p_146199_1_ == this.scrollOffset) {
+			if (p_146199_1_ == this.scrollOffset)
 				this.scrollOffset -= GuiRenderHelper.instance.font.trimStringToWidth(this.text, k, true).length();
-			}
 			
-			if (p_146199_1_ > l) {
+			if (p_146199_1_ > l)
 				this.scrollOffset += p_146199_1_ - l;
-			} else if (p_146199_1_ <= this.scrollOffset) {
+			else if (p_146199_1_ <= this.scrollOffset)
 				this.scrollOffset -= this.scrollOffset - p_146199_1_;
-			}
 			
-			if (this.scrollOffset < 0) {
-				this.scrollOffset = 0;
-			}
-			
-			if (this.scrollOffset > j) {
-				this.scrollOffset = j;
-			}
+			this.scrollOffset = MathHelper.clamp(scrollOffset, 0, j);
 		}
 	}
 	
 	public void setCursorPosition(int pos) {
 		this.cursorPosition = pos;
-		int j = this.text.length();
 		
-		if (this.cursorPosition < 0) {
-			this.cursorPosition = 0;
-		}
-		
-		if (this.cursorPosition > j) {
-			this.cursorPosition = j;
-		}
+		this.cursorPosition = MathHelper.clamp(cursorPosition, 0, this.text.length());
 		
 		this.setSelectionPos(this.cursorPosition);
 	}
@@ -431,13 +409,11 @@ public class GuiTextfield extends GuiFocusControl {
 			endY = j;
 		}
 		
-		if (endX > this.posX + this.width) {
+		if (endX > this.posX + this.width)
 			endX = this.posX + this.width;
-		}
 		
-		if (startX > this.posX + this.width) {
+		if (startX > this.posX + this.width)
 			startX = this.posX + this.width;
-		}
 		
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder vertexbuffer = tessellator.getBuffer();
@@ -457,10 +433,12 @@ public class GuiTextfield extends GuiFocusControl {
 	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
+		this.scrollOffset = MathHelper.clamp(scrollOffset, 0, this.text.length());
+		
 		int i = this.enabled ? this.enabledColor : this.disabledColor;
 		int j = this.cursorPosition - this.scrollOffset;
 		int k = this.selEnd - this.scrollOffset;
-		String s = GuiRenderHelper.instance.font.trimStringToWidth(this.text.substring(Math.min(this.text.length() - 1, this.scrollOffset)), this.getWidth());
+		String s = GuiRenderHelper.instance.font.trimStringToWidth(this.text.substring(this.scrollOffset), this.getWidth());
 		boolean flag = j >= 0 && j <= s.length();
 		boolean flag1 = this.focused && this.cursorCounter / 6 % 2 == 0 && flag;
 		
@@ -468,9 +446,8 @@ public class GuiTextfield extends GuiFocusControl {
 		int i1 = (this.height - getContentOffset() - GuiRenderHelper.instance.getFontHeight()) / 2;
 		int j1 = l;
 		
-		if (k > s.length()) {
+		if (k > s.length())
 			k = s.length();
-		}
 		
 		if (s.length() > 0) {
 			String s1 = flag ? s.substring(0, j) : s;
