@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -59,6 +58,7 @@ public class BufferBuilderUtils {
 				//System.out.println("Made buffer grow buffer: Old size " + Integer.valueOf(i) + " bytes, new size " + Integer.valueOf(j) + " bytes.");
 				//LOGGER.debug("Needed to grow BufferBuilder buffer: Old size {} bytes, new size {} bytes.", Integer.valueOf(i), Integer.valueOf(j));
 				int k = intBuffer.position();
+				
 				ByteBuffer byteBuffer = GLAllocation.createDirectByteBuffer(j);
 				oldByteBuffer.position(0);
 				byteBuffer.put(oldByteBuffer);
@@ -73,7 +73,7 @@ public class BufferBuilderUtils {
 				rawShortBufferField.set(builder, byteBuffer.asShortBuffer());
 				((ShortBuffer) rawShortBufferField.get(builder)).position(k << 1);
 				
-				if (FMLClientHandler.instance().hasOptifine()) {
+				/*if (FMLClientHandler.instance().hasOptifine()) {
 					TextureAtlasSprite[] sprites = (TextureAtlasSprite[]) quadSpritesField.get(builder);
 					if (sprites != null) {
 						int quadSize = getBufferQuadSize(builder);
@@ -82,7 +82,7 @@ public class BufferBuilderUtils {
 						System.arraycopy(sprites, 0, newQuadSprites, 0, Math.min(sprites.length, newQuadSprites.length));
 						quadSpritesPrevField.set(builder, null);
 					}
-				}
+				}*/
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
