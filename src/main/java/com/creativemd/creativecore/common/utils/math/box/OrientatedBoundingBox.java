@@ -462,11 +462,11 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 	}
 	
 	public double getMaxTranslated(Axis axis) {
-		return getMax(axis) + RotationUtils.get(axis, origin.translation());
+		return getMax(axis) + origin.translationCombined(axis);
 	}
 	
 	public double getMinTranslated(Axis axis) {
-		return getMin(axis) + RotationUtils.get(axis, origin.translation());
+		return getMin(axis) + origin.translationCombined(axis);
 	}
 	
 	public double calculateOffset(AxisAlignedBB other, Axis axis, double offset) {

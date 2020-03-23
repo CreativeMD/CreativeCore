@@ -5,6 +5,7 @@ import javax.vecmath.Vector3d;
 
 import org.lwjgl.opengl.GL11;
 
+import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
@@ -12,6 +13,7 @@ import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
@@ -74,6 +76,10 @@ public interface IVecOrigin {
 	public void tick();
 	
 	public IVecOrigin getParent();
+	
+	public default double translationCombined(Axis axis) {
+		return RotationUtils.get(axis, translation());
+	}
 	
 	public default void transformPointToWorld(Vector3d vec) {
 		vec.sub(center());

@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.utils.math.vec;
 import javax.vecmath.Vector3d;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumFacing.Axis;
 
 public class ChildVecOrigin extends VecOrigin {
 	
@@ -30,6 +31,11 @@ public class ChildVecOrigin extends VecOrigin {
 	public void setupRenderingInternal(Entity entity, float partialTicks) {
 		parent.setupRenderingInternal(entity, partialTicks);
 		super.setupRenderingInternal(entity, partialTicks);
+	}
+	
+	@Override
+	public double translationCombined(Axis axis) {
+		return parent.translationCombined(axis) + super.translationCombined(axis);
 	}
 	
 	@Override
