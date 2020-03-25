@@ -1,10 +1,12 @@
-package team.creative.creativecore.common.config;
+package team.creative.creativecore.common.config.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
@@ -13,33 +15,31 @@ public @interface CreativeConfig {
 	
 	String name() default "";
 	
+	ConfigSynchronization type() default ConfigSynchronization.UNIVERSAL;
+	
+	boolean requiresRestart() default false;
+	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.FIELD })
-	public @interface IntRange {
+	@interface IntRange {
 		
 		public int min();
 		
 		public int max();
 		
+		public boolean slider() default true;
+		
 	}
 	
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(value = { ElementType.FIELD })
-	public @interface DoubleRange {
+	@interface DecimalRange {
 		
 		public double min();
 		
 		public double max();
 		
-	}
-	
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(value = { ElementType.FIELD })
-	public @interface FloatRange {
-		
-		public float min();
-		
-		public float max();
+		public boolean slider() default true;
 		
 	}
 	

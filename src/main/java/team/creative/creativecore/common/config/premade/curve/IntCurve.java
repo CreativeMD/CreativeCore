@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.config.premade.curve;
 
-import team.creative.creativecore.common.config.CreativeConfig;
-import team.creative.creativecore.common.config.ICreativeConfig;
+import team.creative.creativecore.common.config.api.CreativeConfig;
+import team.creative.creativecore.common.config.api.ICreativeConfig;
 
 public class IntCurve implements ICreativeConfig, Curve {
 	

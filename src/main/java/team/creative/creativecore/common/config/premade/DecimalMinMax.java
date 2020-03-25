@@ -2,8 +2,8 @@ package team.creative.creativecore.common.config.premade;
 
 import java.util.Random;
 
-import team.creative.creativecore.common.config.CreativeConfig;
-import team.creative.creativecore.common.config.ICreativeConfig;
+import team.creative.creativecore.common.config.api.CreativeConfig;
+import team.creative.creativecore.common.config.api.ICreativeConfig;
 
 public class DecimalMinMax implements ICreativeConfig {
 	
@@ -30,6 +30,10 @@ public class DecimalMinMax implements ICreativeConfig {
 			this.min = max;
 			this.max = temp;
 		}
+	}
+	
+	public double spanLength() {
+		return max - min;
 	}
 	
 }

@@ -2,8 +2,8 @@ package team.creative.creativecore.common.config.premade.curve;
 
 import java.util.Random;
 
-import team.creative.creativecore.common.config.CreativeConfig;
-import team.creative.creativecore.common.config.ICreativeConfig;
+import team.creative.creativecore.common.config.api.CreativeConfig;
+import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.premade.DecimalMinMax;
 import team.creative.creativecore.common.config.premade.IntMinMax;
 

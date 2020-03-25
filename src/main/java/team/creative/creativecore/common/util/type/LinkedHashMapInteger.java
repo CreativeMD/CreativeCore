@@ -1,15 +1,16 @@
-package team.creative.creativecore.common.utils.type;
+package team.creative.creativecore.common.util.type;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-public class HashMapInteger<K> extends HashMap<K, Integer> {
+public class LinkedHashMapInteger<K> extends LinkedHashMap<K, Integer> {
 	
-	public HashMapInteger() {
+	public LinkedHashMapInteger() {
 		super();
 	}
 	
-	public HashMapInteger(Map<? extends K, ? extends Integer> paramMap) {
+	public LinkedHashMapInteger(Map<? extends K, ? extends Integer> paramMap) {
 		super(paramMap);
 	}
 	

@@ -1,16 +1,10 @@
 package team.creative.creativecore;
 
-import team.creative.creativecore.common.config.CreativeConfig;
-import team.creative.creativecore.common.config.ICreativeConfig;
+import team.creative.creativecore.common.config.api.CreativeConfig;
 
-public class CreativeCoreConfig implements ICreativeConfig {
+public class CreativeCoreConfig {
 	
 	@CreativeConfig
 	public boolean fixInventoryTab = true;
-	
-	@Override
-	public void configured() {
-		
-	}
 	
 }

@@ -1,15 +1,16 @@
-package team.creative.creativecore.common.utils.type;
+package team.creative.creativecore.common.util.type;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-public class HashMapFloat<K> extends HashMap<K, Float> {
+public class LinkedHashMapFloat<K> extends LinkedHashMap<K, Float> {
 	
-	public HashMapFloat() {
+	public LinkedHashMapFloat() {
 		super();
 	}
 	
-	public HashMapFloat(Map<? extends K, ? extends Float> paramMap) {
+	public LinkedHashMapFloat(Map<? extends K, ? extends Float> paramMap) {
 		super(paramMap);
 	}
 	
