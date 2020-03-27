@@ -16,6 +16,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -23,6 +24,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class CreativeNetwork {
 	
+	@OnlyIn(value = Dist.CLIENT)
 	private static PlayerEntity getClientPlayer() {
 		return Minecraft.getInstance().player;
 	}

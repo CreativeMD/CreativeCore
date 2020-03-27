@@ -4,7 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -28,9 +31,10 @@ public class CreativeCore {
 	
 	public CreativeCore() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client);
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
 	}
 	
+	@OnlyIn(value = Dist.CLIENT)
 	private void client(final FMLClientSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(CreativeCoreClient.class);
 		CreativeCoreClient.init(event);
