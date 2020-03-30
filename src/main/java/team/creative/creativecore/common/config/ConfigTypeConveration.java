@@ -80,11 +80,6 @@ public abstract class ConfigTypeConveration<T> {
 			public JsonElement writeElement(Boolean value, Boolean defaultValue, boolean saveDefault) {
 				return new JsonPrimitive(value);
 			}
-			
-			@Override
-			public Boolean set(ConfigKeyField key, Boolean value) {
-				return value;
-			}
 		};
 		registerType(boolean.class, booleanType);
 		registerType(Boolean.class, booleanType);
@@ -222,11 +217,6 @@ public abstract class ConfigTypeConveration<T> {
 			@Override
 			public JsonElement writeElement(String value, String defaultValue, boolean saveDefault) {
 				return new JsonPrimitive(value);
-			}
-			
-			@Override
-			public String set(ConfigKeyField key, String value) {
-				return value;
 			}
 		});
 		
@@ -379,7 +369,7 @@ public abstract class ConfigTypeConveration<T> {
 	}
 	
 	public T set(ConfigKeyField key, T value) {
-		return null;
+		return value;
 	}
 	
 	public static Object parseObject(ICreativeConfigHolder parent, ConfigSynchronization synchronization, String key, Object object) {

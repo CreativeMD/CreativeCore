@@ -129,7 +129,7 @@ public abstract class CreativeIngredient {
 			public CreativeIngredient readElement(CreativeIngredient defaultValue, boolean loadDefault, JsonElement element) {
 				if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
 					try {
-						return parse(JsonToNBT.getTagFromJson(element.getAsString()));
+						return CreativeIngredient.read(JsonToNBT.getTagFromJson(element.getAsString()));
 					} catch (CommandSyntaxException e) {
 						e.printStackTrace();
 					}
