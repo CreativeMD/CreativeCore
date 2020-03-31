@@ -2,9 +2,11 @@
 
 ## Dependants
 - LittleTiles
-- IGCM (OpticManager)
+- OpticManager
 - ItemPhysic Full
 - OnlinePictureFrame
+- EnhancedVisuals
+- AmbientSounds
 
 ## Features
 - Gui-Api
