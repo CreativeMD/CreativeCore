@@ -26,7 +26,7 @@ public class CreativeCore {
 	public static final String MODID = "creativecore";
 	public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
 	public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
-	public static CreativeNetwork NETWORK;
+	public static final CreativeNetwork NETWORK = new CreativeNetwork("1.0", LOGGER, new ResourceLocation(CreativeCore.MODID, "main"));
 	public static ConfigEventHandler CONFIG_HANDLER;
 	
 	public CreativeCore() {
@@ -41,7 +41,6 @@ public class CreativeCore {
 	}
 	
 	private void init(final FMLCommonSetupEvent event) {
-		NETWORK = new CreativeNetwork("1.0", LOGGER, new ResourceLocation(CreativeCore.MODID, "main"));
 		NETWORK.registerType(ConfigurationChangePacket.class);
 		NETWORK.registerType(ConfigurationClientPacket.class);
 		NETWORK.registerType(ConfigurationPacket.class);

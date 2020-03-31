@@ -40,7 +40,7 @@ public class CreativeNetwork {
 		this.version = version;
 		this.logger = logger;
 		this.instance = NetworkRegistry.newSimpleChannel(location, () -> this.version, this.version::equals, this.version::equals);
-		this.logger.debug("Created network " + location + "!");
+		this.logger.debug("Created network " + location + "");
 	}
 	
 	public <T extends CreativePacket> void registerType(Class<T> classType) {
@@ -50,7 +50,7 @@ public class CreativeNetwork {
 		}, (buffer) -> {
 			return handler.read(buffer);
 		}, (message, ctx) -> {
-			message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender());
+			ctx.get().enqueueWork(() -> message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender()));
 			ctx.get().setPacketHandled(true);
 		});
 		id++;
