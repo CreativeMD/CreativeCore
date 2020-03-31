@@ -355,10 +355,10 @@ public class CreativeFieldParserEntry {
 						throw new RuntimeException("Invalid generic type");
 				} else
 					throw new RuntimeException("Missing generic type");
-				int length = Array.getLength(content);
+				int length = ((List) content).size();
 				buffer.writeInt(length);
 				for (int i = 0; i < length; i++)
-					subParser.write(Array.get(content, i), subClass, subType, buffer);
+					subParser.write(((List) content).get(i), subClass, subType, buffer);
 			}
 			
 			@Override
