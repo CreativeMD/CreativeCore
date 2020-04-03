@@ -27,6 +27,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.client.Minecraft;
@@ -66,8 +67,10 @@ public class ConfigEventHandler {
 	public void playerLoggedIn(ServerConnectionFromClientEvent event) {
 		EntityPlayer player = ((NetHandlerPlayServer) event.getHandler()).player;
 		if (!event.isLocal()) {
-			PacketHandler.sendPacketToPlayer(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (EntityPlayerMP) player);
-			PacketHandler.sendPacketToPlayer(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (EntityPlayerMP) player);
+			PacketHandler.sendPacketToPlayer(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT),
+			    (EntityPlayerMP) player);
+			PacketHandler.sendPacketToPlayer(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false),
+			    (EntityPlayerMP) player);
 		}
 	}
 	
@@ -214,7 +217,12 @@ public class ConfigEventHandler {
 			if (config.exists()) {
 				try {
 					FileReader reader = new FileReader(config);
-					JsonObject json = GSON.fromJson(reader, JsonObject.class);
+					JsonObject json = null;
+					try {
+						json = GSON.fromJson(reader, JsonObject.class);
+					} catch (JsonSyntaxException e) {
+						e.printStackTrace();
+					}
 					if (json == null)
 						json = new JsonObject();
 					holder.load(true, false, json, side);
