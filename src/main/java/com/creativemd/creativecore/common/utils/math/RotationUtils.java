@@ -90,6 +90,18 @@ public class RotationUtils {
 		return null;
 	}
 	
+	public static BlockPos setValue(BlockPos vec, int value, Axis axis) {
+		switch (axis) {
+		case X:
+			return new BlockPos(value, vec.getY(), vec.getZ());
+		case Y:
+			return new BlockPos(vec.getX(), value, vec.getZ());
+		case Z:
+			return new BlockPos(vec.getX(), vec.getY(), value);
+		}
+		return null;
+	}
+	
 	public static double get(Axis axis, Tuple3d vec) {
 		return get(axis, vec.x, vec.y, vec.z);
 	}
