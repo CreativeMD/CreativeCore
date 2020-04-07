@@ -34,10 +34,7 @@ public class RenderCubeObject extends CubeObject {
 	
 	public static enum EnumSideRender {
 		
-		INSIDE_RENDERED(true, false),
-		INSIDE_NOT_RENDERED(false, false),
-		OUTSIDE_RENDERED(true, true),
-		OUTSIDE_NOT_RENDERD(false, true);
+		INSIDE_RENDERED(true, false), INSIDE_NOT_RENDERED(false, false), OUTSIDE_RENDERED(true, true), OUTSIDE_NOT_RENDERD(false, true);
 		
 		public final boolean shouldBeRendered;
 		public final boolean outside;
@@ -56,6 +53,7 @@ public class RenderCubeObject extends CubeObject {
 	public Object customData = null;
 	
 	public boolean keepVU = false;
+	public boolean allowOverlap = false;
 	
 	private EnumSideRender renderEast = EnumSideRender.INSIDE_RENDERED;
 	private EnumSideRender renderWest = EnumSideRender.INSIDE_RENDERED;
@@ -365,9 +363,12 @@ public class RenderCubeObject extends CubeObject {
 				
 				index = k * quad.getFormat().getIntegerSize();
 				
-				float x = facing.getAxis() == Axis.X ? getVertexInformationPosition(vertex.xIndex) - offset.getX() : MathHelper.clamp(getVertexInformationPosition(vertex.xIndex) - offset.getX(), minX, maxX);
-				float y = facing.getAxis() == Axis.Y ? getVertexInformationPosition(vertex.yIndex) - offset.getY() : MathHelper.clamp(getVertexInformationPosition(vertex.yIndex) - offset.getY(), minY, maxY);
-				float z = facing.getAxis() == Axis.Z ? getVertexInformationPosition(vertex.zIndex) - offset.getZ() : MathHelper.clamp(getVertexInformationPosition(vertex.zIndex) - offset.getZ(), minZ, maxZ);
+				float x = facing.getAxis() == Axis.X || allowOverlap ? getVertexInformationPosition(vertex.xIndex) - offset.getX() : MathHelper.clamp(
+				        getVertexInformationPosition(vertex.xIndex) - offset.getX(), minX, maxX);
+				float y = facing.getAxis() == Axis.Y || allowOverlap ? getVertexInformationPosition(vertex.yIndex) - offset.getY() : MathHelper.clamp(
+				        getVertexInformationPosition(vertex.yIndex) - offset.getY(), minY, maxY);
+				float z = facing.getAxis() == Axis.Z || allowOverlap ? getVertexInformationPosition(vertex.zIndex) - offset.getZ() : MathHelper.clamp(
+				        getVertexInformationPosition(vertex.zIndex) - offset.getZ(), minZ, maxZ);
 				
 				float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
 				float oldY = Float.intBitsToFloat(quad.getVertexData()[index + 1]);
@@ -385,11 +386,15 @@ public class RenderCubeObject extends CubeObject {
 				float uOffset;
 				float vOffset;
 				if (uvInverted) {
-					uOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeU;
-					vOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeV;
+					uOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY,
+					        sizeZ)) * sizeU;
+					vOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY,
+					        sizeZ)) * sizeV;
 				} else {
-					uOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeU;
-					vOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeV;
+					uOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY,
+					        sizeZ)) * sizeU;
+					vOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY,
+					        sizeZ)) * sizeV;
 				}
 				
 				quad.getVertexData()[uvIndex] = Float.floatToRawIntBits(Float.intBitsToFloat(quad.getVertexData()[uvIndex]) - uOffset);
