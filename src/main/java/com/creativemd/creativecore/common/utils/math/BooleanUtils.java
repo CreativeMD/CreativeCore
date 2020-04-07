@@ -23,4 +23,28 @@ public class BooleanUtils {
 		return count;
 	}
 	
+	public static void reset(boolean[] state) {
+		for (int i = 0; i < state.length; i++)
+			state[i] = false;
+	}
+	
+	public static boolean any(boolean[] state) {
+		for (int i = 0; i < state.length; i++)
+			if (state[i])
+				return true;
+		return false;
+	}
+	
+	public static void or(boolean[] state, boolean[] state2) {
+		for (int i = 0; i < state.length; i++)
+			state[i] = state[i] || state2[i];
+	}
+	
+	public static boolean equals(boolean[] state, boolean[] state2) {
+		for (int i = 0; i < state.length; i++)
+			if (state[i] != state2[i])
+				return false;
+		return true;
+	}
+	
 }
