@@ -1,16 +1,19 @@
 package com.creativemd.creativecore.common.utils.math.box;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.common.utils.math.Rotation;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.google.common.annotations.VisibleForTesting;
 
 import net.minecraft.client.renderer.EnumFaceDirection.VertexInformation;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.fml.relauncher.Side;
@@ -361,4 +364,88 @@ public class CubeObject {
 			cube.maxZ = (float) min.z;
 		}
 	}
+	
+	@Nullable
+	public RayTraceResult calculateIntercept(Vec3d vecA, Vec3d vecB) {
+		Vec3d vec3d = this.collideWithXPlane(this.minX, vecA, vecB);
+		EnumFacing enumfacing = EnumFacing.WEST;
+		Vec3d vec3d1 = this.collideWithXPlane(this.maxX, vecA, vecB);
+		
+		if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) {
+			vec3d = vec3d1;
+			enumfacing = EnumFacing.EAST;
+		}
+		
+		vec3d1 = this.collideWithYPlane(this.minY, vecA, vecB);
+		
+		if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) {
+			vec3d = vec3d1;
+			enumfacing = EnumFacing.DOWN;
+		}
+		
+		vec3d1 = this.collideWithYPlane(this.maxY, vecA, vecB);
+		
+		if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) {
+			vec3d = vec3d1;
+			enumfacing = EnumFacing.UP;
+		}
+		
+		vec3d1 = this.collideWithZPlane(this.minZ, vecA, vecB);
+		
+		if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) {
+			vec3d = vec3d1;
+			enumfacing = EnumFacing.NORTH;
+		}
+		
+		vec3d1 = this.collideWithZPlane(this.maxZ, vecA, vecB);
+		
+		if (vec3d1 != null && this.isClosest(vecA, vec3d, vec3d1)) {
+			vec3d = vec3d1;
+			enumfacing = EnumFacing.SOUTH;
+		}
+		
+		return vec3d == null ? null : new RayTraceResult(vec3d, enumfacing);
+	}
+	
+	@VisibleForTesting
+	boolean isClosest(Vec3d p_186661_1_, @Nullable Vec3d p_186661_2_, Vec3d p_186661_3_) {
+		return p_186661_2_ == null || p_186661_1_.squareDistanceTo(p_186661_3_) < p_186661_1_.squareDistanceTo(p_186661_2_);
+	}
+	
+	@Nullable
+	@VisibleForTesting
+	Vec3d collideWithXPlane(double p_186671_1_, Vec3d p_186671_3_, Vec3d p_186671_4_) {
+		Vec3d vec3d = p_186671_3_.getIntermediateWithXValue(p_186671_4_, p_186671_1_);
+		return vec3d != null && this.intersectsWithYZ(vec3d) ? vec3d : null;
+	}
+	
+	@Nullable
+	@VisibleForTesting
+	Vec3d collideWithYPlane(double p_186663_1_, Vec3d p_186663_3_, Vec3d p_186663_4_) {
+		Vec3d vec3d = p_186663_3_.getIntermediateWithYValue(p_186663_4_, p_186663_1_);
+		return vec3d != null && this.intersectsWithXZ(vec3d) ? vec3d : null;
+	}
+	
+	@Nullable
+	@VisibleForTesting
+	Vec3d collideWithZPlane(double p_186665_1_, Vec3d p_186665_3_, Vec3d p_186665_4_) {
+		Vec3d vec3d = p_186665_3_.getIntermediateWithZValue(p_186665_4_, p_186665_1_);
+		return vec3d != null && this.intersectsWithXY(vec3d) ? vec3d : null;
+	}
+	
+	@VisibleForTesting
+	public boolean intersectsWithYZ(Vec3d vec) {
+		return vec.y >= this.minY && vec.y <= this.maxY && vec.z >= this.minZ && vec.z <= this.maxZ;
+	}
+	
+	@VisibleForTesting
+	public boolean intersectsWithXZ(Vec3d vec) {
+		return vec.x >= this.minX && vec.x <= this.maxX && vec.z >= this.minZ && vec.z <= this.maxZ;
+	}
+	
+	@VisibleForTesting
+	public boolean intersectsWithXY(Vec3d vec) {
+		return vec.x >= this.minX && vec.x <= this.maxX && vec.y >= this.minY && vec.y <= this.maxY;
+	}
+	
 }
