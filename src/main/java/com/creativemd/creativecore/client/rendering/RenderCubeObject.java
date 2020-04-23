@@ -177,6 +177,11 @@ public class RenderCubeObject extends CubeObject {
 		return this;
 	}
 	
+	public RenderCubeObject setKeepUV(boolean keep) {
+		this.keepVU = keep;
+		return this;
+	}
+	
 	public IBlockState getModelState(IBlockState state, IBlockAccess world, BlockPos pos) {
 		return block.getExtendedState(state, world, pos);
 	}
@@ -363,12 +368,9 @@ public class RenderCubeObject extends CubeObject {
 				
 				index = k * quad.getFormat().getIntegerSize();
 				
-				float x = facing.getAxis() == Axis.X || allowOverlap ? getVertexInformationPosition(vertex.xIndex) - offset.getX() : MathHelper.clamp(
-				        getVertexInformationPosition(vertex.xIndex) - offset.getX(), minX, maxX);
-				float y = facing.getAxis() == Axis.Y || allowOverlap ? getVertexInformationPosition(vertex.yIndex) - offset.getY() : MathHelper.clamp(
-				        getVertexInformationPosition(vertex.yIndex) - offset.getY(), minY, maxY);
-				float z = facing.getAxis() == Axis.Z || allowOverlap ? getVertexInformationPosition(vertex.zIndex) - offset.getZ() : MathHelper.clamp(
-				        getVertexInformationPosition(vertex.zIndex) - offset.getZ(), minZ, maxZ);
+				float x = facing.getAxis() == Axis.X || allowOverlap ? getVertexInformationPosition(vertex.xIndex) - offset.getX() : MathHelper.clamp(getVertexInformationPosition(vertex.xIndex) - offset.getX(), minX, maxX);
+				float y = facing.getAxis() == Axis.Y || allowOverlap ? getVertexInformationPosition(vertex.yIndex) - offset.getY() : MathHelper.clamp(getVertexInformationPosition(vertex.yIndex) - offset.getY(), minY, maxY);
+				float z = facing.getAxis() == Axis.Z || allowOverlap ? getVertexInformationPosition(vertex.zIndex) - offset.getZ() : MathHelper.clamp(getVertexInformationPosition(vertex.zIndex) - offset.getZ(), minZ, maxZ);
 				
 				float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
 				float oldY = Float.intBitsToFloat(quad.getVertexData()[index + 1]);
@@ -386,15 +388,11 @@ public class RenderCubeObject extends CubeObject {
 				float uOffset;
 				float vOffset;
 				if (uvInverted) {
-					uOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY,
-					        sizeZ)) * sizeU;
-					vOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY,
-					        sizeZ)) * sizeV;
+					uOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeU;
+					vOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeV;
 				} else {
-					uOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY,
-					        sizeZ)) * sizeU;
-					vOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY,
-					        sizeZ)) * sizeV;
+					uOffset = ((RotationUtils.getUFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(facing, x, y, z)) / RotationUtils.getUFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeU;
+					vOffset = ((RotationUtils.getVFromFacing(facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(facing, x, y, z)) / RotationUtils.getVFromFacing(facing, sizeX, sizeY, sizeZ)) * sizeV;
 				}
 				
 				quad.getVertexData()[uvIndex] = Float.floatToRawIntBits(Float.intBitsToFloat(quad.getVertexData()[uvIndex]) - uOffset);
