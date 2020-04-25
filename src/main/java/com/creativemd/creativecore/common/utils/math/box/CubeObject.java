@@ -76,6 +76,24 @@ public class CubeObject {
 		this.maxZ -= vec.z;
 	}
 	
+	public void add(Vec3i vec) {
+		this.minX += vec.getX();
+		this.minY += vec.getY();
+		this.minZ += vec.getZ();
+		this.maxX += vec.getX();
+		this.maxY += vec.getY();
+		this.maxZ += vec.getZ();
+	}
+	
+	public void sub(Vec3i vec) {
+		this.minX -= vec.getX();
+		this.minY -= vec.getY();
+		this.minZ -= vec.getZ();
+		this.maxX -= vec.getX();
+		this.maxY -= vec.getY();
+		this.maxZ -= vec.getZ();
+	}
+	
 	public Vec3d getSize() {
 		return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
 	}

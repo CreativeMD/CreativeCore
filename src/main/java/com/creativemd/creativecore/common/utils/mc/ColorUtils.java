@@ -84,6 +84,8 @@ public class ColorUtils {
 	public static final int RED = -65536;
 	public static final int GREEN = -16711936;
 	public static final int BLUE = -16776961;
+	public static final int LIGHT_BLUE = -16740609;
+	public static final int ORANGE = -23296;
 	public static final int YELLOW = -256;
 	public static final int CYAN = 16711681;
 	public static final int MAGENTA = -65281;
@@ -110,7 +112,7 @@ public class ColorUtils {
 	}
 	
 	public static int RGBAToInt(Color color) {
-		return ((int) color.getAlpha() & 255) << 24 | ((int) color.getRed() & 255) << 16 | ((int) color.getGreen() & 255) << 8 | (int) color.getBlue() & 255;
+		return (color.getAlpha() & 255) << 24 | (color.getRed() & 255) << 16 | (color.getGreen() & 255) << 8 | color.getBlue() & 255;
 	}
 	
 	public static Color IntToRGBA(int color) {
@@ -122,20 +124,20 @@ public class ColorUtils {
 	}
 	
 	public static int RGBToInt(Vec3i color) {
-		return ((int) 255 & 255) << 24 | ((int) color.getX() & 255) << 16 | ((int) color.getY() & 255) << 8 | (int) color.getZ() & 255;
+		return (255 & 255) << 24 | (color.getX() & 255) << 16 | (color.getY() & 255) << 8 | color.getZ() & 255;
 	}
 	
 	public static Vec3i IntToRGB(int color) {
-		float r = (float) (color >> 16 & 255);
-		float g = (float) (color >> 8 & 255);
-		float b = (float) (color & 255);
+		float r = color >> 16 & 255;
+		float g = color >> 8 & 255;
+		float b = color & 255;
 		return new Vec3i(r, g, b);
 	}
 	
 	public static Vec3d IntToVec(int color) {
-		float r = (float) (color >> 16 & 255);
-		float g = (float) (color >> 8 & 255);
-		float b = (float) (color & 255);
+		float r = color >> 16 & 255;
+		float g = color >> 8 & 255;
+		float b = color & 255;
 		return new Vec3d(r / 255F, g / 255F, b / 255F);
 	}
 	

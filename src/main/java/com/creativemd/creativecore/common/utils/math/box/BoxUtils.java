@@ -256,6 +256,7 @@ public class BoxUtils {
 	}
 	
 	public static enum BoxCorner {
+		
 		EUN(EnumFacing.EAST, EnumFacing.UP, EnumFacing.NORTH),
 		EUS(EnumFacing.EAST, EnumFacing.UP, EnumFacing.SOUTH),
 		EDN(EnumFacing.EAST, EnumFacing.DOWN, EnumFacing.NORTH),
@@ -321,7 +322,9 @@ public class BoxUtils {
 			int normalX = x.getAxisDirection().getOffset();
 			int normalY = y.getAxisDirection().getOffset();
 			int normalZ = z.getAxisDirection().getOffset();
-			return getCorner(EnumFacing.getFacingFromAxis(rotation.getMatrix().getX(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.X), EnumFacing.getFacingFromAxis(rotation.getMatrix().getY(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Y), EnumFacing.getFacingFromAxis(rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Z));
+			return getCorner(EnumFacing.getFacingFromAxis(rotation.getMatrix().getX(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.X),
+			        EnumFacing.getFacingFromAxis(rotation.getMatrix().getY(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Y),
+			        EnumFacing.getFacingFromAxis(rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Z));
 		}
 		
 		public static BoxCorner getCornerUnsorted(EnumFacing facing) {

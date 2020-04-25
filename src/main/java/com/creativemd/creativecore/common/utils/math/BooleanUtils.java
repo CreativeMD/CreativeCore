@@ -47,4 +47,20 @@ public class BooleanUtils {
 		return true;
 	}
 	
+	public static int boolToInt(boolean[] state) {
+		if (state.length > 32)
+			throw new RuntimeException("Cannot convert more than 32 bits to an integer");
+		int n = 0;
+		for (int i = 0; i < state.length; i++)
+			n = (n << 1) | (state[i] ? 1 : 0);
+		return n;
+	}
+	
+	public static void intToBool(int number, boolean[] state) {
+		if (state.length > 32)
+			throw new RuntimeException("More than 32 bits cannot be stored in an integer");
+		for (int i = 0; i < state.length; i++)
+			state[state.length - 1 - i] = (1 << i & number) != 0;
+	}
+	
 }
