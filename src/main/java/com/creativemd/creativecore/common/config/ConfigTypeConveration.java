@@ -156,7 +156,7 @@ public abstract class ConfigTypeConveration<T> {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-				
+			
 			}
 			
 			@Override
@@ -372,7 +372,7 @@ public abstract class ConfigTypeConveration<T> {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-				
+			
 			}
 			
 			@Override
@@ -392,7 +392,7 @@ public abstract class ConfigTypeConveration<T> {
 				return null;
 			}
 		});
-		
+			
 		registerType(ConfigHolderDynamic.class, new ConfigTypeConveration<ConfigHolderDynamic>() {
 			
 			@Override
@@ -412,7 +412,7 @@ public abstract class ConfigTypeConveration<T> {
 			@Override
 			@SideOnly(Side.CLIENT)
 			public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-				
+			
 			}
 			
 			@Override
@@ -432,7 +432,7 @@ public abstract class ConfigTypeConveration<T> {
 				return null;
 			}
 		});
-		
+			
 		registerSpecialType((x) -> {
 			if (x.isArray()) {
 				if (has(x.getComponentType()))
@@ -586,7 +586,7 @@ public abstract class ConfigTypeConveration<T> {
 			}
 		});
 		
-		registerSpecialType((x) -> x == List.class || x == ArrayList.class, new ConfigTypeConveration<List>() {
+		registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeConveration<List>() {
 			
 			@Override
 			public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
