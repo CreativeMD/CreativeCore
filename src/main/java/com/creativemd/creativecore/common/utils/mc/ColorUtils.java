@@ -91,6 +91,22 @@ public class ColorUtils {
 	public static final int MAGENTA = -65281;
 	public static final int BLACK = -16777216;
 	
+	public static float getAlphaDecimal(int color) {
+		return (color >> 24 & 255) / 255F;
+	}
+	
+	public static float getRedDecimal(int color) {
+		return (color >> 16 & 255) / 255F;
+	}
+	
+	public static float getGreenDecimal(int color) {
+		return (color >> 8 & 255) / 255F;
+	}
+	
+	public static float getBlueDecimal(int color) {
+		return (color & 255) / 255F;
+	}
+	
 	public static int getAlpha(int color) {
 		return color >> 24 & 255;
 	}

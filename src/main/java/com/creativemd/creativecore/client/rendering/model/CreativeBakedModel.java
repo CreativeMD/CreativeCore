@@ -10,7 +10,7 @@ import javax.vecmath.Vector3f;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderBox;
 import com.creativemd.creativecore.common.block.TileEntityState;
 import com.google.common.collect.ImmutableMap;
 
@@ -75,11 +75,11 @@ public class CreativeBakedModel implements IBakedModel {
 		return getBlockQuads(state, side, rand, false);
 	}
 	
-	public static List<BakedQuad> getBlockQuads(List<? extends RenderCubeObject> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
+	public static List<BakedQuad> getBlockQuads(List<? extends RenderBox> cubes, List<BakedQuad> baked, ICreativeRendered renderer, EnumFacing side, IBlockState state, BlockRenderLayer layer, Block renderBlock, TileEntity te, long rand, ItemStack stack, boolean threaded) {
 		for (int i = 0; i < cubes.size(); i++) {
-			RenderCubeObject cube = cubes.get(i);
+			RenderBox cube = cubes.get(i);
 			
-			if (!cube.shouldSideBeRendered(side))
+			if (!cube.renderSide(side))
 				continue;
 			
 			Block block = renderBlock;
@@ -117,7 +117,7 @@ public class CreativeBakedModel implements IBakedModel {
 		return baked;
 	}
 	
-	public static List<BakedQuad> getBakedQuad(IBlockAccess world, RenderCubeObject cube, @Nullable BlockPos pos, BlockPos offset, IBlockState state, IBakedModel blockModel, BlockRenderLayer layer, EnumFacing side, long rand, boolean overrideTint) {
+	public static List<BakedQuad> getBakedQuad(IBlockAccess world, RenderBox cube, @Nullable BlockPos pos, BlockPos offset, IBlockState state, IBakedModel blockModel, BlockRenderLayer layer, EnumFacing side, long rand, boolean overrideTint) {
 		return cube.getBakedQuad(world, pos, offset, state, blockModel, side, layer, rand, overrideTint, -1);
 	}
 	
@@ -134,7 +134,7 @@ public class CreativeBakedModel implements IBakedModel {
 		TileEntity te = state instanceof TileEntityState ? ((TileEntityState) state).te : null;
 		ItemStack stack = state != null ? null : lastItemStack;
 		
-		List<? extends RenderCubeObject> cubes = null;
+		List<? extends RenderBox> cubes = null;
 		
 		ICreativeRendered renderer = null;
 		if (renderBlock instanceof ICreativeRendered)

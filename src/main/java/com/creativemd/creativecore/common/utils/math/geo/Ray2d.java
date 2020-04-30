@@ -1,8 +1,9 @@
-package com.creativemd.creativecore.common.utils.math.vec;
+package com.creativemd.creativecore.common.utils.math.geo;
 
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.vec.IVecInt;
 
 import net.minecraft.util.EnumFacing.Axis;
 
@@ -33,6 +34,16 @@ public class Ray2d {
 		this.originTwo = origin.get(two);
 		this.directionOne = directionOne;
 		this.directionTwo = directionTwo;
+	}
+	
+	public Ray2d(Axis one, Axis two, double startOne, double startTwo, double endOne, double endTwo) {
+		this.one = one;
+		this.two = two;
+		
+		this.originOne = startOne;
+		this.originTwo = startTwo;
+		this.directionOne = endOne - startOne;
+		this.directionTwo = endTwo - startTwo;
 	}
 	
 	public double getOrigin(Axis axis) {

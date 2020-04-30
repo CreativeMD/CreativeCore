@@ -6,8 +6,7 @@ import javax.vecmath.Vector3d;
 import org.lwjgl.opengl.GL11;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
-import com.creativemd.creativecore.common.utils.math.box.BoxUtils;
-import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
+import com.creativemd.creativecore.common.utils.math.box.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -117,7 +116,7 @@ public interface IVecOrigin {
 		double maxY = -Double.MAX_VALUE;
 		double maxZ = -Double.MAX_VALUE;
 		
-		for (int i = 0; i < BoxUtils.BoxCorner.values().length; i++) {
+		for (int i = 0; i < BoxCorner.values().length; i++) {
 			Vector3d vec = BoxCorner.values()[i].getVector(box);
 			
 			transformPointToWorld(vec);
@@ -141,7 +140,7 @@ public interface IVecOrigin {
 		double maxY = -Double.MAX_VALUE;
 		double maxZ = -Double.MAX_VALUE;
 		
-		for (int i = 0; i < BoxUtils.BoxCorner.values().length; i++) {
+		for (int i = 0; i < BoxCorner.values().length; i++) {
 			Vector3d vec = BoxCorner.values()[i].getVector(box);
 			
 			transformPointToFakeWorld(vec);

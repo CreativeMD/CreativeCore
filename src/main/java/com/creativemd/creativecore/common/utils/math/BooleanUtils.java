@@ -2,6 +2,14 @@ package com.creativemd.creativecore.common.utils.math;
 
 public class BooleanUtils {
 	
+	public static boolean isTrue(Boolean value) {
+		return value != null && value;
+	}
+	
+	public static boolean isFalse(Boolean value) {
+		return value != null && !value;
+	}
+	
 	public static boolean oneTrue(boolean... array) {
 		boolean wasTrue = false;
 		for (int i = 0; i < array.length; i++) {
