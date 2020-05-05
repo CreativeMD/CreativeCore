@@ -10,7 +10,7 @@ import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = { ElementType.FIELD })
+@Target(value = { ElementType.FIELD, ElementType.TYPE })
 public @interface CreativeConfig {
 	
 	String name() default "";

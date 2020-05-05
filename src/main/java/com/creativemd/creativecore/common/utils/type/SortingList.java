@@ -21,6 +21,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+@CreativeConfig
 public class SortingList implements List<InfoStack> {
 	
 	@CreativeConfig

@@ -53,6 +53,9 @@ public abstract class ConfigTypeConveration<T> {
 		if (types.containsKey(typeClass))
 			return true;
 		
+		if (typeClass.isAnnotationPresent(CreativeConfig.class))
+			return false;
+		
 		for (int i = 0; i < specialTypes.size(); i++)
 			if (specialTypes.get(i).key.test(typeClass))
 				return true;
@@ -676,6 +679,7 @@ public abstract class ConfigTypeConveration<T> {
 			public Class getListType(ConfigKeyField key) {
 				ParameterizedType type = (ParameterizedType) key.field.getGenericType();
 				return (Class) type.getActualTypeArguments()[0];
+				
 			}
 		});
 	}
