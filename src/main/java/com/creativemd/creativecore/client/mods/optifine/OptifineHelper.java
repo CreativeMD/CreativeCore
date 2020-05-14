@@ -150,7 +150,7 @@ public class OptifineHelper {
 			
 			return quads;
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
