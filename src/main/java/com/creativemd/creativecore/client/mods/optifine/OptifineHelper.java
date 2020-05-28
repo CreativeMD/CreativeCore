@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.creativemd.creativecore.CreativeCore;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -135,7 +137,7 @@ public class OptifineHelper {
 	}
 	
 	public static List<BakedQuad> getRenderQuads(List<BakedQuad> quads, IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing facing, BlockRenderLayer layer, long rand) {
-		if (!active || world == null || layer == null)
+		if (!active || world == null || layer == null || !CreativeCore.config.useOptifineCompat)
 			return quads;
 		try {
 			if (ltInstalled)
