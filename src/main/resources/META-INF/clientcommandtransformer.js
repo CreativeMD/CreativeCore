@@ -28,7 +28,7 @@ function initializeCoreMod() {
             'target': {
                 'type': 'METHOD',
 				'class': 'net.minecraft.client.gui.screen.Screen',
-				'methodName': 'keyPressed',
+				'methodName': 'func_231046_a_',
 				'methodDesc': '(III)Z'
             },
             'transformer': function(method) {
@@ -37,12 +37,12 @@ function initializeCoreMod() {
 				var InsnNode = Java.type('org.objectweb.asm.tree.InsnNode');
 				var JumpInsnNode = Java.type('org.objectweb.asm.tree.JumpInsnNode');
 				var LabelNode = Java.type('org.objectweb.asm.tree.LabelNode');
-				
+
 				var node = asmapi.findFirstMethodCall(method, asmapi.MethodType.VIRTUAL, "net/minecraft/client/gui/screen/Screen", asmapi.mapMethod("changeFocus"), "(Z)Z");
 				var label = node.getPrevious().getPrevious().getPrevious();
 				if(label instanceof Java.type('org.objectweb.asm.tree.LineNumberNode'))
 					label = label.getPrevious();
-				
+
 				method.instructions.insertBefore(label, asmapi.buildMethodCall("team/creative/creativecore/client/CreativeCoreClient", "keyTyped", "()Z", asmapi.MethodType.STATIC));
 				method.instructions.insertBefore(label, new JumpInsnNode(Opcodes.IFEQ, label));
 				method.instructions.insertBefore(label, new LabelNode());
