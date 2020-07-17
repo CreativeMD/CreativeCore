@@ -5,9 +5,9 @@ import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
+import com.creativemd.creativecore.common.utils.math.box.BoxCorner;
+import com.creativemd.creativecore.common.utils.math.box.BoxFace;
 import com.creativemd.creativecore.common.utils.math.box.BoxUtils;
-import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxCorner;
-import com.creativemd.creativecore.common.utils.math.box.BoxUtils.BoxFace;
 import com.creativemd.creativecore.common.utils.math.box.CreativeAxisAlignedBB;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
 
@@ -192,27 +192,27 @@ public class CollidingPlane {
 		CollidingPlane[] planes = new CollidingPlane[BooleanUtils.countTrue(east, west, up, down, south, north)];
 		int index = 0;
 		if (east) {
-			planes[index] = new CollidingPlane(box, EnumFacing.EAST, cache, corners, BoxFace.getFace(EnumFacing.EAST).corners);
+			planes[index] = new CollidingPlane(box, EnumFacing.EAST, cache, corners, BoxFace.get(EnumFacing.EAST).corners);
 			index++;
 		}
 		if (west) {
-			planes[index] = new CollidingPlane(box, EnumFacing.WEST, cache, corners, BoxFace.getFace(EnumFacing.WEST).corners);
+			planes[index] = new CollidingPlane(box, EnumFacing.WEST, cache, corners, BoxFace.get(EnumFacing.WEST).corners);
 			index++;
 		}
 		if (up) {
-			planes[index] = new CollidingPlane(box, EnumFacing.UP, cache, corners, BoxFace.getFace(EnumFacing.UP).corners);
+			planes[index] = new CollidingPlane(box, EnumFacing.UP, cache, corners, BoxFace.get(EnumFacing.UP).corners);
 			index++;
 		}
 		if (down) {
-			planes[index] = new CollidingPlane(box, EnumFacing.DOWN, cache, corners, BoxFace.getFace(EnumFacing.DOWN).corners);
+			planes[index] = new CollidingPlane(box, EnumFacing.DOWN, cache, corners, BoxFace.get(EnumFacing.DOWN).corners);
 			index++;
 		}
 		if (south) {
-			planes[index] = new CollidingPlane(box, EnumFacing.SOUTH, cache, corners, BoxFace.getFace(EnumFacing.SOUTH).corners);
+			planes[index] = new CollidingPlane(box, EnumFacing.SOUTH, cache, corners, BoxFace.get(EnumFacing.SOUTH).corners);
 			index++;
 		}
 		if (north) {
-			planes[index] = new CollidingPlane(box, EnumFacing.NORTH, cache, corners, BoxFace.getFace(EnumFacing.NORTH).corners);
+			planes[index] = new CollidingPlane(box, EnumFacing.NORTH, cache, corners, BoxFace.get(EnumFacing.NORTH).corners);
 			index++;
 		}
 		

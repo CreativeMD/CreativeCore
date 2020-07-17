@@ -10,7 +10,7 @@ import java.util.List;
 import org.lwjgl.util.Color;
 
 import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
-import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderBox;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.common.utils.type.SingletonList;
 
@@ -104,7 +104,7 @@ public class CreativeModelPipeline {
 	
 	public static ThreadLocal<SingletonList<BakedQuad>> singletonList = ThreadLocal.withInitial(() -> new SingletonList(null));
 	
-	public static void renderBlockFaceSmooth(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, float[] afloat, EnumFacing facing, BitSet set, Object ambientOcclusionFace, RenderCubeObject cube) {
+	public static void renderBlockFaceSmooth(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, float[] afloat, EnumFacing facing, BitSet set, Object ambientOcclusionFace, RenderBox cube) {
 		try {
 			SingletonList<BakedQuad> list = singletonList.get();
 			
@@ -153,7 +153,7 @@ public class CreativeModelPipeline {
 		}
 	}
 	
-	public static void renderBlockFaceFlat(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, EnumFacing facing, BitSet set, RenderCubeObject cube, Object renderEnv) {
+	public static void renderBlockFaceFlat(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, List<BakedQuad> quads, EnumFacing facing, BitSet set, RenderBox cube, Object renderEnv) {
 		int light = state.getPackedLightmapCoords(world, pos.offset(facing));
 		try {
 			
@@ -202,7 +202,7 @@ public class CreativeModelPipeline {
 		}
 	}
 	
-	public static void overwriteColor(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, BakedQuad quad, RenderCubeObject cube, Object ambientOcclusionFace, VertexLighterFlat lighter) {
+	public static void overwriteColor(IBlockAccess world, IBlockState state, BlockPos pos, BufferBuilder buffer, BlockRenderLayer layer, BakedQuad quad, RenderBox cube, Object ambientOcclusionFace, VertexLighterFlat lighter) {
 		if (FMLClientHandler.instance().hasOptifine() && ambientOcclusionFace != null)
 			ambientOcclusionFace = OptifineHelper.getAoFace(ambientOcclusionFace);
 		

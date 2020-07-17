@@ -1,6 +1,6 @@
 package com.creativemd.creativecore.client.rendering.model;
 
-import com.creativemd.creativecore.client.rendering.RenderCubeObject;
+import com.creativemd.creativecore.client.rendering.RenderBox;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -10,8 +10,8 @@ import net.minecraft.util.EnumFacing;
 public class CreativeBakedQuad extends BakedQuad {
 	
 	public static TextureAtlasSprite missingSprite = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getTextureMap().getMissingSprite();
-	public static ThreadLocal<CreativeBakedQuad> lastRenderedQuad = new ThreadLocal<>();
-	public final RenderCubeObject cube;
+	public static final ThreadLocal<CreativeBakedQuad> lastRenderedQuad = new ThreadLocal<>();
+	public final RenderBox cube;
 	public boolean shouldOverrideColor;
 	
 	public CreativeBakedQuad(EnumFacing facing) {
@@ -19,11 +19,11 @@ public class CreativeBakedQuad extends BakedQuad {
 		cube = null;
 	}
 	
-	public CreativeBakedQuad(BakedQuad quad, RenderCubeObject cube, int tintedColor, boolean shouldOverrideColor, EnumFacing facing) {
+	public CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, EnumFacing facing) {
 		this(quad, cube, tintedColor, shouldOverrideColor, facing, false);
 	}
 	
-	private CreativeBakedQuad(BakedQuad quad, RenderCubeObject cube, int tintedColor, boolean shouldOverrideColor, EnumFacing facing, boolean something) {
+	private CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, EnumFacing facing, boolean something) {
 		super(copyArray(quad.getVertexData()), shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
 		this.cube = cube;
 		this.shouldOverrideColor = shouldOverrideColor;
@@ -31,9 +31,8 @@ public class CreativeBakedQuad extends BakedQuad {
 	
 	private static int[] copyArray(int[] array) {
 		int[] newarray = new int[array.length];
-		for (int i = 0; i < array.length; i++) {
+		for (int i = 0; i < array.length; i++)
 			newarray[i] = array[i];
-		}
 		return newarray;
 	}
 	
