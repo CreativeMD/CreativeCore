@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.vec;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class Vector3 extends Vector<Vector3> {
 	
@@ -23,12 +23,12 @@ public class Vector3 extends Vector<Vector3> {
 		super(vec);
 	}
 	
-	public Vector3(Vec3d vec) {
+	public Vector3(Vector3d vec) {
 		this(vec.x, vec.y, vec.z);
 	}
 	
-	public Vec3d toVanilla() {
-		return new Vec3d(x, y, z);
+	public Vector3d toVanilla() {
+		return new Vector3d(x, y, z);
 	}
 	
 	@Override

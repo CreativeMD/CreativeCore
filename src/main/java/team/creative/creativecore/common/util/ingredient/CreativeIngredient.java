@@ -102,7 +102,7 @@ public abstract class CreativeIngredient {
 			return null;
 		});
 		registerType("blocktag", CreativeIngredientBlockTag.class, (x) -> {
-			if (x instanceof Tag && !((Tag) x).getEntries().isEmpty() && ((Tag) x).getEntries().iterator().next() instanceof Block)
+			if (x instanceof Tag && !((Tag) x).func_230236_b_().isEmpty() && ((Tag) x).func_230236_b_().iterator().next() instanceof Block)
 				return new CreativeIngredientBlockTag((Tag<Block>) x);
 			return null;
 		});
@@ -113,7 +113,7 @@ public abstract class CreativeIngredient {
 			return null;
 		});
 		registerType("itemtag", CreativeIngredientItemTag.class, (x) -> {
-			if (x instanceof Tag && !((Tag) x).getEntries().isEmpty() && ((Tag) x).getEntries().iterator().next() instanceof Item)
+			if (x instanceof Tag && !((Tag) x).func_230236_b_().isEmpty() && ((Tag) x).func_230236_b_().iterator().next() instanceof Item)
 				return new CreativeIngredientItemTag((Tag<Item>) x);
 			return null;
 		});

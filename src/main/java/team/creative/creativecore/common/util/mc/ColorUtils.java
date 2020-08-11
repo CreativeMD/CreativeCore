@@ -2,8 +2,8 @@ package team.creative.creativecore.common.util.mc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 public class ColorUtils {
 	
@@ -21,14 +21,14 @@ public class ColorUtils {
 			this.alpha = getAlpha(color);
 		}
 		
-		public Color(Vec3i vec) {
+		public Color(Vector3i vec) {
 			this.red = vec.getX();
 			this.green = vec.getY();
 			this.blue = vec.getZ();
 			this.alpha = 255;
 		}
 		
-		public Color(Vec3d vec) {
+		public Color(Vector3d vec) {
 			this.red = (int) (vec.getX() * 255);
 			this.green = (int) (vec.getY() * 255);
 			this.blue = (int) (vec.getZ() * 255);
@@ -53,8 +53,8 @@ public class ColorUtils {
 			RenderSystem.color4f(red / 255F, green / 255F, blue / 255F, alpha / 255F);
 		}
 		
-		public Vec3d toVec(ColorPart part) {
-			return new Vec3d(red / 255D, green / 255D, blue / 255D);
+		public Vector3d toVec(ColorPart part) {
+			return new Vector3d(red / 255D, green / 255D, blue / 255D);
 		}
 		
 		public float getDecimal(ColorPart part) {
@@ -173,22 +173,22 @@ public class ColorUtils {
 		return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
 	}
 	
-	public static int toInt(Vec3i color) {
+	public static int toInt(Vector3i color) {
 		return (255 & 255) << 24 | (color.getX() & 255) << 16 | (color.getY() & 255) << 8 | color.getZ() & 255;
 	}
 	
-	public static Vec3i toIntVec(int color) {
+	public static Vector3i toIntVec(int color) {
 		float r = color >> 16 & 255;
 		float g = color >> 8 & 255;
 		float b = color & 255;
-		return new Vec3i(r, g, b);
+		return new Vector3i(r, g, b);
 	}
 	
-	public static Vec3d toVec(int color) {
+	public static Vector3d toVec(int color) {
 		float r = color >> 16 & 255;
 		float g = color >> 8 & 255;
 		float b = color & 255;
-		return new Vec3d(r / 255F, g / 255F, b / 255F);
+		return new Vector3d(r / 255F, g / 255F, b / 255F);
 	}
 	
 	public static boolean isWhite(int color) {

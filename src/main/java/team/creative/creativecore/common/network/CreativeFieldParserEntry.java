@@ -19,7 +19,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 
 public class CreativeFieldParserEntry {
@@ -270,18 +270,18 @@ public class CreativeFieldParserEntry {
 			}
 		});
 		
-		registerParser(Vec3d.class, new SimpleFieldParser<Vec3d>() {
+		registerParser(Vector3d.class, new SimpleFieldParser<Vector3d>() {
 			
 			@Override
-			protected void writeContent(Vec3d content, PacketBuffer buffer) {
+			protected void writeContent(Vector3d content, PacketBuffer buffer) {
 				buffer.writeDouble(content.x);
 				buffer.writeDouble(content.y);
 				buffer.writeDouble(content.z);
 			}
 			
 			@Override
-			protected Vec3d readContent(PacketBuffer buffer) {
-				return new Vec3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+			protected Vector3d readContent(PacketBuffer buffer) {
+				return new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
 			}
 		});
 		

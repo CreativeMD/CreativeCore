@@ -3,13 +3,14 @@ package team.creative.creativecore.common.util.ingredient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
 public class CreativeIngredientItemTag extends CreativeIngredient {
 	
-	public Tag<Item> tag;
+	public ITag<Item> tag;
 	
 	public CreativeIngredientItemTag(Tag<Item> tag) {
 		this.tag = tag;
@@ -21,7 +22,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
 	
 	@Override
 	protected void writeExtra(CompoundNBT nbt) {
-		nbt.putString("tag", tag.getId().toString());
+		nbt.putString("tag", ItemTags.getCollection().func_232975_b_(tag).toString());
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
 	
 	@Override
 	public boolean is(ItemStack stack) {
-		return tag.contains(stack.getItem());
+		return tag.func_230235_a_(stack.getItem());
 	}
 	
 	@Override
@@ -41,9 +42,9 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
 	
 	@Override
 	public ItemStack getExample() {
-		if (tag.getAllElements().isEmpty())
+		if (tag.func_230236_b_().isEmpty())
 			return ItemStack.EMPTY;
-		return new ItemStack(tag.getAllElements().iterator().next());
+		return new ItemStack(tag.func_230236_b_().iterator().next());
 	}
 	
 	@Override
