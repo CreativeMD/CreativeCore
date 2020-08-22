@@ -2,6 +2,7 @@ modLoader="javafml"
 loaderVersion="[24,)"
 issueTrackerURL="https://github.com/CreativeMD/CreativeCore/issues"
 logoFile="creativecore.png"
+license="GNU General Public License v3.0"
 
 [[mods]]
 	modId="creativecore"
@@ -11,3 +12,4 @@ logoFile="creativecore.png"
 	displayURL="https://minecraft.curseforge.com/projects/creativecore"
 	authors="CreativeMD"
 	description='''A simple but powerful coremod.'''
+	
