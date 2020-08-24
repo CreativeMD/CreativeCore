@@ -9,7 +9,6 @@ import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.client.command.ClientCommandRegistry;
 
 public class CreativeCoreClient {
@@ -30,11 +29,5 @@ public class CreativeCoreClient {
 			event.setCanceled(true);
 			mc.ingameGUI.getChatGUI().addToSentMessages(message);
 		}
-	}
-	
-	public static boolean keyTyped() {
-		if (CreativeCore.CONFIG.fixInventoryTab)
-			return true;
-		return false;
 	}
 }
