@@ -71,6 +71,21 @@ public class ColorUtils {
 			public int getBrightest() {
 				return 0x000000FF;
 			}
+		},
+		SHADE {
+			@Override
+			public int getColor(Color color) {
+				return color.getBlue();
+			}
+			
+			@Override
+			public void setColor(Color color, int intenstiy) {
+			}
+			
+			@Override
+			public int getBrightest() {
+				return 0xFFFFFFFF;
+			}
 		};
 		
 		public abstract int getColor(Color color);
