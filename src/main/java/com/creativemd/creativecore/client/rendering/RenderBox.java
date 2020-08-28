@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
+import com.creativemd.creativecore.client.rendering.face.FaceRenderType;
+import com.creativemd.creativecore.client.rendering.face.IFaceRenderType;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.box.AlignedBox;
 import com.creativemd.creativecore.common.utils.math.vec.VectorFan;
@@ -38,20 +40,6 @@ public class RenderBox extends AlignedBox {
 	private static final VectorFan WEST = new VectorFan(new Vector3f[] { new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(0, 1, 1) });
 	private static final VectorFan EAST = new VectorFan(new Vector3f[] { new Vector3f(1, 1, 1), new Vector3f(1, 0, 1), new Vector3f(1, 0, 0), new Vector3f(1, 1, 0) });
 	
-	public static enum SideRenderType {
-		
-		INSIDE_RENDERED(true, false), INSIDE_NOT_RENDERED(false, false), OUTSIDE_RENDERED(true, true), OUTSIDE_NOT_RENDERD(false, true);
-		
-		public final boolean shouldBeRendered;
-		public final boolean outside;
-		
-		SideRenderType(boolean shouldBeRendered, boolean outside) {
-			this.shouldBeRendered = shouldBeRendered;
-			this.outside = outside;
-		}
-		
-	}
-	
 	public Block block;
 	public int meta = 0;
 	public int color = -1;
@@ -61,12 +49,12 @@ public class RenderBox extends AlignedBox {
 	public boolean keepVU = false;
 	public boolean allowOverlap = false;
 	
-	private SideRenderType renderEast = SideRenderType.INSIDE_RENDERED;
-	private SideRenderType renderWest = SideRenderType.INSIDE_RENDERED;
-	private SideRenderType renderUp = SideRenderType.INSIDE_RENDERED;
-	private SideRenderType renderDown = SideRenderType.INSIDE_RENDERED;
-	private SideRenderType renderSouth = SideRenderType.INSIDE_RENDERED;
-	private SideRenderType renderNorth = SideRenderType.INSIDE_RENDERED;
+	private IFaceRenderType renderEast = FaceRenderType.INSIDE_RENDERED;
+	private IFaceRenderType renderWest = FaceRenderType.INSIDE_RENDERED;
+	private IFaceRenderType renderUp = FaceRenderType.INSIDE_RENDERED;
+	private IFaceRenderType renderDown = FaceRenderType.INSIDE_RENDERED;
+	private IFaceRenderType renderSouth = FaceRenderType.INSIDE_RENDERED;
+	private IFaceRenderType renderNorth = FaceRenderType.INSIDE_RENDERED;
 	
 	private Object quadEast = null;
 	private Object quadWest = null;
@@ -194,7 +182,7 @@ public class RenderBox extends AlignedBox {
 			return block.getDefaultState();
 	}
 	
-	public void setType(EnumFacing facing, SideRenderType renderer) {
+	public void setType(EnumFacing facing, IFaceRenderType renderer) {
 		switch (facing) {
 		case DOWN:
 			renderDown = renderer;
@@ -217,7 +205,7 @@ public class RenderBox extends AlignedBox {
 		}
 	}
 	
-	public SideRenderType getType(EnumFacing facing) {
+	public IFaceRenderType getType(EnumFacing facing) {
 		switch (facing) {
 		case DOWN:
 			return renderDown;
@@ -232,23 +220,23 @@ public class RenderBox extends AlignedBox {
 		case WEST:
 			return renderWest;
 		}
-		return SideRenderType.INSIDE_RENDERED;
+		return FaceRenderType.INSIDE_RENDERED;
 	}
 	
 	public boolean renderSide(EnumFacing facing) {
 		switch (facing) {
 		case DOWN:
-			return renderDown.shouldBeRendered;
+			return renderDown.shouldRender();
 		case EAST:
-			return renderEast.shouldBeRendered;
+			return renderEast.shouldRender();
 		case NORTH:
-			return renderNorth.shouldBeRendered;
+			return renderNorth.shouldRender();
 		case SOUTH:
-			return renderSouth.shouldBeRendered;
+			return renderSouth.shouldRender();
 		case UP:
-			return renderUp.shouldBeRendered;
+			return renderUp.shouldRender();
 		case WEST:
-			return renderWest.shouldBeRendered;
+			return renderWest.shouldRender();
 		}
 		return true;
 	}
@@ -268,6 +256,8 @@ public class RenderBox extends AlignedBox {
 	public boolean isEmissive = false;
 	
 	protected Object getRenderQuads(EnumFacing facing) {
+		if (getType(facing).hasCachedFans())
+			return getType(facing).getCachedFans();
 		switch (facing) {
 		case DOWN:
 			return DOWN;
@@ -301,6 +291,10 @@ public class RenderBox extends AlignedBox {
 		return minZ;
 	}
 	
+	protected float getOverallScale(EnumFacing facing) {
+		return getType(facing).getScale();
+	}
+	
 	protected float getScaleX() {
 		return maxX - minX;
 	}
@@ -313,8 +307,12 @@ public class RenderBox extends AlignedBox {
 		return maxZ - minZ;
 	}
 	
-	protected boolean scaleAndOffsetQuads() {
+	protected boolean scaleAndOffsetQuads(EnumFacing facing) {
 		return true;
+	}
+	
+	protected boolean onlyScaleOnceNoOffset(EnumFacing facing) {
+		return getType(facing).hasCachedFans();
 	}
 	
 	public List<BakedQuad> getBakedQuad(IBlockAccess world, @Nullable BlockPos pos, BlockPos offset, IBlockState state, IBakedModel blockModel, EnumFacing facing, BlockRenderLayer layer, long rand, boolean overrideTint, int defaultColor) {
@@ -446,7 +444,7 @@ public class RenderBox extends AlignedBox {
 			red = green = blue = 0;
 		
 		GlStateManager.pushMatrix();
-		if (scaleAndOffsetQuads()) {
+		if (scaleAndOffsetQuads(null)) {
 			GlStateManager.translate(x + minX, y + minY, z + minZ);
 			GlStateManager.scale(maxX - minX, maxY - minY, maxZ - minZ);
 		} else
@@ -461,6 +459,12 @@ public class RenderBox extends AlignedBox {
 				((VectorFan) renderQuads).renderLines(red, green, blue, alpha);
 		}
 		GlStateManager.popMatrix();
+	}
+	
+	public boolean isTranslucent() {
+		if (ColorUtils.isTransparent(color))
+			return true;
+		return !getBlockState().getMaterial().blocksLight() || !getBlockState().getMaterial().isSolid() || !getBlockState().isOpaqueCube();
 	}
 	
 	public class RenderInformationHolder {
@@ -501,21 +505,23 @@ public class RenderBox extends AlignedBox {
 			this.color = color;
 			this.facing = facing;
 			RenderBox box = getBox();
-			scaleAndOffset = box.scaleAndOffsetQuads();
+			scaleAndOffset = box.scaleAndOffsetQuads(facing);
 			if (scaleAndOffset) {
-				this.offsetX = box.getOffsetX();
-				this.offsetY = box.getOffsetY();
-				this.offsetZ = box.getOffsetZ();
-				this.scaleX = box.getScaleX();
-				this.scaleY = box.getScaleY();
-				this.scaleZ = box.getScaleZ();
+				if (box.onlyScaleOnceNoOffset(facing)) {
+					this.offsetX = this.offsetY = this.offsetZ = 0;
+					this.scaleX = this.scaleY = this.scaleZ = box.getOverallScale(facing);
+				} else {
+					this.offsetX = box.getOffsetX();
+					this.offsetY = box.getOffsetY();
+					this.offsetZ = box.getOffsetZ();
+					this.scaleX = box.getScaleX();
+					this.scaleY = box.getScaleY();
+					this.scaleZ = box.getScaleZ();
+				}
+				
 			} else {
-				this.offsetX = 0;
-				this.offsetY = 0;
-				this.offsetZ = 0;
-				this.scaleX = 0;
-				this.scaleY = 0;
-				this.scaleZ = 0;
+				this.offsetX = this.offsetY = this.offsetZ = 0;
+				this.scaleX = this.scaleY = this.scaleZ = 0;
 			}
 		}
 		

@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.utils.math.geo;
 
 import javax.vecmath.Vector3d;
+import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.vec.IVecInt;
@@ -88,14 +89,32 @@ public class Ray2d {
 	public boolean isCoordinateToTheRight(int one, int two) {
 		double tempOne = one - originOne;
 		double tempTwo = two - originTwo;
-		
-		// return directionOne * (-tempTwo) + directionTwo * tempOne > 0;
-		
 		return directionOne * tempTwo - directionTwo * tempOne < 0;
+	}
+	
+	public Boolean isCoordinateToTheRight(double one, double two) {
+		double tempOne = one - originOne;
+		double tempTwo = two - originTwo;
+		double result = directionOne * tempTwo - directionTwo * tempOne;
+		if (result == 0)
+			return null;
+		return result < 0;
+	}
+	
+	public Vector3f intersect(Vector3f start, Vector3f end, float thirdValue) {
+		float lineOriginOne = RotationUtils.get(one, start);
+		float lineOriginTwo = RotationUtils.get(two, start);
+		float lineDirectionOne = RotationUtils.get(one, end) - RotationUtils.get(one, start);
+		float lineDirectionTwo = RotationUtils.get(two, end) - RotationUtils.get(two, start);
 		
-		// d=(x−x1)(y2−y1)−(y−y1)(x2−x1)
-		// If d<0d<0 then the point lies on one side of the line, and if d>0d>0 then it
-		// lies on the other side. If d=0d=0 then the point lies exactly line.
+		if (directionOne * lineDirectionTwo - directionTwo * lineDirectionOne == 0)
+			return null;
+		
+		Vector3f vec = new Vector3f(thirdValue, thirdValue, thirdValue);
+		double t = ((lineOriginTwo - originTwo) * lineDirectionOne + originOne * lineDirectionTwo - lineOriginOne * lineDirectionTwo) / (lineDirectionOne * directionTwo - directionOne * lineDirectionTwo);
+		RotationUtils.setValue(vec, (float) (originOne + t * directionOne), one);
+		RotationUtils.setValue(vec, (float) (originTwo + t * directionTwo), two);
+		return vec;
 	}
 	
 	public Vector3d intersect(Ray2d line, int thirdValue) {
