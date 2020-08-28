@@ -14,6 +14,7 @@ import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.geo.NormalPlane;
+import com.creativemd.creativecore.common.utils.math.geo.Ray2d;
 import com.creativemd.creativecore.common.utils.math.geo.Ray3d;
 
 import net.minecraft.client.renderer.BufferBuilder;
@@ -311,6 +312,29 @@ public class VectorFan {
 		return new VectorFan(coordsCopy);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof VectorFan) {
+			VectorFan other = (VectorFan) obj;
+			
+			if (coords.length != other.coords.length)
+				return false;
+			
+			int start = 0;
+			while (start < coords.length && !coords[start].equals(other.coords[0]))
+				start++;
+			if (start < coords.length) {
+				for (int i = 1; i < other.coords.length; i++) {
+					start = (start + 1) % coords.length;
+					if (!coords[start].equals(other.coords[i]))
+						return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	protected static Vec3d calculateIntercept(Ray3d ray, Vector3f triangle0, Vector3f triangle1, Vector3f triangle2) throws ParallelException {
 		Vector3f edge1 = new Vector3f();
 		Vector3f edge2 = new Vector3f();
@@ -408,6 +432,118 @@ public class VectorFan {
 			}
 		}
 		return false;
+	}
+	
+	public List<VectorFan> cut2d(List<VectorFan> cutters, Axis one, Axis two, boolean inverse, boolean takeInner) {
+		List<VectorFan> temp = new ArrayList<>();
+		List<VectorFan> next = new ArrayList<>();
+		temp.add(this);
+		for (VectorFan cutter : cutters) {
+			for (VectorFan fan2 : temp)
+				next.addAll(fan2.cut2d(cutter, one, two, inverse, takeInner));
+			temp.clear();
+			temp.addAll(next);
+			next.clear();
+		}
+		return temp;
+	}
+	
+	public List<VectorFan> cut2d(VectorFan cutter, Axis one, Axis two, boolean inverse, boolean takeInner) {
+		List<VectorFan> done = new ArrayList<>();
+		VectorFan toCut = this;
+		Vector3f before = cutter.coords[0];
+		Ray2d ray = new Ray2d(one, two, 0, 0, 0, 0);
+		for (int i = 1; i <= cutter.coords.length; i++) {
+			boolean last = i == cutter.coords.length;
+			Vector3f vec = last ? cutter.coords[0] : cutter.coords[i];
+			ray.originOne = RotationUtils.get(one, before);
+			ray.originTwo = RotationUtils.get(two, before);
+			ray.directionOne = RotationUtils.get(one, vec) - RotationUtils.get(one, before);
+			ray.directionTwo = RotationUtils.get(two, vec) - RotationUtils.get(two, before);
+			
+			toCut = toCut.cut2d(ray, one, two, takeInner ? null : done, inverse);
+			if (toCut == null)
+				return done;
+			before = vec;
+		}
+		if (takeInner)
+			done.add(toCut);
+		return done;
+	}
+	
+	protected VectorFan cut2d(Ray2d ray, Axis one, Axis two, List<VectorFan> done, boolean inverse) {
+		boolean allTheSame = true;
+		Boolean allValue = null;
+		Boolean[] cutted = new Boolean[coords.length];
+		for (int i = 0; i < cutted.length; i++) {
+			cutted[i] = ray.isCoordinateToTheRight(RotationUtils.get(one, coords[i]), RotationUtils.get(two, coords[i]));
+			if (inverse && cutted[i] != null)
+				cutted[i] = !cutted[i];
+			if (allTheSame) {
+				if (i == 0)
+					allValue = cutted[i];
+				else {
+					if (allValue == null)
+						allValue = cutted[i];
+					else if (allValue != cutted[i] && cutted[i] != null)
+						allTheSame = false;
+				}
+			}
+		}
+		
+		if (allTheSame) {
+			if (allValue == null)
+				return null;
+			else if (allValue)
+				return this;
+			else {
+				if (done != null)
+					done.add(this);
+				return null;
+			}
+		}
+		
+		float thirdAxisValue = RotationUtils.get(RotationUtils.getDifferentAxis(one, two), coords[0]);
+		
+		List<Vector3f> left = new ArrayList<>();
+		List<Vector3f> right = new ArrayList<>();
+		Boolean beforeCutted = cutted[cutted.length - 1];
+		Vector3f beforeVec = coords[coords.length - 1];
+		
+		for (int i = 0; i < coords.length; i++) {
+			Vector3f vec = coords[i];
+			
+			if (BooleanUtils.isTrue(cutted[i])) {
+				if (BooleanUtils.isFalse(beforeCutted)) {
+					//Intersection
+					Vector3f intersection = ray.intersect(vec, beforeVec, thirdAxisValue);
+					left.add(intersection);
+					right.add(intersection);
+				}
+				right.add(vec);
+			} else if (BooleanUtils.isFalse(cutted[i])) {
+				if (BooleanUtils.isTrue(beforeCutted)) {
+					//Intersection
+					Vector3f intersection = ray.intersect(vec, beforeVec, thirdAxisValue);
+					left.add(intersection);
+					right.add(intersection);
+				}
+				left.add(vec);
+			} else {
+				left.add(vec);
+				right.add(vec);
+			}
+			
+			beforeCutted = cutted[i];
+			beforeVec = vec;
+		}
+		
+		if (left.size() >= 3 && done != null)
+			done.add(new VectorFan(left.toArray(new Vector3f[left.size()])));
+		
+		if (right.size() < 3)
+			return null;
+		return new VectorFan(right.toArray(new Vector3f[right.size()]));
 	}
 	
 	public static boolean isInside(List<NormalPlane> shape, Vector3f before, Vector3f vec, Boolean beforeOutside, Boolean outside, int currentPlane) {
