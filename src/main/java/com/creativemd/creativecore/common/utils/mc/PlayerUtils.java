@@ -26,8 +26,8 @@ public class PlayerUtils {
 	}
 	
 	public static GameType getGameType(EntityPlayer player) {
-		if (player.world.isRemote)
-			return getGameTypeClient(player);
-		return ((EntityPlayerMP) player).interactionManager.getGameType();
+		if (player instanceof EntityPlayerMP)
+			return ((EntityPlayerMP) player).interactionManager.getGameType();
+		return getGameTypeClient(player);
 	}
 }
