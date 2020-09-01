@@ -331,6 +331,8 @@ public abstract class InfoStack extends Ingredient {
 	protected abstract boolean isStackInstanceIgnoreSize(ItemStack stack);
 	
 	public boolean isInstanceIgnoreSize(ItemStack stack) {
+		if (stack.isEmpty())
+			return false;
 		return isStackInstanceIgnoreSize(stack);
 	}
 	
