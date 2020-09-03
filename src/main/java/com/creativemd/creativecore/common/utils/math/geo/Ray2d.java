@@ -5,6 +5,7 @@ import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.vec.IVecInt;
+import com.creativemd.creativecore.common.utils.math.vec.VectorFan.ParallelException;
 
 import net.minecraft.util.EnumFacing.Axis;
 
@@ -86,6 +87,10 @@ public class Ray2d {
 		return get(this.one, one) == two;
 	}
 	
+	public boolean isCoordinateOnLine(double one, double two) {
+		return get(this.one, one) == two;
+	}
+	
 	public boolean isCoordinateToTheRight(int one, int two) {
 		double tempOne = one - originOne;
 		double tempTwo = two - originTwo;
@@ -115,6 +120,15 @@ public class Ray2d {
 		RotationUtils.setValue(vec, (float) (originOne + t * directionOne), one);
 		RotationUtils.setValue(vec, (float) (originTwo + t * directionTwo), two);
 		return vec;
+	}
+	
+	public double intersectWhen(Ray2d line) throws ParallelException {
+		if (directionOne * line.directionTwo - directionTwo * line.directionOne == 0)
+			if (isCoordinateOnLine(line.originOne, line.originTwo))
+				throw new ParallelException();
+			else
+				return -1;
+		return ((line.originTwo - originTwo) * line.directionOne + originOne * line.directionTwo - line.originOne * line.directionTwo) / (line.directionOne * directionTwo - directionOne * line.directionTwo);
 	}
 	
 	public Vector3d intersect(Ray2d line, int thirdValue) {

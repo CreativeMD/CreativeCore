@@ -434,6 +434,48 @@ public class VectorFan {
 		return false;
 	}
 	
+	public boolean intersect2d(VectorFan other, Axis one, Axis two) {
+		if (this.equals(other))
+			return true;
+		
+		int parrallel = 0;
+		
+		Vector3f before1 = coords[0];
+		Ray2d ray1 = new Ray2d(one, two, 0, 0, 0, 0);
+		for (int i = 1; i <= coords.length; i++) {
+			Vector3f vec1 = i == coords.length ? coords[0] : coords[i];
+			ray1.originOne = RotationUtils.get(one, before1);
+			ray1.originTwo = RotationUtils.get(two, before1);
+			ray1.directionOne = RotationUtils.get(one, vec1) - RotationUtils.get(one, before1);
+			ray1.directionTwo = RotationUtils.get(two, vec1) - RotationUtils.get(two, before1);
+			
+			Vector3f before2 = other.coords[0];
+			Ray2d ray2 = new Ray2d(one, two, 0, 0, 0, 0);
+			for (int i2 = 1; i2 <= other.coords.length; i2++) {
+				Vector3f vec2 = i2 == other.coords.length ? other.coords[0] : other.coords[i2];
+				ray2.originOne = RotationUtils.get(one, before2);
+				ray2.originTwo = RotationUtils.get(two, before2);
+				ray2.directionOne = RotationUtils.get(one, vec2) - RotationUtils.get(one, before2);
+				ray2.directionTwo = RotationUtils.get(two, vec2) - RotationUtils.get(two, before2);
+				
+				try {
+					double t = ray1.intersectWhen(ray2);
+					if (t > 0 && t < 1)
+						return true;
+				} catch (ParallelException e) {
+					parrallel++;
+					if (parrallel > 1)
+						return true;
+				}
+				
+				before2 = vec2;
+			}
+			
+			before1 = vec1;
+		}
+		return false;
+	}
+	
 	public List<VectorFan> cut2d(List<VectorFan> cutters, Axis one, Axis two, boolean inverse, boolean takeInner) {
 		List<VectorFan> temp = new ArrayList<>();
 		List<VectorFan> next = new ArrayList<>();
