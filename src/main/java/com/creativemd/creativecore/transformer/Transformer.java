@@ -158,6 +158,10 @@ public abstract class Transformer {
 			System.out.println("COULD NOT FIND NODE line=" + ((LineNumberNode) node).line);
 	}
 	
+	public String map(String dev, String obf) {
+		return TransformerNames.obfuscated ? obf : dev;
+	}
+	
 	public boolean is(String className) {
 		return className.equals(this.className);
 	}
