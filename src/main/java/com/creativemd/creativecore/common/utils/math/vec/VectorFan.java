@@ -24,6 +24,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class VectorFan {
 	
@@ -47,6 +49,7 @@ public class VectorFan {
 		return coords.length;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
 		int index = 0;
 		while (index < coords.length - 3) {
@@ -57,6 +60,7 @@ public class VectorFan {
 			generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
 	}
 	
+	@SideOnly(Side.CLIENT)
 	protected void generate(RenderInformationHolder holder, Vector3f vec1, Vector3f vec2, Vector3f vec3, Vector3f vec4, List<BakedQuad> quads) {
 		BakedQuad quad = new CreativeBakedQuad(holder.quad, holder.getBox(), holder.color, holder.shouldOverrideColor, holder.facing);
 		RenderBox box = holder.getBox();
