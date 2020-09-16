@@ -2,7 +2,7 @@ package com.creativemd.creativecore.common.utils.math.box;
 
 import javax.vecmath.Vector3d;
 
-import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 
 import net.minecraft.util.EnumFacing.Axis;
 
@@ -38,14 +38,14 @@ public class BoxPlane {
 	}
 	
 	public static BoxPlane createPlane(Axis axis, Vector3d direction, Vector3d[] corners) {
-		double value = RotationUtils.get(axis, direction);
+		double value = VectorUtils.get(axis, direction);
 		if (value == 0)
 			return null;
 		return new BoxPlane(corners, BoxFace.get(axis, value > 0));
 	}
 	
 	public static BoxPlane createOppositePlane(Axis axis, Vector3d direction, Vector3d[] corners) {
-		double value = RotationUtils.get(axis, direction);
+		double value = VectorUtils.get(axis, direction);
 		if (value == 0)
 			return null;
 		return new BoxPlane(corners, BoxFace.get(axis, value < 0));

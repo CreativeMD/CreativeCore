@@ -6,6 +6,7 @@ import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.collision.CollidingPlane.PlaneCache;
 import com.creativemd.creativecore.common.utils.math.collision.IntersectionHelper;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
@@ -252,9 +253,9 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		Vector3d[] corners = BoxUtils.getOuterCorner(facing, origin, this, minOne, minTwo, maxOne, maxTwo);
 		
 		Vector3d outerCorner = corners[0];
-		double outerCornerOne = RotationUtils.get(one, outerCorner);
-		double outerCornerTwo = RotationUtils.get(two, outerCorner);
-		double outerCornerAxis = RotationUtils.get(axis, outerCorner);
+		double outerCornerOne = VectorUtils.get(one, outerCorner);
+		double outerCornerTwo = VectorUtils.get(two, outerCorner);
+		double outerCornerAxis = VectorUtils.get(axis, outerCorner);
 		
 		int outerCornerOffsetOne = getCornerOffset(outerCornerOne, minOne, maxOne);
 		int outerCornerOffsetTwo = getCornerOffset(outerCornerTwo, minTwo, maxTwo);
@@ -262,8 +263,8 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		if (outerCornerOffsetOne == 0 && outerCornerOffsetTwo == 0) {
 			// Hits the outer corner
 			if (positive)
-				return RotationUtils.get(axis, outerCorner) - closestValue;
-			return closestValue - RotationUtils.get(axis, outerCorner);
+				return VectorUtils.get(axis, outerCorner) - closestValue;
+			return closestValue - VectorUtils.get(axis, outerCorner);
 		}
 		
 		Vector2d[] directions = new Vector2d[3];
@@ -345,11 +346,12 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		Vector2d[] vectors = { new Vector2d(minOne - outerCornerOne, minTwo - outerCornerTwo), new Vector2d(maxOne - outerCornerOne, minTwo - outerCornerTwo), new Vector2d(maxOne - outerCornerOne, maxTwo - outerCornerTwo), new Vector2d(minOne - outerCornerOne, maxTwo - outerCornerTwo) };
 		Vector2d[] vectorsRelative = { new Vector2d(), new Vector2d(), new Vector2d(), new Vector2d() };
 		
-		directions[0] = new Vector2d(RotationUtils.get(one, corners[1]) - outerCornerOne, RotationUtils.get(two, corners[1]) - outerCornerTwo);
-		directions[1] = new Vector2d(RotationUtils.get(one, corners[2]) - outerCornerOne, RotationUtils.get(two, corners[2]) - outerCornerTwo);
-		directions[2] = new Vector2d(RotationUtils.get(one, corners[3]) - outerCornerOne, RotationUtils.get(two, corners[3]) - outerCornerTwo);
+		directions[0] = new Vector2d(VectorUtils.get(one, corners[1]) - outerCornerOne, VectorUtils.get(two, corners[1]) - outerCornerTwo);
+		directions[1] = new Vector2d(VectorUtils.get(one, corners[2]) - outerCornerOne, VectorUtils.get(two, corners[2]) - outerCornerTwo);
+		directions[2] = new Vector2d(VectorUtils.get(one, corners[3]) - outerCornerOne, VectorUtils.get(two, corners[3]) - outerCornerTwo);
 		
-		face_loop: for (int i = 0; i < 3; i++) { // Calculate faces
+		face_loop:
+		for (int i = 0; i < 3; i++) { // Calculate faces
 			
 			int indexFirst = i;
 			int indexSecond = i == 2 ? 0 : i + 1;
@@ -365,8 +367,8 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 				second = directions[indexSecond];
 			}
 			
-			double firstAxisValue = RotationUtils.get(axis, corners[indexFirst + 1]);
-			double secondAxisValue = RotationUtils.get(axis, corners[indexSecond + 1]);
+			double firstAxisValue = VectorUtils.get(axis, corners[indexFirst + 1]);
+			double secondAxisValue = VectorUtils.get(axis, corners[indexSecond + 1]);
 			
 			boolean allInside = true;
 			

@@ -14,6 +14,7 @@ import com.creativemd.creativecore.client.rendering.RenderBox.RenderInformationH
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.collision.IntersectionHelperAdvanced;
 import com.creativemd.creativecore.common.utils.math.geo.NormalPlane;
 import com.creativemd.creativecore.common.utils.math.geo.Ray2d;
@@ -56,8 +57,8 @@ public class VectorFan {
 		boolean[] inside = new boolean[coords.length];
 		
 		for (int i = 0; i < inside.length; i++) {
-			float valueOne = RotationUtils.get(one, coords[i]);
-			float valueTwo = RotationUtils.get(two, coords[i]);
+			float valueOne = VectorUtils.get(one, coords[i]);
+			float valueTwo = VectorUtils.get(two, coords[i]);
 			
 			inside[i] = IntersectionHelperAdvanced.epsilionEqualsGreater(valueOne, minOne) && IntersectionHelperAdvanced.epsilionEqualsSmaller(valueOne, maxOne) && IntersectionHelperAdvanced.epsilionEqualsGreater(valueTwo, minTwo) && IntersectionHelperAdvanced.epsilionEqualsSmaller(valueTwo,
 			        maxTwo);
@@ -84,9 +85,9 @@ public class VectorFan {
 		for (int i = 0; i < result.length; i++) {
 			Vector3f vec = new Vector3f();
 			Vector2f vec2d = shape.get(i);
-			RotationUtils.setValue(vec, vec2d.x, one);
-			RotationUtils.setValue(vec, vec2d.y, two);
-			RotationUtils.setValue(vec, plane.project(one, two, axis, vec2d.x, vec2d.y), axis);
+			VectorUtils.set(vec, vec2d.x, one);
+			VectorUtils.set(vec, vec2d.y, two);
+			VectorUtils.set(vec, plane.project(one, two, axis, vec2d.x, vec2d.y), axis);
 			result[i] = vec;
 		}
 		return result;
@@ -106,10 +107,10 @@ public class VectorFan {
 			float offsetOne;
 			float offsetTwo;
 			if (holder.scaleAndOffset) {
-				scaleOne = 1 / RotationUtils.get(one, holder.scaleX, holder.scaleY, holder.scaleZ);
-				scaleTwo = 1 / RotationUtils.get(two, holder.scaleX, holder.scaleY, holder.scaleZ);
-				offsetOne = RotationUtils.get(one, holder.offsetX, holder.offsetY, holder.offsetZ);
-				offsetTwo = RotationUtils.get(two, holder.offsetX, holder.offsetY, holder.offsetZ);
+				scaleOne = 1 / VectorUtils.get(one, holder.scaleX, holder.scaleY, holder.scaleZ);
+				scaleTwo = 1 / VectorUtils.get(two, holder.scaleX, holder.scaleY, holder.scaleZ);
+				offsetOne = VectorUtils.get(one, holder.offsetX, holder.offsetY, holder.offsetZ);
+				offsetTwo = VectorUtils.get(two, holder.offsetX, holder.offsetY, holder.offsetZ);
 			} else {
 				scaleOne = 1;
 				scaleTwo = 1;
@@ -117,10 +118,10 @@ public class VectorFan {
 				offsetTwo = 0;
 			}
 			
-			float minOne = RotationUtils.get(one, holder.minX, holder.minY, holder.minZ) * scaleOne - offsetOne;
-			float minTwo = RotationUtils.get(two, holder.minX, holder.minY, holder.minZ) * scaleTwo - offsetTwo;
-			float maxOne = RotationUtils.get(one, holder.maxX, holder.maxY, holder.maxZ) * scaleOne - offsetOne;
-			float maxTwo = RotationUtils.get(two, holder.maxX, holder.maxY, holder.maxZ) * scaleTwo - offsetTwo;
+			float minOne = VectorUtils.get(one, holder.minX, holder.minY, holder.minZ) * scaleOne - offsetOne;
+			float minTwo = VectorUtils.get(two, holder.minX, holder.minY, holder.minZ) * scaleTwo - offsetTwo;
+			float maxOne = VectorUtils.get(one, holder.maxX, holder.maxY, holder.maxZ) * scaleOne - offsetOne;
+			float maxTwo = VectorUtils.get(two, holder.maxX, holder.maxY, holder.maxZ) * scaleTwo - offsetTwo;
 			
 			coords = cutMinMax(one, two, holder.facing.getAxis(), minOne, minTwo, maxOne, maxTwo);
 		}
@@ -589,19 +590,19 @@ public class VectorFan {
 		Ray2d ray1 = new Ray2d(one, two, 0, 0, 0, 0);
 		for (int i = 1; i <= coords.length; i++) {
 			Vector3f vec1 = i == coords.length ? coords[0] : coords[i];
-			ray1.originOne = RotationUtils.get(one, before1);
-			ray1.originTwo = RotationUtils.get(two, before1);
-			ray1.directionOne = RotationUtils.get(one, vec1) - RotationUtils.get(one, before1);
-			ray1.directionTwo = RotationUtils.get(two, vec1) - RotationUtils.get(two, before1);
+			ray1.originOne = VectorUtils.get(one, before1);
+			ray1.originTwo = VectorUtils.get(two, before1);
+			ray1.directionOne = VectorUtils.get(one, vec1) - VectorUtils.get(one, before1);
+			ray1.directionTwo = VectorUtils.get(two, vec1) - VectorUtils.get(two, before1);
 			
 			Vector3f before2 = other.coords[0];
 			Ray2d ray2 = new Ray2d(one, two, 0, 0, 0, 0);
 			for (int i2 = 1; i2 <= other.coords.length; i2++) {
 				Vector3f vec2 = i2 == other.coords.length ? other.coords[0] : other.coords[i2];
-				ray2.originOne = RotationUtils.get(one, before2);
-				ray2.originTwo = RotationUtils.get(two, before2);
-				ray2.directionOne = RotationUtils.get(one, vec2) - RotationUtils.get(one, before2);
-				ray2.directionTwo = RotationUtils.get(two, vec2) - RotationUtils.get(two, before2);
+				ray2.originOne = VectorUtils.get(one, before2);
+				ray2.originTwo = VectorUtils.get(two, before2);
+				ray2.directionOne = VectorUtils.get(one, vec2) - VectorUtils.get(one, before2);
+				ray2.directionTwo = VectorUtils.get(two, vec2) - VectorUtils.get(two, before2);
 				
 				try {
 					double t = ray1.intersectWhen(ray2);
@@ -643,10 +644,10 @@ public class VectorFan {
 		for (int i = 1; i <= cutter.coords.length; i++) {
 			boolean last = i == cutter.coords.length;
 			Vector3f vec = last ? cutter.coords[0] : cutter.coords[i];
-			ray.originOne = RotationUtils.get(one, before);
-			ray.originTwo = RotationUtils.get(two, before);
-			ray.directionOne = RotationUtils.get(one, vec) - RotationUtils.get(one, before);
-			ray.directionTwo = RotationUtils.get(two, vec) - RotationUtils.get(two, before);
+			ray.originOne = VectorUtils.get(one, before);
+			ray.originTwo = VectorUtils.get(two, before);
+			ray.directionOne = VectorUtils.get(one, vec) - VectorUtils.get(one, before);
+			ray.directionTwo = VectorUtils.get(two, vec) - VectorUtils.get(two, before);
 			
 			toCut = toCut.cut2d(ray, one, two, takeInner ? null : done, inverse);
 			if (toCut == null)
@@ -663,7 +664,7 @@ public class VectorFan {
 		Boolean allValue = null;
 		Boolean[] cutted = new Boolean[coords.length];
 		for (int i = 0; i < cutted.length; i++) {
-			cutted[i] = ray.isCoordinateToTheRight(RotationUtils.get(one, coords[i]), RotationUtils.get(two, coords[i]));
+			cutted[i] = ray.isCoordinateToTheRight(VectorUtils.get(one, coords[i]), VectorUtils.get(two, coords[i]));
 			if (inverse && cutted[i] != null)
 				cutted[i] = !cutted[i];
 			if (allTheSame) {
@@ -690,7 +691,7 @@ public class VectorFan {
 			}
 		}
 		
-		float thirdAxisValue = RotationUtils.get(RotationUtils.getDifferentAxis(one, two), coords[0]);
+		float thirdAxisValue = VectorUtils.get(RotationUtils.getDifferentAxis(one, two), coords[0]);
 		
 		List<Vector3f> left = new ArrayList<>();
 		List<Vector3f> right = new ArrayList<>();

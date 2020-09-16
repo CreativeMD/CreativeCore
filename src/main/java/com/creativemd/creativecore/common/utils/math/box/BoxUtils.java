@@ -5,6 +5,7 @@ import javax.vecmath.Vector3d;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.RotationUtils.BooleanRotation;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.collision.CollisionCoordinator;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 
@@ -69,7 +70,7 @@ public class BoxUtils {
 				
 				box.include(facing, length);
 				if (coordinator.translation != null)
-					box.include(facing, length + RotationUtils.get(facing.getAxis(), coordinator.translation));
+					box.include(facing, length + VectorUtils.get(facing.getAxis(), coordinator.translation));
 				
 				state = state.clockwise();
 				quarterRotation += 90;
@@ -87,7 +88,7 @@ public class BoxUtils {
 			
 			box.include(facing, length);
 			if (coordinator.translation != null)
-				box.include(facing, length + RotationUtils.get(facing.getAxis(), coordinator.translation));
+				box.include(facing, length + VectorUtils.get(facing.getAxis(), coordinator.translation));
 		}
 	}
 	
@@ -179,7 +180,7 @@ public class BoxUtils {
 			Vector3d vec = corners[i];
 			origin.transformPointToWorld(vec);
 			
-			double vectorValue = RotationUtils.get(axis, vec);
+			double vectorValue = VectorUtils.get(axis, vec);
 			if (selected == null || (positive ? vectorValue > value : vectorValue < value)) {
 				selected = BoxCorner.values()[i];
 				value = vectorValue;

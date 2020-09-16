@@ -8,7 +8,7 @@ import java.util.List;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.vec.VectorFan;
 
 import net.minecraft.util.EnumFacing.Axis;
@@ -35,15 +35,15 @@ public class IntersectionHelperAdvanced {
 	
 	public static List<Vector2f> getIntersectionShape(float minX, float minY, float maxX, float maxY, Axis one, Axis two, Vector3f[] corners) {
 		
-		float originOne = RotationUtils.get(one, corners[1]);
-		float originTwo = RotationUtils.get(two, corners[1]);
+		float originOne = VectorUtils.get(one, corners[1]);
+		float originTwo = VectorUtils.get(two, corners[1]);
 		
-		boolean inversed = (RotationUtils.get(one, corners[0]) - originOne) * (RotationUtils.get(two, corners[2]) - originTwo) - (RotationUtils.get(two, corners[0]) - originTwo) * (RotationUtils.get(one, corners[2]) - originOne) < 0;
+		boolean inversed = (VectorUtils.get(one, corners[0]) - originOne) * (VectorUtils.get(two, corners[2]) - originTwo) - (VectorUtils.get(two, corners[0]) - originTwo) * (VectorUtils.get(one, corners[2]) - originOne) < 0;
 		//inversed = !inversed;
 		// result array !!(is checked back, but only the first and last element, so you can also choose to cache those instead)!!
 		List<Vector2f> result = new ArrayList<>(8);
 		// cached previous corner !!(this is not the same as last result corner)!!
-		Vector2f prev = inversed ? new Vector2f(RotationUtils.get(one, corners[0]), RotationUtils.get(two, corners[0])) : new Vector2f(RotationUtils.get(one, corners[corners.length - 1]), RotationUtils.get(two, corners[corners.length - 1]));
+		Vector2f prev = inversed ? new Vector2f(VectorUtils.get(one, corners[0]), VectorUtils.get(two, corners[0])) : new Vector2f(VectorUtils.get(one, corners[corners.length - 1]), VectorUtils.get(two, corners[corners.length - 1]));
 		// cached current corner
 		Vector2f cur = null;
 		
@@ -59,7 +59,7 @@ public class IntersectionHelperAdvanced {
 		// now loop over all corners of projected structure
 		for (int ci = (inversed ? corners.length : 0); (inversed ? ci-- > 0 : ci < corners.length); ci += (inversed ? 0 : 1)) {
 			//for (int ci = inversed ? corners.length - 1 : 0; inversed ? ci >= 0 : ci < corners.length; ci += (inversed ? -1 : 1)) {
-			cur = new Vector2f(RotationUtils.get(one, corners[ci]), RotationUtils.get(two, corners[ci]));
+			cur = new Vector2f(VectorUtils.get(one, corners[ci]), VectorUtils.get(two, corners[ci]));
 			ray.reset();
 			
 			// check if prev & cur defenitly don't intersect)

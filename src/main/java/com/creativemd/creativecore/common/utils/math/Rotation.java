@@ -90,7 +90,7 @@ public enum Rotation {
 		this.clockwise = clockwise;
 		this.direction = clockwise ? 1 : -1;
 		this.vec = new Vector3d();
-		RotationUtils.setValue(vec, direction, axis);
+		VectorUtils.set(vec, direction, axis);
 	}
 	
 	public boolean getRotatedComponentPositive(Axis axis) {

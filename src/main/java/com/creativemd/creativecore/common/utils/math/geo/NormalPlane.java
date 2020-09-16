@@ -2,7 +2,7 @@ package com.creativemd.creativecore.common.utils.math.geo;
 
 import javax.vecmath.Vector3f;
 
-import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.vec.VectorFan;
 
 import net.minecraft.util.EnumFacing;
@@ -21,9 +21,9 @@ public class NormalPlane {
 	
 	public NormalPlane(Axis axis, float value, EnumFacing facing) {
 		this.origin = new Vector3f();
-		RotationUtils.setValue(origin, value, axis);
+		VectorUtils.set(origin, value, axis);
 		this.normal = new Vector3f();
-		RotationUtils.setValue(normal, facing.getAxisDirection().getOffset(), facing.getAxis());
+		VectorUtils.set(normal, facing.getAxisDirection().getOffset(), facing.getAxis());
 	}
 	
 	public Boolean isInFront(Vector3f vec) {
@@ -84,17 +84,17 @@ public class NormalPlane {
 	
 	public Float project(Axis one, Axis two, Axis axis, float valueOne, float valueTwo) {
 		Vector3f lineOrigin = new Vector3f();
-		RotationUtils.setValue(lineOrigin, valueOne, one);
-		RotationUtils.setValue(lineOrigin, valueTwo, two);
+		VectorUtils.set(lineOrigin, valueOne, one);
+		VectorUtils.set(lineOrigin, valueTwo, two);
 		
 		Vector3f lineDirection = new Vector3f();
-		RotationUtils.setValue(lineDirection, 1, axis);
+		VectorUtils.set(lineDirection, 1, axis);
 		
 		if (normal.dot(lineDirection) == 0)
 			return null;
 		
 		float t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
-		return RotationUtils.get(axis, lineOrigin) + RotationUtils.get(axis, lineDirection) * t;
+		return VectorUtils.get(axis, lineOrigin) + VectorUtils.get(axis, lineDirection) * t;
 	}
 	
 	@Override

@@ -4,7 +4,7 @@ import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
-import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.vec.IVecInt;
 import com.creativemd.creativecore.common.utils.math.vec.VectorFan.ParallelException;
 
@@ -24,8 +24,8 @@ public class Ray2d {
 	public Ray2d(Axis one, Axis two, Vector3d origin, double directionOne, double directionTwo) {
 		this.one = one;
 		this.two = two;
-		this.originOne = RotationUtils.get(one, origin);
-		this.originTwo = RotationUtils.get(two, origin);
+		this.originOne = VectorUtils.get(one, origin);
+		this.originTwo = VectorUtils.get(two, origin);
 		this.directionOne = directionOne;
 		this.directionTwo = directionTwo;
 	}
@@ -75,10 +75,10 @@ public class Ray2d {
 		this.one = one;
 		this.two = two;
 		
-		this.originOne = RotationUtils.get(one, first);
-		this.originTwo = RotationUtils.get(two, first);
-		this.directionOne = RotationUtils.get(one, second) - originOne;
-		this.directionTwo = RotationUtils.get(two, second) - originTwo;
+		this.originOne = VectorUtils.get(one, first);
+		this.originTwo = VectorUtils.get(two, first);
+		this.directionOne = VectorUtils.get(one, second) - originOne;
+		this.directionTwo = VectorUtils.get(two, second) - originTwo;
 	}
 	
 	public double getT(Axis axis, double value) {
@@ -130,18 +130,18 @@ public class Ray2d {
 	}
 	
 	public Vector3f intersect(Vector3f start, Vector3f end, float thirdValue) {
-		float lineOriginOne = RotationUtils.get(one, start);
-		float lineOriginTwo = RotationUtils.get(two, start);
-		float lineDirectionOne = RotationUtils.get(one, end) - RotationUtils.get(one, start);
-		float lineDirectionTwo = RotationUtils.get(two, end) - RotationUtils.get(two, start);
+		float lineOriginOne = VectorUtils.get(one, start);
+		float lineOriginTwo = VectorUtils.get(two, start);
+		float lineDirectionOne = VectorUtils.get(one, end) - VectorUtils.get(one, start);
+		float lineDirectionTwo = VectorUtils.get(two, end) - VectorUtils.get(two, start);
 		
 		if (directionOne * lineDirectionTwo - directionTwo * lineDirectionOne == 0)
 			return null;
 		
 		Vector3f vec = new Vector3f(thirdValue, thirdValue, thirdValue);
 		double t = ((lineOriginTwo - originTwo) * lineDirectionOne + originOne * lineDirectionTwo - lineOriginOne * lineDirectionTwo) / (lineDirectionOne * directionTwo - directionOne * lineDirectionTwo);
-		RotationUtils.setValue(vec, (float) (originOne + t * directionOne), one);
-		RotationUtils.setValue(vec, (float) (originTwo + t * directionTwo), two);
+		VectorUtils.set(vec, (float) (originOne + t * directionOne), one);
+		VectorUtils.set(vec, (float) (originTwo + t * directionTwo), two);
 		return vec;
 	}
 	
@@ -160,8 +160,8 @@ public class Ray2d {
 		
 		Vector3d vec = new Vector3d(thirdValue, thirdValue, thirdValue);
 		double t = ((line.originTwo - originTwo) * line.directionOne + originOne * line.directionTwo - line.originOne * line.directionTwo) / (line.directionOne * directionTwo - directionOne * line.directionTwo);
-		RotationUtils.setValue(vec, originOne + t * directionOne, one);
-		RotationUtils.setValue(vec, originTwo + t * directionTwo, two);
+		VectorUtils.set(vec, originOne + t * directionOne, one);
+		VectorUtils.set(vec, originTwo + t * directionTwo, two);
 		return vec;
 	}
 	

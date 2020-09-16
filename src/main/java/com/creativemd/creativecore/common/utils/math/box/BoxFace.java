@@ -4,6 +4,7 @@ import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
@@ -76,8 +77,8 @@ public enum BoxFace {
 	
 	public Boolean isFacingOutwards(boolean first, boolean inverted, Vector3f normal) {
 		BoxTriangle triangle = getTriangle(first, inverted);
-		float valueOne = RotationUtils.get(one, normal);
-		float valueTwo = RotationUtils.get(two, normal);
+		float valueOne = VectorUtils.get(one, normal);
+		float valueTwo = VectorUtils.get(two, normal);
 		Boolean outwardOne = valueOne == 0 ? null : valueOne > 0;
 		Boolean outwardTwo = valueTwo == 0 ? null : valueTwo > 0;
 		

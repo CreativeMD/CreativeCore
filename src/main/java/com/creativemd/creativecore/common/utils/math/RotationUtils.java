@@ -1,7 +1,5 @@
 package com.creativemd.creativecore.common.utils.math;
 
-import javax.vecmath.Tuple3d;
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
@@ -10,7 +8,6 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 public class RotationUtils {
@@ -48,110 +45,6 @@ public class RotationUtils {
 			return EnumFacing.NORTH;
 		}
 		return null;
-	}
-	
-	public static void setValue(Tuple3d vec, double value, Axis axis) {
-		switch (axis) {
-		case X:
-			vec.x = value;
-			break;
-		case Y:
-			vec.y = value;
-			break;
-		case Z:
-			vec.z = value;
-			break;
-		}
-	}
-	
-	public static void setValue(Tuple3f vec, float value, Axis axis) {
-		switch (axis) {
-		case X:
-			vec.x = value;
-			break;
-		case Y:
-			vec.y = value;
-			break;
-		case Z:
-			vec.z = value;
-			break;
-		}
-	}
-	
-	public static Vec3d setValue(Vec3d vec, double value, Axis axis) {
-		switch (axis) {
-		case X:
-			return new Vec3d(value, vec.y, vec.z);
-		case Y:
-			return new Vec3d(vec.x, value, vec.z);
-		case Z:
-			return new Vec3d(vec.x, vec.y, value);
-		}
-		return null;
-	}
-	
-	public static BlockPos setValue(BlockPos vec, int value, Axis axis) {
-		switch (axis) {
-		case X:
-			return new BlockPos(value, vec.getY(), vec.getZ());
-		case Y:
-			return new BlockPos(vec.getX(), value, vec.getZ());
-		case Z:
-			return new BlockPos(vec.getX(), vec.getY(), value);
-		}
-		return null;
-	}
-	
-	public static double get(Axis axis, Tuple3d vec) {
-		return get(axis, vec.x, vec.y, vec.z);
-	}
-	
-	public static float get(Axis axis, Tuple3f vec) {
-		return get(axis, vec.x, vec.y, vec.z);
-	}
-	
-	public static double get(Axis axis, Vec3d vec) {
-		return get(axis, vec.x, vec.y, vec.z);
-	}
-	
-	public static int get(Axis axis, Vec3i vec) {
-		return get(axis, vec.getX(), vec.getY(), vec.getZ());
-	}
-	
-	public static float get(Axis axis, float x, float y, float z) {
-		switch (axis) {
-		case X:
-			return x;
-		case Y:
-			return y;
-		case Z:
-			return z;
-		}
-		return 0;
-	}
-	
-	public static double get(Axis axis, double x, double y, double z) {
-		switch (axis) {
-		case X:
-			return x;
-		case Y:
-			return y;
-		case Z:
-			return z;
-		}
-		return 0;
-	}
-	
-	public static int get(Axis axis, int x, int y, int z) {
-		switch (axis) {
-		case X:
-			return x;
-		case Y:
-			return y;
-		case Z:
-			return z;
-		}
-		return 0;
 	}
 	
 	public static Axis getDifferentAxis(Axis one, Axis two) {
@@ -444,12 +337,12 @@ public class RotationUtils {
 		}
 		
 		public boolean is(Vector3d vec) {
-			return positiveOne == (RotationUtils.get(BooleanRotation.getOne(axis), vec) >= 0) && positiveTwo == (RotationUtils.get(BooleanRotation.getTwo(axis), vec) >= 0);
+			return positiveOne == (VectorUtils.get(BooleanRotation.getOne(axis), vec) >= 0) && positiveTwo == (VectorUtils.get(BooleanRotation.getTwo(axis), vec) >= 0);
 		}
 		
 		public static BooleanRotation getRotationState(Axis axis, Vector3d vec) {
-			boolean positiveOne = RotationUtils.get(BooleanRotation.getOne(axis), vec) >= 0;
-			boolean positiveTwo = RotationUtils.get(BooleanRotation.getTwo(axis), vec) >= 0;
+			boolean positiveOne = VectorUtils.get(BooleanRotation.getOne(axis), vec) >= 0;
+			boolean positiveTwo = VectorUtils.get(BooleanRotation.getTwo(axis), vec) >= 0;
 			
 			for (int i = 0; i < rotations[axis.ordinal()].length; i++) {
 				BooleanRotation rotation = rotations[axis.ordinal()][i];

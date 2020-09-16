@@ -5,7 +5,7 @@ import javax.vecmath.Vector3d;
 
 import org.lwjgl.opengl.GL11;
 
-import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.box.BoxCorner;
 import com.creativemd.creativecore.common.utils.math.box.OrientatedBoundingBox;
 
@@ -77,7 +77,7 @@ public interface IVecOrigin {
 	public IVecOrigin getParent();
 	
 	public default double translationCombined(Axis axis) {
-		return RotationUtils.get(axis, translation());
+		return VectorUtils.get(axis, translation());
 	}
 	
 	public default void transformPointToWorld(Vector3d vec) {
