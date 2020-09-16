@@ -5,6 +5,7 @@ import javax.vecmath.Vector3f;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumFacing.Axis;
 
 public class Ray3d {
 	
@@ -22,6 +23,20 @@ public class Ray3d {
 		this.origin = origin;
 		this.direction = new Vector3f();
 		RotationUtils.setValue(direction, facing.getAxisDirection().getOffset(), facing.getAxis());
+	}
+	
+	public void set(float x, float y, float z, float x2, float y2, float z2) {
+		origin.set(x, y, z);
+		direction.set(x2, y2, z2);
+		direction.sub(origin);
+	}
+	
+	public double getT(Axis axis, double value) {
+		return (value - RotationUtils.get(axis, origin)) / RotationUtils.get(axis, direction);
+	}
+	
+	public Vector3f get(float t) {
+		return new Vector3f(origin.x + direction.x * t, origin.y + direction.y * t, origin.z + direction.z * t);
 	}
 	
 }

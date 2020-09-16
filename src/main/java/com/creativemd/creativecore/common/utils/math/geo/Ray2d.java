@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.common.utils.math.geo;
 
+import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
@@ -39,13 +40,7 @@ public class Ray2d {
 	}
 	
 	public Ray2d(Axis one, Axis two, double startOne, double startTwo, double endOne, double endTwo) {
-		this.one = one;
-		this.two = two;
-		
-		this.originOne = startOne;
-		this.originTwo = startTwo;
-		this.directionOne = endOne - startOne;
-		this.directionTwo = endTwo - startTwo;
+		set(one, two, startOne, startTwo, endOne, endTwo);
 	}
 	
 	public double getOrigin(Axis axis) {
@@ -66,9 +61,37 @@ public class Ray2d {
 		return one;
 	}
 	
+	public void set(Axis one, Axis two, double startOne, double startTwo, double endOne, double endTwo) {
+		this.one = one;
+		this.two = two;
+		
+		this.originOne = startOne;
+		this.originTwo = startTwo;
+		this.directionOne = endOne - startOne;
+		this.directionTwo = endTwo - startTwo;
+	}
+	
+	public void set(Axis one, Axis two, Vector3f first, Vector3f second) {
+		this.one = one;
+		this.two = two;
+		
+		this.originOne = RotationUtils.get(one, first);
+		this.originTwo = RotationUtils.get(two, first);
+		this.directionOne = RotationUtils.get(one, second) - originOne;
+		this.directionTwo = RotationUtils.get(two, second) - originTwo;
+	}
+	
+	public double getT(Axis axis, double value) {
+		return (value - getOrigin(axis)) / getDirection(axis);
+	}
+	
 	public double get(Axis axis, double value) {
 		Axis other = getOther(axis);
 		return getOrigin(other) + getDirection(other) * (value - getOrigin(axis)) / getDirection(axis);
+	}
+	
+	public Vector2d get(double t) {
+		return new Vector2d(originOne + directionOne * t, originTwo + directionTwo * t);
 	}
 	
 	public Double getWithLimits(Axis axis, double value) {
@@ -140,5 +163,10 @@ public class Ray2d {
 		RotationUtils.setValue(vec, originOne + t * directionOne, one);
 		RotationUtils.setValue(vec, originTwo + t * directionTwo, two);
 		return vec;
+	}
+	
+	@Override
+	public String toString() {
+		return one + "," + two + ",[" + originOne + "," + originTwo + "],[" + directionOne + "," + directionTwo + "]";
 	}
 }

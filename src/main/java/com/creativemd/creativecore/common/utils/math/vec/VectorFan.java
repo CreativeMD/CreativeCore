@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
 import org.lwjgl.opengl.GL11;
@@ -13,6 +14,7 @@ import com.creativemd.creativecore.client.rendering.RenderBox.RenderInformationH
 import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
+import com.creativemd.creativecore.common.utils.math.collision.IntersectionHelperAdvanced;
 import com.creativemd.creativecore.common.utils.math.geo.NormalPlane;
 import com.creativemd.creativecore.common.utils.math.geo.Ray2d;
 import com.creativemd.creativecore.common.utils.math.geo.Ray3d;
@@ -22,7 +24,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing.Axis;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -49,13 +50,87 @@ public class VectorFan {
 		return coords.length;
 	}
 	
+	protected Vector3f[] cutMinMax(Axis one, Axis two, Axis axis, float minOne, float minTwo, float maxOne, float maxTwo) {
+		boolean allTheSame = true;
+		boolean allValue = false;
+		boolean[] inside = new boolean[coords.length];
+		
+		for (int i = 0; i < inside.length; i++) {
+			float valueOne = RotationUtils.get(one, coords[i]);
+			float valueTwo = RotationUtils.get(two, coords[i]);
+			
+			inside[i] = IntersectionHelperAdvanced.epsilionEqualsGreater(valueOne, minOne) && IntersectionHelperAdvanced.epsilionEqualsSmaller(valueOne, maxOne) && IntersectionHelperAdvanced.epsilionEqualsGreater(valueTwo, minTwo) && IntersectionHelperAdvanced.epsilionEqualsSmaller(valueTwo,
+			        maxTwo);
+			if (allTheSame) {
+				if (i == 0)
+					allValue = inside[i];
+				else if (allValue != inside[i])
+					allTheSame = false;
+			}
+		}
+		
+		if (allTheSame) {
+			if (allValue)
+				return coords;
+			else
+				return null;
+		}
+		List<Vector2f> shape = IntersectionHelperAdvanced.getIntersectionShape(minOne, minTwo, maxOne, maxTwo, one, two, coords);
+		if (shape == null)
+			return null;
+		
+		NormalPlane plane = createPlane();
+		Vector3f[] result = new Vector3f[shape.size()];
+		for (int i = 0; i < result.length; i++) {
+			Vector3f vec = new Vector3f();
+			Vector2f vec2d = shape.get(i);
+			RotationUtils.setValue(vec, vec2d.x, one);
+			RotationUtils.setValue(vec, vec2d.y, two);
+			RotationUtils.setValue(vec, plane.project(one, two, axis, vec2d.x, vec2d.y), axis);
+			result[i] = vec;
+		}
+		return result;
+	}
+	
 	@SideOnly(Side.CLIENT)
 	public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
 		int index = 0;
+		holder.normal = null;
+		Vector3f[] coords = this.coords;
+		if (!holder.getBox().allowOverlap && holder.hasBounds()) {
+			Axis one = RotationUtils.getDifferentAxisFirst(holder.facing.getAxis());
+			Axis two = RotationUtils.getDifferentAxisSecond(holder.facing.getAxis());
+			
+			float scaleOne;
+			float scaleTwo;
+			float offsetOne;
+			float offsetTwo;
+			if (holder.scaleAndOffset) {
+				scaleOne = 1 / RotationUtils.get(one, holder.scaleX, holder.scaleY, holder.scaleZ);
+				scaleTwo = 1 / RotationUtils.get(two, holder.scaleX, holder.scaleY, holder.scaleZ);
+				offsetOne = RotationUtils.get(one, holder.offsetX, holder.offsetY, holder.offsetZ);
+				offsetTwo = RotationUtils.get(two, holder.offsetX, holder.offsetY, holder.offsetZ);
+			} else {
+				scaleOne = 1;
+				scaleTwo = 1;
+				offsetOne = 0;
+				offsetTwo = 0;
+			}
+			
+			float minOne = RotationUtils.get(one, holder.minX, holder.minY, holder.minZ) * scaleOne - offsetOne;
+			float minTwo = RotationUtils.get(two, holder.minX, holder.minY, holder.minZ) * scaleTwo - offsetTwo;
+			float maxOne = RotationUtils.get(one, holder.maxX, holder.maxY, holder.maxZ) * scaleOne - offsetOne;
+			float maxTwo = RotationUtils.get(two, holder.maxX, holder.maxY, holder.maxZ) * scaleTwo - offsetTwo;
+			
+			coords = cutMinMax(one, two, holder.facing.getAxis(), minOne, minTwo, maxOne, maxTwo);
+		}
+		if (coords == null)
+			return;
 		while (index < coords.length - 3) {
 			generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
 			index += 2;
 		}
+		System.out.println(coords);
 		if (index < coords.length - 2)
 			generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
 	}
@@ -81,15 +156,17 @@ public class VectorFan {
 			float x;
 			float y;
 			float z;
+			
 			if (holder.scaleAndOffset) {
-				x = holder.facing.getAxis() == Axis.X || box.allowOverlap ? vec.x * holder.scaleX + holder.offsetX - holder.offset.getX() : MathHelper.clamp(vec.x * holder.scaleX + holder.offsetX - holder.offset.getX(), holder.minX, holder.maxX);
-				y = holder.facing.getAxis() == Axis.Y || box.allowOverlap ? vec.y * holder.scaleY + holder.offsetY - holder.offset.getY() : MathHelper.clamp(vec.y * holder.scaleY + holder.offsetY - holder.offset.getY(), holder.minY, holder.maxY);
-				z = holder.facing.getAxis() == Axis.Z || box.allowOverlap ? vec.z * holder.scaleZ + holder.offsetZ - holder.offset.getZ() : MathHelper.clamp(vec.z * holder.scaleZ + holder.offsetZ - holder.offset.getZ(), holder.minZ, holder.maxZ);
+				x = vec.x * holder.scaleX + holder.offsetX - holder.offset.getX();
+				y = vec.y * holder.scaleY + holder.offsetY - holder.offset.getY();
+				z = vec.z * holder.scaleZ + holder.offsetZ - holder.offset.getZ();
 			} else {
-				x = holder.facing.getAxis() == Axis.X || box.allowOverlap ? vec.x - holder.offset.getX() : MathHelper.clamp(vec.x - holder.offset.getX(), holder.minX, holder.maxX);
-				y = holder.facing.getAxis() == Axis.Y || box.allowOverlap ? vec.y - holder.offset.getY() : MathHelper.clamp(vec.y - holder.offset.getY(), holder.minY, holder.maxY);
-				z = holder.facing.getAxis() == Axis.Z || box.allowOverlap ? vec.z - holder.offset.getZ() : MathHelper.clamp(vec.z - holder.offset.getZ(), holder.minZ, holder.maxZ);
+				x = vec.x - holder.offset.getX();
+				y = vec.y - holder.offset.getY();
+				z = vec.z - holder.offset.getZ();
 			}
+			
 			float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
 			float oldY = Float.intBitsToFloat(quad.getVertexData()[index + 1]);
 			float oldZ = Float.intBitsToFloat(quad.getVertexData()[index + 2]);
@@ -194,73 +271,105 @@ public class VectorFan {
 	}
 	
 	public void cutWithoutCopy(NormalPlane plane) {
-		List<Vector3f> result = cutInternal(plane);
-		if (result != null)
-			coords = result.toArray(new Vector3f[result.size()]);
-		else
-			coords = null;
+		cutInternal(plane, false);
 	}
 	
 	public boolean isEmpty() {
 		return coords == null;
 	}
 	
-	protected List<Vector3f> cutInternal(NormalPlane plane) {
-		List<Vector3f> result = new ArrayList<>();
-		
-		boolean inside = false;
-		Boolean outsideBefore = null;
-		
-		for (int i = 0; i <= coords.length; i++) {
-			boolean last = i == coords.length;
-			Vector3f vec = last ? coords[0] : coords[i];
-			Boolean outside = plane.isInFront(vec);
-			
-			if (inside) {
-				if (outside == null || !outside) {
-					if (last)
-						continue;
-					add(result, vec);
-				} else {
-					if (BooleanUtils.isFalse(outsideBefore))
-						add(result, plane.intersect(last ? coords[coords.length - 1] : coords[i - 1], vec));
-					inside = false;
-				}
-			} else {
-				if (outside == null) {
-					if (!last)
-						add(result, vec);
-				} else if (!outside) {
-					if (BooleanUtils.isTrue(outsideBefore))
-						add(result, plane.intersect(last ? coords[coords.length - 1] : coords[i - 1], vec));
-					if (!last)
-						add(result, vec);
-					inside = true;
+	protected VectorFan cutInternal(NormalPlane plane, boolean copy) {
+		boolean allTheSame = true;
+		Boolean allValue = null;
+		Boolean[] cutted = new Boolean[coords.length];
+		for (int i = 0; i < cutted.length; i++) {
+			cutted[i] = plane.isInFront(coords[i]);
+			if (cutted[i] != null)
+				cutted[i] = !cutted[i];
+			if (allTheSame) {
+				if (i == 0)
+					allValue = cutted[i];
+				else {
+					if (allValue == null)
+						allValue = cutted[i];
+					else if (allValue != cutted[i] && cutted[i] != null)
+						allTheSame = false;
 				}
 			}
-			
-			outsideBefore = outside;
 		}
 		
-		if (result.isEmpty() || result.size() < 3)
+		if (allTheSame) {
+			if (allValue == null) {
+				if (!copy)
+					coords = null;
+				return null;
+			} else if (allValue)
+				return this;
+			else {
+				if (!copy)
+					coords = null;
+				return null;
+			}
+		}
+		
+		//List<Vector3f> left = new ArrayList<>();
+		List<Vector3f> right = new ArrayList<>();
+		Boolean beforeCutted = cutted[cutted.length - 1];
+		Vector3f beforeVec = coords[coords.length - 1];
+		
+		for (int i = 0; i < coords.length; i++) {
+			Vector3f vec = coords[i];
+			
+			if (BooleanUtils.isTrue(cutted[i])) {
+				if (BooleanUtils.isFalse(beforeCutted)) {
+					//Intersection
+					Vector3f intersection = plane.intersect(vec, beforeVec);
+					//left.add(intersection);
+					right.add(intersection);
+				}
+				right.add(vec);
+			} else if (BooleanUtils.isFalse(cutted[i])) {
+				if (BooleanUtils.isTrue(beforeCutted)) {
+					//Intersection
+					Vector3f intersection = plane.intersect(vec, beforeVec);
+					//left.add(intersection);
+					right.add(intersection);
+				}
+				//left.add(vec);
+			} else {
+				//left.add(vec);
+				right.add(vec);
+			}
+			
+			beforeCutted = cutted[i];
+			beforeVec = vec;
+		}
+		
+		//if (left.size() >= 3 && done != null)
+		//done.add(new VectorFan(left.toArray(new Vector3f[left.size()])));
+		
+		if (isPointBetween(right.get(right.size() - 2), right.get(0), right.get(right.size() - 1)))
+			right.remove(right.size() - 1);
+		
+		if (right.size() >= 3 && isPointBetween(right.get(right.size() - 1), right.get(1), right.get(0)))
+			right.remove(0);
+		
+		if (right.size() < 3) {
+			if (!copy)
+				coords = null;
 			return null;
+		}
 		
-		if (isPointBetween(result.get(result.size() - 2), result.get(0), result.get(result.size() - 1)))
-			result.remove(result.size() - 1);
+		if (copy)
+			return new VectorFan(right.toArray(new Vector3f[right.size()]));
 		
-		if (result.size() >= 3 && isPointBetween(result.get(result.size() - 1), result.get(1), result.get(0)))
-			result.remove(0);
-		
-		if (result.size() >= 3)
-			return result;
+		if (right != null)
+			coords = right.toArray(new Vector3f[right.size()]);
 		return null;
 	}
 	
 	public VectorFan cut(NormalPlane plane) {
-		List<Vector3f> result = cutInternal(plane);
-		if (result != null)
-			return new VectorFan(result.toArray(new Vector3f[result.size()]));
-		return null;
+		return cutInternal(plane, true);
 	}
 	
 	public void move(int x, int y, int z) {
@@ -394,6 +503,38 @@ public class VectorFan {
 		Vector3f normal = new Vector3f();
 		normal.cross(a, b);
 		return new NormalPlane(coords[0], normal);
+	}
+	
+	public NormalPlane createPlane(RenderInformationHolder holder) {
+		Vector3f a = new Vector3f(coords[1]);
+		a.sub(coords[0]);
+		if (holder.scaleAndOffset) {
+			a.x *= holder.scaleX;
+			a.y *= holder.scaleY;
+			a.z *= holder.scaleZ;
+		}
+		
+		Vector3f b = new Vector3f(coords[2]);
+		b.sub(coords[0]);
+		if (holder.scaleAndOffset) {
+			b.x *= holder.scaleX;
+			b.y *= holder.scaleY;
+			b.z *= holder.scaleZ;
+		}
+		
+		Vector3f normal = new Vector3f();
+		normal.cross(a, b);
+		
+		Vector3f origin = new Vector3f();
+		if (holder.scaleAndOffset) {
+			origin.x *= holder.scaleX;
+			origin.x += holder.offsetX;
+			origin.y *= holder.scaleY;
+			origin.y += holder.offsetY;
+			origin.z *= holder.scaleZ;
+			origin.z += holder.offsetZ;
+		}
+		return new NormalPlane(origin, normal);
 	}
 	
 	public boolean isInside(List<List<NormalPlane>> shapes) {
@@ -630,6 +771,280 @@ public class VectorFan {
 	
 	public static class ParallelException extends Exception {
 		
+	}
+	
+	private static enum InsideStatus {
+		INSIDE {
+			@Override
+			public boolean isInside() {
+				return true;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return false;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return false;
+			}
+		},
+		OUTSIDE_MIN_ONE {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return false;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return false;
+			}
+		},
+		OUTSIDE_MAX_ONE {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return false;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return false;
+			}
+		},
+		OUTSIDE_MIN_TWO {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return false;
+			}
+		},
+		OUTSIDE_MAX_TWO {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return true;
+			}
+		},
+		OUTSIDE_MIN_ONE_MIN_TWO {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return false;
+			}
+		},
+		OUTSIDE_MIN_ONE_MAX_TWO {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return true;
+			}
+		},
+		OUTSIDE_MAX_ONE_MIN_TWO {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return false;
+			}
+		},
+		OUTSIDE_MAX_ONE_MAX_TWO {
+			@Override
+			public boolean isInside() {
+				return false;
+			}
+			
+			@Override
+			public boolean isOutsideOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionOne() {
+				return true;
+			}
+			
+			@Override
+			public boolean isOutsideTwo() {
+				return true;
+			}
+			
+			@Override
+			public boolean outsideDirectionTwo() {
+				return true;
+			}
+		};
+		
+		public abstract boolean isInside();
+		
+		public abstract boolean isOutsideOne();
+		
+		public abstract boolean outsideDirectionOne();
+		
+		public abstract boolean isOutsideTwo();
+		
+		public abstract boolean outsideDirectionTwo();
+		
+		public static InsideStatus get(float one, float two, float minOne, float minTwo, float maxOne, float maxTwo) {
+			if (one >= minOne) {
+				if (one <= maxOne)
+					if (two >= minTwo)
+						if (two <= maxTwo)
+							return InsideStatus.INSIDE;
+						else
+							return InsideStatus.OUTSIDE_MAX_TWO;
+					else
+						return InsideStatus.OUTSIDE_MIN_TWO;
+				else if (two >= minTwo)
+					if (two <= maxTwo)
+						return InsideStatus.OUTSIDE_MAX_ONE;
+					else
+						return InsideStatus.OUTSIDE_MAX_ONE_MAX_TWO;
+				else
+					return InsideStatus.OUTSIDE_MAX_ONE_MIN_TWO;
+				
+			} else if (two >= minTwo)
+				if (two <= maxTwo)
+					return OUTSIDE_MIN_ONE;
+				else
+					return InsideStatus.OUTSIDE_MIN_ONE_MAX_TWO;
+			else
+				return InsideStatus.OUTSIDE_MIN_ONE_MIN_TWO;
+		}
 	}
 	
 }

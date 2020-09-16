@@ -12,6 +12,8 @@ import com.creativemd.creativecore.client.rendering.face.FaceRenderType;
 import com.creativemd.creativecore.client.rendering.face.IFaceRenderType;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.box.AlignedBox;
+import com.creativemd.creativecore.common.utils.math.geo.NormalPlane;
+import com.creativemd.creativecore.common.utils.math.geo.Ray2d;
 import com.creativemd.creativecore.common.utils.math.vec.VectorFan;
 import com.creativemd.creativecore.common.utils.mc.BlockUtils;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
@@ -476,6 +478,9 @@ public class RenderBox extends AlignedBox {
 		
 		public BakedQuad quad;
 		
+		public NormalPlane normal;
+		public Ray2d ray = new Ray2d(Axis.X, Axis.Y, 0, 0, 0, 0);
+		
 		public final boolean scaleAndOffset;
 		
 		public final float offsetX;
@@ -545,6 +550,18 @@ public class RenderBox extends AlignedBox {
 		
 		public RenderBox getBox() {
 			return RenderBox.this;
+		}
+		
+		public boolean hasBounds() {
+			switch (facing.getAxis()) {
+			case X:
+				return minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
+			case Y:
+				return minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
+			case Z:
+				return minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
+			}
+			return false;
 		}
 	}
 	

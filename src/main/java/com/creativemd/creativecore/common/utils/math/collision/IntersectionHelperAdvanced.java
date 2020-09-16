@@ -2,6 +2,7 @@ package com.creativemd.creativecore.common.utils.math.collision;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.vecmath.Vector2f;
@@ -33,10 +34,16 @@ public class IntersectionHelperAdvanced {
 	public static final int NONE = 0;
 	
 	public static List<Vector2f> getIntersectionShape(float minX, float minY, float maxX, float maxY, Axis one, Axis two, Vector3f[] corners) {
+		
+		float originOne = RotationUtils.get(one, corners[1]);
+		float originTwo = RotationUtils.get(two, corners[1]);
+		
+		boolean inversed = (RotationUtils.get(one, corners[0]) - originOne) * (RotationUtils.get(two, corners[2]) - originTwo) - (RotationUtils.get(two, corners[0]) - originTwo) * (RotationUtils.get(one, corners[2]) - originOne) < 0;
+		//inversed = !inversed;
 		// result array !!(is checked back, but only the first and last element, so you can also choose to cache those instead)!!
 		List<Vector2f> result = new ArrayList<>(8);
 		// cached previous corner !!(this is not the same as last result corner)!!
-		Vector2f prev = new Vector2f(RotationUtils.get(one, corners[corners.length - 1]), RotationUtils.get(two, corners[corners.length - 1]));
+		Vector2f prev = inversed ? new Vector2f(RotationUtils.get(one, corners[0]), RotationUtils.get(two, corners[0])) : new Vector2f(RotationUtils.get(one, corners[corners.length - 1]), RotationUtils.get(two, corners[corners.length - 1]));
 		// cached current corner
 		Vector2f cur = null;
 		
@@ -50,7 +57,8 @@ public class IntersectionHelperAdvanced {
 		Ray ray = new Ray();
 		
 		// now loop over all corners of projected structure
-		for (int ci = 0; ci < corners.length; ci++) {
+		for (int ci = (inversed ? corners.length : 0); (inversed ? ci-- > 0 : ci < corners.length); ci += (inversed ? 0 : 1)) {
+			//for (int ci = inversed ? corners.length - 1 : 0; inversed ? ci >= 0 : ci < corners.length; ci += (inversed ? -1 : 1)) {
 			cur = new Vector2f(RotationUtils.get(one, corners[ci]), RotationUtils.get(two, corners[ci]));
 			ray.reset();
 			
@@ -112,7 +120,7 @@ public class IntersectionHelperAdvanced {
 						// perpendicular to one side, so add and bail
 						if (!((epsilionEqualsSmaller(minX, prev.x) && epsilionEqualsSmaller(prev.x, maxX) && epsilionEqualsSmaller(minY, prev.y) && epsilionEqualsSmaller(prev.y, maxY)) || (prev.x < minX && epsilionEquals(cur.x, minX)) || (prev.x > maxX && epsilionEquals(cur.x, maxX))))
 							postfix.add(getClosestNormalCorner(minX, minY, maxX, maxY, prev));
-						if (!((epsilionEqualsSmaller(minX, cur.x) && epsilionEqualsSmaller(cur.x, maxX) && epsilionEqualsSmaller(minY, cur.y) && epsilionEqualsSmaller(cur.y, minY)) || (cur.x < minX && epsilionEquals(prev.x, minX)) || (cur.x > maxX && epsilionEquals(prev.x, maxX))))
+						if (!((epsilionEqualsSmaller(minX, cur.x) && epsilionEqualsSmaller(cur.x, maxX) && epsilionEqualsSmaller(minY, cur.y) && epsilionEqualsSmaller(cur.y, maxY)) || (cur.x < minX && epsilionEquals(prev.x, minX)) || (cur.x > maxX && epsilionEquals(prev.x, maxX))))
 							postfix.add(getClosestNormalCorner(minX, minY, maxX, maxY, cur));
 					} else {
 						// otherwise, defenitly a T side 
@@ -333,7 +341,8 @@ public class IntersectionHelperAdvanced {
 			} else
 				result = Arrays.asList(new Vector2f(minX, minY), new Vector2f(minX, maxY), new Vector2f(maxX, maxY), new Vector2f(maxX, minY));
 		}
-		
+		if (inversed)
+			Collections.reverse(result);
 		// we do actually need to return something :P
 		return result;
 	}

@@ -82,6 +82,21 @@ public class NormalPlane {
 		return point;
 	}
 	
+	public Float project(Axis one, Axis two, Axis axis, float valueOne, float valueTwo) {
+		Vector3f lineOrigin = new Vector3f();
+		RotationUtils.setValue(lineOrigin, valueOne, one);
+		RotationUtils.setValue(lineOrigin, valueTwo, two);
+		
+		Vector3f lineDirection = new Vector3f();
+		RotationUtils.setValue(lineDirection, 1, axis);
+		
+		if (normal.dot(lineDirection) == 0)
+			return null;
+		
+		float t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
+		return RotationUtils.get(axis, lineOrigin) + RotationUtils.get(axis, lineDirection) * t;
+	}
+	
 	@Override
 	public String toString() {
 		return "[o:" + origin + ",n:" + normal + "]";
