@@ -34,8 +34,8 @@ public enum BoxFace {
 		this.facing = facing;
 		this.corners = corners;
 		
-		this.one = RotationUtils.getDifferentAxisFirst(facing.getAxis());
-		this.two = RotationUtils.getDifferentAxisSecond(facing.getAxis());
+		this.one = RotationUtils.getOne(facing.getAxis());
+		this.two = RotationUtils.getTwo(facing.getAxis());
 		
 		this.triangleFirst = new BoxTriangle(new BoxCorner[] { corners[0], corners[1], corners[2] });
 		this.triangleFirstInv = new BoxTriangle(new BoxCorner[] { corners[0], corners[1], corners[3] });

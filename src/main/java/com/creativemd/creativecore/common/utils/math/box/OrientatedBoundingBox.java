@@ -242,8 +242,8 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		EnumFacing facing = EnumFacing.getFacingFromAxis(!positive ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, axis);
 		double closestValue = getValueOfFacing(other, facing.getOpposite());
 		
-		Axis one = RotationUtils.getDifferentAxisFirst(axis);
-		Axis two = RotationUtils.getDifferentAxisSecond(axis);
+		Axis one = RotationUtils.getOne(axis);
+		Axis two = RotationUtils.getTwo(axis);
 		
 		double minOne = getMin(other, one);
 		double minTwo = getMin(other, two);
@@ -490,8 +490,8 @@ public class OrientatedBoundingBox extends CreativeAxisAlignedBB {
 		if (origin.isRotated())
 			return calculateOffsetRotated(other, axis, offset);
 		
-		Axis one = RotationUtils.getDifferentAxisFirst(axis);
-		Axis two = RotationUtils.getDifferentAxisSecond(axis);
+		Axis one = RotationUtils.getOne(axis);
+		Axis two = RotationUtils.getTwo(axis);
 		
 		if (getMax(other, one) > getMinTranslated(one) && getMin(other, one) < getMaxTranslated(one) && getMax(other, two) > getMinTranslated(two) && getMin(other, two) < getMaxTranslated(two)) {
 			if (offset > 0.0D && getMax(other, axis) <= getMinTranslated(axis)) {

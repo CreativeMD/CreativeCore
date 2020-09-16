@@ -47,7 +47,7 @@ public class RotationUtils {
 		return null;
 	}
 	
-	public static Axis getDifferentAxis(Axis one, Axis two) {
+	public static Axis getThird(Axis one, Axis two) {
 		switch (one) {
 		case X:
 			if (two == Axis.Y)
@@ -65,7 +65,7 @@ public class RotationUtils {
 		return null;
 	}
 	
-	public static Axis getDifferentAxisFirst(Axis axis) {
+	public static Axis getOne(Axis axis) {
 		switch (axis) {
 		case X:
 			return Axis.Y;
@@ -77,7 +77,7 @@ public class RotationUtils {
 		return axis;
 	}
 	
-	public static Axis getDifferentAxisSecond(Axis axis) {
+	public static Axis getTwo(Axis axis) {
 		switch (axis) {
 		case X:
 			return Axis.Z;

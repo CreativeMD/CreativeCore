@@ -99,8 +99,8 @@ public class VectorFan {
 		holder.normal = null;
 		Vector3f[] coords = this.coords;
 		if (!holder.getBox().allowOverlap && holder.hasBounds()) {
-			Axis one = RotationUtils.getDifferentAxisFirst(holder.facing.getAxis());
-			Axis two = RotationUtils.getDifferentAxisSecond(holder.facing.getAxis());
+			Axis one = RotationUtils.getOne(holder.facing.getAxis());
+			Axis two = RotationUtils.getTwo(holder.facing.getAxis());
 			
 			float scaleOne;
 			float scaleTwo;
@@ -691,7 +691,7 @@ public class VectorFan {
 			}
 		}
 		
-		float thirdAxisValue = VectorUtils.get(RotationUtils.getDifferentAxis(one, two), coords[0]);
+		float thirdAxisValue = VectorUtils.get(RotationUtils.getThird(one, two), coords[0]);
 		
 		List<Vector3f> left = new ArrayList<>();
 		List<Vector3f> right = new ArrayList<>();

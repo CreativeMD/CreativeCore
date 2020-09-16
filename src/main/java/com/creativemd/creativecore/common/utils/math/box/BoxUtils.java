@@ -173,8 +173,8 @@ public class BoxUtils {
 		BoxCorner selected = null;
 		Axis axis = facing.getAxis();
 		
-		Axis one = RotationUtils.getDifferentAxisFirst(axis);
-		Axis two = RotationUtils.getDifferentAxisSecond(axis);
+		Axis one = RotationUtils.getOne(axis);
+		Axis two = RotationUtils.getTwo(axis);
 		
 		for (int i = 0; i < corners.length; i++) {
 			Vector3d vec = corners[i];
