@@ -131,7 +131,6 @@ public class VectorFan {
 			generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
 			index += 2;
 		}
-		System.out.println(coords);
 		if (index < coords.length - 2)
 			generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
 	}
