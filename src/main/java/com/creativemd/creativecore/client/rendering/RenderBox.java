@@ -585,6 +585,11 @@ public class RenderBox extends AlignedBox {
 				generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
 		}
 		
+		@Override
+		protected boolean doMinMaxLate() {
+			return true;
+		}
+		
 	}
 	
 }

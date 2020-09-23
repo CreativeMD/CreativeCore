@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -162,6 +163,15 @@ public class VectorFan {
 				z = vec.z - holder.offset.getZ();
 			}
 			
+			if (doMinMaxLate() && !box.allowOverlap) {
+				if (holder.facing.getAxis() != Axis.X)
+					x = MathHelper.clamp(x, holder.minX, holder.maxX);
+				if (holder.facing.getAxis() != Axis.Y)
+					y = MathHelper.clamp(y, holder.minY, holder.maxY);
+				if (holder.facing.getAxis() != Axis.Z)
+					z = MathHelper.clamp(z, holder.minZ, holder.maxZ);
+			}
+			
 			float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
 			float oldY = Float.intBitsToFloat(quad.getVertexData()[index + 1]);
 			float oldZ = Float.intBitsToFloat(quad.getVertexData()[index + 2]);
@@ -188,6 +198,10 @@ public class VectorFan {
 			quad.getVertexData()[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertexData()[uvIndex + 1]) - vOffset);
 		}
 		quads.add(quad);
+	}
+	
+	protected boolean doMinMaxLate() {
+		return false;
 	}
 	
 	public void renderPreview(int red, int green, int blue, int alpha) {
