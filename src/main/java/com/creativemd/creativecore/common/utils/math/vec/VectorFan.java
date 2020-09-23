@@ -15,7 +15,7 @@ import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
 import com.creativemd.creativecore.common.utils.math.BooleanUtils;
 import com.creativemd.creativecore.common.utils.math.RotationUtils;
 import com.creativemd.creativecore.common.utils.math.VectorUtils;
-import com.creativemd.creativecore.common.utils.math.collision.IntersectionHelperAdvanced;
+import com.creativemd.creativecore.common.utils.math.collision.IntersectionHelperSolid;
 import com.creativemd.creativecore.common.utils.math.geo.NormalPlane;
 import com.creativemd.creativecore.common.utils.math.geo.Ray2d;
 import com.creativemd.creativecore.common.utils.math.geo.Ray3d;
@@ -33,7 +33,7 @@ public class VectorFan {
 	
 	public static final float EPSILON = 0.00001F;
 	
-	private Vector3f[] coords;
+	protected Vector3f[] coords;
 	
 	public VectorFan(Vector3f[] coords) {
 		this.coords = coords;
@@ -60,8 +60,7 @@ public class VectorFan {
 			float valueOne = VectorUtils.get(one, coords[i]);
 			float valueTwo = VectorUtils.get(two, coords[i]);
 			
-			inside[i] = IntersectionHelperAdvanced.epsilionEqualsGreater(valueOne, minOne) && IntersectionHelperAdvanced.epsilionEqualsSmaller(valueOne, maxOne) && IntersectionHelperAdvanced.epsilionEqualsGreater(valueTwo, minTwo) && IntersectionHelperAdvanced.epsilionEqualsSmaller(valueTwo,
-			        maxTwo);
+			inside[i] = valueOne >= minOne && valueOne <= maxOne && valueTwo >= minTwo && valueTwo <= maxTwo;
 			if (allTheSame) {
 				if (i == 0)
 					allValue = inside[i];
@@ -70,13 +69,9 @@ public class VectorFan {
 			}
 		}
 		
-		if (allTheSame) {
-			if (allValue)
-				return coords;
-			else
-				return null;
-		}
-		List<Vector2f> shape = IntersectionHelperAdvanced.getIntersectionShape(minOne, minTwo, maxOne, maxTwo, one, two, coords);
+		if (allTheSame && allValue)
+			return coords;
+		List<Vector2f> shape = IntersectionHelperSolid.cutMinMax(one, two, minOne, minTwo, maxOne, maxTwo, coords);
 		if (shape == null)
 			return null;
 		
@@ -95,7 +90,6 @@ public class VectorFan {
 	
 	@SideOnly(Side.CLIENT)
 	public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
-		int index = 0;
 		holder.normal = null;
 		Vector3f[] coords = this.coords;
 		if (!holder.getBox().allowOverlap && holder.hasBounds()) {
@@ -127,6 +121,7 @@ public class VectorFan {
 		}
 		if (coords == null)
 			return;
+		int index = 0;
 		while (index < coords.length - 3) {
 			generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
 			index += 2;
@@ -771,280 +766,6 @@ public class VectorFan {
 	
 	public static class ParallelException extends Exception {
 		
-	}
-	
-	private static enum InsideStatus {
-		INSIDE {
-			@Override
-			public boolean isInside() {
-				return true;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return false;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return false;
-			}
-		},
-		OUTSIDE_MIN_ONE {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return false;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return false;
-			}
-		},
-		OUTSIDE_MAX_ONE {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return false;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return false;
-			}
-		},
-		OUTSIDE_MIN_TWO {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return false;
-			}
-		},
-		OUTSIDE_MAX_TWO {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return true;
-			}
-		},
-		OUTSIDE_MIN_ONE_MIN_TWO {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return false;
-			}
-		},
-		OUTSIDE_MIN_ONE_MAX_TWO {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return true;
-			}
-		},
-		OUTSIDE_MAX_ONE_MIN_TWO {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return false;
-			}
-		},
-		OUTSIDE_MAX_ONE_MAX_TWO {
-			@Override
-			public boolean isInside() {
-				return false;
-			}
-			
-			@Override
-			public boolean isOutsideOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionOne() {
-				return true;
-			}
-			
-			@Override
-			public boolean isOutsideTwo() {
-				return true;
-			}
-			
-			@Override
-			public boolean outsideDirectionTwo() {
-				return true;
-			}
-		};
-		
-		public abstract boolean isInside();
-		
-		public abstract boolean isOutsideOne();
-		
-		public abstract boolean outsideDirectionOne();
-		
-		public abstract boolean isOutsideTwo();
-		
-		public abstract boolean outsideDirectionTwo();
-		
-		public static InsideStatus get(float one, float two, float minOne, float minTwo, float maxOne, float maxTwo) {
-			if (one >= minOne) {
-				if (one <= maxOne)
-					if (two >= minTwo)
-						if (two <= maxTwo)
-							return InsideStatus.INSIDE;
-						else
-							return InsideStatus.OUTSIDE_MAX_TWO;
-					else
-						return InsideStatus.OUTSIDE_MIN_TWO;
-				else if (two >= minTwo)
-					if (two <= maxTwo)
-						return InsideStatus.OUTSIDE_MAX_ONE;
-					else
-						return InsideStatus.OUTSIDE_MAX_ONE_MAX_TWO;
-				else
-					return InsideStatus.OUTSIDE_MAX_ONE_MIN_TWO;
-				
-			} else if (two >= minTwo)
-				if (two <= maxTwo)
-					return OUTSIDE_MIN_ONE;
-				else
-					return InsideStatus.OUTSIDE_MIN_ONE_MAX_TWO;
-			else
-				return InsideStatus.OUTSIDE_MIN_ONE_MIN_TWO;
-		}
 	}
 	
 }

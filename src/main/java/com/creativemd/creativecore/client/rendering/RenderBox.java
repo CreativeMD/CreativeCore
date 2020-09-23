@@ -35,12 +35,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderBox extends AlignedBox {
 	
-	private static final VectorFan DOWN = new VectorFan(new Vector3f[] { new Vector3f(0, 0, 1), new Vector3f(0, 0, 0), new Vector3f(1, 0, 0), new Vector3f(1, 0, 1) });
-	private static final VectorFan UP = new VectorFan(new Vector3f[] { new Vector3f(0, 1, 0), new Vector3f(0, 1, 1), new Vector3f(1, 1, 1), new Vector3f(1, 1, 0) });
-	private static final VectorFan NORTH = new VectorFan(new Vector3f[] { new Vector3f(1, 1, 0), new Vector3f(1, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0) });
-	private static final VectorFan SOUTH = new VectorFan(new Vector3f[] { new Vector3f(0, 1, 1), new Vector3f(0, 0, 1), new Vector3f(1, 0, 1), new Vector3f(1, 1, 1) });
-	private static final VectorFan WEST = new VectorFan(new Vector3f[] { new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(0, 1, 1) });
-	private static final VectorFan EAST = new VectorFan(new Vector3f[] { new Vector3f(1, 1, 1), new Vector3f(1, 0, 1), new Vector3f(1, 0, 0), new Vector3f(1, 1, 0) });
+	private static final VectorFan DOWN = new VectorFanSimple(new Vector3f[] { new Vector3f(0, 0, 1), new Vector3f(0, 0, 0), new Vector3f(1, 0, 0), new Vector3f(1, 0, 1) });
+	private static final VectorFan UP = new VectorFanSimple(new Vector3f[] { new Vector3f(0, 1, 0), new Vector3f(0, 1, 1), new Vector3f(1, 1, 1), new Vector3f(1, 1, 0) });
+	private static final VectorFan NORTH = new VectorFanSimple(new Vector3f[] { new Vector3f(1, 1, 0), new Vector3f(1, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0, 1, 0) });
+	private static final VectorFan SOUTH = new VectorFanSimple(new Vector3f[] { new Vector3f(0, 1, 1), new Vector3f(0, 0, 1), new Vector3f(1, 0, 1), new Vector3f(1, 1, 1) });
+	private static final VectorFan WEST = new VectorFanSimple(new Vector3f[] { new Vector3f(0, 1, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, 1), new Vector3f(0, 1, 1) });
+	private static final VectorFan EAST = new VectorFanSimple(new Vector3f[] { new Vector3f(1, 1, 1), new Vector3f(1, 0, 1), new Vector3f(1, 0, 0), new Vector3f(1, 1, 0) });
 	
 	public Block block;
 	public int meta = 0;
@@ -328,6 +328,7 @@ public class RenderBox extends AlignedBox {
 		
 		List<BakedQuad> quads = new ArrayList<>();
 		for (int i = 0; i < blockQuads.size(); i++) {
+			
 			holder.setQuad(blockQuads.get(i), overrideTint, defaultColor);
 			
 			if (!isEmissive && OptifineHelper.isEmissive(holder.quad.getSprite()))
@@ -563,6 +564,27 @@ public class RenderBox extends AlignedBox {
 			}
 			return false;
 		}
+	}
+	
+	private static class VectorFanSimple extends VectorFan {
+		
+		public VectorFanSimple(Vector3f[] coords) {
+			super(coords);
+			
+		}
+		
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
+			int index = 0;
+			while (index < coords.length - 3) {
+				generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
+				index += 2;
+			}
+			if (index < coords.length - 2)
+				generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
+		}
+		
 	}
 	
 }

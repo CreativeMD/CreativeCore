@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.utils.math.geo;
 
 import javax.vecmath.Vector2d;
+import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
@@ -92,6 +93,10 @@ public class Ray2d {
 	
 	public Vector2d get(double t) {
 		return new Vector2d(originOne + directionOne * t, originTwo + directionTwo * t);
+	}
+	
+	public Vector2f getFloat(double t) {
+		return new Vector2f((float) (originOne + directionOne * t), (float) (originTwo + directionTwo * t));
 	}
 	
 	public Double getWithLimits(Axis axis, double value) {
