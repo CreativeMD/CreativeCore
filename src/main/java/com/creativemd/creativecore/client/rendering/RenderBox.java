@@ -447,11 +447,7 @@ public class RenderBox extends AlignedBox {
 			red = green = blue = 0;
 		
 		GlStateManager.pushMatrix();
-		if (scaleAndOffsetQuads(null)) {
-			GlStateManager.translate(x + minX, y + minY, z + minZ);
-			GlStateManager.scale(maxX - minX, maxY - minY, maxZ - minZ);
-		} else
-			GlStateManager.translate(x, y, z);
+		setupPreviewRendering(x, y, z);
 		
 		for (int i = 0; i < EnumFacing.VALUES.length; i++) {
 			Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);

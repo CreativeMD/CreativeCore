@@ -18,9 +18,8 @@ public class InventoryUtils {
 	
 	public static NBTTagCompound saveInventoryBasic(IInventory basic) {
 		ItemStack[] stacks = new ItemStack[basic.getSizeInventory()];
-		for (int i = 0; i < stacks.length; i++) {
+		for (int i = 0; i < stacks.length; i++)
 			stacks[i] = basic.getStackInSlot(i);
-		}
 		return saveInventory(stacks);
 	}
 	
@@ -299,6 +298,22 @@ public class InventoryUtils {
 			inventory.setInventorySlotContents(i, i < sorting.size() ? sorting.get(i) : ItemStack.EMPTY);
 		}
 		
+	}
+	
+	public static String toString(IInventory inventory) {
+		String result = "[";
+		boolean first = true;
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (!stack.isEmpty()) {
+				if (first)
+					first = false;
+				else
+					result += ",";
+				result += stack.toString();
+			}
+		}
+		return result + "]";
 	}
 	
 }
