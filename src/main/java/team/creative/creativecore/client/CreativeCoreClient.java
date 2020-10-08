@@ -1,15 +1,22 @@
 package team.creative.creativecore.client;
 
+import java.util.function.Predicate;
+
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.resource.IResourceType;
+import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import team.creative.creativecore.client.command.ClientCommandRegistry;
+import team.creative.creativecore.common.gui.style.GuiStyle;
 
 public class CreativeCoreClient {
 	
@@ -20,6 +27,18 @@ public class CreativeCoreClient {
 			mc.player.getCommandSource().sendFeedback(new StringTextComponent("Successful!"), false);
 			return 1;
 		}));
+		
+		GuiStyle.reload();
+		Minecraft minecraft = Minecraft.getInstance();
+		IReloadableResourceManager reloadableResourceManager = (IReloadableResourceManager) minecraft.getResourceManager();
+		
+		reloadableResourceManager.addReloadListener(new ISelectiveResourceReloadListener() {
+			
+			@Override
+			public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+				GuiStyle.reload();
+			}
+		});
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)

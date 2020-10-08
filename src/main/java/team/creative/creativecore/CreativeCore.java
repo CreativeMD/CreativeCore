@@ -38,6 +38,7 @@ public class CreativeCore {
 	private void client(final FMLClientSetupEvent event) {
 		MinecraftForge.EVENT_BUS.register(CreativeCoreClient.class);
 		CreativeCoreClient.init(event);
+		
 	}
 	
 	private void init(final FMLCommonSetupEvent event) {
