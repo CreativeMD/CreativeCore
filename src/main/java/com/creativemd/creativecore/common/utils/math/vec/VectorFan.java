@@ -614,12 +614,17 @@ public class VectorFan {
 				
 				try {
 					double t = ray1.intersectWhen(ray2);
-					if (t > 0 && t < 1)
+					double otherT = ray2.intersectWhen(ray1);
+					if (t > EPSILON && t < 1 - EPSILON && otherT > EPSILON && otherT < 1 - EPSILON)
 						return true;
 				} catch (ParallelException e) {
-					parrallel++;
-					if (parrallel > 1)
-						return true;
+					double startT = ray1.getT(one, ray2.originOne);
+					double endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
+					if ((startT > 0 && startT < 1) || endT > 0 && endT < 1) {
+						parrallel++;
+						if (parrallel > 1)
+							return true;
+					}
 				}
 				
 				before2 = vec2;
