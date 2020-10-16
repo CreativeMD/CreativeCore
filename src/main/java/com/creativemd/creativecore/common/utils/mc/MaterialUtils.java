@@ -1,4 +1,4 @@
-package com.creativemd.creativecore.common.gui.mc;
+package com.creativemd.creativecore.common.utils.mc;
 
 import java.util.HashMap;
 
