@@ -7,30 +7,21 @@ public class GuiStateButton extends GuiButton {
 	
 	public String[] states;
 	
-	public GuiStateButton(String name, String caption, int x, int y, int width, int height, String... states) {
+	public GuiStateButton(String name, int index, int x, int y, int width, int height, String... states) {
 		super(name, x, y, width, height);
-		this.caption = caption;
+		if (index >= 0 && index < states.length)
+			this.caption = states[index];
+		else
+			this.caption = states[0];
 		this.states = states;
 	}
 	
-	public GuiStateButton(String name, int index, int x, int y, int width, int height, String... states) {
-		this(name, states[index], x, y, width, height, states);
-	}
-	
-	public GuiStateButton(String name, String caption, int x, int y, int width, String... states) {
-		this(name, caption, x, y, width, 14, states);
-	}
-	
 	public GuiStateButton(String name, int index, int x, int y, int width, String... states) {
-		this(name, states[index], x, y, width, 14, states);
-	}
-	
-	public GuiStateButton(String name, String caption, int x, int y, String... states) {
-		this(name, caption, x, y, GuiRenderHelper.instance.getStringWidth(caption), states);
+		this(name, index, x, y, width, 14, states);
 	}
 	
 	public GuiStateButton(String name, int index, int x, int y, String... states) {
-		this(name, states[index], x, y, GuiRenderHelper.instance.getStringWidth(states[index]), states);
+		this(name, index, x, y, GuiRenderHelper.instance.getStringWidth(states[index]), states);
 	}
 	
 	public void setState(int index) {
