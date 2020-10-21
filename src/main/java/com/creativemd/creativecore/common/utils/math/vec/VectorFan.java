@@ -457,6 +457,41 @@ public class VectorFan {
 		return false;
 	}
 	
+	private static boolean equals(Vector3f vec, Vector3f other, Axis one, Axis two) {
+		float diff = VectorUtils.get(one, vec) - VectorUtils.get(one, other);
+		if (Float.isNaN(diff))
+			return false;
+		if ((diff < 0 ? -diff : diff) > VectorFan.EPSILON)
+			return false;
+		
+		diff = VectorUtils.get(two, vec) - VectorUtils.get(two, other);
+		if (Float.isNaN(diff))
+			return false;
+		if ((diff < 0 ? -diff : diff) > VectorFan.EPSILON)
+			return false;
+		return true;
+	}
+	
+	public boolean equalsIgnoreOrder(VectorFan other, Axis toIgnore) {
+		if (coords.length != other.coords.length)
+			return false;
+		
+		Axis one = RotationUtils.getOne(toIgnore);
+		Axis two = RotationUtils.getTwo(toIgnore);
+		
+		for (int i = 0; i < coords.length; i++) {
+			boolean found = false;
+			for (int j = 0; j < other.coords.length; j++)
+				if (equals(coords[i], other.coords[j], one, two)) {
+					found = true;
+					break;
+				}
+			if (!found)
+				return false;
+		}
+		return true;
+	}
+	
 	protected static Vec3d calculateIntercept(Ray3d ray, Vector3f triangle0, Vector3f triangle1, Vector3f triangle2) throws ParallelException {
 		Vector3f edge1 = new Vector3f();
 		Vector3f edge2 = new Vector3f();
