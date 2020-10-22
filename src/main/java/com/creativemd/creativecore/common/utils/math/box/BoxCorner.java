@@ -28,6 +28,8 @@ public enum BoxCorner {
 	public BoxCorner neighborTwo;
 	public BoxCorner neighborThree;
 	
+	private static BoxCorner[][] facingCorners = new BoxCorner[][] { { EDN, EDS, WDN, WDS }, { EUN, EUS, WUN, WUS }, { EUN, EDN, WUN, WDN }, { EUS, EDS, WUS, WDS }, { WUN, WUS, WDN, WDS }, { EUN, EUS, EDN, EDS } };
+	
 	private BoxCorner(EnumFacing x, EnumFacing y, EnumFacing z) {
 		this.x = x;
 		this.y = y;
@@ -76,9 +78,7 @@ public enum BoxCorner {
 		int normalX = x.getAxisDirection().getOffset();
 		int normalY = y.getAxisDirection().getOffset();
 		int normalZ = z.getAxisDirection().getOffset();
-		return getCorner(EnumFacing.getFacingFromAxis(rotation.getMatrix().getX(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.X),
-		        EnumFacing.getFacingFromAxis(rotation.getMatrix().getY(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Y),
-		        EnumFacing.getFacingFromAxis(rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Z));
+		return getCorner(EnumFacing.getFacingFromAxis(rotation.getMatrix().getX(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.X), EnumFacing.getFacingFromAxis(rotation.getMatrix().getY(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Y), EnumFacing.getFacingFromAxis(rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0 ? AxisDirection.POSITIVE : AxisDirection.NEGATIVE, Axis.Z));
 	}
 	
 	public static BoxCorner getCornerUnsorted(EnumFacing facing, EnumFacing facing2, EnumFacing facing3) {
@@ -91,6 +91,10 @@ public enum BoxCorner {
 				return corner;
 		}
 		return null;
+	}
+	
+	public static BoxCorner[] faceCorners(EnumFacing facing) {
+		return facingCorners[facing.ordinal()];
 	}
 	
 	static {
