@@ -21,7 +21,8 @@ public class GuiStateButton extends GuiButton {
 	}
 	
 	public GuiStateButton(String name, int index, int x, int y, String... states) {
-		this(name, index, x, y, GuiRenderHelper.instance.getStringWidth(states[index]), states);
+		this(name, index, x, y, 15, states);
+		this.width = GuiRenderHelper.instance.getStringWidth(caption) + getContentOffset() * 2;
 	}
 	
 	public void setState(int index) {
