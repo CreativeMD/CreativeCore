@@ -623,11 +623,12 @@ public class VectorFan {
 		return false;
 	}
 	
-	public boolean intersect2d(VectorFan other, Axis one, Axis two) {
+	public boolean intersect2d(VectorFan other, Axis one, Axis two, boolean inverse) {
 		if (this.equals(other))
 			return true;
 		
 		int parrallel = 0;
+		//boolean allAtEdge = true;
 		
 		Vector3f before1 = coords[0];
 		Ray2d ray1 = new Ray2d(one, two, 0, 0, 0, 0);
@@ -638,6 +639,7 @@ public class VectorFan {
 			ray1.directionOne = VectorUtils.get(one, vec1) - VectorUtils.get(one, before1);
 			ray1.directionTwo = VectorUtils.get(two, vec1) - VectorUtils.get(two, before1);
 			
+			boolean edge = false;
 			Vector3f before2 = other.coords[0];
 			Ray2d ray2 = new Ray2d(one, two, 0, 0, 0, 0);
 			for (int i2 = 1; i2 <= other.coords.length; i2++) {
@@ -652,6 +654,9 @@ public class VectorFan {
 					double otherT = ray2.intersectWhen(ray1);
 					if (t > EPSILON && t < 1 - EPSILON && otherT > EPSILON && otherT < 1 - EPSILON)
 						return true;
+					//else if (t > -EPSILON && t < 1 + EPSILON && otherT > -EPSILON && otherT < 1 + EPSILON)
+					//edge = true;
+					
 				} catch (ParallelException e) {
 					double startT = ray1.getT(one, ray2.originOne);
 					double endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
@@ -665,9 +670,53 @@ public class VectorFan {
 				before2 = vec2;
 			}
 			
+			//if (!edge)
+			//allAtEdge = false;
+			
 			before1 = vec1;
 		}
+		if (/*allAtEdge && */(isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse)))
+			return true;
 		return false;
+	}
+	
+	private boolean isInside2d(Axis one, Axis two, VectorFan other, boolean inverse) {
+		Ray2d temp = new Ray2d(one, two, 0, 0, 0, 0);
+		
+		for (int i = 0; i < other.coords.length; i++) {
+			float pointOne = VectorUtils.get(one, other.coords[i]);
+			float pointTwo = VectorUtils.get(two, other.coords[i]);
+			
+			boolean inside = false;
+			int index = 0;
+			while (index < coords.length - 2) {
+				float firstOne = VectorUtils.get(one, coords[0]);
+				float firstTwo = VectorUtils.get(two, coords[0]);
+				float secondOne = VectorUtils.get(one, coords[index + 1]);
+				float secondTwo = VectorUtils.get(two, coords[index + 1]);
+				float thirdOne = VectorUtils.get(one, coords[index + 2]);
+				float thirdTwo = VectorUtils.get(two, coords[index + 2]);
+				
+				temp.set(one, two, firstOne, firstTwo, secondOne, secondTwo);
+				if (BooleanUtils.isFalse(temp.isCoordinateToTheRight(pointOne, pointTwo)) == inverse) {
+					
+					temp.set(one, two, secondOne, secondTwo, thirdOne, thirdTwo);
+					if (BooleanUtils.isFalse(temp.isCoordinateToTheRight(pointOne, pointTwo)) == inverse) {
+						
+						temp.set(one, two, thirdOne, thirdTwo, firstOne, firstTwo);
+						if (BooleanUtils.isFalse(temp.isCoordinateToTheRight(pointOne, pointTwo)) == inverse) {
+							inside = true;
+							break;
+						}
+					}
+				}
+				index += 1;
+			}
+			
+			if (!inside)
+				return false;
+		}
+		return true;
 	}
 	
 	public List<VectorFan> cut2d(List<VectorFan> cutters, Axis one, Axis two, boolean inverse, boolean takeInner) {
