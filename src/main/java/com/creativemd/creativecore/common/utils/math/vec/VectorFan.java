@@ -698,13 +698,16 @@ public class VectorFan {
 				float thirdTwo = VectorUtils.get(two, coords[index + 2]);
 				
 				temp.set(one, two, firstOne, firstTwo, secondOne, secondTwo);
-				if (BooleanUtils.isFalse(temp.isCoordinateToTheRight(pointOne, pointTwo)) == inverse) {
+				Boolean result = temp.isCoordinateToTheRight(pointOne, pointTwo);
+				if (result == null || BooleanUtils.isFalse(result) == inverse) {
 					
 					temp.set(one, two, secondOne, secondTwo, thirdOne, thirdTwo);
-					if (BooleanUtils.isFalse(temp.isCoordinateToTheRight(pointOne, pointTwo)) == inverse) {
+					result = temp.isCoordinateToTheRight(pointOne, pointTwo);
+					if (result == null || BooleanUtils.isFalse(result) == inverse) {
 						
 						temp.set(one, two, thirdOne, thirdTwo, firstOne, firstTwo);
-						if (BooleanUtils.isFalse(temp.isCoordinateToTheRight(pointOne, pointTwo)) == inverse) {
+						result = temp.isCoordinateToTheRight(pointOne, pointTwo);
+						if (result == null || BooleanUtils.isFalse(result) == inverse) {
 							inside = true;
 							break;
 						}
