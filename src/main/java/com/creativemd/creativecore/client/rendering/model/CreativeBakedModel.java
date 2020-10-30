@@ -149,15 +149,13 @@ public class CreativeBakedModel implements IBakedModel {
 		
 		if (renderer != null) {
 			List<BakedQuad> cached = renderer.getCachedModel(side, layer, state, te, stack, threaded);
-			if (cached != null) {
+			if (cached != null)
 				return cached;
-			}
 			cubes = renderer.getRenderingCubes(state, te, stack);
 		}
 		
-		if (cubes != null) {
+		if (cubes != null)
 			return getBlockQuads(cubes, baked, renderer, side, state, layer, renderBlock, te, rand, stack, threaded);
-		}
 		return baked;
 	}
 	

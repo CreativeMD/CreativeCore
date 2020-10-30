@@ -29,6 +29,11 @@ public class BooleanUtils {
 		return count;
 	}
 	
+	public static void set(boolean[] state, boolean[] newState) {
+		for (int i = 0; i < state.length; i++)
+			state[i] = newState[i];
+	}
+	
 	public static void reset(boolean[] state) {
 		for (int i = 0; i < state.length; i++)
 			state[i] = false;
