@@ -51,13 +51,6 @@ public class ClientCommandRegistry {
 		try {
 			try {
 				ParseResults<ISuggestionProvider> parse = clientDispatcher.parse(stringreader, source);
-				/*net.minecraftforge.event.CommandEvent event = new net.minecraftforge.event.CommandEvent(parse);
-				if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event)) {
-					if (event.getException() != null) {
-						com.google.common.base.Throwables.throwIfUnchecked(event.getException());
-					}
-					return 1;
-				}*/
 				return clientDispatcher.execute(parse);
 			} catch (CommandException commandexception) {
 				source.sendErrorMessage(commandexception.getComponent());
@@ -68,20 +61,20 @@ public class ClientCommandRegistry {
 				source.sendErrorMessage(TextComponentUtils.toTextComponent(commandsyntaxexception.getRawMessage()));
 				if (commandsyntaxexception.getInput() != null && commandsyntaxexception.getCursor() >= 0) {
 					int k = Math.min(commandsyntaxexception.getInput().length(), commandsyntaxexception.getCursor());
-					IFormattableTextComponent itextcomponent1 = (new StringTextComponent("")).func_240701_a_(TextFormatting.GRAY).func_240700_a_((p_211705_1_) -> {
-						return p_211705_1_.func_240715_a_(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
+					IFormattableTextComponent itextcomponent1 = (new StringTextComponent("")).mergeStyle(TextFormatting.GRAY).modifyStyle((p_211705_1_) -> {
+						return p_211705_1_.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
 					});
 					if (k > 10) {
-						itextcomponent1.func_230529_a_(new StringTextComponent("..."));
+						itextcomponent1.append(new StringTextComponent("..."));
 					}
-
-					itextcomponent1.func_230529_a_(new StringTextComponent(commandsyntaxexception.getInput().substring(Math.max(0, k - 10), k)));
+					
+					itextcomponent1.append(new StringTextComponent(commandsyntaxexception.getInput().substring(Math.max(0, k - 10), k)));
 					if (k < commandsyntaxexception.getInput().length()) {
-						ITextComponent itextcomponent2 = (new StringTextComponent(commandsyntaxexception.getInput().substring(k))).func_240701_a_(new TextFormatting[] { TextFormatting.RED, TextFormatting.UNDERLINE });
-						itextcomponent1.func_230529_a_(itextcomponent2);
+						ITextComponent itextcomponent2 = (new StringTextComponent(commandsyntaxexception.getInput().substring(k))).mergeStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.UNDERLINE });
+						itextcomponent1.append(itextcomponent2);
 					}
-
-					itextcomponent1.func_230529_a_((new TranslationTextComponent("command.context.here")).func_240701_a_(new TextFormatting[] { TextFormatting.RED, TextFormatting.ITALIC }));
+					
+					itextcomponent1.append((new TranslationTextComponent("command.context.here")).mergeStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.ITALIC }));
 					source.sendErrorMessage(itextcomponent1);
 				}
 			} catch (Exception exception) {
@@ -89,18 +82,18 @@ public class ClientCommandRegistry {
 				IFormattableTextComponent itextcomponent = stringtextcomponent;
 				if (CreativeCore.LOGGER.isDebugEnabled()) {
 					StackTraceElement[] astacktraceelement = exception.getStackTrace();
-
+					
 					for (int j = 0; j < Math.min(astacktraceelement.length, 3); ++j) {
-						itextcomponent.func_240702_b_("\n\n").func_240702_b_(astacktraceelement[j].getMethodName()).func_240702_b_("\n ").func_240702_b_(astacktraceelement[j].getFileName()).func_240702_b_(":").func_240702_b_(String.valueOf(astacktraceelement[j].getLineNumber()));
+						itextcomponent.appendString("\n\n").appendString(astacktraceelement[j].getMethodName()).appendString("\n ").appendString(astacktraceelement[j].getFileName()).appendString(":").appendString(String.valueOf(astacktraceelement[j].getLineNumber()));
 					}
 				}
-
-				source.sendErrorMessage((new TranslationTextComponent("command.failed")).func_240700_a_((p_211704_1_) -> {
-					return p_211704_1_.func_240716_a_(new HoverEvent(HoverEvent.Action.field_230550_a_, itextcomponent));
+				
+				source.sendErrorMessage((new TranslationTextComponent("command.failed")).modifyStyle((p_211704_1_) -> {
+					return p_211704_1_.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, itextcomponent));
 				}));
 				return 0;
 			}
-
+			
 			return 0;
 		} finally {
 			mc.getProfiler().endSection();

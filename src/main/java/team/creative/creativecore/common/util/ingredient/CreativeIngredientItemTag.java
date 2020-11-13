@@ -22,7 +22,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
 	
 	@Override
 	protected void writeExtra(CompoundNBT nbt) {
-		nbt.putString("tag", ItemTags.getCollection().func_232975_b_(tag).toString());
+		nbt.putString("tag", ItemTags.getCollection().getDirectIdFromTag(tag).toString());
 	}
 	
 	@Override
@@ -32,7 +32,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
 	
 	@Override
 	public boolean is(ItemStack stack) {
-		return tag.func_230235_a_(stack.getItem());
+		return tag.contains(stack.getItem());
 	}
 	
 	@Override
@@ -42,9 +42,9 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
 	
 	@Override
 	public ItemStack getExample() {
-		if (tag.func_230236_b_().isEmpty())
+		if (tag.getAllElements().isEmpty())
 			return ItemStack.EMPTY;
-		return new ItemStack(tag.func_230236_b_().iterator().next());
+		return new ItemStack(tag.getAllElements().iterator().next());
 	}
 	
 	@Override

@@ -22,7 +22,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
 	
 	@Override
 	protected void writeExtra(CompoundNBT nbt) {
-		nbt.putString("tag", BlockTags.getCollection().func_232975_b_(tag).toString());
+		nbt.putString("tag", BlockTags.getCollection().getDirectIdFromTag(tag).toString());
 	}
 	
 	@Override
@@ -34,7 +34,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
 	public boolean is(ItemStack stack) {
 		Block block = Block.getBlockFromItem(stack.getItem());
 		if (block != null)
-			return tag.func_230235_a_(block);
+			return tag.contains(block);
 		return false;
 	}
 	
@@ -45,9 +45,9 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
 	
 	@Override
 	public ItemStack getExample() {
-		if (tag.func_230236_b_().isEmpty())
+		if (tag.getAllElements().isEmpty())
 			return ItemStack.EMPTY;
-		return new ItemStack(tag.func_230236_b_().iterator().next());
+		return new ItemStack(tag.getAllElements().iterator().next());
 	}
 	
 	@Override
