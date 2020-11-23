@@ -31,7 +31,7 @@ public class ClientCommandRegistry {
 	private static CombinedCommandDispatcher<ISuggestionProvider> combined = null;
 	
 	public static CommandDispatcher<ISuggestionProvider> getDispatcher(CommandDispatcher<ISuggestionProvider> vanillaDispatcher) {
-		if (combined == null || combined.is(vanillaDispatcher, clientDispatcher))
+		if (combined == null || !combined.is(vanillaDispatcher, clientDispatcher))
 			combined = new CombinedCommandDispatcher<>(vanillaDispatcher, clientDispatcher);
 		return combined;
 	}
