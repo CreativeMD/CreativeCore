@@ -2,6 +2,15 @@ package com.creativemd.creativecore.common.utils.math;
 
 public class BooleanUtils {
 	
+	public static final boolean[] SINGLE_FALSE = new boolean[] { false };
+	public static final boolean[] SINGLE_TRUE = new boolean[] { true };
+	
+	public static boolean[] asArray(boolean value) {
+		if (value)
+			return SINGLE_TRUE;
+		return SINGLE_FALSE;
+	}
+	
 	public static boolean isTrue(Boolean value) {
 		return value != null && value;
 	}
