@@ -9,6 +9,10 @@ public abstract class GuiButton extends GuiClickableLabel {
 		this(caption, x, y, GuiRenderHelper.instance.getStringWidth(caption));
 	}
 	
+	public GuiButton(String name, String title, int x, int y) {
+		this(name, title, x, y, GuiRenderHelper.instance.getStringWidth(title));
+	}
+	
 	public GuiButton(String caption, int x, int y, int width) {
 		this(caption, caption, x, y, width, 14);
 	}

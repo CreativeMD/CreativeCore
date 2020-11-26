@@ -117,6 +117,15 @@ public class GuiColorPicker extends GuiParent {
 		
 	}
 	
+	public void setColor(Color color) {
+		this.color.setColor(color);
+		((GuiColoredSteppedSlider) get("r")).value = color.getRed();
+		((GuiColoredSteppedSlider) get("g")).value = color.getGreen();
+		((GuiColoredSteppedSlider) get("b")).value = color.getBlue();
+		((GuiColoredSteppedSlider) get("a")).value = color.getAlpha();
+		
+	}
+	
 	public void onColorChanged() {
 		raiseEvent(new GuiControlChangedEvent(this));
 	}

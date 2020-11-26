@@ -22,6 +22,7 @@ public class GuiComboBoxExtension extends GuiListBox {
 		return new Vec3d(width / 2, -comboBox.height / 2, 0);
 	}
 	
+	@Override
 	public void onLoseFocus() {
 		if (!comboBox.isMouseOver() && !isMouseOver())
 			comboBox.closeBox();
@@ -30,7 +31,7 @@ public class GuiComboBoxExtension extends GuiListBox {
 	@Override
 	public void onSelectionChange() {
 		if (selected != -1 && selected < lines.size()) {
-			comboBox.caption = lines.get(selected);
+			comboBox.caption = comboBox.getDisplay(selected);
 			comboBox.index = selected;
 			comboBox.raiseEvent(new GuiControlChangedEvent(comboBox));
 		}

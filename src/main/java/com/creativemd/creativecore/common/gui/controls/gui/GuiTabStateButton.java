@@ -32,6 +32,14 @@ public class GuiTabStateButton extends GuiControl {
 		return selected;
 	}
 	
+	public String getCaption() {
+		return states[selected];
+	}
+	
+	protected String getDisplay(int index) {
+		return states[selected];
+	}
+	
 	@Override
 	public boolean mousePressed(int posX, int posY, int button) {
 		int x = 0;
@@ -53,7 +61,7 @@ public class GuiTabStateButton extends GuiControl {
 		int posX = 0;
 		Vec3d pos = rotateMouseVec(getParent().getMousePos());
 		for (int i = 0; i < states.length; i++) {
-			int buttonWidth = helper.getStringWidth(states[i]) + 4;
+			int buttonWidth = helper.getStringWidth(getDisplay(i)) + 4;
 			if (i > 0)
 				getStyle().getBorder(this).renderStyle(posX - 1, 0, helper, 1, height);
 			
@@ -66,7 +74,7 @@ public class GuiTabStateButton extends GuiControl {
 			} else
 				getStyle().getDisableEffect(this).renderStyle(posX, 0, helper, buttonWidth, height);
 			
-			helper.font.drawStringWithShadow(states[i], i + posX + 2, 4, ColorUtils.WHITE);
+			helper.font.drawStringWithShadow(getDisplay(i), i + posX + 2, 4, ColorUtils.WHITE);
 			posX += buttonWidth + 1;
 		}
 		

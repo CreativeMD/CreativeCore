@@ -11,23 +11,29 @@ public class GuiComboBox extends GuiLabel {
 	
 	public GuiComboBoxExtension extension;
 	public List<String> lines;
+	
 	public int index;
 	
 	public GuiComboBox(String name, int x, int y, int width, List<String> lines) {
 		super(name, x, y, width, 14, ColorUtils.WHITE);
+		this.lines = lines;
+		
 		if (lines.size() > 0) {
-			this.caption = lines.get(0);
+			this.caption = getDisplay(0);
 			this.index = 0;
 		} else {
 			this.caption = "";
 			this.index = -1;
 		}
-		this.lines = lines;
+	}
+	
+	public String getDisplay(int index) {
+		return lines.get(index);
 	}
 	
 	public boolean select(int index) {
 		if (index >= 0 && index < lines.size()) {
-			caption = lines.get(index);
+			caption = getDisplay(index);
 			raiseEvent(new GuiControlChangedEvent(this));
 			return true;
 		}
