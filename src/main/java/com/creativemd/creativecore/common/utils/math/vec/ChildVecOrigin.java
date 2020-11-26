@@ -15,6 +15,12 @@ public class ChildVecOrigin extends VecOrigin {
 	}
 	
 	@Override
+	public void onlyRotateWithoutCenter(Vector3d vec) {
+		super.onlyRotateWithoutCenter(vec);
+		parent.onlyRotateWithoutCenter(vec);
+	}
+	
+	@Override
 	public void transformPointToWorld(Vector3d vec) {
 		super.transformPointToWorld(vec);
 		parent.transformPointToWorld(vec);

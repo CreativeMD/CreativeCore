@@ -80,6 +80,10 @@ public interface IVecOrigin {
 		return VectorUtils.get(axis, translation());
 	}
 	
+	public default void onlyRotateWithoutCenter(Vector3d vec) {
+		rotation().transform(vec);
+	}
+	
 	public default void transformPointToWorld(Vector3d vec) {
 		vec.sub(center());
 		rotation().transform(vec);
