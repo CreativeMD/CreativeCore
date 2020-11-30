@@ -39,7 +39,7 @@ public class CreativeNetwork {
 	public CreativeNetwork(String version, Logger logger, ResourceLocation location) {
 		this.version = version;
 		this.logger = logger;
-		this.instance = NetworkRegistry.newSimpleChannel(location, () -> this.version, this.version::equals, this.version::equals);
+		this.instance = NetworkRegistry.newSimpleChannel(location, () -> this.version, x -> true/* this.version::equals*/, this.version::equals);
 		this.logger.debug("Created network " + location + "");
 	}
 	

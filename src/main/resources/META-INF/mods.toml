@@ -11,5 +11,6 @@ license="GNU General Public License v3.0"
 	side="CLIENT"
 	displayURL="https://minecraft.curseforge.com/projects/creativecore"
 	authors="CreativeMD"
+	acceptableRemoteVersions="*"
 	description='''A simple but powerful coremod.'''
 	
