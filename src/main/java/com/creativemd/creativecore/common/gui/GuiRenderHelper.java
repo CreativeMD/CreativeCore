@@ -47,6 +47,32 @@ public class GuiRenderHelper {
 		this.itemRenderer = itemRenderer;
 	}
 	
+	public void drawLine(int x1, int y1, int x2, int y2, int color) {
+		float f = (color >> 24 & 255) / 255.0F;
+		float f1 = (color >> 16 & 255) / 255.0F;
+		float f2 = (color >> 8 & 255) / 255.0F;
+		float f3 = (color & 255) / 255.0F;
+		
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+		GlStateManager.shadeModel(7425);
+		GlStateManager.pushMatrix();
+		GlStateManager.glLineWidth(4F);
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+		bufferbuilder.pos(x1, y1, 0).color(f1, f2, f3, f).endVertex();
+		bufferbuilder.pos(x2, y2, 0).color(f1, f2, f3, f).endVertex();
+		tessellator.draw();
+		GlStateManager.popMatrix();
+		GlStateManager.shadeModel(7424);
+		GlStateManager.disableBlend();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableTexture2D();
+	}
+	
 	public void drawGrayBackgroundRect(int x, int y, int width, int height) {
 		int alpha = 180;
 		
