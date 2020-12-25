@@ -46,6 +46,10 @@ public enum BoxCorner {
 		return new Vector3d(CreativeAxisAlignedBB.getCornerX(box, this), CreativeAxisAlignedBB.getCornerY(box, this), CreativeAxisAlignedBB.getCornerZ(box, this));
 	}
 	
+	public boolean isFacing(EnumFacing facing) {
+		return getFacing(facing.getAxis()) == facing;
+	}
+	
 	public boolean isFacingPositive(Axis axis) {
 		return getFacing(axis).getAxisDirection() == AxisDirection.POSITIVE;
 	}

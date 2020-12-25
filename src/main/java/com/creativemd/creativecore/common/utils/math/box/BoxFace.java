@@ -12,12 +12,36 @@ import net.minecraft.util.EnumFacing.AxisDirection;
 
 public enum BoxFace {
 	
-	EAST(EnumFacing.EAST, new BoxCorner[] { BoxCorner.EUS, BoxCorner.EDS, BoxCorner.EDN, BoxCorner.EUN }),
-	WEST(EnumFacing.WEST, new BoxCorner[] { BoxCorner.WUN, BoxCorner.WDN, BoxCorner.WDS, BoxCorner.WUS }),
-	UP(EnumFacing.UP, new BoxCorner[] { BoxCorner.WUN, BoxCorner.WUS, BoxCorner.EUS, BoxCorner.EUN }),
-	DOWN(EnumFacing.DOWN, new BoxCorner[] { BoxCorner.WDS, BoxCorner.WDN, BoxCorner.EDN, BoxCorner.EDS }),
-	SOUTH(EnumFacing.SOUTH, new BoxCorner[] { BoxCorner.WUS, BoxCorner.WDS, BoxCorner.EDS, BoxCorner.EUS }),
-	NORTH(EnumFacing.NORTH, new BoxCorner[] { BoxCorner.EUN, BoxCorner.EDN, BoxCorner.WDN, BoxCorner.WUN });
+	EAST(
+	        EnumFacing.EAST,
+	        new BoxCorner[] { BoxCorner.EUS, BoxCorner.EDS, BoxCorner.EDN, BoxCorner.EUN },
+	        EnumFacing.NORTH,
+	        EnumFacing.DOWN),
+	WEST(
+	        EnumFacing.WEST,
+	        new BoxCorner[] { BoxCorner.WUN, BoxCorner.WDN, BoxCorner.WDS, BoxCorner.WUS },
+	        EnumFacing.SOUTH,
+	        EnumFacing.DOWN),
+	UP(
+	        EnumFacing.UP,
+	        new BoxCorner[] { BoxCorner.WUN, BoxCorner.WUS, BoxCorner.EUS, BoxCorner.EUN },
+	        EnumFacing.EAST,
+	        EnumFacing.SOUTH),
+	DOWN(
+	        EnumFacing.DOWN,
+	        new BoxCorner[] { BoxCorner.WDS, BoxCorner.WDN, BoxCorner.EDN, BoxCorner.EDS },
+	        EnumFacing.EAST,
+	        EnumFacing.NORTH),
+	SOUTH(
+	        EnumFacing.SOUTH,
+	        new BoxCorner[] { BoxCorner.WUS, BoxCorner.WDS, BoxCorner.EDS, BoxCorner.EUS },
+	        EnumFacing.EAST,
+	        EnumFacing.DOWN),
+	NORTH(
+	        EnumFacing.NORTH,
+	        new BoxCorner[] { BoxCorner.EUN, BoxCorner.EDN, BoxCorner.WDN, BoxCorner.WUN },
+	        EnumFacing.WEST,
+	        EnumFacing.DOWN);
 	
 	public final EnumFacing facing;
 	public final BoxCorner[] corners;
@@ -25,17 +49,23 @@ public enum BoxFace {
 	private final Axis one;
 	private final Axis two;
 	
+	private final EnumFacing texU;
+	private final EnumFacing texV;
+	
 	private final BoxTriangle triangleFirst;
 	private final BoxTriangle triangleFirstInv;
 	private final BoxTriangle triangleSecond;
 	private final BoxTriangle triangleSecondInv;
 	
-	BoxFace(EnumFacing facing, BoxCorner[] corners) {
+	BoxFace(EnumFacing facing, BoxCorner[] corners, EnumFacing texU, EnumFacing texV) {
 		this.facing = facing;
 		this.corners = corners;
 		
 		this.one = RotationUtils.getOne(facing.getAxis());
 		this.two = RotationUtils.getTwo(facing.getAxis());
+		
+		this.texU = texU;
+		this.texV = texV;
 		
 		this.triangleFirst = new BoxTriangle(new BoxCorner[] { corners[0], corners[1], corners[2] });
 		this.triangleFirstInv = new BoxTriangle(new BoxCorner[] { corners[0], corners[1], corners[3] });
@@ -52,6 +82,22 @@ public enum BoxFace {
 		else if (inverted)
 			return triangleSecondInv;
 		return triangleSecond;
+	}
+	
+	public Axis getTexUAxis() {
+		return texU.getAxis();
+	}
+	
+	public Axis getTexVAxis() {
+		return texV.getAxis();
+	}
+	
+	public EnumFacing getTexU() {
+		return texU;
+	}
+	
+	public EnumFacing getTexV() {
+		return texV;
 	}
 	
 	public BoxCorner[] getTriangleFirst(boolean inverted) {

@@ -91,6 +91,10 @@ public class AlignedBox {
 		return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 	
+	public AxisAlignedBB getBB(BlockPos pos) {
+		return new AxisAlignedBB(minX + pos.getX(), minY + pos.getY(), minZ + pos.getZ(), maxX + pos.getX(), maxY + pos.getY(), maxZ + pos.getZ());
+	}
+	
 	public void rotate(Rotation rotation, Vector3f center) {
 		Vector3f low = new Vector3f(minX, minY, minZ);
 		Vector3f high = new Vector3f(maxX, maxY, maxZ);
@@ -225,6 +229,12 @@ public class AlignedBox {
 			return maxZ;
 		}
 		return 0;
+	}
+	
+	public void shrink(Axis axis, float value) {
+		value /= 2;
+		setMin(axis, getMin(axis) + value);
+		setMax(axis, getMax(axis) - value);
 	}
 	
 }
