@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import com.creativemd.creativecore.common.gui.mc.ContainerSub;
 import com.creativemd.creativecore.common.gui.mc.IVanillaGUI;
+import com.creativemd.creativecore.common.tileentity.TileEntityCreative;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -38,6 +41,13 @@ public class CreativeTickHandler {
 				// It is ready to crash
 			}
 		}
+	}
+	
+	@SubscribeEvent
+	public void worldUnload(WorldEvent.Unload event) {
+		for (TileEntity te : event.getWorld().loadedTileEntityList)
+			if (te instanceof TileEntityCreative)
+				te.onChunkUnload();
 	}
 	
 	@SideOnly(Side.CLIENT)
