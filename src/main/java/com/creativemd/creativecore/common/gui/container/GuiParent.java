@@ -90,8 +90,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	}
 	
 	@Override
-	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
-	}
+	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {}
 	
 	@Override
 	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height, Rect relativeMaximumRect) {
@@ -151,7 +150,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	// ================Helper================
 	
 	@Override
-	public CoreControl get(String name) {
+	public GuiControl get(String name) {
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
 			if (control.is(name))
@@ -159,7 +158,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 			if (control instanceof IControlParent) {
 				CoreControl tempcontrol = ((IControlParent) control).get(name);
 				if (tempcontrol != null)
-					return tempcontrol;
+					return (GuiControl) tempcontrol;
 			}
 		}
 		return null;
