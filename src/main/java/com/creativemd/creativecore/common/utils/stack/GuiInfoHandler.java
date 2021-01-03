@@ -121,11 +121,11 @@ public abstract class GuiInfoHandler {
 						ItemStack stack = selector.getSelected();
 						if (!stack.isEmpty()) {
 							
-							((GuiLabel) gui.get("guilabel1")).caption = "damage: " + stack.getItemDamage();
-							((GuiLabel) gui.get("guilabel2")).caption = "nbt: " + (stack.hasTagCompound() ? stack.getTagCompound().toString() : "null");
+							((GuiLabel) gui.get("guilabel1")).setCaption("damage: " + stack.getItemDamage());
+							((GuiLabel) gui.get("guilabel2")).setCaption("nbt: " + (stack.hasTagCompound() ? stack.getTagCompound().toString() : "null"));
 						} else {
-							((GuiLabel) gui.get("guilabel1")).caption = "";
-							((GuiLabel) gui.get("guilabel2")).caption = "";
+							((GuiLabel) gui.get("guilabel1")).setCaption("");
+							((GuiLabel) gui.get("guilabel2")).setCaption("");
 						}
 					}
 				}
@@ -137,7 +137,7 @@ public abstract class GuiInfoHandler {
 			
 			@Override
 			public InfoStack parseInfo(SubGuiFullItemDialog gui, int stackSize) {
-				String ore = ((GuiComboBox) gui.get("ore")).caption;
+				String ore = ((GuiComboBox) gui.get("ore")).getCaption();
 				if (!ore.equals(""))
 					return new InfoOre(ore, stackSize);
 				return null;
@@ -151,7 +151,7 @@ public abstract class GuiInfoHandler {
 				gui.controls.add(new GuiTextfield("search", "", 0, 57, 144, 14));
 				
 				if (info instanceof InfoOre)
-					ore.caption = ((InfoOre) info).ore;
+					ore.setCaption(((InfoOre) info).ore);
 			}
 			
 			@Override
@@ -172,11 +172,11 @@ public abstract class GuiInfoHandler {
 					GuiComboBox comboBox = (GuiComboBox) gui.get("ore");
 					if (comboBox != null) {
 						comboBox.lines = ores;
-						if (!ores.contains(comboBox.caption)) {
+						if (!ores.contains(comboBox.getCaption())) {
 							if (ores.size() > 0)
-								comboBox.caption = ores.get(0);
+								comboBox.setCaption(ores.get(0));
 							else
-								comboBox.caption = "";
+								comboBox.setCaption("");
 						}
 					}
 				}
@@ -259,7 +259,6 @@ public abstract class GuiInfoHandler {
 	
 	public abstract InfoStack parseInfo(SubGuiFullItemDialog gui, int stackSize);
 	
-	public void onChanged(SubGuiFullItemDialog gui, GuiControlChangedEvent event) {
-	}
+	public void onChanged(SubGuiFullItemDialog gui, GuiControlChangedEvent event) {}
 	
 }

@@ -7,7 +7,7 @@ import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 
 public class GuiLabel extends GuiControl {
 	
-	public String caption;
+	protected String caption;
 	public int color;
 	
 	public GuiLabel(String caption, int x, int y) {
@@ -35,6 +35,15 @@ public class GuiLabel extends GuiControl {
 		this.width += getAdditionalSize();
 		this.color = color;
 		this.caption = caption;
+	}
+	
+	public String getCaption() {
+		return caption;
+	}
+	
+	public void setCaption(String caption) {
+		this.caption = caption;
+		this.width = font.getStringWidth(caption) + getContentOffset() * 2;
 	}
 	
 	@Override

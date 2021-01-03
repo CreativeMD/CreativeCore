@@ -43,14 +43,14 @@ public class SubGuiFullItemDialog extends SubGui {
 		
 		GuiComboBox box = (GuiComboBox) get("type");
 		if (box != null)
-			handler = GuiInfoHandler.getHandler(box.caption);
+			handler = GuiInfoHandler.getHandler(box.getCaption());
 		
 		controls.clear();
 		ArrayList<String> lines = new ArrayList<String>(GuiInfoHandler.getNames());
 		//lines.add("Latest");
 		
 		box = new GuiComboBox("type", 0, 0, 144, lines);
-		box.caption = handler.getName();
+		box.setCaption(handler.getName());
 		box.index = lines.indexOf(handler.getName());
 		controls.add(box);
 		

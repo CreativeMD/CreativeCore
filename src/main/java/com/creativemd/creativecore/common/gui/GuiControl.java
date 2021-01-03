@@ -136,6 +136,10 @@ public abstract class GuiControl extends CoreControl {
 		return (GuiParent) parent;
 	}
 	
+	public void openClientLayer(SubGui gui) {
+		getGui().openClientLayer(gui);
+	}
+	
 	// ================Styling================
 	
 	public Style getDefaultStyle() {
@@ -317,8 +321,7 @@ public abstract class GuiControl extends CoreControl {
 	
 	// ================Events================
 	
-	public void onLoseFocus() {
-	}
+	public void onLoseFocus() {}
 	
 	public boolean mouseScrolled(int x, int y, int scrolled) {
 		return false;
@@ -328,14 +331,11 @@ public abstract class GuiControl extends CoreControl {
 		return false;
 	}
 	
-	public void mouseMove(int x, int y, int button) {
-	}
+	public void mouseMove(int x, int y, int button) {}
 	
-	public void mouseReleased(int x, int y, int button) {
-	}
+	public void mouseReleased(int x, int y, int button) {}
 	
-	public void mouseDragged(int x, int y, int button, long time) {
-	}
+	public void mouseDragged(int x, int y, int button, long time) {}
 	
 	public boolean onKeyPressed(char character, int key) {
 		return false;

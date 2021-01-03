@@ -7,6 +7,7 @@ import com.creativemd.creativecore.common.gui.GuiRenderHelper;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.event.ControlEvent;
 import com.creativemd.creativecore.common.gui.mc.IVanillaGUI;
+import com.creativemd.creativecore.common.gui.premade.SubContainerEmpty;
 import com.creativemd.creativecore.common.gui.premade.SubGuiDialog;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
@@ -60,6 +61,17 @@ public abstract class SubGui extends GuiParent {
 		nbt.setBoolean("newNonSyncedLayer", true);
 		sendPacketToServer(nbt);
 	}*/
+	
+	@Override
+	public void openClientLayer(SubGui gui) {
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setBoolean("dialog", true);
+		gui.gui = this.gui;
+		PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, gui.gui.getLayers().size() - 1, false));
+		gui.container = new SubContainerEmpty(getPlayer());
+		gui.gui.addLayer(gui);
+		gui.onOpened();
+	}
 	
 	public void openNewLayer(NBTTagCompound nbt) {
 		openNewLayer(nbt, false);
@@ -190,8 +202,7 @@ public abstract class SubGui extends GuiParent {
 	
 	/* public void readFromOpeningNBT(NBTTagCompound nbt){} */
 	
-	public void receiveContainerPacket(NBTTagCompound nbt) {
-	}
+	public void receiveContainerPacket(NBTTagCompound nbt) {}
 	
 	public void sendPacketToServer(NBTTagCompound nbt) {
 		PacketHandler.sendPacketToServer(new GuiUpdatePacket(nbt, false, getLayerID()));
@@ -231,8 +242,7 @@ public abstract class SubGui extends GuiParent {
 	// ================CUSTOM EVENTS================
 	
 	@Override
-	public void onTick() {
-	}
+	public void onTick() {}
 	
 	@Override
 	public void onClosed() {
