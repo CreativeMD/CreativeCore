@@ -34,6 +34,7 @@ public class GuiComboBox extends GuiLabel {
 	public boolean select(int index) {
 		if (index >= 0 && index < lines.size()) {
 			caption = getDisplay(index);
+			this.index = index;
 			raiseEvent(new GuiControlChangedEvent(this));
 			return true;
 		}
