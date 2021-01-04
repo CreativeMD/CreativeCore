@@ -285,6 +285,9 @@ public abstract class GuiControl extends CoreControl {
 		
 		GlStateManager.pushMatrix();
 		
+		if (scale != 0)
+			GlStateManager.scale(scale, scale, 1);
+		
 		GlStateManager.translate(posX, posY, 0);
 		if (rotation != 0) {
 			Vec3d centerOffset = getCenterOffset();
@@ -292,9 +295,6 @@ public abstract class GuiControl extends CoreControl {
 			GlStateManager.rotate(rotation, 0, 0, 1);
 			GlStateManager.translate(-centerOffset.x, -centerOffset.y, 0);
 		}
-		
-		if (scale != 0)
-			GlStateManager.scale(scale, scale, 1);
 		
 		renderBackground(helper, style);
 		

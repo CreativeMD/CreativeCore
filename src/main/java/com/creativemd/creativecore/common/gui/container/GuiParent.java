@@ -101,10 +101,10 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		double yOffset = getOffsetY();
 		
 		Rect newRect = relativeMaximumRect.mergeRects(getRect());
-		
+		Rect scaledRect = relativeMaximumRect.mergeRects(getRect());
 		lastRenderedHeight = 0;
 		
-		newRect.scale(scale);
+		scaledRect.scale(scale);
 		
 		for (int i = controls.size() - 1; i >= 0; i--) {
 			GuiControl control = controls.get(i);
@@ -124,8 +124,9 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 				}
 				
 				GlStateManager.pushMatrix();
+				GlStateManager.scale(scale, scale, 1);
 				GlStateManager.translate(xOffset, yOffset, 0);
-				control.renderControl(helper, scale, control.canOverlap() ? getScreenRect() : newRect.getOffsetRect((int) -xOffset - control.posX - control.getContentOffset(), (int) -yOffset - control.posY - control.getContentOffset()));
+				control.renderControl(helper, 1, control.canOverlap() ? getScreenRect() : scaledRect.getOffsetRect((int) -xOffset - control.posX - control.getContentOffset(), (int) -yOffset - control.posY - control.getContentOffset()));
 				GlStateManager.popMatrix();
 				
 				GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -185,8 +186,11 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 	
 	@Override
 	public Vec3d getMousePos() {
+		float scale = getScaleFactor();
+		if (scale != 1)
+			scale = 1 / getScaleFactor();
 		if (parent != null)
-			return getParent().getMousePos().addVector(-getContentOffset() - getOffsetX() - this.posX, -getContentOffset() - getOffsetY() - this.posY, 0);
+			return getParent().getMousePos().addVector(-getContentOffset() - getOffsetX() * getScaleFactor() - this.posX, -getContentOffset() - getOffsetY() * getScaleFactor() - this.posY, 0).scale(scale);
 		ScaledResolution scaledresolution = new ScaledResolution(mc);
 		int i = scaledresolution.getScaledWidth();
 		int j = scaledresolution.getScaledHeight();
@@ -198,7 +202,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
 		int movey = (j - height) / 2;
 		x -= movex;
 		y -= movey;
-		return new Vec3d(x - getContentOffset() - getOffsetX(), y - getContentOffset() - getOffsetY(), 0);
+		return new Vec3d(x - getContentOffset() - getOffsetX(), y - getContentOffset() - getOffsetY(), 0).scale(1 / getScaleFactor());
 	}
 	
 	public boolean isAnyControlFocused() {
