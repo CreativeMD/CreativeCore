@@ -71,6 +71,7 @@ public class GuiStateButton extends GuiButton {
 				previousState();
 			else
 				nextState();
+			onClicked(posX, posY, button);
 			return true;
 		}
 		return false;
