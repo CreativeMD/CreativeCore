@@ -36,7 +36,7 @@ public class ChunkProviderFake implements IChunkProvider {
 	private final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
 	public final IChunkGenerator chunkGenerator;
 	public final IChunkLoader chunkLoader;
-	public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap(8192);
+	public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap(4);
 	public final CreativeWorld worldObj;
 	private Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 	
