@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.utils.sorting;
 import com.creativemd.creativecore.common.utils.mc.BlockUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 
@@ -93,6 +94,20 @@ public abstract class BlockSelector {
 		@Override
 		public boolean is(Block block, int meta) {
 			return this.block == block && this.meta == meta;
+		}
+	}
+	
+	public static class BlockSelectorMaterial extends BlockSelector {
+		
+		public Material material;
+		
+		public BlockSelectorMaterial(Material material) {
+			this.material = material;
+		}
+		
+		@Override
+		public boolean is(Block block, int meta) {
+			return block.getStateFromMeta(meta).getMaterial() == material;
 		}
 	}
 	
