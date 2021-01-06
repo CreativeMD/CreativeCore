@@ -83,4 +83,11 @@ public class BooleanUtils {
 			state[state.length - 1 - i] = (1 << i & number) != 0;
 	}
 	
+	public static String print(boolean[] state) {
+		String result = "[";
+		for (int i = 0; i < state.length; i++)
+			result += state[i] ? "1" : "0";
+		return result + "]";
+	}
+	
 }
