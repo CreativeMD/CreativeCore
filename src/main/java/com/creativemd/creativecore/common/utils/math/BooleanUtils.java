@@ -7,8 +7,8 @@ public class BooleanUtils {
 	
 	public static boolean[] asArray(boolean value) {
 		if (value)
-			return SINGLE_TRUE;
-		return SINGLE_FALSE;
+			return new boolean[] { true };
+		return new boolean[] { false };
 	}
 	
 	public static boolean isTrue(Boolean value) {
@@ -40,7 +40,10 @@ public class BooleanUtils {
 	
 	public static void set(boolean[] state, boolean[] newState) {
 		for (int i = 0; i < state.length; i++)
-			state[i] = newState[i];
+			if (i < newState.length)
+				state[i] = newState[i];
+			else
+				state[i] = false;
 	}
 	
 	public static void reset(boolean[] state) {
