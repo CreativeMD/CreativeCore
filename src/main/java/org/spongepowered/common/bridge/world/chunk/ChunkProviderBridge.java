@@ -31,9 +31,9 @@ import net.minecraft.world.gen.ChunkProviderServer;
 
 /** Implemented for both {@link ChunkProviderServer} and the client version. */
 public interface ChunkProviderBridge {
-	
-	void bridge$setMaxChunkUnloads(int maxUnloads);
-	
-	@Nullable
-	Chunk bridge$getLoadedChunkWithoutMarkingActive(int x, int z);
+    
+    void bridge$setMaxChunkUnloads(int maxUnloads);
+    
+    @Nullable
+    Chunk bridge$getLoadedChunkWithoutMarkingActive(int x, int z);
 }

@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface IRenderChunkSupplier {
-	
-	public Object getRenderChunk(World world, BlockPos pos);
-	
+    
+    public Object getRenderChunk(World world, BlockPos pos);
+    
 }

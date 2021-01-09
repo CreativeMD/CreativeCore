@@ -13,64 +13,64 @@ import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import net.minecraft.init.SoundEvents;
 
 public class GuiCheckBox extends GuiControl {
-	
-	public static final int disabledColor = ColorUtils.RGBAToInt(new Color(100, 100, 100));
-	public static final DisplayStyle partialStyle = new ColoredDisplayStyle(ColorUtils.WHITE);
-	public static final int checkBoxWidth = 7;
-	
-	public boolean value = false;
-	public String title;
-	public boolean partial = false;
-	
-	public GuiCheckBox(String name, String title, int x, int y, boolean value) {
-		super(name, x, y, checkBoxWidth + GuiRenderHelper.instance.getStringWidth(title) + 3, 8);
-		this.value = value;
-		this.title = title;
-	}
-	
-	public GuiCheckBox(String title, int x, int y, boolean value) {
-		this(title, title, x, y, value);
-	}
-	
-	@Override
-	protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
-		int yoffset = 0;
-		
-		if (!enabled)
-			style.getDisableEffect(this).renderStyle(0, yoffset, helper, checkBoxWidth, checkBoxWidth);
-		
-		style.getBorder(this).renderStyle(0, yoffset, helper, checkBoxWidth, checkBoxWidth);
-		style.getBackground(this).renderStyle(1, yoffset + 1, helper, checkBoxWidth - 2, checkBoxWidth - 2);
-		
-		if (value)
-			helper.font.drawString("x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : disabledColor);
-		else if (partial)
-			partialStyle.renderStyle(2, yoffset + 2, helper, checkBoxWidth - 4, checkBoxWidth - 4);
-		
-		helper.font.drawStringWithShadow(title, checkBoxWidth + 3, yoffset, enabled ? ColorUtils.WHITE : disabledColor);
-	}
-	
-	@Override
-	public boolean hasBorder() {
-		return false;
-	}
-	
-	@Override
-	public boolean hasBackground() {
-		return false;
-	}
-	
-	@Override
-	public boolean mousePressed(int posX, int posY, int button) {
-		playSound(SoundEvents.UI_BUTTON_CLICK);
-		this.value = !value;
-		raiseEvent(new GuiControlChangedEvent(this));
-		return true;
-	}
-	
-	@Override
-	protected void renderForeground(GuiRenderHelper helper, Style style) {
-		
-	}
-	
+    
+    public static final int disabledColor = ColorUtils.RGBAToInt(new Color(100, 100, 100));
+    public static final DisplayStyle partialStyle = new ColoredDisplayStyle(ColorUtils.WHITE);
+    public static final int checkBoxWidth = 7;
+    
+    public boolean value = false;
+    public String title;
+    public boolean partial = false;
+    
+    public GuiCheckBox(String name, String title, int x, int y, boolean value) {
+        super(name, x, y, checkBoxWidth + GuiRenderHelper.instance.getStringWidth(title) + 3, 8);
+        this.value = value;
+        this.title = title;
+    }
+    
+    public GuiCheckBox(String title, int x, int y, boolean value) {
+        this(title, title, x, y, value);
+    }
+    
+    @Override
+    protected void renderContent(GuiRenderHelper helper, Style style, int width, int height) {
+        int yoffset = 0;
+        
+        if (!enabled)
+            style.getDisableEffect(this).renderStyle(0, yoffset, helper, checkBoxWidth, checkBoxWidth);
+        
+        style.getBorder(this).renderStyle(0, yoffset, helper, checkBoxWidth, checkBoxWidth);
+        style.getBackground(this).renderStyle(1, yoffset + 1, helper, checkBoxWidth - 2, checkBoxWidth - 2);
+        
+        if (value)
+            helper.font.drawString("x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : disabledColor);
+        else if (partial)
+            partialStyle.renderStyle(2, yoffset + 2, helper, checkBoxWidth - 4, checkBoxWidth - 4);
+        
+        helper.font.drawStringWithShadow(title, checkBoxWidth + 3, yoffset, enabled ? ColorUtils.WHITE : disabledColor);
+    }
+    
+    @Override
+    public boolean hasBorder() {
+        return false;
+    }
+    
+    @Override
+    public boolean hasBackground() {
+        return false;
+    }
+    
+    @Override
+    public boolean mousePressed(int posX, int posY, int button) {
+        playSound(SoundEvents.UI_BUTTON_CLICK);
+        this.value = !value;
+        raiseEvent(new GuiControlChangedEvent(this));
+        return true;
+    }
+    
+    @Override
+    protected void renderForeground(GuiRenderHelper helper, Style style) {
+        
+    }
+    
 }

@@ -10,21 +10,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
 public class ConfigCommand extends CommandBase {
-	
-	@Override
-	public String getName() {
-		return "cmdconfig";
-	}
-	
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return "opens config gui";
-	}
-	
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (sender.getCommandSenderEntity() instanceof EntityPlayer)
-			GuiHandler.openGui("config", new NBTTagCompound(), (EntityPlayer) sender.getCommandSenderEntity());
-	}
-	
+    
+    @Override
+    public String getName() {
+        return "cmdconfig";
+    }
+    
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "opens config gui";
+    }
+    
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (sender.getCommandSenderEntity() instanceof EntityPlayer)
+            GuiHandler.openGui("config", new NBTTagCompound(), (EntityPlayer) sender.getCommandSenderEntity());
+    }
+    
 }

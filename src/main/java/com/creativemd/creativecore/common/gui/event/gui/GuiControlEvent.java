@@ -4,9 +4,9 @@ import com.creativemd.creativecore.common.gui.GuiControl;
 import com.creativemd.creativecore.common.gui.event.ControlEvent;
 
 public abstract class GuiControlEvent extends ControlEvent {
-	
-	public GuiControlEvent(GuiControl source) {
-		super(source);
-	}
-	
+    
+    public GuiControlEvent(GuiControl source) {
+        super(source);
+    }
+    
 }

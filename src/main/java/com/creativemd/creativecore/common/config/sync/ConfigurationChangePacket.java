@@ -11,44 +11,44 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ConfigurationChangePacket extends CreativeCorePacket {
-	
-	public String[] path;
-	public JsonObject json;
-	
-	public ConfigurationChangePacket(ICreativeConfigHolder holder, JsonObject json) {
-		this.path = holder.path();
-		this.json = json;
-	}
-	
-	public ConfigurationChangePacket() {
-		
-	}
-	
-	@Override
-	public void writeBytes(ByteBuf buf) {
-		writeString(buf, String.join(".", path));
-		writeJson(buf, json);
-	}
-	
-	@Override
-	public void readBytes(ByteBuf buf) {
-		String text = readString(buf);
-		path = text.isEmpty() ? new String[] {} : text.split(".");
-		json = readJson(buf);
-	}
-	
-	@Override
-	public void executeClient(EntityPlayer player) {
-		
-	}
-	
-	@Override
-	public void executeServer(EntityPlayer player) {
-		if (player.canUseCommand(2, "")) {
-			CreativeConfigRegistry.ROOT.followPath(path).load(false, true, json, Side.SERVER);
-			CreativeCore.configHandler.save(Side.SERVER);
-			CreativeCore.configHandler.syncAll();
-		}
-	}
-	
+    
+    public String[] path;
+    public JsonObject json;
+    
+    public ConfigurationChangePacket(ICreativeConfigHolder holder, JsonObject json) {
+        this.path = holder.path();
+        this.json = json;
+    }
+    
+    public ConfigurationChangePacket() {
+        
+    }
+    
+    @Override
+    public void writeBytes(ByteBuf buf) {
+        writeString(buf, String.join(".", path));
+        writeJson(buf, json);
+    }
+    
+    @Override
+    public void readBytes(ByteBuf buf) {
+        String text = readString(buf);
+        path = text.isEmpty() ? new String[] {} : text.split(".");
+        json = readJson(buf);
+    }
+    
+    @Override
+    public void executeClient(EntityPlayer player) {
+        
+    }
+    
+    @Override
+    public void executeServer(EntityPlayer player) {
+        if (player.canUseCommand(2, "")) {
+            CreativeConfigRegistry.ROOT.followPath(path).load(false, true, json, Side.SERVER);
+            CreativeCore.configHandler.save(Side.SERVER);
+            CreativeCore.configHandler.syncAll();
+        }
+    }
+    
 }

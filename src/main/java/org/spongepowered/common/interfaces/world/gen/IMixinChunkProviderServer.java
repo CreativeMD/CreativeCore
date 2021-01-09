@@ -34,23 +34,23 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
 public interface IMixinChunkProviderServer {
-	
-	CompletableFuture<Boolean> doesChunkExistSync(Vector3i chunkCoords);
-	
-	boolean getForceChunkRequests();
-	
-	void setMaxChunkUnloads(int maxUnloads);
-	
-	void setDenyChunkRequests(boolean flag);
-	
-	void setForceChunkRequests(boolean flag);
-	
-	void unloadChunkAndSave(Chunk chunk);
-	
-	@Nullable
-	Chunk getLoadedChunkWithoutMarkingActive(int x, int z);
-	
-	long getChunkUnloadDelay();
-	
-	WorldServer getWorld();
+    
+    CompletableFuture<Boolean> doesChunkExistSync(Vector3i chunkCoords);
+    
+    boolean getForceChunkRequests();
+    
+    void setMaxChunkUnloads(int maxUnloads);
+    
+    void setDenyChunkRequests(boolean flag);
+    
+    void setForceChunkRequests(boolean flag);
+    
+    void unloadChunkAndSave(Chunk chunk);
+    
+    @Nullable
+    Chunk getLoadedChunkWithoutMarkingActive(int x, int z);
+    
+    long getChunkUnloadDelay();
+    
+    WorldServer getWorld();
 }

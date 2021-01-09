@@ -6,19 +6,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SubContainerEmpty extends SubContainer {
-	
-	public SubContainerEmpty(EntityPlayer player) {
-		super("empty", player);
-	}
-	
-	@Override
-	public void createControls() {
-		
-	}
-	
-	@Override
-	public void onPacketReceive(NBTTagCompound nbt) {
-		
-	}
-	
+    
+    public SubContainerEmpty(EntityPlayer player) {
+        super("empty", player);
+    }
+    
+    @Override
+    public void createControls() {
+        
+    }
+    
+    @Override
+    public void onPacketReceive(NBTTagCompound nbt) {
+        
+    }
+    
 }

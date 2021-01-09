@@ -7,8 +7,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class Avatar {
-	
-	/** Handles the rendering of a RepresntiveObject, **/
-	public abstract void handleRendering(GuiRenderHelper helper, int width, int height);
-	
+    
+    /** Handles the rendering of a RepresntiveObject, **/
+    public abstract void handleRendering(GuiRenderHelper helper, int width, int height);
+    
 }
