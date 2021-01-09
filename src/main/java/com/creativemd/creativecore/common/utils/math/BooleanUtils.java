@@ -5,6 +5,10 @@ public class BooleanUtils {
 	public static final boolean[] SINGLE_FALSE = new boolean[] { false };
 	public static final boolean[] SINGLE_TRUE = new boolean[] { true };
 	
+	public static int toInt(boolean value) {
+		return value ? 1 : 0;
+	}
+	
 	public static boolean[] asArray(boolean value) {
 		if (value)
 			return new boolean[] { true };
@@ -91,6 +95,20 @@ public class BooleanUtils {
 		for (int i = 0; i < state.length; i++)
 			result += state[i] ? "1" : "0";
 		return result + "]";
+	}
+	
+	public static boolean[] toBits(int number, int bandwidth) {
+		boolean[] b = new boolean[bandwidth];
+		for (int i = 0; i < bandwidth; i++)
+			b[b.length - i - 1] = (1 << bandwidth - i - 1 & number) != 0;
+		return b;
+	}
+	
+	public static int toNumber(boolean[] b) {
+		int x = 0;
+		for (int i = b.length - 1; i >= 0; i--)
+			x = x << 1 | (b[i] ? 1 : 0);
+		return x;
 	}
 	
 }
