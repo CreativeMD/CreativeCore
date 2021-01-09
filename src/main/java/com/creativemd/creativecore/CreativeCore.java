@@ -12,7 +12,6 @@ import com.creativemd.creativecore.common.config.holder.CreativeConfigRegistry;
 import com.creativemd.creativecore.common.config.sync.ConfigurationChangePacket;
 import com.creativemd.creativecore.common.config.sync.ConfigurationClientPacket;
 import com.creativemd.creativecore.common.config.sync.ConfigurationPacket;
-import com.creativemd.creativecore.common.entity.EntitySit;
 import com.creativemd.creativecore.common.event.CreativeTickHandler;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
@@ -48,7 +47,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -60,7 +58,6 @@ import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -199,8 +196,6 @@ public class CreativeCore {
             }
             
         });
-        
-        EntityRegistry.registerModEntity(new ResourceLocation(modid, "sit"), EntitySit.class, "Sit", 0, this, 250, 250, true);
         
         // Init Packets
         CreativeCorePacket.registerPacket(GuiUpdatePacket.class);
