@@ -42,40 +42,47 @@ public class AlignedBox {
         this(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
     }
     
+    public void add(float x, float y, float z) {
+        this.minX += x;
+        this.minY += y;
+        this.minZ += z;
+        this.maxX += x;
+        this.maxY += y;
+        this.maxZ += z;
+    }
+    
+    public void sub(float x, float y, float z) {
+        this.minX -= x;
+        this.minY -= y;
+        this.minZ -= z;
+        this.maxX -= x;
+        this.maxY -= y;
+        this.maxZ -= z;
+    }
+    
     public void add(Vector3d vec) {
-        this.minX += vec.x;
-        this.minY += vec.y;
-        this.minZ += vec.z;
-        this.maxX += vec.x;
-        this.maxY += vec.y;
-        this.maxZ += vec.z;
+        add((float) vec.x, (float) vec.y, (float) vec.z);
     }
     
     public void sub(Vector3d vec) {
-        this.minX -= vec.x;
-        this.minY -= vec.y;
-        this.minZ -= vec.z;
-        this.maxX -= vec.x;
-        this.maxY -= vec.y;
-        this.maxZ -= vec.z;
+        sub((float) vec.x, (float) vec.y, (float) vec.z);
     }
     
     public void add(Vec3i vec) {
-        this.minX += vec.getX();
-        this.minY += vec.getY();
-        this.minZ += vec.getZ();
-        this.maxX += vec.getX();
-        this.maxY += vec.getY();
-        this.maxZ += vec.getZ();
+        add(vec.getX(), vec.getY(), vec.getZ());
     }
     
     public void sub(Vec3i vec) {
-        this.minX -= vec.getX();
-        this.minY -= vec.getY();
-        this.minZ -= vec.getZ();
-        this.maxX -= vec.getX();
-        this.maxY -= vec.getY();
-        this.maxZ -= vec.getZ();
+        sub(vec.getX(), vec.getY(), vec.getZ());
+    }
+    
+    public void scale(float scale) {
+        this.minX *= scale;
+        this.minY *= scale;
+        this.minZ *= scale;
+        this.maxX *= scale;
+        this.maxY *= scale;
+        this.maxZ *= scale;
     }
     
     public Vector3d getSize() {

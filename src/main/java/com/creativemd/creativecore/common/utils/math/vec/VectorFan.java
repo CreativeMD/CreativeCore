@@ -385,7 +385,7 @@ public class VectorFan {
         return cutInternal(plane, true);
     }
     
-    public void move(int x, int y, int z) {
+    public void move(float x, float y, float z) {
         for (int i = 0; i < coords.length; i++) {
             coords[i].x += x;
             coords[i].y += y;
