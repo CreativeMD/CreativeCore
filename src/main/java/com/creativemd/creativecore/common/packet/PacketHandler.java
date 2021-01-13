@@ -104,8 +104,13 @@ public class PacketHandler {
         if (world instanceof IOrientatedWorld) {
             CreativeWorld subWorld = getParentSubWorld((IOrientatedWorld) world);
             sendPacketToTrackingPlayers(packet, subWorld.parent, (WorldServer) ((IOrientatedWorld) world).getRealWorld(), predicate);
-        } else
-            sendPacketToPlayers(packet, ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4).getWatchingPlayers(), predicate);
+        } else {
+            try {
+                sendPacketToPlayers(packet, ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4).getWatchingPlayers(), predicate);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, Entity entity, WorldServer world, @Nullable Predicate<EntityPlayer> predicate) {
