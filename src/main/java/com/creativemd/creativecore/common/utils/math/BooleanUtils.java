@@ -111,4 +111,13 @@ public class BooleanUtils {
         return x;
     }
     
+    public static boolean[] copy(boolean[] state) {
+        if (state == null)
+            return null;
+        boolean[] newState = new boolean[state.length];
+        for (int i = 0; i < newState.length; i++)
+            newState[i] = state[i];
+        return newState;
+    }
+    
 }
