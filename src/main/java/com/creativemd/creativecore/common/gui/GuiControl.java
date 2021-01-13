@@ -63,6 +63,11 @@ public abstract class GuiControl extends CoreControl {
     
     // ================Construction================
     
+    @Override
+    public GuiControl setEnabled(boolean enabled) {
+        return (GuiControl) super.setEnabled(enabled);
+    }
+    
     public GuiControl setDimension(int width, int height) {
         this.width = width + getContentOffset() * 2;
         this.height = height + getContentOffset() * 2;
