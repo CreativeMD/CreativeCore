@@ -133,7 +133,7 @@ public class GuiTimeline extends GuiParent {
                 raiseEvent(new GuiControlChangedEvent(this));
             } else if (channel != -1) {
                 int tick = getTickAt(x);
-                if (tick > 0 && tick < duration) {
+                if (tick >= 0 && tick <= duration) {
                     handler.set(tick);
                     draggedTimeline = true;
                 }
@@ -314,6 +314,7 @@ public class GuiTimeline extends GuiParent {
         for (int i = begin; i < end; i++) {
             if (i % halfArea == 0) {
                 getStyle().getBorder(this).renderStyle(helper, 1, 2);
+                getStyle().getDisableEffect(this).renderStyle(0, 2, helper, 1, height - 2);
                 String text = "" + (i * smallestStep);
                 font.drawString(text, 0 - font.getStringWidth(text) / 2, -8, ColorUtils.BLACK);
             } else
