@@ -37,7 +37,7 @@ public class GuiTabStateButton extends GuiControl {
     }
     
     protected String getDisplay(int index) {
-        return states[selected];
+        return states[index];
     }
     
     @Override
