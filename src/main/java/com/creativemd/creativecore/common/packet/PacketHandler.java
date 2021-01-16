@@ -16,6 +16,7 @@ import com.google.common.base.Predicate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -106,7 +107,9 @@ public class PacketHandler {
             sendPacketToTrackingPlayers(packet, subWorld.parent, (WorldServer) ((IOrientatedWorld) world).getRealWorld(), predicate);
         } else {
             try {
-                sendPacketToPlayers(packet, ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4).getWatchingPlayers(), predicate);
+                PlayerChunkMapEntry entry = ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4);
+                if (entry != null)
+                    sendPacketToPlayers(packet, entry.getWatchingPlayers(), predicate);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
