@@ -20,6 +20,10 @@ public abstract class TileEntityCreative extends TileEntity {
         return tempWorld.isRemote;
     }
     
+    public World getTempWorld() {
+        return tempWorld;
+    }
+    
     @Override
     protected void setWorldCreate(World worldIn) {
         tempWorld = worldIn;
