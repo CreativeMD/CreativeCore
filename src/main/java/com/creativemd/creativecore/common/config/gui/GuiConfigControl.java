@@ -47,7 +47,7 @@ public class GuiConfigControl extends GuiParent {
     }
     
     public void init(JsonElement initalValue) {
-        field.converation.createControls(this, field, field.getType(), 100);
+        field.converation.createControls(this, field, field.getType(), width - 20);
         field.converation.loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, false, initalValue, side, field) : field.get(), this, field);
     }
     

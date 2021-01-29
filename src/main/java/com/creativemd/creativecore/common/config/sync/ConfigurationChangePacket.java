@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class ConfigurationChangePacket extends CreativeCorePacket {
@@ -17,6 +18,11 @@ public class ConfigurationChangePacket extends CreativeCorePacket {
     
     public ConfigurationChangePacket(ICreativeConfigHolder holder, JsonObject json) {
         this.path = holder.path();
+        this.json = json;
+    }
+    
+    public ConfigurationChangePacket(String[] path, JsonObject json) {
+        this.path = path;
         this.json = json;
     }
     
@@ -48,7 +54,8 @@ public class ConfigurationChangePacket extends CreativeCorePacket {
             CreativeConfigRegistry.ROOT.followPath(path).load(false, true, json, Side.SERVER);
             CreativeCore.configHandler.save(Side.SERVER);
             CreativeCore.configHandler.syncAll();
-        }
+        } else
+            CreativeCore.configHandler.syncAll((EntityPlayerMP) player);
     }
     
 }

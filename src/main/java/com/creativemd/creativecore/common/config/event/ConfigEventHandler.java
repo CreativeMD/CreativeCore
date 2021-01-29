@@ -241,6 +241,14 @@ public class ConfigEventHandler {
         save(side);
     }
     
+    public boolean isSynchronizedWithServer(String key) {
+        String[] path = key.split(".");
+        ConfigKey config = CreativeConfigRegistry.ROOT.findKey(path);
+        if (config != null)
+            return config.is(Side.SERVER);
+        return false;
+    }
+    
     public static List<String> loadClientFieldList(ICreativeConfigHolder holder) {
         List<String> enabled = new ArrayList<>();
         for (ConfigKey key : holder.fields())

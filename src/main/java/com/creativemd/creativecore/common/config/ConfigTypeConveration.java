@@ -1,8 +1,11 @@
 package com.creativemd.creativecore.common.config;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
@@ -11,8 +14,10 @@ import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.common.config.api.CreativeConfig;
 import com.creativemd.creativecore.common.config.gui.GuiConfigSubControl;
+import com.creativemd.creativecore.common.config.gui.GuiConfigSubControlHolder;
 import com.creativemd.creativecore.common.config.holder.ConfigHolderDynamic;
 import com.creativemd.creativecore.common.config.holder.ConfigHolderObject;
+import com.creativemd.creativecore.common.config.holder.ConfigKey;
 import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.config.holder.ICreativeConfigHolder;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
@@ -41,8 +46,74 @@ public abstract class ConfigTypeConveration<T> {
     private static HashMap<Class, ConfigTypeConveration> types = new HashMap<>();
     private static PairList<Predicate<Class>, ConfigTypeConveration> specialTypes = new PairList<>();
     
-    public static <T, U extends T> void registerType(Class<U> clazz, ConfigTypeConveration<T> type) {
+    private static final ICreativeConfigHolder fakeParent = new ICreativeConfigHolder() {
+        
+        @Override
+        public ConfigSynchronization synchronization() {
+            return ConfigSynchronization.UNIVERSAL;
+        }
+        
+        @Override
+        public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side) {
+            return null;
+        }
+        
+        @Override
+        public void restoreDefault(Side side, boolean ignoreRestart) {}
+        
+        @Override
+        public String[] path() {
+            return new String[0];
+        }
+        
+        @Override
+        public ICreativeConfigHolder parent() {
+            return null;
+        }
+        
+        @Override
+        public Collection<String> names() {
+            return null;
+        }
+        
+        @Override
+        public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {}
+        
+        @Override
+        public boolean isEmptyWithoutForce(Side side) {
+            return false;
+        }
+        
+        @Override
+        public boolean isEmpty(Side side) {
+            return false;
+        }
+        
+        @Override
+        public boolean isDefault(Side side) {
+            return false;
+        }
+        
+        @Override
+        public ConfigKey getField(String key) {
+            return null;
+        }
+        
+        @Override
+        public Object get(String key) {
+            return null;
+        }
+        
+        @Override
+        public Collection<? extends ConfigKey> fields() {
+            return null;
+        }
+    };
+    private static ConfigTypeConveration<ConfigHolderObject> holderConveration;
+    
+    public static <T, U extends T> ConfigTypeConveration<T> registerType(Class<U> clazz, ConfigTypeConveration<T> type) {
         types.put(clazz, type);
+        return type;
     }
     
     public static void registerSpecialType(Predicate<Class> predicate, ConfigTypeConveration type) {
@@ -71,6 +142,16 @@ public abstract class ConfigTypeConveration<T> {
             if (specialTypes.get(i).key.test(typeClass))
                 return specialTypes.get(i).value;
         throw new RuntimeException("Could not find converation for " + typeClass.getName());
+    }
+    
+    public static ConfigTypeConveration getUnsafe(Class typeClass) {
+        ConfigTypeConveration converation = types.get(typeClass);
+        if (converation != null)
+            return converation;
+        for (int i = 0; i < specialTypes.size(); i++)
+            if (specialTypes.get(i).key.test(typeClass))
+                return specialTypes.get(i).value;
+        return null;
     }
     
     public static Object read(Class typeClass, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
@@ -119,6 +200,11 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             public Boolean set(ConfigKeyField key, Boolean value) {
                 return value;
+            }
+            
+            @Override
+            public Boolean createPrimitiveDefault(Class clazz) {
+                return Boolean.FALSE;
             }
         };
         registerType(boolean.class, booleanType);
@@ -193,7 +279,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @SideOnly(Side.CLIENT)
             public void loadValue(Number value, GuiParent parent) {
-                GuiControl control = (GuiControl) parent.get("data");
+                GuiControl control = parent.get("data");
                 if (control instanceof GuiSteppedSlider) {
                     GuiSteppedSlider button = (GuiSteppedSlider) control;
                     button.setValue(value.intValue());
@@ -269,7 +355,7 @@ public abstract class ConfigTypeConveration<T> {
             @SideOnly(Side.CLIENT)
             protected Number saveValue(GuiParent parent, Class clazz) {
                 boolean decimal = isDecimal(clazz);
-                GuiControl control = (GuiControl) parent.get("data");
+                GuiControl control = parent.get("data");
                 String text;
                 if (control instanceof GuiSteppedSlider) {
                     GuiSteppedSlider button = (GuiSteppedSlider) control;
@@ -300,6 +386,23 @@ public abstract class ConfigTypeConveration<T> {
                     }
                 }
                 return value;
+            }
+            
+            @Override
+            public Number createPrimitiveDefault(Class clazz) {
+                if (clazz == Float.class || clazz == float.class)
+                    return new Float(0);
+                else if (clazz == Double.class || clazz == double.class)
+                    return new Double(0);
+                else if (clazz == Byte.class || clazz == byte.class)
+                    return new Byte((byte) 0);
+                else if (clazz == Short.class || clazz == short.class)
+                    return new Short((short) 0);
+                else if (clazz == Integer.class || clazz == int.class)
+                    return new Integer(0);
+                else if (clazz == Long.class || clazz == long.class)
+                    return new Long(0);
+                return 0;
             }
         };
         registerType(byte.class, numberType);
@@ -354,9 +457,14 @@ public abstract class ConfigTypeConveration<T> {
             public String set(ConfigKeyField key, String value) {
                 return value;
             }
+            
+            @Override
+            public String createPrimitiveDefault(Class clazz) {
+                return "";
+            }
         });
         
-        registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
+        holderConveration = registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
             
             @Override
             public ConfigHolderObject readElement(ConfigHolderObject defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
@@ -392,6 +500,11 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public ConfigHolderObject set(ConfigKeyField key, ConfigHolderObject value) {
+                return null;
+            }
+            
+            @Override
+            public ConfigHolderObject createPrimitiveDefault(Class clazz) {
                 return null;
             }
         });
@@ -432,6 +545,11 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public ConfigHolderDynamic set(ConfigKeyField key, ConfigHolderDynamic value) {
+                return null;
+            }
+            
+            @Override
+            public ConfigHolderDynamic createPrimitiveDefault(Class clazz) {
                 return null;
             }
         });
@@ -543,6 +661,11 @@ public abstract class ConfigTypeConveration<T> {
                 return true;
             }
             
+            @Override
+            public Object createPrimitiveDefault(Class clazz) {
+                return null;
+            }
+            
         });
         
         registerSpecialType((x) -> x.isEnum(), new SimpleConfigTypeConveration<Enum>() {
@@ -587,9 +710,27 @@ public abstract class ConfigTypeConveration<T> {
             public Enum set(ConfigKeyField key, Enum value) {
                 return value;
             }
+            
+            @Override
+            public Enum createPrimitiveDefault(Class clazz) {
+                return null;
+            }
         });
         
         registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeConveration<List>() {
+            
+            private ConfigHolderObject constructHolder(Side side, Object value) {
+                return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
+            }
+            
+            private Object constructEmpty(Class clazz) {
+                try {
+                    Constructor con = clazz.getConstructor();
+                    return con.newInstance();
+                } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             
             @Override
             public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
@@ -597,8 +738,16 @@ public abstract class ConfigTypeConveration<T> {
                     JsonArray array = (JsonArray) element;
                     Class clazz = getListType(key);
                     List list = new ArrayList<>(array.size());
+                    ConfigTypeConveration conversation = getUnsafe(clazz);
                     for (int i = 0; i < array.size(); i++)
-                        list.add(read(clazz, null, loadDefault, ignoreRestart, array.get(i), side, null));
+                        if (conversation != null)
+                            list.add(conversation.readElement(conversation.createPrimitiveDefault(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
+                        else {
+                            Object value = constructEmpty(clazz);
+                            holderConveration
+                                .readElement(constructHolder(side, value), loadDefault, ignoreRestart, array.get(i), side, null);
+                            list.add(value);
+                        }
                     return list;
                 }
                 return defaultValue;
@@ -608,8 +757,12 @@ public abstract class ConfigTypeConveration<T> {
             public JsonElement writeElement(List value, List defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
                 JsonArray array = new JsonArray();
                 Class clazz = getListType(key);
+                ConfigTypeConveration conversation = getUnsafe(clazz);
                 for (int i = 0; i < value.size(); i++)
-                    array.add(write(clazz, value.get(i), null, saveDefault, ignoreRestart, side, null));
+                    if (conversation != null)
+                        array.add(conversation.writeElement(value.get(i), null, saveDefault, ignoreRestart, side, key));
+                    else
+                        array.add(holderConveration.writeElement(constructHolder(side, value.get(i)), null, saveDefault, ignoreRestart, side, key));
                 return array;
             }
             
@@ -621,16 +774,24 @@ public abstract class ConfigTypeConveration<T> {
                 parent.addControl(listBox);
                 
                 Class subClass = getListType(key);
-                ConfigTypeConveration converation = get(subClass);
+                ConfigTypeConveration converation = getUnsafe(subClass);
                 
-                int parentWidth = parent.width;
+                int parentWidth = parent.width - 10;
                 
                 parent.addControl(new GuiButton("add", 0, 140) {
                     
                     @Override
                     public void onClicked(int x, int y, int button) {
-                        GuiConfigSubControl control = new GuiConfigSubControl("" + 0, 2, 0, parentWidth, 14);
-                        converation.createControls(control, null, subClass, Math.min(100, control.width));
+                        GuiConfigSubControl control;
+                        if (converation != null) {
+                            control = new GuiConfigSubControl("" + 0, 2, 0, parentWidth, 14);
+                            converation.createControls(control, null, subClass, Math.min(100, control.width - 35));
+                        } else {
+                            Object value = constructEmpty(subClass);
+                            ConfigHolderObject holder = constructHolder(Side.SERVER, value);
+                            control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, holder, value);
+                            ((GuiConfigSubControlHolder) control).createControls();
+                        }
                         listBox.add(control);
                     }
                 });
@@ -644,14 +805,22 @@ public abstract class ConfigTypeConveration<T> {
                     box.clear();
                 
                 Class clazz = getListType(key);
-                ConfigTypeConveration converation = get(clazz);
+                ConfigTypeConveration converation = getUnsafe(clazz);
+                
+                int parentWidth = parent.width - 10;
                 
                 List<GuiConfigSubControl> controls = new ArrayList<>(value.size());
                 for (int i = 0; i < value.size(); i++) {
                     Object entry = value.get(i);
-                    GuiConfigSubControl control = new GuiConfigSubControl("" + i, 2, 0, parent.width, 14);
-                    converation.createControls(control, null, clazz, Math.min(100, control.width));
-                    converation.loadValue(entry, control, null);
+                    GuiConfigSubControl control;
+                    if (converation != null) {
+                        control = new GuiConfigSubControl("" + i, 2, 0, parentWidth, 14);
+                        converation.createControls(control, null, clazz, Math.min(100, control.width - 35));
+                        converation.loadValue(entry, control, null);
+                    } else {
+                        control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, constructHolder(Side.SERVER, entry), entry);
+                        ((GuiConfigSubControlHolder) control).createControls();
+                    }
                     controls.add(control);
                 }
                 
@@ -662,12 +831,17 @@ public abstract class ConfigTypeConveration<T> {
             @SideOnly(Side.CLIENT)
             protected List saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
                 Class subClass = getListType(key);
-                ConfigTypeConveration converation = get(subClass);
+                ConfigTypeConveration converation = getUnsafe(subClass);
                 
                 GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
                 List value = new ArrayList(box.size());
                 for (int i = 0; i < box.size(); i++)
-                    value.add(converation.save(box.get(i), subClass, null));
+                    if (converation != null)
+                        value.add(converation.save(box.get(i), subClass, null));
+                    else {
+                        ((GuiConfigSubControlHolder) box.get(i)).save();
+                        value.add(((GuiConfigSubControlHolder) box.get(i)).value);
+                    }
                 return value;
             }
             
@@ -679,10 +853,17 @@ public abstract class ConfigTypeConveration<T> {
             public Class getListType(ConfigKeyField key) {
                 ParameterizedType type = (ParameterizedType) key.field.getGenericType();
                 return (Class) type.getActualTypeArguments()[0];
-                
             }
+            
+            @Override
+            public List createPrimitiveDefault(Class clazz) {
+                return null;
+            }
+            
         });
     }
+    
+    public abstract T createPrimitiveDefault(Class clazz);
     
     public abstract T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key);
     
