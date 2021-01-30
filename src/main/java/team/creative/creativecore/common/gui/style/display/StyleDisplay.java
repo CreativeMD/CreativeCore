@@ -14,10 +14,17 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
+import team.creative.creativecore.common.util.math.Rect;
 
 @OnlyIn(value = Dist.CLIENT)
 @JsonAdapter(value = StyleDisplayDeserializer.class)
 public abstract class StyleDisplay {
+	
+	public static final StyleDisplay NONE = new StyleDisplay() {
+		
+		@Override
+		protected void render(Matrix4f mat, int x, int y, int width, int height) {}
+	};
 	
 	private static HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
 	
@@ -25,6 +32,10 @@ public abstract class StyleDisplay {
 		if (types.containsKey(id))
 			throw new IllegalArgumentException(id + " is already taken");
 		types.put(id, clazz);
+	}
+	
+	public void render(MatrixStack matrix, Rect rect) {
+		render(matrix, rect.minX, rect.minY, rect.getWidth(), rect.getHeight());
 	}
 	
 	public void render(MatrixStack matrix, int x, int y, int width, int height) {

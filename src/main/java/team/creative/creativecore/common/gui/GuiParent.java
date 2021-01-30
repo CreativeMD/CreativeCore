@@ -1,0 +1,195 @@
+package team.creative.creativecore.common.gui;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.lwjgl.opengl.GL11;
+
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+
+import net.minecraft.client.MainWindow;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.math.vec.Vector2;
+
+public abstract class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
+	
+	private List<GuiControl> controls = new ArrayList<>();
+	
+	@OnlyIn(value = Dist.CLIENT)
+	protected int lastRenderedHeight;
+	
+	public GuiParent(String name, int x, int y, int width, int height) {
+		super(name, x, y, width, height);
+	}
+	
+	@Override
+	public boolean isClient() {
+		return getParent().isClient();
+	}
+	
+	public float getScaleFactor() {
+		return 1F;
+	}
+	
+	public double getOffsetY() {
+		return 0;
+	}
+	
+	public double getOffsetX() {
+		return 0;
+	}
+	
+	public Vector2 getMousePos() {
+		float scale = getScaleFactor();
+		if (scale != 1)
+			scale = 1 / getScaleFactor();
+		if (getParent() instanceof GuiParent) {
+			Vector2 vec = ((GuiParent) getParent()).getMousePos();
+			vec.add(-getContentOffset() - getOffsetX() * getScaleFactor() - x, -getContentOffset() - getOffsetY() * getScaleFactor() - y);
+			vec.scale(scale);
+			return vec;
+		}
+		
+		Minecraft mc = Minecraft.getInstance();
+		MainWindow window = mc.getMainWindow();
+		int i = window.getScaledWidth();
+		int j = window.getScaledHeight();
+		int x = (int) (mc.mouseHelper.getMouseX() * i / window.getWidth());
+		int y = (int) (j - mc.mouseHelper.getMouseY() * j / window.getHeight() - 1);
+		int movex = (i - width) / 2;
+		int movey = (j - height) / 2;
+		x -= movex;
+		y -= movey;
+		Vector2 vec = new Vector2(x - getContentOffset() - getOffsetX(), y - getContentOffset() - getOffsetY());
+		vec.scale(scale);
+		return vec;
+	}
+	
+	@Override
+	public Iterator<GuiControl> iterator() {
+		return controls.iterator();
+	}
+	
+	public GuiControl get(String name) {
+		for (int i = 0; i < controls.size(); i++)
+			if (controls.get(i).name.equalsIgnoreCase(name))
+				return controls.get(i);
+		return null;
+	}
+	
+	public boolean has(String name) {
+		for (int i = 0; i < controls.size(); i++)
+			if (controls.get(i).name.equalsIgnoreCase(name))
+				return true;
+		return false;
+	}
+	
+	public void add(GuiControl control) {
+		control.setParent(this);
+		controls.add(control);
+	}
+	
+	public void remove(String... include) {
+		controls.removeIf((x) -> ArrayUtils.contains(include, x.name));
+	}
+	
+	public void removeExclude(String... exclude) {
+		controls.removeIf((x) -> !ArrayUtils.contains(exclude, x.name));
+	}
+	
+	public void clear() {
+		controls.clear();
+	}
+	
+	@Override
+	public void moveBehind(GuiControl toMove, GuiControl reference) {
+		controls.remove(toMove);
+		int index = controls.indexOf(reference);
+		if (index != -1 && index < controls.size() - 1)
+			controls.add(index + 1, toMove);
+		else
+			moveBottom(toMove);
+	}
+	
+	@Override
+	public void moveInFront(GuiControl toMove, GuiControl reference) {
+		controls.remove(toMove);
+		int index = controls.indexOf(reference);
+		if (index != -1)
+			controls.add(index, toMove);
+		else
+			moveTop(toMove);
+	}
+	
+	@Override
+	public void moveTop(GuiControl toMove) {
+		controls.remove(toMove);
+		controls.add(0, toMove);
+	}
+	
+	@Override
+	public void moveBottom(GuiControl toMove) {
+		controls.remove(toMove);
+		controls.add(toMove);
+	}
+	
+	@Override
+	@OnlyIn(value = Dist.CLIENT)
+	protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+		RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
+		
+		float scale = getScaleFactor();
+		double xOffset = getOffsetX();
+		double yOffset = getOffsetY();
+		
+		lastRenderedHeight = 0;
+		
+		for (int i = controls.size() - 1; i >= 0; i--) {
+			GuiControl control = controls.get(i);
+			
+			if (!control.visible)
+				continue;
+			
+			Rect controlRect = rect.child((int) ((control.x + xOffset) * scale), (int) ((control.y + yOffset) * scale), (int) (control.width * scale), (int) (control.height * scale));
+			Rect realRect = rect.intersection(controlRect);
+			if (realRect != null || control.canOverlap()) {
+				if (control.canOverlap())
+					RenderSystem.disableScissor();
+				else
+					realRect.scissor();
+				
+				matrix.push();
+				matrix.translate((int) (control.x * scale), (int) (control.y * scale), 0);
+				control.render(matrix, controlRect, realRect, mouseX - (int) (control.x * scale), mouseY - (int) (control.y * scale));
+				matrix.pop();
+			}
+			
+			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.x + control.height) * scale);
+			
+		}
+	}
+	
+	@Override
+	public void init() {
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).init();
+	}
+	
+	@Override
+	public void closed() {
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).closed();
+	}
+	
+	@Override
+	public void tick() {
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).tick();
+	}
+}

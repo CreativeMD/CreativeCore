@@ -15,6 +15,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
+import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.type.Color;
@@ -89,4 +91,43 @@ public class GuiStyle {
 	public StyleDisplay clickable = new DisplayColor(0.4F, 0.4F, 0.4F, 1);
 	@SerializedName("clickable-highlight")
 	public StyleDisplay clickableHighlight = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
+	
+	public StyleDisplay get(ControlStyleBorder border) {
+		switch (border) {
+		case BIG:
+			return this.borderThick;
+		case SMALL:
+			return this.border;
+		default:
+			return StyleDisplay.NONE;
+		}
+	}
+	
+	public StyleDisplay get(ControlStyleFace face, boolean mouseOver) {
+		switch (face) {
+		case BACKGROUND:
+			return background;
+		case BAR:
+			return bar;
+		case CLICKABLE:
+			if (mouseOver)
+				return clickableHighlight;
+			return clickable;
+		case NESTED_BACKGROUND:
+			return secondaryBackground;
+		default:
+			return StyleDisplay.NONE;
+		}
+	}
+	
+	public int getBorder(ControlStyleBorder border) {
+		switch (border) {
+		case BIG:
+			return this.borderThickWidth;
+		case SMALL:
+			return this.borderWidth;
+		default:
+			return 0;
+		}
+	}
 }

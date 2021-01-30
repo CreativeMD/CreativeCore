@@ -52,10 +52,20 @@ public class Vector2 extends Vector<Vector2> {
 		return new Vector2(x, y);
 	}
 	
+	public void add(double x, double y) {
+		this.x += x;
+		this.y += y;
+	}
+	
 	@Override
 	public void add(Vector2 vec) {
-		this.x += vec.x;
-		this.y += vec.y;
+		this.x += x;
+		this.y += y;
+	}
+	
+	public void sub(double x, double y) {
+		this.x = x;
+		this.y -= y;
 	}
 	
 	@Override
