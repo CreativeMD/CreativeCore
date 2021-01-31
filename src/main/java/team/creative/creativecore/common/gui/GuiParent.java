@@ -192,4 +192,9 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 		for (int i = 0; i < controls.size(); i++)
 			controls.get(i).tick();
 	}
+	
+	@Override
+	public void closeLayer(GuiLayer layer) {
+		getParent().closeLayer(layer);
+	}
 }

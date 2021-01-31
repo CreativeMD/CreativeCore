@@ -3,14 +3,20 @@ package team.creative.creativecore.common.gui.integration;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.IGuiParent;
+import team.creative.creativecore.common.gui.IGuiIntegratedParent;
+import team.creative.creativecore.common.gui.sync.PacketLayerAction;
+import team.creative.creativecore.common.gui.sync.PacketLayerAction.LayerAction;
+import team.creative.creativecore.common.network.CreativePacket;
 
-public class ContainerIntegration extends Container implements IGuiParent {
+public class ContainerIntegration extends Container implements IGuiIntegratedParent {
 	
 	private List<GuiLayer> layers = new ArrayList<>();
 	private final PlayerEntity player;
@@ -27,12 +33,19 @@ public class ContainerIntegration extends Container implements IGuiParent {
 			layer.tick();
 	}
 	
+	@Override
 	public List<GuiLayer> getLayers() {
 		return layers;
 	}
 	
+	@Override
 	public GuiLayer getTopLayer() {
 		return layers.get(layers.size() - 1);
+	}
+	
+	@Override
+	public boolean isContainer() {
+		return true;
 	}
 	
 	@Override
@@ -58,35 +71,41 @@ public class ContainerIntegration extends Container implements IGuiParent {
 	}
 	
 	@Override
-	public void moveBehind(GuiControl toMove, GuiControl reference) {
-		layers.remove(toMove);
-		int index = layers.indexOf(reference);
-		if (index != -1 && index < layers.size() - 1)
-			layers.add(index + 1, (GuiLayer) toMove);
+	public void closeLayer(GuiLayer layer) {
+		int index = layers.indexOf(layer);
+		if (index != -1) {
+			sendPacket(new PacketLayerAction(LayerAction.CLOSE, index));
+			layers.remove(index);
+			if (layers.isEmpty())
+				if (isClient())
+					Minecraft.getInstance().displayGuiScreen((Screen) null);
+				else
+					((ServerPlayerEntity) player).closeContainer();
+		}
+	}
+	
+	public void closeLayer(int layer) {
+		layers.remove(layer);
+		if (layers.isEmpty())
+			if (isClient())
+				Minecraft.getInstance().displayGuiScreen((Screen) null);
+			else
+				((ServerPlayerEntity) player).closeContainer();
+	}
+	
+	public void sendPacket(CreativePacket packet) {
+		if (isClient())
+			sendPacketToServer(packet);
 		else
-			moveBottom(toMove);
+			sendPacketToClient(packet);
 	}
 	
-	@Override
-	public void moveInFront(GuiControl toMove, GuiControl reference) {
-		layers.remove(toMove);
-		int index = layers.indexOf(reference);
-		if (index != -1)
-			layers.add(index, (GuiLayer) toMove);
-		else
-			moveTop(toMove);
+	public void sendPacketToServer(CreativePacket packet) {
+		CreativeCore.NETWORK.sendToServer(packet);
 	}
 	
-	@Override
-	public void moveTop(GuiControl toMove) {
-		layers.remove(toMove);
-		layers.add(0, (GuiLayer) toMove);
-	}
-	
-	@Override
-	public void moveBottom(GuiControl toMove) {
-		layers.remove(toMove);
-		layers.add((GuiLayer) toMove);
+	public void sendPacketToClient(CreativePacket packet) {
+		CreativeCore.NETWORK.sendToClient(packet, (ServerPlayerEntity) player);
 	}
 	
 }

@@ -4,6 +4,8 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public interface IGuiParent {
 	
+	public boolean isContainer();
+	
 	public boolean isClient();
 	
 	public PlayerEntity getPlayer();
@@ -15,5 +17,7 @@ public interface IGuiParent {
 	public void moveTop(GuiControl toMove);
 	
 	public void moveBottom(GuiControl toMove);
+	
+	public void closeLayer(GuiLayer layer);
 	
 }

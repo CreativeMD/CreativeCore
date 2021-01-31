@@ -22,6 +22,7 @@ import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.config.sync.ConfigurationPacket;
+import team.creative.creativecore.common.gui.sync.PacketLayerAction;
 import team.creative.creativecore.common.network.CreativeNetwork;
 
 @Mod(value = CreativeCore.MODID)
@@ -49,6 +50,7 @@ public class CreativeCore {
 		NETWORK.registerType(ConfigurationChangePacket.class);
 		NETWORK.registerType(ConfigurationClientPacket.class);
 		NETWORK.registerType(ConfigurationPacket.class);
+		NETWORK.registerType(PacketLayerAction.class);
 		CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
 	}
 	
