@@ -157,7 +157,7 @@ public abstract class GuiControl {
 		controlRect.shrink(style.getBorder(formatting.border));
 		style.get(formatting.face, realRect.inside(mouseX, mouseY)).render(matrix, realRect, controlRect);
 		
-		controlRect.shrink(formatting.margin);
+		controlRect.shrink(formatting.padding);
 		matrix.push();
 		matrix.translate(controlRect.minX - realRect.minX, controlRect.minY - realRect.minY, 0);
 		renderContent(matrix, controlRect, mouseX, mouseY);

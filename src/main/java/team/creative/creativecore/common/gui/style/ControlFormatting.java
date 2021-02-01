@@ -9,12 +9,12 @@ public class ControlFormatting {
 	public static final ControlFormatting TRANSPARENT = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE);
 	
 	public final ControlStyleBorder border;
-	public final int margin;
+	public final int padding;
 	public final ControlStyleFace face;
 	
-	public ControlFormatting(ControlStyleBorder border, int margin, ControlStyleFace face) {
+	public ControlFormatting(ControlStyleBorder border, int padding, ControlStyleFace face) {
 		this.border = border;
-		this.margin = margin;
+		this.padding = padding;
 		this.face = face;
 	}
 	
