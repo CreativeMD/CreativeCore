@@ -5,27 +5,40 @@ import java.lang.reflect.Field;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
 import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.NativeUtil;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import team.creative.creativecore.common.gui.IGuiIntegratedParent;
 
 public class ScreenEventListener implements IGuiEventListener {
 	
 	private static final Field eventTime = ObfuscationReflectionHelper.findField(MouseHelper.class, "field_198045_j");
-	public static final int DOUBLE_CLICK_TIME = 200;
+	public static final double DOUBLE_CLICK_TIME = 0.2;
 	
 	private final IGuiIntegratedParent gui;
+	private final Screen screen;
 	private int doubleClickButton = -1;
 	private double time;
 	private double x;
 	private double y;
 	private boolean released = false;
 	
-	public ScreenEventListener(IGuiIntegratedParent gui) {
+	public ScreenEventListener(IGuiIntegratedParent gui, Screen screen) {
 		this.gui = gui;
+		this.screen = screen;
+	}
+	
+	public int getOffsetX() {
+		Minecraft.getInstance().getMainWindow().getScaledHeight();
+		return (screen.width - gui.getTopLayer().width) / 2;
+	}
+	
+	public int getOffsetY() {
+		return (screen.height - gui.getTopLayer().height) / 2;
 	}
 	
 	public void tick() {
-		if (doubleClickButton != -1 && getEventTime() - time > DOUBLE_CLICK_TIME)
+		if (doubleClickButton != -1 && NativeUtil.getTime() - time > DOUBLE_CLICK_TIME)
 			fireRemaingEvents();
 	}
 	
@@ -50,7 +63,7 @@ public class ScreenEventListener implements IGuiEventListener {
 	
 	@Override
 	public void mouseMoved(double x, double y) {
-		gui.getTopLayer().mouseMoved(x, y);
+		gui.getTopLayer().mouseMoved(x - getOffsetX(), y - getOffsetY());
 	}
 	
 	@Override
@@ -58,11 +71,13 @@ public class ScreenEventListener implements IGuiEventListener {
 		if (doubleClickButton == button) {
 			released = false;
 			doubleClickButton = -1;
-			return gui.getTopLayer().mouseDoubleClicked(x, y, button);
+			return gui.getTopLayer().mouseDoubleClicked(x - getOffsetX(), y - getOffsetY(), button);
 		}
 		fireRemaingEvents();
 		doubleClickButton = button;
 		time = getEventTime();
+		this.x = x - getOffsetX();
+		this.y = y - getOffsetY();
 		return true;
 	}
 	
@@ -73,19 +88,20 @@ public class ScreenEventListener implements IGuiEventListener {
 			return true;
 		}
 		fireRemaingEvents();
-		return gui.getTopLayer().mouseReleased(x, y, button);
+		gui.getTopLayer().mouseReleased(x - getOffsetX(), y - getOffsetY(), button);
+		return true;
 	}
 	
 	@Override
 	public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
 		if (doubleClickButton == -1)
-			return gui.getTopLayer().mouseDragged(x, y, button, dragX, dragY, getEventTime());
+			gui.getTopLayer().mouseDragged(x - getOffsetX(), y - getOffsetY(), button, dragX, dragY, getEventTime());
 		return true;
 	}
 	
 	@Override
 	public boolean mouseScrolled(double x, double y, double delta) {
-		return gui.getTopLayer().mouseScrolled(x, y, delta);
+		return gui.getTopLayer().mouseScrolled(x - getOffsetX(), y - getOffsetY(), delta);
 	}
 	
 	@Override

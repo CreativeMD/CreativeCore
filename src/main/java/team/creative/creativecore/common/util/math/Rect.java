@@ -2,6 +2,7 @@ package team.creative.creativecore.common.util.math;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.api.distmarker.Dist;
@@ -70,7 +71,13 @@ public class Rect {
 	
 	@OnlyIn(value = Dist.CLIENT)
 	public void scissor() {
-		RenderSystem.enableScissor(minX, minY, getWidth(), getHeight());
+		MainWindow window = Minecraft.getInstance().getMainWindow();
+		int realMinX = (int) (minX * window.getGuiScaleFactor());
+		int realMinY = window.getHeight() - (int) ((minY + getHeight()) * window.getGuiScaleFactor());
+		int realMaxX = (int) (getWidth() * window.getGuiScaleFactor());
+		int realMaxY = (int) (getHeight() * window.getGuiScaleFactor());
+		
+		RenderSystem.enableScissor(realMinX, realMinY, realMaxX, realMaxY);
 	}
 	
 	public Rect copy() {

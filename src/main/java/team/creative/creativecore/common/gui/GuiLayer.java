@@ -17,8 +17,21 @@ public abstract class GuiLayer extends GuiParent {
 	}
 	
 	@Override
+	public void init() {
+		create();
+		super.init();
+	}
+	
+	public abstract void create();
+	
+	@Override
 	public ControlFormatting getControlFormatting() {
 		return ControlFormatting.GUI;
+	}
+	
+	@Override
+	public String getNestedName() {
+		return "gui." + super.getNestedName();
 	}
 	
 	@Override
@@ -47,7 +60,7 @@ public abstract class GuiLayer extends GuiParent {
 	
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 1) {
+		if (keyCode == 256) {
 			if (closeLayerUsingEscape())
 				closeLayer(this);
 			return true;

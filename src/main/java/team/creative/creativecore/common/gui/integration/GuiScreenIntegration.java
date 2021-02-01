@@ -8,7 +8,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
@@ -17,11 +17,20 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
 	
 	public final Minecraft mc = Minecraft.getInstance();
 	private List<GuiLayer> layers = new ArrayList<>();
-	protected final ScreenEventListener listener;
+	protected ScreenEventListener listener;
 	
-	protected GuiScreenIntegration(ITextComponent titleIn) {
-		super(titleIn);
-		listener = this.addListener(new ScreenEventListener(this));
+	public GuiScreenIntegration(GuiLayer layer) {
+		super(new StringTextComponent("gui-api"));
+		layer.setParent(this);
+		this.layers.add(layer);
+		layer.init();
+	}
+	
+	@Override
+	protected void init() {
+		if (listener == null)
+			listener = new ScreenEventListener(this, this);
+		this.addListener(listener);
 	}
 	
 	@Override
@@ -38,12 +47,6 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
 		for (GuiLayer layer : layers)
 			height = Math.max(height, layer.height);
 		return height;
-	}
-	
-	@Override
-	protected void init() {
-		for (GuiLayer layer : layers)
-			layer.init();
 	}
 	
 	@Override
@@ -89,10 +92,38 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
 	}
 	
 	@Override
+	public void openLayer(GuiLayer layer) {
+		layer.setParent(this);
+		layers.add(layer);
+		layer.init();
+	}
+	
+	@Override
 	public void closeLayer(GuiLayer layer) {
 		layers.remove(layer);
 		if (layers.isEmpty())
 			closeScreen();
+	}
+	
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (listener.keyPressed(keyCode, scanCode, modifiers))
+			return true;
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+	
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		if (listener.keyReleased(keyCode, scanCode, modifiers))
+			return true;
+		return super.keyReleased(keyCode, scanCode, modifiers);
+	}
+	
+	@Override
+	public boolean charTyped(char codePoint, int modifiers) {
+		if (listener.charTyped(codePoint, modifiers))
+			return true;
+		return super.charTyped(codePoint, modifiers);
 	}
 	
 }

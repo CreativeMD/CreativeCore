@@ -10,12 +10,10 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.Rect;
-import team.creative.creativecore.common.util.math.vec.Vector2;
 
 public abstract class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
 	
@@ -43,32 +41,6 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 	
 	public double getOffsetX() {
 		return 0;
-	}
-	
-	public Vector2 getMousePos() {
-		float scale = getScaleFactor();
-		if (scale != 1)
-			scale = 1 / getScaleFactor();
-		if (getParent() instanceof GuiParent) {
-			Vector2 vec = ((GuiParent) getParent()).getMousePos();
-			vec.add(-getContentOffset() - getOffsetX() * getScaleFactor() - x, -getContentOffset() - getOffsetY() * getScaleFactor() - y);
-			vec.scale(scale);
-			return vec;
-		}
-		
-		Minecraft mc = Minecraft.getInstance();
-		MainWindow window = mc.getMainWindow();
-		int i = window.getScaledWidth();
-		int j = window.getScaledHeight();
-		int x = (int) (mc.mouseHelper.getMouseX() * i / window.getWidth());
-		int y = (int) (j - mc.mouseHelper.getMouseY() * j / window.getHeight() - 1);
-		int movex = (i - width) / 2;
-		int movey = (j - height) / 2;
-		x -= movex;
-		y -= movey;
-		Vector2 vec = new Vector2(x - getContentOffset() - getOffsetX(), y - getContentOffset() - getOffsetY());
-		vec.scale(scale);
-		return vec;
 	}
 	
 	@Override
@@ -166,13 +138,19 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 				
 				matrix.push();
 				matrix.translate((int) (control.x * scale), (int) (control.y * scale), 0);
-				control.render(matrix, controlRect, realRect, mouseX - (int) (control.x * scale), mouseY - (int) (control.y * scale));
+				control.render(matrix, controlRect, realRect, mouseX, mouseY);
 				matrix.pop();
 			}
 			
 			lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.x + control.height) * scale);
 			
 		}
+		
+	}
+	
+	@Override
+	public boolean isContainer() {
+		return getParent().isContainer();
 	}
 	
 	@Override
@@ -197,4 +175,129 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 	public void closeLayer(GuiLayer layer) {
 		getParent().closeLayer(layer);
 	}
+	
+	@Override
+	public void openLayer(GuiLayer layer) {
+		getParent().openLayer(layer);
+	}
+	
+	@Override
+	public void mouseMoved(double x, double y) {
+		x *= getScaleFactor();
+		y *= getScaleFactor();
+		int offset = getContentOffset();
+		x += getOffsetX() - offset;
+		y += getOffsetY() - offset;
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable())
+				control.mouseMoved(x - control.x, y - control.y);
+		}
+	}
+	
+	@Override
+	public boolean mouseClicked(double x, double y, int button) {
+		x *= getScaleFactor();
+		y *= getScaleFactor();
+		int offset = getContentOffset();
+		x += getOffsetX() - offset;
+		y += getOffsetY() - offset;
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseClicked(x, y, button))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean mouseDoubleClicked(double x, double y, int button) {
+		x *= getScaleFactor();
+		y *= getScaleFactor();
+		int offset = getContentOffset();
+		x += getOffsetX() - offset;
+		y += getOffsetY() - offset;
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseDoubleClicked(x, y, button))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void mouseReleased(double x, double y, int button) {
+		x *= getScaleFactor();
+		y *= getScaleFactor();
+		int offset = getContentOffset();
+		x += getOffsetX() - offset;
+		y += getOffsetY() - offset;
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable())
+				control.mouseReleased(x - control.x, y - control.y, button);
+		}
+	}
+	
+	@Override
+	public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
+		x *= getScaleFactor();
+		y *= getScaleFactor();
+		int offset = getContentOffset();
+		x += getOffsetX() - offset;
+		y += getOffsetY() - offset;
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable())
+				control.mouseDragged(x - control.x, y - control.y, button, dragX, dragY, time);
+		}
+	}
+	
+	@Override
+	public boolean mouseScrolled(double x, double y, double delta) {
+		x *= getScaleFactor();
+		y *= getScaleFactor();
+		int offset = getContentOffset();
+		x += getOffsetX() - offset;
+		y += getOffsetY() - offset;
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseScrolled(x, y, delta))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable() && control.keyPressed(keyCode, scanCode, modifiers))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable() && control.keyReleased(keyCode, scanCode, modifiers))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean charTyped(char codePoint, int modifiers) {
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable() && control.charTyped(codePoint, modifiers))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public void looseFocus() {}
 }

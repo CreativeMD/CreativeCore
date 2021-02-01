@@ -130,4 +130,8 @@ public class GuiStyle {
 			return 0;
 		}
 	}
+	
+	public int getContentOffset(ControlFormatting formatting) {
+		return getBorder(formatting.border) + formatting.margin;
+	}
 }

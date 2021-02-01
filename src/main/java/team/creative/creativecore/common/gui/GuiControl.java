@@ -2,8 +2,12 @@ package team.creative.creativecore.common.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -21,7 +25,7 @@ public abstract class GuiControl {
 	public int width;
 	public int height;
 	
-	public boolean visible;
+	public boolean visible = true;
 	
 	public GuiControl(String name, int x, int y, int width, int height) {
 		this.name = name;
@@ -44,6 +48,12 @@ public abstract class GuiControl {
 	
 	public IGuiParent getParent() {
 		return parent;
+	}
+	
+	public String getNestedName() {
+		if (getParent() instanceof GuiControl)
+			return ((GuiControl) getParent()).getNestedName() + "." + name;
+		return name;
 	}
 	
 	public GuiLayer getLayer() {
@@ -74,8 +84,12 @@ public abstract class GuiControl {
 	
 	// INTERACTION
 	
-	public boolean isInterable() {
+	public boolean isInteractable() {
 		return enabled && visible;
+	}
+	
+	public boolean isMouseOver(double x, double y) {
+		return x >= this.x && x < this.x + this.width && y >= this.y && y < this.y + this.height;
 	}
 	
 	public void mouseMoved(double x, double y) {}
@@ -88,13 +102,9 @@ public abstract class GuiControl {
 		return mouseClicked(x, y, button);
 	}
 	
-	public boolean mouseReleased(double x, double y, int button) {
-		return false;
-	}
+	public void mouseReleased(double x, double y, int button) {}
 	
-	public boolean mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
-		return false;
-	}
+	public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {}
 	
 	public boolean mouseScrolled(double x, double y, double delta) {
 		return false;
@@ -119,7 +129,11 @@ public abstract class GuiControl {
 	public abstract ControlFormatting getControlFormatting();
 	
 	public int getContentOffset() {
-		return 0;
+		return getStyle().getContentOffset(getControlFormatting());
+	}
+	
+	public String getToolTip() {
+		return null;
 	}
 	
 	// RENDERING
@@ -138,19 +152,20 @@ public abstract class GuiControl {
 		GuiStyle style = getStyle();
 		ControlFormatting formatting = getControlFormatting();
 		
-		style.get(formatting.border).render(matrix, controlRect);
+		style.get(formatting.border).render(matrix, realRect, controlRect);
 		
-		int borderWidth = style.getBorder(formatting.border);
-		controlRect.shrink(borderWidth);
-		style.get(formatting.face, realRect.inside(mouseX, mouseY)).render(matrix, controlRect);
+		controlRect.shrink(style.getBorder(formatting.border));
+		style.get(formatting.face, realRect.inside(mouseX, mouseY)).render(matrix, realRect, controlRect);
 		
-		int margin = formatting.margin;
-		controlRect.shrink(margin);
-		renderContent(matrix, controlRect, mouseX - borderWidth - margin, mouseY - borderWidth - margin);
+		controlRect.shrink(formatting.margin);
+		matrix.push();
+		matrix.translate(controlRect.minX - realRect.minX, controlRect.minY - realRect.minY, 0);
+		renderContent(matrix, controlRect, mouseX, mouseY);
+		matrix.pop();
 		
 		if (!enabled) {
 			realRect.scissor();
-			style.disabled.render(matrix, rectCopy);
+			style.disabled.render(matrix, realRect, rectCopy);
 		}
 	}
 	
@@ -199,4 +214,18 @@ public abstract class GuiControl {
 		return defaultText;
 	}
 	
+	@OnlyIn(value = Dist.CLIENT)
+	public static void playSound(ISound sound) {
+		Minecraft.getInstance().getSoundHandler().play(sound);
+	}
+	
+	@OnlyIn(value = Dist.CLIENT)
+	public static void playSound(SoundEvent event) {
+		Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(event, 1.0F));
+	}
+	
+	@OnlyIn(value = Dist.CLIENT)
+	public static void playSound(SoundEvent event, float volume, float pitch) {
+		Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(event, pitch, volume));
+	}
 }

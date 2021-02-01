@@ -16,6 +16,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import team.creative.creativecore.client.command.ClientCommandRegistry;
+import team.creative.creativecore.client.test.GuiTest;
+import team.creative.creativecore.common.gui.integration.GuiEventHandler;
+import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 
 public class CreativeCoreClient {
@@ -25,6 +28,11 @@ public class CreativeCoreClient {
 	public static void init(FMLClientSetupEvent event) {
 		ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-client")).executes((x) -> {
 			mc.player.getCommandSource().sendFeedback(new StringTextComponent("Successful!"), false);
+			return 1;
+		}));
+		
+		ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-gui")).executes((x) -> {
+			GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
 			return 1;
 		}));
 		

@@ -34,8 +34,12 @@ public abstract class StyleDisplay {
 		types.put(id, clazz);
 	}
 	
-	public void render(MatrixStack matrix, Rect rect) {
-		render(matrix, rect.minX, rect.minY, rect.getWidth(), rect.getHeight());
+	public void render(MatrixStack matrix, int width, int height) {
+		render(matrix, 0, 0, width, height);
+	}
+	
+	public void render(MatrixStack matrix, Rect origin, Rect rect) {
+		render(matrix, rect.minX - origin.minX, rect.minY - origin.minY, rect.getWidth(), rect.getHeight());
 	}
 	
 	public void render(MatrixStack matrix, int x, int y, int width, int height) {

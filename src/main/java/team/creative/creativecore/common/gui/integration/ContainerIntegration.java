@@ -23,9 +23,16 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
 	
 	protected ContainerIntegration(ContainerType<?> type, int id, PlayerEntity player, GuiLayer layer) {
 		super(type, id);
+		this.player = player;
 		layer.setParent(this);
 		this.layers.add(layer);
-		this.player = player;
+		layer.init();
+	}
+	
+	@Override
+	public void detectAndSendChanges() {
+		super.detectAndSendChanges();
+		tick();
 	}
 	
 	public void tick() {
@@ -68,6 +75,11 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
 	@Override
 	public boolean isClient() {
 		return player.world.isRemote;
+	}
+	
+	@Override
+	public void openLayer(GuiLayer layer) {
+		throw new UnsupportedOperationException();
 	}
 	
 	@Override

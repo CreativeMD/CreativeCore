@@ -18,6 +18,8 @@ public interface IGuiParent {
 	
 	public void moveBottom(GuiControl toMove);
 	
+	public void openLayer(GuiLayer layer);
+	
 	public void closeLayer(GuiLayer layer);
 	
 }

@@ -31,21 +31,23 @@ public interface IGuiIntegratedParent extends IGuiParent {
 		for (int i = 0; i < layers.size(); i++) {
 			GuiLayer layer = layers.get(i);
 			
-			if (layer.hasGrayBackground())
-				GuiRenderHelper.fillGradient(matrixStack, 0, 0, width, height, -1072689136, -804253680);
-			
-			if (i == layers.size() - 1)
+			if (i == layers.size() - 1) {
+				if (layer.hasGrayBackground())
+					GuiRenderHelper.fillGradient(matrixStack, 0, 0, width, height, -1072689136, -804253680);
 				net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(screen, matrixStack));
+			}
 			
 			matrixStack.push();
 			int offX = (width - layer.width) / 2;
 			int offY = (height - layer.height) / 2;
-			matrixStack.translate(offX, offY, 0);
+			matrixStack.translate(offX, offY, i);
 			
 			RenderSystem.blendColor(1.0F, 1.0F, 1.0F, 1.0F);
 			Rect controlRect = new Rect(offX, offY, offX + layer.width, offY + layer.height);
-			layer.render(matrixStack, screenRect.intersection(controlRect), controlRect, mouseX - offX, mouseY - offY);
+			layer.render(matrixStack, controlRect, screenRect.intersection(controlRect), mouseX, mouseY);
 			matrixStack.pop();
+			
+			RenderSystem.disableScissor();
 		}
 		
 		if (layers.isEmpty())
