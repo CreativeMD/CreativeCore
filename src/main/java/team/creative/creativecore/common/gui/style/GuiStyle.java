@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
@@ -25,7 +26,7 @@ public class GuiStyle {
 	
 	public static final ResourceLocation DEFAULT_STYLE_LOCATION = new ResourceLocation(CreativeCore.MODID, "gui/default_style.json");
 	private static final Minecraft mc = Minecraft.getInstance();
-	private static final Gson GSON = new Gson();
+	private static final Gson GSON = new GsonBuilder().create();
 	private static final JsonParser PARSER = new JsonParser();
 	public static GuiStyle defaultStyle;
 	private static HashMap<String, GuiStyle> cachedStyles = new HashMap<>();
@@ -67,6 +68,7 @@ public class GuiStyle {
 	}
 	
 	@SerializedName("font-color")
+	
 	public Color fontColor = new Color(255, 255, 255);
 	@SerializedName("font-color-highlight")
 	public Color fontColorHighlight = new Color(255, 255, 200);

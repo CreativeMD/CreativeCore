@@ -11,7 +11,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.sync.PacketLayerAction;
 import team.creative.creativecore.common.gui.sync.PacketLayerAction.LayerAction;
 import team.creative.creativecore.common.network.CreativePacket;

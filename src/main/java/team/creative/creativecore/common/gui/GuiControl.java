@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui;
 
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
@@ -8,11 +10,14 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.event.GuiEvent;
+import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.tooltip.TooltipBuilder;
 import team.creative.creativecore.common.util.math.Rect;
 
 public abstract class GuiControl {
@@ -28,6 +33,8 @@ public abstract class GuiControl {
 	
 	public boolean visible = true;
 	
+	private List<ITextComponent> customTooltip;
+	
 	public GuiControl(String name, int x, int y, int width, int height) {
 		this.name = name;
 		this.x = x;
@@ -37,6 +44,11 @@ public abstract class GuiControl {
 	}
 	
 	// BASICS
+	
+	public GuiControl setTooltip(List<ITextComponent> tooltip) {
+		this.customTooltip = tooltip;
+		return this;
+	}
 	
 	public GuiControl setEnabled(boolean enabled) {
 		this.enabled = enabled;
@@ -137,7 +149,27 @@ public abstract class GuiControl {
 		return getStyle().getContentOffset(getControlFormatting());
 	}
 	
-	public String getToolTip() {
+	public GuiTooltipEvent getTooltipEvent(double x, double y) {
+		List<ITextComponent> toolTip = getTooltip();
+		
+		if (customTooltip != null)
+			if (toolTip == null)
+				toolTip = customTooltip;
+			else
+				toolTip.addAll(customTooltip);
+			
+		if (toolTip == null) {
+			String langTooltip = translateOrDefault(getNestedName() + ".tooltip", null);
+			if (langTooltip != null)
+				toolTip = new TooltipBuilder(langTooltip).build();
+		}
+		
+		if (toolTip != null)
+			return new GuiTooltipEvent(this, toolTip);
+		return null;
+	}
+	
+	public List<ITextComponent> getTooltip() {
 		return null;
 	}
 	

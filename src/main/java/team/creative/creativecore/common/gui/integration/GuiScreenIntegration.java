@@ -10,7 +10,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 
 public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {

@@ -1,7 +1,10 @@
 package team.creative.creativecore.common.gui.controls;
 
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.util.text.ITextComponent;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -31,10 +34,10 @@ public class GuiProgressbar extends GuiControl {
 	public void tick() {}
 	
 	@Override
-	public String getToolTip() {
+	public List<ITextComponent> getTooltip() {
 		if (showToolTip)
-			return new TooltipBuilder().append(pos, true).append("/").append(max, true).append(" (").append(pos / max * 100, true).append("%)").build();
-		return null;
+			return new TooltipBuilder().number(pos, true).text("/").number(max, true).text(" (").number(pos / max * 100, true).text("%)").build();
+		return super.getTooltip();
 	}
 	
 	@Override

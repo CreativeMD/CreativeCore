@@ -18,6 +18,7 @@ import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiEventManager;
+import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.util.math.Rect;
 
 public abstract class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
@@ -188,6 +189,28 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 	}
 	
 	@Override
+	public GuiTooltipEvent getTooltipEvent(double x, double y) {
+		GuiTooltipEvent event = super.getTooltipEvent(x, y);
+		if (event != null)
+			return event;
+		
+		x *= getScaleFactor();
+		y *= getScaleFactor();
+		int offset = getContentOffset();
+		x += getOffsetX() - offset;
+		y += getOffsetY() - offset;
+		for (int i = 0; i < controls.size(); i++) {
+			GuiControl control = controls.get(i);
+			if (control.isInteractable() && control.isMouseOver(x, y)) {
+				event = control.getTooltipEvent(x - control.x, y - control.y);
+				if (event != null)
+					return event;
+			}
+		}
+		return null;
+	}
+	
+	@Override
 	public void mouseMoved(double x, double y) {
 		x *= getScaleFactor();
 		y *= getScaleFactor();
@@ -210,7 +233,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 		y += getOffsetY() - offset;
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
-			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseClicked(x, y, button)) {
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseClicked(x - control.x, y - control.y, button)) {
 				raiseEvent(new GuiControlClickEvent(control, button, false));
 				return true;
 			}
@@ -227,7 +250,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 		y += getOffsetY() - offset;
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
-			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseDoubleClicked(x, y, button)) {
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseDoubleClicked(x - control.x, y - control.y, button)) {
 				raiseEvent(new GuiControlClickEvent(control, button, false));
 				return true;
 			}
@@ -272,7 +295,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 		y += getOffsetY() - offset;
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
-			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseScrolled(x, y, delta))
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseScrolled(x - control.x, y - control.y, delta))
 				return true;
 		}
 		return false;

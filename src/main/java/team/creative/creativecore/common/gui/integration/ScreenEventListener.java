@@ -8,7 +8,6 @@ import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.NativeUtil;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import team.creative.creativecore.common.gui.IGuiIntegratedParent;
 
 public class ScreenEventListener implements IGuiEventListener {
 	
@@ -29,7 +28,6 @@ public class ScreenEventListener implements IGuiEventListener {
 	}
 	
 	public int getOffsetX() {
-		Minecraft.getInstance().getMainWindow().getScaledHeight();
 		return (screen.width - gui.getTopLayer().width) / 2;
 	}
 	

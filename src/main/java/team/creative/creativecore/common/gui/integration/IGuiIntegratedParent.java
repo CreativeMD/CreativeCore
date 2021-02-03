@@ -1,16 +1,21 @@
-package team.creative.creativecore.common.gui;
+package team.creative.creativecore.common.gui.integration;
 
 import java.util.List;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
-import team.creative.creativecore.common.gui.integration.ScreenEventListener;
+import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.util.math.Rect;
 
 public interface IGuiIntegratedParent extends IGuiParent {
@@ -54,23 +59,13 @@ public interface IGuiIntegratedParent extends IGuiParent {
 		if (layers.isEmpty())
 			return;
 		
-		/*int i = layers.size() - 1;
-		GlStateManager.pushMatrix();
-		
-		int k = guiLeft;
-		int l = guiTop;
-		int offX = (this.width - layers.get(i).width) / 2 - k;
-		int offY = (this.height - layers.get(i).height) / 2 - l;
-		matrixStack.translate(k, l, 0);
-		
-		GlStateManager.translatef(offX, offY, 0);
-		
-		Vec3d mouse = layers.get(i).getMousePos();
-		GuiToolTipEvent event = layers.get(i).getToolTipEvent();
-		if (event != null && layers.get(i).raiseEvent(event))
-			this.drawHoveringText(event.tooltip, (int) mouse.x, (int) mouse.y, GuiRenderHelper.instance.font);
-		
-		GlStateManager.popMatrix();*/
+		GuiLayer layer = getTopLayer();
+		GuiTooltipEvent event = layer.getTooltipEvent(mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
+		if (event != null) {
+			layer.raiseEvent(event);
+			if (!event.isCanceled())
+				GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
+		}
 	}
 	
 	@Override
