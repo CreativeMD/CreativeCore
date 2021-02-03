@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.integration.ScreenEventListener;
 import team.creative.creativecore.common.util.math.Rect;
 
@@ -108,4 +109,6 @@ public interface IGuiIntegratedParent extends IGuiParent {
 		layers.add((GuiLayer) toMove);
 	}
 	
+	@Override
+	public default void raiseEvent(GuiEvent event) {}
 }

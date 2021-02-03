@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui;
 
 import net.minecraft.entity.player.PlayerEntity;
+import team.creative.creativecore.common.gui.event.GuiEvent;
 
 public interface IGuiParent {
 	
@@ -21,5 +22,7 @@ public interface IGuiParent {
 	public void openLayer(GuiLayer layer);
 	
 	public void closeLayer(GuiLayer layer);
+	
+	public void raiseEvent(GuiEvent event);
 	
 }

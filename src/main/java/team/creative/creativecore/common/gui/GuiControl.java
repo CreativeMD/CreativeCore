@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.Rect;
@@ -123,6 +124,10 @@ public abstract class GuiControl {
 	}
 	
 	public void looseFocus() {}
+	
+	public void raiseEvent(GuiEvent event) {
+		parent.raiseEvent(event);
+	}
 	
 	// APPERANCE
 	

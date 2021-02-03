@@ -3,6 +3,7 @@ package team.creative.creativecore.common.gui;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.opengl.GL11;
@@ -13,10 +14,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
+import team.creative.creativecore.common.gui.event.GuiEvent;
+import team.creative.creativecore.common.gui.event.GuiEventManager;
 import team.creative.creativecore.common.util.math.Rect;
 
 public abstract class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
 	
+	private GuiEventManager eventManager;
 	private List<GuiControl> controls = new ArrayList<>();
 	
 	@OnlyIn(value = Dist.CLIENT)
@@ -204,8 +210,10 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 		y += getOffsetY() - offset;
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
-			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseClicked(x, y, button))
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseClicked(x, y, button)) {
+				raiseEvent(new GuiControlClickEvent(control, button, false));
 				return true;
+			}
 		}
 		return false;
 	}
@@ -219,8 +227,10 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 		y += getOffsetY() - offset;
 		for (int i = 0; i < controls.size(); i++) {
 			GuiControl control = controls.get(i);
-			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseDoubleClicked(x, y, button))
+			if (control.isInteractable() && control.isMouseOver(x, y) && control.mouseDoubleClicked(x, y, button)) {
+				raiseEvent(new GuiControlClickEvent(control, button, false));
 				return true;
+			}
 		}
 		return false;
 	}
@@ -300,4 +310,26 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
 	
 	@Override
 	public void looseFocus() {}
+	
+	@Override
+	public void raiseEvent(GuiEvent event) {
+		if (eventManager != null)
+			eventManager.raiseEvent(event);
+		if (!event.isCanceled())
+			getParent().raiseEvent(event);
+	}
+	
+	public void registerEventClick(Consumer<GuiControlClickEvent> consumer) {
+		registerEvent(GuiControlClickEvent.class, consumer);
+	}
+	
+	public void registerEventChanged(Consumer<GuiControlChangedEvent> consumer) {
+		registerEvent(GuiControlChangedEvent.class, consumer);
+	}
+	
+	public <T extends GuiEvent> void registerEvent(Class<T> clazz, Consumer<T> action) {
+		if (eventManager == null)
+			eventManager = new GuiEventManager();
+		eventManager.registerEvent(clazz, action);
+	}
 }
