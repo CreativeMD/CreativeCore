@@ -2,35 +2,21 @@ package team.creative.creativecore.common.gui.controls;
 
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-
 import net.minecraft.util.SoundEvents;
-import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.Rect;
-import team.creative.creativecore.common.util.mc.ColorUtils;
 
-public class GuiButton extends GuiControl {
+public class GuiButton extends GuiLabel {
 	
-	private String title;
-	public int color = ColorUtils.WHITE;
 	private final Consumer<Integer> pressed;
-	private String key;
 	
 	public GuiButton(String name, int x, int y, int width, int height, Consumer<Integer> pressed) {
 		super(name, x, y, width, height);
 		this.pressed = pressed;
 	}
 	
-	public void setTitle(String title) {
-		this.key = title;
-		this.title = translate(title);
-	}
-	
-	public void setTitle(String title, Object... parameters) {
-		this.key = title;
-		this.title = translate(title, parameters);
+	public GuiButton(String name, int x, int y, Consumer<Integer> pressed) {
+		super(name, x, y);
+		this.pressed = pressed;
 	}
 	
 	@Override
@@ -42,12 +28,6 @@ public class GuiButton extends GuiControl {
 	}
 	
 	@Override
-	public void init() {
-		if (key == null)
-			setTitle(getNestedName());
-	}
-	
-	@Override
 	public void closed() {}
 	
 	@Override
@@ -56,11 +36,6 @@ public class GuiButton extends GuiControl {
 	@Override
 	public ControlFormatting getControlFormatting() {
 		return ControlFormatting.CLICKABLE;
-	}
-	
-	@Override
-	protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
-		GuiRenderHelper.drawStringCentered(matrix, title, rect.getWidth(), rect.getHeight(), color, true);
 	}
 	
 }

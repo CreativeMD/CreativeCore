@@ -5,12 +5,14 @@ import java.util.List;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.gui.tooltip.TooltipBuilder;
 import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiProgressbar extends GuiControl {
 	
@@ -36,7 +38,7 @@ public class GuiProgressbar extends GuiControl {
 	@Override
 	public List<ITextComponent> getTooltip() {
 		if (showToolTip)
-			return new TooltipBuilder().number(pos, true).text("/").number(max, true).text(" (").number(pos / max * 100, true).text("%)").build();
+			return new TextBuilder().number(pos, true).text("/").number(max, true).text(" (").number(pos / max * 100, true).text("%)").build();
 		return super.getTooltip();
 	}
 	
@@ -46,6 +48,7 @@ public class GuiProgressbar extends GuiControl {
 	}
 	
 	@Override
+	@OnlyIn(value = Dist.CLIENT)
 	protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
 		GuiStyle style = getStyle();
 		double percent = pos / max;

@@ -5,11 +5,9 @@ import java.util.List;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -63,8 +61,8 @@ public interface IGuiIntegratedParent extends IGuiParent {
 		GuiTooltipEvent event = layer.getTooltipEvent(mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
 		if (event != null) {
 			layer.raiseEvent(event);
-			if (!event.isCanceled())
-				GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
+			//if (!event.isCanceled())
+			//	GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
 		}
 	}
 	

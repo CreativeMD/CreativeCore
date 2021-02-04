@@ -32,7 +32,11 @@ public class CreativeCoreClient {
 		}));
 		
 		ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-gui")).executes((x) -> {
-			GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
+			try {
+				GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return 1;
 		}));
 		

@@ -1,13 +1,26 @@
 package team.creative.creativecore.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,6 +28,46 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class GuiRenderHelper {
 	
 	private static final Minecraft mc = Minecraft.getInstance();
+	
+	public static void drawItemStack(MatrixStack matrix, ItemStack stack) {
+		ItemRenderer renderer = mc.getItemRenderer();
+		
+		RenderSystem.pushMatrix();
+		mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+		mc.getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
+		RenderSystem.enableRescaleNormal();
+		RenderSystem.enableAlphaTest();
+		RenderSystem.defaultAlphaFunc();
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		//RenderSystem.translated(x, y, 0);
+		RenderSystem.translatef(8.0F, 8.0F, 0.0F);
+		RenderSystem.scalef(1.0F, -1.0F, 1.0F);
+		RenderSystem.scalef(16, 16, 16);
+		IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+		IBakedModel bakedmodel = renderer.getItemModelWithOverrides(stack, (World) null, (LivingEntity) null);
+		boolean flag = !bakedmodel.isSideLit();
+		if (flag)
+			RenderHelper.setupGuiFlatDiffuseLighting();
+		matrix.push();
+		Matrix4f m = matrix.getLast().getMatrix();
+		Vector4f vec = new Vector4f();
+		vec.setW(1);
+		vec.transform(m);
+		float shrink = 1 / 16F;
+		m.translate(new Vector3f(-vec.getX() + vec.getX() * shrink, -vec.getY() - vec.getY() * shrink, -vec.getZ() + vec.getZ() * shrink));
+		renderer.renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrix, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+		matrix.pop();
+		irendertypebuffer$impl.finish();
+		RenderSystem.enableDepthTest();
+		if (flag)
+			RenderHelper.setupGui3DDiffuseLighting();
+		
+		RenderSystem.disableAlphaTest();
+		RenderSystem.disableRescaleNormal();
+		RenderSystem.popMatrix();
+	}
 	
 	public static void drawStringCentered(MatrixStack stack, String text, int width, int height, int color, boolean shadow) {
 		int textWidth = mc.fontRenderer.getStringWidth(text);

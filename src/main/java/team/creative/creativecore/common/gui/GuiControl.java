@@ -17,8 +17,8 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.gui.tooltip.TooltipBuilder;
 import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.text.TextBuilder;
 
 public abstract class GuiControl {
 	
@@ -45,6 +45,10 @@ public abstract class GuiControl {
 	
 	// BASICS
 	
+	public boolean isClient() {
+		return parent.isClient();
+	}
+	
 	public GuiControl setTooltip(List<ITextComponent> tooltip) {
 		this.customTooltip = tooltip;
 		return this;
@@ -61,6 +65,18 @@ public abstract class GuiControl {
 	
 	public IGuiParent getParent() {
 		return parent;
+	}
+	
+	public int getParentContentWidth() {
+		if (getParent() instanceof GuiControl)
+			return ((GuiControl) getParent()).width - ((GuiControl) getParent()).getContentOffset() * 2;
+		return 0;
+	}
+	
+	public int getParentContentHeight() {
+		if (getParent() instanceof GuiControl)
+			return ((GuiControl) getParent()).height - ((GuiControl) getParent()).getContentOffset() * 2;
+		return 0;
 	}
 	
 	public String getNestedName() {
@@ -161,7 +177,7 @@ public abstract class GuiControl {
 		if (toolTip == null) {
 			String langTooltip = translateOrDefault(getNestedName() + ".tooltip", null);
 			if (langTooltip != null)
-				toolTip = new TooltipBuilder(langTooltip).build();
+				toolTip = new TextBuilder(langTooltip).build();
 		}
 		
 		if (toolTip != null)
