@@ -35,6 +35,20 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
 		return this;
 	}
 	
+	public ConfigKey findKey(String[] path) {
+		ICreativeConfigHolder current = this;
+		for (int i = 0; i < path.length; i++) {
+			if (i + 1 == path.length)
+				return current.getField(path[i]);
+			Object object = current.get(path[i]);
+			if (object instanceof ICreativeConfigHolder)
+				current = (ICreativeConfigHolder) object;
+			else
+				return null;
+		}
+		return null;
+	}
+	
 	public boolean removeField(String modid) {
 		return fields.removeKey(modid);
 	}

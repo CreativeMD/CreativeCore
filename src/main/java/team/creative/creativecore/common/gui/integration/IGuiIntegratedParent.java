@@ -22,6 +22,13 @@ public interface IGuiIntegratedParent extends IGuiParent {
 	
 	public GuiLayer getTopLayer();
 	
+	public default boolean isOpen(Class<? extends GuiLayer> clazz) {
+		for (GuiLayer layer : getLayers())
+			if (clazz.isInstance(layer))
+				return true;
+		return false;
+	}
+	
 	@OnlyIn(value = Dist.CLIENT)
 	public default void render(MatrixStack matrixStack, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
 		int width = screen.width;

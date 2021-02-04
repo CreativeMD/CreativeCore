@@ -62,6 +62,7 @@ public class ConfigurationClientPacket extends CreativePacket {
 	@Override
 	public void executeClient(PlayerEntity player) {
 		run();
+		ConfigurationPacket.updateGui(player);
 	}
 	
 	@Override

@@ -20,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.client.Minecraft;
@@ -65,7 +66,7 @@ public class ConfigEventHandler {
 	public void playerLoggedIn(PlayerLoggedInEvent event) {
 		if (!event.getPlayer().getServer().isSinglePlayer() || !isOwner(event.getPlayer().getServer())) {
 			CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (ServerPlayerEntity) event.getPlayer());
-			syncAll((ServerPlayerEntity) event.getPlayer());
+			CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (ServerPlayerEntity) event.getPlayer());
 		}
 	}
 	
@@ -86,12 +87,11 @@ public class ConfigEventHandler {
 	}
 	
 	public void sync(ICreativeConfigHolder holder) {
-		CreativeCore.NETWORK.sendToClientAll(new ConfigurationPacket(holder));
+		CreativeCore.NETWORK.sendToClientAll(new ConfigurationPacket(holder, true));
 	}
 	
 	public void sync(ICreativeConfigHolder holder, ServerPlayerEntity player) {
-		CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(holder), player);
-		
+		CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(holder, true), player);
 	}
 	
 	public void syncAll() {
@@ -132,7 +132,7 @@ public class ConfigEventHandler {
 			File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
 			if (object instanceof ICreativeConfigHolder || object == null) {
 				ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
-				JsonObject json = holder.save(true, side);
+				JsonObject json = holder.save(true, false, side);
 				JsonUtils.cleanUp(json);
 				
 				if (json.size() > 0) {
@@ -213,15 +213,20 @@ public class ConfigEventHandler {
 			if (config.exists()) {
 				try {
 					FileReader reader = new FileReader(config);
-					JsonObject json = GSON.fromJson(reader, JsonObject.class);
+					JsonObject json = null;
+					try {
+						json = GSON.fromJson(reader, JsonObject.class);
+					} catch (JsonSyntaxException e) {
+						e.printStackTrace();
+					}
 					if (json == null)
 						json = new JsonObject();
-					holder.load(true, json, side);
+					holder.load(true, false, json, side);
 				} catch (FileNotFoundException e) {
 					LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
 				}
 			} else
-				holder.restoreDefault(side);
+				holder.restoreDefault(side, false);
 		}
 	}
 	
@@ -232,6 +237,14 @@ public class ConfigEventHandler {
 			load(modid, side);
 		
 		save(side);
+	}
+	
+	public boolean isSynchronizedWithServer(String key) {
+		String[] path = key.split(".");
+		ConfigKey config = CreativeConfigRegistry.ROOT.findKey(path);
+		if (config != null)
+			return config.is(Dist.DEDICATED_SERVER);
+		return false;
 	}
 	
 	public static List<String> loadClientFieldList(ICreativeConfigHolder holder) {

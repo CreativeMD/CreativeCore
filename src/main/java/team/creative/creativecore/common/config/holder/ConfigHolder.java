@@ -104,36 +104,34 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
 	}
 	
 	@Override
-	public void restoreDefault(Dist side) {
-		reset(side);
-	}
-	
-	protected void reset(Dist side) {
+	public void restoreDefault(Dist side, boolean ignoreRestart) {
 		for (int i = 0; i < fields.size(); i++) {
 			T key = fields.get(i).value;
-			if (key.is(side) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
-				fields.get(i).value.restoreDefault(side);
+			if (key.is(side) && (!ignoreRestart || !key.requiresRestart) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
+				key.restoreDefault(side, ignoreRestart);
 		}
 	}
 	
 	@Override
-	public void load(boolean loadDefault, JsonObject json, Dist side) {
-		if (loadDefault)
-			reset(side);
+	public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Dist side) {
 		for (int i = 0; i < fields.size(); i++) {
 			T field = fields.get(i).value;
-			if (field.is(side) && json.has(field.name))
-				field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+			if (field.is(side) && (!ignoreRestart || !field.requiresRestart))
+				if (json.has(field.name))
+					field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+				else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
+					field.restoreDefault(side, ignoreRestart);
+				
 		}
 	}
 	
 	@Override
-	public JsonObject save(boolean saveDefault, Dist side) {
+	public JsonObject save(boolean saveDefault, boolean ignoreRestart, Dist side) {
 		JsonObject object = new JsonObject();
 		for (int i = 0; i < fields.size(); i++) {
 			T field = fields.get(i).value;
-			if (field.is(side) && (saveDefault || !field.isDefault(side)))
-				object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+			if (field.is(side) && (!ignoreRestart || !field.requiresRestart) && (saveDefault || !field.isDefault(side)))
+				object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, ignoreRestart, side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
 		}
 		return object;
 	}
