@@ -95,6 +95,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
     @Override
     protected void renderContent(GuiRenderHelper helper, Style style, int width, int height, Rect relativeMaximumRect) {
         GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        GlStateManager.disableDepth();
         
         float scale = getScaleFactor();
         double xOffset = getOffsetX();
