@@ -664,7 +664,7 @@ public class VectorFan {
                 } catch (ParallelException e) {
                     double startT = ray1.getT(one, ray2.originOne);
                     double endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
-                    if ((startT > 0 && startT < 1) || endT > 0 && endT < 1) {
+                    if ((startT > EPSILON && startT < 1 - EPSILON) || endT > EPSILON && endT < 1 - EPSILON) {
                         parrallel++;
                         if (parrallel > 1)
                             return true;

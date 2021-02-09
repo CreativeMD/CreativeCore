@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.vec.IVecInt;
+import com.creativemd.creativecore.common.utils.math.vec.VectorFan;
 import com.creativemd.creativecore.common.utils.math.vec.VectorFan.ParallelException;
 
 import net.minecraft.util.EnumFacing.Axis;
@@ -133,7 +134,7 @@ public class Ray2d {
         double tempOne = one - originOne;
         double tempTwo = two - originTwo;
         double result = directionOne * tempTwo - directionTwo * tempOne;
-        if (result == 0)
+        if (result > -VectorFan.EPSILON && result < VectorFan.EPSILON)
             return null;
         return result < 0;
     }
