@@ -28,6 +28,7 @@ public class DialogGuiLayer extends GuiLayer {
         for (DialogButton button : buttons)
             hBox.add(new GuiButton(button.name(), 0, 0, x -> closeDialog(button)).setTitle(new TranslationTextComponent("dialog.button." + button.name())));
         vBox.add(hBox);
+        add(vBox);
     }
     
     public void closeDialog(DialogButton button) {

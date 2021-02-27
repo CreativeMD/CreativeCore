@@ -79,6 +79,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     @Override
     public void openLayer(GuiLayer layer) {
         layers.add(layer);
+        layer.init();
     }
     
     @Override
@@ -95,7 +96,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     @Override
     public void closeTopLayer() {
         int index = layers.size() - 1;
-        sendPacket(new LayerClosePacket(index));
+        sendPacket(new LayerClosePacket());
         layers.remove(index);
         if (layers.isEmpty())
             if (isClient())

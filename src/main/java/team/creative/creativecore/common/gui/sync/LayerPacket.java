@@ -6,12 +6,6 @@ import team.creative.creativecore.common.network.CreativePacket;
 
 public abstract class LayerPacket extends CreativePacket {
     
-    public int layer;
-    
-    public LayerPacket(int layer) {
-        this.layer = layer;
-    }
-    
     public LayerPacket() {
         
     }
