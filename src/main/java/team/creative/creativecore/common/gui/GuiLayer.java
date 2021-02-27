@@ -25,6 +25,7 @@ public abstract class GuiLayer extends GuiParent {
     
     public void reinit() {
         super.init();
+        initiateLayoutUpdate();
     }
     
     @Override

@@ -61,9 +61,15 @@ public class GuiHBox extends GuiLayoutControl {
         
         xOffset -= spacing;
         
+        updatePositions(width, xOffset);
+        
+        setHeight(height);
+    }
+    
+    protected void updatePositions(int availableWidth, int xOffset) {
         if (align != Align.LEFT && align != Align.STRETCH) {
+            int x = 0;
             for (GuiControl control : this) {
-                int x = 0;
                 switch (align) {
                 case CENTER:
                     control.setX(availableWidth / 2 - xOffset / 2 + x);
@@ -76,8 +82,6 @@ public class GuiHBox extends GuiLayoutControl {
             }
         } else
             setWidth(xOffset);
-        
-        setHeight(height);
     }
     
     @Override

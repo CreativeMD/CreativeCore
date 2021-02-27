@@ -18,6 +18,7 @@ import team.creative.creativecore.common.gui.controls.GuiButtonFixed;
 import team.creative.creativecore.common.gui.controls.GuiLabel;
 import team.creative.creativecore.common.gui.controls.GuiLabelFixed;
 import team.creative.creativecore.common.gui.controls.GuiScrollBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -76,14 +77,17 @@ public class ConfigGuiLayer extends GuiLayer {
             savePage();
             clear();
         }
-        add(new GuiLabel("path", 0, 2).setTitle(new StringTextComponent("/" + String.join("/", holder.path()))));
+        GuiLeftRightBox upperBox = new GuiLeftRightBox("upperbox", 0, 0);
+        upperBox.add(new GuiLabel("path", 0, 2).setTitle(new StringTextComponent("/" + String.join("/", holder.path()))));
+        
         if (holder != rootHolder)
-            add(new GuiButton("back", 370, 0, x -> {
+            upperBox.addRight(new GuiButton("back", 0, 0, x -> {
                 loadHolder(holder.parent());
             }).setTitle(new TranslationTextComponent("gui.back")));
         this.holder = holder;
         
-        GuiScrollBox box = new GuiScrollBox("box", 0, 17, 400, 186);
+        add(upperBox);
+        GuiScrollBox box = new GuiScrollBox("box", 0, 17, 406, 186);
         add(box);
         
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
@@ -128,24 +132,26 @@ public class ConfigGuiLayer extends GuiLayer {
             
         }
         
-        add(new GuiButton("cancel", 0, 205, x -> {
+        GuiLeftRightBox lowerBox = new GuiLeftRightBox("lowerBox", 0, 205);
+        lowerBox.add(new GuiButton("cancel", 0, 205, x -> {
             nextAction = 0;
             closeTopLayer();
         }).setTitle(new TranslationTextComponent("gui.cancel")));
         
         if (side == Dist.DEDICATED_SERVER)
-            add(new GuiButton("client-config", 40, 205, x -> {
+            lowerBox.add(new GuiButton("client-config", 40, 205, x -> {
                 nextAction = 1;
                 closeTopLayer();
             }).setTitle(new TranslationTextComponent("gui.client-config")));
         
-        add(new GuiButton("save", 370, 205, x -> {
+        lowerBox.addRight(new GuiButton("save", 370, 205, x -> {
             nextAction = 0;
             savePage();
             sendUpdate();
             force = true;
             closeTopLayer();
         }).setTitle(new TranslationTextComponent("gui.save")));
+        add(lowerBox);
         reinit();
     }
     
