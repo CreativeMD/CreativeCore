@@ -8,70 +8,110 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 
 public abstract class GuiLayer extends GuiParent {
-	
-	public final GuiStyle style;
-	
-	public GuiLayer(String name, int width, int height) {
-		super(name, 0, 0, width, height);
-		this.style = GuiStyle.getStyle(name);
-	}
-	
-	@Override
-	public void init() {
-		create();
-		super.init();
-	}
-	
-	public abstract void create();
-	
-	@Override
-	public ControlFormatting getControlFormatting() {
-		return ControlFormatting.GUI;
-	}
-	
-	@Override
-	public String getNestedName() {
-		return "gui." + super.getNestedName();
-	}
-	
-	@Override
-	public GuiLayer getLayer() {
-		return this;
-	}
-	
-	@Override
-	public GuiStyle getStyle() {
-		return style;
-	}
-	
-	public boolean closeLayerUsingEscape() {
-		return true;
-	}
-	
-	@OnlyIn(value = Dist.CLIENT)
-	public GameSettings getSettings() {
-		return Minecraft.getInstance().gameSettings;
-	}
-	
-	@OnlyIn(value = Dist.CLIENT)
-	public boolean hasGrayBackground() {
-		return true;
-	}
-	
-	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == 256) {
-			if (closeLayerUsingEscape())
-				closeLayer(this);
-			return true;
-		}
-		if (super.keyPressed(keyCode, scanCode, modifiers))
-			return true;
-		if (keyCode == getSettings().keyBindInventory.getKey().getKeyCode()) {
-			closeLayer(this);
-			return true;
-		}
-		return false;
-	}
-	
+    
+    public final GuiStyle style;
+    
+    public GuiLayer(String name, int width, int height) {
+        super(name, 0, 0, width, height);
+        this.style = GuiStyle.getStyle(name);
+    }
+    
+    @Override
+    public void init() {
+        create();
+        super.init();
+        initiateLayoutUpdate();
+    }
+    
+    public void reinit() {
+        super.init();
+    }
+    
+    @Override
+    public void initiateLayoutUpdate() {
+        updateLayout();
+    }
+    
+    public abstract void create();
+    
+    @Override
+    public ControlFormatting getControlFormatting() {
+        return ControlFormatting.GUI;
+    }
+    
+    @Override
+    public String getNestedName() {
+        return "gui." + super.getNestedName();
+    }
+    
+    @Override
+    public GuiLayer getLayer() {
+        return this;
+    }
+    
+    @Override
+    public GuiStyle getStyle() {
+        return style;
+    }
+    
+    public boolean closeLayerUsingEscape() {
+        return true;
+    }
+    
+    @OnlyIn(value = Dist.CLIENT)
+    public GameSettings getSettings() {
+        return Minecraft.getInstance().gameSettings;
+    }
+    
+    @OnlyIn(value = Dist.CLIENT)
+    public boolean hasGrayBackground() {
+        return true;
+    }
+    
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == 256) {
+            if (closeLayerUsingEscape())
+                closeTopLayer();
+            return true;
+        }
+        if (super.keyPressed(keyCode, scanCode, modifiers))
+            return true;
+        if (keyCode == getSettings().keyBindInventory.getKey().getKeyCode()) {
+            closeTopLayer();
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean hasLayer() {
+        return true;
+    }
+    
+    @Override
+    public int getPreferredWidth() {
+        return 0;
+    }
+    
+    @Override
+    public int getPreferredHeight() {
+        return 0;
+    }
+    
+    @Override
+    public void setWidthLayout(int width) {}
+    
+    @Override
+    public int getMinWidth() {
+        return 0;
+    }
+    
+    @Override
+    public void setHeightLayout(int height) {}
+    
+    @Override
+    public int getMinHeight() {
+        return 0;
+    }
 }

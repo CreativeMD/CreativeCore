@@ -9,87 +9,92 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class Rect {
-	
-	public int minX;
-	public int minY;
-	public int maxX;
-	public int maxY;
-	
-	public Rect(int x, int y, int x2, int y2) {
-		this.minX = x;
-		this.minY = y;
-		this.maxX = x2;
-		this.maxY = y2;
-	}
-	
-	@OnlyIn(value = Dist.CLIENT)
-	public static Rect getScreenRect() {
-		Minecraft mc = Minecraft.getInstance();
-		return new Rect(0, 0, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight());
-	}
-	
-	public boolean intersects(Rect other) {
-		return this.minX < other.maxX && this.maxX > other.minX && this.minY < other.maxY && this.maxY > other.minY;
-	}
-	
-	public Rect intersection(Rect other) {
-		if (intersects(other)) {
-			int x = Math.max(this.minX, other.minX);
-			int y = Math.max(this.minY, other.minY);
-			int x2 = Math.min(this.maxX, other.maxX);
-			int y2 = Math.min(this.maxY, other.maxY);
-			return new Rect(x, y, x2, y2);
-		}
-		return null;
-	}
-	
-	public void shrink(int shrink) {
-		minX += shrink;
-		minY += shrink;
-		maxX -= shrink;
-		maxY -= shrink;
-	}
-	
-	public int getWidth() {
-		return maxX - minX;
-	}
-	
-	public int getHeight() {
-		return maxY - minY;
-	}
-	
-	public int getSize(Axis axis) {
-		switch (axis) {
-		case X:
-			return getWidth();
-		case Y:
-			return getHeight();
-		default:
-			return 0;
-		}
-	}
-	
-	@OnlyIn(value = Dist.CLIENT)
-	public void scissor() {
-		MainWindow window = Minecraft.getInstance().getMainWindow();
-		int realMinX = (int) (minX * window.getGuiScaleFactor());
-		int realMinY = window.getHeight() - (int) ((minY + getHeight()) * window.getGuiScaleFactor());
-		int realMaxX = (int) (getWidth() * window.getGuiScaleFactor());
-		int realMaxY = (int) (getHeight() * window.getGuiScaleFactor());
-		
-		RenderSystem.enableScissor(realMinX, realMinY, realMaxX, realMaxY);
-	}
-	
-	public Rect copy() {
-		return new Rect(minX, minY, maxX, maxY);
-	}
-	
-	public Rect child(int x, int y, int width, int height) {
-		return new Rect(minX + x, minY + y, minX + x + width, minY + y + height);
-	}
-	
-	public boolean inside(int x, int y) {
-		return x >= this.minX && x < this.maxX && y >= this.minY && y < this.maxY;
-	}
-	
+    
+    public double minX;
+    public double minY;
+    public double maxX;
+    public double maxY;
+    
+    public Rect(double x, double y, double x2, double y2) {
+        this.minX = x;
+        this.minY = y;
+        this.maxX = x2;
+        this.maxY = y2;
+    }
+    
+    @OnlyIn(value = Dist.CLIENT)
+    public static Rect getScreenRect() {
+        Minecraft mc = Minecraft.getInstance();
+        return new Rect(0, 0, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight());
+    }
+    
+    public boolean intersects(Rect other) {
+        return this.minX < other.maxX && this.maxX > other.minX && this.minY < other.maxY && this.maxY > other.minY;
+    }
+    
+    public Rect intersection(Rect other) {
+        if (intersects(other)) {
+            double x = Math.max(this.minX, other.minX);
+            double y = Math.max(this.minY, other.minY);
+            double x2 = Math.min(this.maxX, other.maxX);
+            double y2 = Math.min(this.maxY, other.maxY);
+            return new Rect(x, y, x2, y2);
+        }
+        return null;
+    }
+    
+    public void shrink(double shrink) {
+        minX += shrink;
+        minY += shrink;
+        maxX -= shrink;
+        maxY -= shrink;
+    }
+    
+    public double getWidth() {
+        return maxX - minX;
+    }
+    
+    public double getHeight() {
+        return maxY - minY;
+    }
+    
+    public double getSize(Axis axis) {
+        switch (axis) {
+        case X:
+            return getWidth();
+        case Y:
+            return getHeight();
+        default:
+            return 0;
+        }
+    }
+    
+    @OnlyIn(value = Dist.CLIENT)
+    public void scissor() {
+        MainWindow window = Minecraft.getInstance().getMainWindow();
+        double realMinX = minX * window.getGuiScaleFactor();
+        double realMinY = window.getHeight() - (minY + getHeight()) * window.getGuiScaleFactor();
+        double realMaxX = getWidth() * window.getGuiScaleFactor();
+        double realMaxY = getHeight() * window.getGuiScaleFactor();
+        
+        RenderSystem.enableScissor((int) Math.floor(realMinX), (int) Math.floor(realMinY), (int) Math.ceil(realMaxX), (int) Math.ceil(realMaxY) + 1);
+    }
+    
+    public Rect copy() {
+        return new Rect(minX, minY, maxX, maxY);
+    }
+    
+    public Rect child(double x, double y, double width, double height) {
+        return new Rect(minX + x, minY + y, minX + x + width, minY + y + height);
+    }
+    
+    public boolean inside(double x, double y) {
+        return x >= this.minX && x < this.maxX && y >= this.minY && y < this.maxY;
+    }
+    
+    @Override
+    public String toString() {
+        return "[" + minX + "," + minY + "," + maxX + "," + maxY + "]";
+    }
+    
 }

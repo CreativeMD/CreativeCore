@@ -13,6 +13,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.Style;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.IAdvancedTextComponent;
 import team.creative.creativecore.common.util.type.SingletonList;
@@ -28,7 +29,7 @@ public class CompiledText {
 	public int lineSpacing = 2;
 	public boolean shadow = true;
 	public int defaultColor = ColorUtils.WHITE;
-	public TextAlignment alignment = TextAlignment.LEFT;
+	public Align alignment = Align.LEFT;
 	private List<CompiledLine> lines;
 	private List<ITextComponent> original;
 	
@@ -37,10 +38,22 @@ public class CompiledText {
 		this.maxHeight = height;
 	}
 	
+	public void setMaxHeight(int height) {
+		this.maxHeight = height;
+	}
+	
 	public void setDimension(int width, int height) {
 		this.maxWidth = width;
 		this.maxHeight = height;
 		compile();
+	}
+	
+	public int getMaxWidht() {
+		return maxWidth;
+	}
+	
+	public int getMaxHeight() {
+		return maxHeight;
 	}
 	
 	public void setText(ITextComponent component) {
@@ -85,6 +98,40 @@ public class CompiledText {
 		if (siblings != null)
 			currentLine = compileNext(currentLine, false, siblings);
 		return currentLine;
+	}
+	
+	public int getTotalHeight() {
+		int height = -lineSpacing;
+		for (CompiledLine line : lines)
+			height += line.height + lineSpacing;
+		return height;
+	}
+	
+	public void calculateDimensions() {
+		if (lines == null)
+			return;
+		
+		usedWidth = 0;
+		usedHeight = -lineSpacing;
+		
+		for (CompiledLine line : lines) {
+			switch (alignment) {
+			case LEFT:
+				usedWidth = Math.max(usedWidth, line.width);
+				break;
+			case CENTER:
+				usedWidth = Math.max(usedWidth, maxWidth);
+				break;
+			case RIGHT:
+				usedWidth = Math.max(usedWidth, maxWidth);
+				break;
+			}
+			int height = line.height + lineSpacing;
+			usedHeight += height;
+			
+			if (usedHeight > maxHeight)
+				break;
+		}
 	}
 	
 	public void render(MatrixStack stack) {
@@ -223,10 +270,33 @@ public class CompiledText {
 		
 	}
 	
-	public static enum TextAlignment {
+	public int getTotalWidth() {
+		return calculateWidth(0, true, original);
+	}
+	
+	private int calculateWidth(int width, boolean newLine, List<? extends ITextProperties> components) {
+		for (ITextProperties component : components) {
+			int result = calculateWidth(component);
+			if (newLine)
+				width = Math.max(width, result);
+			else
+				width += result;
+		}
+		return width;
+	}
+	
+	private int calculateWidth(ITextProperties component) {
+		int width = 0;
+		if (component instanceof IAdvancedTextComponent) {
+			IAdvancedTextComponent advanced = (IAdvancedTextComponent) component;
+			if (!advanced.isEmpty())
+				width += advanced.getWidth(font);
+		} else
+			width += font.getStringPropertyWidth(component);
 		
-		LEFT, CENTER, RIGHT;
-		
+		if (component instanceof ITextComponent && !((ITextComponent) component).getSiblings().isEmpty())
+			width += calculateWidth(0, false, ((ITextComponent) component).getSiblings());
+		return width;
 	}
 	
 }

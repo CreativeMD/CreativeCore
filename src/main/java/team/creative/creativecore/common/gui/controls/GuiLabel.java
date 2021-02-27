@@ -4,88 +4,110 @@ import java.util.List;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.CompiledText;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiLabel extends GuiControl {
-	
-	private CompiledText text;
-	private boolean autosize;
-	public int color = ColorUtils.WHITE;
-	
-	public GuiLabel(String name, int x, int y) {
-		super(name, x, y, 1, 1);
-		this.autosize = true;
-	}
-	
-	public GuiLabel(String name, int x, int y, int width, int height) {
-		super(name, x, y, width, height);
-	}
-	
-	private void updateSize() {
-		if (getParent() != null && isClient() && autosize) {
-			width = getContentOffset() * 2 + text.usedWidth;
-			height = getContentOffset() * 2 + text.usedHeight;
-		}
-	}
-	
-	public GuiLabel setTitle(ITextComponent component) {
-		if (text == null)
-			if (getParent() == null)
-				if (autosize)
-					text = new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
-				else
-					text = new CompiledText(width, height);
-			else
-				text = new CompiledText(getParentContentWidth() - x, getParentContentWidth() - y);
-		text.setText(component);
-		return this;
-	}
-	
-	public GuiLabel setTitle(List<ITextComponent> components) {
-		if (text == null)
-			if (getParent() == null)
-				if (autosize)
-					text = new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
-				else
-					text = new CompiledText(width, height);
-			else
-				text = new CompiledText(getParentContentWidth() - x, getParentContentWidth() - y);
-		text.setText(components);
-		return this;
-	}
-	
-	@Override
-	public void init() {
-		if (text == null)
-			setTitle(new TranslationTextComponent(getNestedName()));
-		else if (autosize)
-			text.setDimension(getParentContentWidth() - x, getParentContentWidth() - y);
-	}
-	
-	@Override
-	public void closed() {}
-	
-	@Override
-	public void tick() {}
-	
-	@Override
-	public ControlFormatting getControlFormatting() {
-		return ControlFormatting.TRANSPARENT;
-	}
-	
-	@Override
-	@OnlyIn(value = Dist.CLIENT)
-	protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
-		text.render(matrix);
-		updateSize();
-	}
-	
+    
+    protected CompiledText text;
+    public Align align;
+    public int color = ColorUtils.WHITE;
+    
+    public GuiLabel(String name, int x, int y) {
+        super(name, x, y, 1, 1);
+        if (text == null)
+            text = create();
+    }
+    
+    protected CompiledText create() {
+        return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+    
+    protected void updateDimension() {
+        if (getParent() != null) {
+            text.calculateDimensions();
+            int contentOffset = getContentOffset();
+            setWidth(text.usedWidth + contentOffset * 2);
+            setHeight(text.usedHeight + contentOffset * 2);
+        }
+    }
+    
+    public GuiLabel setTitle(ITextComponent component) {
+        text.setText(component);
+        if (getParent() != null)
+            initiateLayoutUpdate();
+        return this;
+    }
+    
+    public GuiLabel setTitle(List<ITextComponent> components) {
+        text.setText(components);
+        if (getParent() != null)
+            initiateLayoutUpdate();
+        return this;
+    }
+    
+    @Override
+    public void init() {
+        updateDimension();
+    }
+    
+    @Override
+    public void closed() {}
+    
+    @Override
+    public void tick() {}
+    
+    @Override
+    public ControlFormatting getControlFormatting() {
+        return ControlFormatting.TRANSPARENT;
+    }
+    
+    @Override
+    @OnlyIn(value = Dist.CLIENT)
+    protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+        text.render(matrix);
+    }
+    
+    @Override
+    public void setWidthLayout(int width) {
+        text.setDimension(width, Integer.MAX_VALUE);
+        text.calculateDimensions();
+        setWidth(text.usedWidth);
+        setHeight(text.usedHeight);
+    }
+    
+    @Override
+    public int getMinWidth() {
+        return 10;
+    }
+    
+    @Override
+    public int getPreferredWidth() {
+        return text.getTotalWidth() + getContentOffset() * 2;
+    }
+    
+    @Override
+    public void setHeightLayout(int height) {
+        text.setMaxHeight(height);
+        setHeight(height);
+    }
+    
+    @Override
+    public int getMinHeight() {
+        return Minecraft.getInstance().fontRenderer.FONT_HEIGHT + getContentOffset() * 2;
+    }
+    
+    @Override
+    public int getPreferredHeight() {
+        return text.getTotalHeight();
+    }
+    
 }

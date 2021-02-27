@@ -3,134 +3,83 @@ package team.creative.creativecore.common.config.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.creativemd.creativecore.client.avatar.AvatarItemStack;
-import com.creativemd.creativecore.common.config.gui.GuiInfoStackButton;
-import com.creativemd.creativecore.common.config.gui.SubGuiFullItemDialog;
-import com.creativemd.creativecore.common.gui.container.SubGui;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiAvatarLabelClickable;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiComboBox;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiLabel;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiScrollBox;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
-import com.creativemd.creativecore.common.gui.event.gui.GuiControlChangedEvent;
-import com.creativemd.creativecore.common.gui.event.gui.GuiToolTipEvent;
-import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.creativecore.common.utils.stack.GuiInfoHandler;
-import com.creativemd.creativecore.common.utils.stack.InfoStack;
-import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
+import net.minecraft.util.SoundEvents;
+import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.controls.GuiButton;
+import team.creative.creativecore.common.gui.controls.GuiComboBox;
+import team.creative.creativecore.common.gui.controls.GuiLabel;
+import team.creative.creativecore.common.gui.controls.GuiScrollBox;
+import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
+import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
+import team.creative.creativecore.common.util.text.TextBuilder;
+import team.creative.creativecore.common.util.text.TextListBuilder;
 
-import net.minecraft.nbt.NBTTagCompound;
-
-public class FullItemDialogGuiLayer extends SubGui {
+public class FullItemDialogGuiLayer extends GuiLayer {
     
-    public static List<InfoStack> latest = new ArrayList<InfoStack>();
+    public static List<CreativeIngredient> latest = new ArrayList<CreativeIngredient>();
     
     public final GuiInfoStackButton button;
     
-    public boolean supportStackSize;
-    
-    public FullItemDialogGuiLayer(GuiInfoStackButton button, boolean supportStackSize) {
-        super(150, 230);
+    public FullItemDialogGuiLayer(GuiInfoStackButton button) {
+        super("info", 150, 230);
         this.button = button;
-        this.supportStackSize = supportStackSize;
+        registerEventChanged(x -> {
+            if (x.control.is("type")) {
+                create();
+            } else
+                handler.onChanged(this, x);
+        });
     }
     
-    public GuiInfoHandler handler;
+    public GuiCreativeIngredientHandler handler;
     
     @Override
-    public void createControls() {
-        InfoStack info = button.get();
-        handler = GuiInfoHandler.getHandler(info);
+    public void create() {
+        CreativeIngredient info = button.get();
+        handler = GuiCreativeIngredientHandler.getHandler(info);
         
         GuiComboBox box = (GuiComboBox) get("type");
         if (box != null)
-            handler = GuiInfoHandler.getHandler(box.getCaption());
+            handler = GuiCreativeIngredientHandler.get(box.getIndex());
         
-        controls.clear();
-        ArrayList<String> lines = new ArrayList<String>(GuiInfoHandler.getNames());
-        //lines.add("Latest");
-        
-        box = new GuiComboBox("type", 0, 0, 144, lines);
-        box.setCaption(handler.getName());
-        box.index = lines.indexOf(handler.getName());
-        controls.add(box);
+        clear();
+        List<String> lines = new ArrayList<>(GuiCreativeIngredientHandler.getNames());
+        box = new GuiComboBox("type", 0, 0, new TextListBuilder().add(lines));
+        box.select(lines.indexOf(handler.getName()));
+        add(box);
         
         handler.createControls(this, info);
         
-        if (supportStackSize) {
-            controls.add(new GuiLabel("StackSize:", 5, 210));
-            GuiTextfield field = new GuiTextfield("stacksize", "1", 110, 208, 30, 14).setNumbersOnly();
-            if (info != null)
-                field.text = "" + info.stackSize;
-            controls.add(field);
-        }
-        
-        GuiScrollBox scroll = new GuiScrollBox("latest", 0, 155, 144, supportStackSize ? 45 : 65);
+        GuiScrollBox scroll = new GuiScrollBox("latest", 0, 155, 144, 65);
         int latestPerRow = 4;
         for (int i = 0; i < latest.size(); i++) {
             int row = i / latestPerRow;
             int cell = i - (row * latestPerRow);
             
-            GuiAvatarLabelClickable avatar = new GuiAvatarLabelClickable("" + i, cell * 32, row * 18, ColorUtils.WHITE, new AvatarItemStack(latest.get(i).getItemStack())) {
+            GuiLabel label = new GuiLabel("" + i, cell * 32, row * 18) {
                 
                 @Override
-                public void onClicked(int x, int y, int button) {
+                public boolean mouseClicked(double x, double y, int button) {
                     FullItemDialogGuiLayer.this.button.set(latest.get(Integer.parseInt(name)));
-                    closeLayer(new NBTTagCompound());
+                    closeTopLayer();
+                    playSound(SoundEvents.UI_BUTTON_CLICK);
+                    return true;
                 }
-            };
-            scroll.addControl(avatar);
+            }.setTitle(new TextBuilder().stack(latest.get(i).getExample()).build());
+            scroll.add(label);
         }
-        controls.add(scroll);
+        add(scroll);
         
-        controls.add(new GuiButton("Cancel", 0, 130, 41) {
-            
-            @Override
-            public void onClicked(int x, int y, int button) {
-                closeLayer(new NBTTagCompound());
+        add(new GuiButton("Cancel", 0, 130, x -> closeTopLayer()));
+        add(new GuiButton("Save", 100, 130, x -> {
+            CreativeIngredient parsedInfo = handler.parseInfo(FullItemDialogGuiLayer.this);
+            if (parsedInfo != null) {
+                FullItemDialogGuiLayer.this.button.set(parsedInfo);
+                if (!latest.contains(parsedInfo))
+                    latest.add(0, parsedInfo.copy());
+                closeTopLayer();
             }
-        });
-        controls.add(new GuiButton("Save", 100, 130, 41) {
-            
-            @Override
-            public void onClicked(int x, int y, int button) {
-                int stackSize = 0;
-                try {
-                    if (supportStackSize)
-                        stackSize = Integer.parseInt(((GuiTextfield) get("stacksize")).text);
-                    else
-                        stackSize = 1;
-                } catch (Exception e) {
-                    stackSize = 1;
-                }
-                
-                InfoStack info = handler.parseInfo(FullItemDialogGuiLayer.this, stackSize);
-                if (info != null) {
-                    FullItemDialogGuiLayer.this.button.set(info);
-                    if (!latest.contains(info))
-                        latest.add(0, info.copy());
-                    closeLayer(new NBTTagCompound());
-                }
-            }
-        });
-    }
-    
-    @CustomEventSubscribe
-    public void onToolTip(GuiToolTipEvent event) {
-        if (event.source.is("stacksize")) {
-            event.tooltip.add("0: no consumption");
-            event.tooltip.add("1: normal");
-        }
-    }
-    
-    @CustomEventSubscribe
-    public void onChanged(GuiControlChangedEvent event) {
-        if (event.source.is("type")) {
-            createControls();
-            refreshControls();
-        } else
-            handler.onChanged(this, event);
+        }));
     }
     
 }

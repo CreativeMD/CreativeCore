@@ -72,6 +72,8 @@ public class GuiStyle {
 	public Color fontColor = new Color(255, 255, 255);
 	@SerializedName("font-color-highlight")
 	public Color fontColorHighlight = new Color(255, 255, 200);
+	@SerializedName("font-color-disabled")
+	public Color fontColorDisabled = new Color(100, 100, 100);
 	
 	@SerializedName("border-width")
 	public int borderWidth = 1;
