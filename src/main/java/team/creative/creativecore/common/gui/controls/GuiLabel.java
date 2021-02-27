@@ -78,10 +78,11 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public void setWidthLayout(int width) {
-        text.setDimension(width, Integer.MAX_VALUE);
+        int offset = getContentOffset();
+        text.setDimension(width - offset * 2, Integer.MAX_VALUE);
         text.calculateDimensions();
-        setWidth(text.usedWidth);
-        setHeight(text.usedHeight);
+        setWidth(text.usedWidth + offset * 2);
+        setHeight(text.usedHeight + offset * 2);
     }
     
     @Override
@@ -96,7 +97,7 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public void setHeightLayout(int height) {
-        text.setMaxHeight(height);
+        text.setMaxHeight(height - getContentOffset() * 2);
         setHeight(height);
     }
     
@@ -107,7 +108,7 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public int getPreferredHeight() {
-        return text.getTotalHeight();
+        return text.getTotalHeight() + getContentOffset() * 2;
     }
     
 }

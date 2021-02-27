@@ -78,6 +78,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     
     @Override
     public void openLayer(GuiLayer layer) {
+        layer.setParent(this);
         layers.add(layer);
         layer.init();
     }
@@ -97,12 +98,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     public void closeTopLayer() {
         int index = layers.size() - 1;
         sendPacket(new LayerClosePacket());
-        layers.remove(index);
-        if (layers.isEmpty())
-            if (isClient())
-                Minecraft.getInstance().displayGuiScreen((Screen) null);
-            else
-                ((ServerPlayerEntity) player).closeContainer();
+        closeLayer(index);
     }
     
     @Override

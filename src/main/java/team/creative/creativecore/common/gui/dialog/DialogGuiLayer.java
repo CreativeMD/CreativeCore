@@ -3,7 +3,9 @@ package team.creative.creativecore.common.gui.dialog;
 import java.util.function.BiConsumer;
 
 import net.minecraft.util.text.TranslationTextComponent;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.GuiButton;
 import team.creative.creativecore.common.gui.controls.GuiLabel;
 import team.creative.creativecore.common.gui.controls.layout.GuiHBox;
@@ -15,14 +17,14 @@ public class DialogGuiLayer extends GuiLayer {
     public BiConsumer<DialogGuiLayer, DialogButton> onClicked;
     
     public DialogGuiLayer(String name, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
-        super(name, 100, 100);
+        super(name, 200, 200);
         this.buttons = buttons;
         this.onClicked = onClicked;
     }
     
     @Override
     public void create() {
-        GuiVBox vBox = new GuiVBox("v", 0, 0);
+        GuiVBox vBox = new GuiVBox("v", 0, 0, Align.CENTER, VAlign.CENTER);
         GuiHBox hBox = new GuiHBox("h", 0, 0);
         vBox.add(new GuiLabel("text", 0, 0).setTitle(new TranslationTextComponent("dialog." + name)));
         for (DialogButton button : buttons)

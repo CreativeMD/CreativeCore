@@ -95,6 +95,10 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         controls.clear();
     }
     
+    public int size() {
+        return controls.size();
+    }
+    
     @Override
     public void moveBehind(GuiControl toMove, GuiControl reference) {
         controls.remove(toMove);

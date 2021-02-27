@@ -11,7 +11,7 @@ public class LayerClosePacket extends LayerPacket {
     
     @Override
     public void execute(PlayerEntity player, IGuiIntegratedParent container) {
-        container.closeTopLayer();
+        container.closeLayer(container.getLayers().size() - 1);
     }
     
 }
