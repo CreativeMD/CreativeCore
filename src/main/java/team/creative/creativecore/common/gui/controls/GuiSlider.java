@@ -52,7 +52,9 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
             if (textfield != null)
                 return textfield.mouseClicked(x, y, button);
             playSound(SoundEvents.UI_BUTTON_CLICK);
-            return (grabbedSlider = true);
+            grabbedSlider = true;
+            mouseMoved(x, y);
+            return true;
         } else if (button == 1) {
             grabbedSlider = false;
             textfield = createTextfield();
@@ -102,7 +104,8 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
         this.value = Math.max(minValue, value);
         this.value = Math.min(maxValue, this.value);
         
-        raiseEvent(new GuiControlChangedEvent(this));
+        if (getParent() != null)
+            raiseEvent(new GuiControlChangedEvent(this));
     }
     
     @Override
@@ -173,7 +176,7 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     
     @Override
     public ControlFormatting getControlFormatting() {
-        return ControlFormatting.NESTED;
+        return ControlFormatting.SLIDER;
     }
     
     @Override

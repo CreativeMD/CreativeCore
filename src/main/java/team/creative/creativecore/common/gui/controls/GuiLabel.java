@@ -33,10 +33,8 @@ public class GuiLabel extends GuiControl {
     
     protected void updateDimension() {
         if (getParent() != null) {
-            text.calculateDimensions();
-            int contentOffset = getContentOffset();
-            setWidth(text.usedWidth + contentOffset * 2);
-            setHeight(text.usedHeight + contentOffset * 2);
+            setWidth(getPreferredWidth());
+            setHeight(getPreferredHeight());
         }
     }
     

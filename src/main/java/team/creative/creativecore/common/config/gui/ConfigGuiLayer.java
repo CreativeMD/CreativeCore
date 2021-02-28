@@ -16,7 +16,6 @@ import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.GuiButton;
 import team.creative.creativecore.common.gui.controls.GuiButtonFixed;
 import team.creative.creativecore.common.gui.controls.GuiLabel;
-import team.creative.creativecore.common.gui.controls.GuiLabelFixed;
 import team.creative.creativecore.common.gui.controls.GuiScrollBox;
 import team.creative.creativecore.common.gui.controls.layout.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
@@ -111,9 +110,9 @@ public class ConfigGuiLayer extends GuiLayer {
                 if (!key.is(side))
                     continue;
                 
-                GuiLabel label = new GuiLabelFixed(caption + ":", offsetX, offsetY + 2, 100, 16).setTitle(new StringTextComponent(caption + ":"));
+                GuiLabel label = new GuiLabel(caption + ":", offsetX, offsetY + 2).setTitle(new StringTextComponent(caption + ":"));
                 
-                GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, 0, offsetY, 100, 14, side);
+                GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, 0, offsetY, 100, 16, side);
                 GuiButton resetButton = (GuiButton) new GuiButtonFixed("r", offsetX + 370, offsetY, 14, 14, x -> {
                     config.reset();
                     ConfigGuiLayer.this.changed = true;

@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.holder.ConfigKey;
@@ -18,6 +19,7 @@ import team.creative.creativecore.common.gui.controls.GuiButton;
 import team.creative.creativecore.common.gui.controls.GuiCheckBox;
 import team.creative.creativecore.common.gui.controls.GuiLabel;
 import team.creative.creativecore.common.gui.controls.GuiScrollBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -37,7 +39,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
     public boolean force;
     
     public ClientSyncGuiLayer(ICreativeConfigHolder holder) {
-        super("client-sync", 200, 200);
+        super("client-sync", 300, 200);
         this.root = holder;
         
         registerEvent(GuiControlChangedEvent.class, x -> {
@@ -88,20 +90,22 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
-        add(new GuiLabel("path", 0, 0).setTitle(new StringTextComponent("/" + String.join("/", holder.path()))));
+        GuiLeftRightBox upperBox = new GuiLeftRightBox("upperBox", 0, 0);
+        upperBox.add(new GuiLabel("path", 0, 0).setTitle(new StringTextComponent("/" + String.join("/", holder.path()))));
         if (entry.parent != null)
-            add(new GuiButton("back", 170, 0, x -> {
+            upperBox.addRight(new GuiButton("back", 170, 0, x -> {
                 load(entry.parent);
-            }));
+            }).setTitle(new TranslationTextComponent("gui.back")));
+        add(upperBox);
         this.currentView = entry;
         
-        GuiScrollBox box = new GuiScrollBox("box", 0, 21, 194, 152);
+        GuiScrollBox box = new GuiScrollBox("box", 0, 17, 286, 152);
         add(box);
         
         int offsetX = 20;
         int offsetY = 1;
         for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
-            box.add(new GuiTreeCheckBox(key, 2, offsetY + 3));
+            box.add(new GuiTreeCheckBox(key, 5, offsetY + 3));
             
             String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
@@ -109,32 +113,34 @@ public class ClientSyncGuiLayer extends GuiLayer {
                 
                 box.add(new GuiButton(caption, offsetX, offsetY, x -> {
                     load(key);
-                }).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                }).setTitle(new StringTextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
                 offsetY += 21;
             } else {
-                GuiLabel label = new GuiLabel(caption, offsetX, offsetY + 2);
+                GuiLabel label = new GuiLabel(caption, offsetX, offsetY + 2).setTitle(new StringTextComponent(caption));
                 box.add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
-                offsetY += label.getHeight() + 1;
+                offsetY += 16;
             }
-            
         }
         
-        add(new GuiButton("cancel", 0, 180, x -> {
+        GuiLeftRightBox lowerBox = new GuiLeftRightBox("lowerBox", 0, 171);
+        lowerBox.add(new GuiButton("cancel", 0, 180, x -> {
             nextAction = 0;
             closeTopLayer();
-        }));
+        }).setTitle(new TranslationTextComponent("gui.cancel")));
         
-        add(new GuiButton("config", 40, 180, x -> {
+        lowerBox.add(new GuiButton("config", 40, 180, x -> {
             nextAction = 1;
             closeTopLayer();
-        }));
+        }).setTitle(new TranslationTextComponent("gui.config")));
         
-        add(new GuiButton("save", 170, 180, x -> {
+        lowerBox.addRight(new GuiButton("save", 170, 180, x -> {
             nextAction = 0;
             force = true;
             save();
             closeTopLayer();
-        }));
+        }).setTitle(new TranslationTextComponent("gui.save")));
+        add(lowerBox);
+        reinit();
     }
     
     @Override

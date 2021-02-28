@@ -21,6 +21,7 @@ import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.SharedConstants;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,16 +48,16 @@ public class GuiTextfield extends GuiFocusControl {
     };
     
     public GuiTextfield(String name, int x, int y, int width) {
-        super(name, x, y, width, 20);
+        this(name, x, y, width, 20);
     }
     
     public GuiTextfield(String name, int x, int y, int width, int height) {
-        super(name, x, y, width, height);
+        this(name, "", x, y, width, height);
     }
     
     public GuiTextfield(String name, String text, int x, int y, int width, int height) {
         super(name, x, y, width, height);
-        this.text = text;
+        setText(text);
     }
     
     public GuiTextfield setFloatOnly() {
@@ -145,8 +146,8 @@ public class GuiTextfield extends GuiFocusControl {
         boolean flag1 = this.isFocused() && this.cursorCounter / 6 % 2 == 0 && flag;
         int i1 = 0;
         int j1 = 0;
-        if (k > s.length())
-            k = s.length();
+        //if (k > s.length())
+        //k = s.length();
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
@@ -176,7 +177,7 @@ public class GuiTextfield extends GuiFocusControl {
             
         if (k != j) {
             int l1 = fontRenderer.getStringWidth(s.substring(0, k));
-            this.drawSelectionBox(k1, i1 - 1, l1 - 1, i1 + 1 + 9);
+            this.drawSelectionBox(matrix.getLast().getMatrix(), k1, i1 - 1, l1 - 1, i1 + 1 + 9);
         }
     }
     
@@ -427,7 +428,7 @@ public class GuiTextfield extends GuiFocusControl {
         return false;
     }
     
-    private void drawSelectionBox(int startX, int startY, int endX, int endY) {
+    private void drawSelectionBox(Matrix4f matrix, int startX, int startY, int endX, int endY) {
         if (startX < endX) {
             int i = startX;
             startX = endX;
@@ -453,10 +454,10 @@ public class GuiTextfield extends GuiFocusControl {
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos(startX, endY, 0.0D).endVertex();
-        bufferbuilder.pos(endX, endY, 0.0D).endVertex();
-        bufferbuilder.pos(endX, startY, 0.0D).endVertex();
-        bufferbuilder.pos(startX, startY, 0.0D).endVertex();
+        bufferbuilder.pos(matrix, startX, endY, 0).endVertex();
+        bufferbuilder.pos(matrix, endX, endY, 0).endVertex();
+        bufferbuilder.pos(matrix, endX, startY, 0).endVertex();
+        bufferbuilder.pos(matrix, startX, startY, 0).endVertex();
         tessellator.draw();
         RenderSystem.disableColorLogicOp();
         RenderSystem.enableTexture();
@@ -486,11 +487,10 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     public void setSelectionPos(int position) {
-        if (getParent() == null || !hasLayer())
-            return;
-        
         int textLength = this.text.length();
         this.selectionEnd = MathHelper.clamp(position, 0, textLength);
+        if (getParent() == null || !hasLayer())
+            return;
         FontRenderer fontRenderer = GuiRenderHelper.getFont();
         if (fontRenderer != null) {
             if (this.lineScrollOffset > textLength)

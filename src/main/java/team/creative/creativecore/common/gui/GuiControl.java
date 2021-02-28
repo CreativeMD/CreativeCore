@@ -235,7 +235,8 @@ public abstract class GuiControl {
     public void looseFocus() {}
     
     public void raiseEvent(GuiEvent event) {
-        parent.raiseEvent(event);
+        if (parent != null)
+            parent.raiseEvent(event);
     }
     
     // APPERANCE
