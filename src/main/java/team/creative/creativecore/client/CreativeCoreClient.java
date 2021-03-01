@@ -56,6 +56,15 @@ public class CreativeCoreClient {
             return 1;
         }));
         
+        ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
+            try {
+                GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.CLIENT)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return 1;
+        }));
+        
         GuiStyle.reload();
         Minecraft minecraft = Minecraft.getInstance();
         IReloadableResourceManager reloadableResourceManager = (IReloadableResourceManager) minecraft.getResourceManager();
