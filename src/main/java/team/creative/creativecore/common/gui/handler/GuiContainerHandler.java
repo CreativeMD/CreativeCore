@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.ScreenManager.IScreenFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -69,7 +71,14 @@ public class GuiContainerHandler {
     @OnlyIn(value = Dist.CLIENT)
     public static void initClient() {
         for (GuiContainerHandler handler : guihandlers.values())
-            ScreenManager.registerFactory(handler.type.get(), (container, inventory, text) -> new ContainerScreenIntegration(container, inventory));
+            ScreenManager.registerFactory(handler.type.get(), new IScreenFactory<ContainerIntegration, ContainerScreenIntegration>() {
+                
+                @Override
+                public ContainerScreenIntegration create(ContainerIntegration container, PlayerInventory inventory, ITextComponent p_create_3_) {
+                    return new ContainerScreenIntegration(container, inventory);
+                }
+            });
+        //ScreenManager.registerFactory(handler.type.get(), (container, inventory, text) -> new ContainerScreenIntegration(container, inventory));
     }
     
     public static abstract class GuiHandlerPlayer extends GuiContainerHandler {
