@@ -8,35 +8,35 @@ import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public interface ICreativeConfigHolder {
-	
-	public ICreativeConfigHolder parent();
-	
-	public default String getName() {
-		return path()[path().length - 1];
-	}
-	
-	public String[] path();
-	
-	public Collection<? extends ConfigKey> fields();
-	
-	public Collection<String> names();
-	
-	public Object get(String key);
-	
-	public ConfigKey getField(String key);
-	
-	public boolean isDefault(Dist side);
-	
-	public void restoreDefault(Dist side, boolean ignoreRestart);
-	
-	public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Dist side);
-	
-	public JsonObject save(boolean saveDefault, boolean ignoreRestart, Dist side);
-	
-	public boolean isEmpty(Dist side);
-	
-	public boolean isEmptyWithoutForce(Dist side);
-	
-	public ConfigSynchronization synchronization();
-	
+    
+    public ICreativeConfigHolder parent();
+    
+    public default String getName() {
+        return path()[path().length - 1];
+    }
+    
+    public String[] path();
+    
+    public Collection<? extends ConfigKey> fields();
+    
+    public Collection<String> names();
+    
+    public Object get(String key);
+    
+    public ConfigKey getField(String key);
+    
+    public boolean isDefault(Dist side);
+    
+    public void restoreDefault(Dist side, boolean ignoreRestart);
+    
+    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Dist side);
+    
+    public JsonObject save(boolean saveDefault, boolean ignoreRestart, Dist side);
+    
+    public boolean isEmpty(Dist side);
+    
+    public boolean isEmptyWithoutForce(Dist side);
+    
+    public ConfigSynchronization synchronization();
+    
 }
