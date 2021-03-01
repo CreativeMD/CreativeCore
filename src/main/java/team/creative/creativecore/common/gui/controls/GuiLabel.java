@@ -13,22 +13,16 @@ import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.Rect;
-import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiLabel extends GuiControl {
     
     protected CompiledText text;
     public Align align;
-    public int color = ColorUtils.WHITE;
     
     public GuiLabel(String name, int x, int y) {
-        super(name, x, y, 1, 1);
+        super(name, x, y, 1, 10);
         if (text == null)
-            text = create();
-    }
-    
-    protected CompiledText create() {
-        return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
+            text = CompiledText.createAnySize();
     }
     
     protected void updateDimension() {

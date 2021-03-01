@@ -2,7 +2,10 @@ package team.creative.creativecore.common.gui;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -163,7 +166,8 @@ public abstract class GuiControl {
     }
     
     public void initiateLayoutUpdate() {
-        getParent().initiateLayoutUpdate();
+        if (getParent() != null)
+            getParent().initiateLayoutUpdate();
     }
     
     public void updateLayout() {}
@@ -280,6 +284,8 @@ public abstract class GuiControl {
     
     @OnlyIn(value = Dist.CLIENT)
     public void render(MatrixStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
+        
         Rect rectCopy = null;
         if (!enabled)
             rectCopy = controlRect.copy();

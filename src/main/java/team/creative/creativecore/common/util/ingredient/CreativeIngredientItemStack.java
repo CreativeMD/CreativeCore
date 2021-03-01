@@ -6,9 +6,11 @@ import net.minecraft.nbt.CompoundNBT;
 public class CreativeIngredientItemStack extends CreativeIngredient {
     
     public ItemStack stack;
+    public boolean needNBT;
     
-    public CreativeIngredientItemStack(ItemStack stack) {
+    public CreativeIngredientItemStack(ItemStack stack, boolean needNBT) {
         this.stack = stack;
+        this.needNBT = needNBT;
     }
     
     public CreativeIngredientItemStack() {
@@ -18,11 +20,13 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     @Override
     protected void writeExtra(CompoundNBT nbt) {
         stack.write(nbt);
+        nbt.putBoolean("needNBT", needNBT);
     }
     
     @Override
     protected void readExtra(CompoundNBT nbt) {
         stack = ItemStack.read(nbt);
+        needNBT = nbt.getBoolean("needNBT");
     }
     
     @Override
@@ -68,6 +72,6 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     public CreativeIngredient copy() {
-        return new CreativeIngredientItemStack(stack.copy());
+        return new CreativeIngredientItemStack(stack.copy(), needNBT);
     }
 }

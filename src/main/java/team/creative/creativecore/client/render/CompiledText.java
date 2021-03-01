@@ -301,4 +301,8 @@ public class CompiledText {
         return width;
     }
     
+    public static CompiledText createAnySize() {
+        return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+    
 }

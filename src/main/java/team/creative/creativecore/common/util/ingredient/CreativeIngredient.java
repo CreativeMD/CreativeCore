@@ -124,10 +124,12 @@ public abstract class CreativeIngredient {
             return null;
         });
         
-        registerType("itemstack", CreativeIngredientItemStack.class, (x) -> x instanceof ItemStack ? new CreativeIngredientItemStack((ItemStack) x) : null);
+        registerType("itemstack", CreativeIngredientItemStack.class, (x) -> x instanceof ItemStack ? new CreativeIngredientItemStack((ItemStack) x, false) : null);
         
         registerType("material", CreativeIngredientMaterial.class, (x) -> x instanceof Material ? new CreativeIngredientMaterial((Material) x) : null);
         registerType("fuel", CreativeIngredientFuel.class, null);
+        
+        final CreativeIngredient temp = new CreativeIngredientBlock(Blocks.DIRT);
         
         ConfigTypeConveration.registerSpecialType((x) -> CreativeIngredient.class.isAssignableFrom(x), new ConfigTypeConveration.SimpleConfigTypeConveration<CreativeIngredient>() {
             
@@ -150,7 +152,8 @@ public abstract class CreativeIngredient {
             @Override
             @OnlyIn(value = Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-                parent.add(new GuiInfoStackButton("data", 0, 0, Math.min(150, parent.getWidth() - 50), 14, new CreativeIngredientBlock(Blocks.DIRT)));
+                parent.add(new GuiInfoStackButton("data", 0, 0, parent.getWidth() - 50, 18, temp));
+                parent.setHeight(18);
             }
             
             @Override

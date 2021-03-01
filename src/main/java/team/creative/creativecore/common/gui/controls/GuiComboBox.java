@@ -11,7 +11,7 @@ import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-import team.creative.creativecore.common.util.text.TextListBuilder;
+import team.creative.creativecore.common.util.text.ITextCollection;
 
 public class GuiComboBox extends GuiLabel {
     
@@ -21,20 +21,12 @@ public class GuiComboBox extends GuiLabel {
     public CompiledText[] lines;
     private int index;
     
-    public GuiComboBox(String name, int x, int y, TextListBuilder lines) {
+    public GuiComboBox(String name, int x, int y, ITextCollection builder) {
         super(name, x, y);
-        buildStates(lines);
-        updateDisplay();
-    }
-    
-    protected void buildStates(TextListBuilder builder) {
-        lines = new CompiledText[builder.size()];
-        for (int i = 0; i < builder.size(); i++) {
-            lines[i] = create();
-            lines[i].setText(builder.get(i));
-        }
+        lines = builder.build();
         if (index >= lines.length)
             index = 0;
+        updateDisplay();
     }
     
     @Override
@@ -115,6 +107,7 @@ public class GuiComboBox extends GuiLabel {
     @Override
     @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+        matrix.translate(rect.getWidth() / 2 - text.usedWidth / 2, rect.getHeight() / 2 - text.usedHeight / 2, 0);
         text.render(matrix);
     }
     
@@ -122,10 +115,10 @@ public class GuiComboBox extends GuiLabel {
         this.extension = createBox();
         GuiLayer layer = getLayer();
         layer.add(extension);
-        layer.moveInFront(extension);
+        extension.moveTop();
         extension.init();
-        extension.setX(getControlOffsetX() - getContentOffset());
-        extension.setY(getControlOffsetY() - getContentOffset() + getHeight());
+        extension.setX(getControlOffsetX());
+        extension.setY(getControlOffsetY() + getHeight());
         
         if (extension.getY() + extension.getHeight() > layer.getHeight() && this.getY() >= extension.getHeight())
             extension.setY(extension.getY() - this.getHeight() + extension.getHeight());

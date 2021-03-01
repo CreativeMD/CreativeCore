@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.TranslationTextComponent;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.GuiButton;
 import team.creative.creativecore.common.gui.controls.GuiComboBox;
 import team.creative.creativecore.common.gui.controls.GuiLabel;
+import team.creative.creativecore.common.gui.controls.GuiLabelFixed;
 import team.creative.creativecore.common.gui.controls.GuiScrollBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiLeftRightBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiVBox;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -18,14 +23,13 @@ public class FullItemDialogGuiLayer extends GuiLayer {
     
     public static List<CreativeIngredient> latest = new ArrayList<CreativeIngredient>();
     
-    public final GuiInfoStackButton button;
+    public GuiInfoStackButton button;
     
-    public FullItemDialogGuiLayer(GuiInfoStackButton button) {
-        super("info", 150, 230);
-        this.button = button;
+    public FullItemDialogGuiLayer() {
+        super("info", 250, 230);
         registerEventChanged(x -> {
             if (x.control.is("type")) {
-                create();
+                init();
             } else
                 handler.onChanged(this, x);
         });
@@ -35,6 +39,8 @@ public class FullItemDialogGuiLayer extends GuiLayer {
     
     @Override
     public void create() {
+        if (button == null)
+            return;
         CreativeIngredient info = button.get();
         handler = GuiCreativeIngredientHandler.getHandler(info);
         
@@ -43,20 +49,21 @@ public class FullItemDialogGuiLayer extends GuiLayer {
             handler = GuiCreativeIngredientHandler.get(box.getIndex());
         
         clear();
+        GuiVBox upperBox = new GuiVBox("upperBox", 0, 0, Align.STRETCH);
         List<String> lines = new ArrayList<>(GuiCreativeIngredientHandler.getNames());
         box = new GuiComboBox("type", 0, 0, new TextListBuilder().add(lines));
         box.select(lines.indexOf(handler.getName()));
-        add(box);
-        
+        upperBox.add(box);
+        add(upperBox);
         handler.createControls(this, info);
         
-        GuiScrollBox scroll = new GuiScrollBox("latest", 0, 155, 144, 65);
+        GuiScrollBox scroll = new GuiScrollBox("latest", 0, 150, 136, 65);
         int latestPerRow = 4;
         for (int i = 0; i < latest.size(); i++) {
             int row = i / latestPerRow;
             int cell = i - (row * latestPerRow);
             
-            GuiLabel label = new GuiLabel("" + i, cell * 32, row * 18) {
+            GuiLabel label = (GuiLabel) new GuiLabelFixed("" + i, cell * 18, row * 18, 18, 18) {
                 
                 @Override
                 public boolean mouseClicked(double x, double y, int button) {
@@ -65,13 +72,14 @@ public class FullItemDialogGuiLayer extends GuiLayer {
                     playSound(SoundEvents.UI_BUTTON_CLICK);
                     return true;
                 }
-            }.setTitle(new TextBuilder().stack(latest.get(i).getExample()).build());
+            }.setTitle(new TextBuilder().stack(latest.get(i).getExample()).build()).setTooltip(GuiInfoStackButton.getLabelText(latest.get(i)));
             scroll.add(label);
         }
         add(scroll);
         
-        add(new GuiButton("Cancel", 0, 130, x -> closeTopLayer()));
-        add(new GuiButton("Save", 100, 130, x -> {
+        GuiLeftRightBox actionBox = new GuiLeftRightBox("actionBox", 0, 130);
+        actionBox.add(new GuiButton("cancel", 0, 130, x -> closeTopLayer()).setTitle(new TranslationTextComponent("gui.cancel")));
+        actionBox.addRight(new GuiButton("save", 100, 130, x -> {
             CreativeIngredient parsedInfo = handler.parseInfo(FullItemDialogGuiLayer.this);
             if (parsedInfo != null) {
                 FullItemDialogGuiLayer.this.button.set(parsedInfo);
@@ -79,7 +87,8 @@ public class FullItemDialogGuiLayer extends GuiLayer {
                     latest.add(0, parsedInfo.copy());
                 closeTopLayer();
             }
-        }));
+        }).setTitle(new TranslationTextComponent("gui.save")));
+        add(actionBox);
     }
     
 }

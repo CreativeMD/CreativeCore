@@ -83,7 +83,7 @@ public class GuiScrollBox extends GuiParent {
             if (lastRenderedHeight < completeHeight)
                 scrollThingHeight = completeHeight;
             
-            double percent = (y - this.getY()) / (completeHeight - scrollThingHeight);
+            double percent = (y) / (completeHeight - scrollThingHeight);
             this.scrolled.set((int) (percent * maxScroll));
             onScrolled();
         }

@@ -2,12 +2,17 @@ package team.creative.creativecore.common.config.gui;
 
 import java.util.List;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.GuiButtonFixed;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
+import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlock;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlockTag;
@@ -24,23 +29,19 @@ public class GuiInfoStackButton extends GuiButtonFixed {
     private CreativeIngredient info;
     
     public GuiInfoStackButton(String name, int x, int y, int width, int height, CreativeIngredient info) {
-        super(name, x, y, width, height, button -> {
-            /*
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setBoolean("dialog", true);
-            SubGui gui = new FullItemDialogGuiLayer(this, false);
-            gui.container = new SubContainerEmpty(getPlayer());
-            gui.gui = getGui().gui;
-            getGui().gui.addLayer(gui);
-            PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, gui.gui.getLayers().size() - 1, false));
-            gui.onOpened();*/
-        });
+        super(name, x, y, width, height, null);
+        pressed = button -> {
+            FullItemDialogGuiLayer layer = (FullItemDialogGuiLayer) this.getParent().openLayer(new LayerOpenPacket("info", new CompoundNBT()));
+            layer.button = this;
+            layer.init();
+        };
         this.info = info;
         setTitle(getLabelText(info));
     }
     
     public void set(CreativeIngredient info) {
         this.info = info;
+        setTitle(getLabelText(info));
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
@@ -73,4 +74,13 @@ public class GuiInfoStackButton extends GuiButtonFixed {
         return info;
     }
     
+    static {
+        GuiLayerHandler.registerGuiLayerHandler("info", new GuiLayerHandler() {
+            
+            @Override
+            public GuiLayer create(IGuiIntegratedParent parent, CompoundNBT nbt) {
+                return new FullItemDialogGuiLayer();
+            }
+        });
+    }
 }

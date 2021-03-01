@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.gui.controls.layout.GuiLayoutControl;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -60,6 +59,11 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         for (int i = 0; i < controls.size(); i++)
             if (controls.get(i).name.equalsIgnoreCase(name))
                 return controls.get(i);
+            else if (controls.get(i) instanceof GuiLayoutControl) {
+                GuiControl result = ((GuiLayoutControl) controls.get(i)).get(name);
+                if (result != null)
+                    return result;
+            }
         return null;
     }
     
@@ -134,8 +138,6 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     @Override
     @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(MatrixStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY) {
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
-        
         float scale = getScaleFactor();
         double xOffset = getOffsetX();
         double yOffset = getOffsetY();
@@ -157,7 +159,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
                     realRect.scissor();
                 
                 matrix.push();
-                matrix.translate((control.getX() + xOffset) * scale, (control.getY() + yOffset) * scale, 0);
+                matrix.translate((control.getX() + xOffset) * scale, (control.getY() + yOffset) * scale, 10);
                 control.render(matrix, controlRect, realRect, mouseX, mouseY);
                 matrix.pop();
             }

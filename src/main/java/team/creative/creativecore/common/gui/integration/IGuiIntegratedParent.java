@@ -5,9 +5,11 @@ import java.util.List;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -38,7 +40,6 @@ public interface IGuiIntegratedParent extends IGuiParent {
         Rect screenRect = Rect.getScreenRect();
         
         List<GuiLayer> layers = getLayers();
-        
         for (int i = 0; i < layers.size(); i++) {
             GuiLayer layer = layers.get(i);
             
@@ -51,7 +52,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             matrixStack.push();
             int offX = (width - layer.getWidth()) / 2;
             int offY = (height - layer.getHeight()) / 2;
-            matrixStack.translate(offX, offY, i);
+            matrixStack.translate(offX, offY, 0);
             
             RenderSystem.blendColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
@@ -68,8 +69,8 @@ public interface IGuiIntegratedParent extends IGuiParent {
         GuiTooltipEvent event = layer.getTooltipEvent(mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
         if (event != null) {
             layer.raiseEvent(event);
-            //if (!event.isCanceled())
-            //	GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
+            if (!event.isCanceled())
+                GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
         }
     }
     
