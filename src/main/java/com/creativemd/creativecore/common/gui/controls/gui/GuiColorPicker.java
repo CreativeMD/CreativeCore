@@ -146,7 +146,8 @@ public class GuiColorPicker extends GuiParent {
         ((GuiColoredSteppedSlider) get("r")).value = color.getRed();
         ((GuiColoredSteppedSlider) get("g")).value = color.getGreen();
         ((GuiColoredSteppedSlider) get("b")).value = color.getBlue();
-        ((GuiColoredSteppedSlider) get("a")).value = color.getAlpha();
+        if (has("a"))
+            ((GuiColoredSteppedSlider) get("a")).value = color.getAlpha();
         
     }
     
