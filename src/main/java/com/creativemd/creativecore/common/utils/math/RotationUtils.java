@@ -120,6 +120,12 @@ public class RotationUtils {
         return rotation.axis == axis ? rotation.getOpposite() : rotation;
     }
     
+    public static EnumFacing flip(EnumFacing facing, Axis axis) {
+        if (facing.getAxis() == axis)
+            return facing.getOpposite();
+        return facing;
+    }
+    
     public static EnumFacing rotate(EnumFacing facing, Rotation rotation) {
         Vec3i rotatedNormal = new Vec3i(rotation.getMatrix().getX(facing.getDirectionVec()), rotation.getMatrix().getY(facing.getDirectionVec()), rotation.getMatrix()
             .getZ(facing.getDirectionVec()));
