@@ -145,7 +145,7 @@ public class Ray2d {
         float lineDirectionOne = VectorUtils.get(one, end) - VectorUtils.get(one, start);
         float lineDirectionTwo = VectorUtils.get(two, end) - VectorUtils.get(two, start);
         
-        if (directionOne * lineDirectionTwo - directionTwo * lineDirectionOne == 0)
+        if (VectorUtils.isZero(directionOne * lineDirectionTwo - directionTwo * lineDirectionOne))
             return null;
         
         Vector3f vec = new Vector3f(thirdValue, thirdValue, thirdValue);
@@ -156,7 +156,7 @@ public class Ray2d {
     }
     
     public double intersectWhen(Ray2d line) throws ParallelException {
-        if (directionOne * line.directionTwo - directionTwo * line.directionOne == 0)
+        if (VectorUtils.isZero(directionOne * line.directionTwo - directionTwo * line.directionOne))
             if (isCoordinateOnLine(line.originOne, line.originTwo))
                 throw new ParallelException();
             else
@@ -165,7 +165,7 @@ public class Ray2d {
     }
     
     public Vector3d intersect(Ray2d line, int thirdValue) {
-        if (directionOne * line.directionTwo - directionTwo * line.directionOne == 0)
+        if (VectorUtils.isZero(directionOne * line.directionTwo - directionTwo * line.directionOne))
             return null;
         
         Vector3d vec = new Vector3d(thirdValue, thirdValue, thirdValue);

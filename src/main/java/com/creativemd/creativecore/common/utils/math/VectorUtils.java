@@ -3,6 +3,8 @@ package com.creativemd.creativecore.common.utils.math;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Tuple3f;
 
+import com.creativemd.creativecore.common.utils.math.vec.VectorFan;
+
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -112,6 +114,14 @@ public class VectorUtils {
             return z;
         }
         return 0;
+    }
+    
+    public static boolean isZero(double number) {
+        return number > -VectorFan.EPSILON && number < VectorFan.EPSILON;
+    }
+    
+    public static boolean isZero(float number) {
+        return number > -VectorFan.EPSILON && number < VectorFan.EPSILON;
     }
     
 }
