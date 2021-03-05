@@ -45,6 +45,7 @@ public class OptifineHelper {
     private static Method getAoFace;
     private static Method getColorMultiplier;
     private static Method isAnisotropicFiltering;
+    private static Method isAntialiasing;
     private static Field isEmissive;
     private static Method getQuadEmissive;
     private static boolean newVersion = false;
@@ -90,6 +91,7 @@ public class OptifineHelper {
             isShadersMethod = configClass.getMethod("isShaders");
             isRenderRegions = configClass.getMethod("isRenderRegions");
             isAnisotropicFiltering = configClass.getMethod("isAnisotropicFiltering");
+            isAntialiasing = configClass.getMethod("isAntialiasing");
             
             regionX = ReflectionHelper.findField(RenderChunk.class, "regionX");
             regionZ = ReflectionHelper.findField(RenderChunk.class, "regionZ");
@@ -208,6 +210,15 @@ public class OptifineHelper {
     public static boolean isAnisotropicFiltering() {
         try {
             return (boolean) isAnisotropicFiltering.invoke(null);
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public static boolean isAntialiasing() {
+        try {
+            return (boolean) isAntialiasing.invoke(null);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
