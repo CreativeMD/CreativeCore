@@ -39,6 +39,7 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
                         @Override
                         public void run() {
                             value.packet.executeClient(Minecraft.getMinecraft().player);
+                            value.buf.release();
                         }
                     });
                     
@@ -77,6 +78,7 @@ public class SplittedPacketReceiver implements IMessageHandler<CreativeSplittedM
                                 @Override
                                 public void run() {
                                     value.packet.executeServer(ctx.getServerHandler().player);
+                                    value.buf.release();
                                 }
                             });
                             

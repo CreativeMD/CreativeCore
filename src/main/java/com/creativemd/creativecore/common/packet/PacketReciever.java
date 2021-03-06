@@ -84,6 +84,8 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
                         @Override
                         public void run() {
                             ((CreativeMessageHandler) message).packet.executeClient(Minecraft.getMinecraft().player);
+                            if (cm.content != null)
+                                cm.content.release();
                         }
                     });
                 }
@@ -113,6 +115,8 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
                             @Override
                             public void run() {
                                 message.packet.executeServer(ctx.getServerHandler().player);
+                                if (cm.content != null)
+                                    cm.content.release();
                             }
                         });
                     }
@@ -184,6 +188,7 @@ public class PacketReciever implements IMessageHandler<CreativeMessageHandler, I
             
             buf.writeBytes(toRead, index, length);
             lastReceivedPart = System.nanoTime();
+            toRead.release();
         }
         
     }
