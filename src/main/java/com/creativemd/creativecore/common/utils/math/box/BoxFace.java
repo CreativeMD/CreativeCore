@@ -143,14 +143,14 @@ public enum BoxFace {
     }
     
     public static Vector3f getTraingleNormal(BoxCorner[] triangle, Vector3f[] corners) {
-        Vector3f a = new Vector3f(corners[triangle[0].ordinal()]);
-        a.sub(corners[triangle[1].ordinal()]);
+        Vector3f a = new Vector3f(corners[triangle[1].ordinal()]);
+        a.sub(corners[triangle[0].ordinal()]);
         
         Vector3f b = new Vector3f(corners[triangle[2].ordinal()]);
-        b.sub(corners[triangle[1].ordinal()]);
+        b.sub(corners[triangle[0].ordinal()]);
         
         Vector3f normal = new Vector3f();
-        normal.cross(b, a);
+        normal.cross(a, b);
         return normal;
     }
     
