@@ -94,6 +94,10 @@ public class AlignedBox {
         return "cube[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
     }
     
+    public Vector3f getCorner(BoxCorner corner) {
+        return new Vector3f(getValueOfFacing(corner.x), getValueOfFacing(corner.y), getValueOfFacing(corner.z));
+    }
+    
     public AxisAlignedBB getBB() {
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }

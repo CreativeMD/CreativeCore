@@ -73,6 +73,17 @@ public enum BoxFace {
         this.triangleSecondInv = new BoxTriangle(new BoxCorner[] { corners[1], corners[2], corners[3] });
     }
     
+    public BoxCorner getCornerInQuestion(boolean first, boolean inverted) {
+        if (first)
+            if (inverted)
+                return corners[1];
+            else
+                return corners[0];
+        if (inverted)
+            return corners[3];
+        return corners[2];
+    }
+    
     private BoxTriangle getTriangle(boolean first, boolean inverted) {
         if (first)
             if (inverted)
