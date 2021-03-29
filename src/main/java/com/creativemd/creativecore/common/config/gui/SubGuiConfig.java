@@ -118,7 +118,7 @@ public class SubGuiConfig extends SubGui {
                     }
                 };
                 
-                int labelWidth = 200;
+                int labelWidth = label.width;
                 config.posX = label.posX + labelWidth + 2;
                 config.width = 380 - config.posX;
                 config.init(json != null ? json.get(key.name) : null);

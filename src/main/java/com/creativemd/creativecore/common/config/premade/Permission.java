@@ -1,30 +1,31 @@
 package com.creativemd.creativecore.common.config.premade;
 
-import java.util.function.Supplier;
-
 import com.creativemd.creativecore.CreativeCore;
-import com.creativemd.creativecore.common.utils.type.Pair;
-import com.creativemd.creativecore.common.utils.type.PairList;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-public class Permission<T> {
+public class Permission<T> extends NamedList<T> {
     
     private T value;
-    private PairList<String, T> valueGroups = new PairList<>();
-    private Supplier<T> factory;
     
     public Permission(T defaultValue) {
         this.value = defaultValue;
     }
     
-    public Permission(Supplier<T> factory) {
-        this.value = factory.get();
-        this.factory = factory;
+    public T getDefault() {
+        return value;
+    }
+    
+    public Permission<T> add(String usergroup, T value) {
+        if (usergroup.equals("default"))
+            this.value = value;
+        else
+            super.put(usergroup, value);
+        return this;
     }
     
     public T get(EntityPlayer player) {
-        for (Pair<String, T> pair : valueGroups)
+        for (java.util.Map.Entry<String, T> pair : entrySet())
             if (CreativeCore.config.is(player, pair.getKey()))
                 return pair.getValue();
         return value;

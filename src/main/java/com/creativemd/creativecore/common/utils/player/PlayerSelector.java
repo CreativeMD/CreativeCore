@@ -110,11 +110,6 @@ public abstract class PlayerSelector {
             public PlayerSelector set(ConfigKeyField key, PlayerSelector value) {
                 return value;
             }
-            
-            @Override
-            public PlayerSelector createPrimitiveDefault(Class clazz) {
-                return null;
-            }
         });
     }
     

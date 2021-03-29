@@ -1,8 +1,5 @@
 package com.creativemd.creativecore.common.config.converation;
 
-import static com.creativemd.creativecore.common.config.converation.ConfigTypeConveration.fakeParent;
-import static com.creativemd.creativecore.common.config.converation.ConfigTypeConveration.holderConveration;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -49,7 +46,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             ConfigTypeConveration conversation = getUnsafe(clazz);
             for (int i = 0; i < array.size(); i++)
                 if (conversation != null)
-                    list.add(conversation.readElement(conversation.createPrimitiveDefault(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
+                    list.add(conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
                 else {
                     Object value = constructEmpty(clazz);
                     holderConveration
@@ -93,7 +90,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 GuiConfigSubControl control;
                 if (converation != null) {
                     control = new GuiConfigSubControl("" + 0, 2, 0, parentWidth, 14);
-                    converation.createControls(control, null, subClass, Math.min(100, control.width - 35));
+                    converation.createControls(control, null, subClass, Math.max(100, control.width - 35));
                 } else {
                     Object value = constructEmpty(subClass);
                     ConfigHolderObject holder = constructHolder(Side.SERVER, value);
@@ -123,7 +120,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             GuiConfigSubControl control;
             if (converation != null) {
                 control = new GuiConfigSubControl("" + i, 2, 0, parentWidth, 14);
-                converation.createControls(control, null, clazz, Math.min(100, control.width - 35));
+                converation.createControls(control, null, clazz, Math.max(100, control.width - 35));
                 converation.loadValue(entry, control, null);
             } else {
                 control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, constructHolder(Side.SERVER, entry), entry);
@@ -161,10 +158,5 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     public Class getListType(ConfigKeyField key) {
         ParameterizedType type = (ParameterizedType) key.field.getGenericType();
         return (Class) type.getActualTypeArguments()[0];
-    }
-    
-    @Override
-    public List createPrimitiveDefault(Class clazz) {
-        return null;
     }
 }

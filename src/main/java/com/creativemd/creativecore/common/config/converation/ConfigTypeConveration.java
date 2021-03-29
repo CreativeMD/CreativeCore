@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -36,6 +37,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class ConfigTypeConveration<T> {
     
+    private static HashMap<Class, Supplier> typeCreators = new HashMap<>();
     private static HashMap<Class, ConfigTypeConveration> types = new HashMap<>();
     private static PairList<Predicate<Class>, ConfigTypeConveration> specialTypes = new PairList<>();
     
@@ -104,6 +106,10 @@ public abstract class ConfigTypeConveration<T> {
     };
     public static ConfigTypeConveration<ConfigHolderObject> holderConveration;
     
+    public static <T, U extends T> void registerTypeCreator(Class<U> clazz, Supplier<T> type) {
+        typeCreators.put(clazz, type);
+    }
+    
     public static <T, U extends T> ConfigTypeConveration<T> registerType(Class<U> clazz, ConfigTypeConveration<T> type) {
         types.put(clazz, type);
         return type;
@@ -155,6 +161,13 @@ public abstract class ConfigTypeConveration<T> {
         return get(typeClass).writeElement(value, defaultValue, saveDefault, ignoreRestart, side, key);
     }
     
+    public static Object createObject(Class clazz) {
+        Supplier supplier = typeCreators.get(clazz);
+        if (supplier != null)
+            return supplier.get();
+        return null;
+    }
+    
     static {
         ConfigTypeConveration<Boolean> booleanType = new SimpleConfigTypeConveration<Boolean>() {
             
@@ -194,14 +207,12 @@ public abstract class ConfigTypeConveration<T> {
             public Boolean set(ConfigKeyField key, Boolean value) {
                 return value;
             }
-            
-            @Override
-            public Boolean createPrimitiveDefault(Class clazz) {
-                return Boolean.FALSE;
-            }
         };
         registerType(boolean.class, booleanType);
         registerType(Boolean.class, booleanType);
+        
+        registerTypeCreator(boolean.class, () -> false);
+        registerTypeCreator(Boolean.class, () -> Boolean.FALSE);
         
         ConfigTypeConveration<Number> numberType = new SimpleConfigTypeConveration<Number>() {
             
@@ -380,23 +391,6 @@ public abstract class ConfigTypeConveration<T> {
                 }
                 return value;
             }
-            
-            @Override
-            public Number createPrimitiveDefault(Class clazz) {
-                if (clazz == Float.class || clazz == float.class)
-                    return new Float(0);
-                else if (clazz == Double.class || clazz == double.class)
-                    return new Double(0);
-                else if (clazz == Byte.class || clazz == byte.class)
-                    return new Byte((byte) 0);
-                else if (clazz == Short.class || clazz == short.class)
-                    return new Short((short) 0);
-                else if (clazz == Integer.class || clazz == int.class)
-                    return new Integer(0);
-                else if (clazz == Long.class || clazz == long.class)
-                    return new Long(0);
-                return 0;
-            }
         };
         registerType(byte.class, numberType);
         registerType(Byte.class, numberType);
@@ -410,6 +404,19 @@ public abstract class ConfigTypeConveration<T> {
         registerType(Float.class, numberType);
         registerType(double.class, numberType);
         registerType(Double.class, numberType);
+        
+        registerTypeCreator(byte.class, () -> (byte) 0);
+        registerTypeCreator(Byte.class, () -> new Byte((byte) 0));
+        registerTypeCreator(short.class, () -> (short) 0);
+        registerTypeCreator(Short.class, () -> new Short((short) 0));
+        registerTypeCreator(int.class, () -> 0);
+        registerTypeCreator(Integer.class, () -> new Integer(0));
+        registerTypeCreator(long.class, () -> (long) 0);
+        registerTypeCreator(Long.class, () -> new Long(0));
+        registerTypeCreator(float.class, () -> 0F);
+        registerTypeCreator(Float.class, () -> new Float(0));
+        registerTypeCreator(double.class, () -> 0D);
+        registerTypeCreator(Double.class, () -> new Double(0));
         
         registerType(String.class, new SimpleConfigTypeConveration<String>() {
             
@@ -450,12 +457,8 @@ public abstract class ConfigTypeConveration<T> {
             public String set(ConfigKeyField key, String value) {
                 return value;
             }
-            
-            @Override
-            public String createPrimitiveDefault(Class clazz) {
-                return "";
-            }
         });
+        registerTypeCreator(String.class, () -> "");
         
         registerType(NamedList.class, new ConfigTypeNamedList());
         registerType(Permission.class, new ConfigTypePermission());
@@ -499,10 +502,6 @@ public abstract class ConfigTypeConveration<T> {
                 return null;
             }
             
-            @Override
-            public ConfigHolderObject createPrimitiveDefault(Class clazz) {
-                return null;
-            }
         });
             
         registerType(ConfigHolderDynamic.class, new ConfigTypeConveration<ConfigHolderDynamic>() {
@@ -541,11 +540,6 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public ConfigHolderDynamic set(ConfigKeyField key, ConfigHolderDynamic value) {
-                return null;
-            }
-            
-            @Override
-            public ConfigHolderDynamic createPrimitiveDefault(Class clazz) {
                 return null;
             }
         });
@@ -601,17 +595,10 @@ public abstract class ConfigTypeConveration<T> {
             public Enum set(ConfigKeyField key, Enum value) {
                 return value;
             }
-            
-            @Override
-            public Enum createPrimitiveDefault(Class clazz) {
-                return null;
-            }
         });
         
         registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeList());
     }
-    
-    public abstract T createPrimitiveDefault(Class clazz);
     
     public abstract T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key);
     

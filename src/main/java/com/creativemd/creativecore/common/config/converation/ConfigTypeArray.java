@@ -116,9 +116,4 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         return true;
     }
     
-    @Override
-    public Object createPrimitiveDefault(Class clazz) {
-        return null;
-    }
-    
 }

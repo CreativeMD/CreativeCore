@@ -1,6 +1,7 @@
 package com.creativemd.creativecore.common.config.gui;
 
 import com.creativemd.creativecore.common.gui.container.GuiParent;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiLabel;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiConfigSubControl extends GuiParent {
     
     public GuiTextfield nameField;
+    public GuiLabel nameLabel;
     
     public GuiConfigSubControl(String name, int x, int y, int width, int height) {
         super(name, x, y, width, height);
@@ -17,9 +19,21 @@ public class GuiConfigSubControl extends GuiParent {
     }
     
     public String getName() {
+        if (nameLabel != null)
+            return nameLabel.getCaption();
         if (nameField != null)
             return nameField.text;
         return "";
+    }
+    
+    public void addNameUnmodifieable(String name) {
+        nameLabel = new GuiLabel("label", 0, 0);
+        nameLabel.setCaption(name);
+        int offsetY = nameLabel.height + 2;
+        for (int i = 0; i < controls.size(); i++)
+            controls.get(i).posY += offsetY;
+        height += offsetY;
+        addControl(nameLabel);
     }
     
     public void addNameTextfield(String name) {

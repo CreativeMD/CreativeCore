@@ -45,7 +45,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                 }
             };
             
-            int labelWidth = 40;
+            int labelWidth = label.width;
             config.posX = label.posX + labelWidth + 2;
             config.width = width - 25 - config.posX;
             config.init(null);

@@ -40,22 +40,30 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
         }
     }
     
+    protected void addToList(NamedList list, String name, Object object) {
+        list.put(name, object);
+    }
+    
+    protected NamedList create(Class clazz) {
+        return new NamedList<>();
+    }
+    
     @Override
     public NamedList readElement(NamedList defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         if (element.isJsonObject()) {
             JsonObject object = (JsonObject) element;
             Class clazz = getListType(key);
-            NamedList list = new NamedList<>();
+            NamedList list = create(clazz);
             ConfigTypeConveration conversation = getUnsafe(clazz);
             
             for (Entry<String, JsonElement> entry : object.entrySet()) {
                 if (conversation != null)
-                    list.put(entry.getKey(), conversation.readElement(conversation.createPrimitiveDefault(clazz), loadDefault, ignoreRestart, entry.getValue(), side, null));
+                    addToList(list, entry.getKey(), conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, entry.getValue(), side, null));
                 else {
                     Object value = constructEmpty(clazz);
                     holderConveration
                         .readElement(constructHolder(side, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
-                    list.put(entry.getKey(), value);
+                    addToList(list, entry.getKey(), value);
                 }
             }
             
@@ -150,13 +158,13 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
         ConfigTypeConveration converation = getUnsafe(subClass);
         
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
-        NamedList value = new NamedList<>();
+        NamedList value = create(subClass);
         for (int i = 0; i < box.size(); i++)
             if (converation != null)
-                value.put(box.get(i).getName(), converation.save(box.get(i), subClass, null));
+                addToList(value, box.get(i).getName(), converation.save(box.get(i), subClass, null));
             else {
                 ((GuiConfigSubControlHolder) box.get(i)).save();
-                value.put(box.get(i).getName(), ((GuiConfigSubControlHolder) box.get(i)).value);
+                addToList(value, box.get(i).getName(), ((GuiConfigSubControlHolder) box.get(i)).value);
             }
         return value;
     }
@@ -169,10 +177,5 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     public Class getListType(ConfigKeyField key) {
         ParameterizedType type = (ParameterizedType) key.field.getGenericType();
         return (Class) type.getActualTypeArguments()[0];
-    }
-    
-    @Override
-    public NamedList createPrimitiveDefault(Class clazz) {
-        return null;
     }
 }

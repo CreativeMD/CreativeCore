@@ -236,11 +236,6 @@ public abstract class InfoStack extends Ingredient {
             public InfoStack set(ConfigKeyField key, InfoStack value) {
                 return value;
             }
-            
-            @Override
-            public InfoStack createPrimitiveDefault(Class clazz) {
-                return null;
-            }
         });
     }
     
