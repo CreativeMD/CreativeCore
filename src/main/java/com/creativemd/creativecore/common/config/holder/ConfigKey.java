@@ -2,7 +2,7 @@ package com.creativemd.creativecore.common.config.holder;
 
 import java.lang.reflect.Field;
 
-import com.creativemd.creativecore.common.config.ConfigTypeConveration;
+import com.creativemd.creativecore.common.config.converation.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 
 import net.minecraftforge.fml.relauncher.Side;

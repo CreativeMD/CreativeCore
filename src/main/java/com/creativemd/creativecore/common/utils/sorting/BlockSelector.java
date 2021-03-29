@@ -13,7 +13,7 @@ public abstract class BlockSelector {
     
     public static class BlockSelectorAnd extends BlockSelector {
         
-        public BlockSelector[] selectors;
+        public final BlockSelector[] selectors;
         
         public BlockSelectorAnd(BlockSelector... selectors) {
             this.selectors = selectors;
@@ -21,10 +21,9 @@ public abstract class BlockSelector {
         
         @Override
         public boolean is(Block block, int meta) {
-            for (BlockSelector selector : selectors) {
+            for (BlockSelector selector : selectors)
                 if (!selector.is(block, meta))
                     return false;
-            }
             return true;
         }
         
@@ -32,7 +31,7 @@ public abstract class BlockSelector {
     
     public static class BlockSelectorOr extends BlockSelector {
         
-        public BlockSelector[] selectors;
+        public final BlockSelector[] selectors;
         
         public BlockSelectorOr(BlockSelector... selectors) {
             this.selectors = selectors;
@@ -40,17 +39,16 @@ public abstract class BlockSelector {
         
         @Override
         public boolean is(Block block, int meta) {
-            for (BlockSelector selector : selectors) {
+            for (BlockSelector selector : selectors)
                 if (selector.is(block, meta))
                     return true;
-            }
             return false;
         }
     }
     
     public static class BlockSelectorBlock extends BlockSelector {
         
-        public Block block;
+        public final Block block;
         
         public BlockSelectorBlock(Block block) {
             this.block = block;
@@ -83,8 +81,8 @@ public abstract class BlockSelector {
     
     public static class BlockSelectorState extends BlockSelector {
         
-        public Block block;
-        public int meta;
+        public final Block block;
+        public final int meta;
         
         public BlockSelectorState(Block block, int meta) {
             this.block = block;
@@ -99,7 +97,7 @@ public abstract class BlockSelector {
     
     public static class BlockSelectorMaterial extends BlockSelector {
         
-        public Material material;
+        public final Material material;
         
         public BlockSelectorMaterial(Material material) {
             this.material = material;
@@ -113,7 +111,7 @@ public abstract class BlockSelector {
     
     public static class BlockSelectorClass extends BlockSelector {
         
-        public Class<? extends Block>[] classes;
+        public final Class<? extends Block>[] classes;
         
         public BlockSelectorClass(Class<? extends Block>... classes) {
             this.classes = classes;
@@ -131,7 +129,7 @@ public abstract class BlockSelector {
     
     public static class BlockSelectorProperty extends BlockSelector {
         
-        public IProperty[] properties;
+        public final IProperty[] properties;
         
         public BlockSelectorProperty(IProperty... properties) {
             this.properties = properties;

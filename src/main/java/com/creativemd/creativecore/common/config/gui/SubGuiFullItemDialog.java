@@ -50,8 +50,7 @@ public class SubGuiFullItemDialog extends SubGui {
         //lines.add("Latest");
         
         box = new GuiComboBox("type", 0, 0, 144, lines);
-        box.setCaption(handler.getName());
-        box.index = lines.indexOf(handler.getName());
+        box.select(lines.indexOf(handler.getName()));
         controls.add(box);
         
         handler.createControls(this, info);

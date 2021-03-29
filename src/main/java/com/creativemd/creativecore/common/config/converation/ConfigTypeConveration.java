@@ -1,9 +1,5 @@
-package com.creativemd.creativecore.common.config;
+package com.creativemd.creativecore.common.config.converation;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,26 +9,23 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.common.config.api.CreativeConfig;
-import com.creativemd.creativecore.common.config.gui.GuiConfigSubControl;
-import com.creativemd.creativecore.common.config.gui.GuiConfigSubControlHolder;
 import com.creativemd.creativecore.common.config.holder.ConfigHolderDynamic;
 import com.creativemd.creativecore.common.config.holder.ConfigHolderObject;
 import com.creativemd.creativecore.common.config.holder.ConfigKey;
 import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.config.holder.ICreativeConfigHolder;
+import com.creativemd.creativecore.common.config.premade.NamedList;
+import com.creativemd.creativecore.common.config.premade.Permission;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 import com.creativemd.creativecore.common.gui.GuiControl;
 import com.creativemd.creativecore.common.gui.container.GuiParent;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiAnalogeSlider;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiComboBox;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiListBoxBase;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiStateButton;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiSteppedSlider;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
 import com.creativemd.creativecore.common.utils.mc.ChatFormatting;
 import com.creativemd.creativecore.common.utils.type.PairList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -46,7 +39,7 @@ public abstract class ConfigTypeConveration<T> {
     private static HashMap<Class, ConfigTypeConveration> types = new HashMap<>();
     private static PairList<Predicate<Class>, ConfigTypeConveration> specialTypes = new PairList<>();
     
-    private static final ICreativeConfigHolder fakeParent = new ICreativeConfigHolder() {
+    public static final ICreativeConfigHolder fakeParent = new ICreativeConfigHolder() {
         
         @Override
         public ConfigSynchronization synchronization() {
@@ -109,7 +102,7 @@ public abstract class ConfigTypeConveration<T> {
             return null;
         }
     };
-    private static ConfigTypeConveration<ConfigHolderObject> holderConveration;
+    public static ConfigTypeConveration<ConfigHolderObject> holderConveration;
     
     public static <T, U extends T> ConfigTypeConveration<T> registerType(Class<U> clazz, ConfigTypeConveration<T> type) {
         types.put(clazz, type);
@@ -464,6 +457,9 @@ public abstract class ConfigTypeConveration<T> {
             }
         });
         
+        registerType(NamedList.class, new ConfigTypeNamedList());
+        registerType(Permission.class, new ConfigTypePermission());
+        
         holderConveration = registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
             
             @Override
@@ -561,112 +557,7 @@ public abstract class ConfigTypeConveration<T> {
                 throw new RuntimeException("Array with holders are not permitted");
             }
             return false;
-        }, new ConfigTypeConveration() {
-            
-            @Override
-            public Object readElement(Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
-                if (element.isJsonArray()) {
-                    JsonArray array = (JsonArray) element;
-                    int size = Math.min(array.size(), Array.getLength(defaultValue));
-                    Object object = Array.newInstance(defaultValue.getClass().getComponentType(), size);
-                    for (int i = 0; i < size; i++)
-                        Array.set(object, i, read(defaultValue.getClass().getComponentType(), Array.get(defaultValue, i), loadDefault, ignoreRestart, array.get(i), side, null));
-                    return object;
-                }
-                return defaultValue;
-            }
-            
-            @Override
-            public JsonElement writeElement(Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
-                int length = Array.getLength(value);
-                JsonArray array = new JsonArray();
-                for (int i = 0; i < length; i++)
-                    array.add(write(value.getClass().getComponentType(), Array.get(value, i), Array.get(defaultValue, i), saveDefault, ignoreRestart, side, null));
-                return array;
-            }
-            
-            @Override
-            @SideOnly(Side.CLIENT)
-            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-                parent.height = 160;
-                GuiListBoxBase<GuiConfigSubControl> listBox = new GuiListBoxBase<>("data", 0, 0, parent.width - 10, 150, false, new ArrayList<>());
-                parent.addControl(listBox);
-            }
-            
-            @Override
-            @SideOnly(Side.CLIENT)
-            public void loadValue(Object value, GuiParent parent, @Nullable ConfigKeyField key) {
-                GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
-                if (!box.isEmpty())
-                    box.clear();
-                
-                Class clazz = value.getClass().getComponentType();
-                ConfigTypeConveration converation = get(clazz);
-                
-                int length = Array.getLength(value);
-                List<GuiConfigSubControl> controls = new ArrayList<>(length);
-                for (int i = 0; i < length; i++) {
-                    Object entry = Array.get(value, i);
-                    GuiConfigSubControl control = new GuiConfigSubControl("" + i, 2, 0, parent.width, 14);
-                    converation.createControls(control, null, clazz, Math.min(100, control.width));
-                    converation.loadValue(entry, control, null);
-                    controls.add(control);
-                }
-                
-                box.addAll(controls);
-            }
-            
-            @Override
-            @SideOnly(Side.CLIENT)
-            protected Object saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
-                Class subClass = clazz.getComponentType();
-                ConfigTypeConveration converation = get(subClass);
-                
-                GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
-                Object value = Array.newInstance(subClass, box.size());
-                for (int i = 0; i < box.size(); i++)
-                    Array.set(value, i, converation.save(box.get(i), subClass, null));
-                return value;
-            }
-            
-            @Override
-            public Object set(ConfigKeyField key, Object value) {
-                return value;
-            }
-            
-            @Override
-            public boolean areEqual(Object one, Object two) {
-                int lengthOne = Array.getLength(one);
-                int lengthTwo = Array.getLength(two);
-                
-                if (lengthOne != lengthTwo)
-                    return false;
-                
-                for (int i = 0; i < lengthOne; i++) {
-                    Object entryOne = Array.get(one, i);
-                    Object entryTwo = Array.get(two, i);
-                    
-                    if (entryOne.getClass().isArray()) {
-                        if (!entryTwo.getClass().isArray())
-                            return false;
-                        
-                        if (!areEqual(entryOne, entryTwo))
-                            return false;
-                    }
-                    
-                    if (!entryOne.equals(entryTwo))
-                        return false;
-                }
-                
-                return true;
-            }
-            
-            @Override
-            public Object createPrimitiveDefault(Class clazz) {
-                return null;
-            }
-            
-        });
+        }, new ConfigTypeArray());
         
         registerSpecialType((x) -> x.isEnum(), new SimpleConfigTypeConveration<Enum>() {
             
@@ -717,150 +608,7 @@ public abstract class ConfigTypeConveration<T> {
             }
         });
         
-        registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeConveration<List>() {
-            
-            private ConfigHolderObject constructHolder(Side side, Object value) {
-                return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
-            }
-            
-            private Object constructEmpty(Class clazz) {
-                try {
-                    Constructor con = clazz.getConstructor();
-                    return con.newInstance();
-                } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            
-            @Override
-            public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
-                if (element.isJsonArray()) {
-                    JsonArray array = (JsonArray) element;
-                    Class clazz = getListType(key);
-                    List list = new ArrayList<>(array.size());
-                    ConfigTypeConveration conversation = getUnsafe(clazz);
-                    for (int i = 0; i < array.size(); i++)
-                        if (conversation != null)
-                            list.add(conversation.readElement(conversation.createPrimitiveDefault(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
-                        else {
-                            Object value = constructEmpty(clazz);
-                            holderConveration
-                                .readElement(constructHolder(side, value), loadDefault, ignoreRestart, array.get(i), side, null);
-                            list.add(value);
-                        }
-                    return list;
-                }
-                return defaultValue;
-            }
-            
-            @Override
-            public JsonElement writeElement(List value, List defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
-                JsonArray array = new JsonArray();
-                Class clazz = getListType(key);
-                ConfigTypeConveration conversation = getUnsafe(clazz);
-                for (int i = 0; i < value.size(); i++)
-                    if (conversation != null)
-                        array.add(conversation.writeElement(value.get(i), null, saveDefault, ignoreRestart, side, key));
-                    else
-                        array.add(holderConveration.writeElement(constructHolder(side, value.get(i)), null, saveDefault, ignoreRestart, side, key));
-                return array;
-            }
-            
-            @Override
-            @SideOnly(Side.CLIENT)
-            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-                parent.height = 160;
-                GuiListBoxBase<GuiConfigSubControl> listBox = new GuiListBoxBase<>("data", 0, 0, parent.width - 10, 130, true, new ArrayList<>());
-                parent.addControl(listBox);
-                
-                Class subClass = getListType(key);
-                ConfigTypeConveration converation = getUnsafe(subClass);
-                
-                int parentWidth = parent.width - 10;
-                
-                parent.addControl(new GuiButton("add", 0, 140) {
-                    
-                    @Override
-                    public void onClicked(int x, int y, int button) {
-                        GuiConfigSubControl control;
-                        if (converation != null) {
-                            control = new GuiConfigSubControl("" + 0, 2, 0, parentWidth, 14);
-                            converation.createControls(control, null, subClass, Math.min(100, control.width - 35));
-                        } else {
-                            Object value = constructEmpty(subClass);
-                            ConfigHolderObject holder = constructHolder(Side.SERVER, value);
-                            control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, holder, value);
-                            ((GuiConfigSubControlHolder) control).createControls();
-                        }
-                        listBox.add(control);
-                    }
-                });
-            }
-            
-            @Override
-            @SideOnly(Side.CLIENT)
-            public void loadValue(List value, GuiParent parent, @Nullable ConfigKeyField key) {
-                GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
-                if (!box.isEmpty())
-                    box.clear();
-                
-                Class clazz = getListType(key);
-                ConfigTypeConveration converation = getUnsafe(clazz);
-                
-                int parentWidth = parent.width - 10;
-                
-                List<GuiConfigSubControl> controls = new ArrayList<>(value.size());
-                for (int i = 0; i < value.size(); i++) {
-                    Object entry = value.get(i);
-                    GuiConfigSubControl control;
-                    if (converation != null) {
-                        control = new GuiConfigSubControl("" + i, 2, 0, parentWidth, 14);
-                        converation.createControls(control, null, clazz, Math.min(100, control.width - 35));
-                        converation.loadValue(entry, control, null);
-                    } else {
-                        control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, constructHolder(Side.SERVER, entry), entry);
-                        ((GuiConfigSubControlHolder) control).createControls();
-                    }
-                    controls.add(control);
-                }
-                
-                box.addAll(controls);
-            }
-            
-            @Override
-            @SideOnly(Side.CLIENT)
-            protected List saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
-                Class subClass = getListType(key);
-                ConfigTypeConveration converation = getUnsafe(subClass);
-                
-                GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
-                List value = new ArrayList(box.size());
-                for (int i = 0; i < box.size(); i++)
-                    if (converation != null)
-                        value.add(converation.save(box.get(i), subClass, null));
-                    else {
-                        ((GuiConfigSubControlHolder) box.get(i)).save();
-                        value.add(((GuiConfigSubControlHolder) box.get(i)).value);
-                    }
-                return value;
-            }
-            
-            @Override
-            public List set(ConfigKeyField key, List value) {
-                return value;
-            }
-            
-            public Class getListType(ConfigKeyField key) {
-                ParameterizedType type = (ParameterizedType) key.field.getGenericType();
-                return (Class) type.getActualTypeArguments()[0];
-            }
-            
-            @Override
-            public List createPrimitiveDefault(Class clazz) {
-                return null;
-            }
-            
-        });
+        registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeList());
     }
     
     public abstract T createPrimitiveDefault(Class clazz);

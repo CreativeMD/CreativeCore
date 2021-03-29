@@ -1,0 +1,14 @@
+package com.creativemd.creativecore.common.config.premade;
+
+import java.util.LinkedHashMap;
+import java.util.Set;
+
+public class NamedList<T> extends LinkedHashMap<String, T> {
+    
+    @Override
+    public Set<java.util.Map.Entry<String, T>> entrySet() {
+        // TODO Auto-generated method stub
+        return super.entrySet();
+    }
+    
+}

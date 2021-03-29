@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 
-import com.creativemd.creativecore.common.config.ConfigTypeConveration;
+import com.creativemd.creativecore.common.config.converation.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.gui.GuiInfoStackButton;
 import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.gui.container.GuiParent;

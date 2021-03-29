@@ -2,7 +2,7 @@ package com.creativemd.creativecore.common.config.holder;
 
 import java.util.Collection;
 
-import com.creativemd.creativecore.common.config.ConfigTypeConveration;
+import com.creativemd.creativecore.common.config.converation.ConfigTypeConveration;
 import com.creativemd.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 import com.creativemd.creativecore.common.utils.type.PairList;
