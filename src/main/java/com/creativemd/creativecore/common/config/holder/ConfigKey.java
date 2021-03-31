@@ -158,7 +158,7 @@ public abstract class ConfigKey {
         @Override
         protected boolean checkEqual(Object one, Object two) {
             if (converation != null)
-                return converation.areEqual(one, two);
+                return converation.areEqual(one, two, this);
             return super.checkEqual(one, two);
         }
         

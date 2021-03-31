@@ -1,5 +1,6 @@
 package com.creativemd.creativecore.common.config.converation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -165,6 +166,9 @@ public abstract class ConfigTypeConveration<T> {
         Supplier supplier = typeCreators.get(clazz);
         if (supplier != null)
             return supplier.get();
+        try {
+            return clazz.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {}
         return null;
     }
     
@@ -623,7 +627,7 @@ public abstract class ConfigTypeConveration<T> {
         return value;
     }
     
-    public boolean areEqual(T one, T two) {
+    public boolean areEqual(T one, T two, @Nullable ConfigKeyField key) {
         return one.equals(two);
     }
     

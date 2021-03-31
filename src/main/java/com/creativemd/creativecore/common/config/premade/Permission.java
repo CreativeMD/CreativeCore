@@ -10,6 +10,7 @@ public class Permission<T> extends NamedList<T> {
     
     public Permission(T defaultValue) {
         this.value = defaultValue;
+        put("default", value);
     }
     
     public T getDefault() {
@@ -26,7 +27,7 @@ public class Permission<T> extends NamedList<T> {
     
     public T get(EntityPlayer player) {
         for (java.util.Map.Entry<String, T> pair : entrySet())
-            if (CreativeCore.config.is(player, pair.getKey()))
+            if (!pair.getKey().equals("default") && CreativeCore.config.is(player, pair.getKey()))
                 return pair.getValue();
         return value;
     }

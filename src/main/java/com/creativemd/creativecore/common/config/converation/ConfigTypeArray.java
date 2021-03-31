@@ -36,7 +36,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         int length = Array.getLength(value);
         JsonArray array = new JsonArray();
         for (int i = 0; i < length; i++)
-            array.add(write(value.getClass().getComponentType(), Array.get(value, i), Array.get(defaultValue, i), saveDefault, ignoreRestart, side, null));
+            array.add(write(value.getClass().getComponentType(), Array.get(value, i), Array.get(defaultValue, i), true, ignoreRestart, side, null));
         return array;
     }
     
@@ -90,9 +90,12 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     }
     
     @Override
-    public boolean areEqual(Object one, Object two) {
+    public boolean areEqual(Object one, Object two, @Nullable ConfigKeyField key) {
         int lengthOne = Array.getLength(one);
         int lengthTwo = Array.getLength(two);
+        
+        Class clazz = key.getDefault().getClass().getComponentType();
+        ConfigTypeConveration conversation = getUnsafe(clazz);
         
         if (lengthOne != lengthTwo)
             return false;
@@ -101,15 +104,10 @@ public class ConfigTypeArray extends ConfigTypeConveration {
             Object entryOne = Array.get(one, i);
             Object entryTwo = Array.get(two, i);
             
-            if (entryOne.getClass().isArray()) {
-                if (!entryTwo.getClass().isArray())
-                    return false;
-                
-                if (!areEqual(entryOne, entryTwo))
-                    return false;
-            }
+            if (conversation != null && !conversation.areEqual(entryOne, entryTwo, null))
+                return false;
             
-            if (!entryOne.equals(entryTwo))
+            if (conversation == null && !entryOne.equals(entryTwo))
                 return false;
         }
         

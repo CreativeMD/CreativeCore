@@ -1,7 +1,5 @@
 package com.creativemd.creativecore.common.config.converation;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +29,6 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
         return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
     }
     
-    private Object constructEmpty(Class clazz) {
-        try {
-            Constructor con = clazz.getConstructor();
-            return con.newInstance();
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
     protected void addToList(NamedList list, String name, Object object) {
         list.put(name, object);
     }
@@ -60,7 +49,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                 if (conversation != null)
                     addToList(list, entry.getKey(), conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, entry.getValue(), side, null));
                 else {
-                    Object value = constructEmpty(clazz);
+                    Object value = ConfigTypeConveration.createObject(clazz);
                     holderConveration
                         .readElement(constructHolder(side, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
                     addToList(list, entry.getKey(), value);
@@ -79,9 +68,9 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
         ConfigTypeConveration conversation = getUnsafe(clazz);
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) value.entrySet())
             if (conversation != null)
-                array.add(entry.getKey(), conversation.writeElement(entry.getValue(), null, saveDefault, ignoreRestart, side, key));
+                array.add(entry.getKey(), conversation.writeElement(entry.getValue(), null, true, ignoreRestart, side, key));
             else
-                array.add(entry.getKey(), holderConveration.writeElement(constructHolder(side, entry.getValue()), null, saveDefault, ignoreRestart, side, key));
+                array.add(entry.getKey(), holderConveration.writeElement(constructHolder(side, entry.getValue()), null, true, ignoreRestart, side, key));
         return array;
     }
     
@@ -107,7 +96,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                     converation.createControls(control, null, subClass, Math.min(100, control.width - 35));
                     control.addNameTextfield("");
                 } else {
-                    Object value = constructEmpty(subClass);
+                    Object value = ConfigTypeConveration.createObject(subClass);
                     ConfigHolderObject holder = constructHolder(Side.SERVER, value);
                     control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, holder, value);
                     ((GuiConfigSubControlHolder) control).createControls();
@@ -177,5 +166,26 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     public Class getListType(ConfigKeyField key) {
         ParameterizedType type = (ParameterizedType) key.field.getGenericType();
         return (Class) type.getActualTypeArguments()[0];
+    }
+    
+    @Override
+    public boolean areEqual(NamedList one, NamedList two, @Nullable ConfigKeyField key) {
+        Class clazz = getListType(key);
+        ConfigTypeConveration conversation = getUnsafe(clazz);
+        
+        if (one.size() != two.size())
+            return false;
+        
+        for (Entry<String, ?> entry : (Set<Entry<String, ?>>) one.entrySet()) {
+            Object other = two.get(entry.getKey());
+            
+            if (conversation != null && !conversation.areEqual(entry.getValue(), other, null))
+                return false;
+            
+            if (conversation == null && !entry.getValue().equals(other))
+                return false;
+        }
+        
+        return true;
     }
 }

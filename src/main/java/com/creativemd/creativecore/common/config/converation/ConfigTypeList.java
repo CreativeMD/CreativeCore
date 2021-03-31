@@ -1,7 +1,5 @@
 package com.creativemd.creativecore.common.config.converation;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +26,6 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
     }
     
-    private Object constructEmpty(Class clazz) {
-        try {
-            Constructor con = clazz.getConstructor();
-            return con.newInstance();
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
     @Override
     public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         if (element.isJsonArray()) {
@@ -48,7 +37,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 if (conversation != null)
                     list.add(conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
                 else {
-                    Object value = constructEmpty(clazz);
+                    Object value = ConfigTypeConveration.createObject(clazz);
                     holderConveration
                         .readElement(constructHolder(side, value), loadDefault, ignoreRestart, array.get(i), side, null);
                     list.add(value);
@@ -65,9 +54,9 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         ConfigTypeConveration conversation = getUnsafe(clazz);
         for (int i = 0; i < value.size(); i++)
             if (conversation != null)
-                array.add(conversation.writeElement(value.get(i), null, saveDefault, ignoreRestart, side, key));
+                array.add(conversation.writeElement(value.get(i), null, true, ignoreRestart, side, key));
             else
-                array.add(holderConveration.writeElement(constructHolder(side, value.get(i)), null, saveDefault, ignoreRestart, side, key));
+                array.add(holderConveration.writeElement(constructHolder(side, value.get(i)), null, true, ignoreRestart, side, key));
         return array;
     }
     
@@ -92,7 +81,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                     control = new GuiConfigSubControl("" + 0, 2, 0, parentWidth, 14);
                     converation.createControls(control, null, subClass, Math.max(100, control.width - 35));
                 } else {
-                    Object value = constructEmpty(subClass);
+                    Object value = ConfigTypeConveration.createObject(subClass);
                     ConfigHolderObject holder = constructHolder(Side.SERVER, value);
                     control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, holder, value);
                     ((GuiConfigSubControlHolder) control).createControls();
@@ -158,5 +147,27 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     public Class getListType(ConfigKeyField key) {
         ParameterizedType type = (ParameterizedType) key.field.getGenericType();
         return (Class) type.getActualTypeArguments()[0];
+    }
+    
+    @Override
+    public boolean areEqual(List one, List two, @Nullable ConfigKeyField key) {
+        Class clazz = getListType(key);
+        ConfigTypeConveration conversation = getUnsafe(clazz);
+        
+        if (one.size() != two.size())
+            return false;
+        
+        for (int i = 0; i < one.size(); i++) {
+            Object entryOne = one.get(i);
+            Object entryTwo = two.get(i);
+            
+            if (conversation != null && !conversation.areEqual(entryOne, entryTwo, null))
+                return false;
+            
+            if (conversation == null && !entryOne.equals(entryTwo))
+                return false;
+        }
+        
+        return true;
     }
 }
