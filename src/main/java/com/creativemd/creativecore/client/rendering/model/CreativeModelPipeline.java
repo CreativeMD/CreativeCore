@@ -54,7 +54,11 @@ public class CreativeModelPipeline {
     private static Field wrSmoothField;
     private static Method setBufferMethod;
     private static Field blockInfoField;
+    
     private static Field fullBlockInfoField;
+    private static Field sArrayBlockInfoField;
+    private static Field bArrayBlockInfoField;
+    private static Method combineBlockInfoMethod;
     
     static {
         try {
@@ -91,6 +95,10 @@ public class CreativeModelPipeline {
             }
             blockInfoField = ReflectionHelper.findField(VertexLighterFlat.class, "blockInfo");
             fullBlockInfoField = ReflectionHelper.findField(BlockInfo.class, "full");
+            sArrayBlockInfoField = ReflectionHelper.findField(BlockInfo.class, "s");
+            bArrayBlockInfoField = ReflectionHelper.findField(BlockInfo.class, "b");
+            combineBlockInfoMethod = ReflectionHelper
+                .findMethod(BlockInfo.class, "combine", "combine", int.class, int.class, int.class, int.class, boolean.class, boolean.class, boolean.class, boolean.class);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,10 +134,71 @@ public class CreativeModelPipeline {
                 wrSmooth.get().setOffset(pos);
                 
                 VertexLighterSmoothAo lighter = lighterSmooth.get();
+                
                 lighter.setWorld(world);
                 lighter.setState(state);
                 lighter.setBlockPos(pos);
-                lighter.updateBlockInfo();
+                if (cube.emissive) {
+                    BlockInfo info = (BlockInfo) blockInfoField.get(lighter);
+                    info.updateShift();
+                    boolean[][][] t = info.getTranslucent();
+                    int[][][] s = (int[][][]) sArrayBlockInfoField.get(info);
+                    int[][][] b = (int[][][]) bArrayBlockInfoField.get(info);
+                    float[][][] ao = info.getAo();
+                    float[][][][] skyLight = info.getSkyLight();
+                    float[][][][] blockLight = info.getBlockLight();
+                    for (int x = 0; x <= 2; x++) {
+                        for (int y = 0; y <= 2; y++) {
+                            for (int z = 0; z <= 2; z++) {
+                                t[x][y][z] = true;
+                                int brightness = 15 << 4;
+                                s[x][y][z] = (brightness >> 0x14) & 0xF;
+                                b[x][y][z] = (brightness >> 0x04) & 0xF;
+                                ao[x][y][z] = 1.0F;
+                            }
+                        }
+                    }
+                    
+                    for (EnumFacing side : EnumFacing.VALUES) {
+                        int x = side.getFrontOffsetX() + 1;
+                        int y = side.getFrontOffsetY() + 1;
+                        int z = side.getFrontOffsetZ() + 1;
+                        s[x][y][z] = Math.max(s[1][1][1] - 1, s[x][y][z]);
+                        b[x][y][z] = Math.max(b[1][1][1] - 1, b[x][y][z]);
+                    }
+                    
+                    for (int x = 0; x < 2; x++) {
+                        for (int y = 0; y < 2; y++) {
+                            for (int z = 0; z < 2; z++) {
+                                int x1 = x * 2;
+                                int y1 = y * 2;
+                                int z1 = z * 2;
+                                
+                                int sxyz = s[x1][y1][z1];
+                                int bxyz = b[x1][y1][z1];
+                                boolean txyz = t[x1][y1][z1];
+                                
+                                int sxz = s[x1][1][z1], sxy = s[x1][y1][1], syz = s[1][y1][z1];
+                                int bxz = b[x1][1][z1], bxy = b[x1][y1][1], byz = b[1][y1][z1];
+                                boolean txz = t[x1][1][z1], txy = t[x1][y1][1], tyz = t[1][y1][z1];
+                                
+                                int sx = s[x1][1][1], sy = s[1][y1][1], sz = s[1][1][z1];
+                                int bx = b[x1][1][1], by = b[1][y1][1], bz = b[1][1][z1];
+                                boolean tx = t[x1][1][1], ty = t[1][y1][1], tz = t[1][1][z1];
+                                
+                                skyLight[0][x][y][z] = (float) combineBlockInfoMethod.invoke(info, sx, sxz, sxy, txz || txy ? sxyz : sx, tx, txz, txy, txz || txy ? txyz : tx);
+                                blockLight[0][x][y][z] = (float) combineBlockInfoMethod.invoke(info, bx, bxz, bxy, txz || txy ? bxyz : bx, tx, txz, txy, txz || txy ? txyz : tx);
+                                
+                                skyLight[1][x][y][z] = (float) combineBlockInfoMethod.invoke(info, sy, sxy, syz, txy || tyz ? sxyz : sy, ty, txy, tyz, txy || tyz ? txyz : ty);
+                                blockLight[1][x][y][z] = (float) combineBlockInfoMethod.invoke(info, by, bxy, byz, txy || tyz ? bxyz : by, ty, txy, tyz, txy || tyz ? txyz : ty);
+                                
+                                skyLight[2][x][y][z] = (float) combineBlockInfoMethod.invoke(info, sz, syz, sxz, tyz || txz ? sxyz : sz, tz, tyz, txz, tyz || txz ? txyz : tz);
+                                blockLight[2][x][y][z] = (float) combineBlockInfoMethod.invoke(info, bz, byz, bxz, tyz || txz ? bxyz : bz, tz, tyz, txz, tyz || txz ? txyz : tz);
+                            }
+                        }
+                    }
+                } else
+                    lighter.updateBlockInfo();
                 
                 fullBlockInfoField.setBoolean(blockInfoField.get(lighter), false);
                 
@@ -179,6 +248,14 @@ public class CreativeModelPipeline {
                 lighter.setState(state);
                 lighter.setBlockPos(pos);
                 lighter.updateBlockInfo();
+                if (cube.emissive) {
+                    BlockInfo info = (BlockInfo) blockInfoField.get(lighter);
+                    info.updateShift();
+                    int[] packed = info.getPackedLight();
+                    for (int i = 0; i < packed.length; i++)
+                        packed[0] = 15 << 4;
+                } else
+                    lighter.updateBlockInfo();
                 
                 fullBlockInfoField.setBoolean(blockInfoField.get(lighter), false);
                 

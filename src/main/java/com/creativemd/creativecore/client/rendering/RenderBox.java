@@ -46,10 +46,11 @@ public class RenderBox extends AlignedBox {
     public int meta = 0;
     public int color = -1;
     
-    public Object customData = null;
-    
     public boolean keepVU = false;
     public boolean allowOverlap = false;
+    public boolean doesNeedQuadUpdate = true;
+    public boolean needsResorting = false;
+    public boolean emissive = false;
     
     private IFaceRenderType renderEast = FaceRenderType.INSIDE_RENDERED;
     private IFaceRenderType renderWest = FaceRenderType.INSIDE_RENDERED;
@@ -65,7 +66,7 @@ public class RenderBox extends AlignedBox {
     private Object quadSouth = null;
     private Object quadNorth = null;
     
-    public boolean doesNeedQuadUpdate = true;
+    public Object customData;
     
     public RenderBox(AlignedBox cube, RenderBox box) {
         super(cube);
@@ -255,8 +256,6 @@ public class RenderBox extends AlignedBox {
         return false;
     }
     
-    public boolean isEmissive = false;
-    
     protected Object getRenderQuads(EnumFacing facing) {
         if (getType(facing).hasCachedFans())
             return getType(facing).getCachedFans();
@@ -330,9 +329,8 @@ public class RenderBox extends AlignedBox {
         for (int i = 0; i < blockQuads.size(); i++) {
             
             holder.setQuad(blockQuads.get(i), overrideTint, defaultColor);
-            
-            if (!isEmissive && OptifineHelper.isEmissive(holder.quad.getSprite()))
-                isEmissive = true;
+            if (!needsResorting && OptifineHelper.isEmissive(holder.quad.getSprite()))
+                needsResorting = true;
             
             VertexFormat format = holder.quad.getFormat();
             int[] data = holder.quad.getVertexData();
