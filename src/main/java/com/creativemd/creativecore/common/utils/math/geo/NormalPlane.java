@@ -71,7 +71,7 @@ public class NormalPlane {
         return point;
     }
     
-    public Vector3f intersect(Ray3d ray) {
+    public Vector3f intersect(Ray3f ray) {
         if (normal.dot(ray.direction) == 0)
             return null;
         

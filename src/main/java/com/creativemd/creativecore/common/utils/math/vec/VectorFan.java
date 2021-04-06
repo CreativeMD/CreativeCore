@@ -18,7 +18,7 @@ import com.creativemd.creativecore.common.utils.math.VectorUtils;
 import com.creativemd.creativecore.common.utils.math.collision.IntersectionHelperSolid;
 import com.creativemd.creativecore.common.utils.math.geo.NormalPlane;
 import com.creativemd.creativecore.common.utils.math.geo.Ray2d;
-import com.creativemd.creativecore.common.utils.math.geo.Ray3d;
+import com.creativemd.creativecore.common.utils.math.geo.Ray3f;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -496,7 +496,7 @@ public class VectorFan {
         return true;
     }
     
-    protected static Vec3d calculateIntercept(Ray3d ray, Vector3f triangle0, Vector3f triangle1, Vector3f triangle2) throws ParallelException {
+    protected static Vec3d calculateIntercept(Ray3f ray, Vector3f triangle0, Vector3f triangle1, Vector3f triangle2) throws ParallelException {
         Vector3f edge1 = new Vector3f();
         Vector3f edge2 = new Vector3f();
         Vector3f h = new Vector3f();
@@ -526,7 +526,7 @@ public class VectorFan {
         return new Vec3d(ray.direction.x * t + ray.origin.x, ray.direction.y * t + ray.origin.y, ray.direction.z * t + ray.origin.z);
     }
     
-    public Vec3d calculateIntercept(Ray3d ray) {
+    public Vec3d calculateIntercept(Ray3f ray) {
         try {
             Vector3f origin = coords[0];
             for (int i = 0; i < coords.length - 2; i++) {

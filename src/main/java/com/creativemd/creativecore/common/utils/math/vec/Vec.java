@@ -40,6 +40,7 @@ public abstract class Vec<T extends Vec> {
         return newVec;
     }
     
+    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
@@ -50,6 +51,15 @@ public abstract class Vec<T extends Vec> {
         }
         builder.append("]");
         return builder.toString();
+    }
+    
+    public double distance(Vec vec) {
+        if (vec.getDimensionCount() != this.getDimensionCount())
+            return 0;
+        double value = 0;
+        for (int i = 0; i < getDimensionCount(); i++)
+            value += Math.pow(getValueByDim(i) - vec.getValueByDim(i), 2);
+        return Math.sqrt(value);
     }
     
     public static Vec copyVec(Vec vec) {
