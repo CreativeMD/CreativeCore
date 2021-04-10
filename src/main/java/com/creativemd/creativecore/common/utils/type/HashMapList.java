@@ -3,6 +3,7 @@ package com.creativemd.creativecore.common.utils.type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +25,13 @@ public class HashMapList<K, V> {
     
     public ArrayList<V> getValues(K key) {
         return keys.get(key);
+    }
+    
+    public List<V> getValuesOrEmpty(K key) {
+        List<V> result = keys.get(key);
+        if (result != null)
+            return result;
+        return Collections.EMPTY_LIST;
     }
     
     public K getKey(V search) {
