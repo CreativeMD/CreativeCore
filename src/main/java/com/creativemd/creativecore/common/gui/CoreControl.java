@@ -119,7 +119,7 @@ public abstract class CoreControl {
     
     public static String translateOrDefault(String text, String defaultText) {
         if (I18n.canTranslate(text))
-            translate(text);
+            return translate(text);
         return defaultText;
     }
     
