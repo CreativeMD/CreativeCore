@@ -97,6 +97,15 @@ public class BooleanUtils {
         return result + "]";
     }
     
+    public static int getRequiredBandwidth(int number) {
+        int digit = 0;
+        while (number != 0) {
+            digit++;
+            number = number / 10;
+        }
+        return digit;
+    }
+    
     public static boolean[] toBits(int number, int bandwidth) {
         boolean[] b = new boolean[bandwidth];
         for (int i = 0; i < bandwidth; i++)
