@@ -13,7 +13,7 @@ public class GuiComboBoxTranslated extends GuiComboBox {
         this.prefix = prefix;
         List<String> translatedLines = new ArrayList<>();
         for (int i = 0; i < lines.size(); i++)
-            translatedLines.add(getDisplay(index));
+            translatedLines.add(getDisplay(i));
         this.translatedLines = translatedLines;
     }
     
