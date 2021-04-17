@@ -123,6 +123,10 @@ public class ColorUtils {
         return color & 255;
     }
     
+    public static int setFullColor(int color) {
+        return (255 & 255) << 24 | (getRed(color) & 255) << 16 | (getGreen(color) & 255) << 8 | getBlue(color) & 255;
+    }
+    
     public static int RGBAToInt(int red, int green, int blue, int alpha) {
         return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
