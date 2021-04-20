@@ -158,10 +158,10 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
                 else
                     realRect.scissor();
                 
-                matrix.push();
+                matrix.pushPose();
                 matrix.translate((control.getX() + xOffset) * scale, (control.getY() + yOffset) * scale, 10);
                 control.render(matrix, controlRect, realRect, mouseX, mouseY);
-                matrix.pop();
+                matrix.popPose();
             }
             
             lastRenderedHeight = (int) Math.max(lastRenderedHeight, (control.getY() + control.getHeight()) * scale);

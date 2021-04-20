@@ -21,7 +21,7 @@ import team.creative.creativecore.common.util.type.SingletonList;
 
 public class CompiledText {
     
-    private static final FontRenderer font = Minecraft.getInstance().fontRenderer;
+    private static final FontRenderer font = Minecraft.getInstance().font;
     
     private int maxWidth;
     private int maxHeight;
@@ -70,7 +70,7 @@ public class CompiledText {
     private void compile() {
         List<ITextComponent> copy = new ArrayList<>();
         for (ITextComponent component : original)
-            copy.add(component.deepCopy());
+            copy.add(component.plainCopy());
         lines = new ArrayList<>();
         compileNext(null, true, copy);
     }
@@ -143,7 +143,7 @@ public class CompiledText {
         usedWidth = 0;
         usedHeight = -lineSpacing;
         
-        stack.push();
+        stack.pushPose();
         for (CompiledLine line : lines) {
             switch (alignment) {
             case LEFT:
@@ -151,18 +151,18 @@ public class CompiledText {
                 usedWidth = Math.max(usedWidth, line.width);
                 break;
             case CENTER:
-                stack.push();
+                stack.pushPose();
                 stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
                 line.render(stack);
                 usedWidth = Math.max(usedWidth, maxWidth);
-                stack.pop();
+                stack.popPose();
                 break;
             case RIGHT:
-                stack.push();
+                stack.pushPose();
                 stack.translate(maxWidth - line.width, 0, 0);
                 line.render(stack);
                 usedWidth = Math.max(usedWidth, maxWidth);
-                stack.pop();
+                stack.popPose();
                 break;
             }
             int height = line.height + lineSpacing;
@@ -173,7 +173,7 @@ public class CompiledText {
                 break;
         }
         
-        stack.pop();
+        stack.popPose();
     }
     
     public class CompiledLine {
@@ -188,7 +188,7 @@ public class CompiledText {
         
         public void render(MatrixStack stack) {
             int xOffset = 0;
-            IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+            IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
             for (ITextProperties text : components) {
                 int height;
                 int width;
@@ -196,22 +196,22 @@ public class CompiledText {
                     width = ((IAdvancedTextComponent) text).getWidth(font);
                     height = ((IAdvancedTextComponent) text).getHeight(font);
                 } else {
-                    width = font.getStringPropertyWidth(text);
-                    height = font.FONT_HEIGHT;
+                    width = font.width(text);
+                    height = font.lineHeight;
                 }
                 
                 int yOffset = 0;
                 if (height < this.height)
                     yOffset = (this.height - height) / 2;
-                stack.push();
+                stack.pushPose();
                 stack.translate(xOffset, yOffset, 0);
                 if (text instanceof IAdvancedTextComponent)
                     ((IAdvancedTextComponent) text).render(stack, font, defaultColor);
                 else {
-                    font.func_238416_a_(LanguageMap.getInstance().func_241870_a(text), 0, 0, defaultColor, shadow, stack.getLast().getMatrix(), renderType, false, 0, 15728880);
-                    renderType.finish();
+                    font.drawInBatch(LanguageMap.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, stack.last().pose(), renderType, false, 0, 15728880);
+                    renderType.endBatch();
                 }
-                stack.pop();
+                stack.popPose();
                 xOffset += width;
             }
         }
@@ -250,15 +250,15 @@ public class CompiledText {
                     return new SingletonList<>(advanced);
             }
             
-            int textWidth = font.getStringPropertyWidth(component);
+            int textWidth = font.width(component);
             
             if (remainingWidth > textWidth) {
                 components.add(component);
-                updateDimension(width + textWidth, font.FONT_HEIGHT);
+                updateDimension(width + textWidth, font.lineHeight);
                 return null;
             } else if (width == 0) {
-                List<ITextProperties> wrappedLines = font.getCharacterManager().func_238362_b_(component, maxWidth - width, Style.EMPTY);
-                updateDimension(width + font.getStringPropertyWidth(wrappedLines.get(0)), font.FONT_HEIGHT);
+                List<ITextProperties> wrappedLines = font.getSplitter().splitLines(component, maxWidth - width, Style.EMPTY);
+                updateDimension(width + font.width(wrappedLines.get(0)), font.lineHeight);
                 if (wrappedLines.isEmpty())
                     return null;
                 components.add(wrappedLines.get(0));
@@ -294,7 +294,7 @@ public class CompiledText {
             if (!advanced.isEmpty())
                 width += advanced.getWidth(font);
         } else
-            width += font.getStringPropertyWidth(component);
+            width += font.width(component);
         
         if (component instanceof ITextComponent && !((ITextComponent) component).getSiblings().isEmpty())
             width += calculateWidth(0, false, ((ITextComponent) component).getSiblings());

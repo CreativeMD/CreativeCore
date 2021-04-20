@@ -64,14 +64,14 @@ public class GuiCheckBox extends GuiLabel {
         style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(matrix, 1, yoffset + 1, checkBoxWidth - 2, checkBoxWidth - 2);
         
         if (value)
-            Minecraft.getInstance().fontRenderer.drawString(matrix, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt());
+            Minecraft.getInstance().font.draw(matrix, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt());
         else if (partial)
             partialStyle.render(matrix, 2, yoffset + 2, checkBoxWidth - 4, checkBoxWidth - 4);
         
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(checkBoxWidth + 3, 0, 0);
         text.render(matrix);
-        matrix.pop();
+        matrix.popPose();
     }
     
     @Override

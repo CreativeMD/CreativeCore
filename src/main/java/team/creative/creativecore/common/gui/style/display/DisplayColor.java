@@ -36,13 +36,13 @@ public class DisplayColor extends StyleDisplay {
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
         
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuilder();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(mat, (float) (x + width), (float) y, 0).color(red, green, blue, alpha).endVertex();
-        buffer.pos(mat, (float) x, (float) y, 0).color(red, green, blue, alpha).endVertex();
-        buffer.pos(mat, (float) x, (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
-        buffer.pos(mat, (float) (x + width), (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
-        tessellator.draw();
+        buffer.vertex(mat, (float) (x + width), (float) y, 0).color(red, green, blue, alpha).endVertex();
+        buffer.vertex(mat, (float) x, (float) y, 0).color(red, green, blue, alpha).endVertex();
+        buffer.vertex(mat, (float) x, (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
+        buffer.vertex(mat, (float) (x + width), (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
+        tessellator.end();
         
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();

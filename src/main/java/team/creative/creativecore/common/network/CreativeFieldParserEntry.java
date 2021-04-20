@@ -196,12 +196,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected void writeContent(String content, PacketBuffer buffer) {
-                buffer.writeString(content);
+                buffer.writeUtf(content);
             }
             
             @Override
             protected String readContent(PacketBuffer buffer) {
-                return buffer.readString(32767);
+                return buffer.readUtf();
             }
         });
         
@@ -209,12 +209,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected void writeContent(ITextComponent content, PacketBuffer buffer) {
-                buffer.writeTextComponent(content);
+                buffer.writeComponent(content);
             }
             
             @Override
             protected ITextComponent readContent(PacketBuffer buffer) {
-                return buffer.readTextComponent();
+                return buffer.readComponent();
             }
         });
         
@@ -222,12 +222,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected void writeContent(CompoundNBT content, PacketBuffer buffer) {
-                buffer.writeCompoundTag(content);
+                buffer.writeNbt(content);
             }
             
             @Override
             protected CompoundNBT readContent(PacketBuffer buffer) {
-                return buffer.readCompoundTag();
+                return buffer.readNbt();
             }
         });
         
@@ -235,12 +235,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected void writeContent(ItemStack content, PacketBuffer buffer) {
-                buffer.writeItemStack(content);
+                buffer.writeItem(content);
             }
             
             @Override
             protected ItemStack readContent(PacketBuffer buffer) {
-                return buffer.readItemStack();
+                return buffer.readItem();
             }
         });
         
@@ -261,12 +261,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected void writeContent(BlockState content, PacketBuffer buffer) {
-                buffer.writeInt(Block.getStateId(content));
+                buffer.writeInt(Block.getId(content));
             }
             
             @Override
             protected BlockState readContent(PacketBuffer buffer) {
-                return Block.getStateById(buffer.readInt());
+                return Block.stateById(buffer.readInt());
             }
         });
         
@@ -289,12 +289,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected void writeContent(UUID content, PacketBuffer buffer) {
-                buffer.writeString(content.toString());
+                buffer.writeUtf(content.toString());
             }
             
             @Override
             protected UUID readContent(PacketBuffer buffer) {
-                return UUID.fromString(buffer.readString(32767));
+                return UUID.fromString(buffer.readUtf());
             }
         });
         
@@ -302,12 +302,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected void writeContent(JsonObject content, PacketBuffer buffer) {
-                buffer.writeString(content.toString());
+                buffer.writeUtf(content.toString());
             }
             
             @Override
             protected JsonObject readContent(PacketBuffer buffer) {
-                return GSON.fromJson(buffer.readString(32767), JsonObject.class);
+                return GSON.fromJson(buffer.readUtf(), JsonObject.class);
             }
             
         });
@@ -391,12 +391,12 @@ public class CreativeFieldParserEntry {
             
             @Override
             public void write(Object content, Class classType, Type genericType, PacketBuffer buffer) {
-                buffer.writeEnumValue((Enum<?>) content);
+                buffer.writeEnum((Enum<?>) content);
             }
             
             @Override
             public Object read(Class classType, Type genericType, PacketBuffer buffer) {
-                return buffer.readEnumValue(classType);
+                return buffer.readEnum(classType);
             }
         });
     }

@@ -61,7 +61,7 @@ public abstract class GuiLayer extends GuiParent {
     
     @OnlyIn(value = Dist.CLIENT)
     public GameSettings getSettings() {
-        return Minecraft.getInstance().gameSettings;
+        return Minecraft.getInstance().options;
     }
     
     @OnlyIn(value = Dist.CLIENT)
@@ -78,7 +78,7 @@ public abstract class GuiLayer extends GuiParent {
         }
         if (super.keyPressed(keyCode, scanCode, modifiers))
             return true;
-        if (keyCode == getSettings().keyBindInventory.getKey().getKeyCode()) {
+        if (keyCode == getSettings().keyInventory.getKey().getValue()) {
             closeTopLayer();
             return true;
         }

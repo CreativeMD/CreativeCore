@@ -31,15 +31,15 @@ public class GuiRenderHelper {
     private static final Minecraft mc = Minecraft.getInstance();
     
     public static FontRenderer getFont() {
-        return mc.fontRenderer;
+        return mc.font;
     }
     
     public static void drawItemStack(MatrixStack matrix, ItemStack stack) {
         ItemRenderer renderer = mc.getItemRenderer();
         
         RenderSystem.pushMatrix();
-        mc.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        mc.getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmapDirect(false, false);
+        mc.getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
+        mc.getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS).setBlurMipmap(false, false);
         RenderSystem.enableRescaleNormal();
         RenderSystem.enableAlphaTest();
         RenderSystem.defaultAlphaFunc();
@@ -50,24 +50,24 @@ public class GuiRenderHelper {
         RenderSystem.translatef(8.0F, 8.0F, 0.0F);
         RenderSystem.scalef(1.0F, -1.0F, 1.0F);
         RenderSystem.scalef(16, 16, 16);
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-        IBakedModel bakedmodel = renderer.getItemModelWithOverrides(stack, (World) null, (LivingEntity) null);
-        boolean flag = !bakedmodel.isSideLit();
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
+        IBakedModel bakedmodel = renderer.getModel(stack, (World) null, (LivingEntity) null);
+        boolean flag = !bakedmodel.usesBlockLight();
         if (flag)
-            RenderHelper.setupGuiFlatDiffuseLighting();
-        matrix.push();
-        Matrix4f m = matrix.getLast().getMatrix();
+            RenderHelper.setupForFlatItems();
+        matrix.pushPose();
+        Matrix4f m = matrix.last().pose();
         Vector4f vec = new Vector4f();
         vec.setW(1);
         vec.transform(m);
         float shrink = 1 / 16F;
-        m.translate(new Vector3f(-vec.getX() + vec.getX() * shrink, -vec.getY() - vec.getY() * shrink, -vec.getZ() + vec.getZ() * shrink));
-        renderer.renderItem(stack, ItemCameraTransforms.TransformType.GUI, false, matrix, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
-        matrix.pop();
-        irendertypebuffer$impl.finish();
+        m.translate(new Vector3f(-vec.x() + vec.x() * shrink, -vec.y() - vec.y() * shrink, -vec.z() + vec.z() * shrink));
+        renderer.render(stack, ItemCameraTransforms.TransformType.GUI, false, matrix, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        matrix.popPose();
+        irendertypebuffer$impl.endBatch();
         RenderSystem.enableDepthTest();
         if (flag)
-            RenderHelper.setupGui3DDiffuseLighting();
+            RenderHelper.setupFor3DItems();
         
         RenderSystem.disableAlphaTest();
         RenderSystem.disableRescaleNormal();
@@ -75,14 +75,14 @@ public class GuiRenderHelper {
     }
     
     public static void drawStringCentered(MatrixStack stack, String text, float width, float height, int color, boolean shadow) {
-        int textWidth = mc.fontRenderer.getStringWidth(text);
+        int textWidth = mc.font.width(text);
         if (textWidth > width) {
-            int dotWith = mc.fontRenderer.getStringWidth("...");
+            int dotWith = mc.font.width("...");
             if (textWidth > dotWith) {
                 StringBuilder builder = new StringBuilder();
                 textWidth = 0;
                 for (int i = 0; i < text.length(); i++) {
-                    int charWidth = mc.fontRenderer.getStringWidth("" + text.charAt(i));
+                    int charWidth = mc.font.width("" + text.charAt(i));
                     if (charWidth + textWidth + dotWith < width) {
                         builder.append(text.charAt(i));
                         textWidth += charWidth;
@@ -92,7 +92,7 @@ public class GuiRenderHelper {
                 text = builder.toString() + "...";
             }
         }
-        mc.fontRenderer.drawStringWithShadow(stack, text, width / 2 - mc.fontRenderer.getStringWidth(text) / 2, height / 2 - mc.fontRenderer.FONT_HEIGHT / 2, color);
+        mc.font.drawShadow(stack, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, color);
     }
     
     public static void fillGradient(MatrixStack matrixStack, int x1, int y1, int x2, int y2, int colorFrom, int colorTo) {
@@ -102,10 +102,10 @@ public class GuiRenderHelper {
         RenderSystem.defaultBlendFunc();
         RenderSystem.shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        fillGradient(matrixStack.getLast().getMatrix(), bufferbuilder, x1, y1, x2, y2, 0, colorFrom, colorTo);
-        tessellator.draw();
+        fillGradient(matrixStack.last().pose(), bufferbuilder, x1, y1, x2, y2, 0, colorFrom, colorTo);
+        tessellator.end();
         RenderSystem.shadeModel(7424);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
@@ -121,10 +121,10 @@ public class GuiRenderHelper {
         float f5 = (colorB >> 16 & 255) / 255.0F;
         float f6 = (colorB >> 8 & 255) / 255.0F;
         float f7 = (colorB & 255) / 255.0F;
-        builder.pos(matrix, x2, y1, z).color(f1, f2, f3, f).endVertex();
-        builder.pos(matrix, x1, y1, z).color(f1, f2, f3, f).endVertex();
-        builder.pos(matrix, x1, y2, z).color(f5, f6, f7, f4).endVertex();
-        builder.pos(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();
+        builder.vertex(matrix, x2, y1, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x1, y1, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x1, y2, z).color(f5, f6, f7, f4).endVertex();
+        builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();
     }
     
 }

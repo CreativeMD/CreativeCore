@@ -76,8 +76,8 @@ public class CreativeCore {
     }
     
     private void server(final FMLServerStartingEvent event) {
-        event.getServer().getCommandManager().getDispatcher().register(Commands.literal("cmdconfig").executes(x -> {
-            GuiContainerHandler.openGui(x.getSource().asPlayer(), "config");
+        event.getServer().getCommands().getDispatcher().register(Commands.literal("cmdconfig").executes(x -> {
+            GuiContainerHandler.openGui(x.getSource().getPlayerOrException(), "config");
             return 0;
         }));
     }

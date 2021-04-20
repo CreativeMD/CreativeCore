@@ -42,7 +42,7 @@ public class ScreenEventListener implements IGuiEventListener {
     
     public double getEventTime() {
         try {
-            return eventTime.getDouble(Minecraft.getInstance().mouseHelper);
+            return eventTime.getDouble(Minecraft.getInstance().mouseHandler);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
             return 0;

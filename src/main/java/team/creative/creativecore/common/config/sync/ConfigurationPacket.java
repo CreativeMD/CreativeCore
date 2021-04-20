@@ -42,10 +42,10 @@ public class ConfigurationPacket extends CreativePacket {
     }
     
     public static void updateGui(PlayerEntity player) {
-        if (player != null && player.openContainer instanceof IGuiIntegratedParent) {
+        if (player != null && player.containerMenu instanceof IGuiIntegratedParent) {
             
-            if (((IGuiIntegratedParent) player.openContainer).isOpen(ConfigGuiLayer.class) || ((IGuiIntegratedParent) player.openContainer).isOpen(ClientSyncGuiLayer.class))
-                for (GuiLayer layer : ((IGuiIntegratedParent) player.openContainer).getLayers())
+            if (((IGuiIntegratedParent) player.containerMenu).isOpen(ConfigGuiLayer.class) || ((IGuiIntegratedParent) player.containerMenu).isOpen(ClientSyncGuiLayer.class))
+                for (GuiLayer layer : ((IGuiIntegratedParent) player.containerMenu).getLayers())
                     if (layer instanceof ConfigGuiLayer) {
                         ((ConfigGuiLayer) layer).ROOT = new JsonObject();
                         ((ConfigGuiLayer) layer).loadHolder(((ConfigGuiLayer) layer).holder);

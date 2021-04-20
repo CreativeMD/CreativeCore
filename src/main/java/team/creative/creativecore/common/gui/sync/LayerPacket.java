@@ -12,14 +12,14 @@ public abstract class LayerPacket extends CreativePacket {
     
     @Override
     public void executeClient(PlayerEntity player) {
-        if (player.openContainer instanceof IGuiIntegratedParent)
-            execute(player, (IGuiIntegratedParent) player.openContainer);
+        if (player.containerMenu instanceof IGuiIntegratedParent)
+            execute(player, (IGuiIntegratedParent) player.containerMenu);
     }
     
     @Override
     public void executeServer(PlayerEntity player) {
-        if (player.openContainer instanceof IGuiIntegratedParent)
-            execute(player, (IGuiIntegratedParent) player.openContainer);
+        if (player.containerMenu instanceof IGuiIntegratedParent)
+            execute(player, (IGuiIntegratedParent) player.containerMenu);
     }
     
     public abstract void execute(PlayerEntity player, IGuiIntegratedParent container);

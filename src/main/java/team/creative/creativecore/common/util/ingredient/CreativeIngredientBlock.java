@@ -33,13 +33,13 @@ public class CreativeIngredientBlock extends CreativeIngredient {
         if (info instanceof CreativeIngredientBlock)
             return ((CreativeIngredientBlock) info).block == block;
         if (info instanceof CreativeIngredientItemStack)
-            return block == Block.getBlockFromItem(((CreativeIngredientItemStack) info).stack.getItem());
+            return block == Block.byItem(((CreativeIngredientItemStack) info).stack.getItem());
         return false;
     }
     
     @Override
     public boolean is(ItemStack stack) {
-        return Block.getBlockFromItem(stack.getItem()) == this.block;
+        return Block.byItem(stack.getItem()) == this.block;
     }
     
     @Override

@@ -43,7 +43,7 @@ public class CreativeCoreClient {
     
     public static void init(FMLClientSetupEvent event) {
         ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-client")).executes((x) -> {
-            mc.player.getCommandSource().sendFeedback(new StringTextComponent("Successful!"), false);
+            mc.player.createCommandSourceStack().sendSuccess(new StringTextComponent("Successful!"), false);
             return 1;
         }));
         
@@ -69,7 +69,7 @@ public class CreativeCoreClient {
         Minecraft minecraft = Minecraft.getInstance();
         IReloadableResourceManager reloadableResourceManager = (IReloadableResourceManager) minecraft.getResourceManager();
         
-        reloadableResourceManager.addReloadListener(new ISelectiveResourceReloadListener() {
+        reloadableResourceManager.registerReloadListener(new ISelectiveResourceReloadListener() {
             
             @Override
             public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
@@ -82,9 +82,9 @@ public class CreativeCoreClient {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void chat(ClientChatEvent event) {
         String message = event.getMessage();
-        if (message.startsWith("/") && ClientCommandRegistry.handleCommand(mc.player.getCommandSource(), message) != -1) {
+        if (message.startsWith("/") && ClientCommandRegistry.handleCommand(mc.player.createCommandSourceStack(), message) != -1) {
             event.setCanceled(true);
-            mc.ingameGUI.getChatGUI().addToSentMessages(message);
+            mc.gui.getChat().enqueueMessage(new StringTextComponent(message));
         }
     }
 }

@@ -41,7 +41,7 @@ public class SlotViewer extends GuiControlBasic {
     
     @Override
     public List<ITextComponent> getTooltip() {
-        return stack.getTooltip(getPlayer(), TooltipFlags.NORMAL);
+        return stack.getTooltipLines(getPlayer(), TooltipFlags.NORMAL);
     }
     
     @Override

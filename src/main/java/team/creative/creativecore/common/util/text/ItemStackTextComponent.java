@@ -44,14 +44,14 @@ public class ItemStackTextComponent extends TextComponent implements IAdvancedTe
     
     @Override
     public void render(MatrixStack stack, FontRenderer font, int defaultColor) {
-        stack.push();
+        stack.pushPose();
         stack.translate(-2, -2, 10);
         GuiRenderHelper.drawItemStack(stack, this.stack);
-        stack.pop();
+        stack.popPose();
     }
     
     @Override
-    public TextComponent copyRaw() {
+    public TextComponent plainCopy() {
         return new ItemStackTextComponent(stack);
     }
     

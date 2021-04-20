@@ -29,9 +29,9 @@ public class ColorUtils {
         }
         
         public Color(Vector3d vec) {
-            this.red = (int) (vec.getX() * 255);
-            this.green = (int) (vec.getY() * 255);
-            this.blue = (int) (vec.getZ() * 255);
+            this.red = (int) (vec.x * 255);
+            this.green = (int) (vec.y * 255);
+            this.blue = (int) (vec.z * 255);
             this.alpha = 255;
         }
         

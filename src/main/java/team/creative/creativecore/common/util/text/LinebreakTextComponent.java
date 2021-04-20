@@ -10,7 +10,7 @@ import net.minecraft.util.text.TextComponent;
 public class LinebreakTextComponent extends TextComponent implements IAdvancedTextComponent {
     
     @Override
-    public TextComponent copyRaw() {
+    public TextComponent plainCopy() {
         return new LinebreakTextComponent();
     }
     

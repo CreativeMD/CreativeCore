@@ -49,7 +49,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
                 net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(screen, matrixStack));
             }
             
-            matrixStack.push();
+            matrixStack.pushPose();
             int offX = (width - layer.getWidth()) / 2;
             int offY = (height - layer.getHeight()) / 2;
             matrixStack.translate(offX, offY, 0);
@@ -57,7 +57,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             RenderSystem.blendColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
             layer.render(matrixStack, controlRect, screenRect.intersection(controlRect), mouseX, mouseY);
-            matrixStack.pop();
+            matrixStack.popPose();
             
             RenderSystem.disableScissor();
         }
@@ -70,7 +70,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
-                GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().fontRenderer);
+                GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().font);
         }
     }
     

@@ -25,7 +25,7 @@ public class Rect {
     @OnlyIn(value = Dist.CLIENT)
     public static Rect getScreenRect() {
         Minecraft mc = Minecraft.getInstance();
-        return new Rect(0, 0, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight());
+        return new Rect(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
     }
     
     public boolean intersects(Rect other) {
@@ -71,11 +71,11 @@ public class Rect {
     
     @OnlyIn(value = Dist.CLIENT)
     public void scissor() {
-        MainWindow window = Minecraft.getInstance().getMainWindow();
-        double realMinX = minX * window.getGuiScaleFactor();
-        double realMinY = window.getHeight() - (minY + getHeight()) * window.getGuiScaleFactor();
-        double realMaxX = getWidth() * window.getGuiScaleFactor();
-        double realMaxY = getHeight() * window.getGuiScaleFactor();
+        MainWindow window = Minecraft.getInstance().getWindow();
+        double realMinX = minX * window.getGuiScale();
+        double realMinY = window.getHeight() - (minY + getHeight()) * window.getGuiScale();
+        double realMaxX = getWidth() * window.getGuiScale();
+        double realMaxY = getHeight() * window.getGuiScale();
         
         RenderSystem.enableScissor((int) Math.floor(realMinX), (int) Math.floor(realMinY), (int) Math.ceil(realMaxX), (int) Math.ceil(realMaxY) + 1);
     }

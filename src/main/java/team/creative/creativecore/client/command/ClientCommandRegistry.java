@@ -46,23 +46,23 @@ public class ClientCommandRegistry {
             stringreader.skip();
         }
         
-        mc.getProfiler().startSection(command);
+        mc.getProfiler().push(command);
         
         try {
             try {
                 ParseResults<ISuggestionProvider> parse = clientDispatcher.parse(stringreader, source);
                 return clientDispatcher.execute(parse);
             } catch (CommandException commandexception) {
-                source.sendErrorMessage(commandexception.getComponent());
+                source.sendFailure(commandexception.getComponent());
                 return 0;
             } catch (CommandSyntaxException commandsyntaxexception) {
                 if (commandsyntaxexception.getType() == CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand())
                     return -1;
-                source.sendErrorMessage(TextComponentUtils.toTextComponent(commandsyntaxexception.getRawMessage()));
+                source.sendFailure(TextComponentUtils.fromMessage(commandsyntaxexception.getRawMessage()));
                 if (commandsyntaxexception.getInput() != null && commandsyntaxexception.getCursor() >= 0) {
                     int k = Math.min(commandsyntaxexception.getInput().length(), commandsyntaxexception.getCursor());
-                    IFormattableTextComponent itextcomponent1 = (new StringTextComponent("")).mergeStyle(TextFormatting.GRAY).modifyStyle((p_211705_1_) -> {
-                        return p_211705_1_.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
+                    IFormattableTextComponent itextcomponent1 = (new StringTextComponent("")).withStyle(TextFormatting.GRAY).withStyle((p_211705_1_) -> {
+                        return p_211705_1_.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
                     });
                     if (k > 10) {
                         itextcomponent1.append(new StringTextComponent("..."));
@@ -71,12 +71,12 @@ public class ClientCommandRegistry {
                     itextcomponent1.append(new StringTextComponent(commandsyntaxexception.getInput().substring(Math.max(0, k - 10), k)));
                     if (k < commandsyntaxexception.getInput().length()) {
                         ITextComponent itextcomponent2 = (new StringTextComponent(commandsyntaxexception.getInput().substring(k)))
-                                .mergeStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.UNDERLINE });
+                                .withStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.UNDERLINE });
                         itextcomponent1.append(itextcomponent2);
                     }
                     
-                    itextcomponent1.append((new TranslationTextComponent("command.context.here")).mergeStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.ITALIC }));
-                    source.sendErrorMessage(itextcomponent1);
+                    itextcomponent1.append((new TranslationTextComponent("command.context.here")).withStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.ITALIC }));
+                    source.sendFailure(itextcomponent1);
                 }
             } catch (Exception exception) {
                 StringTextComponent stringtextcomponent = new StringTextComponent(exception.getMessage() == null ? exception.getClass().getName() : exception.getMessage());
@@ -85,20 +85,20 @@ public class ClientCommandRegistry {
                     StackTraceElement[] astacktraceelement = exception.getStackTrace();
                     
                     for (int j = 0; j < Math.min(astacktraceelement.length, 3); ++j) {
-                        itextcomponent.appendString("\n\n").appendString(astacktraceelement[j].getMethodName()).appendString("\n ")
-                                .appendString(astacktraceelement[j].getFileName()).appendString(":").appendString(String.valueOf(astacktraceelement[j].getLineNumber()));
+                        itextcomponent.append("\n\n").append(astacktraceelement[j].getMethodName()).append("\n ").append(astacktraceelement[j].getFileName()).append(":")
+                                .append(String.valueOf(astacktraceelement[j].getLineNumber()));
                     }
                 }
                 
-                source.sendErrorMessage((new TranslationTextComponent("command.failed")).modifyStyle((p_211704_1_) -> {
-                    return p_211704_1_.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, itextcomponent));
+                source.sendFailure((new TranslationTextComponent("command.failed")).withStyle((p_211704_1_) -> {
+                    return p_211704_1_.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, itextcomponent));
                 }));
                 return 0;
             }
             
             return 0;
         } finally {
-            mc.getProfiler().endSection();
+            mc.getProfiler().pop();
         }
     }
     

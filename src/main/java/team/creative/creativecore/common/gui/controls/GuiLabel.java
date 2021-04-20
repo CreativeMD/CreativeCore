@@ -95,7 +95,7 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public int getMinHeight() {
-        return Minecraft.getInstance().fontRenderer.FONT_HEIGHT + getContentOffset() * 2;
+        return Minecraft.getInstance().font.lineHeight + getContentOffset() * 2;
     }
     
     @Override

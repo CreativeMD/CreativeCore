@@ -30,30 +30,30 @@ public class GuiEventHandler {
         Minecraft mc = Minecraft.getInstance();
         if (tick.phase == Phase.START) {
             if (displayScreen != null) {
-                mc.displayGuiScreen(displayScreen);
+                mc.setScreen(displayScreen);
                 displayScreen = null;
             }
-            if (mc.currentScreen instanceof IScaleableGuiScreen) {
-                IScaleableGuiScreen gui = (IScaleableGuiScreen) mc.currentScreen;
+            if (mc.screen instanceof IScaleableGuiScreen) {
+                IScaleableGuiScreen gui = (IScaleableGuiScreen) mc.screen;
                 
                 if (!changed)
-                    defaultScale = mc.gameSettings.guiScale;
-                int maxScale = gui.getMaxScale(mc.getMainWindow().getWidth(), mc.getMainWindow().getHeight());
+                    defaultScale = mc.options.guiScale;
+                int maxScale = gui.getMaxScale(mc.getWindow().getWidth(), mc.getWindow().getHeight());
                 int scale = Math.min(defaultScale, maxScale);
                 if (defaultScale == 0)
                     scale = maxScale;
-                if (scale != mc.gameSettings.guiScale) {
+                if (scale != mc.options.guiScale) {
                     changed = true;
-                    mc.gameSettings.guiScale = scale;
-                    mc.getMainWindow().setGuiScale(scale);
-                    mc.currentScreen.resize(mc, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight());
+                    mc.options.guiScale = scale;
+                    mc.getWindow().setGuiScale(scale);
+                    mc.screen.resize(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
                 }
             } else if (changed) {
                 changed = false;
-                mc.gameSettings.guiScale = defaultScale;
-                mc.getMainWindow().setGuiScale(mc.getMainWindow().calcGuiScale(mc.gameSettings.guiScale, mc.getForceUnicodeFont()));
-                if (mc.currentScreen != null)
-                    mc.currentScreen.resize(mc, mc.getMainWindow().getScaledWidth(), mc.getMainWindow().getScaledHeight());
+                mc.options.guiScale = defaultScale;
+                mc.getWindow().setGuiScale(mc.getWindow().calculateScale(mc.options.guiScale, mc.isEnforceUnicode()));
+                if (mc.screen != null)
+                    mc.screen.resize(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
             }
         }
     }

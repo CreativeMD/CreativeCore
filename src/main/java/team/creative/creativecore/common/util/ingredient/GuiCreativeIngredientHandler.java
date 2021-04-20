@@ -111,8 +111,8 @@ public abstract class GuiCreativeIngredientHandler {
                     if (damage) {
                         return new CreativeIngredientItemStack(stack.copy(), nbt);
                     } else {
-                        if (!(Block.getBlockFromItem(stack.getItem()) instanceof AirBlock))
-                            return new CreativeIngredientBlock(Block.getBlockFromItem(stack.getItem()));
+                        if (!(Block.byItem(stack.getItem()) instanceof AirBlock))
+                            return new CreativeIngredientBlock(Block.byItem(stack.getItem()));
                         else
                             return new CreativeIngredientItem(stack.getItem());
                     }
@@ -127,7 +127,7 @@ public abstract class GuiCreativeIngredientHandler {
                     if (selector != null) {
                         ItemStack stack = selector.getSelected();
                         if (!stack.isEmpty()) {
-                            ((GuiLabel) gui.get("guilabel1")).setTitle(new StringTextComponent("damage: " + stack.getDamage()));
+                            ((GuiLabel) gui.get("guilabel1")).setTitle(new StringTextComponent("damage: " + stack.getDamageValue()));
                             ((GuiLabel) gui.get("guilabel2")).setTitle(new StringTextComponent("nbt: " + stack.getTag()));
                         } else {
                             ((GuiLabel) gui.get("guilabel1")).setTitle(new StringTextComponent(""));
@@ -145,9 +145,9 @@ public abstract class GuiCreativeIngredientHandler {
             public CreativeIngredient parseInfo(FullItemDialogGuiLayer gui) {
                 ItemStack blockStack = ((GuiStackSelector) gui.get("inv")).getSelected();
                 if (blockStack != null) {
-                    Block block = Block.getBlockFromItem(blockStack.getItem());
+                    Block block = Block.byItem(blockStack.getItem());
                     if (!(block instanceof AirBlock))
-                        return new CreativeIngredientMaterial(block.getDefaultState().getMaterial());
+                        return new CreativeIngredientMaterial(block.defaultBlockState().getMaterial());
                 }
                 return null;
             }
@@ -180,9 +180,8 @@ public abstract class GuiCreativeIngredientHandler {
             @Override
             public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
                 GuiVBox test = new GuiVBox("test", 0, 30, Align.STRETCH);
-                GuiComboBoxMapped<ITag<Block>> box = new GuiComboBoxMapped<>("tag", 0, 30, new TextMapBuilder<ITag<Block>>()
-                        .addComponents(BlockTags.getCollection().getIDTagMap().values(), x -> new TextBuilder().stack(new ItemStack(x.getAllElements().get(0)))
-                                .text(BlockTags.getCollection().getDirectIdFromTag(x).toString()).build()));
+                GuiComboBoxMapped<ITag<Block>> box = new GuiComboBoxMapped<>("tag", 0, 30, new TextMapBuilder<ITag<Block>>().addComponents(BlockTags.getAllTags().getAllTags()
+                        .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(BlockTags.getAllTags().getId(x).toString()).build()));
                 test.add(box);
                 test.add(new GuiTextfield("search", 0, 0, 10, 16));
                 gui.add(test);
@@ -200,8 +199,8 @@ public abstract class GuiCreativeIngredientHandler {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<ITag<Block>> box = (GuiComboBoxMapped<ITag<Block>>) gui.get("tag");
                     box.setLines(new TextMapBuilder<ITag<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
-                            .addComponents(BlockTags.getCollection().getIDTagMap().values(), x -> new TextBuilder().stack(new ItemStack(x.getAllElements().get(0)))
-                                    .text(BlockTags.getCollection().getDirectIdFromTag(x).toString()).build()));
+                            .addComponents(BlockTags.getAllTags().getAllTags()
+                                    .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(BlockTags.getAllTags().getId(x).toString()).build()));
                 }
             }
         });
@@ -220,8 +219,8 @@ public abstract class GuiCreativeIngredientHandler {
             @Override
             public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
                 GuiVBox test = new GuiVBox("test", 0, 30, Align.STRETCH);
-                GuiComboBoxMapped<ITag<Item>> box = new GuiComboBoxMapped<>("tag", 0, 30, new TextMapBuilder<ITag<Item>>().addComponents(ItemTags.getCollection().getIDTagMap()
-                        .values(), x -> new TextBuilder().stack(new ItemStack(x.getAllElements().get(0))).text(ItemTags.getCollection().getDirectIdFromTag(x).toString()).build()));
+                GuiComboBoxMapped<ITag<Item>> box = new GuiComboBoxMapped<>("tag", 0, 30, new TextMapBuilder<ITag<Item>>().addComponents(ItemTags.getAllTags().getAllTags()
+                        .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(ItemTags.getAllTags().getId(x).toString()).build()));
                 test.add(box);
                 test.add(new GuiTextfield("search", 0, 0, 10, 16));
                 gui.add(test);
@@ -239,8 +238,8 @@ public abstract class GuiCreativeIngredientHandler {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<ITag<Item>> box = (GuiComboBoxMapped<ITag<Item>>) gui.get("tag");
                     box.setLines(new TextMapBuilder<ITag<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
-                            .addComponents(ItemTags.getCollection().getIDTagMap().values(), x -> new TextBuilder().stack(new ItemStack(x.getAllElements().get(0)))
-                                    .text(ItemTags.getCollection().getDirectIdFromTag(x).toString()).build()));
+                            .addComponents(ItemTags.getAllTags().getAllTags()
+                                    .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(ItemTags.getAllTags().getId(x).toString()).build()));
                 }
             }
         });

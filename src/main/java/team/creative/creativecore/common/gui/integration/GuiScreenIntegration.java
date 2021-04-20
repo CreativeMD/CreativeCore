@@ -30,7 +30,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     protected void init() {
         if (listener == null)
             listener = new ScreenEventListener(this, this);
-        this.addListener(listener);
+        this.addWidget(listener);
     }
     
     @Override
@@ -56,7 +56,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     }
     
     @Override
-    public void onClose() {
+    public void removed() {
         for (GuiLayer layer : layers)
             layer.closed();
     }
@@ -102,7 +102,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     public void closeLayer(int layer) {
         layers.remove(layer);
         if (layers.isEmpty())
-            closeScreen();
+            onClose();
     }
     
     @Override

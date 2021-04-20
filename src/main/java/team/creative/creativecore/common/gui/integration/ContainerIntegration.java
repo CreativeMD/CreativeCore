@@ -29,8 +29,8 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     }
     
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
         tick();
     }
     
@@ -55,14 +55,14 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     }
     
     @Override
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
+    public void removed(PlayerEntity playerIn) {
+        super.removed(playerIn);
         for (GuiLayer layer : layers)
             layer.closed();
     }
     
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn) {
+    public boolean stillValid(PlayerEntity playerIn) {
         return true;
     }
     
@@ -73,7 +73,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     
     @Override
     public boolean isClient() {
-        return player.world.isRemote;
+        return player.level.isClientSide;
     }
     
     @Override
@@ -106,7 +106,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
         layers.remove(layer);
         if (layers.isEmpty())
             if (isClient())
-                Minecraft.getInstance().displayGuiScreen((Screen) null);
+                Minecraft.getInstance().setScreen((Screen) null);
             else
                 ((ServerPlayerEntity) player).closeContainer();
     }

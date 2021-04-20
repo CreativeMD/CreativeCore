@@ -9,7 +9,7 @@ public abstract class CreativePacket {
     }
     
     public void execute(PlayerEntity player) {
-        if (player.world.isRemote)
+        if (player.level.isClientSide)
             executeClient(player);
         else
             executeServer(player);

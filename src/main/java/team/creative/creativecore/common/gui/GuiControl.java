@@ -284,7 +284,7 @@ public abstract class GuiControl {
     
     @OnlyIn(value = Dist.CLIENT)
     public void render(MatrixStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.IS_RUNNING_ON_MAC);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
         if (!enabled)
@@ -310,10 +310,10 @@ public abstract class GuiControl {
     @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(MatrixStack matrix, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         controlRect.shrink(formatting.padding);
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
         renderContent(matrix, controlRect, controlRect.intersection(realRect), mouseX, mouseY);
-        matrix.pop();
+        matrix.popPose();
     }
     
     @OnlyIn(value = Dist.CLIENT)
@@ -330,8 +330,8 @@ public abstract class GuiControl {
         return parent.getPlayer();
     }
     
-    public boolean isRemote() {
-        return getPlayer().world.isRemote;
+    public boolean isClientSide() {
+        return getPlayer().level.isClientSide;
     }
     
     // MANAGEMENT
@@ -356,28 +356,28 @@ public abstract class GuiControl {
     
     @OnlyIn(value = Dist.CLIENT)
     public static String translate(String text, Object... parameters) {
-        return I18n.format(text, parameters);
+        return I18n.get(text, parameters);
     }
     
     @OnlyIn(value = Dist.CLIENT)
     public static String translateOrDefault(String text, String defaultText) {
-        if (I18n.hasKey(text))
+        if (I18n.exists(text))
             return translate(text);
         return defaultText;
     }
     
     @OnlyIn(value = Dist.CLIENT)
     public static void playSound(ISound sound) {
-        Minecraft.getInstance().getSoundHandler().play(sound);
+        Minecraft.getInstance().getSoundManager().play(sound);
     }
     
     @OnlyIn(value = Dist.CLIENT)
     public static void playSound(SoundEvent event) {
-        Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(event, 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(event, 1.0F));
     }
     
     @OnlyIn(value = Dist.CLIENT)
     public static void playSound(SoundEvent event, float volume, float pitch) {
-        Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(event, pitch, volume));
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(event, pitch, volume));
     }
 }

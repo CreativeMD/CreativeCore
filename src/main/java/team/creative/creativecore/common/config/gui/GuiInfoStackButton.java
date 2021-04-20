@@ -52,11 +52,11 @@ public class GuiInfoStackButton extends GuiButtonFixed {
             if (value instanceof CreativeIngredientBlock)
                 text.text("Block: " + TextFormatting.YELLOW + ((CreativeIngredientBlock) value).block.getRegistryName().toString());
             else if (value instanceof CreativeIngredientBlockTag)
-                text.text("Blocktag: " + TextFormatting.YELLOW + BlockTags.getCollection().getDirectIdFromTag(((CreativeIngredientBlockTag) value).tag).toString());
+                text.text("Blocktag: " + TextFormatting.YELLOW + BlockTags.getAllTags().getId(((CreativeIngredientBlockTag) value).tag).toString());
             else if (value instanceof CreativeIngredientItem)
                 text.text("Item: " + TextFormatting.YELLOW + ((CreativeIngredientItem) value).item.getRegistryName().toString());
             else if (value instanceof CreativeIngredientItemTag)
-                text.text("Itemtag: " + TextFormatting.YELLOW + ItemTags.getCollection().getDirectIdFromTag(((CreativeIngredientItemTag) value).tag).toString());
+                text.text("Itemtag: " + TextFormatting.YELLOW + ItemTags.getAllTags().getId(((CreativeIngredientItemTag) value).tag).toString());
             else if (value instanceof CreativeIngredientItemStack)
                 text.text("Stack: " + TextFormatting.YELLOW).add(((CreativeIngredientItemStack) value).stack.getDisplayName());
             else if (value instanceof CreativeIngredientMaterial)

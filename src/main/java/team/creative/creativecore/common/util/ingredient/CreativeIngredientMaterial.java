@@ -29,12 +29,12 @@ public class CreativeIngredientMaterial extends CreativeIngredient {
     protected void readExtra(CompoundNBT nbt) {
         Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("material")));
         if (block != null)
-            material = block.getDefaultState().getMaterial();
+            material = block.defaultBlockState().getMaterial();
     }
     
     public Block getBlock() {
         for (Block block : ForgeRegistries.BLOCKS)
-            if (block.getDefaultState().getMaterial() == material)
+            if (block.defaultBlockState().getMaterial() == material)
                 return block;
         return null;
     }
@@ -45,9 +45,9 @@ public class CreativeIngredientMaterial extends CreativeIngredient {
     }
     
     public static BlockState getState(ItemStack stack) {
-        Block block = Block.getBlockFromItem(stack.getItem());
+        Block block = Block.byItem(stack.getItem());
         if (block != null)
-            return block.getDefaultState();
+            return block.defaultBlockState();
         return null;
     }
     

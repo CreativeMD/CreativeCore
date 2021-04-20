@@ -14,23 +14,23 @@ public class ContainerScreenIntegration extends ContainerScreen<ContainerIntegra
     
     public ContainerScreenIntegration(ContainerIntegration screenContainer, PlayerInventory inv) {
         super(screenContainer, inv, new StringTextComponent("gui-api"));
-        listener = new ScreenEventListener(getContainer(), this);
+        listener = new ScreenEventListener(this.getMenu(), this);
     }
     
     @Override
     protected void init() {
-        this.addListener(listener);
+        this.addWidget(listener);
     }
     
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        getContainer().render(matrixStack, this, listener, mouseX, mouseY);
+        getMenu().render(matrixStack, this, listener, mouseX, mouseY);
     }
     
     @Override
     public int getWidth() {
         int width = 0;
-        for (GuiLayer layer : getContainer().getLayers())
+        for (GuiLayer layer : getMenu().getLayers())
             width = Math.max(width, layer.getWidth());
         return width;
     }
@@ -38,13 +38,13 @@ public class ContainerScreenIntegration extends ContainerScreen<ContainerIntegra
     @Override
     public int getHeight() {
         int height = 0;
-        for (GuiLayer layer : getContainer().getLayers())
+        for (GuiLayer layer : getMenu().getLayers())
             height = Math.max(height, layer.getHeight());
         return height;
     }
     
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {}
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {}
     
     @Override
     public void mouseMoved(double x, double y) {

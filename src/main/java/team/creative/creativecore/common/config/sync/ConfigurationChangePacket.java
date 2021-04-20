@@ -31,7 +31,7 @@ public class ConfigurationChangePacket extends CreativePacket {
     
     @Override
     public void executeServer(PlayerEntity player) {
-        if (player.hasPermissionLevel(2)) {
+        if (player.hasPermissions(2)) {
             CreativeConfigRegistry.ROOT.followPath(path).load(false, true, json, Dist.DEDICATED_SERVER);
             CreativeCore.CONFIG_HANDLER.save(Dist.DEDICATED_SERVER);
             CreativeCore.CONFIG_HANDLER.syncAll();

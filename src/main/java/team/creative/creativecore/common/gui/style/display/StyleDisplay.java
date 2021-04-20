@@ -44,9 +44,9 @@ public abstract class StyleDisplay {
     }
     
     public void render(MatrixStack matrix, double x, double y, double width, double height) {
-        matrix.push();
-        render(matrix.getLast().getMatrix(), x, y, width, height);
-        matrix.pop();
+        matrix.pushPose();
+        render(matrix.last().pose(), x, y, width, height);
+        matrix.popPose();
     }
     
     protected abstract void render(Matrix4f mat, double x, double y, double width, double height);

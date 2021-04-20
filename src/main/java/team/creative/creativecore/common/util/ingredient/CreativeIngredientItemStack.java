@@ -19,13 +19,13 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     protected void writeExtra(CompoundNBT nbt) {
-        stack.write(nbt);
+        stack.save(nbt);
         nbt.putBoolean("needNBT", needNBT);
     }
     
     @Override
     protected void readExtra(CompoundNBT nbt) {
-        stack = ItemStack.read(nbt);
+        stack = ItemStack.of(nbt);
         needNBT = nbt.getBoolean("needNBT");
     }
     
@@ -35,10 +35,10 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
             if (((CreativeIngredientItemStack) info).stack.getItem() != stack.getItem())
                 return false;
             
-            if (((CreativeIngredientItemStack) info).stack.getDamage() != stack.getDamage())
+            if (((CreativeIngredientItemStack) info).stack.getDamageValue() != stack.getDamageValue())
                 return false;
             
-            if (!ItemStack.areItemStackTagsEqual(((CreativeIngredientItemStack) info).stack, stack))
+            if (!ItemStack.isSame(((CreativeIngredientItemStack) info).stack, stack))
                 return false;
             
             return true;
@@ -51,10 +51,10 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
         if (stack.getItem() != this.stack.getItem())
             return false;
         
-        if (stack.getDamage() != this.stack.getDamage())
+        if (stack.getDamageValue() != this.stack.getDamageValue())
             return false;
         
-        if (!ItemStack.areItemStackTagsEqual(this.stack, stack))
+        if (!ItemStack.isSame(this.stack, stack))
             return false;
         
         return true;

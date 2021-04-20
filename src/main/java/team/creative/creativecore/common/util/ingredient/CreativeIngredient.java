@@ -101,14 +101,14 @@ public abstract class CreativeIngredient {
             if (x instanceof Block)
                 block = (Block) x;
             if (x instanceof BlockItem)
-                block = Block.getBlockFromItem((Item) x);
+                block = Block.byItem((Item) x);
             
             if (block != null && !(block instanceof AirBlock))
                 return new CreativeIngredientBlock(block);
             return null;
         });
         registerType("blocktag", CreativeIngredientBlockTag.class, (x) -> {
-            if (x instanceof Tag && !((Tag) x).getAllElements().isEmpty() && ((Tag) x).getAllElements().iterator().next() instanceof Block)
+            if (x instanceof Tag && !((Tag) x).getValues().isEmpty() && ((Tag) x).getValues().iterator().next() instanceof Block)
                 return new CreativeIngredientBlockTag((Tag<Block>) x);
             return null;
         });
@@ -119,7 +119,7 @@ public abstract class CreativeIngredient {
             return null;
         });
         registerType("itemtag", CreativeIngredientItemTag.class, (x) -> {
-            if (x instanceof Tag && !((Tag) x).getAllElements().isEmpty() && ((Tag) x).getAllElements().iterator().next() instanceof Item)
+            if (x instanceof Tag && !((Tag) x).getValues().isEmpty() && ((Tag) x).getValues().iterator().next() instanceof Item)
                 return new CreativeIngredientItemTag((Tag<Item>) x);
             return null;
         });
@@ -137,7 +137,7 @@ public abstract class CreativeIngredient {
             public CreativeIngredient readElement(CreativeIngredient defaultValue, boolean loadDefault, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
-                        return CreativeIngredient.read(JsonToNBT.getTagFromJson(element.getAsString()));
+                        return CreativeIngredient.read(JsonToNBT.parseTag(element.getAsString()));
                     } catch (CommandSyntaxException e) {
                         e.printStackTrace();
                     }

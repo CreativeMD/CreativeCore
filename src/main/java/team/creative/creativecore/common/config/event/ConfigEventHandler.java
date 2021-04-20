@@ -64,7 +64,7 @@ public class ConfigEventHandler {
     
     @SubscribeEvent
     public void playerLoggedIn(PlayerLoggedInEvent event) {
-        if (!event.getPlayer().getServer().isSinglePlayer() || !isOwner(event.getPlayer().getServer())) {
+        if (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer().getServer())) {
             CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (ServerPlayerEntity) event.getPlayer());
             CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (ServerPlayerEntity) event.getPlayer());
         }
@@ -72,12 +72,12 @@ public class ConfigEventHandler {
     
     @OnlyIn(value = Dist.CLIENT)
     public boolean isOwner(MinecraftServer server) {
-        return server.getServerOwner().equals(Minecraft.getInstance().getSession().getUsername());
+        return server.getSingleplayerName().equals(Minecraft.getInstance().getUser().getName());
     }
     
     @SubscribeEvent
     public void loadWorld(Load event) {
-        if (event.getWorld().isRemote())
+        if (event.getWorld().isClientSide())
             load(Dist.CLIENT);
     }
     

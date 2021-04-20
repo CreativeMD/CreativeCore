@@ -61,17 +61,17 @@ public class GuiContainerHandler {
     public static void openGui(PlayerEntity player, String name) {
         GuiContainerHandler handler = getHandler(name);
         if (handler != null) {
-            if (player.world.isRemote)
+            if (player.level.isClientSide)
                 CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name));
             else
-                player.openContainer(handler.provider);
+                player.openMenu(handler.provider);
         }
     }
     
     @OnlyIn(value = Dist.CLIENT)
     public static void initClient() {
         for (GuiContainerHandler handler : guihandlers.values())
-            ScreenManager.registerFactory(handler.type.get(), new IScreenFactory<ContainerIntegration, ContainerScreenIntegration>() {
+            ScreenManager.register(handler.type.get(), new IScreenFactory<ContainerIntegration, ContainerScreenIntegration>() {
                 
                 @Override
                 public ContainerScreenIntegration create(ContainerIntegration container, PlayerInventory inventory, ITextComponent p_create_3_) {

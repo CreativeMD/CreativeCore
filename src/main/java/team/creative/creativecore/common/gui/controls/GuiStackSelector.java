@@ -149,7 +149,7 @@ public class GuiStackSelector extends GuiButtonFixed {
             if (player != null) {
                 // Inventory
                 List<ItemStack> tempStacks = new ArrayList<>();
-                for (ItemStack stack : player.inventory.mainInventory)
+                for (ItemStack stack : player.inventory.items)
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
                     else {
@@ -194,7 +194,7 @@ public class GuiStackSelector extends GuiButtonFixed {
             
             for (Item item : ForgeRegistries.ITEMS)
                 if (!item.getCreativeTabs().isEmpty())
-                    item.fillItemGroup(ItemGroup.SEARCH, tempStacks);
+                    item.fillItemCategory(ItemGroup.TAB_SEARCH, tempStacks);
                 
             List<ItemStack> newStacks = new ArrayList<>();
             for (ItemStack stack : tempStacks) {
@@ -229,7 +229,7 @@ public class GuiStackSelector extends GuiButtonFixed {
         @Override
         public boolean allow(ItemStack stack) {
             if (super.allow(stack))
-                return Block.getBlockFromItem(stack.getItem()) != null && !(Block.getBlockFromItem(stack.getItem()) instanceof AirBlock);
+                return Block.byItem(stack.getItem()) != null && !(Block.byItem(stack.getItem()) instanceof AirBlock);
             return false;
         }
         
@@ -240,8 +240,8 @@ public class GuiStackSelector extends GuiButtonFixed {
             return true;
         if (getItemName(stack).toLowerCase().contains(search))
             return true;
-        for (ITextComponent line : stack.getTooltip(null, TooltipFlags.NORMAL))
-            if (line.getUnformattedComponentText().toLowerCase().contains(search))
+        for (ITextComponent line : stack.getTooltipLines(null, TooltipFlags.NORMAL))
+            if (line.getString().toLowerCase().contains(search))
                 return true;
             
         return false;
