@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 import com.creativemd.creativecore.client.mods.optifine.OptifineHelper;
@@ -454,6 +455,28 @@ public class RenderBox extends AlignedBox {
                     ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha);
             else if (renderQuads instanceof VectorFan)
                 ((VectorFan) renderQuads).renderLines(red, green, blue, alpha);
+        }
+        GlStateManager.popMatrix();
+    }
+    
+    public void renderLines(double x, double y, double z, int alpha, Vector3d center, double grow) {
+        int red = ColorUtils.getRed(color);
+        int green = ColorUtils.getGreen(color);
+        int blue = ColorUtils.getBlue(color);
+        
+        if (red == 1 && green == 1 && blue == 1)
+            red = green = blue = 0;
+        
+        GlStateManager.pushMatrix();
+        setupPreviewRendering(x, y, z);
+        
+        for (int i = 0; i < EnumFacing.VALUES.length; i++) {
+            Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+            if (renderQuads instanceof List)
+                for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                    ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha, center, grow);
+            else if (renderQuads instanceof VectorFan)
+                ((VectorFan) renderQuads).renderLines(red, green, blue, alpha, center, grow);
         }
         GlStateManager.popMatrix();
     }

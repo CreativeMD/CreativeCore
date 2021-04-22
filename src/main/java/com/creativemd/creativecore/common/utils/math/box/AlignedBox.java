@@ -89,6 +89,10 @@ public class AlignedBox {
         return new Vector3d(maxX - minX, maxY - minY, maxZ - minZ);
     }
     
+    public Vector3d getCenter() {
+        return new Vector3d((maxX + minX) * 0.5, (maxY + minY) * 0.5, (maxZ + minZ) * 0.5);
+    }
+    
     @Override
     public String toString() {
         return "cube[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
