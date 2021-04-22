@@ -42,28 +42,31 @@ public class CreativeCoreClient {
     }
     
     public static void init(FMLClientSetupEvent event) {
-        ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-client")).executes((x) -> {
-            mc.player.createCommandSourceStack().sendSuccess(new StringTextComponent("Successful!"), false);
-            return 1;
-        }));
-        
-        ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-gui")).executes((x) -> {
-            try {
-                GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return 1;
-        }));
-        
-        ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
-            try {
-                GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.CLIENT)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return 1;
-        }));
+        event.enqueueWork(() -> {
+            ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-client")).executes((x) -> {
+                mc.player.createCommandSourceStack().sendSuccess(new StringTextComponent("Successful!"), false);
+                return 1;
+            }));
+            
+            ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-gui")).executes((x) -> {
+                try {
+                    GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return 1;
+            }));
+            
+            ClientCommandRegistry
+                    .register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
+                        try {
+                            GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.CLIENT)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return 1;
+                    }));
+        });
         
         GuiStyle.reload();
         Minecraft minecraft = Minecraft.getInstance();
@@ -84,7 +87,7 @@ public class CreativeCoreClient {
         String message = event.getMessage();
         if (message.startsWith("/") && ClientCommandRegistry.handleCommand(mc.player.createCommandSourceStack(), message) != -1) {
             event.setCanceled(true);
-            mc.gui.getChat().enqueueMessage(new StringTextComponent(message));
+            mc.gui.getChat().addRecentChat(message);
         }
     }
 }

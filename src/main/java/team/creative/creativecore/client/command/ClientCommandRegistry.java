@@ -1,13 +1,22 @@
 package team.creative.creativecore.client.command;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
+import com.mojang.brigadier.AmbiguityConsumer;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.ResultConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.mojang.brigadier.tree.RootCommandNode;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandException;
@@ -21,6 +30,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import team.creative.creativecore.CreativeCore;
 
 public class ClientCommandRegistry {
@@ -31,8 +41,9 @@ public class ClientCommandRegistry {
     private static CombinedCommandDispatcher<ISuggestionProvider> combined = null;
     
     public static CommandDispatcher<ISuggestionProvider> getDispatcher(CommandDispatcher<ISuggestionProvider> vanillaDispatcher) {
-        if (combined == null || !combined.is(vanillaDispatcher, clientDispatcher))
+        if (combined == null)
             combined = new CombinedCommandDispatcher<>(vanillaDispatcher, clientDispatcher);
+        combined.set(vanillaDispatcher, clientDispatcher);
         return combined;
     }
     
@@ -42,9 +53,8 @@ public class ClientCommandRegistry {
     
     public static int handleCommand(CommandSource source, String command) {
         StringReader stringreader = new StringReader(command);
-        if (stringreader.canRead() && stringreader.peek() == '/') {
+        if (stringreader.canRead() && stringreader.peek() == '/')
             stringreader.skip();
-        }
         
         mc.getProfiler().push(command);
         
@@ -102,25 +112,125 @@ public class ClientCommandRegistry {
         }
     }
     
-    public static class CombinedCommandDispatcher<T> extends CommandDispatcher<T> {
+    private static final Field consumerField = ObfuscationReflectionHelper.findField(CommandDispatcher.class, "consumer");
+    
+    public static class CombinedCommandDispatcher<S> extends CommandDispatcher<S> {
         
-        public final CommandDispatcher<T> first;
-        public final CommandDispatcher<T> second;
+        public CommandDispatcher<S> vanilla;
+        public CommandDispatcher<S> extra;
         
-        public CombinedCommandDispatcher(CommandDispatcher<T> first, CommandDispatcher<T> second) {
+        public CombinedCommandDispatcher(CommandDispatcher<S> vanilla, CommandDispatcher<S> extra) {
             super();
-            this.first = first;
-            this.second = second;
-            RootCommandNode<T> root = getRoot();
-            for (CommandNode<T> node : first.getRoot().getChildren())
-                root.addChild(node);
-            for (CommandNode<T> node : second.getRoot().getChildren())
-                root.addChild(node);
-            
+            set(vanilla, extra);
         }
         
-        public boolean is(CommandDispatcher<T> first, CommandDispatcher<T> second) {
-            return this.first == first && this.second == second;
+        public void set(CommandDispatcher<S> vanilla, CommandDispatcher<S> extra) {
+            this.vanilla = vanilla;
+            this.extra = extra;
+        }
+        
+        public ResultConsumer<S> getConsumer() {
+            try {
+                return (ResultConsumer<S>) consumerField.get(vanilla);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        @Override
+        public int execute(ParseResults<S> parse) throws CommandSyntaxException {
+            if (parse instanceof ParseResultsCombined)
+                if (((ParseResultsCombined) parse).isPrimary())
+                    return vanilla.execute(parse);
+                else
+                    return extra.execute(((ParseResultsCombined) parse).secondary);
+            return vanilla.execute(parse);
+        }
+        
+        @Override
+        public ParseResults<S> parse(final StringReader command, final S source) {
+            int cursor = command.getCursor();
+            ParseResults<S> results = vanilla.parse(command, source);
+            command.setCursor(cursor);
+            ParseResults<S> otherResults = extra.parse(command, source);
+            return new ParseResultsCombined<>(results, otherResults);
+        }
+        
+        @Override
+        public String[] getAllUsage(final CommandNode<S> node, final S source, final boolean restricted) {
+            if (vanilla.getPath(node).isEmpty())
+                return extra.getAllUsage(node, source, restricted);
+            return vanilla.getAllUsage(node, source, restricted);
+        }
+        
+        @Override
+        public Map<CommandNode<S>, String> getSmartUsage(final CommandNode<S> node, final S source) {
+            if (vanilla.getPath(node).isEmpty())
+                return extra.getSmartUsage(node, source);
+            return vanilla.getSmartUsage(node, source);
+        }
+        
+        @Override
+        public CompletableFuture<Suggestions> getCompletionSuggestions(final ParseResults<S> parse, int cursor) {
+            if (parse instanceof ParseResultsCombined) {
+                CompletableFuture<Suggestions> resultVanilla = vanilla.getCompletionSuggestions(parse, cursor);
+                CompletableFuture<Suggestions> resultExtra = extra.getCompletionSuggestions(((ParseResultsCombined) parse).secondary, cursor);
+                
+                final CompletableFuture<Suggestions> result = new CompletableFuture<>();
+                final List<Suggestions> suggestions = new ArrayList<>();
+                suggestions.add(resultVanilla.join());
+                suggestions.add(resultExtra.join());
+                result.complete(Suggestions.merge(parse.getReader().getString(), suggestions));
+                return result;
+            } else
+                return vanilla.getCompletionSuggestions(parse, cursor);
+        }
+        
+        @Override
+        public Collection<String> getPath(final CommandNode<S> target) {
+            Collection<String> path = vanilla.getPath(target);
+            if (path.isEmpty())
+                return extra.getPath(target);
+            return path;
+        }
+        
+        @Override
+        public CommandNode<S> findNode(final Collection<String> path) {
+            CommandNode<S> node = vanilla.findNode(path);
+            if (node == null)
+                return extra.findNode(path);
+            return node;
+        }
+        
+        @Override
+        public void findAmbiguities(final AmbiguityConsumer<S> consumer) {
+            vanilla.findAmbiguities(consumer);
+            extra.findAmbiguities(consumer);
+        }
+        
+        public boolean is(CommandDispatcher<S> vanilla, CommandDispatcher<S> extra) {
+            return this.vanilla == vanilla && this.extra == extra;
+        }
+        
+    }
+    
+    public static class ParseResultsCombined<S> extends ParseResults<S> {
+        
+        public ParseResults<S> secondary;
+        
+        public ParseResultsCombined(ParseResults<S> primary, ParseResults<S> secondary) {
+            super(primary.getContext(), primary.getReader(), primary.getExceptions());
+            this.secondary = secondary;
+        }
+        
+        public boolean isPrimary() {
+            if (getContext().getCommand() != null)
+                return true;
+            else if (secondary.getContext().getCommand() != null)
+                return false;
+            if (getContext().getNodes().size() >= secondary.getContext().getNodes().size())
+                return true;
+            return false;
         }
         
     }
