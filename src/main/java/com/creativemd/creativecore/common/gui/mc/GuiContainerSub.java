@@ -269,7 +269,8 @@ public class GuiContainerSub extends GuiContainer implements IVanillaGUI {
         // if(button > 0)
         // onMouseMove(x, y, button);
         // else
-        onMouseReleased(x, y, button);
+        if (hasTopLayer())
+            onMouseReleased(x, y, button);
     }
     
     public void onMouseReleased(int x, int y, int button) {
