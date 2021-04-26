@@ -201,7 +201,7 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected String readContent(PacketBuffer buffer) {
-                return buffer.readUtf();
+                return buffer.readUtf(32767);
             }
         });
         
@@ -294,7 +294,7 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected UUID readContent(PacketBuffer buffer) {
-                return UUID.fromString(buffer.readUtf());
+                return UUID.fromString(buffer.readUtf(32767));
             }
         });
         
@@ -307,7 +307,7 @@ public class CreativeFieldParserEntry {
             
             @Override
             protected JsonObject readContent(PacketBuffer buffer) {
-                return GSON.fromJson(buffer.readUtf(), JsonObject.class);
+                return GSON.fromJson(buffer.readUtf(32767), JsonObject.class);
             }
             
         });
