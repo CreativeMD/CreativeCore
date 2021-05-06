@@ -400,7 +400,8 @@ public class VectorFan {
                     //Intersection
                     Vector3f intersection = plane.intersect(vec, beforeVec);
                     //left.add(intersection);
-                    right.add(intersection);
+                    if (intersection != null)
+                        right.add(intersection);
                 }
                 right.add(vec);
             } else if (BooleanUtils.isFalse(cutted[i])) {
@@ -408,7 +409,8 @@ public class VectorFan {
                     //Intersection
                     Vector3f intersection = plane.intersect(vec, beforeVec);
                     //left.add(intersection);
-                    right.add(intersection);
+                    if (intersection != null)
+                        right.add(intersection);
                 }
                 //left.add(vec);
             } else {
@@ -871,16 +873,20 @@ public class VectorFan {
                 if (BooleanUtils.isFalse(beforeCutted)) {
                     //Intersection
                     Vector3f intersection = ray.intersect(vec, beforeVec, thirdAxisValue);
-                    left.add(intersection);
-                    right.add(intersection);
+                    if (intersection != null) {
+                        left.add(intersection);
+                        right.add(intersection);
+                    }
                 }
                 right.add(vec);
             } else if (BooleanUtils.isFalse(cutted[i])) {
                 if (BooleanUtils.isTrue(beforeCutted)) {
                     //Intersection
                     Vector3f intersection = ray.intersect(vec, beforeVec, thirdAxisValue);
-                    left.add(intersection);
-                    right.add(intersection);
+                    if (intersection != null) {
+                        left.add(intersection);
+                        right.add(intersection);
+                    }
                 }
                 left.add(vec);
             } else {
