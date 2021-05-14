@@ -64,7 +64,7 @@ public enum BoxCorner {
         case Z:
             return z;
         }
-        return null;
+        throw new RuntimeException("null axis not permitted");
     }
     
     public BoxCorner flip(Axis axis) {
@@ -76,7 +76,7 @@ public enum BoxCorner {
         case Z:
             return getCorner(x, y, z.getOpposite());
         }
-        return null;
+        throw new RuntimeException("null axis not permitted");
     }
     
     public BoxCorner rotate(Rotation rotation) {
