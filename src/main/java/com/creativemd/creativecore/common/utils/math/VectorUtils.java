@@ -124,4 +124,12 @@ public class VectorUtils {
         return number > -VectorFan.EPSILON && number < VectorFan.EPSILON;
     }
     
+    public static boolean equals(double number, double number2) {
+        return number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON;
+    }
+    
+    public static boolean equals(float number, float number2) {
+        return number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON;
+    }
+    
 }

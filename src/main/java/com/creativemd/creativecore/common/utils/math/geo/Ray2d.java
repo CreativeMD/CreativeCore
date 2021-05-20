@@ -118,10 +118,10 @@ public class Ray2d {
     
     public boolean isCoordinateOnLine(double one, double two) {
         if (directionOne == 0)
-            return originOne == one;
+            return VectorUtils.equals(originOne, one);
         else if (directionTwo == 0)
-            return originTwo == two;
-        return get(this.one, one) == two;
+            return VectorUtils.equals(originTwo, two);
+        return VectorUtils.equals(get(this.one, one), two);
     }
     
     public boolean isCoordinateToTheRight(int one, int two) {
