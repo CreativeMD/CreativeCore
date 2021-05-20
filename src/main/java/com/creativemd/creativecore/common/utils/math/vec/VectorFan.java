@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class VectorFan {
     
-    public static final float EPSILON = 0.00001F;
+    public static final float EPSILON = 0.0001F;
     
     protected Vector3f[] coords;
     
