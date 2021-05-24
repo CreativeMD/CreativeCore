@@ -220,6 +220,17 @@ public class VectorFan {
         tessellator.draw();
     }
     
+    public void renderPreview(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
+        for (int i = 0; i < coords.length; i++) {
+            Vector3f vec = coords[i];
+            bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+        }
+        tessellator.draw();
+    }
+    
     public void renderLines(int red, int green, int blue, int alpha) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -245,7 +256,7 @@ public class VectorFan {
         
     }
     
-    public void renderLines(int red, int green, int blue, int alpha, Vector3d center, double grow) {
+    public void renderLines(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         int index = 0;
@@ -253,24 +264,7 @@ public class VectorFan {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vector3f vec = coords[i];
-                float x = vec.x;
-                if (vec.x > center.x)
-                    x += grow;
-                else
-                    x -= grow;
-                float y = vec.y;
-                
-                if (vec.y > center.y)
-                    y += grow;
-                else
-                    y -= grow;
-                
-                float z = vec.z;
-                if (vec.z > center.z)
-                    z += grow;
-                else
-                    z -= grow;
-                bufferbuilder.pos(x, y, z).color(red, green, blue, alpha).endVertex();
+                bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
             tessellator.draw();
             index += 2;
@@ -280,27 +274,93 @@ public class VectorFan {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vector3f vec = coords[i];
-                
-                float x = vec.x;
-                if (vec.x > center.x)
-                    x += grow;
-                else
-                    x -= grow;
-                float y = vec.y;
-                
-                if (vec.y > center.y)
-                    y += grow;
-                else
-                    y -= grow;
-                
-                float z = vec.z;
-                if (vec.z > center.z)
-                    z += grow;
-                else
-                    z -= grow;
-                
-                bufferbuilder.pos(x, y, z).color(red, green, blue, alpha).endVertex();
+                bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
+            tessellator.draw();
+        }
+    }
+    
+    public void renderLines(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        int index = 0;
+        while (index < coords.length - 3) {
+            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+            for (int i = index; i < index + 4; i++)
+                renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            tessellator.draw();
+            index += 2;
+        }
+        
+        if (index < coords.length - 2) {
+            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+            for (int i = index; i < index + 3; i++)
+                renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            tessellator.draw();
+        }
+        
+    }
+    
+    protected void renderLinePoint(BufferBuilder bufferbuilder, Vector3f vec, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+        float x = vec.x * scaleX + offX;
+        if (x > center.x)
+            x += grow;
+        else
+            x -= grow;
+        float y = vec.y * scaleY + offY;
+        
+        if (y > center.y)
+            y += grow;
+        else
+            y -= grow;
+        
+        float z = vec.z * scaleZ + offZ;
+        if (z > center.z)
+            z += grow;
+        else
+            z -= grow;
+        
+        bufferbuilder.pos(x, y, z).color(red, green, blue, alpha).endVertex();
+    }
+    
+    protected void renderLinePoint(BufferBuilder bufferbuilder, Vector3f vec, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+        float x = vec.x;
+        if (x > center.x)
+            x += grow;
+        else
+            x -= grow;
+        float y = vec.y;
+        
+        if (y > center.y)
+            y += grow;
+        else
+            y -= grow;
+        
+        float z = vec.z;
+        if (z > center.z)
+            z += grow;
+        else
+            z -= grow;
+        
+        bufferbuilder.pos(x, y, z).color(red, green, blue, alpha).endVertex();
+    }
+    
+    public void renderLines(int red, int green, int blue, int alpha, Vector3d center, double grow) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        int index = 0;
+        while (index < coords.length - 3) {
+            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+            for (int i = index; i < index + 4; i++)
+                renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
+            tessellator.draw();
+            index += 2;
+        }
+        
+        if (index < coords.length - 2) {
+            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+            for (int i = index; i < index + 3; i++)
+                renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
             tessellator.draw();
         }
         

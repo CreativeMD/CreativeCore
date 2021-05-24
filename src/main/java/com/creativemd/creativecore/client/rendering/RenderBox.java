@@ -413,9 +413,32 @@ public class RenderBox extends AlignedBox {
         quadNorth = null;
     }
     
-    protected void setupPreviewRendering(double x, double y, double z) {
-        GlStateManager.translate(x + minX, y + minY, z + minZ);
-        GlStateManager.scale(maxX - minX, maxY - minY, maxZ - minZ);
+    protected boolean previewScalingAndOffset() {
+        return true;
+    }
+    
+    public float getPreviewOffX() {
+        return minX;
+    }
+    
+    public float getPreviewOffY() {
+        return minY;
+    }
+    
+    public float getPreviewOffZ() {
+        return minZ;
+    }
+    
+    public float getPreviewScaleX() {
+        return maxX - minX;
+    }
+    
+    public float getPreviewScaleY() {
+        return maxY - minY;
+    }
+    
+    public float getPreviewScaleZ() {
+        return maxZ - minZ;
     }
     
     public void renderPreview(double x, double y, double z, int alpha) {
@@ -424,16 +447,30 @@ public class RenderBox extends AlignedBox {
         int blue = ColorUtils.getBlue(color);
         
         GlStateManager.pushMatrix();
-        setupPreviewRendering(x, y, z);
+        GlStateManager.translate(x, y, z);
         
-        for (int i = 0; i < EnumFacing.VALUES.length; i++) {
-            Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
-            if (renderQuads instanceof List)
-                for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                    ((List<VectorFan>) renderQuads).get(j).renderPreview(red, green, blue, alpha);
-            else if (renderQuads instanceof VectorFan)
-                ((VectorFan) renderQuads).renderPreview(red, green, blue, alpha);
+        if (previewScalingAndOffset()) {
+            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+                if (renderQuads instanceof List)
+                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                        ((List<VectorFan>) renderQuads).get(j)
+                            .renderPreview(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan)
+                    ((VectorFan) renderQuads)
+                        .renderPreview(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+            }
+        } else {
+            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+                if (renderQuads instanceof List)
+                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                        ((List<VectorFan>) renderQuads).get(j).renderPreview(red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan)
+                    ((VectorFan) renderQuads).renderPreview(red, green, blue, alpha);
+            }
         }
+        
         GlStateManager.popMatrix();
     }
     
@@ -446,15 +483,28 @@ public class RenderBox extends AlignedBox {
             red = green = blue = 0;
         
         GlStateManager.pushMatrix();
-        setupPreviewRendering(x, y, z);
+        GlStateManager.translate(x, y, z);
         
-        for (int i = 0; i < EnumFacing.VALUES.length; i++) {
-            Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
-            if (renderQuads instanceof List)
-                for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                    ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha);
-            else if (renderQuads instanceof VectorFan)
-                ((VectorFan) renderQuads).renderLines(red, green, blue, alpha);
+        if (previewScalingAndOffset()) {
+            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+                if (renderQuads instanceof List)
+                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                        ((List<VectorFan>) renderQuads).get(j)
+                            .renderLines(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan)
+                    ((VectorFan) renderQuads)
+                        .renderLines(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+            }
+        } else {
+            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+                if (renderQuads instanceof List)
+                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                        ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan)
+                    ((VectorFan) renderQuads).renderLines(red, green, blue, alpha);
+            }
         }
         GlStateManager.popMatrix();
     }
@@ -468,15 +518,28 @@ public class RenderBox extends AlignedBox {
             red = green = blue = 0;
         
         GlStateManager.pushMatrix();
-        setupPreviewRendering(x, y, z);
+        GlStateManager.translate(x, y, z);
         
-        for (int i = 0; i < EnumFacing.VALUES.length; i++) {
-            Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
-            if (renderQuads instanceof List)
-                for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                    ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha, center, grow);
-            else if (renderQuads instanceof VectorFan)
-                ((VectorFan) renderQuads).renderLines(red, green, blue, alpha, center, grow);
+        if (previewScalingAndOffset()) {
+            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+                if (renderQuads instanceof List)
+                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                        ((List<VectorFan>) renderQuads).get(j)
+                            .renderLines(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
+                else if (renderQuads instanceof VectorFan)
+                    ((VectorFan) renderQuads)
+                        .renderLines(getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
+            }
+        } else {
+            for (int i = 0; i < EnumFacing.VALUES.length; i++) {
+                Object renderQuads = getRenderQuads(EnumFacing.VALUES[i]);
+                if (renderQuads instanceof List)
+                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                        ((List<VectorFan>) renderQuads).get(j).renderLines(red, green, blue, alpha, center, grow);
+                else if (renderQuads instanceof VectorFan)
+                    ((VectorFan) renderQuads).renderLines(red, green, blue, alpha, center, grow);
+            }
         }
         GlStateManager.popMatrix();
     }
