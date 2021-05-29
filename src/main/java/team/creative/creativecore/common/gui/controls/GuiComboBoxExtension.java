@@ -7,7 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.CompiledText;
+import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.controls.GuiComboBoxExtension.GuiComboBoxEntry;
 import team.creative.creativecore.common.util.math.geo.Rect;

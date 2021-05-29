@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import net.minecraft.util.text.ITextComponent;
-import team.creative.creativecore.client.render.CompiledText;
+import team.creative.creativecore.client.render.text.CompiledText;
 
 public class TextMapBuilder<K> implements ITextCollection {
     

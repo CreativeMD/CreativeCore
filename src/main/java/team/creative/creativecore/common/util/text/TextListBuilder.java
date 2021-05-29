@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import team.creative.creativecore.client.render.CompiledText;
+import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.GuiControl;
 
 public class TextListBuilder implements ITextCollection {

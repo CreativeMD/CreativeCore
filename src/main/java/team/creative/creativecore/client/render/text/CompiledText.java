@@ -1,4 +1,4 @@
-package team.creative.creativecore.client.render;
+package team.creative.creativecore.client.render.text;
 
 import java.util.ArrayList;
 import java.util.Collections;
