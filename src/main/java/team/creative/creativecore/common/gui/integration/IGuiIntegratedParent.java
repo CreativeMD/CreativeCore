@@ -16,7 +16,7 @@ import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
-import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.math.geo.Rect;
 
 public interface IGuiIntegratedParent extends IGuiParent {
     

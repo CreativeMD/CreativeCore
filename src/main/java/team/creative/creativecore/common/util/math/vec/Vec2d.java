@@ -1,26 +1,26 @@
 package team.creative.creativecore.common.util.math.vec;
 
-public class Vector2 extends Vector<Vector2> {
+public class Vec2d extends VecNd<Vec2d> {
     
     public double x;
     public double y;
     
-    public Vector2() {
+    public Vec2d() {
         super();
     }
     
-    public Vector2(double x, double y) {
+    public Vec2d(double x, double y) {
         super();
         this.x = x;
         this.y = y;
     }
     
-    public Vector2(Vector2 vec) {
+    public Vec2d(Vec2d vec) {
         super(vec);
     }
     
     @Override
-    public void set(Vector2 vec) {
+    public void set(Vec2d vec) {
         this.x = vec.x;
         this.y = vec.y;
     }
@@ -48,8 +48,8 @@ public class Vector2 extends Vector<Vector2> {
     }
     
     @Override
-    public Vector2 copy() {
-        return new Vector2(x, y);
+    public Vec2d copy() {
+        return new Vec2d(x, y);
     }
     
     public void add(double x, double y) {
@@ -58,19 +58,19 @@ public class Vector2 extends Vector<Vector2> {
     }
     
     @Override
-    public void add(Vector2 vec) {
+    public void add(Vec2d vec) {
         this.x += x;
         this.y += y;
     }
     
     public void sub(double x, double y) {
-        this.x = x;
+        this.x -= x;
         this.y -= y;
     }
     
     @Override
-    public void sub(Vector2 vec) {
-        this.x = vec.x;
+    public void sub(Vec2d vec) {
+        this.x -= vec.x;
         this.y -= vec.y;
     }
     
@@ -82,9 +82,22 @@ public class Vector2 extends Vector<Vector2> {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Vector2)
-            return ((Vector2) obj).x == x && ((Vector2) obj).y == y;
+        if (obj instanceof Vec2d)
+            return ((Vec2d) obj).x == x && ((Vec2d) obj).y == y;
         return false;
+    }
+    
+    @Override
+    public boolean epsilonEquals(Vec2d var1, double var2) {
+        double var3 = this.x - var1.x;
+        if (Double.isNaN(var3))
+            return false;
+        else if ((var3 < 0.0F ? -var3 : var3) > var2)
+            return false;
+        var3 = this.y - var1.y;
+        if (Double.isNaN(var3))
+            return false;
+        return (var3 < 0.0F ? -var3 : var3) <= var2;
     }
     
     @Override
@@ -98,7 +111,7 @@ public class Vector2 extends Vector<Vector2> {
     }
     
     @Override
-    public double angle(Vector2 vec) {
+    public double angle(Vec2d vec) {
         double vDot = this.dot(vec) / (this.length() * vec.length());
         if (vDot < -1.0)
             vDot = -1.0;
@@ -108,12 +121,7 @@ public class Vector2 extends Vector<Vector2> {
     }
     
     @Override
-    public void cross(Vector2 vec1, Vector2 vec2) {
-        
-    }
-    
-    @Override
-    public double dot(Vector2 vec) {
+    public double dot(Vec2d vec) {
         return x * vec.x + y * vec.y;
     }
     

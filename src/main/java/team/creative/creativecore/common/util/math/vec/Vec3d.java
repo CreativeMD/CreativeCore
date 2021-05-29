@@ -1,29 +1,30 @@
 package team.creative.creativecore.common.util.math.vec;
 
 import net.minecraft.util.math.vector.Vector3d;
+import team.creative.creativecore.common.util.math.base.Axis;
 
-public class Vector3 extends Vector<Vector3> {
+public class Vec3d extends VecNd<Vec3d> {
     
     public double x;
     public double y;
     public double z;
     
-    public Vector3() {
+    public Vec3d() {
         super();
     }
     
-    public Vector3(double x, double y, double z) {
+    public Vec3d(double x, double y, double z) {
         super();
         this.x = x;
         this.y = y;
         this.z = z;
     }
     
-    public Vector3(Vector3 vec) {
+    public Vec3d(Vec3d vec) {
         super(vec);
     }
     
-    public Vector3(Vector3d vec) {
+    public Vec3d(Vector3d vec) {
         this(vec.x, vec.y, vec.z);
     }
     
@@ -32,7 +33,7 @@ public class Vector3 extends Vector<Vector3> {
     }
     
     @Override
-    public void set(Vector3 vec) {
+    public void set(Vec3d vec) {
         this.x = vec.x;
         this.y = vec.y;
         this.z = vec.z;
@@ -52,10 +53,39 @@ public class Vector3 extends Vector<Vector3> {
         }
     }
     
+    @Override
+    public double get(Axis axis) {
+        switch (axis) {
+        case X:
+            return x;
+        case Y:
+            return y;
+        case Z:
+            return z;
+        default:
+            return 0;
+        }
+    }
+    
     public void set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    
+    @Override
+    public void set(Axis axis, double value) {
+        switch (axis) {
+        case X:
+            this.x = value;
+            break;
+        case Y:
+            this.y = value;
+            break;
+        case Z:
+            this.z = value;
+            break;
+        }
     }
     
     @Override
@@ -79,19 +109,19 @@ public class Vector3 extends Vector<Vector3> {
     }
     
     @Override
-    public Vector3 copy() {
-        return new Vector3(x, y, z);
+    public Vec3d copy() {
+        return new Vec3d(x, y, z);
     }
     
     @Override
-    public void add(Vector3 vec) {
+    public void add(Vec3d vec) {
         this.x += vec.x;
         this.y += vec.y;
         this.z += vec.z;
     }
     
     @Override
-    public void sub(Vector3 vec) {
+    public void sub(Vec3d vec) {
         this.x -= vec.x;
         this.y -= vec.y;
         this.z -= vec.z;
@@ -106,9 +136,28 @@ public class Vector3 extends Vector<Vector3> {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Vector3)
-            return ((Vector3) obj).x == x && ((Vector3) obj).y == y && ((Vector3) obj).z == z;
+        if (obj instanceof Vec3d)
+            return ((Vec3d) obj).x == x && ((Vec3d) obj).y == y && ((Vec3d) obj).z == z;
         return false;
+    }
+    
+    @Override
+    public boolean epsilonEquals(Vec3d var1, double var2) {
+        double var3 = this.x - var1.x;
+        if (Double.isNaN(var3))
+            return false;
+        else if ((var3 < 0.0F ? -var3 : var3) > var2)
+            return false;
+        var3 = this.y - var1.y;
+        if (Double.isNaN(var3))
+            return false;
+        else if ((var3 < 0.0F ? -var3 : var3) > var2)
+            return false;
+        var3 = this.z - var1.z;
+        if (Double.isNaN(var3))
+            return false;
+        else
+            return (var3 < 0.0F ? -var3 : var3) <= var2;
     }
     
     @Override
@@ -122,7 +171,7 @@ public class Vector3 extends Vector<Vector3> {
     }
     
     @Override
-    public double angle(Vector3 vec) {
+    public double angle(Vec3d vec) {
         double vDot = this.dot(vec) / (this.length() * vec.length());
         if (vDot < -1.0)
             vDot = -1.0;
@@ -131,15 +180,14 @@ public class Vector3 extends Vector<Vector3> {
         return ((Math.acos(vDot)));
     }
     
-    @Override
-    public void cross(Vector3 vec1, Vector3 vec2) {
+    public void cross(Vec3d vec1, Vec3d vec2) {
         this.x = vec1.y * vec2.z - vec1.z * vec2.y;
         this.y = vec2.x * vec1.z - vec2.z * vec1.x;
         this.z = vec1.x * vec2.y - vec1.y * vec2.x;
     }
     
     @Override
-    public double dot(Vector3 vec) {
+    public double dot(Vec3d vec) {
         return x * vec.x + y * vec.y + z * vec.z;
     }
     

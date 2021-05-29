@@ -6,7 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiButtonFixed extends GuiButton {
     

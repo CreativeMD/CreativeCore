@@ -9,7 +9,7 @@ import team.creative.creativecore.client.render.CompiledText;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.ITextCollection;
 

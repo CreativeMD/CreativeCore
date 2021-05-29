@@ -7,7 +7,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.CompiledText;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 
 public class GuiStateButton extends GuiButton {

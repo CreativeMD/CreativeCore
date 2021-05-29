@@ -1,36 +1,36 @@
 package team.creative.creativecore.common.util.math.vec;
 
-public class Vector1 extends Vector<Vector1> {
+public class Vec1f extends VecNf<Vec1f> {
     
-    public double x;
+    public float x;
     
-    public Vector1() {
+    public Vec1f() {
         super();
     }
     
-    public Vector1(double x) {
+    public Vec1f(float x) {
         super();
         this.x = x;
     }
     
-    public Vector1(Vector1 vec) {
+    public Vec1f(Vec1f vec) {
         super(vec);
     }
     
     @Override
-    public void set(Vector1 vec) {
+    public void set(Vec1f vec) {
         this.x = vec.x;
     }
     
     @Override
-    public double get(int dim) {
+    public float get(int dim) {
         if (dim == 0)
             return this.x;
         return 0;
     }
     
     @Override
-    public void set(int dim, double value) {
+    public void set(int dim, float value) {
         if (dim == 0)
             this.x = value;
     }
@@ -41,17 +41,17 @@ public class Vector1 extends Vector<Vector1> {
     }
     
     @Override
-    public Vector1 copy() {
-        return new Vector1(x);
+    public Vec1f copy() {
+        return new Vec1f(x);
     }
     
     @Override
-    public void add(Vector1 vec) {
+    public void add(Vec1f vec) {
         this.x += vec.x;
     }
     
     @Override
-    public void sub(Vector1 vec) {
+    public void sub(Vec1f vec) {
         this.x -= vec.x;
     }
     
@@ -62,9 +62,17 @@ public class Vector1 extends Vector<Vector1> {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Vector1)
-            return ((Vector1) obj).x == x;
+        if (obj instanceof Vec1f)
+            return ((Vec1f) obj).x == x;
         return false;
+    }
+    
+    @Override
+    public boolean epsilonEquals(Vec1f var1, float var2) {
+        float var3 = this.x - var1.x;
+        if (Float.isNaN(var3))
+            return false;
+        return (var3 < 0.0F ? -var3 : var3) <= var2;
     }
     
     @Override
@@ -78,18 +86,13 @@ public class Vector1 extends Vector<Vector1> {
     }
     
     @Override
-    public double angle(Vector1 vec) {
+    public double angle(Vec1f vec) {
         return 0;
     }
     
     @Override
-    public void cross(Vector1 vec1, Vector1 vec2) {
-        
-    }
-    
-    @Override
-    public double dot(Vector1 vec) {
-        return 0;
+    public float dot(Vec1f vec) {
+        return x * vec.x;
     }
     
 }

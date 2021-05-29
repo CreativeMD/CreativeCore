@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.math;
+package team.creative.creativecore.common.util.math.vec;
 
 public class SmoothValue {
     

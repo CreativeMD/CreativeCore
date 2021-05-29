@@ -19,7 +19,7 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiEventManager;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
-import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
     

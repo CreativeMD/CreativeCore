@@ -202,13 +202,11 @@ public class ColorUtils {
     }
     
     public static boolean isTransparent(int color) {
-        int a = color >> 24 & 255;
-        return a < 255;
+        return (color >> 24 & 255) < 255;
     }
     
     public static boolean isInvisible(int color) {
-        int a = color >> 24 & 255;
-        return a == 0;
+        return (color >> 24 & 255) == 0;
     }
     
     public static int blend(int i1, int i2) {

@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.math.matrix;
 
-import team.creative.creativecore.common.util.math.vec.Vector3;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
+import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public class Matrix3 {
     
@@ -314,6 +315,56 @@ public class Matrix3 {
         tmp[6] = m20;
         tmp[7] = m21;
         tmp[8] = m22;
+        
+        // Calculate LU decomposition: Is the matrix singular?
+        if (!luDecomposition(tmp, row_perm)) {
+            // Matrix has no inverse
+            throw new RuntimeException("Cannot be reverted");
+        }
+        
+        // Perform back substitution on the identity matrix
+        for (i = 0; i < 9; i++)
+            result[i] = 0.0;
+        result[0] = 1.0;
+        result[4] = 1.0;
+        result[8] = 1.0;
+        luBacksubstitution(tmp, row_perm, result);
+        
+        this.m00 = result[0];
+        this.m01 = result[1];
+        this.m02 = result[2];
+        
+        this.m10 = result[3];
+        this.m11 = result[4];
+        this.m12 = result[5];
+        
+        this.m20 = result[6];
+        this.m21 = result[7];
+        this.m22 = result[8];
+        
+    }
+    
+    public final void invert(Matrix3 m) {
+        double result[] = new double[9];
+        int row_perm[] = new int[3];
+        int i;
+        double[] tmp = new double[9]; // scratch matrix
+        
+        // Use LU decomposition and backsubstitution code specifically
+        // for floating-point 3x3 matrices.
+        
+        // Copy source matrix to t1tmp
+        tmp[0] = m.m00;
+        tmp[1] = m.m01;
+        tmp[2] = m.m02;
+        
+        tmp[3] = m.m10;
+        tmp[4] = m.m11;
+        tmp[5] = m.m12;
+        
+        tmp[6] = m.m20;
+        tmp[7] = m.m21;
+        tmp[8] = m.m22;
         
         // Calculate LU decomposition: Is the matrix singular?
         if (!luDecomposition(tmp, row_perm)) {
@@ -783,10 +834,22 @@ public class Matrix3 {
      * 
      * @param t
      *            the tuple to be multiplied by this matrix and then replaced */
-    public final void transform(Vector3 t) {
+    public final void transform(Vec3d t) {
         double x = m00 * t.x + m01 * t.y + m02 * t.z;
         double y = m10 * t.x + m11 * t.y + m12 * t.z;
         double z = m20 * t.x + m21 * t.y + m22 * t.z;
+        t.set(x, y, z);
+    }
+    
+    /** Multiply this matrix by the tuple t and place the result
+     * back into the tuple (t = this*t).
+     * 
+     * @param t
+     *            the tuple to be multiplied by this matrix and then replaced */
+    public final void transform(Vec3f t) {
+        float x = (float) (m00 * t.x + m01 * t.y + m02 * t.z);
+        float y = (float) (m10 * t.x + m11 * t.y + m12 * t.z);
+        float z = (float) (m20 * t.x + m21 * t.y + m22 * t.z);
         t.set(x, y, z);
     }
     

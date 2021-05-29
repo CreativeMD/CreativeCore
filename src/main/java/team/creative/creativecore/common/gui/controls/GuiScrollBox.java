@@ -7,8 +7,8 @@ import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.util.math.Rect;
-import team.creative.creativecore.common.util.math.SmoothValue;
+import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.util.math.vec.SmoothValue;
 
 public class GuiScrollBox extends GuiParent {
     

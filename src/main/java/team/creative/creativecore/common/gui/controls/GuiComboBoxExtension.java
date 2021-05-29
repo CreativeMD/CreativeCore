@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.controls.GuiComboBoxExtension.GuiComboBoxEntry;
-import team.creative.creativecore.common.util.math.Rect;
+import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {

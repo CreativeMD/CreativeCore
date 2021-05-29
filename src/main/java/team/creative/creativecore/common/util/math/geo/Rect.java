@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.math;
+package team.creative.creativecore.common.util.math.geo;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
