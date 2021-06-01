@@ -6,6 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -77,6 +78,18 @@ public interface IVecOrigin {
     
     public default void onlyRotateWithoutCenter(Vec3d vec) {
         rotation().transform(vec);
+    }
+    
+    public default BlockPos transformPointToWorld(BlockPos pos) {
+        Vec3d vec = new Vec3d(pos);
+        transformPointToWorld(vec);
+        return vec.toBlockPos();
+    }
+    
+    public default BlockPos transformPointToFakeWorld(BlockPos pos) {
+        Vec3d vec = new Vec3d(pos);
+        transformPointToFakeWorld(vec);
+        return vec.toBlockPos();
     }
     
     public default void transformPointToWorld(Vec3d vec) {

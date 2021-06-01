@@ -128,6 +128,14 @@ public enum Facing {
     
     public abstract Direction toVanilla();
     
+    public Axis one() {
+        return axis.one();
+    }
+    
+    public Axis two() {
+        return axis.two();
+    }
+    
     public Axis getUAxisFromFacing() {
         switch (axis) {
         case X:

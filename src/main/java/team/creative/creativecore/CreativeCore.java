@@ -6,10 +6,15 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.command.Commands;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.world.ForgeWorldType;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -36,6 +41,8 @@ import team.creative.creativecore.common.gui.sync.LayerClosePacket;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 import team.creative.creativecore.common.gui.sync.OpenGuiPacket;
 import team.creative.creativecore.common.network.CreativeNetwork;
+import team.creative.creativecore.common.world.EmptyFakeDimension;
+import team.creative.creativecore.common.world.EmptyFakeForgeWorld;
 
 @Mod(value = CreativeCore.MODID)
 public class CreativeCore {
@@ -46,9 +53,15 @@ public class CreativeCore {
     public static final CreativeNetwork NETWORK = new CreativeNetwork("1.0", LOGGER, new ResourceLocation(CreativeCore.MODID, "main"));
     public static ConfigEventHandler CONFIG_HANDLER;
     
+    public static final ResourceLocation FAKE_WORLD_LOCATION = new ResourceLocation(MODID, "fake");
+    public static EmptyFakeForgeWorld FAKE_FORGE_WORLD;
+    public static EmptyFakeDimension FAKE_DIMENSION;
+    public static RegistryKey<World> FAKE_DIMENSION_NAME = RegistryKey.create(Registry.DIMENSION_REGISTRY, FAKE_WORLD_LOCATION);
+    
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         MinecraftForge.EVENT_BUS.addListener(this::server);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerDimensions);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
         GuiContainerHandler.CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
@@ -91,7 +104,12 @@ public class CreativeCore {
         NETWORK.registerType(OpenGuiPacket.class);
         CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
         MinecraftForge.EVENT_BUS.register(GuiEventHandler.class);
+        FAKE_DIMENSION = new EmptyFakeDimension();
         
+    }
+    
+    public void registerDimensions(RegistryEvent.Register<ForgeWorldType> event) {
+        event.getRegistry().register((FAKE_FORGE_WORLD = new EmptyFakeForgeWorld()).setRegistryName(FAKE_WORLD_LOCATION));
     }
     
 }

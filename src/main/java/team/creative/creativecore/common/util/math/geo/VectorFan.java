@@ -6,10 +6,6 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.creativemd.creativecore.client.rendering.RenderBox;
-import com.creativemd.creativecore.client.rendering.RenderBox.RenderInformationHolder;
-import com.creativemd.creativecore.client.rendering.model.CreativeBakedQuad;
-
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
@@ -18,9 +14,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.client.render.box.RenderBox;
+import team.creative.creativecore.client.render.box.RenderBox.RenderInformationHolder;
+import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
-import team.creative.creativecore.common.util.math.transformation.RotationUtils;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
 import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -91,8 +89,8 @@ public class VectorFan {
         holder.normal = null;
         Vec3f[] coords = this.coords;
         if (!holder.getBox().allowOverlap && holder.hasBounds()) {
-            Axis one = RotationUtils.getOne(holder.facing.getAxis());
-            Axis two = RotationUtils.getTwo(holder.facing.getAxis());
+            Axis one = holder.facing.one();
+            Axis two = holder.facing.two();
             
             float scaleOne;
             float scaleTwo;
@@ -115,7 +113,7 @@ public class VectorFan {
             float maxOne = VectorUtils.get(one, holder.maxX, holder.maxY, holder.maxZ) * scaleOne - offsetOne;
             float maxTwo = VectorUtils.get(two, holder.maxX, holder.maxY, holder.maxZ) * scaleTwo - offsetTwo;
             
-            coords = cutMinMax(one, two, holder.facing.getAxis(), minOne, minTwo, maxOne, maxTwo);
+            coords = cutMinMax(one, two, holder.facing.axis, minOne, minTwo, maxOne, maxTwo);
         }
         if (coords == null)
             return;
@@ -130,7 +128,7 @@ public class VectorFan {
     
     @OnlyIn(value = Dist.CLIENT)
     protected void generate(RenderInformationHolder holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
-        BakedQuad quad = new CreativeBakedQuad(holder.quad, holder.getBox(), holder.color, holder.shouldOverrideColor, holder.facing);
+        BakedQuad quad = new CreativeBakedQuad(holder.quad, holder.getBox(), holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
         RenderBox box = holder.getBox();
         
         for (int k = 0; k < 4; k++) {
@@ -144,7 +142,7 @@ public class VectorFan {
             else
                 vec = vec4;
             
-            int index = k * quad.getFormat().getIntegerSize();
+            int index = k * holder.format.getIntegerSize();
             
             float x;
             float y;
@@ -161,42 +159,42 @@ public class VectorFan {
             }
             
             if (doMinMaxLate() && !box.allowOverlap) {
-                if (holder.facing.getAxis() != Axis.X)
+                if (holder.facing.axis != Axis.X)
                     x = MathHelper.clamp(x, holder.minX, holder.maxX);
-                if (holder.facing.getAxis() != Axis.Y)
+                if (holder.facing.axis != Axis.Y)
                     y = MathHelper.clamp(y, holder.minY, holder.maxY);
-                if (holder.facing.getAxis() != Axis.Z)
+                if (holder.facing.axis != Axis.Z)
                     z = MathHelper.clamp(z, holder.minZ, holder.maxZ);
             }
             
-            float oldX = Float.intBitsToFloat(quad.getVertexData()[index]);
-            float oldY = Float.intBitsToFloat(quad.getVertexData()[index + 1]);
-            float oldZ = Float.intBitsToFloat(quad.getVertexData()[index + 2]);
+            float oldX = Float.intBitsToFloat(quad.getVertices()[index]);
+            float oldY = Float.intBitsToFloat(quad.getVertices()[index + 1]);
+            float oldZ = Float.intBitsToFloat(quad.getVertices()[index + 2]);
             
-            quad.getVertexData()[index] = Float.floatToIntBits(x + holder.offset.getX());
-            quad.getVertexData()[index + 1] = Float.floatToIntBits(y + holder.offset.getY());
-            quad.getVertexData()[index + 2] = Float.floatToIntBits(z + holder.offset.getZ());
+            quad.getVertices()[index] = Float.floatToIntBits(x + holder.offset.getX());
+            quad.getVertices()[index + 1] = Float.floatToIntBits(y + holder.offset.getY());
+            quad.getVertices()[index + 2] = Float.floatToIntBits(z + holder.offset.getZ());
             
             if (box.keepVU)
                 continue;
             
-            int uvIndex = index + quad.getFormat().getUvOffsetById(0) / 4;
+            int uvIndex = index + holder.uvOffset / 4;
             
             float uOffset;
             float vOffset;
             if (holder.uvInverted) {
-                uOffset = ((RotationUtils.getVFromFacing(holder.facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(holder.facing, x, y, z)) / RotationUtils
-                        .getVFromFacing(holder.facing, holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
-                vOffset = ((RotationUtils.getUFromFacing(holder.facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(holder.facing, x, y, z)) / RotationUtils
-                        .getUFromFacing(holder.facing, holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
+                uOffset = ((holder.facing.getVFromFacing(oldX, oldY, oldZ) - holder.facing.getVFromFacing(x, y, z)) / holder.facing
+                        .getVFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
+                vOffset = ((holder.facing.getUFromFacing(oldX, oldY, oldZ) - holder.facing.getUFromFacing(x, y, z)) / holder.facing
+                        .getUFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
             } else {
-                uOffset = ((RotationUtils.getUFromFacing(holder.facing, oldX, oldY, oldZ) - RotationUtils.getUFromFacing(holder.facing, x, y, z)) / RotationUtils
-                        .getUFromFacing(holder.facing, holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
-                vOffset = ((RotationUtils.getVFromFacing(holder.facing, oldX, oldY, oldZ) - RotationUtils.getVFromFacing(holder.facing, x, y, z)) / RotationUtils
-                        .getVFromFacing(holder.facing, holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
+                uOffset = ((holder.facing.getUFromFacing(oldX, oldY, oldZ) - holder.facing.getUFromFacing(x, y, z)) / holder.facing
+                        .getUFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
+                vOffset = ((holder.facing.getVFromFacing(oldX, oldY, oldZ) - holder.facing.getVFromFacing(x, y, z)) / holder.facing
+                        .getVFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
             }
-            quad.getVertexData()[uvIndex] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertexData()[uvIndex]) - uOffset);
-            quad.getVertexData()[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertexData()[uvIndex + 1]) - vOffset);
+            quad.getVertices()[uvIndex] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex]) - uOffset);
+            quad.getVertices()[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex + 1]) - vOffset);
         }
         quads.add(quad);
     }
@@ -207,37 +205,37 @@ public class VectorFan {
     
     public void renderPreview(int red, int green, int blue, int alpha) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            bufferbuilder.pos(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
+            bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
         }
-        tessellator.draw();
+        tessellator.end();
     }
     
     public void renderPreview(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+            bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
         }
-        tessellator.draw();
+        tessellator.end();
     }
     
     public void renderLines(int red, int green, int blue, int alpha) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.pos(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
+                bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
-            tessellator.draw();
+            tessellator.end();
             index += 2;
         }
         
@@ -245,24 +243,24 @@ public class VectorFan {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.pos(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
+                bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
-            tessellator.draw();
+            tessellator.end();
         }
         
     }
     
     public void renderLines(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+                bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
-            tessellator.draw();
+            tessellator.end();
             index += 2;
         }
         
@@ -270,21 +268,21 @@ public class VectorFan {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.pos(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+                bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
-            tessellator.draw();
+            tessellator.end();
         }
     }
     
     public void renderLines(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            tessellator.draw();
+            tessellator.end();
             index += 2;
         }
         
@@ -292,7 +290,7 @@ public class VectorFan {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            tessellator.draw();
+            tessellator.end();
         }
         
     }
@@ -316,7 +314,7 @@ public class VectorFan {
         else
             z -= grow;
         
-        bufferbuilder.pos(x, y, z).color(red, green, blue, alpha).endVertex();
+        bufferbuilder.vertex(x, y, z).color(red, green, blue, alpha).endVertex();
     }
     
     protected void renderLinePoint(BufferBuilder bufferbuilder, Vec3f vec, int red, int green, int blue, int alpha, Vector3d center, double grow) {
@@ -338,18 +336,18 @@ public class VectorFan {
         else
             z -= grow;
         
-        bufferbuilder.pos(x, y, z).color(red, green, blue, alpha).endVertex();
+        bufferbuilder.vertex(x, y, z).color(red, green, blue, alpha).endVertex();
     }
     
     public void renderLines(int red, int green, int blue, int alpha, Vector3d center, double grow) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
-            tessellator.draw();
+            tessellator.end();
             index += 2;
         }
         
@@ -357,7 +355,7 @@ public class VectorFan {
             bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
-            tessellator.draw();
+            tessellator.end();
         }
         
     }

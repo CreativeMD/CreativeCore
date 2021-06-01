@@ -1,6 +1,8 @@
 package team.creative.creativecore.common.util.math.vec;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import team.creative.creativecore.common.util.math.base.Axis;
 
 public class Vec3d extends VecNd<Vec3d> {
@@ -11,6 +13,10 @@ public class Vec3d extends VecNd<Vec3d> {
     
     public Vec3d() {
         super();
+    }
+    
+    public Vec3d(Vector3i vec) {
+        this(vec.getX(), vec.getY(), vec.getZ());
     }
     
     public Vec3d(double x, double y, double z) {
@@ -30,6 +36,10 @@ public class Vec3d extends VecNd<Vec3d> {
     
     public Vector3d toVanilla() {
         return new Vector3d(x, y, z);
+    }
+    
+    public BlockPos toBlockPos() {
+        return new BlockPos(x, y, z);
     }
     
     @Override
