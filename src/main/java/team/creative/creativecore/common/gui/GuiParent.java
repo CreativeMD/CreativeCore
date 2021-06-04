@@ -138,6 +138,8 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     @Override
     @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(MatrixStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY) {
+        if (realContentRect == null)
+            return;
         float scale = getScaleFactor();
         double xOffset = getOffsetX();
         double yOffset = getOffsetY();
