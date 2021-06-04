@@ -61,7 +61,7 @@ public class CreativeCore {
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         MinecraftForge.EVENT_BUS.addListener(this::server);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerDimensions);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(ForgeWorldType.class, this::registerDimensions);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
         GuiContainerHandler.CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
