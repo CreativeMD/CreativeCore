@@ -17,11 +17,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
@@ -30,17 +33,22 @@ import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.config.premade.SoundConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.GuiButton;
 import team.creative.creativecore.common.gui.controls.GuiComboBox;
+import team.creative.creativecore.common.gui.controls.GuiComboBoxMapped;
+import team.creative.creativecore.common.gui.controls.GuiLabel;
 import team.creative.creativecore.common.gui.controls.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.GuiSlider;
 import team.creative.creativecore.common.gui.controls.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.GuiSteppedSlider;
 import team.creative.creativecore.common.gui.controls.GuiTextfield;
+import team.creative.creativecore.common.gui.controls.layout.GuiHBox;
 import team.creative.creativecore.common.util.text.TextListBuilder;
+import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.PairList;
 
 public abstract class ConfigTypeConveration<T> {
@@ -457,6 +465,74 @@ public abstract class ConfigTypeConveration<T> {
             public String createPrimitiveDefault(Class clazz) {
                 return "";
             }
+        });
+        
+        registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
+            
+            @Override
+            public SoundConfig createPrimitiveDefault(Class clazz) {
+                return new SoundConfig(new ResourceLocation("missing"));
+            }
+            
+            @Override
+            public SoundConfig readElement(SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, ConfigKeyField key) {
+                if (element.isJsonObject())
+                    return new SoundConfig(new ResourceLocation(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume").getAsFloat(), element
+                            .getAsJsonObject().get("pitch").getAsFloat());
+                return defaultValue;
+            }
+            
+            @Override
+            public JsonElement writeElement(SoundConfig value, SoundConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, ConfigKeyField key) {
+                JsonObject json = new JsonObject();
+                json.addProperty("sound", value.event.toString());
+                json.addProperty("volume", value.volume);
+                json.addProperty("pitch", value.pitch);
+                return json;
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            public void createControls(GuiParent parent, ConfigKeyField key, Class clazz, int recommendedWidth) {
+                parent.add(new GuiTextfield("search", 0, 0, recommendedWidth, 14));
+                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", 0, 14, new TextMapBuilder<ResourceLocation>()
+                        .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new StringTextComponent(x.toString()))));
+                GuiHBox hBox = new GuiHBox("vBox", 0, 30);
+                hBox.add(new GuiLabel("volumeLabel", 0, 0).setTitle(new TranslationTextComponent("gui.volume")));
+                hBox.add(new GuiSlider("volume", 0, 30, 40, 10, 1, 0, 1));
+                hBox.add(new GuiLabel("pitchLabel", 0, 0).setTitle(new TranslationTextComponent("gui.pitch")));
+                hBox.add(new GuiSlider("pitch", 30, 30, 40, 10, 1, 0.5, 2));
+                parent.add(hBox);
+                parent.setHeight(45);
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            public void loadValue(SoundConfig value, GuiParent parent, ConfigKeyField key) {
+                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
+                GuiSlider volume = (GuiSlider) parent.get("volume");
+                GuiSlider pitch = (GuiSlider) parent.get("pitch");
+                
+                box.select(value.event);
+                volume.setValue(value.volume);
+                pitch.setValue(value.pitch);
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            protected SoundConfig saveValue(GuiParent parent, Class clazz, ConfigKeyField key) {
+                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
+                GuiSlider volume = (GuiSlider) parent.get("volume");
+                GuiSlider pitch = (GuiSlider) parent.get("pitch");
+                
+                return new SoundConfig(box.getSelected(), (float) volume.value, (float) pitch.value);
+            }
+            
+            @Override
+            public SoundConfig set(ConfigKeyField key, SoundConfig value) {
+                return value;
+            }
+            
         });
         
         holderConveration = registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
