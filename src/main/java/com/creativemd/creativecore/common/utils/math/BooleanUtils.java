@@ -101,7 +101,7 @@ public class BooleanUtils {
         int digit = 0;
         while (number != 0) {
             digit++;
-            number = number / 10;
+            number = number / 2;
         }
         return digit;
     }
