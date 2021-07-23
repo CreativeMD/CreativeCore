@@ -1,11 +1,11 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class CreativeIngredientMaterial extends CreativeIngredient {
@@ -21,12 +21,12 @@ public class CreativeIngredientMaterial extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundNBT nbt) {
+    protected void writeExtra(CompoundTag nbt) {
         nbt.putString("material", getBlock().getRegistryName().toString());
     }
     
     @Override
-    protected void readExtra(CompoundNBT nbt) {
+    protected void readExtra(CompoundTag nbt) {
         Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("material")));
         if (block != null)
             material = block.defaultBlockState().getMaterial();

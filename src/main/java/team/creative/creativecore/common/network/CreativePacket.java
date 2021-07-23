@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.network;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public abstract class CreativePacket {
     
@@ -8,15 +9,15 @@ public abstract class CreativePacket {
         
     }
     
-    public void execute(PlayerEntity player) {
+    public void execute(Player player) {
         if (player.level.isClientSide)
             executeClient(player);
         else
-            executeServer(player);
+            executeServer((ServerPlayer) player);
     }
     
-    public abstract void executeClient(PlayerEntity player);
+    public abstract void executeClient(Player player);
     
-    public abstract void executeServer(PlayerEntity player);
+    public abstract void executeServer(ServerPlayer player);
     
 }

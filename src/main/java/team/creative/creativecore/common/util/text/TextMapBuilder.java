@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import team.creative.creativecore.client.render.text.CompiledText;
 
 public class TextMapBuilder<K> implements ITextCollection {
     
-    private LinkedHashMap<K, List<ITextComponent>> lines = new LinkedHashMap<>();
+    private LinkedHashMap<K, List<Component>> lines = new LinkedHashMap<>();
     private Predicate<String> filter;
     
     public TextMapBuilder() {
@@ -24,16 +24,16 @@ public class TextMapBuilder<K> implements ITextCollection {
         return this;
     }
     
-    private void addNewLine(K key, ITextComponent line) {
-        List<ITextComponent> newLine = new ArrayList<>();
+    private void addNewLine(K key, Component line) {
+        List<Component> newLine = new ArrayList<>();
         newLine.add(line);
         addNewLine(key, newLine);
     }
     
-    private void addNewLine(K key, List<ITextComponent> line) {
+    private void addNewLine(K key, List<Component> line) {
         if (filter != null) {
             StringBuilder builder = new StringBuilder();
-            for (ITextComponent component : line)
+            for (Component component : line)
                 builder.append(component.getString());
             if (!filter.test(builder.toString()))
                 return;
@@ -41,19 +41,19 @@ public class TextMapBuilder<K> implements ITextCollection {
         lines.put(key, line);
     }
     
-    public TextMapBuilder addComponent(K[] array, Function<K, ITextComponent> toComponent) {
+    public TextMapBuilder addComponent(K[] array, Function<K, Component> toComponent) {
         for (int i = 0; i < array.length; i++)
             addNewLine(array[i], toComponent.apply(array[i]));
         return this;
     }
     
-    public TextMapBuilder addComponent(Collection<K> collection, Function<K, ITextComponent> toComponent) {
+    public TextMapBuilder addComponent(Collection<K> collection, Function<K, Component> toComponent) {
         for (K t : collection)
             addNewLine(t, toComponent.apply(t));
         return this;
     }
     
-    public TextMapBuilder addComponents(Collection<K> collection, Function<K, List<ITextComponent>> toComponent) {
+    public TextMapBuilder addComponents(Collection<K> collection, Function<K, List<Component>> toComponent) {
         for (K t : collection)
             addNewLine(t, toComponent.apply(t));
         return this;
@@ -63,7 +63,7 @@ public class TextMapBuilder<K> implements ITextCollection {
     public CompiledText[] build() {
         CompiledText[] lines = new CompiledText[this.lines.size()];
         int i = 0;
-        for (List<ITextComponent> text : this.lines.values()) {
+        for (List<Component> text : this.lines.values()) {
             lines[i] = CompiledText.createAnySize();
             lines[i].setText(text);
             i++;

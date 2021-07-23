@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.util.math.transformation;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
@@ -15,14 +15,14 @@ public class Mirror {
         return facing;
     }
     
-    public static Vector3i mirror(Vector3i vec, Axis axis) {
+    public static Vec3i mirror(Vec3i vec, Axis axis) {
         switch (axis) {
         case X:
-            return new Vector3i(-vec.getX(), vec.getY(), vec.getZ());
+            return new Vec3i(-vec.getX(), vec.getY(), vec.getZ());
         case Y:
-            return new Vector3i(vec.getX(), -vec.getY(), vec.getZ());
+            return new Vec3i(vec.getX(), -vec.getY(), vec.getZ());
         case Z:
-            return new Vector3i(vec.getX(), vec.getY(), -vec.getZ());
+            return new Vec3i(vec.getX(), vec.getY(), -vec.getZ());
         }
         return vec;
     }

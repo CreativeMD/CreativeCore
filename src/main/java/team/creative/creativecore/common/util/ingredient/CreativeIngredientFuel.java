@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.AbstractFurnaceTileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 public class CreativeIngredientFuel extends CreativeIngredient {
     
@@ -12,12 +12,12 @@ public class CreativeIngredientFuel extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundNBT nbt) {
+    protected void writeExtra(CompoundTag nbt) {
         
     }
     
     @Override
-    protected void readExtra(CompoundNBT nbt) {
+    protected void readExtra(CompoundTag nbt) {
         
     }
     
@@ -28,7 +28,7 @@ public class CreativeIngredientFuel extends CreativeIngredient {
     
     @Override
     public boolean is(ItemStack stack) {
-        return AbstractFurnaceTileEntity.isFuel(stack);
+        return AbstractFurnaceBlockEntity.isFuel(stack);
     }
     
     @Override

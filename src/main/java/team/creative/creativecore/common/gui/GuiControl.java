@@ -4,16 +4,16 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -36,7 +36,7 @@ public abstract class GuiControl {
     
     public boolean visible = true;
     
-    private List<ITextComponent> customTooltip;
+    private List<Component> customTooltip;
     
     public GuiControl(String name, int x, int y, int width, int height) {
         this.name = name;
@@ -52,7 +52,7 @@ public abstract class GuiControl {
         return parent.isClient();
     }
     
-    public GuiControl setTooltip(List<ITextComponent> tooltip) {
+    public GuiControl setTooltip(List<Component> tooltip) {
         if (!tooltip.isEmpty())
             this.customTooltip = tooltip;
         return this;
@@ -252,7 +252,7 @@ public abstract class GuiControl {
     }
     
     public GuiTooltipEvent getTooltipEvent(double x, double y) {
-        List<ITextComponent> toolTip = getTooltip();
+        List<Component> toolTip = getTooltip();
         
         if (customTooltip != null)
             if (toolTip == null)
@@ -271,7 +271,7 @@ public abstract class GuiControl {
         return null;
     }
     
-    public List<ITextComponent> getTooltip() {
+    public List<Component> getTooltip() {
         return null;
     }
     
@@ -283,7 +283,7 @@ public abstract class GuiControl {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public void render(MatrixStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    public void render(PoseStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
@@ -308,7 +308,7 @@ public abstract class GuiControl {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         controlRect.shrink(formatting.padding);
         matrix.pushPose();
         matrix.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
@@ -317,16 +317,16 @@ public abstract class GuiControl {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         renderContent(matrix, controlRect, mouseX, mouseY);
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected abstract void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY);
+    protected abstract void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY);
     
     // MINECRAFT
     
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return parent.getPlayer();
     }
     
@@ -367,17 +367,17 @@ public abstract class GuiControl {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public static void playSound(ISound sound) {
+    public static void playSound(SoundInstance sound) {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
     
     @OnlyIn(value = Dist.CLIENT)
     public static void playSound(SoundEvent event) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(event, 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F));
     }
     
     @OnlyIn(value = Dist.CLIENT)
     public static void playSound(SoundEvent event, float volume, float pitch) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(event, pitch, volume));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
     }
 }

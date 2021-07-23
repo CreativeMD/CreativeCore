@@ -13,8 +13,8 @@ import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IResource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
@@ -33,7 +33,7 @@ public class GuiStyle {
     
     public static void reload() {
         try {
-            IResource resource = mc.getResourceManager().getResource(DEFAULT_STYLE_LOCATION);
+            Resource resource = mc.getResourceManager().getResource(DEFAULT_STYLE_LOCATION);
             JsonObject root = PARSER.parse(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
             
             defaultStyle = GSON.fromJson(root, GuiStyle.class);
@@ -52,7 +52,7 @@ public class GuiStyle {
             return cached;
         
         try {
-            IResource resource = mc.getResourceManager().getResource(new ResourceLocation(name));
+            Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name));
             JsonObject root = PARSER.parse(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
             
             cached = GSON.fromJson(root, GuiStyle.class);

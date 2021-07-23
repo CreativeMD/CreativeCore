@@ -2,10 +2,10 @@ package team.creative.creativecore.common.gui.controls;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
@@ -32,14 +32,14 @@ public class GuiLabel extends GuiControl {
         }
     }
     
-    public GuiLabel setTitle(ITextComponent component) {
+    public GuiLabel setTitle(Component component) {
         text.setText(component);
         if (getParent() != null)
             initiateLayoutUpdate();
         return this;
     }
     
-    public GuiLabel setTitle(List<ITextComponent> components) {
+    public GuiLabel setTitle(List<Component> components) {
         text.setText(components);
         if (getParent() != null)
             initiateLayoutUpdate();
@@ -64,7 +64,7 @@ public class GuiLabel extends GuiControl {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
         text.render(matrix);
     }
     

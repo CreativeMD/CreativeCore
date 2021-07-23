@@ -1,9 +1,10 @@
 package team.creative.creativecore.common.util.math.box;
 
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import com.mojang.math.Vector3d;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
@@ -28,7 +29,7 @@ public class AlignedBox {
         this.maxZ = maxZ;
     }
     
-    public AlignedBox(AxisAlignedBB box) {
+    public AlignedBox(AABB box) {
         this((float) box.minX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.maxY, (float) box.maxZ);
     }
     
@@ -66,11 +67,11 @@ public class AlignedBox {
         sub((float) vec.x, (float) vec.y, (float) vec.z);
     }
     
-    public void add(Vector3i vec) {
+    public void add(Vec3i vec) {
         add(vec.getX(), vec.getY(), vec.getZ());
     }
     
-    public void sub(Vector3i vec) {
+    public void sub(Vec3i vec) {
         sub(vec.getX(), vec.getY(), vec.getZ());
     }
     
@@ -100,12 +101,12 @@ public class AlignedBox {
         return new Vec3f(get(corner.x), get(corner.y), get(corner.z));
     }
     
-    public AxisAlignedBB getBB() {
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    public AABB getBB() {
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
-    public AxisAlignedBB getBB(BlockPos pos) {
-        return new AxisAlignedBB(minX + pos.getX(), minY + pos.getY(), minZ + pos.getZ(), maxX + pos.getX(), maxY + pos.getY(), maxZ + pos.getZ());
+    public AABB getBB(BlockPos pos) {
+        return new AABB(minX + pos.getX(), minY + pos.getY(), minZ + pos.getZ(), maxX + pos.getX(), maxY + pos.getY(), maxZ + pos.getZ());
     }
     
     public void rotate(Rotation rotation, Vec3f center) {

@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class CreativeIngredientItem extends CreativeIngredient {
@@ -19,12 +19,12 @@ public class CreativeIngredientItem extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundNBT nbt) {
+    protected void writeExtra(CompoundTag nbt) {
         nbt.putString("item", item.getRegistryName().toString());
     }
     
     @Override
-    protected void readExtra(CompoundNBT nbt) {
+    protected void readExtra(CompoundTag nbt) {
         item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(nbt.getString("item")));
     }
     

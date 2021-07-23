@@ -1,19 +1,19 @@
 package team.creative.creativecore.common.gui.integration;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Inventory;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 
-public class ContainerScreenIntegration extends ContainerScreen<ContainerIntegration> implements IScaleableGuiScreen {
+public class ContainerScreenIntegration extends AbstractContainerScreen<ContainerIntegration> implements IScaleableGuiScreen {
     
     protected ScreenEventListener listener;
     
-    public ContainerScreenIntegration(ContainerIntegration screenContainer, PlayerInventory inv) {
-        super(screenContainer, inv, new StringTextComponent("gui-api"));
+    public ContainerScreenIntegration(ContainerIntegration screenContainer, Inventory inv) {
+        super(screenContainer, inv, new TextComponent("gui-api"));
         listener = new ScreenEventListener(this.getMenu(), this);
     }
     
@@ -23,8 +23,8 @@ public class ContainerScreenIntegration extends ContainerScreen<ContainerIntegra
     }
     
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        getMenu().render(matrixStack, this, listener, mouseX, mouseY);
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+        getMenu().render(stack, this, listener, mouseX, mouseY);
     }
     
     @Override
@@ -44,7 +44,7 @@ public class ContainerScreenIntegration extends ContainerScreen<ContainerIntegra
     }
     
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int x, int y) {}
+    protected void renderBg(PoseStack stack, float partialTicks, int x, int y) {}
     
     @Override
     public void mouseMoved(double x, double y) {

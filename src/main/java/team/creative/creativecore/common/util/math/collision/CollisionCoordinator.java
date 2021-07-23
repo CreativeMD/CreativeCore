@@ -2,7 +2,7 @@ package team.creative.creativecore.common.util.math.collision;
 
 import java.util.HashMap;
 
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.box.BoxUtils;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
@@ -136,7 +136,7 @@ public class CollisionCoordinator {
         }
     }
     
-    public AxisAlignedBB computeSurroundingBox(AxisAlignedBB box) {
+    public AABB computeSurroundingBox(AABB box) {
         return BoxUtils.getRotatedSurrounding(box, this);
     }
     

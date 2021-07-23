@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.util.mc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Vector3d;
 
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
 
 public class ColorUtils {
     
@@ -21,7 +21,7 @@ public class ColorUtils {
             this.alpha = getAlpha(color);
         }
         
-        public Color(Vector3i vec) {
+        public Color(Vec3i vec) {
             this.red = vec.getX();
             this.green = vec.getY();
             this.blue = vec.getZ();
@@ -50,7 +50,7 @@ public class ColorUtils {
         }
         
         public void glColor() {
-            RenderSystem.color4f(red / 255F, green / 255F, blue / 255F, alpha / 255F);
+            RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
         }
         
         public Vector3d toVec(ColorPart part) {
@@ -176,15 +176,15 @@ public class ColorUtils {
         return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
     
-    public static int toInt(Vector3i color) {
+    public static int toInt(Vec3i color) {
         return (255 & 255) << 24 | (color.getX() & 255) << 16 | (color.getY() & 255) << 8 | color.getZ() & 255;
     }
     
-    public static Vector3i toIntVec(int color) {
+    public static Vec3i toIntVec(int color) {
         float r = color >> 16 & 255;
         float g = color >> 8 & 255;
         float b = color & 255;
-        return new Vector3i(r, g, b);
+        return new Vec3i(r, g, b);
     }
     
     public static Vector3d toVec(int color) {

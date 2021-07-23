@@ -3,7 +3,8 @@ package team.creative.creativecore.common.config.sync;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
@@ -60,13 +61,13 @@ public class ConfigurationClientPacket extends CreativePacket {
     }
     
     @Override
-    public void executeClient(PlayerEntity player) {
+    public void executeClient(Player player) {
         run();
         ConfigurationPacket.updateGui(player);
     }
     
     @Override
-    public void executeServer(PlayerEntity player) {
+    public void executeServer(ServerPlayer player) {
         CreativeCore.NETWORK.sendToClientAll(new ConfigurationClientPacket(run()));
         CreativeCore.CONFIG_HANDLER.saveClientFields();
         CreativeCore.CONFIG_HANDLER.save(Dist.DEDICATED_SERVER);

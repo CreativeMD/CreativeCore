@@ -1,7 +1,8 @@
 package team.creative.creativecore.common.util.math.vec;
 
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
+
 import team.creative.creativecore.common.util.math.base.Axis;
 
 public class Vec3f extends VecNf<Vec3f> {

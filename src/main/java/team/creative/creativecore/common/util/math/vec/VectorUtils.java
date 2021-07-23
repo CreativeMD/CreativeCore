@@ -1,28 +1,15 @@
 package team.creative.creativecore.common.util.math.vec;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Tuple3d;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
 
 public class VectorUtils {
-    
-    public static void set(Tuple3d vec, double value, Axis axis) {
-        switch (axis) {
-        case X:
-            vec.x = value;
-            break;
-        case Y:
-            vec.y = value;
-            break;
-        case Z:
-            vec.z = value;
-            break;
-        }
-    }
     
     public static Vector3d set(Vector3d vec, double value, Axis axis) {
         switch (axis) {
@@ -51,7 +38,7 @@ public class VectorUtils {
         throw new IllegalArgumentException();
     }
     
-    public static void set(BlockPos.Mutable vec, int value, Axis axis) {
+    public static void set(MutableBlockPos vec, int value, Axis axis) {
         switch (axis) {
         case X:
             vec.setX(value);
@@ -78,10 +65,6 @@ public class VectorUtils {
         return null;
     }
     
-    public static double get(Axis axis, Tuple3d vec) {
-        return get(axis, vec.x, vec.y, vec.z);
-    }
-    
     public static double get(Axis axis, Vector3d vec) {
         return get(axis, vec.x, vec.y, vec.z);
     }
@@ -90,7 +73,7 @@ public class VectorUtils {
         return get(axis, vec.x(), vec.y(), vec.z());
     }
     
-    public static int get(Axis axis, Vector3i vec) {
+    public static int get(Axis axis, Vec3i vec) {
         return get(axis, vec.getX(), vec.getY(), vec.getZ());
     }
     

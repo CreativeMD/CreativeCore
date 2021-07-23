@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -137,7 +137,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY) {
         if (realContentRect == null)
             return;
         float scale = getScaleFactor();
@@ -174,7 +174,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {}
     
     @Override
     public boolean isContainer() {

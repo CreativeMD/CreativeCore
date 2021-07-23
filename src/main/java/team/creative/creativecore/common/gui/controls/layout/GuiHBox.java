@@ -77,6 +77,12 @@ public class GuiHBox extends GuiLayoutControl {
                 case RIGHT:
                     control.setX(availableWidth - xOffset + x);
                     break;
+                case LEFT:
+                    break;
+                case STRETCH:
+                    break;
+                default:
+                    break;
                 }
                 x += control.getWidth() + spacing;
             }

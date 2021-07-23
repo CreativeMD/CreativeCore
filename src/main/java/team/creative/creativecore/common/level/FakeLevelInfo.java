@@ -1,12 +1,11 @@
-package team.creative.creativecore.common.world;
+package team.creative.creativecore.common.level;
 
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.storage.ISpawnWorldInfo;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.storage.WritableLevelData;
 
-public class FakeWorldInfo implements ISpawnWorldInfo {
+public class FakeLevelInfo implements WritableLevelData {
     
     private final boolean hardcore;
     private final GameRules gameRules;
@@ -21,7 +20,7 @@ public class FakeWorldInfo implements ISpawnWorldInfo {
     private Difficulty difficulty;
     private boolean difficultyLocked;
     
-    public FakeWorldInfo(Difficulty p_i232338_1_, boolean hardcore, boolean isFlat) {
+    public FakeLevelInfo(Difficulty p_i232338_1_, boolean hardcore, boolean isFlat) {
         this.difficulty = p_i232338_1_;
         this.hardcore = hardcore;
         this.isFlat = isFlat;
@@ -127,11 +126,6 @@ public class FakeWorldInfo implements ISpawnWorldInfo {
     @Override
     public boolean isDifficultyLocked() {
         return this.difficultyLocked;
-    }
-    
-    @Override
-    public void fillCrashReportCategory(CrashReportCategory p_85118_1_) {
-        ISpawnWorldInfo.super.fillCrashReportCategory(p_85118_1_);
     }
     
     public void setDifficulty(Difficulty p_239156_1_) {

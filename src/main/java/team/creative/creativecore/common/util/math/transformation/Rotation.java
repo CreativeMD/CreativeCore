@@ -1,8 +1,9 @@
 package team.creative.creativecore.common.util.math.transformation;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import com.mojang.math.Vector3d;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -57,7 +58,7 @@ public enum Rotation {
             Facing facing = Facing.get(i);
             for (int j = 0; j < Rotation.values().length; j++) {
                 Rotation rotation = Rotation.values()[j];
-                Vector3i rotatedNormal = new Vector3i(rotation.getMatrix().getX(facing.normal), rotation.getMatrix().getY(facing.normal), rotation.getMatrix().getZ(facing.normal));
+                Vec3i rotatedNormal = new Vec3i(rotation.getMatrix().getX(facing.normal), rotation.getMatrix().getY(facing.normal), rotation.getMatrix().getZ(facing.normal));
                 for (int k = 0; k < Facing.values().length; k++) {
                     if (Facing.get(k).normal.equals(rotatedNormal)) {
                         FACING_ROTATION[i][j] = Facing.get(k);
@@ -97,7 +98,7 @@ public enum Rotation {
         return null;
     }
     
-    public static Rotation getRotation(net.minecraft.util.Rotation rotationIn) {
+    public static Rotation getRotation(net.minecraft.world.level.block.Rotation rotationIn) {
         switch (rotationIn) {
         case CLOCKWISE_90:
             return Rotation.Y_CLOCKWISE;
@@ -110,8 +111,8 @@ public enum Rotation {
         }
     }
     
-    public static int getRotationCount(net.minecraft.util.Rotation rotationIn) {
-        if (rotationIn == net.minecraft.util.Rotation.CLOCKWISE_180)
+    public static int getRotationCount(net.minecraft.world.level.block.Rotation rotationIn) {
+        if (rotationIn == net.minecraft.world.level.block.Rotation.CLOCKWISE_180)
             return 2;
         return 1;
     }
@@ -258,7 +259,7 @@ public enum Rotation {
         return rotationMatrix.transform(vec);
     }
     
-    public Vector3i transform(Vector3i vec) {
+    public Vec3i transform(Vec3i vec) {
         return rotationMatrix.transform(vec);
     }
     
@@ -318,7 +319,7 @@ public enum Rotation {
             return getX(vec[0], vec[1], vec[2]);
         }
         
-        public int getX(Vector3i vec) {
+        public int getX(Vec3i vec) {
             return getX(vec.getX(), vec.getY(), vec.getZ());
         }
         
@@ -334,7 +335,7 @@ public enum Rotation {
             return getY(vec[0], vec[1], vec[2]);
         }
         
-        public int getY(Vector3i vec) {
+        public int getY(Vec3i vec) {
             return getY(vec.getX(), vec.getY(), vec.getZ());
         }
         
@@ -350,7 +351,7 @@ public enum Rotation {
             return getZ(vec[0], vec[1], vec[2]);
         }
         
-        public int getZ(Vector3i vec) {
+        public int getZ(Vec3i vec) {
             return getZ(vec.getX(), vec.getY(), vec.getZ());
         }
         
@@ -369,11 +370,11 @@ public enum Rotation {
             return new BlockPos(x, y, z);
         }
         
-        public Vector3i transform(Vector3i vec) {
+        public Vec3i transform(Vec3i vec) {
             int x = vec.getX() * m00 + vec.getY() * m01 + vec.getZ() * m02;
             int y = vec.getX() * m10 + vec.getY() * m11 + vec.getZ() * m12;
             int z = vec.getX() * m20 + vec.getY() * m21 + vec.getZ() * m22;
-            return new Vector3i(x, y, z);
+            return new Vec3i(x, y, z);
         }
         
         public Vector3d transform(Vector3d vec) {

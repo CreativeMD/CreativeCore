@@ -17,11 +17,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -190,7 +190,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @OnlyIn(value = Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-                parent.add(new GuiStateButton("data", 0, 0, 0, TextFormatting.RED + "false", TextFormatting.GREEN + "true"));
+                parent.add(new GuiStateButton("data", 0, 0, 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true"));
             }
             
             @Override
@@ -382,11 +382,11 @@ public abstract class ConfigTypeConveration<T> {
                     if (decimal) {
                         CreativeConfig.DecimalRange decRange = key.field.getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null)
-                            return parseDecimal(clazz, MathHelper.clamp(value.doubleValue(), decRange.min(), decRange.max()));
+                            return parseDecimal(clazz, Mth.clamp(value.doubleValue(), decRange.min(), decRange.max()));
                     } else {
                         CreativeConfig.IntRange intRange = key.field.getAnnotation(CreativeConfig.IntRange.class);
                         if (intRange != null)
-                            return parseInt(clazz, MathHelper.clamp(value.intValue(), intRange.min(), intRange.max()));
+                            return parseInt(clazz, Mth.clamp(value.intValue(), intRange.min(), intRange.max()));
                     }
                 }
                 return value;
@@ -395,17 +395,17 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             public Number createPrimitiveDefault(Class clazz) {
                 if (clazz == Float.class || clazz == float.class)
-                    return new Float(0);
+                    return Float.valueOf(0);
                 else if (clazz == Double.class || clazz == double.class)
-                    return new Double(0);
+                    return Double.valueOf(0);
                 else if (clazz == Byte.class || clazz == byte.class)
-                    return new Byte((byte) 0);
+                    return Byte.valueOf((byte) 0);
                 else if (clazz == Short.class || clazz == short.class)
-                    return new Short((short) 0);
+                    return Short.valueOf((short) 0);
                 else if (clazz == Integer.class || clazz == int.class)
-                    return new Integer(0);
+                    return Integer.valueOf(0);
                 else if (clazz == Long.class || clazz == long.class)
-                    return new Long(0);
+                    return Long.valueOf(0);
                 return 0;
             }
         };
@@ -496,11 +496,11 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, ConfigKeyField key, Class clazz, int recommendedWidth) {
                 parent.add(new GuiTextfield("search", 0, 0, recommendedWidth, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", 0, 14, new TextMapBuilder<ResourceLocation>()
-                        .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new StringTextComponent(x.toString()))));
+                        .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new TextComponent(x.toString()))));
                 GuiHBox hBox = new GuiHBox("vBox", 0, 30);
-                hBox.add(new GuiLabel("volumeLabel", 0, 0).setTitle(new TranslationTextComponent("gui.volume")));
+                hBox.add(new GuiLabel("volumeLabel", 0, 0).setTitle(new TranslatableComponent("gui.volume")));
                 hBox.add(new GuiSlider("volume", 0, 30, 40, 10, 1, 0, 1));
-                hBox.add(new GuiLabel("pitchLabel", 0, 0).setTitle(new TranslationTextComponent("gui.pitch")));
+                hBox.add(new GuiLabel("pitchLabel", 0, 0).setTitle(new TranslatableComponent("gui.pitch")));
                 hBox.add(new GuiSlider("pitch", 30, 30, 40, 10, 1, 0.5, 2));
                 parent.add(hBox);
                 parent.setHeight(45);
@@ -856,7 +856,7 @@ public abstract class ConfigTypeConveration<T> {
                         ((GuiConfigSubControlHolder) control).createControls();
                     }
                     listBox.addItem(control);
-                }).setTitle(new TranslationTextComponent("gui.add")));
+                }).setTitle(new TranslatableComponent("gui.add")));
             }
             
             @Override

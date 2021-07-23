@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.util.math.matrix;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
@@ -35,7 +35,7 @@ public class ChildVecOrigin extends VecOrigin {
     }
     
     @Override
-    public void setupRenderingInternal(MatrixStack matrixStack, Entity entity, float partialTicks) {
+    public void setupRenderingInternal(PoseStack matrixStack, Entity entity, float partialTicks) {
         parent.setupRenderingInternal(matrixStack, entity, partialTicks);
         super.setupRenderingInternal(matrixStack, entity, partialTicks);
     }

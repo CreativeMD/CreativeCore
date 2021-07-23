@@ -11,16 +11,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.block.AirBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.config.ConfigTypeConveration;
@@ -80,7 +80,7 @@ public abstract class CreativeIngredient {
         return null;
     }
     
-    public static CreativeIngredient read(CompoundNBT nbt) {
+    public static CreativeIngredient read(CompoundTag nbt) {
         Class<? extends CreativeIngredient> classType = getClass(nbt.getString("id"));
         if (classType == null)
             throw new IllegalArgumentException("'" + nbt.getString("id") + "' is an invalid type");
@@ -137,7 +137,7 @@ public abstract class CreativeIngredient {
             public CreativeIngredient readElement(CreativeIngredient defaultValue, boolean loadDefault, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
-                        return CreativeIngredient.read(JsonToNBT.parseTag(element.getAsString()));
+                        return CreativeIngredient.read(TagParser.parseTag(element.getAsString()));
                     } catch (CommandSyntaxException e) {
                         e.printStackTrace();
                     }
@@ -146,7 +146,7 @@ public abstract class CreativeIngredient {
             
             @Override
             public JsonElement writeElement(CreativeIngredient value, CreativeIngredient defaultValue, boolean saveDefault) {
-                return new JsonPrimitive(value.write(new CompoundNBT()).toString());
+                return new JsonPrimitive(value.write(new CompoundTag()).toString());
             }
             
             @Override
@@ -186,15 +186,15 @@ public abstract class CreativeIngredient {
         
     }
     
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         nbt.putString("id", getId(this));
         writeExtra(nbt);
         return nbt;
     }
     
-    protected abstract void writeExtra(CompoundNBT nbt);
+    protected abstract void writeExtra(CompoundTag nbt);
     
-    protected abstract void readExtra(CompoundNBT nbt);
+    protected abstract void readExtra(CompoundTag nbt);
     
     public abstract boolean is(ItemStack stack);
     

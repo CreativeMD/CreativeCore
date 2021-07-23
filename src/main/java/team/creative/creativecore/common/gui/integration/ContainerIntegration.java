@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.sync.LayerClosePacket;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 import team.creative.creativecore.common.network.CreativePacket;
 
-public class ContainerIntegration extends Container implements IGuiIntegratedParent {
+public class ContainerIntegration extends AbstractContainerMenu implements IGuiIntegratedParent {
     
     private List<GuiLayer> layers = new ArrayList<>();
-    private final PlayerEntity player;
+    private final Player player;
     
-    public ContainerIntegration(ContainerType<ContainerIntegration> type, int id, PlayerEntity player, GuiLayer layer) {
+    public ContainerIntegration(MenuType<ContainerIntegration> type, int id, Player player, GuiLayer layer) {
         super(type, id);
         this.player = player;
         layer.setParent(this);
@@ -55,19 +55,19 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     }
     
     @Override
-    public void removed(PlayerEntity playerIn) {
+    public void removed(Player playerIn) {
         super.removed(playerIn);
         for (GuiLayer layer : layers)
             layer.closed();
     }
     
     @Override
-    public boolean stillValid(PlayerEntity playerIn) {
+    public boolean stillValid(Player playerIn) {
         return true;
     }
     
     @Override
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return player;
     }
     
@@ -89,7 +89,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
         if (isClient())
             CreativeCore.NETWORK.sendToServer(packet);
         else
-            CreativeCore.NETWORK.sendToClient(packet, (ServerPlayerEntity) player);
+            CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
         
         return layers.get(layers.size() - 1);
     }
@@ -108,7 +108,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
             if (isClient())
                 Minecraft.getInstance().setScreen((Screen) null);
             else
-                ((ServerPlayerEntity) player).closeContainer();
+                ((ServerPlayer) player).closeContainer();
     }
     
     public void sendPacket(CreativePacket packet) {
@@ -123,7 +123,7 @@ public class ContainerIntegration extends Container implements IGuiIntegratedPar
     }
     
     public void sendPacketToClient(CreativePacket packet) {
-        CreativeCore.NETWORK.sendToClient(packet, (ServerPlayerEntity) player);
+        CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
     }
     
 }

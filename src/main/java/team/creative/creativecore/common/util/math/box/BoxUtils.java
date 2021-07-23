@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.box;
 
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollisionCoordinator;
@@ -86,7 +86,7 @@ public class BoxUtils {
         }
     }
     
-    public static AxisAlignedBB getRotatedSurrounding(AxisAlignedBB boundingBox, CollisionCoordinator coordinator) {
+    public static AABB getRotatedSurrounding(AABB boundingBox, CollisionCoordinator coordinator) {
         Vec3d[] corners = getRotatedCorners(boundingBox, coordinator.origin);
         
         IncludeBox bb = new IncludeBox();
@@ -112,7 +112,7 @@ public class BoxUtils {
         return bb.getAxisBB();
     }
     
-    public static Vec3d[] getRotatedCorners(AxisAlignedBB box, IVecOrigin origin) {
+    public static Vec3d[] getRotatedCorners(AABB box, IVecOrigin origin) {
         /*Vec3d[] corners = getCorners(box); TODO
         for (int i = 0; i < corners.length; i++) {
             Vec3d vec = corners[i];
@@ -122,7 +122,7 @@ public class BoxUtils {
         return null;
     }
     
-    public static Vec3d[] getOuterCorner(Facing facing, IVecOrigin origin, AxisAlignedBB box, double minOne, double minTwo, double maxOne, double maxTwo) {
+    public static Vec3d[] getOuterCorner(Facing facing, IVecOrigin origin, AABB box, double minOne, double minTwo, double maxOne, double maxTwo) {
         /*Vec3d[] corners = getCorners(box); TODO
         
         double value = 0;
@@ -195,8 +195,8 @@ public class BoxUtils {
             }
         }
         
-        public AxisAlignedBB getAxisBB() {
-            return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+        public AABB getAxisBB() {
+            return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
         }
         
     }

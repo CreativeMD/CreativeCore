@@ -2,12 +2,13 @@ package team.creative.creativecore.common.util.math.matrix;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3d;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
@@ -120,7 +121,19 @@ public interface IVecOrigin {
         return new Vector3d(real.x, real.y, real.z);
     }
     
-    public default AxisAlignedBB getAxisAlignedBox(AxisAlignedBB box) {
+    public default Vec3 transformPointToWorld(Vec3 vec) {
+        Vec3d real = new Vec3d(vec);
+        transformPointToWorld(real);
+        return new Vec3(real.x, real.y, real.z);
+    }
+    
+    public default Vec3 transformPointToFakeWorld(Vec3 vec) {
+        Vec3d real = new Vec3d(vec);
+        transformPointToFakeWorld(real);
+        return new Vec3(real.x, real.y, real.z);
+    }
+    
+    public default AABB getAxisAlignedBox(AABB box) {
         /*double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         double minZ = Double.MAX_VALUE;
@@ -145,7 +158,7 @@ public interface IVecOrigin {
         return null;
     }
     
-    public default OrientatedVoxelShape getOrientatedBox(AxisAlignedBB box) {
+    public default OrientatedVoxelShape getOrientatedBox(AABB box) {
         /*double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         double minZ = Double.MAX_VALUE;
@@ -171,7 +184,7 @@ public interface IVecOrigin {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public default void setupRenderingInternal(MatrixStack matrixStack, Entity entity, float partialTicks) {
+    public default void setupRenderingInternal(PoseStack matrixStack, Entity entity, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
         double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
@@ -194,7 +207,7 @@ public interface IVecOrigin {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public default void setupRendering(MatrixStack matrixStack, Entity entity, float partialTicks) {
+    public default void setupRendering(PoseStack matrixStack, Entity entity, float partialTicks) {
         //matrixStack.translate(-TileEntityRendererDispatcher.staticPlayerX, -TileEntityRendererDispatcher.staticPlayerY, -TileEntityRendererDispatcher.staticPlayerZ); TODO
         setupRenderingInternal(matrixStack, entity, partialTicks);
     }

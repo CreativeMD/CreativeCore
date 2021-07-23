@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.util.math.matrix;
 
-import com.sun.javafx.geom.transform.SingularMatrixException;
-
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.math.vec.Vec4d;
@@ -902,7 +900,7 @@ public class Matrix4 {
         int[] var3 = new int[4];
         double[] var7 = new double[] { var1.m00, var1.m01, var1.m02, var1.m03, var1.m10, var1.m11, var1.m12, var1.m13, var1.m20, var1.m21, var1.m22, var1.m23, var1.m30, var1.m31, var1.m32, var1.m33 };
         if (!luDecomposition(var7, var3)) {
-            throw new SingularMatrixException();
+            throw new RuntimeException("SingularMatrixException");
         } else {
             for (int var4 = 0; var4 < 16; ++var4) {
                 var2[var4] = 0.0D;

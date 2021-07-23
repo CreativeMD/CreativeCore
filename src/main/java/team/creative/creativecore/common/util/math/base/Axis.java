@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.math.base;
 
-import net.minecraft.util.Mirror;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Mirror;
 
 public enum Axis {
     
@@ -41,8 +42,8 @@ public enum Axis {
         }
         
         @Override
-        public net.minecraft.util.Direction.Axis toVanilla() {
-            return net.minecraft.util.Direction.Axis.X;
+        public Direction.Axis toVanilla() {
+            return Direction.Axis.X;
         }
     },
     Y {
@@ -82,8 +83,8 @@ public enum Axis {
         }
         
         @Override
-        public net.minecraft.util.Direction.Axis toVanilla() {
-            return net.minecraft.util.Direction.Axis.Y;
+        public Direction.Axis toVanilla() {
+            return Direction.Axis.Y;
         }
     },
     Z {
@@ -123,12 +124,12 @@ public enum Axis {
         }
         
         @Override
-        public net.minecraft.util.Direction.Axis toVanilla() {
-            return net.minecraft.util.Direction.Axis.Z;
+        public Direction.Axis toVanilla() {
+            return Direction.Axis.Z;
         }
     };
     
-    public static Axis get(net.minecraft.util.Direction.Axis axis) {
+    public static Axis get(Direction.Axis axis) {
         switch (axis) {
         case X:
             return Axis.X;
@@ -183,6 +184,6 @@ public enum Axis {
     
     public abstract <T> T get(T x, T y, T z);
     
-    public abstract net.minecraft.util.Direction.Axis toVanilla();
+    public abstract Direction.Axis toVanilla();
     
 }

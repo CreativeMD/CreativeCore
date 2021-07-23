@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 
@@ -10,7 +10,7 @@ public interface IGuiParent {
     
     public boolean isClient();
     
-    public PlayerEntity getPlayer();
+    public Player getPlayer();
     
     public void moveBehind(GuiControl toMove, GuiControl reference);
     

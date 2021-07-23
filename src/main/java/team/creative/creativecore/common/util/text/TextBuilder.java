@@ -5,31 +5,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class TextBuilder {
     
     private static NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
-    private final List<ITextComponent> components = new ArrayList<>();
+    private final List<Component> components = new ArrayList<>();
     
     public TextBuilder() {
         
     }
     
-    public TextBuilder add(ITextComponent component) {
+    public TextBuilder add(Component component) {
         if (components.isEmpty())
             components.add(component);
         else {
-            ITextComponent last = components.get(components.size() - 1);
-            if (last instanceof TextComponent)
-                ((TextComponent) last).append(component);
+            Component last = components.get(components.size() - 1);
+            if (last instanceof BaseComponent)
+                ((BaseComponent) last).append(component);
             else
                 components.add(component);
         }
@@ -43,22 +43,22 @@ public class TextBuilder {
     public TextBuilder translateIfCan(String text) {
         String translated = GuiControl.translate(text);
         if (!translated.equals(text))
-            add(new TranslationTextComponent(text));
+            add(new TranslatableComponent(text));
         return this;
     }
     
     public TextBuilder translate(String text) {
-        add(new TranslationTextComponent(text));
+        add(new TranslatableComponent(text));
         return this;
     }
     
     public TextBuilder translate(String text, Object... param) {
-        add(new TranslationTextComponent(text, param));
+        add(new TranslatableComponent(text, param));
         return this;
     }
     
     public TextBuilder text(String text) {
-        add(new StringTextComponent(text));
+        add(new TextComponent(text));
         return this;
     }
     
@@ -87,7 +87,7 @@ public class TextBuilder {
     }
     
     public TextBuilder newLine() {
-        components.add(new LinebreakTextComponent());
+        components.add(new LinebreakComponent());
         return this;
     }
     
@@ -96,16 +96,16 @@ public class TextBuilder {
         int g = ColorUtils.getGreen(color);
         int b = ColorUtils.getBlue(color);
         int a = ColorUtils.getAlpha(color);
-        text("" + TextFormatting.RED + r + " " + TextFormatting.GREEN + g + " " + TextFormatting.BLUE + b + (a < 255 ? " " + TextFormatting.WHITE + a : ""));
+        text("" + ChatFormatting.RED + r + " " + ChatFormatting.GREEN + g + " " + ChatFormatting.BLUE + b + (a < 255 ? " " + ChatFormatting.WHITE + a : ""));
         return this;
     }
     
     public TextBuilder stack(ItemStack stack) {
-        add(new ItemStackTextComponent(stack));
+        add(new ItemStackComponent(stack));
         return this;
     }
     
-    public List<ITextComponent> build() {
+    public List<Component> build() {
         return components;
     }
     

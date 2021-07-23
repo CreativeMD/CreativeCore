@@ -3,12 +3,12 @@ package team.creative.creativecore.common.gui.integration;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
@@ -20,7 +20,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     protected ScreenEventListener listener;
     
     public GuiScreenIntegration(GuiLayer layer) {
-        super(new StringTextComponent("gui-api"));
+        super(new TextComponent("gui-api"));
         layer.setParent(this);
         this.layers.add(layer);
         layer.init();
@@ -72,13 +72,13 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     }
     
     @Override
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return mc.player;
     }
     
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        render(matrixStack, this, listener, mouseX, mouseY);
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
+        render(stack, this, listener, mouseX, mouseY);
     }
     
     @Override

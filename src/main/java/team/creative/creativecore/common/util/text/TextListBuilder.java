@@ -5,30 +5,30 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.GuiControl;
 
 public class TextListBuilder implements ITextCollection {
     
-    private List<List<ITextComponent>> list = new ArrayList<>();
+    private List<List<Component>> list = new ArrayList<>();
     
     public TextListBuilder() {
         
     }
     
     private void addNewLine(String line) {
-        addNewLine(new StringTextComponent(line));
+        addNewLine(new TextComponent(line));
     }
     
-    private void addNewLine(ITextComponent line) {
-        List<ITextComponent> newLine = new ArrayList<>();
+    private void addNewLine(Component line) {
+        List<Component> newLine = new ArrayList<>();
         newLine.add(line);
         list.add(newLine);
     }
     
-    private void addNewLine(List<ITextComponent> line) {
+    private void addNewLine(List<Component> line) {
         list.add(line);
     }
     
@@ -56,19 +56,19 @@ public class TextListBuilder implements ITextCollection {
         return this;
     }
     
-    public <T> TextListBuilder addComponent(T[] array, Function<T, ITextComponent> toComponent) {
+    public <T> TextListBuilder addComponent(T[] array, Function<T, Component> toComponent) {
         for (int i = 0; i < array.length; i++)
             addNewLine(toComponent.apply(array[i]));
         return this;
     }
     
-    public <T> TextListBuilder addComponent(Collection<T> collection, Function<T, ITextComponent> toComponent) {
+    public <T> TextListBuilder addComponent(Collection<T> collection, Function<T, Component> toComponent) {
         for (T t : collection)
             addNewLine(toComponent.apply(t));
         return this;
     }
     
-    public <T> TextListBuilder addComponents(Collection<T> collection, Function<T, List<ITextComponent>> toComponent) {
+    public <T> TextListBuilder addComponents(Collection<T> collection, Function<T, List<Component>> toComponent) {
         for (T t : collection)
             addNewLine(toComponent.apply(t));
         return this;
@@ -106,7 +106,7 @@ public class TextListBuilder implements ITextCollection {
         return list.size();
     }
     
-    public List<ITextComponent> get(int index) {
+    public List<Component> get(int index) {
         return list.get(index);
     }
     

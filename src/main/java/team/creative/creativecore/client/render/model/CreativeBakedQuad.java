@@ -1,7 +1,7 @@
 package team.creative.creativecore.client.render.model;
 
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.util.Direction;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.core.Direction;
 import team.creative.creativecore.client.render.box.RenderBox;
 
 public class CreativeBakedQuad extends BakedQuad {

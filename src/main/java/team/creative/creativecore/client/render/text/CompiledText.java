@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.Style;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.IAdvancedTextComponent;
@@ -21,7 +21,7 @@ import team.creative.creativecore.common.util.type.SingletonList;
 
 public class CompiledText {
     
-    private static final FontRenderer font = Minecraft.getInstance().font;
+    private static final Font font = Minecraft.getInstance().font;
     
     private int maxWidth;
     private int maxHeight;
@@ -32,7 +32,7 @@ public class CompiledText {
     public int defaultColor = ColorUtils.WHITE;
     public Align alignment = Align.LEFT;
     private List<CompiledLine> lines;
-    private List<ITextComponent> original;
+    private List<Component> original;
     
     public CompiledText(int width, int height) {
         this.maxWidth = width;
@@ -58,25 +58,25 @@ public class CompiledText {
         return maxHeight;
     }
     
-    public void setText(ITextComponent component) {
-        setText(new SingletonList<ITextComponent>(component));
+    public void setText(Component component) {
+        setText(new SingletonList<Component>(component));
     }
     
-    public void setText(List<ITextComponent> components) {
+    public void setText(List<Component> components) {
         this.original = components;
         compile();
     }
     
     private void compile() {
-        List<ITextComponent> copy = new ArrayList<>();
-        for (ITextComponent component : original)
+        List<Component> copy = new ArrayList<>();
+        for (Component component : original)
             copy.add(component.plainCopy());
         lines = new ArrayList<>();
         compileNext(null, true, copy);
     }
     
-    private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, List<? extends ITextProperties> components) {
-        for (ITextProperties component : components) {
+    private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, List<? extends FormattedText> components) {
+        for (FormattedText component : components) {
             if (newLine)
                 lines.add(currentLine = new CompiledLine());
             currentLine = compileNext(currentLine, component);
@@ -84,13 +84,13 @@ public class CompiledText {
         return currentLine;
     }
     
-    private CompiledLine compileNext(CompiledLine currentLine, ITextProperties component) {
-        List<ITextComponent> siblings = null;
-        if (component instanceof ITextComponent && !((ITextComponent) component).getSiblings().isEmpty()) {
-            siblings = new ArrayList<>(((ITextComponent) component).getSiblings());
-            ((ITextComponent) component).getSiblings().clear();
+    private CompiledLine compileNext(CompiledLine currentLine, FormattedText component) {
+        List<Component> siblings = null;
+        if (component instanceof Component && !((Component) component).getSiblings().isEmpty()) {
+            siblings = new ArrayList<>(((Component) component).getSiblings());
+            ((Component) component).getSiblings().clear();
         }
-        List<ITextProperties> properties = currentLine.add(component);
+        List<FormattedText> properties = currentLine.add(component);
         
         if (properties != null) {
             lines.add(currentLine = new CompiledLine());
@@ -127,6 +127,10 @@ public class CompiledText {
             case RIGHT:
                 usedWidth = Math.max(usedWidth, maxWidth);
                 break;
+            case STRETCH:
+                break;
+            default:
+                break;
             }
             int height = line.height + lineSpacing;
             usedHeight += height;
@@ -136,7 +140,7 @@ public class CompiledText {
         }
     }
     
-    public void render(MatrixStack stack) {
+    public void render(PoseStack stack) {
         if (lines == null)
             return;
         
@@ -164,6 +168,10 @@ public class CompiledText {
                 usedWidth = Math.max(usedWidth, maxWidth);
                 stack.popPose();
                 break;
+            case STRETCH:
+                break;
+            default:
+                break;
             }
             int height = line.height + lineSpacing;
             stack.translate(0, height, 0);
@@ -178,7 +186,7 @@ public class CompiledText {
     
     public class CompiledLine {
         
-        private List<ITextProperties> components = new ArrayList<>();
+        private List<FormattedText> components = new ArrayList<>();
         private int height = 0;
         private int width = 0;
         
@@ -186,10 +194,10 @@ public class CompiledText {
             
         }
         
-        public void render(MatrixStack stack) {
+        public void render(PoseStack stack) {
             int xOffset = 0;
-            IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
-            for (ITextProperties text : components) {
+            MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            for (FormattedText text : components) {
                 int height;
                 int width;
                 if (text instanceof IAdvancedTextComponent) {
@@ -208,7 +216,7 @@ public class CompiledText {
                 if (text instanceof IAdvancedTextComponent)
                     ((IAdvancedTextComponent) text).render(stack, font, defaultColor);
                 else {
-                    font.drawInBatch(LanguageMap.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, stack.last().pose(), renderType, false, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, stack.last().pose(), renderType, false, 0, 15728880);
                     renderType.endBatch();
                 }
                 stack.popPose();
@@ -221,7 +229,7 @@ public class CompiledText {
             this.height = Math.max(height, this.height);
         }
         
-        public List<ITextProperties> add(ITextProperties component) {
+        public List<FormattedText> add(FormattedText component) {
             int remainingWidth = maxWidth - width;
             if (component instanceof IAdvancedTextComponent) {
                 IAdvancedTextComponent advanced = (IAdvancedTextComponent) component;
@@ -257,7 +265,7 @@ public class CompiledText {
                 updateDimension(width + textWidth, font.lineHeight);
                 return null;
             } else if (width == 0) {
-                List<ITextProperties> wrappedLines = font.getSplitter().splitLines(component, maxWidth - width, Style.EMPTY);
+                List<FormattedText> wrappedLines = font.getSplitter().splitLines(component, maxWidth - width, Style.EMPTY);
                 updateDimension(width + font.width(wrappedLines.get(0)), font.lineHeight);
                 if (wrappedLines.isEmpty())
                     return null;
@@ -276,8 +284,8 @@ public class CompiledText {
         return calculateWidth(0, true, original);
     }
     
-    private int calculateWidth(int width, boolean newLine, List<? extends ITextProperties> components) {
-        for (ITextProperties component : components) {
+    private int calculateWidth(int width, boolean newLine, List<? extends FormattedText> components) {
+        for (FormattedText component : components) {
             int result = calculateWidth(component);
             if (newLine)
                 width = Math.max(width, result);
@@ -287,7 +295,7 @@ public class CompiledText {
         return width;
     }
     
-    private int calculateWidth(ITextProperties component) {
+    private int calculateWidth(FormattedText component) {
         int width = 0;
         if (component instanceof IAdvancedTextComponent) {
             IAdvancedTextComponent advanced = (IAdvancedTextComponent) component;
@@ -296,8 +304,8 @@ public class CompiledText {
         } else
             width += font.width(component);
         
-        if (component instanceof ITextComponent && !((ITextComponent) component).getSiblings().isEmpty())
-            width += calculateWidth(0, false, ((ITextComponent) component).getSiblings());
+        if (component instanceof Component && !((Component) component).getSiblings().isEmpty())
+            width += calculateWidth(0, false, ((Component) component).getSiblings());
         return width;
     }
     

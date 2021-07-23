@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.holder.ConfigKey;
@@ -91,11 +91,11 @@ public class ClientSyncGuiLayer extends GuiLayer {
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
         GuiLeftRightBox upperBox = new GuiLeftRightBox("upperBox", 0, 0);
-        upperBox.add(new GuiLabel("path", 0, 0).setTitle(new StringTextComponent("/" + String.join("/", holder.path()))));
+        upperBox.add(new GuiLabel("path", 0, 0).setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         if (entry.parent != null)
             upperBox.addRight(new GuiButton("back", 170, 0, x -> {
                 load(entry.parent);
-            }).setTitle(new TranslationTextComponent("gui.back")));
+            }).setTitle(new TranslatableComponent("gui.back")));
         add(upperBox);
         this.currentView = entry;
         
@@ -113,10 +113,10 @@ public class ClientSyncGuiLayer extends GuiLayer {
                 
                 box.add(new GuiButton(caption, offsetX, offsetY, x -> {
                     load(key);
-                }).setTitle(new StringTextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
                 offsetY += 21;
             } else {
-                GuiLabel label = new GuiLabel(caption, offsetX, offsetY + 2).setTitle(new StringTextComponent(caption));
+                GuiLabel label = new GuiLabel(caption, offsetX, offsetY + 2).setTitle(new TextComponent(caption));
                 box.add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
                 offsetY += 16;
             }
@@ -126,19 +126,19 @@ public class ClientSyncGuiLayer extends GuiLayer {
         lowerBox.add(new GuiButton("cancel", 0, 180, x -> {
             nextAction = 0;
             closeTopLayer();
-        }).setTitle(new TranslationTextComponent("gui.cancel")));
+        }).setTitle(new TranslatableComponent("gui.cancel")));
         
         lowerBox.add(new GuiButton("config", 40, 180, x -> {
             nextAction = 1;
             closeTopLayer();
-        }).setTitle(new TranslationTextComponent("gui.config")));
+        }).setTitle(new TranslatableComponent("gui.config")));
         
         lowerBox.addRight(new GuiButton("save", 170, 180, x -> {
             nextAction = 0;
             force = true;
             save();
             closeTopLayer();
-        }).setTitle(new TranslationTextComponent("gui.save")));
+        }).setTitle(new TranslatableComponent("gui.save")));
         add(lowerBox);
         reinit();
     }

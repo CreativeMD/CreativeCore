@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.gui.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
@@ -101,7 +101,7 @@ public class GuiScrollBox extends GuiParent {
     }
     
     @Override
-    protected void renderContent(MatrixStack matrix, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         super.renderContent(matrix, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
         realRect.scissor();
         GuiStyle style = getStyle();

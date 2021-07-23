@@ -10,22 +10,22 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 public class CreativeNetwork {
     
     @OnlyIn(value = Dist.CLIENT)
-    private static PlayerEntity getClientPlayer() {
+    private static Player getClientPlayer() {
         return Minecraft.getInstance().player;
     }
     
@@ -44,7 +44,7 @@ public class CreativeNetwork {
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType) {
-        CreativeBufferHandler<T> handler = new CreativeBufferHandler(classType);
+        CreativeBufferHandler<T> handler = new CreativeBufferHandler<>(classType);
         this.instance.registerMessage(id, classType, (message, buffer) -> {
             handler.write(message, buffer);
         }, (buffer) -> {
@@ -60,11 +60,11 @@ public class CreativeNetwork {
         this.instance.sendToServer(message);
     }
     
-    public void sendToClient(CreativePacket message, ServerPlayerEntity player) {
+    public void sendToClient(CreativePacket message, ServerPlayer player) {
         this.instance.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
     
-    public void sendToClient(CreativePacket message, Chunk chunk) {
+    public void sendToClient(CreativePacket message, LevelChunk chunk) {
         this.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), message);
     }
     
@@ -97,20 +97,18 @@ public class CreativeNetwork {
             }
         }
         
-        public void write(T packet, PacketBuffer buffer) {
-            for (CreativeFieldParserEntry parser : parsers) {
+        public void write(T packet, FriendlyByteBuf buffer) {
+            for (CreativeFieldParserEntry parser : parsers)
                 parser.write(packet, buffer);
-            }
         }
         
-        public T read(PacketBuffer buffer) {
+        public T read(FriendlyByteBuf buffer) {
             try {
-                Constructor constructor = classType.getConstructor();
-                T message = (T) constructor.newInstance();
+                Constructor<T> constructor = classType.getConstructor();
+                T message = constructor.newInstance();
                 
-                for (CreativeFieldParserEntry parser : parsers) {
+                for (CreativeFieldParserEntry parser : parsers)
                     parser.read(message, buffer);
-                }
                 
                 return message;
             } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

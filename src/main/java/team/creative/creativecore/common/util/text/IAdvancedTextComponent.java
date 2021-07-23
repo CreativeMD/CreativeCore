@@ -2,16 +2,16 @@ package team.creative.creativecore.common.util.text;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.FormattedText;
 
-public interface IAdvancedTextComponent extends ITextComponent {
+public interface IAdvancedTextComponent extends FormattedText {
     
-    public int getWidth(FontRenderer font);
+    public int getWidth(Font font);
     
-    public int getHeight(FontRenderer font);
+    public int getHeight(Font font);
     
     public boolean canSplit();
     
@@ -19,6 +19,6 @@ public interface IAdvancedTextComponent extends ITextComponent {
     
     public boolean isEmpty();
     
-    public void render(MatrixStack stack, FontRenderer font, int defaultColor);
+    public void render(PoseStack stack, Font font, int defaultColor);
     
 }

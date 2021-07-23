@@ -1,16 +1,16 @@
-package team.creative.creativecore.common.world;
+package team.creative.creativecore.common.level;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
-public interface IOrientatedWorld {
+public interface IOrientatedLevel {
     
     public boolean hasParent();
     
-    public World getParent();
+    public Level getParent();
     
-    public World getRealWorld();
+    public Level getRealLevel();
     
     public IVecOrigin getOrigin();
     

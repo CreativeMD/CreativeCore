@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui.handler;
 
 import java.util.HashMap;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 
@@ -14,13 +14,13 @@ public abstract class GuiLayerHandler {
         handlers.put(id, handler);
     }
     
-    public static GuiLayer create(IGuiIntegratedParent parent, String id, CompoundNBT nbt) {
+    public static GuiLayer create(IGuiIntegratedParent parent, String id, CompoundTag nbt) {
         GuiLayerHandler handler = handlers.get(id);
         if (handler != null)
             return handler.create(parent, nbt);
         return null;
     }
     
-    public abstract GuiLayer create(IGuiIntegratedParent parent, CompoundNBT nbt);
+    public abstract GuiLayer create(IGuiIntegratedParent parent, CompoundTag nbt);
     
 }

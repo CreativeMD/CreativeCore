@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 public class CreativeIngredientItemStack extends CreativeIngredient {
     
@@ -18,13 +18,13 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundNBT nbt) {
+    protected void writeExtra(CompoundTag nbt) {
         stack.save(nbt);
         nbt.putBoolean("needNBT", needNBT);
     }
     
     @Override
-    protected void readExtra(CompoundNBT nbt) {
+    protected void readExtra(CompoundTag nbt) {
         stack = ItemStack.of(nbt);
         needNBT = nbt.getBoolean("needNBT");
     }

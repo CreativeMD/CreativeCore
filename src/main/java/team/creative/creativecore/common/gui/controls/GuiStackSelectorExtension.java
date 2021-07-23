@@ -3,10 +3,10 @@ package team.creative.creativecore.common.gui.controls;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.util.type.HashMapList;
 
 public class GuiStackSelectorExtension extends GuiScrollBox {
@@ -14,7 +14,7 @@ public class GuiStackSelectorExtension extends GuiScrollBox {
     public GuiStackSelector comboBox;
     public String search = "";
     
-    public GuiStackSelectorExtension(String name, PlayerEntity player, int x, int y, int width, int height, GuiStackSelector comboBox) {
+    public GuiStackSelectorExtension(String name, Player player, int x, int y, int width, int height, GuiStackSelector comboBox) {
         super(name, x, y, width, height);
         this.comboBox = comboBox;
         registerEventChanged((event) -> {
@@ -81,7 +81,7 @@ public class GuiStackSelectorExtension extends GuiScrollBox {
         }
         
         for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
-            GuiLabel label = new GuiLabel("title", 4, height).setTitle(new TranslationTextComponent(entry.getKey()));
+            GuiLabel label = new GuiLabel("title", 4, height).setTitle(new TranslatableComponent(entry.getKey()));
             add(label);
             height += 12;
             

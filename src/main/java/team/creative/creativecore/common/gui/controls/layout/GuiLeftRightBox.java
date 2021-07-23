@@ -80,6 +80,10 @@ public class GuiLeftRightBox extends GuiHBox {
                     case RIGHT:
                         control.setX(availableWidth - leftSize + xLeft);
                         break;
+                    case STRETCH:
+                        break;
+                    default:
+                        break;
                     }
                     xLeft += control.getWidth() + spacing;
                 }

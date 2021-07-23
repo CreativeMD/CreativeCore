@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui.sync;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
 import team.creative.creativecore.common.network.CreativePacket;
 
@@ -17,12 +18,12 @@ public class OpenGuiPacket extends CreativePacket {
     }
     
     @Override
-    public void executeClient(PlayerEntity player) {
+    public void executeClient(Player player) {
         
     }
     
     @Override
-    public void executeServer(PlayerEntity player) {
+    public void executeServer(ServerPlayer player) {
         GuiContainerHandler.openGui(player, name);
     }
     

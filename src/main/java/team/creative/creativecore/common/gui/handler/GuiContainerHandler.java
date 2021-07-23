@@ -3,15 +3,16 @@ package team.creative.creativecore.common.gui.handler;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-import net.minecraft.client.gui.ScreenManager;
+import com.mojang.blaze3d.platform.ScreenManager;
+
 import net.minecraft.client.gui.ScreenManager.IScreenFactory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.DeferredRegister;
@@ -25,40 +26,40 @@ import team.creative.creativecore.common.network.CreativePacket;
 
 public class GuiContainerHandler {
     
-    public static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, CreativeCore.MODID);
+    public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, CreativeCore.MODID);
     
     private static HashMap<String, GuiContainerHandler> guihandlers = new HashMap<String, GuiContainerHandler>();
     
-    INamedContainerProvider provider;
-    Supplier<ContainerType<ContainerIntegration>> type;
+    MenuProvider provider;
+    Supplier<MenuType<ContainerIntegration>> type;
     
     public GuiContainerHandler() {}
     
     public static <T extends CreativePacket> void registerGuiHandler(String handlerid, GuiHandlerPlayer handler) {
         guihandlers.put(handlerid, handler);
-        handler.type = CONTAINERS.register(handlerid, () -> new ContainerType<ContainerIntegration>(null) {
+        handler.type = CONTAINERS.register(handlerid, () -> new MenuType<ContainerIntegration>(null) {
             @Override
-            public ContainerIntegration create(int windowId, PlayerInventory playerInv, net.minecraft.network.PacketBuffer extraData) {
+            public ContainerIntegration create(int windowId, Inventory playerInv, net.minecraft.network.FriendlyByteBuf extraData) {
                 return new ContainerIntegration(this, windowId, playerInv.player, handler.create(playerInv.player));
             }
             
             @Override
-            public ContainerIntegration create(int windowId, PlayerInventory playerInv) {
+            public ContainerIntegration create(int windowId, Inventory playerInv) {
                 return new ContainerIntegration(this, windowId, playerInv.player, handler.create(playerInv.player));
             }
         });
         
-        handler.provider = new SimpleNamedContainerProvider((id, inventory, player) -> {
+        handler.provider = new SimpleMenuProvider((id, inventory, player) -> {
             ContainerIntegration integration = new ContainerIntegration(handler.type.get(), id, player, handler.create(player));
             return integration;
-        }, new StringTextComponent(handlerid));
+        }, new TextComponent(handlerid));
     }
     
     public static GuiContainerHandler getHandler(String id) {
         return guihandlers.get(id);
     }
     
-    public static void openGui(PlayerEntity player, String name) {
+    public static void openGui(Player player, String name) {
         GuiContainerHandler handler = getHandler(name);
         if (handler != null) {
             if (player.level.isClientSide)
@@ -74,7 +75,7 @@ public class GuiContainerHandler {
             ScreenManager.register(handler.type.get(), new IScreenFactory<ContainerIntegration, ContainerScreenIntegration>() {
                 
                 @Override
-                public ContainerScreenIntegration create(ContainerIntegration container, PlayerInventory inventory, ITextComponent p_create_3_) {
+                public ContainerScreenIntegration create(ContainerIntegration container, Inventory inventory, Component p_create_3_) {
                     return new ContainerScreenIntegration(container, inventory);
                 }
             });
@@ -83,7 +84,7 @@ public class GuiContainerHandler {
     
     public static abstract class GuiHandlerPlayer extends GuiContainerHandler {
         
-        public abstract GuiLayer create(PlayerEntity player);
+        public abstract GuiLayer create(Player player);
         
     }
     

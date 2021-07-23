@@ -2,7 +2,7 @@ package team.creative.creativecore.common.util.mc;
 
 import java.util.HashMap;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.material.Material;
 
 public class MaterialUtils {
     
@@ -67,10 +67,12 @@ public class MaterialUtils {
         registerMaterial("heavy_metal", Material.HEAVY_METAL);
         registerMaterial("barrier", Material.BARRIER);
         registerMaterial("piston", Material.PISTON);
-        registerMaterial("coral", Material.CORAL);
+        registerMaterial("coral", Material.MOSS);
         registerMaterial("vegetable", Material.VEGETABLE);
         registerMaterial("egg", Material.EGG);
         registerMaterial("cake", Material.CAKE);
+        registerMaterial("amethyst", Material.AMETHYST);
+        registerMaterial("powder_snow", Material.POWDER_SNOW);
     }
     
 }

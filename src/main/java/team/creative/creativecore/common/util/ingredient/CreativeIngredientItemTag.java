@@ -1,17 +1,17 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class CreativeIngredientItemTag extends CreativeIngredient {
     
-    public ITag<Item> tag;
+    public Tag<Item> tag;
     
-    public CreativeIngredientItemTag(ITag<Item> tag) {
+    public CreativeIngredientItemTag(Tag<Item> tag) {
         this.tag = tag;
     }
     
@@ -20,12 +20,12 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundNBT nbt) {
+    protected void writeExtra(CompoundTag nbt) {
         nbt.putString("tag", ItemTags.getAllTags().getId(tag).toString());
     }
     
     @Override
-    protected void readExtra(CompoundNBT nbt) {
+    protected void readExtra(CompoundTag nbt) {
         tag = ItemTags.getAllTags().getTag(new ResourceLocation(nbt.getString("tag")));
     }
     

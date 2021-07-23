@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui.controls;
 
 import java.util.function.Consumer;
 
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiButton extends GuiLabel {

@@ -2,7 +2,8 @@ package team.creative.creativecore.client.render.model;
 
 import java.util.ArrayList;
 
-import net.minecraft.client.renderer.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.LightUtil;

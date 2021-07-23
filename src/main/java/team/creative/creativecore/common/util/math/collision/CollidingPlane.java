@@ -2,7 +2,7 @@ package team.creative.creativecore.common.util.math.collision;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.BoxCorner;
 import team.creative.creativecore.common.util.math.matrix.Matrix4;
@@ -38,7 +38,7 @@ public class CollidingPlane {
     
     public static final int accuracySteps = 10;
     
-    public Double binarySearch(@Nullable Double value, AxisAlignedBB toCheck, double checkRadiusSquared, Vec3d center, CollisionCoordinator coordinator) {
+    public Double binarySearch(@Nullable Double value, AABB toCheck, double checkRadiusSquared, Vec3d center, CollisionCoordinator coordinator) {
         if (coordinator.isSimple) {
             Double t = searchBetweenSimple(value, center, new Vec3d(center), new Vec3d(), 0, 1, coordinator, 0);
             if (t != null && intersects(toCheck, checkRadiusSquared, center, t, coordinator))
@@ -127,7 +127,7 @@ public class CollidingPlane {
         return null;
     }
     
-    public boolean intersects(AxisAlignedBB toCheck, double checkRadiusSquared, Vec3d center, double t, CollisionCoordinator coordinator) {
+    public boolean intersects(AABB toCheck, double checkRadiusSquared, Vec3d center, double t, CollisionCoordinator coordinator) {
         Vec3d cachedCenter = new Vec3d(cache.center);
         coordinator.origin.transformPointToWorld(cachedCenter);
         coordinator.transform(cachedCenter, t);
@@ -237,7 +237,7 @@ public class CollidingPlane {
         public final Vec3d center;
         public final double radiusSquared;
         
-        public PlaneCache(AxisAlignedBB box) {
+        public PlaneCache(AABB box) {
             this.radiusSquared = (box.minX * box.maxX + box.minY * box.maxY + box.minZ * box.maxZ) * 0.5;
             this.center = new Vec3d(box.minX + (box.maxX - box.minX) * 0.5D, box.minY + (box.maxY - box.minY) * 0.5D, box.minZ + (box.maxZ - box.minZ) * 0.5D);
         }
@@ -256,7 +256,7 @@ public class CollidingPlane {
         public Facing facing;
         public OrientatedVoxelShape pushBox;
         
-        public AxisAlignedBB entityBox;
+        public AABB entityBox;
         public OrientatedVoxelShape entityBoxOrientated;
     }
 }

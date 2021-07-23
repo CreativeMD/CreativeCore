@@ -6,23 +6,23 @@ import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Matrix4f;
 
+import net.minecraft.SharedConstants;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.SharedConstants;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.Style;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
@@ -135,8 +135,8 @@ public class GuiTextfield extends GuiFocusControl {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
-        FontRenderer fontRenderer = GuiRenderHelper.getFont();
+    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
+        Font fontRenderer = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();
@@ -320,7 +320,7 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     public void clampCursorPosition(int pos) {
-        this.cursorPosition = MathHelper.clamp(pos, 0, this.text.length());
+        this.cursorPosition = Mth.clamp(pos, 0, this.text.length());
     }
     
     public void setCursorPositionZero() {
@@ -419,8 +419,8 @@ public class GuiTextfield extends GuiFocusControl {
         super.mouseClicked(mouseX, mouseY, button);
         
         if (button == 0) {
-            int i = MathHelper.floor(mouseX);
-            FontRenderer fontRenderer = GuiRenderHelper.getFont();
+            int i = Mth.floor(mouseX);
+            Font fontRenderer = GuiRenderHelper.getFont();
             String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), getContentWidth());
             this.setCursorPosition(fontRenderer.plainSubstrByWidth(s, i).length() + this.lineScrollOffset);
             return true;
@@ -447,13 +447,13 @@ public class GuiTextfield extends GuiFocusControl {
         if (startX > this.getX() + this.getWidth())
             startX = this.getX() + this.getWidth();
         
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
-        RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+        RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        bufferbuilder.begin(7, DefaultVertexFormat.POSITION);
         bufferbuilder.vertex(matrix, startX, endY, 0).endVertex();
         bufferbuilder.vertex(matrix, endX, endY, 0).endVertex();
         bufferbuilder.vertex(matrix, endX, startY, 0).endVertex();
@@ -488,10 +488,10 @@ public class GuiTextfield extends GuiFocusControl {
     
     public void setSelectionPos(int position) {
         int textLength = this.text.length();
-        this.selectionEnd = MathHelper.clamp(position, 0, textLength);
+        this.selectionEnd = Mth.clamp(position, 0, textLength);
         if (getParent() == null || !hasLayer())
             return;
-        FontRenderer fontRenderer = GuiRenderHelper.getFont();
+        Font fontRenderer = GuiRenderHelper.getFont();
         if (fontRenderer != null) {
             if (this.lineScrollOffset > textLength)
                 this.lineScrollOffset = textLength;
@@ -507,7 +507,7 @@ public class GuiTextfield extends GuiFocusControl {
             else if (this.selectionEnd <= this.lineScrollOffset)
                 this.lineScrollOffset -= this.lineScrollOffset - this.selectionEnd;
             
-            this.lineScrollOffset = MathHelper.clamp(this.lineScrollOffset, 0, textLength);
+            this.lineScrollOffset = Mth.clamp(this.lineScrollOffset, 0, textLength);
         }
         
     }

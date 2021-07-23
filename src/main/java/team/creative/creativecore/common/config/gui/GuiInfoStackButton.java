@@ -2,11 +2,11 @@ package team.creative.creativecore.common.config.gui;
 
 import java.util.List;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.GuiButtonFixed;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -31,7 +31,7 @@ public class GuiInfoStackButton extends GuiButtonFixed {
     public GuiInfoStackButton(String name, int x, int y, int width, int height, CreativeIngredient info) {
         super(name, x, y, width, height, null);
         pressed = button -> {
-            FullItemDialogGuiLayer layer = (FullItemDialogGuiLayer) this.getParent().openLayer(new LayerOpenPacket("info", new CompoundNBT()));
+            FullItemDialogGuiLayer layer = (FullItemDialogGuiLayer) this.getParent().openLayer(new LayerOpenPacket("info", new CompoundTag()));
             layer.button = this;
             layer.init();
         };
@@ -45,22 +45,22 @@ public class GuiInfoStackButton extends GuiButtonFixed {
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
-    public static List<ITextComponent> getLabelText(CreativeIngredient value) {
+    public static List<Component> getLabelText(CreativeIngredient value) {
         TextBuilder text = new TextBuilder();
         if (value != null) {
             text.stack(value.getExample());
             if (value instanceof CreativeIngredientBlock)
-                text.text("Block: " + TextFormatting.YELLOW + ((CreativeIngredientBlock) value).block.getRegistryName().toString());
+                text.text("Block: " + ChatFormatting.YELLOW + ((CreativeIngredientBlock) value).block.getRegistryName().toString());
             else if (value instanceof CreativeIngredientBlockTag)
-                text.text("Blocktag: " + TextFormatting.YELLOW + BlockTags.getAllTags().getId(((CreativeIngredientBlockTag) value).tag).toString());
+                text.text("Blocktag: " + ChatFormatting.YELLOW + BlockTags.getAllTags().getId(((CreativeIngredientBlockTag) value).tag).toString());
             else if (value instanceof CreativeIngredientItem)
-                text.text("Item: " + TextFormatting.YELLOW + ((CreativeIngredientItem) value).item.getRegistryName().toString());
+                text.text("Item: " + ChatFormatting.YELLOW + ((CreativeIngredientItem) value).item.getRegistryName().toString());
             else if (value instanceof CreativeIngredientItemTag)
-                text.text("Itemtag: " + TextFormatting.YELLOW + ItemTags.getAllTags().getId(((CreativeIngredientItemTag) value).tag).toString());
+                text.text("Itemtag: " + ChatFormatting.YELLOW + ItemTags.getAllTags().getId(((CreativeIngredientItemTag) value).tag).toString());
             else if (value instanceof CreativeIngredientItemStack)
-                text.text("Stack: " + TextFormatting.YELLOW).add(((CreativeIngredientItemStack) value).stack.getDisplayName());
+                text.text("Stack: " + ChatFormatting.YELLOW).add(((CreativeIngredientItemStack) value).stack.getDisplayName());
             else if (value instanceof CreativeIngredientMaterial)
-                text.text("Material: " + TextFormatting.YELLOW + MaterialUtils.getName(((CreativeIngredientMaterial) value).material));
+                text.text("Material: " + ChatFormatting.YELLOW + MaterialUtils.getName(((CreativeIngredientMaterial) value).material));
             else if (value instanceof CreativeIngredientFuel)
                 text.text("Fuel");
             else
@@ -78,7 +78,7 @@ public class GuiInfoStackButton extends GuiButtonFixed {
         GuiLayerHandler.registerGuiLayerHandler("info", new GuiLayerHandler() {
             
             @Override
-            public GuiLayer create(IGuiIntegratedParent parent, CompoundNBT nbt) {
+            public GuiLayer create(IGuiIntegratedParent parent, CompoundTag nbt) {
                 return new FullItemDialogGuiLayer();
             }
         });

@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.controls;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,7 +55,7 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
         
         @Override
         @OnlyIn(value = Dist.CLIENT)
-        protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+        protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
             if (selected)
                 text.defaultColor = rect.inside(mouseX, mouseY) ? ColorUtils.toInt(230, 230, 0, 255) : ColorUtils.toInt(200, 200, 0, 255);
             else if (rect.inside(mouseX, mouseY))

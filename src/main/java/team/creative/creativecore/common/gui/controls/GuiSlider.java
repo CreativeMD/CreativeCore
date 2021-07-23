@@ -2,9 +2,9 @@ package team.creative.creativecore.common.gui.controls;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -180,7 +180,7 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     }
     
     @Override
-    protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
         double percent = getPercentage();
         
         int posX = (int) ((getContentWidth() - sliderWidth) * percent);

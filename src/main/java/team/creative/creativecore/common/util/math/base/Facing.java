@@ -1,12 +1,12 @@
 package team.creative.creativecore.common.util.math.base;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.math.geo.NormalPlane;
 
 public enum Facing {
     
-    DOWN(Axis.Y, false, new Vector3i(0, -1, 0)) {
+    DOWN(Axis.Y, false, new Vec3i(0, -1, 0)) {
         @Override
         public Facing opposite() {
             return Facing.UP;
@@ -17,7 +17,7 @@ public enum Facing {
             return Direction.DOWN;
         }
     },
-    UP(Axis.Y, true, new Vector3i(0, 1, 0)) {
+    UP(Axis.Y, true, new Vec3i(0, 1, 0)) {
         @Override
         public Facing opposite() {
             return Facing.DOWN;
@@ -28,7 +28,7 @@ public enum Facing {
             return Direction.UP;
         }
     },
-    NORTH(Axis.Z, false, new Vector3i(0, 0, -1)) {
+    NORTH(Axis.Z, false, new Vec3i(0, 0, -1)) {
         @Override
         public Facing opposite() {
             return SOUTH;
@@ -39,7 +39,7 @@ public enum Facing {
             return Direction.NORTH;
         }
     },
-    SOUTH(Axis.Z, true, new Vector3i(0, 0, 1)) {
+    SOUTH(Axis.Z, true, new Vec3i(0, 0, 1)) {
         @Override
         public Facing opposite() {
             return Facing.NORTH;
@@ -50,7 +50,7 @@ public enum Facing {
             return Direction.SOUTH;
         }
     },
-    WEST(Axis.X, false, new Vector3i(-1, 0, 0)) {
+    WEST(Axis.X, false, new Vec3i(-1, 0, 0)) {
         @Override
         public Facing opposite() {
             return Facing.EAST;
@@ -61,7 +61,7 @@ public enum Facing {
             return Direction.WEST;
         }
     },
-    EAST(Axis.X, true, new Vector3i(1, 0, 0)) {
+    EAST(Axis.X, true, new Vec3i(1, 0, 0)) {
         @Override
         public Facing opposite() {
             return Facing.WEST;
@@ -109,10 +109,10 @@ public enum Facing {
     public final String name;
     public final Axis axis;
     public final boolean positive;
-    public final Vector3i normal;
+    public final Vec3i normal;
     public final NormalPlane plane;
     
-    private Facing(Axis axis, boolean positive, Vector3i normal) {
+    private Facing(Axis axis, boolean positive, Vec3i normal) {
         this.name = name().toLowerCase();
         this.axis = axis;
         this.positive = positive;

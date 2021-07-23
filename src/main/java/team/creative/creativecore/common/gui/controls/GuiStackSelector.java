@@ -3,15 +3,15 @@ package team.creative.creativecore.common.gui.controls;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.AirBlock;
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -27,10 +27,10 @@ public class GuiStackSelector extends GuiButtonFixed {
     public StackCollector collector;
     protected HashMapList<String, ItemStack> stacks;
     
-    public PlayerEntity player;
+    public Player player;
     public boolean searchBar;
     
-    public GuiStackSelector(String name, int x, int y, int width, PlayerEntity player, StackCollector collector, boolean searchBar) {
+    public GuiStackSelector(String name, int x, int y, int width, Player player, StackCollector collector, boolean searchBar) {
         super(name, x, y, width, 18, null);
         pressed = (button) -> {
             if (extension == null)
@@ -45,7 +45,7 @@ public class GuiStackSelector extends GuiButtonFixed {
         selectFirst();
     }
     
-    public GuiStackSelector(String name, int x, int y, int width, PlayerEntity player, StackCollector collector) {
+    public GuiStackSelector(String name, int x, int y, int width, Player player, StackCollector collector) {
         this(name, x, y, width, player, collector, true);
     }
     
@@ -61,7 +61,7 @@ public class GuiStackSelector extends GuiButtonFixed {
     }
     
     @Override
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return player;
     }
     
@@ -132,7 +132,7 @@ public class GuiStackSelector extends GuiButtonFixed {
             this.selector = selector;
         }
         
-        public abstract HashMapList<String, ItemStack> collect(PlayerEntity player);
+        public abstract HashMapList<String, ItemStack> collect(Player player);
         
     }
     
@@ -143,13 +143,13 @@ public class GuiStackSelector extends GuiButtonFixed {
         }
         
         @Override
-        public HashMapList<String, ItemStack> collect(PlayerEntity player) {
+        public HashMapList<String, ItemStack> collect(Player player) {
             HashMapList<String, ItemStack> stacks = new HashMapList<>();
             
             if (player != null) {
                 // Inventory
                 List<ItemStack> tempStacks = new ArrayList<>();
-                for (ItemStack stack : player.inventory.items)
+                for (ItemStack stack : player.inventoryMenu.getItems())
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
                     else {
@@ -187,14 +187,14 @@ public class GuiStackSelector extends GuiButtonFixed {
         }
         
         @Override
-        public HashMapList<String, ItemStack> collect(PlayerEntity player) {
+        public HashMapList<String, ItemStack> collect(Player player) {
             HashMapList<String, ItemStack> stacks = super.collect(player);
             
             NonNullList<ItemStack> tempStacks = NonNullList.create();
             
             for (Item item : ForgeRegistries.ITEMS)
                 if (!item.getCreativeTabs().isEmpty())
-                    item.fillItemCategory(ItemGroup.TAB_SEARCH, tempStacks);
+                    item.fillItemCategory(CreativeModeTab.TAB_SEARCH, tempStacks);
                 
             List<ItemStack> newStacks = new ArrayList<>();
             for (ItemStack stack : tempStacks) {
@@ -240,7 +240,7 @@ public class GuiStackSelector extends GuiButtonFixed {
             return true;
         if (getItemName(stack).toLowerCase().contains(search))
             return true;
-        for (ITextComponent line : stack.getTooltipLines(null, TooltipFlags.NORMAL))
+        for (Component line : stack.getTooltipLines(null, TooltipFlag.Default.NORMAL))
             if (line.getString().toLowerCase().contains(search))
                 return true;
             

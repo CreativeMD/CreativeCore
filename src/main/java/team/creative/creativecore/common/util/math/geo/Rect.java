@@ -1,12 +1,12 @@
 package team.creative.creativecore.common.util.math.geo;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Direction.Axis;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.util.math.base.Axis;
 
 public class Rect {
     
@@ -71,7 +71,7 @@ public class Rect {
     
     @OnlyIn(value = Dist.CLIENT)
     public void scissor() {
-        MainWindow window = Minecraft.getInstance().getWindow();
+        Window window = Minecraft.getInstance().getWindow();
         double realMinX = minX * window.getGuiScale();
         double realMinY = window.getHeight() - (minY + getHeight()) * window.getGuiScale();
         double realMaxX = getWidth() * window.getGuiScale();

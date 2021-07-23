@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui.dialog;
 
 import java.util.function.BiConsumer;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
@@ -13,7 +13,7 @@ import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 public class GuiDialogHandler extends GuiLayerHandler {
     
     @Override
-    public GuiLayer create(IGuiIntegratedParent parent, CompoundNBT nbt) {
+    public GuiLayer create(IGuiIntegratedParent parent, CompoundTag nbt) {
         int[] array = nbt.getIntArray("buttons");
         DialogButton[] buttons = new DialogButton[array.length];
         for (int i = 0; i < array.length; i++)
@@ -22,7 +22,7 @@ public class GuiDialogHandler extends GuiLayerHandler {
     }
     
     public static GuiLayer openDialog(IGuiParent parent, String name, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putString("name", name);
         int[] array = new int[buttons.length];
         for (int i = 0; i < array.length; i++)

@@ -52,6 +52,10 @@ public class GuiVBox extends GuiLayoutControl {
             case RIGHT:
                 control.setX(width - control.getWidth());
                 break;
+            case STRETCH:
+                break;
+            default:
+                break;
             }
             control.setY(yOffset);
             yOffset += control.getHeight() + spacing;
@@ -67,6 +71,12 @@ public class GuiVBox extends GuiLayoutControl {
                     break;
                 case BOTTOM:
                     control.setY(height - yOffset + y);
+                    break;
+                case STRETCH:
+                    break;
+                case TOP:
+                    break;
+                default:
                     break;
                 }
                 y += control.getHeight() + spacing;

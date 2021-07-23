@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Material;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlock;

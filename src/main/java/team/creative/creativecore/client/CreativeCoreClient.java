@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ExtensionPoint;
+import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.resource.IResourceType;
@@ -33,7 +33,7 @@ public class CreativeCoreClient {
     private static Minecraft mc = Minecraft.getInstance();
     
     public static void registerClientConfig(String modid) {
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (a, b) -> {
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.CONFIGGUIFACTORY, () -> (a, b) -> {
             ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(modid);
             if (holder != null && !holder.isEmpty(Dist.CLIENT))
                 return new GuiScreenIntegration(new ConfigGuiLayer(holder, Dist.CLIENT));

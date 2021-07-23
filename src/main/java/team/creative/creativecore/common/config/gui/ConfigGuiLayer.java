@@ -3,8 +3,8 @@ package team.creative.creativecore.common.config.gui;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.holder.ConfigKey;
@@ -77,12 +77,12 @@ public class ConfigGuiLayer extends GuiLayer {
             clear();
         }
         GuiLeftRightBox upperBox = new GuiLeftRightBox("upperbox", 0, 0);
-        upperBox.add(new GuiLabel("path", 0, 2).setTitle(new StringTextComponent("/" + String.join("/", holder.path()))));
+        upperBox.add(new GuiLabel("path", 0, 2).setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         
         if (holder != rootHolder)
             upperBox.addRight(new GuiButton("back", 0, 0, x -> {
                 loadHolder(holder.parent());
-            }).setTitle(new TranslationTextComponent("gui.back")));
+            }).setTitle(new TranslatableComponent("gui.back")));
         this.holder = holder;
         
         add(upperBox);
@@ -103,20 +103,20 @@ public class ConfigGuiLayer extends GuiLayer {
                 if (!((ICreativeConfigHolder) value).isEmpty(side)) {
                     box.add(new GuiButtonFixed(caption, offsetX, offsetY, 100, 20, x -> {
                         loadHolder((ICreativeConfigHolder) value);
-                    }).setTitle(new StringTextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                    }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
                     offsetY += 21;
                 }
             } else {
                 if (!key.is(side))
                     continue;
                 
-                GuiLabel label = new GuiLabel(caption + ":", offsetX, offsetY + 2).setTitle(new StringTextComponent(caption + ":"));
+                GuiLabel label = new GuiLabel(caption + ":", offsetX, offsetY + 2).setTitle(new TextComponent(caption + ":"));
                 
                 GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, 0, offsetY, 100, 16, side);
                 GuiButton resetButton = (GuiButton) new GuiButtonFixed("r", offsetX + 370, offsetY, 14, 14, x -> {
                     config.reset();
                     ConfigGuiLayer.this.changed = true;
-                }).setTitle(new StringTextComponent("r"));
+                }).setTitle(new TextComponent("r"));
                 
                 int labelWidth = 110;
                 config.setX(label.getX() + labelWidth + 2);
@@ -135,13 +135,13 @@ public class ConfigGuiLayer extends GuiLayer {
         lowerBox.add(new GuiButton("cancel", 0, 205, x -> {
             nextAction = 0;
             closeTopLayer();
-        }).setTitle(new TranslationTextComponent("gui.cancel")));
+        }).setTitle(new TranslatableComponent("gui.cancel")));
         
         if (side == Dist.DEDICATED_SERVER)
             lowerBox.add(new GuiButton("client-config", 40, 205, x -> {
                 nextAction = 1;
                 closeTopLayer();
-            }).setTitle(new TranslationTextComponent("gui.client-config")));
+            }).setTitle(new TranslatableComponent("gui.client-config")));
         
         lowerBox.addRight(new GuiButton("save", 370, 205, x -> {
             nextAction = 0;
@@ -149,7 +149,7 @@ public class ConfigGuiLayer extends GuiLayer {
             sendUpdate();
             force = true;
             closeTopLayer();
-        }).setTitle(new TranslationTextComponent("gui.save")));
+        }).setTitle(new TranslatableComponent("gui.save")));
         add(lowerBox);
         reinit();
     }

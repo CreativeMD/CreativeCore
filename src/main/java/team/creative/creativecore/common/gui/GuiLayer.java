@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.gui;
 
-import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -60,7 +60,7 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public GameSettings getSettings() {
+    public Options getSettings() {
         return Minecraft.getInstance().options;
     }
     

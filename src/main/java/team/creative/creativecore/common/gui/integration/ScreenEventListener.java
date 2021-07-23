@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHelper;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.util.NativeUtil;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
-public class ScreenEventListener implements IGuiEventListener {
+public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
     private static final Field eventTime = ObfuscationReflectionHelper.findField(MouseHelper.class, "field_198045_j");
     public static final double DOUBLE_CLICK_TIME = 0.2;
@@ -130,6 +132,14 @@ public class ScreenEventListener implements IGuiEventListener {
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return true;
+    }
+    
+    @Override
+    public void updateNarration(NarrationElementOutput p_169152_) {}
+    
+    @Override
+    public NarrationPriority narrationPriority() {
+        return NarrationPriority.NONE;
     }
     
 }

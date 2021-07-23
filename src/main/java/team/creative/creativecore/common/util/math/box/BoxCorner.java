@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.box;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.transformation.Rotation;

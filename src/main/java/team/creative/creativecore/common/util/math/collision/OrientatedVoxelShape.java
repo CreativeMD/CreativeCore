@@ -1,12 +1,12 @@
 package team.creative.creativecore.common.util.math.collision;
 
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.shapes.SplitVoxelShape;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.phys.shapes.SliceShape;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import team.creative.creativecore.common.util.math.collision.CollidingPlane.PlaneCache;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 
-public class OrientatedVoxelShape extends SplitVoxelShape {
+public class OrientatedVoxelShape extends SliceShape {
     
     public IVecOrigin origin;
     public PlaneCache cache;

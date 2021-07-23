@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.controls;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -58,7 +58,7 @@ public class GuiLabelFixed extends GuiLabel {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
         matrix.translate(rect.getWidth() / 2 - text.usedWidth / 2, rect.getHeight() / 2 - text.usedHeight / 2, 0);
         text.render(matrix);
     }

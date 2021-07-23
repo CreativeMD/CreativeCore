@@ -2,25 +2,25 @@ package team.creative.creativecore.common.util.text;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.TextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.BaseComponent;
 
-public class LinebreakTextComponent extends TextComponent implements IAdvancedTextComponent {
+public class LinebreakComponent extends BaseComponent implements IAdvancedTextComponent {
     
     @Override
-    public TextComponent plainCopy() {
-        return new LinebreakTextComponent();
+    public BaseComponent plainCopy() {
+        return new LinebreakComponent();
     }
     
     @Override
-    public int getWidth(FontRenderer font) {
+    public int getWidth(Font font) {
         return 0;
     }
     
     @Override
-    public int getHeight(FontRenderer font) {
+    public int getHeight(Font font) {
         return 0;
     }
     
@@ -40,6 +40,6 @@ public class LinebreakTextComponent extends TextComponent implements IAdvancedTe
     }
     
     @Override
-    public void render(MatrixStack stack, FontRenderer font, int defaultColor) {}
+    public void render(PoseStack stack, Font font, int defaultColor) {}
     
 }

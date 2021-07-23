@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class CreativeIngredientBlock extends CreativeIngredient {
@@ -19,12 +19,12 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundNBT nbt) {
+    protected void writeExtra(CompoundTag nbt) {
         nbt.putString("block", block.getRegistryName().toString());
     }
     
     @Override
-    protected void readExtra(CompoundNBT nbt) {
+    protected void readExtra(CompoundTag nbt) {
         block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("block")));
     }
     

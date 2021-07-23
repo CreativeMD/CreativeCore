@@ -2,7 +2,8 @@ package team.creative.creativecore.common.config.sync;
 
 import com.google.gson.JsonObject;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
@@ -29,7 +30,7 @@ public class ConfigurationPacket extends CreativePacket {
     }
     
     @Override
-    public void executeClient(PlayerEntity player) {
+    public void executeClient(Player player) {
         ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(path);
         if (holder != null)
             holder.load(true, ignoreRestart, json, Dist.DEDICATED_SERVER);
@@ -37,11 +38,11 @@ public class ConfigurationPacket extends CreativePacket {
     }
     
     @Override
-    public void executeServer(PlayerEntity player) {
+    public void executeServer(ServerPlayer player) {
         
     }
     
-    public static void updateGui(PlayerEntity player) {
+    public static void updateGui(Player player) {
         if (player != null && player.containerMenu instanceof IGuiIntegratedParent) {
             
             if (((IGuiIntegratedParent) player.containerMenu).isOpen(ConfigGuiLayer.class) || ((IGuiIntegratedParent) player.containerMenu).isOpen(ClientSyncGuiLayer.class))

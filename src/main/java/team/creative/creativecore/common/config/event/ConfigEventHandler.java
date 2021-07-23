@@ -24,15 +24,15 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
@@ -65,8 +65,8 @@ public class ConfigEventHandler {
     @SubscribeEvent
     public void playerLoggedIn(PlayerLoggedInEvent event) {
         if (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer().getServer())) {
-            CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (ServerPlayerEntity) event.getPlayer());
-            CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (ServerPlayerEntity) event.getPlayer());
+            CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), (ServerPlayer) event.getPlayer());
+            CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), (ServerPlayer) event.getPlayer());
         }
     }
     
@@ -90,7 +90,7 @@ public class ConfigEventHandler {
         CreativeCore.NETWORK.sendToClientAll(new ConfigurationPacket(holder, true));
     }
     
-    public void sync(ICreativeConfigHolder holder, ServerPlayerEntity player) {
+    public void sync(ICreativeConfigHolder holder, ServerPlayer player) {
         CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(holder, true), player);
     }
     
@@ -98,7 +98,7 @@ public class ConfigEventHandler {
         sync(CreativeConfigRegistry.ROOT);
     }
     
-    public void syncAll(ServerPlayerEntity player) {
+    public void syncAll(ServerPlayer player) {
         sync(CreativeConfigRegistry.ROOT, player);
     }
     

@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.config.premade;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SoundConfig {
@@ -22,11 +22,11 @@ public class SoundConfig {
         this(location, 1, 1);
     }
     
-    public void play(Entity entity, SoundCategory category) {
+    public void play(Entity entity, SoundSource category) {
         entity.level.playSound(null, entity, ForgeRegistries.SOUND_EVENTS.getValue(event), category, volume, pitch);
     }
     
-    public void play(World world, double x, double y, double z, SoundCategory category) {
-        world.playSound(null, x, y, z, ForgeRegistries.SOUND_EVENTS.getValue(event), category, volume, pitch);
+    public void play(Level level, double x, double y, double z, SoundSource category) {
+        level.playSound(null, x, y, z, ForgeRegistries.SOUND_EVENTS.getValue(event), category, volume, pitch);
     }
 }

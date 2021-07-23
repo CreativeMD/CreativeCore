@@ -2,14 +2,14 @@ package team.creative.creativecore.common.gui.integration;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fmlclient.gui.GuiUtils;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -32,7 +32,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public default void render(MatrixStack matrixStack, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
+    public default void render(PoseStack matrixStack, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
         int width = screen.width;
         int height = screen.height;
         
@@ -54,7 +54,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             int offY = (height - layer.getHeight()) / 2;
             matrixStack.translate(offX, offY, 0);
             
-            RenderSystem.blendColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
             layer.render(matrixStack, controlRect, screenRect.intersection(controlRect), mouseX, mouseY);
             matrixStack.popPose();

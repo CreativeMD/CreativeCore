@@ -2,11 +2,11 @@ package team.creative.creativecore.common.gui.controls;
 
 import java.util.List;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
@@ -40,13 +40,13 @@ public class SlotViewer extends GuiControlBasic {
     }
     
     @Override
-    public List<ITextComponent> getTooltip() {
-        return stack.getTooltipLines(getPlayer(), TooltipFlags.NORMAL);
+    public List<Component> getTooltip() {
+        return stack.getTooltipLines(getPlayer(), TooltipFlag.Default.NORMAL);
     }
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(MatrixStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
         matrix.translate(0, 0, 10);
         GuiRenderHelper.drawItemStack(matrix, stack);
         matrix.translate(0, 0, 10);

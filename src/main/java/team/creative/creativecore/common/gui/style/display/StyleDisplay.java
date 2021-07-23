@@ -8,9 +8,9 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
@@ -34,16 +34,16 @@ public abstract class StyleDisplay {
         types.put(id, clazz);
     }
     
-    public void render(MatrixStack matrix, double width, double height) {
+    public void render(PoseStack matrix, double width, double height) {
         render(matrix, 0, 0, width, height);
     }
     
-    public void render(MatrixStack matrix, Rect origin, Rect rect) {
+    public void render(PoseStack matrix, Rect origin, Rect rect) {
         //render(matrix, rect.minX - origin.minX, rect.minY - origin.minY, rect.getWidth(), rect.getHeight());
         render(matrix, rect.getWidth(), rect.getHeight());
     }
     
-    public void render(MatrixStack matrix, double x, double y, double width, double height) {
+    public void render(PoseStack matrix, double x, double y, double width, double height) {
         matrix.pushPose();
         render(matrix.last().pose(), x, y, width, height);
         matrix.popPose();
