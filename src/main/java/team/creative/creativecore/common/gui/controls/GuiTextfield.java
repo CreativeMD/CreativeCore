@@ -12,16 +12,17 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Matrix4f;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,8 +44,8 @@ public class GuiTextfield extends GuiFocusControl {
     private String suggestion;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
-    private BiFunction<String, Integer, IReorderingProcessor> textFormatter = (text, pos) -> {
-        return IReorderingProcessor.forward(text, Style.EMPTY);
+    private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
+        return FormattedCharSequence.forward(text, Style.EMPTY);
     };
     
     public GuiTextfield(String name, int x, int y, int width) {
@@ -171,7 +172,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (flag1)
             if (flag2)
-                AbstractGui.fill(matrix, k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
+                GuiComponent.fill(matrix, k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
             else
                 fontRenderer.drawShadow(matrix, "_", k1, i1, color);
             
@@ -453,7 +454,7 @@ public class GuiTextfield extends GuiFocusControl {
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(7, DefaultVertexFormat.POSITION);
+        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION);
         bufferbuilder.vertex(matrix, startX, endY, 0).endVertex();
         bufferbuilder.vertex(matrix, endX, endY, 0).endVertex();
         bufferbuilder.vertex(matrix, endX, startY, 0).endVertex();

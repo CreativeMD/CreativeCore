@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.gui.style.display;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -36,8 +34,7 @@ public class DisplayColor extends StyleDisplay {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        //RenderSystem.shadeModel(GL11.GL_SMOOTH);
         
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder buffer = tessellator.getBuilder();
@@ -48,7 +45,7 @@ public class DisplayColor extends StyleDisplay {
         buffer.vertex(mat, (float) (x + width), (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
         tessellator.end();
         
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        //RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }

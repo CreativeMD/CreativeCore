@@ -2,18 +2,19 @@ package team.creative.creativecore.common.gui.integration;
 
 import java.lang.reflect.Field;
 
+import com.mojang.blaze3d.Blaze3D;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHelper;
+import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.util.NativeUtil;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
-    private static final Field eventTime = ObfuscationReflectionHelper.findField(MouseHelper.class, "field_198045_j");
+    private static final Field eventTime = ObfuscationReflectionHelper.findField(MouseHandler.class, "field_198045_j");
     public static final double DOUBLE_CLICK_TIME = 0.2;
     
     private final IGuiIntegratedParent gui;
@@ -38,7 +39,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     }
     
     public void tick() {
-        if (doubleClickButton != -1 && NativeUtil.getTime() - time > DOUBLE_CLICK_TIME)
+        if (doubleClickButton != -1 && Blaze3D.getTime() - time > DOUBLE_CLICK_TIME)
             fireRemaingEvents();
     }
     

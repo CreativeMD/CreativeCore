@@ -3,9 +3,8 @@ package team.creative.creativecore.common.gui.handler;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-import com.mojang.blaze3d.platform.ScreenManager;
-
-import net.minecraft.client.gui.ScreenManager.IScreenFactory;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.MenuProvider;
@@ -72,7 +71,7 @@ public class GuiContainerHandler {
     @OnlyIn(value = Dist.CLIENT)
     public static void initClient() {
         for (GuiContainerHandler handler : guihandlers.values())
-            ScreenManager.register(handler.type.get(), new IScreenFactory<ContainerIntegration, ContainerScreenIntegration>() {
+            MenuScreens.register(handler.type.get(), new ScreenConstructor<ContainerIntegration, ContainerScreenIntegration>() {
                 
                 @Override
                 public ContainerScreenIntegration create(ContainerIntegration container, Inventory inventory, Component p_create_3_) {

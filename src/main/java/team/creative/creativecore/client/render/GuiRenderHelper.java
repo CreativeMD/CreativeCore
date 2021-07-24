@@ -1,27 +1,29 @@
 package team.creative.creativecore.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -37,24 +39,23 @@ public class GuiRenderHelper {
     public static void drawItemStack(PoseStack matrix, ItemStack stack) {
         ItemRenderer renderer = mc.getItemRenderer();
         
-        RenderSystem.pushMatrix();
-        mc.getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
-        mc.getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS).setBlurMipmap(false, false);
-        RenderSystem.enableRescaleNormal();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.defaultAlphaFunc();
+        mc.getTextureManager().getTexture(InventoryMenu.BLOCK_ATLAS).setFilter(false, false);
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //RenderSystem.translated(x, y, 0);
-        RenderSystem.translatef(8.0F, 8.0F, 0.0F);
-        RenderSystem.scalef(1.0F, -1.0F, 1.0F);
-        RenderSystem.scalef(16, 16, 16);
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = Minecraft.getInstance().renderBuffers().bufferSource();
-        IBakedModel bakedmodel = renderer.getModel(stack, (World) null, (LivingEntity) null);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        matrix.pushPose();
+        matrix.translate(8.0D, 8.0D, 0.0D);
+        matrix.scale(1.0F, -1.0F, 1.0F);
+        matrix.scale(16.0F, 16.0F, 16.0F);
+        RenderSystem.applyModelViewMatrix();
+        PoseStack posestack1 = new PoseStack();
+        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+        BakedModel bakedmodel = renderer.getModel(stack, (Level) null, (LivingEntity) null, 0);
         boolean flag = !bakedmodel.usesBlockLight();
         if (flag)
-            RenderHelper.setupForFlatItems();
+            Lighting.setupForFlatItems();
+        
         matrix.pushPose();
         Matrix4f m = matrix.last().pose();
         Vector4f vec = new Vector4f();
@@ -62,16 +63,14 @@ public class GuiRenderHelper {
         vec.transform(m);
         float shrink = 1 / 16F;
         m.translate(new Vector3f(-vec.x() + vec.x() * shrink, -vec.y() - vec.y() * shrink, -vec.z() + vec.z() * shrink));
-        renderer.render(stack, ItemCameraTransforms.TransformType.GUI, false, matrix, irendertypebuffer$impl, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
-        matrix.popPose();
-        irendertypebuffer$impl.endBatch();
+        renderer.render(stack, ItemTransforms.TransformType.GUI, false, posestack1, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        multibuffersource$buffersource.endBatch();
         RenderSystem.enableDepthTest();
         if (flag)
-            RenderHelper.setupFor3DItems();
+            Lighting.setupFor3DItems();
         
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableRescaleNormal();
-        RenderSystem.popMatrix();
+        matrix.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
     
     public static void drawStringCentered(PoseStack stack, String text, float width, float height, int color, boolean shadow) {
@@ -98,17 +97,14 @@ public class GuiRenderHelper {
     public static void fillGradient(PoseStack matrixStack, int x1, int y1, int x2, int y2, int colorFrom, int colorTo) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(7425);
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(7, DefaultVertexFormat.POSITION_COLOR);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         fillGradient(matrixStack.last().pose(), bufferbuilder, x1, y1, x2, y2, 0, colorFrom, colorTo);
-        tessellator.end();
-        RenderSystem.shadeModel(7424);
+        tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
     }
     

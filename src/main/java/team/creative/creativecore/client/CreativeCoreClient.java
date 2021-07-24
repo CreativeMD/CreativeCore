@@ -1,23 +1,21 @@
 package team.creative.creativecore.client;
 
-import java.util.function.Predicate;
-
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
+import net.minecraftforge.fmlclient.ConfigGuiHandler.ConfigGuiFactory;
 import team.creative.creativecore.client.command.ClientCommandRegistry;
 import team.creative.creativecore.client.test.GuiTest;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
@@ -33,32 +31,34 @@ public class CreativeCoreClient {
     private static Minecraft mc = Minecraft.getInstance();
     
     public static void registerClientConfig(String modid) {
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.CONFIGGUIFACTORY, () -> (a, b) -> {
+        ModLoadingContext.get().registerExtensionPoint(ConfigGuiFactory.class, () -> new ConfigGuiFactory((a, b) -> {
             ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(modid);
             if (holder != null && !holder.isEmpty(Dist.CLIENT))
                 return new GuiScreenIntegration(new ConfigGuiLayer(holder, Dist.CLIENT));
             return null;
-        });
+        }));
     }
     
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-client")).executes((x) -> {
-                mc.player.createCommandSourceStack().sendSuccess(new StringTextComponent("Successful!"), false);
-                return 1;
-            }));
-            
-            ClientCommandRegistry.register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-gui")).executes((x) -> {
-                try {
-                    GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return 1;
-            }));
-            
             ClientCommandRegistry
-                    .register((LiteralArgumentBuilder<ISuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
+                    .register((LiteralArgumentBuilder<SharedSuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-client")).executes((x) -> {
+                        mc.player.createCommandSourceStack().sendSuccess(new TextComponent("Successful!"), false);
+                        return 1;
+                    }));
+                    
+            ClientCommandRegistry
+                    .register((LiteralArgumentBuilder<SharedSuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-gui")).executes((x) -> {
+                        try {
+                            GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return 1;
+                    }));
+                    
+            ClientCommandRegistry
+                    .register((LiteralArgumentBuilder<SharedSuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
                         try {
                             GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.CLIENT)));
                         } catch (Exception e) {
@@ -70,12 +70,17 @@ public class CreativeCoreClient {
         
         GuiStyle.reload();
         Minecraft minecraft = Minecraft.getInstance();
-        IReloadableResourceManager reloadableResourceManager = (IReloadableResourceManager) minecraft.getResourceManager();
+        ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
         
-        reloadableResourceManager.registerReloadListener(new ISelectiveResourceReloadListener() {
+        reloadableResourceManager.registerReloadListener(new SimplePreparableReloadListener() {
             
             @Override
-            public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
+            protected Object prepare(ResourceManager p_10796_, ProfilerFiller p_10797_) {
+                return GuiStyle.class; // No idea
+            }
+            
+            @Override
+            protected void apply(Object p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
                 GuiStyle.reload();
             }
         });

@@ -9,38 +9,37 @@ import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentUtils;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.CreativeCore;
 
 public class ClientCommandRegistry {
     
     private static Minecraft mc = Minecraft.getInstance();
     
-    private static CommandDispatcher<ISuggestionProvider> clientDispatcher = new CommandDispatcher<>();
-    private static CombinedCommandDispatcher<ISuggestionProvider> combined = null;
+    private static CommandDispatcher<SharedSuggestionProvider> clientDispatcher = new CommandDispatcher<>();
+    private static CombinedCommandDispatcher<SharedSuggestionProvider> combined = null;
     
-    public static CommandDispatcher<ISuggestionProvider> getDispatcher(CommandDispatcher<ISuggestionProvider> vanillaDispatcher) {
+    public static CommandDispatcher<SharedSuggestionProvider> getDispatcher(CommandDispatcher<SharedSuggestionProvider> vanillaDispatcher) {
         if (combined == null || !combined.is(vanillaDispatcher, clientDispatcher))
             combined = new CombinedCommandDispatcher<>(vanillaDispatcher, clientDispatcher);
         return combined;
     }
     
-    public static LiteralCommandNode<ISuggestionProvider> register(final LiteralArgumentBuilder<ISuggestionProvider> command) {
+    public static LiteralCommandNode<SharedSuggestionProvider> register(final LiteralArgumentBuilder<SharedSuggestionProvider> command) {
         return clientDispatcher.register(command);
     }
     
-    public static int handleCommand(CommandSource source, String command) {
+    public static int handleCommand(CommandSourceStack source, String command) {
         StringReader stringreader = new StringReader(command);
         if (stringreader.canRead() && stringreader.peek() == '/') {
             stringreader.skip();
@@ -50,37 +49,37 @@ public class ClientCommandRegistry {
         
         try {
             try {
-                ParseResults<ISuggestionProvider> parse = clientDispatcher.parse(stringreader, source);
+                ParseResults<SharedSuggestionProvider> parse = clientDispatcher.parse(stringreader, source);
                 return clientDispatcher.execute(parse);
-            } catch (CommandException commandexception) {
+                /*} catch (CommandException commandexception) {
                 source.sendFailure(commandexception.getComponent());
-                return 0;
+                return 0;*/
             } catch (CommandSyntaxException commandsyntaxexception) {
                 if (commandsyntaxexception.getType() == CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand())
                     return -1;
-                source.sendFailure(TextComponentUtils.fromMessage(commandsyntaxexception.getRawMessage()));
+                source.sendFailure(ComponentUtils.fromMessage(commandsyntaxexception.getRawMessage()));
                 if (commandsyntaxexception.getInput() != null && commandsyntaxexception.getCursor() >= 0) {
                     int k = Math.min(commandsyntaxexception.getInput().length(), commandsyntaxexception.getCursor());
-                    IFormattableTextComponent itextcomponent1 = (new StringTextComponent("")).withStyle(TextFormatting.GRAY).withStyle((p_211705_1_) -> {
+                    MutableComponent itextcomponent1 = (new TextComponent("")).withStyle(ChatFormatting.GRAY).withStyle((p_211705_1_) -> {
                         return p_211705_1_.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command));
                     });
                     if (k > 10) {
-                        itextcomponent1.append(new StringTextComponent("..."));
+                        itextcomponent1.append(new TextComponent("..."));
                     }
                     
-                    itextcomponent1.append(new StringTextComponent(commandsyntaxexception.getInput().substring(Math.max(0, k - 10), k)));
+                    itextcomponent1.append(new TextComponent(commandsyntaxexception.getInput().substring(Math.max(0, k - 10), k)));
                     if (k < commandsyntaxexception.getInput().length()) {
-                        ITextComponent itextcomponent2 = (new StringTextComponent(commandsyntaxexception.getInput().substring(k)))
-                                .withStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.UNDERLINE });
+                        Component itextcomponent2 = (new TextComponent(commandsyntaxexception.getInput().substring(k)))
+                                .withStyle(new ChatFormatting[] { ChatFormatting.RED, ChatFormatting.UNDERLINE });
                         itextcomponent1.append(itextcomponent2);
                     }
                     
-                    itextcomponent1.append((new TranslationTextComponent("command.context.here")).withStyle(new TextFormatting[] { TextFormatting.RED, TextFormatting.ITALIC }));
+                    itextcomponent1.append((new TranslatableComponent("command.context.here")).withStyle(new ChatFormatting[] { ChatFormatting.RED, ChatFormatting.ITALIC }));
                     source.sendFailure(itextcomponent1);
                 }
             } catch (Exception exception) {
-                StringTextComponent stringtextcomponent = new StringTextComponent(exception.getMessage() == null ? exception.getClass().getName() : exception.getMessage());
-                IFormattableTextComponent itextcomponent = stringtextcomponent;
+                TextComponent TextComponent = new TextComponent(exception.getMessage() == null ? exception.getClass().getName() : exception.getMessage());
+                MutableComponent itextcomponent = TextComponent;
                 if (CreativeCore.LOGGER.isDebugEnabled()) {
                     StackTraceElement[] astacktraceelement = exception.getStackTrace();
                     
@@ -90,7 +89,7 @@ public class ClientCommandRegistry {
                     }
                 }
                 
-                source.sendFailure((new TranslationTextComponent("command.failed")).withStyle((p_211704_1_) -> {
+                source.sendFailure((new TranslatableComponent("command.failed")).withStyle((p_211704_1_) -> {
                     return p_211704_1_.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, itextcomponent));
                 }));
                 return 0;

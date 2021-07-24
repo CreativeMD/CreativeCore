@@ -232,7 +232,7 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
@@ -242,7 +242,7 @@ public class VectorFan {
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
@@ -257,7 +257,7 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
@@ -267,7 +267,7 @@ public class VectorFan {
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
@@ -281,7 +281,7 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
             tessellator.end();
@@ -289,7 +289,7 @@ public class VectorFan {
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
             tessellator.end();
@@ -346,7 +346,7 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
             tessellator.end();
@@ -354,7 +354,7 @@ public class VectorFan {
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
             tessellator.end();
