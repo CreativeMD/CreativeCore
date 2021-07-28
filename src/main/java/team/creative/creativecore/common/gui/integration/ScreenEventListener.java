@@ -14,7 +14,7 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
-    private static final Field eventTime = ObfuscationReflectionHelper.findField(MouseHandler.class, "field_198045_j");
+    private static final Field eventTime = ObfuscationReflectionHelper.findField(MouseHandler.class, "f_91513_");
     public static final double DOUBLE_CLICK_TIME = 0.2;
     
     private final IGuiIntegratedParent gui;

@@ -60,7 +60,7 @@ public class CreativeCore {
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         MinecraftForge.EVENT_BUS.addListener(this::server);
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
         GuiContainerHandler.CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
         GuiContainerHandler.registerGuiHandler("clientconfig", new GuiHandlerPlayer() {

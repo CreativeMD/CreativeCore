@@ -1,11 +1,10 @@
 function initializeCoreMod() {
-	print("Init CreativeCore coremods ...")
     return {
         'clientnetwork': {
             'target': {
                 'type': 'METHOD',
-				'class': 'net.minecraft.client.network.play.ClientPlayNetHandler',
-				'methodName': 'func_195515_i',
+				'class': 'net.minecraft.client.multiplayer.ClientPacketListener',
+				'methodName': 'm_105146_',
 				'methodDesc': '()Lcom/mojang/brigadier/CommandDispatcher;'
             },
             'transformer': function(method) {
@@ -17,10 +16,12 @@ function initializeCoreMod() {
 
 				method.instructions.clear();
 				method.instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
-				method.instructions.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/network/play/ClientPlayNetHandler", asmapi.mapField("field_195517_n"), "Lcom/mojang/brigadier/CommandDispatcher;"));
+				method.instructions.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/client/multiplayer/ClientPacketListener", asmapi.mapField("f_104899_"), "Lcom/mojang/brigadier/CommandDispatcher;"));
 				method.instructions.add(asmapi.buildMethodCall("team/creative/creativecore/client/command/ClientCommandRegistry", "getDispatcher", "(Lcom/mojang/brigadier/CommandDispatcher;)Lcom/mojang/brigadier/CommandDispatcher;", asmapi.MethodType.STATIC));
 				method.instructions.add(new InsnNode(Opcodes.ARETURN));
-
+				
+				asmapi.log("INFO", "Done");
+				
                 return method;
             }
 		}
