@@ -12,6 +12,7 @@ import java.util.UUID;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +22,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
+import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public class CreativeFieldParserEntry {
     
@@ -64,7 +68,7 @@ public class CreativeFieldParserEntry {
     private static final List<CreativeFieldParserSpecial> specialParsers = new ArrayList<>();
     private static final HashMap<Class<?>, CreativeFieldParser> parsers = new HashMap<>();
     
-    public static <T> void registerParser(Class<T> classType, CreativeFieldParser parser) {
+    public static <T> void registerParser(Class<T> classType, CreativeFieldParser<T> parser) {
         parsers.put(classType, parser);
     }
     
@@ -282,6 +286,66 @@ public class CreativeFieldParserEntry {
             @Override
             protected Vector3d readContent(FriendlyByteBuf buffer) {
                 return new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+            }
+        });
+        
+        registerParser(Vec3.class, new SimpleFieldParser<Vec3>() {
+            
+            @Override
+            protected void writeContent(Vec3 content, FriendlyByteBuf buffer) {
+                buffer.writeDouble(content.x);
+                buffer.writeDouble(content.y);
+                buffer.writeDouble(content.z);
+            }
+            
+            @Override
+            protected Vec3 readContent(FriendlyByteBuf buffer) {
+                return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+            }
+        });
+        
+        registerParser(Vec3d.class, new SimpleFieldParser<Vec3d>() {
+            
+            @Override
+            protected void writeContent(Vec3d content, FriendlyByteBuf buffer) {
+                buffer.writeDouble(content.x);
+                buffer.writeDouble(content.y);
+                buffer.writeDouble(content.z);
+            }
+            
+            @Override
+            protected Vec3d readContent(FriendlyByteBuf buffer) {
+                return new Vec3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+            }
+        });
+        
+        registerParser(Vec3f.class, new SimpleFieldParser<Vec3f>() {
+            
+            @Override
+            protected void writeContent(Vec3f content, FriendlyByteBuf buffer) {
+                buffer.writeFloat(content.x);
+                buffer.writeFloat(content.y);
+                buffer.writeFloat(content.z);
+            }
+            
+            @Override
+            protected Vec3f readContent(FriendlyByteBuf buffer) {
+                return new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+            }
+        });
+        
+        registerParser(Vector3f.class, new SimpleFieldParser<Vector3f>() {
+            
+            @Override
+            protected void writeContent(Vector3f content, FriendlyByteBuf buffer) {
+                buffer.writeFloat(content.x());
+                buffer.writeFloat(content.y());
+                buffer.writeFloat(content.z());
+            }
+            
+            @Override
+            protected Vector3f readContent(FriendlyByteBuf buffer) {
+                return new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
             }
         });
         
