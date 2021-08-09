@@ -2,6 +2,7 @@ package team.creative.creativecore.common.config.premade.curve;
 
 import java.util.Random;
 
+import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.premade.DecimalMinMax;
@@ -46,7 +47,7 @@ public class DecimalCurve implements ICreativeConfig, Curve {
     }
     
     @Override
-    public void configured() {
+    public void configured(Dist side) {
         if (min > max) {
             double temp = min;
             this.min = max;
