@@ -6,6 +6,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.Vec3;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
 
@@ -19,6 +20,18 @@ public class VectorUtils {
             return new Vector3d(vec.x, value, vec.z);
         case Z:
             return new Vector3d(vec.x, vec.y, value);
+        }
+        throw new IllegalArgumentException();
+    }
+    
+    public static Vec3 set(Vec3 vec, double value, Axis axis) {
+        switch (axis) {
+        case X:
+            return new Vec3(value, vec.y, vec.z);
+        case Y:
+            return new Vec3(vec.x, value, vec.z);
+        case Z:
+            return new Vec3(vec.x, vec.y, value);
         }
         throw new IllegalArgumentException();
     }
@@ -66,6 +79,10 @@ public class VectorUtils {
     }
     
     public static double get(Axis axis, Vector3d vec) {
+        return get(axis, vec.x, vec.y, vec.z);
+    }
+    
+    public static double get(Axis axis, Vec3 vec) {
         return get(axis, vec.x, vec.y, vec.z);
     }
     

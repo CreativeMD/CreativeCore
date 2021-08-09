@@ -94,6 +94,24 @@ public enum Facing {
         throw new IllegalArgumentException();
     }
     
+    public static Facing get(Direction direction) {
+        switch (direction) {
+        case DOWN:
+            return Facing.DOWN;
+        case UP:
+            return Facing.UP;
+        case NORTH:
+            return Facing.NORTH;
+        case SOUTH:
+            return Facing.SOUTH;
+        case WEST:
+            return Facing.WEST;
+        case EAST:
+            return Facing.EAST;
+        }
+        throw new IllegalArgumentException();
+    }
+    
     public static Facing get(Axis axis, boolean positive) {
         switch (axis) {
         case X:
