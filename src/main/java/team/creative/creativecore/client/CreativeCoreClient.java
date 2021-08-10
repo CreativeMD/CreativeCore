@@ -39,6 +39,12 @@ public class CreativeCoreClient {
         }));
     }
     
+    public static float getDeltaFrameTime() {
+        if (mc.isPaused())
+            return 1.0F;
+        return mc.getDeltaFrameTime();
+    }
+    
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ClientCommandRegistry
