@@ -23,12 +23,12 @@ public class BoxUtils {
         return one > minOne && one < maxOne && two > minTwo && two < maxTwo;
     }
     
-    /*public static Vec3d[] getCorners(AxisAlignedBB box) {
+    public static Vec3d[] getCorners(AABB box) {
         Vec3d[] corners = new Vec3d[BoxCorner.values().length];
         for (int i = 0; i < corners.length; i++)
-            corners[i] = BoxCorner.values()[i].getVector(box);
+            corners[i] = BoxCorner.values()[i].get(box);
         return corners;
-    }*/
+    }
     
     private static double lengthIgnoreAxis(Vec3d vec, Axis axis) {
         switch (axis) {
@@ -113,17 +113,16 @@ public class BoxUtils {
     }
     
     public static Vec3d[] getRotatedCorners(AABB box, IVecOrigin origin) {
-        /*Vec3d[] corners = getCorners(box); TODO
+        Vec3d[] corners = getCorners(box);
         for (int i = 0; i < corners.length; i++) {
             Vec3d vec = corners[i];
             origin.transformPointToWorld(vec);
         }
-        return corners;*/
-        return null;
+        return corners;
     }
     
     public static Vec3d[] getOuterCorner(Facing facing, IVecOrigin origin, AABB box, double minOne, double minTwo, double maxOne, double maxTwo) {
-        /*Vec3d[] corners = getCorners(box); TODO
+        Vec3d[] corners = getCorners(box);
         
         double value = 0;
         BoxCorner selected = null;
@@ -141,8 +140,7 @@ public class BoxUtils {
         }
         
         return new Vec3d[] { corners[selected.ordinal()], corners[selected.neighborOne.ordinal()], corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree
-                .ordinal()] };*/
-        return null;
+                .ordinal()] };
     }
     
     private static class IncludeBox {

@@ -2,6 +2,7 @@ package team.creative.creativecore.common.util.math.base;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.geo.NormalPlane;
 
 public enum Facing {
@@ -16,6 +17,11 @@ public enum Facing {
         public Direction toVanilla() {
             return Direction.DOWN;
         }
+        
+        @Override
+        public double get(AABB bb) {
+            return bb.minY;
+        }
     },
     UP(Axis.Y, true, new Vec3i(0, 1, 0)) {
         @Override
@@ -26,6 +32,11 @@ public enum Facing {
         @Override
         public Direction toVanilla() {
             return Direction.UP;
+        }
+        
+        @Override
+        public double get(AABB bb) {
+            return bb.maxY;
         }
     },
     NORTH(Axis.Z, false, new Vec3i(0, 0, -1)) {
@@ -38,6 +49,11 @@ public enum Facing {
         public Direction toVanilla() {
             return Direction.NORTH;
         }
+        
+        @Override
+        public double get(AABB bb) {
+            return bb.minZ;
+        }
     },
     SOUTH(Axis.Z, true, new Vec3i(0, 0, 1)) {
         @Override
@@ -48,6 +64,11 @@ public enum Facing {
         @Override
         public Direction toVanilla() {
             return Direction.SOUTH;
+        }
+        
+        @Override
+        public double get(AABB bb) {
+            return bb.maxZ;
         }
     },
     WEST(Axis.X, false, new Vec3i(-1, 0, 0)) {
@@ -60,6 +81,11 @@ public enum Facing {
         public Direction toVanilla() {
             return Direction.WEST;
         }
+        
+        @Override
+        public double get(AABB bb) {
+            return bb.minX;
+        }
     },
     EAST(Axis.X, true, new Vec3i(1, 0, 0)) {
         @Override
@@ -70,6 +96,11 @@ public enum Facing {
         @Override
         public Direction toVanilla() {
             return Direction.EAST;
+        }
+        
+        @Override
+        public double get(AABB bb) {
+            return bb.maxX;
         }
     };
     
@@ -201,5 +232,7 @@ public enum Facing {
         }
         return 0;
     }
+    
+    public abstract double get(AABB bb);
     
 }

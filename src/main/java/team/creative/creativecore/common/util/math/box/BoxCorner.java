@@ -1,9 +1,11 @@
 package team.creative.creativecore.common.util.math.box;
 
 import net.minecraft.core.Direction;
+import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.transformation.Rotation;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public enum BoxCorner {
     
@@ -76,6 +78,10 @@ public enum BoxCorner {
         int normalZ = z.offset();
         return getCorner(Facing.get(Axis.X, rotation.getMatrix().getX(normalX, normalY, normalZ) > 0), Facing
                 .get(Axis.Y, rotation.getMatrix().getY(normalX, normalY, normalZ) > 0), Facing.get(Axis.Z, rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0));
+    }
+    
+    public Vec3d get(AABB bb) {
+        return new Vec3d(x.get(bb), y.get(bb), z.get(bb));
     }
     
     public static BoxCorner getCornerUnsorted(Facing facing, Facing facing2, Facing facing3) {
