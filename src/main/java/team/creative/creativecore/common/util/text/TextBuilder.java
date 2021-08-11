@@ -92,10 +92,10 @@ public class TextBuilder {
     }
     
     public TextBuilder color(int color) {
-        int r = ColorUtils.getRed(color);
-        int g = ColorUtils.getGreen(color);
-        int b = ColorUtils.getBlue(color);
-        int a = ColorUtils.getAlpha(color);
+        int r = ColorUtils.red(color);
+        int g = ColorUtils.green(color);
+        int b = ColorUtils.blue(color);
+        int a = ColorUtils.alpha(color);
         text("" + ChatFormatting.RED + r + " " + ChatFormatting.GREEN + g + " " + ChatFormatting.BLUE + b + (a < 255 ? " " + ChatFormatting.WHITE + a : ""));
         return this;
     }

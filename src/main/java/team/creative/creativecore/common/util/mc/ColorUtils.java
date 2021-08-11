@@ -15,10 +15,10 @@ public class ColorUtils {
         public int alpha;
         
         public Color(int color) {
-            this.red = getRed(color);
-            this.green = getGreen(color);
-            this.blue = getBlue(color);
-            this.alpha = getAlpha(color);
+            this.red = red(color);
+            this.green = green(color);
+            this.blue = blue(color);
+            this.alpha = alpha(color);
         }
         
         public Color(Vec3i vec) {
@@ -156,19 +156,19 @@ public class ColorUtils {
     public static final int MAGENTA = -65281;
     public static final int BLACK = -16777216;
     
-    public static int getAlpha(int color) {
+    public static int alpha(int color) {
         return color >> 24 & 255;
     }
     
-    public static int getRed(int color) {
+    public static int red(int color) {
         return color >> 16 & 255;
     }
     
-    public static int getGreen(int color) {
+    public static int green(int color) {
         return color >> 8 & 255;
     }
     
-    public static int getBlue(int color) {
+    public static int blue(int color) {
         return color & 255;
     }
     
@@ -194,11 +194,8 @@ public class ColorUtils {
         return new Vector3d(r / 255F, g / 255F, b / 255F);
     }
     
-    public static boolean isWhite(int color) {
-        int r = color >> 16 & 255;
-        int g = color >> 8 & 255;
-        int b = color & 255;
-        return r == 255 && g == 255 && b == 255;
+    public static boolean isDefault(int color) {
+        return color == WHITE;
     }
     
     public static boolean isTransparent(int color) {

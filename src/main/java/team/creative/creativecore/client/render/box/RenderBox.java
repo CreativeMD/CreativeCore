@@ -323,9 +323,9 @@ public class RenderBox extends AlignedBox {
     }
     
     public void renderPreview(PoseStack matrix, double x, double y, double z, int alpha) {
-        int red = ColorUtils.getRed(color);
-        int green = ColorUtils.getGreen(color);
-        int blue = ColorUtils.getBlue(color);
+        int red = ColorUtils.red(color);
+        int green = ColorUtils.green(color);
+        int blue = ColorUtils.blue(color);
         
         matrix.pushPose();
         matrix.translate(x, y, z);
@@ -356,9 +356,9 @@ public class RenderBox extends AlignedBox {
     }
     
     public void renderLines(PoseStack matrix, double x, double y, double z, int alpha) {
-        int red = ColorUtils.getRed(color);
-        int green = ColorUtils.getGreen(color);
-        int blue = ColorUtils.getBlue(color);
+        int red = ColorUtils.red(color);
+        int green = ColorUtils.green(color);
+        int blue = ColorUtils.blue(color);
         
         if (red == 1 && green == 1 && blue == 1)
             red = green = blue = 0;
@@ -391,9 +391,9 @@ public class RenderBox extends AlignedBox {
     }
     
     public void renderLines(PoseStack matrix, double x, double y, double z, int alpha, Vector3d center, double grow) {
-        int red = ColorUtils.getRed(color);
-        int green = ColorUtils.getGreen(color);
-        int blue = ColorUtils.getBlue(color);
+        int red = ColorUtils.red(color);
+        int green = ColorUtils.green(color);
+        int blue = ColorUtils.blue(color);
         
         if (red == 1 && green == 1 && blue == 1)
             red = green = blue = 0;
