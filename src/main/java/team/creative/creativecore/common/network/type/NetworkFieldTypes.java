@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.network;
+package team.creative.creativecore.common.network.type;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -23,61 +23,71 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import team.creative.creativecore.common.util.math.vec.Vec1d;
+import team.creative.creativecore.common.util.math.vec.Vec1f;
+import team.creative.creativecore.common.util.math.vec.Vec2d;
+import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
-public class CreativeFieldParserEntry {
+public class NetworkFieldTypes {
     
     private static final Gson GSON = new Gson();
+    private static final List<NetworkFieldTypeSpecial> specialParsers = new ArrayList<>();
+    private static final HashMap<Class, NetworkFieldTypeClass> parsers = new HashMap<>();
     
-    public final Field field;
-    public boolean nullable;
-    public final CreativeFieldParser parser;
-    
-    public CreativeFieldParserEntry(Field field, CreativeFieldParser parser) {
-        this.field = field;
-        this.nullable = field.isAnnotationPresent(CanBeNull.class);
-        this.parser = parser;
-    }
-    
-    public void write(CreativePacket packet, FriendlyByteBuf buffer) {
-        try {
-            Object content = field.get(packet);
-            if (nullable)
-                buffer.writeBoolean(content != null);
-            if (content != null)
-                parser.write(content, field.getType(), field.getGenericType(), buffer);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void read(CreativePacket packet, FriendlyByteBuf buffer) {
-        try {
-            Object content;
-            if (nullable && !buffer.readBoolean())
-                content = null;
-            else
-                content = parser.read(field.getType(), field.getGenericType(), buffer);
-            field.set(packet, content);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private static final List<CreativeFieldParserSpecial> specialParsers = new ArrayList<>();
-    private static final HashMap<Class<?>, CreativeFieldParser> parsers = new HashMap<>();
-    
-    public static <T> void registerParser(Class<T> classType, CreativeFieldParser<T> parser) {
+    public static <T> void register(Class<T> classType, NetworkFieldTypeClass<T> parser) {
         parsers.put(classType, parser);
     }
     
-    public static <T> void registerSpecialParser(CreativeFieldParserSpecial parser) {
+    public static <T> void register(NetworkFieldTypeSpecial parser) {
         specialParsers.add(parser);
     }
     
+    public static NetworkFieldType get(Field field) {
+        return get(field.getType(), field.getGenericType());
+    }
+    
+    public static <T> NetworkFieldType<T> get(Class<T> classType) {
+        try {
+            NetworkFieldType parser = parsers.get(classType);
+            if (parser != null)
+                return parser;
+            
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        
+        throw new RuntimeException("No field type found for " + classType.getSimpleName());
+    }
+    
+    public static NetworkFieldType get(Class classType, Type genericType) {
+        try {
+            NetworkFieldType parser = parsers.get(classType);
+            if (parser != null)
+                return parser;
+            
+            for (int i = 0; i < specialParsers.size(); i++)
+                if (specialParsers.get(i).predicate.test(classType, genericType))
+                    return specialParsers.get(i);
+                
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        
+        throw new RuntimeException("No field type found for " + classType.getSimpleName());
+    }
+    
+    public static <T> void write(Class<T> clazz, T object, FriendlyByteBuf buffer) {
+        get(clazz).write(object, clazz, null, buffer);
+    }
+    
+    public static <T> T read(Class<T> clazz, FriendlyByteBuf buffer) {
+        return get(clazz).read(clazz, null, buffer);
+    }
+    
     static {
-        CreativeFieldParser booleanParser = new SimpleFieldParser<Boolean>() {
+        NetworkFieldTypeClass<Boolean> booleanParser = new NetworkFieldTypeClass<Boolean>() {
             
             @Override
             protected void writeContent(Boolean content, FriendlyByteBuf buffer) {
@@ -90,10 +100,10 @@ public class CreativeFieldParserEntry {
             }
             
         };
-        registerParser(boolean.class, booleanParser);
-        registerParser(Boolean.class, booleanParser);
+        register(boolean.class, booleanParser);
+        register(Boolean.class, booleanParser);
         
-        CreativeFieldParser byteParser = new SimpleFieldParser<Byte>() {
+        NetworkFieldTypeClass<Byte> byteParser = new NetworkFieldTypeClass<Byte>() {
             
             @Override
             protected void writeContent(Byte content, FriendlyByteBuf buffer) {
@@ -105,10 +115,10 @@ public class CreativeFieldParserEntry {
                 return buffer.readByte();
             }
         };
-        registerParser(byte.class, byteParser);
-        registerParser(Byte.class, byteParser);
+        register(byte.class, byteParser);
+        register(Byte.class, byteParser);
         
-        CreativeFieldParser shortParser = new SimpleFieldParser<Short>() {
+        NetworkFieldTypeClass<Short> shortParser = new NetworkFieldTypeClass<Short>() {
             
             @Override
             protected void writeContent(Short content, FriendlyByteBuf buffer) {
@@ -120,10 +130,10 @@ public class CreativeFieldParserEntry {
                 return buffer.readShort();
             }
         };
-        registerParser(short.class, shortParser);
-        registerParser(Short.class, shortParser);
+        register(short.class, shortParser);
+        register(Short.class, shortParser);
         
-        CreativeFieldParser intParser = new SimpleFieldParser<Integer>() {
+        NetworkFieldTypeClass<Integer> intParser = new NetworkFieldTypeClass<Integer>() {
             
             @Override
             protected void writeContent(Integer content, FriendlyByteBuf buffer) {
@@ -135,10 +145,10 @@ public class CreativeFieldParserEntry {
                 return buffer.readInt();
             }
         };
-        registerParser(int.class, intParser);
-        registerParser(Integer.class, intParser);
+        register(int.class, intParser);
+        register(Integer.class, intParser);
         
-        CreativeFieldParser longParser = new SimpleFieldParser<Long>() {
+        NetworkFieldTypeClass<Long> longParser = new NetworkFieldTypeClass<Long>() {
             
             @Override
             protected void writeContent(Long content, FriendlyByteBuf buffer) {
@@ -150,10 +160,10 @@ public class CreativeFieldParserEntry {
                 return buffer.readLong();
             }
         };
-        registerParser(long.class, longParser);
-        registerParser(Long.class, longParser);
+        register(long.class, longParser);
+        register(Long.class, longParser);
         
-        CreativeFieldParser floatParser = new SimpleFieldParser<Float>() {
+        NetworkFieldTypeClass<Float> floatParser = new NetworkFieldTypeClass<Float>() {
             
             @Override
             protected void writeContent(Float content, FriendlyByteBuf buffer) {
@@ -165,10 +175,10 @@ public class CreativeFieldParserEntry {
                 return buffer.readFloat();
             }
         };
-        registerParser(float.class, floatParser);
-        registerParser(Float.class, floatParser);
+        register(float.class, floatParser);
+        register(Float.class, floatParser);
         
-        CreativeFieldParser doubleParser = new SimpleFieldParser<Double>() {
+        NetworkFieldTypeClass<Double> doubleParser = new NetworkFieldTypeClass<Double>() {
             
             @Override
             protected void writeContent(Double content, FriendlyByteBuf buffer) {
@@ -180,10 +190,10 @@ public class CreativeFieldParserEntry {
                 return buffer.readDouble();
             }
         };
-        registerParser(double.class, doubleParser);
-        registerParser(Double.class, doubleParser);
+        register(double.class, doubleParser);
+        register(Double.class, doubleParser);
         
-        registerParser(BlockPos.class, new SimpleFieldParser<BlockPos>() {
+        register(BlockPos.class, new NetworkFieldTypeClass<BlockPos>() {
             
             @Override
             protected void writeContent(BlockPos content, FriendlyByteBuf buffer) {
@@ -196,7 +206,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(String.class, new SimpleFieldParser<String>() {
+        register(String.class, new NetworkFieldTypeClass<String>() {
             
             @Override
             protected void writeContent(String content, FriendlyByteBuf buffer) {
@@ -209,7 +219,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(Component.class, new SimpleFieldParser<Component>() {
+        register(Component.class, new NetworkFieldTypeClass<Component>() {
             
             @Override
             protected void writeContent(Component content, FriendlyByteBuf buffer) {
@@ -222,7 +232,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(CompoundTag.class, new SimpleFieldParser<CompoundTag>() {
+        register(CompoundTag.class, new NetworkFieldTypeClass<CompoundTag>() {
             
             @Override
             protected void writeContent(CompoundTag content, FriendlyByteBuf buffer) {
@@ -235,7 +245,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(ItemStack.class, new SimpleFieldParser<ItemStack>() {
+        register(ItemStack.class, new NetworkFieldTypeClass<ItemStack>() {
             
             @Override
             protected void writeContent(ItemStack content, FriendlyByteBuf buffer) {
@@ -248,7 +258,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(ResourceLocation.class, new SimpleFieldParser<ResourceLocation>() {
+        register(ResourceLocation.class, new NetworkFieldTypeClass<ResourceLocation>() {
             
             @Override
             protected void writeContent(ResourceLocation content, FriendlyByteBuf buffer) {
@@ -261,7 +271,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(BlockState.class, new SimpleFieldParser<BlockState>() {
+        register(BlockState.class, new NetworkFieldTypeClass<BlockState>() {
             
             @Override
             protected void writeContent(BlockState content, FriendlyByteBuf buffer) {
@@ -274,7 +284,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(Vector3d.class, new SimpleFieldParser<Vector3d>() {
+        register(Vector3d.class, new NetworkFieldTypeClass<Vector3d>() {
             
             @Override
             protected void writeContent(Vector3d content, FriendlyByteBuf buffer) {
@@ -289,7 +299,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(Vec3.class, new SimpleFieldParser<Vec3>() {
+        register(Vec3.class, new NetworkFieldTypeClass<Vec3>() {
             
             @Override
             protected void writeContent(Vec3 content, FriendlyByteBuf buffer) {
@@ -304,7 +314,61 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(Vec3d.class, new SimpleFieldParser<Vec3d>() {
+        register(Vec1d.class, new NetworkFieldTypeClass<Vec1d>() {
+            
+            @Override
+            protected void writeContent(Vec1d content, FriendlyByteBuf buffer) {
+                buffer.writeDouble(content.x);
+            }
+            
+            @Override
+            protected Vec1d readContent(FriendlyByteBuf buffer) {
+                return new Vec1d(buffer.readDouble());
+            }
+        });
+        
+        register(Vec1f.class, new NetworkFieldTypeClass<Vec1f>() {
+            
+            @Override
+            protected void writeContent(Vec1f content, FriendlyByteBuf buffer) {
+                buffer.writeFloat(content.x);
+            }
+            
+            @Override
+            protected Vec1f readContent(FriendlyByteBuf buffer) {
+                return new Vec1f(buffer.readFloat());
+            }
+        });
+        
+        register(Vec2d.class, new NetworkFieldTypeClass<Vec2d>() {
+            
+            @Override
+            protected void writeContent(Vec2d content, FriendlyByteBuf buffer) {
+                buffer.writeDouble(content.x);
+                buffer.writeDouble(content.y);
+            }
+            
+            @Override
+            protected Vec2d readContent(FriendlyByteBuf buffer) {
+                return new Vec2d(buffer.readDouble(), buffer.readDouble());
+            }
+        });
+        
+        register(Vec2f.class, new NetworkFieldTypeClass<Vec2f>() {
+            
+            @Override
+            protected void writeContent(Vec2f content, FriendlyByteBuf buffer) {
+                buffer.writeFloat(content.x);
+                buffer.writeFloat(content.y);
+            }
+            
+            @Override
+            protected Vec2f readContent(FriendlyByteBuf buffer) {
+                return new Vec2f(buffer.readFloat(), buffer.readFloat());
+            }
+        });
+        
+        register(Vec3d.class, new NetworkFieldTypeClass<Vec3d>() {
             
             @Override
             protected void writeContent(Vec3d content, FriendlyByteBuf buffer) {
@@ -319,7 +383,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(Vec3f.class, new SimpleFieldParser<Vec3f>() {
+        register(Vec3f.class, new NetworkFieldTypeClass<Vec3f>() {
             
             @Override
             protected void writeContent(Vec3f content, FriendlyByteBuf buffer) {
@@ -334,7 +398,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(Vector3f.class, new SimpleFieldParser<Vector3f>() {
+        register(Vector3f.class, new NetworkFieldTypeClass<Vector3f>() {
             
             @Override
             protected void writeContent(Vector3f content, FriendlyByteBuf buffer) {
@@ -349,7 +413,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(UUID.class, new SimpleFieldParser<UUID>() {
+        register(UUID.class, new NetworkFieldTypeClass<UUID>() {
             
             @Override
             protected void writeContent(UUID content, FriendlyByteBuf buffer) {
@@ -362,7 +426,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerParser(JsonObject.class, new SimpleFieldParser<JsonObject>() {
+        register(JsonObject.class, new NetworkFieldTypeClass<JsonObject>() {
             
             @Override
             protected void writeContent(JsonObject content, FriendlyByteBuf buffer) {
@@ -376,12 +440,12 @@ public class CreativeFieldParserEntry {
             
         });
         
-        registerSpecialParser(new CreativeFieldParserSpecial((x, y) -> x.isArray()) {
+        register(new NetworkFieldTypeSpecial((x, y) -> x.isArray()) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
                 Class subClass = classType.getComponentType();
-                CreativeFieldParser subParser = getParser(subClass, null);
+                NetworkFieldType subParser = get(subClass, null);
                 int length = Array.getLength(content);
                 buffer.writeInt(length);
                 for (int i = 0; i < length; i++)
@@ -392,7 +456,7 @@ public class CreativeFieldParserEntry {
             public Object read(Class classType, Type genericType, FriendlyByteBuf buffer) {
                 int length = buffer.readInt();
                 Class subClass = classType.getComponentType();
-                CreativeFieldParser subParser = getParser(subClass, null);
+                NetworkFieldType subParser = get(subClass, null);
                 Object object = Array.newInstance(subClass, length);
                 for (int i = 0; i < length; i++)
                     Array.set(object, i, subParser.read(subClass, null, buffer));
@@ -400,11 +464,11 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerSpecialParser(new CreativeFieldParserSpecial((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
+        register(new NetworkFieldTypeSpecial((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
-                CreativeFieldParser subParser;
+                NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
                 if (genericType instanceof ParameterizedType) {
@@ -412,7 +476,7 @@ public class CreativeFieldParserEntry {
                     if (types.length == 1) {
                         subClass = (Class) ((ParameterizedType) genericType).getActualTypeArguments()[0];
                         subType = types[0];
-                        subParser = getParser(subClass, subType);
+                        subParser = get(subClass, subType);
                         if (subParser == null)
                             throw new RuntimeException("Invalid class type " + classType.getComponentType().getName());
                     } else
@@ -427,7 +491,7 @@ public class CreativeFieldParserEntry {
             
             @Override
             public Object read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-                CreativeFieldParser subParser;
+                NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
                 if (genericType instanceof ParameterizedType) {
@@ -435,7 +499,7 @@ public class CreativeFieldParserEntry {
                     if (types.length == 1) {
                         subClass = (Class) ((ParameterizedType) genericType).getActualTypeArguments()[0];
                         subType = types[0];
-                        subParser = getParser(subClass, subType);
+                        subParser = get(subClass, subType);
                         if (subParser == null)
                             throw new RuntimeException("Invalid class type " + classType.getComponentType().getName());
                     } else
@@ -451,7 +515,7 @@ public class CreativeFieldParserEntry {
             }
         });
         
-        registerSpecialParser(new CreativeFieldParserSpecial((x, y) -> x.isEnum()) {
+        register(new NetworkFieldTypeSpecial((x, y) -> x.isEnum()) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
@@ -463,72 +527,6 @@ public class CreativeFieldParserEntry {
                 return buffer.readEnum(classType);
             }
         });
-    }
-    
-    public static abstract class CreativeFieldParser<T> {
-        
-        public abstract void write(T content, Class classType, Type genericType, FriendlyByteBuf buffer);
-        
-        public abstract T read(Class classType, Type genericType, FriendlyByteBuf buffer);
-    }
-    
-    public static abstract class SimpleFieldParser<T> extends CreativeFieldParser<T> {
-        
-        protected abstract void writeContent(T content, FriendlyByteBuf buffer);
-        
-        @Override
-        public void write(T content, Class classType, Type genericType, FriendlyByteBuf buffer) {
-            writeContent(content, buffer);
-        }
-        
-        protected abstract T readContent(FriendlyByteBuf buffer);
-        
-        @Override
-        public T read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-            return readContent(buffer);
-        }
-        
-    }
-    
-    public static CreativeFieldParserEntry getParser(Field field) {
-        CreativeFieldParser parser = getParser(field.getType(), field.getGenericType());
-        if (parser != null)
-            return new CreativeFieldParserEntry(field, parser);
-        return null;
-    }
-    
-    public static CreativeFieldParser getParser(Class classType, Type genericType) {
-        try {
-            CreativeFieldParser parser = parsers.get(classType);
-            if (parser != null)
-                return parser;
-            
-            for (int i = 0; i < specialParsers.size(); i++)
-                if (specialParsers.get(i).predicate.test(classType, genericType))
-                    return specialParsers.get(i);
-                
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-        
-        return null;
-    }
-    
-    public static abstract class CreativeFieldParserSpecial extends CreativeFieldParser<Object> {
-        
-        public final BiPredicate<Class, Type> predicate;
-        
-        public CreativeFieldParserSpecial(BiPredicate<Class, Type> predicate) {
-            this.predicate = predicate;
-        }
-        
-    }
-    
-    @FunctionalInterface
-    public static abstract interface BiPredicate<T, V> {
-        
-        public boolean test(T one, V two);
-        
     }
     
 }

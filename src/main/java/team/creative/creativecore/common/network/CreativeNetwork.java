@@ -79,7 +79,7 @@ public class CreativeNetwork {
     public static class CreativeBufferHandler<T extends CreativePacket> {
         
         public final Class<T> classType;
-        public List<CreativeFieldParserEntry> parsers = new ArrayList<>();
+        public List<CreativeNetworkField> parsers = new ArrayList<>();
         
         public CreativeBufferHandler(Class<T> classType) {
             this.classType = classType;
@@ -89,7 +89,7 @@ public class CreativeNetwork {
                 if (Modifier.isTransient(field.getModifiers()) && field.isAnnotationPresent(OnlyIn.class))
                     continue;
                 
-                CreativeFieldParserEntry parser = CreativeFieldParserEntry.getParser(field);
+                CreativeNetworkField parser = CreativeNetworkField.create(field);
                 if (parser != null)
                     parsers.add(parser);
                 else
@@ -98,7 +98,7 @@ public class CreativeNetwork {
         }
         
         public void write(T packet, FriendlyByteBuf buffer) {
-            for (CreativeFieldParserEntry parser : parsers)
+            for (CreativeNetworkField parser : parsers)
                 parser.write(packet, buffer);
         }
         
@@ -107,7 +107,7 @@ public class CreativeNetwork {
                 Constructor<T> constructor = classType.getConstructor();
                 T message = constructor.newInstance();
                 
-                for (CreativeFieldParserEntry parser : parsers)
+                for (CreativeNetworkField parser : parsers)
                     parser.read(message, buffer);
                 
                 return message;
