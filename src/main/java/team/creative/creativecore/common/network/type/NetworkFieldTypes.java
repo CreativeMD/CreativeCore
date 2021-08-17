@@ -36,8 +36,13 @@ public class NetworkFieldTypes {
     private static final List<NetworkFieldTypeSpecial> specialParsers = new ArrayList<>();
     private static final HashMap<Class, NetworkFieldTypeClass> parsers = new HashMap<>();
     
-    public static <T> void register(Class<T> classType, NetworkFieldTypeClass<T> parser) {
+    public static <T> void register(NetworkFieldTypeClass<T> parser, Class<T> classType) {
         parsers.put(classType, parser);
+    }
+    
+    public static <T> void register(NetworkFieldTypeClass<T> parser, Class<? extends T>... classType) {
+        for (Class<? extends T> clazz : classType)
+            parsers.put(clazz, parser);
     }
     
     public static <T> void register(NetworkFieldTypeSpecial parser) {
@@ -87,7 +92,7 @@ public class NetworkFieldTypes {
     }
     
     static {
-        NetworkFieldTypeClass<Boolean> booleanParser = new NetworkFieldTypeClass<Boolean>() {
+        register(new NetworkFieldTypeClass<Boolean>() {
             
             @Override
             protected void writeContent(Boolean content, FriendlyByteBuf buffer) {
@@ -99,11 +104,9 @@ public class NetworkFieldTypes {
                 return buffer.readBoolean();
             }
             
-        };
-        register(boolean.class, booleanParser);
-        register(Boolean.class, booleanParser);
+        }, boolean.class, Boolean.class);
         
-        NetworkFieldTypeClass<Byte> byteParser = new NetworkFieldTypeClass<Byte>() {
+        register(new NetworkFieldTypeClass<Byte>() {
             
             @Override
             protected void writeContent(Byte content, FriendlyByteBuf buffer) {
@@ -114,11 +117,9 @@ public class NetworkFieldTypes {
             protected Byte readContent(FriendlyByteBuf buffer) {
                 return buffer.readByte();
             }
-        };
-        register(byte.class, byteParser);
-        register(Byte.class, byteParser);
+        }, byte.class, Byte.class);
         
-        NetworkFieldTypeClass<Short> shortParser = new NetworkFieldTypeClass<Short>() {
+        register(new NetworkFieldTypeClass<Short>() {
             
             @Override
             protected void writeContent(Short content, FriendlyByteBuf buffer) {
@@ -129,11 +130,9 @@ public class NetworkFieldTypes {
             protected Short readContent(FriendlyByteBuf buffer) {
                 return buffer.readShort();
             }
-        };
-        register(short.class, shortParser);
-        register(Short.class, shortParser);
+        }, short.class, Short.class);
         
-        NetworkFieldTypeClass<Integer> intParser = new NetworkFieldTypeClass<Integer>() {
+        register(new NetworkFieldTypeClass<Integer>() {
             
             @Override
             protected void writeContent(Integer content, FriendlyByteBuf buffer) {
@@ -144,11 +143,9 @@ public class NetworkFieldTypes {
             protected Integer readContent(FriendlyByteBuf buffer) {
                 return buffer.readInt();
             }
-        };
-        register(int.class, intParser);
-        register(Integer.class, intParser);
+        }, int.class, Integer.class);
         
-        NetworkFieldTypeClass<Long> longParser = new NetworkFieldTypeClass<Long>() {
+        register(new NetworkFieldTypeClass<Long>() {
             
             @Override
             protected void writeContent(Long content, FriendlyByteBuf buffer) {
@@ -159,11 +156,9 @@ public class NetworkFieldTypes {
             protected Long readContent(FriendlyByteBuf buffer) {
                 return buffer.readLong();
             }
-        };
-        register(long.class, longParser);
-        register(Long.class, longParser);
+        }, long.class, Long.class);
         
-        NetworkFieldTypeClass<Float> floatParser = new NetworkFieldTypeClass<Float>() {
+        register(new NetworkFieldTypeClass<Float>() {
             
             @Override
             protected void writeContent(Float content, FriendlyByteBuf buffer) {
@@ -174,11 +169,9 @@ public class NetworkFieldTypes {
             protected Float readContent(FriendlyByteBuf buffer) {
                 return buffer.readFloat();
             }
-        };
-        register(float.class, floatParser);
-        register(Float.class, floatParser);
+        }, float.class, Float.class);
         
-        NetworkFieldTypeClass<Double> doubleParser = new NetworkFieldTypeClass<Double>() {
+        register(new NetworkFieldTypeClass<Double>() {
             
             @Override
             protected void writeContent(Double content, FriendlyByteBuf buffer) {
@@ -189,11 +182,9 @@ public class NetworkFieldTypes {
             protected Double readContent(FriendlyByteBuf buffer) {
                 return buffer.readDouble();
             }
-        };
-        register(double.class, doubleParser);
-        register(Double.class, doubleParser);
+        }, double.class, Double.class);
         
-        register(BlockPos.class, new NetworkFieldTypeClass<BlockPos>() {
+        register(new NetworkFieldTypeClass<BlockPos>() {
             
             @Override
             protected void writeContent(BlockPos content, FriendlyByteBuf buffer) {
@@ -204,9 +195,9 @@ public class NetworkFieldTypes {
             protected BlockPos readContent(FriendlyByteBuf buffer) {
                 return buffer.readBlockPos();
             }
-        });
+        }, BlockPos.class);
         
-        register(String.class, new NetworkFieldTypeClass<String>() {
+        register(new NetworkFieldTypeClass<String>() {
             
             @Override
             protected void writeContent(String content, FriendlyByteBuf buffer) {
@@ -217,9 +208,9 @@ public class NetworkFieldTypes {
             protected String readContent(FriendlyByteBuf buffer) {
                 return buffer.readUtf(32767);
             }
-        });
+        }, String.class);
         
-        register(Component.class, new NetworkFieldTypeClass<Component>() {
+        register(new NetworkFieldTypeClass<Component>() {
             
             @Override
             protected void writeContent(Component content, FriendlyByteBuf buffer) {
@@ -230,9 +221,9 @@ public class NetworkFieldTypes {
             protected Component readContent(FriendlyByteBuf buffer) {
                 return buffer.readComponent();
             }
-        });
+        }, Component.class);
         
-        register(CompoundTag.class, new NetworkFieldTypeClass<CompoundTag>() {
+        register(new NetworkFieldTypeClass<CompoundTag>() {
             
             @Override
             protected void writeContent(CompoundTag content, FriendlyByteBuf buffer) {
@@ -243,9 +234,9 @@ public class NetworkFieldTypes {
             protected CompoundTag readContent(FriendlyByteBuf buffer) {
                 return buffer.readNbt();
             }
-        });
+        }, CompoundTag.class);
         
-        register(ItemStack.class, new NetworkFieldTypeClass<ItemStack>() {
+        register(new NetworkFieldTypeClass<ItemStack>() {
             
             @Override
             protected void writeContent(ItemStack content, FriendlyByteBuf buffer) {
@@ -256,9 +247,9 @@ public class NetworkFieldTypes {
             protected ItemStack readContent(FriendlyByteBuf buffer) {
                 return buffer.readItem();
             }
-        });
+        }, ItemStack.class);
         
-        register(ResourceLocation.class, new NetworkFieldTypeClass<ResourceLocation>() {
+        register(new NetworkFieldTypeClass<ResourceLocation>() {
             
             @Override
             protected void writeContent(ResourceLocation content, FriendlyByteBuf buffer) {
@@ -269,9 +260,9 @@ public class NetworkFieldTypes {
             protected ResourceLocation readContent(FriendlyByteBuf buffer) {
                 return buffer.readResourceLocation();
             }
-        });
+        }, ResourceLocation.class);
         
-        register(BlockState.class, new NetworkFieldTypeClass<BlockState>() {
+        register(new NetworkFieldTypeClass<BlockState>() {
             
             @Override
             protected void writeContent(BlockState content, FriendlyByteBuf buffer) {
@@ -282,9 +273,9 @@ public class NetworkFieldTypes {
             protected BlockState readContent(FriendlyByteBuf buffer) {
                 return Block.stateById(buffer.readInt());
             }
-        });
+        }, BlockState.class);
         
-        register(Vector3d.class, new NetworkFieldTypeClass<Vector3d>() {
+        register(new NetworkFieldTypeClass<Vector3d>() {
             
             @Override
             protected void writeContent(Vector3d content, FriendlyByteBuf buffer) {
@@ -297,9 +288,9 @@ public class NetworkFieldTypes {
             protected Vector3d readContent(FriendlyByteBuf buffer) {
                 return new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
             }
-        });
+        }, Vector3d.class);
         
-        register(Vec3.class, new NetworkFieldTypeClass<Vec3>() {
+        register(new NetworkFieldTypeClass<Vec3>() {
             
             @Override
             protected void writeContent(Vec3 content, FriendlyByteBuf buffer) {
@@ -312,9 +303,9 @@ public class NetworkFieldTypes {
             protected Vec3 readContent(FriendlyByteBuf buffer) {
                 return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
             }
-        });
+        }, Vec3.class);
         
-        register(Vec1d.class, new NetworkFieldTypeClass<Vec1d>() {
+        register(new NetworkFieldTypeClass<Vec1d>() {
             
             @Override
             protected void writeContent(Vec1d content, FriendlyByteBuf buffer) {
@@ -325,9 +316,9 @@ public class NetworkFieldTypes {
             protected Vec1d readContent(FriendlyByteBuf buffer) {
                 return new Vec1d(buffer.readDouble());
             }
-        });
+        }, Vec1d.class);
         
-        register(Vec1f.class, new NetworkFieldTypeClass<Vec1f>() {
+        register(new NetworkFieldTypeClass<Vec1f>() {
             
             @Override
             protected void writeContent(Vec1f content, FriendlyByteBuf buffer) {
@@ -338,9 +329,9 @@ public class NetworkFieldTypes {
             protected Vec1f readContent(FriendlyByteBuf buffer) {
                 return new Vec1f(buffer.readFloat());
             }
-        });
+        }, Vec1f.class);
         
-        register(Vec2d.class, new NetworkFieldTypeClass<Vec2d>() {
+        register(new NetworkFieldTypeClass<Vec2d>() {
             
             @Override
             protected void writeContent(Vec2d content, FriendlyByteBuf buffer) {
@@ -352,9 +343,9 @@ public class NetworkFieldTypes {
             protected Vec2d readContent(FriendlyByteBuf buffer) {
                 return new Vec2d(buffer.readDouble(), buffer.readDouble());
             }
-        });
+        }, Vec2d.class);
         
-        register(Vec2f.class, new NetworkFieldTypeClass<Vec2f>() {
+        register(new NetworkFieldTypeClass<Vec2f>() {
             
             @Override
             protected void writeContent(Vec2f content, FriendlyByteBuf buffer) {
@@ -366,9 +357,9 @@ public class NetworkFieldTypes {
             protected Vec2f readContent(FriendlyByteBuf buffer) {
                 return new Vec2f(buffer.readFloat(), buffer.readFloat());
             }
-        });
+        }, Vec2f.class);
         
-        register(Vec3d.class, new NetworkFieldTypeClass<Vec3d>() {
+        register(new NetworkFieldTypeClass<Vec3d>() {
             
             @Override
             protected void writeContent(Vec3d content, FriendlyByteBuf buffer) {
@@ -381,9 +372,9 @@ public class NetworkFieldTypes {
             protected Vec3d readContent(FriendlyByteBuf buffer) {
                 return new Vec3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
             }
-        });
+        }, Vec3d.class);
         
-        register(Vec3f.class, new NetworkFieldTypeClass<Vec3f>() {
+        register(new NetworkFieldTypeClass<Vec3f>() {
             
             @Override
             protected void writeContent(Vec3f content, FriendlyByteBuf buffer) {
@@ -396,9 +387,9 @@ public class NetworkFieldTypes {
             protected Vec3f readContent(FriendlyByteBuf buffer) {
                 return new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
             }
-        });
+        }, Vec3f.class);
         
-        register(Vector3f.class, new NetworkFieldTypeClass<Vector3f>() {
+        register(new NetworkFieldTypeClass<Vector3f>() {
             
             @Override
             protected void writeContent(Vector3f content, FriendlyByteBuf buffer) {
@@ -411,9 +402,9 @@ public class NetworkFieldTypes {
             protected Vector3f readContent(FriendlyByteBuf buffer) {
                 return new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
             }
-        });
+        }, Vector3f.class);
         
-        register(UUID.class, new NetworkFieldTypeClass<UUID>() {
+        register(new NetworkFieldTypeClass<UUID>() {
             
             @Override
             protected void writeContent(UUID content, FriendlyByteBuf buffer) {
@@ -424,9 +415,9 @@ public class NetworkFieldTypes {
             protected UUID readContent(FriendlyByteBuf buffer) {
                 return UUID.fromString(buffer.readUtf(32767));
             }
-        });
+        }, UUID.class);
         
-        register(JsonObject.class, new NetworkFieldTypeClass<JsonObject>() {
+        register(new NetworkFieldTypeClass<JsonObject>() {
             
             @Override
             protected void writeContent(JsonObject content, FriendlyByteBuf buffer) {
@@ -438,7 +429,7 @@ public class NetworkFieldTypes {
                 return GSON.fromJson(buffer.readUtf(32767), JsonObject.class);
             }
             
-        });
+        }, JsonObject.class);
         
         register(new NetworkFieldTypeSpecial((x, y) -> x.isArray()) {
             
