@@ -13,6 +13,11 @@ public class HashMapInteger<K> extends HashMap<K, Integer> {
         super(paramMap);
     }
     
+    public void scale(int scale) {
+        for (Entry<K, Integer> entry : entrySet())
+            entry.setValue(entry.getValue() * scale);
+    }
+    
     @Override
     public Integer put(K paramK, Integer paramV) {
         Integer value = get(paramK);

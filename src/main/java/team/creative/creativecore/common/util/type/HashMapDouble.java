@@ -13,6 +13,11 @@ public class HashMapDouble<K> extends HashMap<K, Double> {
         super(paramMap);
     }
     
+    public void scale(double scale) {
+        for (Entry<K, Double> entry : entrySet())
+            entry.setValue(entry.getValue() * scale);
+    }
+    
     @Override
     public Double put(K paramK, Double paramV) {
         Double value = get(paramK);

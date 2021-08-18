@@ -13,6 +13,11 @@ public class HashMapFloat<K> extends HashMap<K, Float> {
         super(paramMap);
     }
     
+    public void scale(float scale) {
+        for (Entry<K, Float> entry : entrySet())
+            entry.setValue(entry.getValue() * scale);
+    }
+    
     @Override
     public Float put(K paramK, Float paramV) {
         Float value = get(paramK);
