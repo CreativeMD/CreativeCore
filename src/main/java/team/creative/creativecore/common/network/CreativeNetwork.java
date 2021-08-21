@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.network;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Logger;
 
@@ -38,12 +39,12 @@ public class CreativeNetwork {
         this.logger.debug("Created network " + location + "");
     }
     
-    public <T extends CreativePacket> void registerType(Class<T> classType) {
+    public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
         CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(classType);
         this.instance.registerMessage(id, classType, (message, buffer) -> {
             handler.write(message, buffer);
         }, (buffer) -> {
-            return handler.read(buffer);
+            return handler.read(supplier, buffer);
         }, (message, ctx) -> {
             ctx.get().enqueueWork(() -> message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender()));
             ctx.get().setPacketHandled(true);

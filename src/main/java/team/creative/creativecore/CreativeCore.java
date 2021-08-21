@@ -95,12 +95,12 @@ public class CreativeCore {
     }
     
     private void init(final FMLCommonSetupEvent event) {
-        NETWORK.registerType(ConfigurationChangePacket.class);
-        NETWORK.registerType(ConfigurationClientPacket.class);
-        NETWORK.registerType(ConfigurationPacket.class);
-        NETWORK.registerType(LayerClosePacket.class);
-        NETWORK.registerType(LayerOpenPacket.class);
-        NETWORK.registerType(OpenGuiPacket.class);
+        NETWORK.registerType(ConfigurationChangePacket.class, ConfigurationChangePacket::new);
+        NETWORK.registerType(ConfigurationClientPacket.class, ConfigurationClientPacket::new);
+        NETWORK.registerType(ConfigurationPacket.class, ConfigurationPacket::new);
+        NETWORK.registerType(LayerClosePacket.class, LayerClosePacket::new);
+        NETWORK.registerType(LayerOpenPacket.class, LayerOpenPacket::new);
+        NETWORK.registerType(OpenGuiPacket.class, OpenGuiPacket::new);
         CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
         MinecraftForge.EVENT_BUS.register(GuiEventHandler.class);
         FAKE_DIMENSION = DimensionType.create(OptionalLong

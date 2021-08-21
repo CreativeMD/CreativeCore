@@ -1,11 +1,10 @@
 package team.creative.creativecore.common.network;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,17 +35,12 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
             parser.write(packet, buffer);
     }
     
-    public T read(FriendlyByteBuf buffer) {
-        try {
-            Constructor<T> constructor = classType.getConstructor();
-            T message = constructor.newInstance();
-            
-            for (CreativeNetworkField parser : parsers)
-                parser.read(message, buffer);
-            
-            return message;
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
+    public T read(Supplier<T> supplier, FriendlyByteBuf buffer) {
+        T message = supplier.get();
+        
+        for (CreativeNetworkField parser : parsers)
+            parser.read(message, buffer);
+        
+        return message;
     }
 }
