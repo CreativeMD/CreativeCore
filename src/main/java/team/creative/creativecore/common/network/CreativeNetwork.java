@@ -40,11 +40,11 @@ public class CreativeNetwork {
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
-        CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(classType);
+        CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(classType, supplier);
         this.instance.registerMessage(id, classType, (message, buffer) -> {
             handler.write(message, buffer);
         }, (buffer) -> {
-            return handler.read(supplier, buffer);
+            return handler.read(buffer);
         }, (message, ctx) -> {
             ctx.get().enqueueWork(() -> message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender()));
             ctx.get().setPacketHandled(true);

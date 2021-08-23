@@ -12,10 +12,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class CreativeNetworkPacket<T extends CreativePacket> {
     
     public final Class<T> classType;
+    public final Supplier<T> supplier;
     public List<CreativeNetworkField> parsers = new ArrayList<>();
     
-    public CreativeNetworkPacket(Class<T> classType) {
+    public CreativeNetworkPacket(Class<T> classType, Supplier<T> supplier) {
         this.classType = classType;
+        this.supplier = supplier;
         
         for (Field field : this.classType.getFields()) {
             
@@ -35,7 +37,7 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
             parser.write(packet, buffer);
     }
     
-    public T read(Supplier<T> supplier, FriendlyByteBuf buffer) {
+    public T read(FriendlyByteBuf buffer) {
         T message = supplier.get();
         
         for (CreativeNetworkField parser : parsers)
