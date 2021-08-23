@@ -3,7 +3,7 @@ package team.creative.creativecore.common.config.holder;
 import java.lang.reflect.Field;
 
 import net.minecraftforge.api.distmarker.Dist;
-import team.creative.creativecore.common.config.ConfigTypeConveration;
+import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public abstract class ConfigKey {
@@ -157,7 +157,7 @@ public abstract class ConfigKey {
         @Override
         protected boolean checkEqual(Object one, Object two) {
             if (converation != null)
-                return converation.areEqual(one, two);
+                return converation.areEqual(one, two, this);
             return super.checkEqual(one, two);
         }
         

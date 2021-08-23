@@ -1,9 +1,14 @@
 package team.creative.creativecore.common.config.gui;
 
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.controls.GuiLabel;
+import team.creative.creativecore.common.gui.controls.GuiTextfield;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiConfigSubControl extends GuiParent {
+    
+    public GuiTextfield nameField;
+    public GuiLabel nameLabel;
     
     protected int initalWidth;
     protected int initalHeight;
@@ -12,6 +17,33 @@ public class GuiConfigSubControl extends GuiParent {
         super(name, x, y, width, height);
         this.initalWidth = width;
         this.initalHeight = height;
+    }
+    
+    public String getName() {
+        if (nameLabel != null)
+            return nameLabel.getCaption();
+        if (nameField != null)
+            return nameField.text;
+        return "";
+    }
+    
+    public void addNameUnmodifieable(String name) {
+        nameLabel = new GuiLabel("label", 0, 0);
+        nameLabel.setCaption(name);
+        int offsetY = nameLabel.height + 2;
+        for (int i = 0; i < controls.size(); i++)
+            controls.get(i).posY += offsetY;
+        height += offsetY;
+        addControl(nameLabel);
+    }
+    
+    public void addNameTextfield(String name) {
+        nameField = new GuiTextfield(name, 0, 0, width - 50);
+        int offsetY = nameField.height + 2;
+        for (int i = 0; i < controls.size(); i++)
+            controls.get(i).posY += offsetY;
+        height += offsetY;
+        addControl(nameField);
     }
     
     @Override

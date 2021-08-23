@@ -6,7 +6,7 @@ import com.google.common.collect.ObjectArrays;
 import com.google.gson.JsonObject;
 
 import net.minecraftforge.api.distmarker.Dist;
-import team.creative.creativecore.common.config.ConfigTypeConveration;
+import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.util.type.PairList;

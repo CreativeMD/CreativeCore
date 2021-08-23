@@ -8,9 +8,9 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import net.minecraftforge.api.distmarker.Dist;
-import team.creative.creativecore.common.config.ConfigTypeConveration;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
+import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyFieldObject;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;

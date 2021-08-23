@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.config.ConfigTypeConveration;
+import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -173,11 +173,6 @@ public abstract class CreativeIngredient {
             @Override
             public CreativeIngredient set(ConfigKeyField key, CreativeIngredient value) {
                 return value;
-            }
-            
-            @Override
-            public CreativeIngredient createPrimitiveDefault(Class clazz) {
-                return null;
             }
         });
     }

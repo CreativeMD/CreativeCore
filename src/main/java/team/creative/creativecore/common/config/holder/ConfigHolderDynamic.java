@@ -2,7 +2,7 @@ package team.creative.creativecore.common.config.holder;
 
 import java.lang.reflect.Field;
 
-import team.creative.creativecore.common.config.ConfigTypeConveration;
+import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyDynamic;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyDynamicField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
