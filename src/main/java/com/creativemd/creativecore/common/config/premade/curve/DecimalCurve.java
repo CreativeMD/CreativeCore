@@ -33,6 +33,13 @@ public class DecimalCurve implements ICreativeConfig, Curve {
         this.maxValue = 0;
     }
     
+    public DecimalCurve(Random rand, IntMinMax duration, double intensity) {
+        this.min = 0;
+        this.minValue = intensity;
+        this.max = duration.next(rand);
+        this.maxValue = 0;
+    }
+    
     @Override
     public double valueAt(double x) {
         if (x <= min)
