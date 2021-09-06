@@ -159,7 +159,7 @@ public abstract class GuiControl {
     
     // INTERACTION
     
-    public boolean testForDoubleClick(double x, double y) {
+    public boolean testForDoubleClick(Rect rect, double x, double y) {
         return false;
     }
     
@@ -167,21 +167,21 @@ public abstract class GuiControl {
         return enabled && visible;
     }
     
-    public void mouseMoved(double x, double y) {}
+    public void mouseMoved(Rect rect, double x, double y) {}
     
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
         return false;
     }
     
-    public boolean mouseDoubleClicked(double x, double y, int button) {
-        return mouseClicked(x, y, button);
+    public boolean mouseDoubleClicked(Rect rect, double x, double y, int button) {
+        return mouseClicked(rect, x, y, button);
     }
     
-    public void mouseReleased(double x, double y, int button) {}
+    public void mouseReleased(Rect rect, double x, double y, int button) {}
     
-    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {}
+    public void mouseDragged(Rect rect, double x, double y, int button, double dragX, double dragY, double time) {}
     
-    public boolean mouseScrolled(double x, double y, double delta) {
+    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
         return false;
     }
     
@@ -212,7 +212,7 @@ public abstract class GuiControl {
         return getStyle().getContentOffset(getControlFormatting());
     }
     
-    public GuiTooltipEvent getTooltipEvent(double x, double y) {
+    public GuiTooltipEvent getTooltipEvent(Rect rect, double x, double y) {
         List<Component> toolTip = getTooltip();
         
         if (customTooltip != null)
@@ -239,7 +239,7 @@ public abstract class GuiControl {
     // RENDERING
     
     @OnlyIn(value = Dist.CLIENT)
-    public void render(PoseStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    public void render(PoseStack matrix, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
@@ -255,7 +255,7 @@ public abstract class GuiControl {
         controlRect.shrink(borderWidth);
         style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)).render(matrix, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
         
-        renderContent(matrix, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
+        renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
@@ -264,16 +264,16 @@ public abstract class GuiControl {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         controlRect.shrink(formatting.padding);
         matrix.pushPose();
         matrix.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(matrix, controlRect, controlRect.intersection(realRect), mouseX, mouseY);
+        renderContent(matrix, control, controlRect, controlRect.intersection(realRect), mouseX, mouseY);
         matrix.popPose();
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         renderContent(matrix, controlRect, mouseX, mouseY);
     }
     

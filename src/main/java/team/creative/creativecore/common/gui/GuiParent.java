@@ -30,9 +30,6 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     protected VAlign valign = VAlign.TOP;
     protected int spacing = 2;
     
-    @OnlyIn(value = Dist.CLIENT)
-    protected int lastRenderedHeight;
-    
     public GuiParent(String name) {
         super(name);
     }
@@ -182,29 +179,25 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
                 
                 matrix.pushPose();
                 matrix.translate((child.getX() + xOffset) * scale, (child.getY() + yOffset) * scale, 10);
-                control.render(matrix, controlRect, realRect, mouseX, mouseY);
+                control.render(matrix, child, controlRect, realRect, mouseX, mouseY);
                 matrix.popPose();
             }
-            
-            lastRenderedHeight = (int) Math.max(lastRenderedHeight, (child.getBottom()) * scale);
         }
     }
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect contentRect, Rect realContentRect, int mouseX, int mouseY) {
         if (realContentRect == null)
             return;
         double scale = getScaleFactor();
         double xOffset = getOffsetX();
         double yOffset = getOffsetY();
         
-        lastRenderedHeight = 0;
-        
         renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, controls, scale, xOffset, yOffset, false);
         renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, hoverControls, scale, xOffset, yOffset, true);
         
-        super.renderContent(matrix, contentRect, realContentRect, mouseX, mouseY);
+        super.renderContent(matrix, control, contentRect, realContentRect, mouseX, mouseY);
     }
     
     @Override
@@ -245,8 +238,8 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     }
     
     @Override
-    public GuiTooltipEvent getTooltipEvent(double x, double y) {
-        GuiTooltipEvent event = super.getTooltipEvent(x, y);
+    public GuiTooltipEvent getTooltipEvent(Rect rect, double x, double y) {
+        GuiTooltipEvent event = super.getTooltipEvent(rect, x, y);
         if (event != null)
             return event;
         
@@ -257,7 +250,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         y += -getOffsetY() - offset;
         for (GuiChildControl child : controls)
             if (child.control.isInteractable() && child.isMouseOver(x, y)) {
-                event = child.control.getTooltipEvent(x - child.getX(), y - child.getY());
+                event = child.control.getTooltipEvent(child.rect, x - child.getX(), y - child.getY());
                 if (event != null)
                     return event;
             }
@@ -265,21 +258,21 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     }
     
     @Override
-    public boolean testForDoubleClick(double x, double y) {
+    public boolean testForDoubleClick(Rect rect, double x, double y) {
         x *= getScaleFactor();
         y *= getScaleFactor();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
         for (GuiChildControl child : controls)
-            if (child.control.isInteractable() && child.control.testForDoubleClick(x - child.getX(), y - child.getY()))
+            if (child.control.isInteractable() && child.control.testForDoubleClick(child.rect, x - child.getX(), y - child.getY()))
                 return true;
         return false;
         
     }
     
     @Override
-    public void mouseMoved(double x, double y) {
+    public void mouseMoved(Rect rect, double x, double y) {
         x *= getScaleFactor();
         y *= getScaleFactor();
         int offset = getContentOffset();
@@ -287,11 +280,11 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         y += -getOffsetY() - offset;
         for (GuiChildControl child : controls)
             if (child.control.isInteractable())
-                child.control.mouseMoved(x - child.getX(), y - child.getY());
+                child.control.mouseMoved(child.rect, x - child.getX(), y - child.getY());
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
         x *= getScaleFactor();
         y *= getScaleFactor();
         int offset = getContentOffset();
@@ -299,7 +292,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         y += -getOffsetY() - offset;
         boolean result = false;
         for (GuiChildControl child : controls)
-            if (!result && child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseClicked(x - child.getX(), y - child.getY(), button)) {
+            if (!result && child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseClicked(child.rect, x - child.getX(), y - child.getY(), button)) {
                 raiseEvent(new GuiControlClickEvent(child.control, button, false));
                 result = true;
             } else
@@ -308,7 +301,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     }
     
     @Override
-    public boolean mouseDoubleClicked(double x, double y, int button) {
+    public boolean mouseDoubleClicked(Rect rect, double x, double y, int button) {
         x *= getScaleFactor();
         y *= getScaleFactor();
         int offset = getContentOffset();
@@ -316,7 +309,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         y += -getOffsetY() - offset;
         boolean result = false;
         for (GuiChildControl child : controls)
-            if (!result && child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseDoubleClicked(x - child.getX(), y - child.getY(), button)) {
+            if (!result && child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseDoubleClicked(child.rect, x - child.getX(), y - child.getY(), button)) {
                 raiseEvent(new GuiControlClickEvent(child.control, button, false));
                 result = true;
             } else
@@ -326,7 +319,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(Rect rect, double x, double y, int button) {
         x *= getScaleFactor();
         y *= getScaleFactor();
         int offset = getContentOffset();
@@ -334,11 +327,11 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         y += -getOffsetY() - offset;
         for (GuiChildControl child : controls)
             if (child.control.isInteractable())
-                child.control.mouseReleased(x - child.getX(), y - child.getY(), button);
+                child.control.mouseReleased(child.rect, x - child.getX(), y - child.getY(), button);
     }
     
     @Override
-    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
+    public void mouseDragged(Rect rect, double x, double y, int button, double dragX, double dragY, double time) {
         x *= getScaleFactor();
         y *= getScaleFactor();
         int offset = getContentOffset();
@@ -346,18 +339,18 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         y += -getOffsetY() - offset;
         for (GuiChildControl child : controls)
             if (child.control.isInteractable())
-                child.control.mouseDragged(x - child.getX(), y - child.getY(), button, dragX, dragY, time);
+                child.control.mouseDragged(child.rect, x - child.getX(), y - child.getY(), button, dragX, dragY, time);
     }
     
     @Override
-    public boolean mouseScrolled(double x, double y, double delta) {
+    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
         x *= getScaleFactor();
         y *= getScaleFactor();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
         for (GuiChildControl child : controls)
-            if (child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseScrolled(x - child.getX(), y - child.getY(), delta))
+            if (child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseScrolled(child.rect, x - child.getX(), y - child.getY(), delta))
                 return true;
         return false;
     }
