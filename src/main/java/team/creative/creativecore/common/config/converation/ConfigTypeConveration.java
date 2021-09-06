@@ -41,7 +41,7 @@ import team.creative.creativecore.common.gui.controls.GuiSlider;
 import team.creative.creativecore.common.gui.controls.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.GuiSteppedSlider;
 import team.creative.creativecore.common.gui.controls.GuiTextfield;
-import team.creative.creativecore.common.gui.controls.layout.GuiHBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiBoxX;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.PairList;
@@ -416,17 +416,17 @@ public abstract class ConfigTypeConveration<T> {
         registerType(Double.class, numberType);
         
         registerTypeCreator(byte.class, () -> (byte) 0);
-        registerTypeCreator(Byte.class, () -> new Byte((byte) 0));
+        registerTypeCreator(Byte.class, () -> Byte.valueOf((byte) 0));
         registerTypeCreator(short.class, () -> (short) 0);
-        registerTypeCreator(Short.class, () -> new Short((short) 0));
+        registerTypeCreator(Short.class, () -> Short.valueOf((short) 0));
         registerTypeCreator(int.class, () -> 0);
-        registerTypeCreator(Integer.class, () -> new Integer(0));
+        registerTypeCreator(Integer.class, () -> Integer.valueOf(0));
         registerTypeCreator(long.class, () -> (long) 0);
-        registerTypeCreator(Long.class, () -> new Long(0));
+        registerTypeCreator(Long.class, () -> Long.valueOf(0));
         registerTypeCreator(float.class, () -> 0F);
-        registerTypeCreator(Float.class, () -> new Float(0));
+        registerTypeCreator(Float.class, () -> Float.valueOf(0));
         registerTypeCreator(double.class, () -> 0D);
-        registerTypeCreator(Double.class, () -> new Double(0));
+        registerTypeCreator(Double.class, () -> Double.valueOf(0));
         
         registerType(String.class, new SimpleConfigTypeConveration<String>() {
             
@@ -495,7 +495,7 @@ public abstract class ConfigTypeConveration<T> {
                 parent.add(new GuiTextfield("search", 0, 0, recommendedWidth, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", 0, 14, new TextMapBuilder<ResourceLocation>()
                         .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new TextComponent(x.toString()))));
-                GuiHBox hBox = new GuiHBox("vBox", 0, 30);
+                GuiBoxX hBox = new GuiBoxX("vBox", 0, 30);
                 hBox.add(new GuiLabel("volumeLabel", 0, 0).setTitle(new TranslatableComponent("gui.volume")));
                 hBox.add(new GuiSlider("volume", 0, 30, 40, 10, 1, 0, 1));
                 hBox.add(new GuiLabel("pitchLabel", 0, 0).setTitle(new TranslatableComponent("gui.pitch")));
