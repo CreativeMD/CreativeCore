@@ -13,7 +13,7 @@ import team.creative.creativecore.common.gui.controls.GuiLabel;
 import team.creative.creativecore.common.gui.controls.GuiLabelFixed;
 import team.creative.creativecore.common.gui.controls.GuiScrollBox;
 import team.creative.creativecore.common.gui.controls.layout.GuiLeftRightBox;
-import team.creative.creativecore.common.gui.controls.layout.GuiVBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiYBox;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -49,7 +49,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
             handler = GuiCreativeIngredientHandler.get(box.getIndex());
         
         clear();
-        GuiVBox upperBox = new GuiVBox("upperBox", 0, 0, Align.STRETCH);
+        GuiYBox upperBox = new GuiYBox("upperBox", 0, 0, Align.STRETCH);
         List<String> lines = new ArrayList<>(GuiCreativeIngredientHandler.getNames());
         box = new GuiComboBox("type", 0, 0, new TextListBuilder().add(lines));
         box.select(lines.indexOf(handler.getName()));

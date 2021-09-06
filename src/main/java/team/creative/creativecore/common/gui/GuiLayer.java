@@ -4,33 +4,46 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.gui.controls.layout.GuiBoxX;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.util.math.geo.Rect;
 
-public abstract class GuiLayer extends GuiParent {
+public abstract class GuiLayer extends GuiBoxX {
     
     public final GuiStyle style;
+    public final Rect rect;
     
     public GuiLayer(String name, int width, int height) {
-        super(name, 0, 0, width, height);
+        super(name, width, height);
+        this.rect = new Rect(0, 0, width, height);
         this.style = GuiStyle.getStyle(name);
+    }
+    
+    public int getWidth() {
+        return preferredWidth;
+    }
+    
+    public int getHeight() {
+        return preferredHeight;
     }
     
     @Override
     public void init() {
         create();
         super.init();
-        initiateLayoutUpdate();
+        reflow();
     }
     
     public void reinit() {
         super.init();
-        initiateLayoutUpdate();
+        reflow();
     }
     
     @Override
-    public void initiateLayoutUpdate() {
-        updateLayout();
+    public void reflow() {
+        flowX((int) rect.getWidth(), (int) rect.getWidth());
+        flowY((int) rect.getHeight(), (int) rect.getHeight());
     }
     
     public abstract void create();
@@ -88,31 +101,5 @@ public abstract class GuiLayer extends GuiParent {
     @Override
     public boolean hasLayer() {
         return true;
-    }
-    
-    @Override
-    public int getPreferredWidth() {
-        return 0;
-    }
-    
-    @Override
-    public int getPreferredHeight() {
-        return 0;
-    }
-    
-    @Override
-    public void setWidthLayout(int width) {}
-    
-    @Override
-    public int getMinWidth() {
-        return 0;
-    }
-    
-    @Override
-    public void setHeightLayout(int height) {}
-    
-    @Override
-    public int getMinHeight() {
-        return 0;
     }
 }

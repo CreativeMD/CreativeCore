@@ -20,7 +20,7 @@ import team.creative.creativecore.common.gui.controls.GuiLabel;
 import team.creative.creativecore.common.gui.controls.GuiStackSelector;
 import team.creative.creativecore.common.gui.controls.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.GuiTextfield;
-import team.creative.creativecore.common.gui.controls.layout.GuiVBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiYBox;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.text.TextListBuilder;
@@ -179,7 +179,7 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
-                GuiVBox test = new GuiVBox("test", 0, 30, Align.STRETCH);
+                GuiYBox test = new GuiYBox("test", 0, 30, Align.STRETCH);
                 GuiComboBoxMapped<Tag<Block>> box = new GuiComboBoxMapped<>("tag", 0, 30, new TextMapBuilder<Tag<Block>>().addComponents(BlockTags.getAllTags().getAllTags()
                         .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(BlockTags.getAllTags().getId(x).toString()).build()));
                 test.add(box);
@@ -218,7 +218,7 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
-                GuiVBox test = new GuiVBox("test", 0, 30, Align.STRETCH);
+                GuiYBox test = new GuiYBox("test", 0, 30, Align.STRETCH);
                 GuiComboBoxMapped<Tag<Item>> box = new GuiComboBoxMapped<>("tag", 0, 30, new TextMapBuilder<Tag<Item>>().addComponents(ItemTags.getAllTags().getAllTags()
                         .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(ItemTags.getAllTags().getId(x).toString()).build()));
                 test.add(box);

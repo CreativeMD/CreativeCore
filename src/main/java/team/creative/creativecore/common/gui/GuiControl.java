@@ -29,21 +29,25 @@ public abstract class GuiControl {
     public final String name;
     public boolean enabled = true;
     
-    private int x;
-    private int y;
-    private int width;
-    private int height;
+    public boolean hasPreferredDimensions;
+    public int preferredWidth;
+    public int preferredHeight;
+    protected boolean expandable = false;
     
     public boolean visible = true;
     
     private List<Component> customTooltip;
     
-    public GuiControl(String name, int x, int y, int width, int height) {
+    public GuiControl(String name) {
         this.name = name;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.hasPreferredDimensions = false;
+    }
+    
+    public GuiControl(String name, int width, int height) {
+        this.name = name;
+        this.hasPreferredDimensions = true;
+        this.preferredWidth = width;
+        this.preferredHeight = height;
     }
     
     // BASICS
@@ -55,6 +59,16 @@ public abstract class GuiControl {
     public GuiControl setTooltip(List<Component> tooltip) {
         if (!tooltip.isEmpty())
             this.customTooltip = tooltip;
+        return this;
+    }
+    
+    public GuiControl setFixed() {
+        this.expandable = false;
+        return this;
+    }
+    
+    public GuiControl setExpandable() {
+        this.expandable = true;
         return this;
     }
     
@@ -71,26 +85,8 @@ public abstract class GuiControl {
         return parent;
     }
     
-    public int getContentWidth() {
-        return width - getContentOffset() * 2;
-    }
-    
-    public int getContentHeight() {
-        return height - getContentOffset() * 2;
-    }
-    
-    public int getControlOffsetX() {
-        int offset = x;
-        if (parent instanceof GuiControl)
-            offset += ((GuiControl) parent).getControlOffsetX();
-        return offset;
-    }
-    
-    public int getControlOffsetY() {
-        int offset = y;
-        if (parent instanceof GuiControl)
-            offset += ((GuiControl) parent).getControlOffsetY();
-        return offset;
+    public boolean isExpandable() {
+        return expandable;
     }
     
     public String getNestedName() {
@@ -133,63 +129,32 @@ public abstract class GuiControl {
     
     // SIZE
     
-    public int getX() {
-        return x;
+    public abstract void flowX(int width, int preferred);
+    
+    public abstract void flowY(int height, int preferred);
+    
+    public void reflow() {
+        parent.reflow();
     }
     
-    public int getY() {
-        return y;
+    public int getMinWidth() {
+        return -1;
     }
-    
-    public int getWidth() {
-        return width;
-    }
-    
-    public int getHeight() {
-        return height;
-    }
-    
-    public void setX(int x) {
-        this.x = x;
-    }
-    
-    public void setY(int y) {
-        this.y = y;
-    }
-    
-    public void setWidth(int width) {
-        this.width = width;
-    }
-    
-    public void setHeight(int height) {
-        this.height = height;
-    }
-    
-    public void initiateLayoutUpdate() {
-        if (getParent() != null)
-            getParent().initiateLayoutUpdate();
-    }
-    
-    public void updateLayout() {}
-    
-    public abstract void setWidthLayout(int width);
-    
-    public abstract int getMinWidth();
     
     public abstract int getPreferredWidth();
     
     public int getMaxWidth() {
-        return 0;
+        return -1;
     }
     
-    public abstract void setHeightLayout(int height);
-    
-    public abstract int getMinHeight();
+    public int getMinHeight() {
+        return -1;
+    }
     
     public abstract int getPreferredHeight();
     
     public int getMaxHeight() {
-        return 0;
+        return -1;
     }
     
     // INTERACTION
@@ -200,10 +165,6 @@ public abstract class GuiControl {
     
     public boolean isInteractable() {
         return enabled && visible;
-    }
-    
-    public boolean isMouseOver(double x, double y) {
-        return x >= this.x && x < this.x + this.width && y >= this.y && y < this.y + this.height;
     }
     
     public void mouseMoved(double x, double y) {}
@@ -278,11 +239,6 @@ public abstract class GuiControl {
     // RENDERING
     
     @OnlyIn(value = Dist.CLIENT)
-    public boolean canOverlap() {
-        return false;
-    }
-    
-    @OnlyIn(value = Dist.CLIENT)
     public void render(PoseStack matrix, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
@@ -332,24 +288,6 @@ public abstract class GuiControl {
     
     public boolean isClientSide() {
         return getPlayer().level.isClientSide;
-    }
-    
-    // MANAGEMENT
-    
-    public void moveBehind(GuiControl reference) {
-        parent.moveBehind(this, reference);
-    }
-    
-    public void moveInFront(GuiControl reference) {
-        parent.moveInFront(this, reference);
-    }
-    
-    public void moveTop() {
-        parent.moveTop(this);
-    }
-    
-    public void moveBottom() {
-        parent.moveBottom(this);
     }
     
     // UTILS

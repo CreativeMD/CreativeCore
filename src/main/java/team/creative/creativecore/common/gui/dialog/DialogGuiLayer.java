@@ -8,8 +8,8 @@ import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.GuiButton;
 import team.creative.creativecore.common.gui.controls.GuiLabel;
-import team.creative.creativecore.common.gui.controls.layout.GuiHBox;
-import team.creative.creativecore.common.gui.controls.layout.GuiVBox;
+import team.creative.creativecore.common.gui.controls.layout.GuiBoxX;
+import team.creative.creativecore.common.gui.controls.layout.GuiYBox;
 
 public class DialogGuiLayer extends GuiLayer {
     
@@ -24,8 +24,8 @@ public class DialogGuiLayer extends GuiLayer {
     
     @Override
     public void create() {
-        GuiVBox vBox = new GuiVBox("v", 0, 0, Align.CENTER, VAlign.CENTER);
-        GuiHBox hBox = new GuiHBox("h", 0, 0);
+        GuiYBox vBox = new GuiYBox("v", 0, 0, Align.CENTER, VAlign.CENTER);
+        GuiBoxX hBox = new GuiBoxX("h", 0, 0);
         vBox.add(new GuiLabel("text", 0, 0).setTitle(new TranslatableComponent("dialog." + name)));
         for (DialogButton button : buttons)
             hBox.add(new GuiButton(button.name(), 0, 0, x -> closeDialog(button)).setTitle(new TranslatableComponent("dialog.button." + button.name())));

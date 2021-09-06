@@ -12,20 +12,12 @@ public interface IGuiParent {
     
     public Player getPlayer();
     
-    public void moveBehind(GuiControl toMove, GuiControl reference);
-    
-    public void moveInFront(GuiControl toMove, GuiControl reference);
-    
-    public void moveTop(GuiControl toMove);
-    
-    public void moveBottom(GuiControl toMove);
-    
     public GuiLayer openLayer(LayerOpenPacket packet);
     
     public void closeTopLayer();
     
     public void raiseEvent(GuiEvent event);
     
-    public void initiateLayoutUpdate();
+    public void reflow();
     
 }

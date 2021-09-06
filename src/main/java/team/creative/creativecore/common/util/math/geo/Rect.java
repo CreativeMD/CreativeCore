@@ -88,6 +88,10 @@ public class Rect {
         return new Rect(minX + x, minY + y, minX + x + width, minY + y + height);
     }
     
+    public Rect child(Rect rect, double scale, double xOffset, double yOffset) {
+        return new Rect(minX + (rect.minX + xOffset) * scale, minY + (rect.minY + yOffset) * scale, minX + (rect.maxX + xOffset) * scale, minY + (rect.maxY + yOffset) * scale);
+    }
+    
     public boolean inside(double x, double y) {
         return x >= this.minX && x < this.maxX && y >= this.minY && y < this.maxY;
     }
