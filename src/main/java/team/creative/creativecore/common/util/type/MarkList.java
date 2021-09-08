@@ -36,7 +36,7 @@ public class MarkList<T> implements Iterable<T> {
     }
     
     public boolean isEmpty() {
-        return remaining > 0;
+        return remaining <= 0;
     }
     
     @Override
@@ -52,7 +52,8 @@ public class MarkList<T> implements Iterable<T> {
                 while (!found && next < content.size()) {
                     if (!set.get(next))
                         found = true;
-                    next++;
+                    else
+                        next++;
                 }
                 return found;
             }
