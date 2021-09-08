@@ -9,8 +9,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -36,33 +34,28 @@ public class GuiRenderHelper {
         return mc.font;
     }
     
-    public static void drawItemStack(PoseStack matrix, ItemStack stack) {
+    public static void drawItemStack(PoseStack mat, ItemStack stack) {
         ItemRenderer renderer = mc.getItemRenderer();
-        
         mc.getTextureManager().getTexture(InventoryMenu.BLOCK_ATLAS).setFilter(false, false);
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        PoseStack matrix = RenderSystem.getModelViewStack();
         matrix.pushPose();
+        matrix.mulPoseMatrix(mat.last().pose());
+        matrix.translate(0, 0, 100.0F + renderer.blitOffset);
         matrix.translate(8.0D, 8.0D, 0.0D);
         matrix.scale(1.0F, -1.0F, 1.0F);
         matrix.scale(16.0F, 16.0F, 16.0F);
+        
         RenderSystem.applyModelViewMatrix();
-        PoseStack posestack1 = new PoseStack();
         MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
         BakedModel bakedmodel = renderer.getModel(stack, (Level) null, (LivingEntity) null, 0);
         boolean flag = !bakedmodel.usesBlockLight();
         if (flag)
             Lighting.setupForFlatItems();
-        
-        Matrix4f m = matrix.last().pose();
-        Vector4f vec = new Vector4f();
-        vec.setW(1);
-        vec.transform(m);
-        float shrink = 1 / 16F;
-        m.translate(new Vector3f(-vec.x() + vec.x() * shrink, -vec.y() - vec.y() * shrink, -vec.z() + vec.z() * shrink));
-        renderer.render(stack, ItemTransforms.TransformType.GUI, false, posestack1, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        renderer.render(stack, ItemTransforms.TransformType.GUI, false, new PoseStack(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
         multibuffersource$buffersource.endBatch();
         RenderSystem.enableDepthTest();
         if (flag)
