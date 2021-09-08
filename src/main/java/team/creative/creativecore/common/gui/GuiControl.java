@@ -146,7 +146,7 @@ public abstract class GuiControl {
     public int getPreferredWidth() {
         if (hasPreferredDimensions)
             return preferredWidth;
-        return preferredWidth;
+        return preferredWidth();
     }
     
     public int getMaxWidth() {
