@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls.layout;
+package team.creative.creativecore.common.gui.controls.parent;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -10,25 +10,26 @@ import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.math.vec.SmoothValue;
 
-public class GuiScrollX extends GuiBoxX {
+public class GuiScrollY extends GuiBoxY {
     
     public int maxScroll = 0;
     public SmoothValue scrolled = new SmoothValue(200);
     public double scaleFactor;
     public boolean dragged;
-    public int scrollbarWidth = 3;
-    protected int cachedWidth;
+    public int scrollbarHeight = 3;
     
-    public GuiScrollX() {
+    protected int cachedHeight;
+    
+    public GuiScrollY() {
         this("");
     }
     
-    public GuiScrollX(String name) {
+    public GuiScrollY(String name) {
         super(name);
         this.scaleFactor = 1;
     }
     
-    public GuiScrollX(String name, int width, int height, float scaleFactor) {
+    public GuiScrollY(String name, int width, int height, float scaleFactor) {
         super(name, width, height);
         this.scaleFactor = scaleFactor;
     }
@@ -66,7 +67,7 @@ public class GuiScrollX extends GuiBoxX {
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (button == 0 && rect.getWidth() - x <= scrollbarWidth && needsScrollbar(rect)) {
+        if (button == 0 && rect.getHeight() - y <= scrollbarHeight && needsScrollbar(rect)) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             dragged = true;
             return true;
@@ -79,13 +80,13 @@ public class GuiScrollX extends GuiBoxX {
         if (dragged) {
             GuiStyle style = getStyle();
             ControlFormatting formatting = getControlFormatting();
-            int completeWidth = (int) (rect.getWidth() - style.getBorder(formatting.border) * 2);
+            int completeHeight = (int) (rect.getHeight() - style.getBorder(formatting.border) * 2);
             
-            int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
-            if (cachedWidth < completeWidth)
-                scrollThingWidth = completeWidth;
+            int scrollThingHeight = Math.max(10, Math.min(completeHeight, (int) ((float) completeHeight / cachedHeight * completeHeight)));
+            if (cachedHeight < completeHeight)
+                scrollThingHeight = completeHeight;
             
-            double percent = (x) / (completeWidth - scrollThingWidth);
+            double percent = (y) / (completeHeight - scrollThingHeight);
             this.scrolled.set((int) (percent * maxScroll));
             onScrolled();
         }
@@ -99,7 +100,7 @@ public class GuiScrollX extends GuiBoxX {
     }
     
     public boolean needsScrollbar(Rect rect) {
-        return cachedWidth > rect.getWidth() - getContentOffset() * 2;
+        return cachedHeight > rect.getHeight() - getContentOffset() * 2;
     }
     
     @Override
@@ -110,34 +111,34 @@ public class GuiScrollX extends GuiBoxX {
         
         scrolled.tick();
         
-        int completeWidth = control.getWidth() - style.getBorder(formatting.border) * 2;
+        int completeHeight = control.getHeight() - style.getBorder(formatting.border) * 2;
         
-        int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
-        if (scrollThingWidth < completeWidth)
-            scrollThingWidth = completeWidth;
+        int scrollThingHeight = Math.max(10, Math.min(completeHeight, (int) ((float) completeHeight / cachedHeight * completeHeight)));
+        if (cachedHeight < completeHeight)
+            scrollThingHeight = completeHeight;
         double percent = scrolled.current() / maxScroll;
         
         style.get(ControlStyleFace.CLICKABLE, false).render(matrix, controlRect
-                .getWidth() + formatting.padding * 2 - scrollbarWidth + borderWidth, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, scrollbarWidth, scrollThingWidth);
+                .getWidth() + formatting.padding * 2 - scrollbarHeight + borderWidth, (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarHeight, scrollThingHeight);
         
-        maxScroll = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
+        maxScroll = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
         
     }
     
     @Override
-    public int getMinHeight() {
+    public int getMinWidth() {
         return 10;
     }
     
     @Override
-    public void flowX(int width, int preferred) {
-        int x = 0;
+    public void flowY(int height, int preferred) {
+        int y = 0;
         for (GuiChildControl child : controls) {
-            child.setWidth(child.control.getPreferredWidth());
-            child.setX(x);
-            x += child.getWidth() + spacing;
+            child.setHeight(child.control.getPreferredHeight());
+            child.setY(y);
+            y += child.getHeight() + spacing;
         }
-        cachedWidth = x;
+        cachedHeight = y;
     }
     
 }

@@ -151,9 +151,8 @@ public abstract class CreativeIngredient {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-                parent.add(new GuiInfoStackButton("data", 0, 0, parent.getWidth() - 50, 18, temp));
-                parent.setHeight(18);
+            public void createControls(GuiParent parent, Class clazz) {
+                parent.add(new GuiInfoStackButton("data", 50, 18, temp).setExpandable());
             }
             
             @Override

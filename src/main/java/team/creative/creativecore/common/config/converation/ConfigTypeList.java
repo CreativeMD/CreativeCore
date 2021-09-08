@@ -18,8 +18,8 @@ import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.GuiButton;
-import team.creative.creativecore.common.gui.controls.GuiListBoxBase;
+import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 
 public class ConfigTypeList extends ConfigTypeConveration<List> {
     
@@ -62,25 +62,22 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-        parent.setHeight(160);
-        GuiListBoxBase<GuiConfigSubControl> listBox = new GuiListBoxBase<>("data", 0, 0, parent.getWidth() - 10, 130, true, new ArrayList<>());
+    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
+        GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", 50, 130, true, new ArrayList<>()).setExpandable();
         parent.add(listBox);
         
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);
         
-        int parentWidth = parent.getWidth() - 10;
-        
         parent.add(new GuiButton("add", 0, 140, x -> {
             GuiConfigSubControl control;
             if (converation != null) {
-                control = new GuiConfigSubControl("" + 0, 2, 0, parentWidth, 14);
-                converation.createControls(control, null, subClass, control.getWidth() - 35);
+                control = new GuiConfigSubControl("" + 0);
+                converation.createControls(control, null, subClass);
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
                 ConfigHolderObject holder = constructHolder(Dist.DEDICATED_SERVER, value);
-                control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, holder, value);
+                control = new GuiConfigSubControlHolder("" + 0, holder, value);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             listBox.addItem(control);
@@ -97,18 +94,16 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         Class clazz = getListType(key);
         ConfigTypeConveration converation = getUnsafe(clazz);
         
-        int parentWidth = parent.getWidth() - 10;
-        
         List<GuiConfigSubControl> controls = new ArrayList<>(value.size());
         for (int i = 0; i < value.size(); i++) {
             Object entry = value.get(i);
             GuiConfigSubControl control;
             if (converation != null) {
-                control = new GuiConfigSubControl("" + i, 2, 0, parentWidth, 14);
-                converation.createControls(control, null, clazz, control.getWidth() - 35);
+                control = new GuiConfigSubControl("" + i);
+                converation.createControls(control, null, clazz);
                 converation.loadValue(entry, control, null);
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, constructHolder(Dist.DEDICATED_SERVER, entry), entry);
+                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Dist.DEDICATED_SERVER, entry), entry);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             controls.add(control);

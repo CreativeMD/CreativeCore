@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.simple;
 
 import java.util.List;
 
@@ -10,46 +10,44 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiLabel extends GuiControl {
     
-    protected CompiledText text;
-    public Align align;
+    protected CompiledText text = CompiledText.createAnySize();
     
-    public GuiLabel(String name, int x, int y) {
-        super(name, x, y, 1, 10);
-        if (text == null)
-            text = CompiledText.createAnySize();
+    public GuiLabel(String name) {
+        super(name);
     }
     
-    protected void updateDimension() {
-        if (getParent() != null) {
-            setWidth(getPreferredWidth());
-            setHeight(getPreferredHeight());
-        }
+    public GuiLabel(String name, int width, int height) {
+        super(name, width, height);
+    }
+    
+    public GuiLabel setAlign(Align align) {
+        text.alignment = align;
+        return this;
     }
     
     public GuiLabel setTitle(Component component) {
         text.setText(component);
         if (getParent() != null)
-            initiateLayoutUpdate();
+            reflow();
         return this;
     }
     
     public GuiLabel setTitle(List<Component> components) {
         text.setText(components);
         if (getParent() != null)
-            initiateLayoutUpdate();
+            reflow();
         return this;
     }
     
     @Override
-    public void init() {
-        updateDimension();
-    }
+    public void init() {}
     
     @Override
     public void closed() {}
@@ -64,17 +62,20 @@ public class GuiLabel extends GuiControl {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         text.render(matrix);
     }
     
     @Override
-    public void setWidthLayout(int width) {
+    public void flowX(int width, int preferred) {
         int offset = getContentOffset();
         text.setDimension(width - offset * 2, Integer.MAX_VALUE);
         text.calculateDimensions();
-        setWidth(text.usedWidth + offset * 2);
-        setHeight(text.usedHeight + offset * 2);
+    }
+    
+    @Override
+    public void flowY(int height, int preferred) {
+        text.setMaxHeight(height);
     }
     
     @Override
@@ -83,14 +84,8 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    public int getPreferredWidth() {
+    public int preferredWidth() {
         return text.getTotalWidth() + getContentOffset() * 2;
-    }
-    
-    @Override
-    public void setHeightLayout(int height) {
-        text.setMaxHeight(height - getContentOffset() * 2);
-        setHeight(height);
     }
     
     @Override
@@ -99,7 +94,7 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    public int getPreferredHeight() {
+    public int preferredHeight() {
         return text.getTotalHeight() + getContentOffset() * 2;
     }
     

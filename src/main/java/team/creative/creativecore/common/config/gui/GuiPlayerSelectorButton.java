@@ -7,7 +7,7 @@ import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
 import com.creativemd.creativecore.common.utils.player.PlayerSelector;
 
 import net.minecraft.nbt.NBTTagCompound;
-import team.creative.creativecore.common.gui.controls.GuiButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 
 public class GuiPlayerSelectorButton extends GuiButton {

@@ -6,8 +6,8 @@ import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.nbt.NBTTagCompound;
-import team.creative.creativecore.common.gui.controls.GuiButton;
-import team.creative.creativecore.common.gui.controls.GuiComboBox;
+import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.util.player.PlayerSelector;
 

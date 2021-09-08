@@ -141,7 +141,13 @@ public abstract class GuiControl {
         return -1;
     }
     
-    public abstract int getPreferredWidth();
+    protected abstract int preferredWidth();
+    
+    public int getPreferredWidth() {
+        if (hasPreferredDimensions)
+            return preferredWidth;
+        return preferredWidth;
+    }
     
     public int getMaxWidth() {
         return -1;
@@ -151,7 +157,13 @@ public abstract class GuiControl {
         return -1;
     }
     
-    public abstract int getPreferredHeight();
+    protected abstract int preferredHeight();
+    
+    public int getPreferredHeight() {
+        if (hasPreferredDimensions)
+            return preferredHeight;
+        return preferredHeight();
+    }
     
     public int getMaxHeight() {
         return -1;
@@ -274,11 +286,11 @@ public abstract class GuiControl {
     
     @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        renderContent(matrix, controlRect, mouseX, mouseY);
+        renderContent(matrix, control, controlRect, mouseX, mouseY);
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected abstract void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY);
+    protected abstract void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY);
     
     // MINECRAFT
     

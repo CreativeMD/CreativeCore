@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.config.gui;
 
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.GuiLabel;
-import team.creative.creativecore.common.gui.controls.GuiTextfield;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiConfigSubControl extends GuiParent {
@@ -10,13 +10,9 @@ public class GuiConfigSubControl extends GuiParent {
     public GuiTextfield nameField;
     public GuiLabel nameLabel;
     
-    protected int initalWidth;
-    protected int initalHeight;
-    
-    public GuiConfigSubControl(String name, int x, int y, int width, int height) {
-        super(name, x, y, width, height);
-        this.initalWidth = width;
-        this.initalHeight = height;
+    public GuiConfigSubControl(String name) {
+        super(name);
+        setExpandable();
     }
     
     public String getName() {

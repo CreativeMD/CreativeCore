@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.simple;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -27,6 +27,8 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.controls.GuiFocusControl;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -47,17 +49,23 @@ public class GuiTextfield extends GuiFocusControl {
     private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
         return FormattedCharSequence.forward(text, Style.EMPTY);
     };
+    private int cachedWidth;
     
-    public GuiTextfield(String name, int x, int y, int width) {
-        this(name, x, y, width, 20);
+    public GuiTextfield(String name) {
+        super(name);
+        setText("");
     }
     
-    public GuiTextfield(String name, int x, int y, int width, int height) {
-        this(name, "", x, y, width, height);
+    public GuiTextfield(String name, int width) {
+        this(name, width, 20);
     }
     
-    public GuiTextfield(String name, String text, int x, int y, int width, int height) {
-        super(name, x, y, width, height);
+    public GuiTextfield(String name, int width, int height) {
+        this(name, "", width, height);
+    }
+    
+    public GuiTextfield(String name, String text, int width, int height) {
+        super(name, width, height);
         setText(text);
     }
     
@@ -136,7 +144,7 @@ public class GuiTextfield extends GuiFocusControl {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         Font fontRenderer = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
@@ -158,7 +166,7 @@ public class GuiTextfield extends GuiFocusControl {
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
         int k1 = j1;
         if (!flag) {
-            k1 = j > 0 ? this.getWidth() : 0;
+            k1 = j > 0 ? control.getWidth() : 0;
         } else if (flag2) {
             k1 = j1 - 1;
             --j1;
@@ -178,7 +186,7 @@ public class GuiTextfield extends GuiFocusControl {
             
         if (k != j) {
             int l1 = fontRenderer.width(s.substring(0, k));
-            this.drawSelectionBox(matrix.last().pose(), k1, i1 - 1, l1 - 1, i1 + 1 + 9);
+            this.drawSelectionBox(control, matrix.last().pose(), k1, i1 - 1, l1 - 1, i1 + 1 + 9);
         }
     }
     
@@ -416,20 +424,20 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(Rect rect, double mouseX, double mouseY, int button) {
+        super.mouseClicked(rect, mouseX, mouseY, button);
         
         if (button == 0) {
             int i = Mth.floor(mouseX);
             Font fontRenderer = GuiRenderHelper.getFont();
-            String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), getContentWidth());
+            String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
             this.setCursorPosition(fontRenderer.plainSubstrByWidth(s, i).length() + this.lineScrollOffset);
             return true;
         }
         return false;
     }
     
-    private void drawSelectionBox(Matrix4f matrix, int startX, int startY, int endX, int endY) {
+    private void drawSelectionBox(GuiChildControl control, Matrix4f matrix, int startX, int startY, int endX, int endY) {
         if (startX < endX) {
             int i = startX;
             startX = endX;
@@ -442,11 +450,11 @@ public class GuiTextfield extends GuiFocusControl {
             endY = j;
         }
         
-        if (endX > this.getX() + this.getWidth())
-            endX = this.getX() + this.getWidth();
+        if (endX > control.getX() + control.getWidth())
+            endX = control.getX() + control.getWidth();
         
-        if (startX > this.getX() + this.getWidth())
-            startX = this.getX() + this.getWidth();
+        if (startX > control.getX() + control.getWidth())
+            startX = control.getX() + control.getWidth();
         
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
@@ -487,6 +495,24 @@ public class GuiTextfield extends GuiFocusControl {
             this.cursorCounter = 0;
     }
     
+    @Override
+    public void flowX(int width, int preferred) {
+        cachedWidth = width - getContentOffset() * 2;
+    }
+    
+    @Override
+    public void flowY(int height, int preferred) {}
+    
+    @Override
+    protected int preferredHeight() {
+        return 10;
+    }
+    
+    @Override
+    protected int preferredWidth() {
+        return 40;
+    }
+    
     public void setSelectionPos(int position) {
         int textLength = this.text.length();
         this.selectionEnd = Mth.clamp(position, 0, textLength);
@@ -497,7 +523,7 @@ public class GuiTextfield extends GuiFocusControl {
             if (this.lineScrollOffset > textLength)
                 this.lineScrollOffset = textLength;
             
-            int j = this.getContentWidth();
+            int j = cachedWidth;
             String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), j);
             int k = s.length() + this.lineScrollOffset;
             if (this.selectionEnd == this.lineScrollOffset)

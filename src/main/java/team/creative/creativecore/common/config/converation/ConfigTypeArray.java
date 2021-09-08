@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.GuiListBoxBase;
+import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 
 public class ConfigTypeArray extends ConfigTypeConveration {
     
@@ -42,10 +42,8 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-        parent.setHeight(160);
-        GuiListBoxBase<GuiConfigSubControl> listBox = new GuiListBoxBase<>("data", 0, 0, parent.getWidth() - 10, 150, false, new ArrayList<>());
-        parent.add(listBox);
+    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
+        parent.add(new GuiListBoxBase<>("data", 50, 150, false, new ArrayList<>()).setExpandable());
     }
     
     @Override
@@ -62,8 +60,8 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         List<GuiConfigSubControl> controls = new ArrayList<>(length);
         for (int i = 0; i < length; i++) {
             Object entry = Array.get(value, i);
-            GuiConfigSubControl control = new GuiConfigSubControl("" + i, 2, 0, parent.getWidth(), 14);
-            converation.createControls(control, null, clazz, Math.min(100, control.getWidth()));
+            GuiConfigSubControl control = (GuiConfigSubControl) new GuiConfigSubControl("" + i).setExpandable();
+            converation.createControls(control, null, clazz);
             converation.loadValue(entry, control, null);
             controls.add(control);
         }

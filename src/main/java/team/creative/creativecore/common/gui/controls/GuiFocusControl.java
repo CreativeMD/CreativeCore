@@ -1,9 +1,16 @@
 package team.creative.creativecore.common.gui.controls;
 
-public abstract class GuiFocusControl extends GuiControlBasic {
+import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.util.math.geo.Rect;
+
+public abstract class GuiFocusControl extends GuiControl {
     
-    public GuiFocusControl(String name, int x, int y, int width, int height) {
-        super(name, x, y, width, height);
+    public GuiFocusControl(String name) {
+        super(name);
+    }
+    
+    public GuiFocusControl(String name, int width, int height) {
+        super(name, width, height);
     }
     
     private boolean focused = false;
@@ -24,7 +31,7 @@ public abstract class GuiFocusControl extends GuiControlBasic {
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
         focus();
         return true;
     }

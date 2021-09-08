@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.collection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +17,12 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.HashMapList;
 
-public class GuiStackSelector extends GuiButtonFixed {
+public class GuiStackSelector extends GuiButton {
     
     protected GuiStackSelectorExtension extension;
     public StackCollector collector;
@@ -30,8 +31,8 @@ public class GuiStackSelector extends GuiButtonFixed {
     public Player player;
     public boolean searchBar;
     
-    public GuiStackSelector(String name, int x, int y, int width, Player player, StackCollector collector, boolean searchBar) {
-        super(name, x, y, width, 18, null);
+    public GuiStackSelector(String name, Player player, StackCollector collector, boolean searchBar) {
+        super(name, null);
         pressed = (button) -> {
             if (extension == null)
                 openBox();
@@ -45,8 +46,23 @@ public class GuiStackSelector extends GuiButtonFixed {
         selectFirst();
     }
     
-    public GuiStackSelector(String name, int x, int y, int width, Player player, StackCollector collector) {
-        this(name, x, y, width, player, collector, true);
+    public GuiStackSelector(String name, int width, Player player, StackCollector collector, boolean searchBar) {
+        super(name, width, 18, null);
+        pressed = (button) -> {
+            if (extension == null)
+                openBox();
+            else
+                closeBox();
+        };
+        this.searchBar = searchBar;
+        this.player = player;
+        this.collector = collector;
+        updateCollectedStacks();
+        selectFirst();
+    }
+    
+    public GuiStackSelector(String name, int width, Player player, StackCollector collector) {
+        this(name, width, player, collector, true);
     }
     
     public boolean selectFirst() {
@@ -99,8 +115,7 @@ public class GuiStackSelector extends GuiButtonFixed {
     public void openBox() {
         this.extension = createBox();
         GuiLayer layer = getLayer();
-        layer.add(extension);
-        extension.moveTop();
+        layer.addHover(extension);
         extension.init();
         extension.setX(getControlOffsetX());
         extension.setY(getControlOffsetY() + getHeight());

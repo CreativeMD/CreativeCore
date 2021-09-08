@@ -40,6 +40,14 @@ public class GuiChildControl {
         return (int) rect.getHeight();
     }
     
+    public int getContentWidth() {
+        return (int) rect.getWidth() - control.getContentOffset() * 2;
+    }
+    
+    public int getContentHeight() {
+        return (int) rect.getHeight() - control.getContentOffset() * 2;
+    }
+    
     public void setWidth(int width) {
         int min = control.getMinWidth();
         if (min != -1)

@@ -1,13 +1,14 @@
-package team.creative.creativecore.common.gui.controls.layout;
+package team.creative.creativecore.common.gui.controls.parent;
 
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.type.MarkIterator;
 import team.creative.creativecore.common.util.type.MarkList;
 
-public abstract class GuiBoxX extends GuiParent {
+public class GuiBoxX extends GuiParent {
     
     public GuiBoxX(String name, Align align, VAlign valign) {
         super(name);
@@ -46,7 +47,7 @@ public abstract class GuiBoxX extends GuiParent {
     }
     
     @Override
-    public int getPreferredWidth() {
+    public int preferredWidth() {
         int width = -spacing;
         for (GuiChildControl child : controls)
             width += child.control.getPreferredWidth() + spacing;
@@ -62,7 +63,7 @@ public abstract class GuiBoxX extends GuiParent {
     }
     
     @Override
-    public int getPreferredHeight() {
+    public int preferredHeight() {
         int height = 0;
         for (GuiChildControl child : controls)
             height = Math.max(height, child.control.getPreferredHeight());
@@ -180,6 +181,11 @@ public abstract class GuiBoxX extends GuiParent {
                 }
             }
         }
+    }
+    
+    @Override
+    public ControlFormatting getControlFormatting() {
+        return ControlFormatting.TRANSPARENT;
     }
     
 }

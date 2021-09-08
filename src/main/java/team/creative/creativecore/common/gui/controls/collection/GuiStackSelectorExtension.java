@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.collection;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;
@@ -7,9 +7,13 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import team.creative.creativecore.common.gui.controls.inventory.SlotViewer;
+import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.util.type.HashMapList;
 
-public class GuiStackSelectorExtension extends GuiScrollBox {
+public class GuiStackSelectorExtension extends GuiScrollY {
     
     public GuiStackSelector comboBox;
     public String search = "";

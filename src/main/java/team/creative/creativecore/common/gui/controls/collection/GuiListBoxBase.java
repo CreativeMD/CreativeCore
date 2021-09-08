@@ -1,13 +1,14 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.collection;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 
-public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
+public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     protected List<T> content;
     protected List<GuiButtonRemove> removeButtons;
@@ -15,7 +16,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollBox {
     public final boolean modifiable;
     public int space = 2;
     
-    public GuiListBoxBase(String name, int x, int y, int width, int height, boolean modifiable, List<T> entries) {
+    public GuiListBoxBase(String name, int width, int height, boolean modifiable, List<T> entries) {
         super(name, x, y, width, height);
         this.content = entries;
         this.modifiable = modifiable;

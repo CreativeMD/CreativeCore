@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls.layout;
+package team.creative.creativecore.common.gui.controls.parent;
 
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
@@ -46,7 +46,7 @@ public abstract class GuiBoxY extends GuiParent {
     }
     
     @Override
-    public int getPreferredHeight() {
+    public int preferredHeight() {
         int height = -spacing;
         for (GuiChildControl child : controls)
             height += child.control.getPreferredHeight() + spacing;
@@ -62,7 +62,7 @@ public abstract class GuiBoxY extends GuiParent {
     }
     
     @Override
-    public int getPreferredWidth() {
+    public int preferredWidth() {
         int width = 0;
         for (GuiChildControl child : controls)
             width = Math.max(width, child.control.getPreferredWidth());

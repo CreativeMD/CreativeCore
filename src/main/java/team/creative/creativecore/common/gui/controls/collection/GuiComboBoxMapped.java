@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.collection;
 
 import java.util.List;
 

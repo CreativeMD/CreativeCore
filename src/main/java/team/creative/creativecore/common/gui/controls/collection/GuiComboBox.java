@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.collection;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -21,7 +22,7 @@ public class GuiComboBox extends GuiLabel {
     public CompiledText[] lines;
     private int index;
     
-    public GuiComboBox(String name, int x, int y, ITextCollection builder) {
+    public GuiComboBox(String name, ITextCollection builder) {
         super(name, x, y);
         lines = builder.build();
         if (index >= lines.length)

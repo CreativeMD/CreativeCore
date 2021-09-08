@@ -34,14 +34,14 @@ import team.creative.creativecore.common.config.premade.SoundConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.GuiComboBox;
-import team.creative.creativecore.common.gui.controls.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.GuiLabel;
-import team.creative.creativecore.common.gui.controls.GuiSlider;
-import team.creative.creativecore.common.gui.controls.GuiStateButton;
-import team.creative.creativecore.common.gui.controls.GuiSteppedSlider;
-import team.creative.creativecore.common.gui.controls.GuiTextfield;
-import team.creative.creativecore.common.gui.controls.layout.GuiBoxX;
+import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
+import team.creative.creativecore.common.gui.controls.parent.GuiBoxX;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.controls.simple.GuiSlider;
+import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiSteppedSlider;
+import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.PairList;
@@ -199,8 +199,8 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-                parent.add(new GuiStateButton("data", 0, 0, 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true"));
+            public void createControls(GuiParent parent, Class clazz) {
+                parent.add(new GuiStateButton("data", 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true"));
             }
             
             @Override
@@ -263,31 +263,29 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-            
-            }
+            public void createControls(GuiParent parent, Class clazz) {}
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
+            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
                 boolean decimal = isDecimal(clazz);
                 if (key != null) {
                     if (decimal) {
                         CreativeConfig.DecimalRange decRange = key.field.getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null && decRange.slider()) {
-                            parent.add(new GuiSlider("data", 0, 0, recommendedWidth, 14, decRange.min(), decRange.min(), decRange.max()));
+                            parent.add(new GuiSlider("data", 30, 14, decRange.min(), decRange.min(), decRange.max()));
                             return;
                         }
                     } else {
                         CreativeConfig.IntRange intRange = key.field.getAnnotation(CreativeConfig.IntRange.class);
                         if (intRange != null && intRange.slider()) {
-                            parent.add(new GuiSteppedSlider("data", 0, 0, recommendedWidth, 14, intRange.min(), intRange.min(), intRange.max()));
+                            parent.add(new GuiSteppedSlider("data", 30, 14, intRange.min(), intRange.min(), intRange.max()));
                             return;
                         }
                     }
                 }
                 
-                GuiTextfield textfield = new GuiTextfield("data", 0, 0, recommendedWidth, 14);
+                GuiTextfield textfield = new GuiTextfield("data", 30, 14);
                 if (decimal)
                     textfield.setFloatOnly();
                 else
@@ -444,8 +442,8 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-                parent.add(new GuiTextfield("data", 0, 0, recommendedWidth, 14));
+            public void createControls(GuiParent parent, Class clazz) {
+                parent.add(new GuiTextfield("data", 30, 14));
             }
             
             @Override
@@ -491,17 +489,16 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, ConfigKeyField key, Class clazz, int recommendedWidth) {
-                parent.add(new GuiTextfield("search", 0, 0, recommendedWidth, 14));
+            public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
+                parent.add(new GuiTextfield("search", 30, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", 0, 14, new TextMapBuilder<ResourceLocation>()
                         .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new TextComponent(x.toString()))));
-                GuiBoxX hBox = new GuiBoxX("vBox", 0, 30);
+                GuiBoxX hBox = new GuiBoxX("vBox");
                 hBox.add(new GuiLabel("volumeLabel", 0, 0).setTitle(new TranslatableComponent("gui.volume")));
-                hBox.add(new GuiSlider("volume", 0, 30, 40, 10, 1, 0, 1));
+                hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
                 hBox.add(new GuiLabel("pitchLabel", 0, 0).setTitle(new TranslatableComponent("gui.pitch")));
-                hBox.add(new GuiSlider("pitch", 30, 30, 40, 10, 1, 0.5, 2));
+                hBox.add(new GuiSlider("pitch", 40, 10, 1, 0.5, 2));
                 parent.add(hBox);
-                parent.setHeight(45);
             }
             
             @Override
@@ -555,15 +552,11 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-            
-            }
+            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {}
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void loadValue(ConfigHolderObject value, GuiParent parent, @Nullable ConfigKeyField key) {
-                
-            }
+            public void loadValue(ConfigHolderObject value, GuiParent parent, @Nullable ConfigKeyField key) {}
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
@@ -576,7 +569,7 @@ public abstract class ConfigTypeConveration<T> {
                 return null;
             }
         });
-            
+        
         registerType(ConfigHolderDynamic.class, new ConfigTypeConveration<ConfigHolderDynamic>() {
             
             @Override
@@ -595,15 +588,11 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-            
-            }
+            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {}
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void loadValue(ConfigHolderDynamic value, GuiParent parent, @Nullable ConfigKeyField key) {
-                
-            }
+            public void loadValue(ConfigHolderDynamic value, GuiParent parent, @Nullable ConfigKeyField key) {}
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
@@ -617,7 +606,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
         });
-            
+        
         registerSpecialType((x) -> {
             if (x.isArray()) {
                 if (has(x.getComponentType()))
@@ -643,8 +632,8 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
-            public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-                parent.add(new GuiComboBox("data", 0, 0, new TextListBuilder().add(clazz.getEnumConstants(), (x) -> ((Enum) x).name())));
+            public void createControls(GuiParent parent, Class clazz) {
+                parent.add(new GuiComboBox("data", new TextListBuilder().add(clazz.getEnumConstants(), (x) -> ((Enum) x).name())));
             }
             
             @Override
@@ -675,7 +664,7 @@ public abstract class ConfigTypeConveration<T> {
     public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key);
     
     @OnlyIn(value = Dist.CLIENT)
-    public abstract void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth);
+    public abstract void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz);
     
     @OnlyIn(value = Dist.CLIENT)
     public abstract void loadValue(T value, GuiParent parent, @Nullable ConfigKeyField key);
@@ -721,12 +710,12 @@ public abstract class ConfigTypeConveration<T> {
         
         @Override
         @OnlyIn(value = Dist.CLIENT)
-        public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-            createControls(parent, clazz, recommendedWidth);
+        public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
+            createControls(parent, clazz);
         }
         
         @OnlyIn(value = Dist.CLIENT)
-        public abstract void createControls(GuiParent parent, Class clazz, int recommendedWidth);
+        public abstract void createControls(GuiParent parent, Class clazz);
         
         @Override
         @OnlyIn(value = Dist.CLIENT)

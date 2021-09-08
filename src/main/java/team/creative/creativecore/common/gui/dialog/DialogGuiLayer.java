@@ -6,10 +6,10 @@ import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.VAlign;
-import team.creative.creativecore.common.gui.controls.GuiButton;
-import team.creative.creativecore.common.gui.controls.GuiLabel;
-import team.creative.creativecore.common.gui.controls.layout.GuiBoxX;
-import team.creative.creativecore.common.gui.controls.layout.GuiYBox;
+import team.creative.creativecore.common.gui.controls.parent.GuiBoxX;
+import team.creative.creativecore.common.gui.controls.parent.GuiYBox;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 
 public class DialogGuiLayer extends GuiLayer {
     

@@ -12,8 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
@@ -21,8 +20,8 @@ import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.GuiButton;
-import team.creative.creativecore.common.gui.controls.GuiListBoxBase;
+import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 
 public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     
@@ -75,40 +74,33 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
-    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz, int recommendedWidth) {
-        parent.height = 160;
-        GuiListBoxBase<GuiConfigSubControl> listBox = new GuiListBoxBase<>("data", 0, 0, parent.width - 10, 130, true, new ArrayList<>());
-        parent.addControl(listBox);
+    @OnlyIn(Dist.CLIENT)
+    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
+        GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", 50, 130, true, new ArrayList<>()).setExpandable();
+        parent.add(listBox);
         
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);
         
-        int parentWidth = parent.width - 10;
-        
-        parent.addControl(new GuiButton("add", 0, 140) {
-            
-            @Override
-            public void onClicked(int x, int y, int button) {
-                GuiConfigSubControl control;
-                if (converation != null) {
-                    control = new GuiConfigSubControl("" + 0, 2, 0, parentWidth, 14);
-                    converation.createControls(control, null, subClass, Math.min(100, control.width - 35));
-                    control.addNameTextfield("");
-                } else {
-                    Object value = constructEmpty(subClass);
-                    ConfigHolderObject holder = constructHolder(Side.SERVER, value);
-                    control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, holder, value);
-                    ((GuiConfigSubControlHolder) control).createControls();
-                    control.addNameTextfield("");
-                }
-                listBox.add(control);
+        parent.add(new GuiButton("add", x -> {
+            GuiConfigSubControl control;
+            if (converation != null) {
+                control = new GuiConfigSubControl("" + 0);
+                converation.createControls(control, null, subClass);
+                control.addNameTextfield("");
+            } else {
+                Object value = ConfigTypeConveration.createObject(subClass);
+                ConfigHolderObject holder = constructHolder(Dist.DEDICATED_SERVER, value);
+                control = new GuiConfigSubControlHolder("" + 0, holder, value);
+                ((GuiConfigSubControlHolder) control).createControls();
+                control.addNameTextfield("");
             }
-        });
+            listBox.add(control);
+        }));
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void loadValue(NamedList value, GuiParent parent, @Nullable ConfigKeyField key) {
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
         if (!box.isEmpty())
@@ -117,19 +109,17 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
         Class clazz = getListType(key);
         ConfigTypeConveration converation = getUnsafe(clazz);
         
-        int parentWidth = parent.width - 10;
-        
         List<GuiConfigSubControl> controls = new ArrayList<>(value.size());
         int i = 0;
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) value.entrySet()) {
             GuiConfigSubControl control;
             if (converation != null) {
-                control = new GuiConfigSubControl("" + i, 2, 0, parentWidth, 14);
-                converation.createControls(control, null, clazz, Math.min(100, control.width - 35));
+                control = new GuiConfigSubControl("" + i);
+                converation.createControls(control, null, clazz);
                 converation.loadValue(entry.getValue(), control, null);
                 control.addNameTextfield(entry.getKey());
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, 2, 0, parentWidth, 14, constructHolder(Side.SERVER, entry.getValue()), entry.getValue());
+                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Dist.DEDICATED_SERVER, entry.getValue()), entry.getValue());
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield(entry.getKey());
             }
@@ -137,11 +127,11 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
             i++;
         }
         
-        box.addAll(controls);
+        box.addAllItems(controls);
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected NamedList saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);

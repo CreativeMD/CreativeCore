@@ -202,7 +202,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
     
     @Override
     public boolean isContainer() {

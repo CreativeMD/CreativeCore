@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.GuiButtonFixed;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
@@ -24,12 +24,12 @@ import team.creative.creativecore.common.util.ingredient.CreativeIngredientMater
 import team.creative.creativecore.common.util.mc.MaterialUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
-public class GuiInfoStackButton extends GuiButtonFixed {
+public class GuiInfoStackButton extends GuiButton {
     
     private CreativeIngredient info;
     
-    public GuiInfoStackButton(String name, int x, int y, int width, int height, CreativeIngredient info) {
-        super(name, x, y, width, height, null);
+    public GuiInfoStackButton(String name, int width, int height, CreativeIngredient info) {
+        super(name, width, height, null);
         pressed = button -> {
             FullItemDialogGuiLayer layer = (FullItemDialogGuiLayer) this.getParent().openLayer(new LayerOpenPacket("info", new CompoundTag()));
             layer.button = this;

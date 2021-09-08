@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.simple;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
@@ -17,7 +18,7 @@ import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
-public class GuiSlider extends GuiControlBasic implements IGuiParent {
+public class GuiSlider extends GuiControl implements IGuiParent {
     
     public double maxValue;
     public double minValue;
@@ -27,8 +28,15 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     
     protected GuiTextfield textfield;
     
-    public GuiSlider(String name, int x, int y, int width, int height, double value, double min, double max) {
-        super(name, x, y, width, height);
+    public GuiSlider(String name, int width, int height, double value, double min, double max) {
+        super(name, width, height);
+        this.minValue = min;
+        this.maxValue = max;
+        setValue(value);
+    }
+    
+    public GuiSlider(String name, double value, double min, double max) {
+        super(name);
         this.minValue = min;
         this.maxValue = max;
         setValue(value);
@@ -47,17 +55,17 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
         if (button == 0) {
             if (textfield != null)
-                return textfield.mouseClicked(x, y, button);
+                return textfield.mouseClicked(rect, x, y, button);
             playSound(SoundEvents.UI_BUTTON_CLICK);
             grabbedSlider = true;
-            mouseMoved(x, y);
+            mouseMoved(rect, x, y);
             return true;
         } else if (button == 1) {
             grabbedSlider = false;
-            textfield = createTextfield();
+            textfield = createTextfield(rect);
             textfield.focus();
             textfield.setText(getTextfieldValue());
             textfield.setParent(this);
@@ -66,8 +74,8 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
         return false;
     }
     
-    protected GuiTextfield createTextfield() {
-        return new GuiTextfield(getNestedName() + ".text", 0, 0, getWidth() - getContentOffset() * 2, getHeight() - getContentOffset() * 2).setFloatOnly();
+    protected GuiTextfield createTextfield(Rect rect) {
+        return new GuiTextfield(getNestedName() + ".text", (int) rect.getWidth() - getContentOffset() * 2, (int) rect.getHeight() - getContentOffset() * 2).setFloatOnly();
     }
     
     public void closeTextField() {
@@ -109,16 +117,16 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     }
     
     @Override
-    public void mouseMoved(double x, double y) {
+    public void mouseMoved(Rect rect, double x, double y) {
         if (grabbedSlider) {
-            int width = this.getWidth() - getContentOffset() * 2 - sliderWidth;
+            int width = (int) rect.getWidth() - getContentOffset() * 2 - sliderWidth;
             
-            if (x < this.getX() + getContentOffset())
+            if (x < rect.minX + getContentOffset())
                 this.value = this.minValue;
-            else if (x > this.getX() + getContentOffset() + width + sliderWidth / 2)
+            else if (x > rect.minX + getContentOffset() + width + sliderWidth / 2)
                 this.value = this.maxValue;
             else {
-                int mouseOffsetX = (int) (x - this.getX() - getContentOffset() - sliderWidth / 2);
+                int mouseOffsetX = (int) (x - rect.minX - getContentOffset() - sliderWidth / 2);
                 this.value = (float) (this.minValue + (float) ((this.maxValue - this.minValue) * ((float) mouseOffsetX / (float) width)));
             }
             setValue(value);
@@ -133,7 +141,7 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(Rect rect, double x, double y, int button) {
         if (this.grabbedSlider)
             grabbedSlider = false;
     }
@@ -142,18 +150,6 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     public boolean isContainer() {
         return getParent().isContainer();
     }
-    
-    @Override
-    public void moveBehind(GuiControl toMove, GuiControl reference) {}
-    
-    @Override
-    public void moveInFront(GuiControl toMove, GuiControl reference) {}
-    
-    @Override
-    public void moveTop(GuiControl toMove) {}
-    
-    @Override
-    public void moveBottom(GuiControl toMove) {}
     
     @Override
     public GuiLayer openLayer(LayerOpenPacket packet) {
@@ -180,18 +176,40 @@ public class GuiSlider extends GuiControlBasic implements IGuiParent {
     }
     
     @Override
-    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         double percent = getPercentage();
         
-        int posX = (int) ((getContentWidth() - sliderWidth) * percent);
+        int posX = (int) ((control.getContentWidth() - sliderWidth) * percent);
         
         GuiStyle style = getStyle();
         style.get(ControlStyleFace.CLICKABLE, false).render(matrix, posX, 0, sliderWidth, rect.getHeight());
         
         if (textfield != null)
-            textfield.render(matrix, rect, rect, mouseX, mouseY);
+            textfield.render(matrix, control, rect, rect, mouseX, mouseY);
         else
             GuiRenderHelper.drawStringCentered(matrix, getTextByValue(), (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE, true);
+    }
+    
+    @Override
+    public void flowX(int width, int preferred) {
+        if (textfield != null)
+            textfield.flowX(width, preferred);
+    }
+    
+    @Override
+    public void flowY(int height, int preferred) {
+        if (textfield != null)
+            textfield.flowY(height, preferred);
+    }
+    
+    @Override
+    protected int preferredWidth() {
+        return 40;
+    }
+    
+    @Override
+    protected int preferredHeight() {
+        return 10;
     }
     
 }

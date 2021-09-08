@@ -1,10 +1,11 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -16,8 +17,8 @@ public class GuiStateButton extends GuiButton {
     public CompiledText[] states;
     public boolean autosize;
     
-    public GuiStateButton(String name, int x, int y, int index, TextListBuilder states) {
-        super(name, x, y, null);
+    public GuiStateButton(String name, int index, TextListBuilder states) {
+        super(name, null);
         this.pressed = button -> {
             if (button == 1)
                 previousState();
@@ -29,8 +30,8 @@ public class GuiStateButton extends GuiButton {
         buildStates(states);
     }
     
-    public GuiStateButton(String name, int x, int y, int index, String... states) {
-        this(name, x, y, index, new TextListBuilder().add(states));
+    public GuiStateButton(String name, int index, String... states) {
+        this(name, index, new TextListBuilder().add(states));
     }
     
     protected void buildStates(TextListBuilder builder) {
@@ -44,25 +45,19 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public void setWidthLayout(int width) {
-        int contentOffset = getContentOffset() * 2;
-        int height = 0;
-        for (CompiledText text : states) {
+    public void flowX(int width, int preferred) {
+        for (CompiledText text : states)
             text.setDimension(width, Integer.MAX_VALUE);
-            height = Math.max(height, text.getTotalHeight() + contentOffset);
-        }
-        setWidth(width);
     }
     
     @Override
-    public void setHeightLayout(int height) {
+    public void flowY(int height, int preferred) {
         for (CompiledText text : states)
             text.setMaxHeight(height);
-        setHeight(height);
     }
     
     @Override
-    public int getPreferredWidth() {
+    public int preferredWidth() {
         int contentOffset = getContentOffset() * 2;
         int width = 0;
         for (CompiledText text : states)
@@ -71,7 +66,7 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public int getPreferredHeight() {
+    public int preferredHeight() {
         int contentOffset = getContentOffset() * 2;
         int height = 0;
         for (CompiledText text : states)
@@ -111,7 +106,7 @@ public class GuiStateButton extends GuiButton {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         CompiledText text = states[index];
         matrix.translate(rect.getWidth() / 2 - text.usedWidth / 2, rect.getHeight() / 2 - text.usedHeight / 2, 0);
         text.render(matrix);

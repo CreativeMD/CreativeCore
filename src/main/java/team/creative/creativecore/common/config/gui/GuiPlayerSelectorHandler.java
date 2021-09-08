@@ -17,10 +17,10 @@ import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSele
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import team.creative.creativecore.common.gui.controls.GuiButton;
-import team.creative.creativecore.common.gui.controls.GuiListBoxBase;
-import team.creative.creativecore.common.gui.controls.GuiStateButton;
-import team.creative.creativecore.common.gui.controls.GuiTextfield;
+import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 
 @SideOnly(Side.CLIENT)

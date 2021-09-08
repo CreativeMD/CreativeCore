@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.GuiButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiConfigControl extends GuiParent {

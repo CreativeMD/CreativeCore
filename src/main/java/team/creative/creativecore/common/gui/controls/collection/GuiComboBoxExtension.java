@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.controls;
+package team.creative.creativecore.common.gui.controls.collection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.controls.GuiComboBoxExtension.GuiComboBoxEntry;
+import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxExtension.GuiComboBoxEntry;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 

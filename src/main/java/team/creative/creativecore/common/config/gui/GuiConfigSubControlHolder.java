@@ -8,8 +8,8 @@ import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.controls.GuiButton;
-import team.creative.creativecore.common.gui.controls.GuiLabel;
+import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiConfigSubControlHolder extends GuiConfigSubControl {
@@ -17,8 +17,9 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     public final ICreativeConfigHolder holder;
     public final Object value;
     
-    public GuiConfigSubControlHolder(String name, int x, int y, int width, int height, ICreativeConfigHolder holder, Object value) {
-        super(name, x, y, width, height);
+    public GuiConfigSubControlHolder(String name, ICreativeConfigHolder holder, Object value) {
+        super(name);
+        setExpandable();
         this.holder = holder;
         this.value = value;
     }

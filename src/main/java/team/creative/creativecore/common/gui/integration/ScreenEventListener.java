@@ -54,9 +54,9 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
     protected void fireRemaingEvents() {
         if (doubleClickButton != -1) {
-            gui.getTopLayer().mouseClicked(x, y, doubleClickButton);
+            gui.getTopLayer().mouseClicked(null, x, y, doubleClickButton);
             if (released)
-                gui.getTopLayer().mouseReleased(x, y, doubleClickButton);
+                gui.getTopLayer().mouseReleased(null, x, y, doubleClickButton);
             doubleClickButton = -1;
             released = false;
         }
@@ -64,17 +64,17 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
     @Override
     public void mouseMoved(double x, double y) {
-        gui.getTopLayer().mouseMoved(x - getOffsetX(), y - getOffsetY());
+        gui.getTopLayer().mouseMoved(null, x - getOffsetX(), y - getOffsetY());
     }
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (gui.getTopLayer().testForDoubleClick(x - getOffsetX(), y - getOffsetY())) {
+        if (gui.getTopLayer().testForDoubleClick(null, x - getOffsetX(), y - getOffsetY())) {
             
             if (doubleClickButton == button) {
                 released = false;
                 doubleClickButton = -1;
-                return gui.getTopLayer().mouseDoubleClicked(x - getOffsetX(), y - getOffsetY(), button);
+                return gui.getTopLayer().mouseDoubleClicked(null, x - getOffsetX(), y - getOffsetY(), button);
             }
             fireRemaingEvents();
             doubleClickButton = button;
@@ -84,7 +84,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
             return true;
         }
         fireRemaingEvents();
-        return gui.getTopLayer().mouseClicked(x - getOffsetX(), y - getOffsetY(), button);
+        return gui.getTopLayer().mouseClicked(null, x - getOffsetX(), y - getOffsetY(), button);
     }
     
     @Override
@@ -94,20 +94,20 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
             return true;
         }
         fireRemaingEvents();
-        gui.getTopLayer().mouseReleased(x - getOffsetX(), y - getOffsetY(), button);
+        gui.getTopLayer().mouseReleased(null, x - getOffsetX(), y - getOffsetY(), button);
         return true;
     }
     
     @Override
     public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
         if (doubleClickButton == -1)
-            gui.getTopLayer().mouseDragged(x - getOffsetX(), y - getOffsetY(), button, dragX, dragY, getEventTime());
+            gui.getTopLayer().mouseDragged(null, x - getOffsetX(), y - getOffsetY(), button, dragX, dragY, getEventTime());
         return true;
     }
     
     @Override
     public boolean mouseScrolled(double x, double y, double delta) {
-        return gui.getTopLayer().mouseScrolled(x - getOffsetX(), y - getOffsetY(), delta);
+        return gui.getTopLayer().mouseScrolled(null, x - getOffsetX(), y - getOffsetY(), delta);
     }
     
     @Override
