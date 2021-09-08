@@ -42,8 +42,8 @@ public abstract class GuiLayer extends GuiBoxX {
     
     @Override
     public void reflow() {
-        flowX((int) rect.getWidth(), preferredWidth());
-        flowY((int) rect.getHeight(), preferredHeight());
+        flowX((int) rect.getWidth() - getContentOffset() * 2, preferredWidth());
+        flowY((int) rect.getHeight() - getContentOffset() * 2, preferredHeight());
     }
     
     public abstract void create();
