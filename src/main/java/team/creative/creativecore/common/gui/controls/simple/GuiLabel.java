@@ -68,8 +68,7 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public void flowX(int width, int preferred) {
-        int offset = getContentOffset();
-        text.setDimension(width - offset * 2, Integer.MAX_VALUE);
+        text.setDimension(width - getContentOffset() * 2, Integer.MAX_VALUE);
         text.calculateDimensions();
     }
     
