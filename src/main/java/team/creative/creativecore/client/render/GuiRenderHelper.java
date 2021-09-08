@@ -56,7 +56,6 @@ public class GuiRenderHelper {
         if (flag)
             Lighting.setupForFlatItems();
         
-        matrix.pushPose();
         Matrix4f m = matrix.last().pose();
         Vector4f vec = new Vector4f();
         vec.setW(1);
