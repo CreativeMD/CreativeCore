@@ -70,7 +70,7 @@ public class CompiledText {
     private void compile() {
         List<Component> copy = new ArrayList<>();
         for (Component component : original)
-            copy.add(component.plainCopy());
+            copy.add(component.copy());
         lines = new ArrayList<>();
         compileNext(null, true, copy);
     }
