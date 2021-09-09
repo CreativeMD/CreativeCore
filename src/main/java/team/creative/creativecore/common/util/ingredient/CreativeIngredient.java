@@ -73,9 +73,7 @@ public abstract class CreativeIngredient {
                 CreativeIngredient ingredient = objectParsers.get(i).apply(object);
                 if (ingredient != null)
                     return ingredient;
-            } catch (Exception e) {
-                
-            }
+            } catch (Exception e) {}
         
         return null;
     }
