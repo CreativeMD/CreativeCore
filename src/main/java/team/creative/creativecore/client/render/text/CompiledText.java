@@ -1,19 +1,27 @@
 package team.creative.creativecore.client.render.text;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
+import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.StringSplitter;
+import net.minecraft.client.StringSplitter.WidthProvider;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSink;
+import net.minecraft.util.StringDecomposer;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.IAdvancedTextComponent;
@@ -84,17 +92,23 @@ public class CompiledText {
         return currentLine;
     }
     
+    private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, FormattedText component) {
+        if (newLine)
+            lines.add(currentLine = new CompiledLine());
+        return compileNext(currentLine, component);
+    }
+    
     private CompiledLine compileNext(CompiledLine currentLine, FormattedText component) {
         List<Component> siblings = null;
         if (component instanceof Component && !((Component) component).getSiblings().isEmpty()) {
             siblings = new ArrayList<>(((Component) component).getSiblings());
             ((Component) component).getSiblings().clear();
         }
-        List<FormattedText> properties = currentLine.add(component);
+        FormattedText next = currentLine.add(component);
         
-        if (properties != null) {
+        if (next != null) {
             lines.add(currentLine = new CompiledLine());
-            currentLine = compileNext(currentLine, false, properties);
+            currentLine = compileNext(currentLine, false, next);
         }
         
         if (siblings != null)
@@ -229,7 +243,7 @@ public class CompiledText {
             this.height = Math.max(height, this.height);
         }
         
-        public List<FormattedText> add(FormattedText component) {
+        public FormattedText add(FormattedText component) {
             int remainingWidth = maxWidth - width;
             if (component instanceof IAdvancedTextComponent) {
                 IAdvancedTextComponent advanced = (IAdvancedTextComponent) component;
@@ -249,35 +263,131 @@ public class CompiledText {
                     if (remaining.isEmpty())
                         return null;
                     else
-                        return new SingletonList<>(remaining.get(0));
+                        return remaining.get(0);
                 } else if (width == 0) {
                     components.add(advanced);
                     updateDimension(width + textWidth, advanced.getHeight(font));
                     return null;
                 } else
-                    return new SingletonList<>(advanced);
+                    return advanced;
             }
             
             int textWidth = font.width(component);
-            
             if (remainingWidth > textWidth) {
                 components.add(component);
                 updateDimension(width + textWidth, font.lineHeight);
                 return null;
-            } else if (width == 0) {
-                List<FormattedText> wrappedLines = font.getSplitter().splitLines(component, maxWidth - width, Style.EMPTY);
-                updateDimension(width + font.width(wrappedLines.get(0)), font.lineHeight);
-                if (wrappedLines.isEmpty())
-                    return null;
-                components.add(wrappedLines.get(0));
-                wrappedLines.remove(0);
-                if (wrappedLines.isEmpty())
-                    return null;
-                return wrappedLines;
-            } else
-                return new SingletonList<>(component);
+            } else {
+                FormattedTextSplit split = splitByWidth(component, remainingWidth, Style.EMPTY, width == 0);
+                if (split != null) {
+                    updateDimension(width + font.width(split.head), font.lineHeight);
+                    components.add(split.head);
+                    return split.tail;
+                } else
+                    return component;
+            }
         }
         
+    }
+    
+    public FormattedTextSplit splitByWidth(FormattedText text, int width, Style style, boolean force) {
+        final WidthLimitedCharSink charSink = new WidthLimitedCharSink(width, font.getSplitter());
+        ComponentCollector head = new ComponentCollector();
+        ComponentCollector tail = new ComponentCollector();
+        text.visit(new FormattedText.StyledContentConsumer<FormattedText>() {
+            @Override
+            public Optional<FormattedText> accept(Style style, String text) {
+                charSink.resetPosition();
+                if (!StringDecomposer.iterateFormatted(text, style, charSink)) {
+                    if (force || charSink.hasLastWord()) {
+                        String sHead;
+                        String sTail;
+                        if (charSink.hasLastWord()) {
+                            sHead = text.substring(0, charSink.getLastWord());
+                            sTail = text.substring(charSink.getLastWord() + 1);
+                        } else {
+                            sHead = text.substring(0, charSink.getPosition());
+                            sTail = text.substring(charSink.getPosition());
+                        }
+                        if (!sHead.isEmpty())
+                            head.append(FormattedText.of(sHead, style));
+                        if (!sTail.isEmpty())
+                            tail.append(FormattedText.of(sTail, style));
+                    } else
+                        tail.append(FormattedText.of(text, style));
+                } else if (!text.isEmpty())
+                    head.append(FormattedText.of(text, style));
+                return Optional.empty();
+            }
+        }, style).orElse(null);
+        
+        FormattedTextSplit split = new FormattedTextSplit(head, tail);
+        if (split.head == null)
+            return null;
+        return split;
+    }
+    
+    private static Field widthProviderField = ObfuscationReflectionHelper.findField(StringSplitter.class, "f_92333_");
+    
+    static class WidthLimitedCharSink implements FormattedCharSink {
+        private final StringSplitter.WidthProvider widthProvider;
+        private float maxWidth;
+        private int position;
+        private int lastWordPos;
+        
+        public WidthLimitedCharSink(float maxWidth, StringSplitter splitter) {
+            this.maxWidth = maxWidth;
+            try {
+                this.widthProvider = (WidthProvider) widthProviderField.get(splitter);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        @Override
+        public boolean accept(int pos, Style style, int character) {
+            this.maxWidth -= widthProvider.getWidth(character, style);
+            if (character == 32) // Empty
+                this.lastWordPos = position;
+            if (this.maxWidth >= 0.0F) {
+                this.position = pos + Character.charCount(character);
+                return true;
+            } else
+                return false;
+        }
+        
+        public boolean hasLastWord() {
+            return lastWordPos > 0;
+        }
+        
+        public int getLastWord() {
+            return this.lastWordPos;
+        }
+        
+        public int getPosition() {
+            return this.position;
+        }
+        
+        public void resetPosition() {
+            this.position = 0;
+            this.lastWordPos = 0;
+        }
+    }
+    
+    static class FormattedTextSplit {
+        
+        public final FormattedText head;
+        public final FormattedText tail;
+        
+        public FormattedTextSplit(FormattedText head, FormattedText tail) {
+            this.head = head;
+            this.tail = tail;
+        }
+        
+        public FormattedTextSplit(ComponentCollector head, ComponentCollector tail) {
+            this.head = head.getResult();
+            this.tail = tail.getResult();
+        }
     }
     
     public int getTotalWidth() {
