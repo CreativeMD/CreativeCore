@@ -4,10 +4,11 @@ import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.type.MarkIterator;
 import team.creative.creativecore.common.util.type.MarkList;
 
-public abstract class GuiBoxY extends GuiParent {
+public class GuiBoxY extends GuiParent {
     
     public GuiBoxY(String name, Align align, VAlign valign) {
         super(name);
@@ -180,6 +181,11 @@ public abstract class GuiBoxY extends GuiParent {
                 y += child.getHeight() + spacing;
             }
         }
+    }
+    
+    @Override
+    public ControlFormatting getControlFormatting() {
+        return ControlFormatting.TRANSPARENT;
     }
     
 }
