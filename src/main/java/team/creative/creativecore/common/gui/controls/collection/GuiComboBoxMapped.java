@@ -8,8 +8,8 @@ public class GuiComboBoxMapped<K> extends GuiComboBox {
     
     private List<K> keys;
     
-    public GuiComboBoxMapped(String name, int x, int y, TextMapBuilder<K> lines) {
-        super(name, x, y, lines);
+    public GuiComboBoxMapped(String name, TextMapBuilder<K> lines) {
+        super(name, lines);
         updateDisplay();
         this.keys = lines.keys();
     }

@@ -1,11 +1,8 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.sounds.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -23,7 +20,7 @@ public class GuiComboBox extends GuiLabel {
     private int index;
     
     public GuiComboBox(String name, ITextCollection builder) {
-        super(name, x, y);
+        super(name);
         lines = builder.build();
         if (index >= lines.length)
             index = 0;
@@ -41,25 +38,19 @@ public class GuiComboBox extends GuiLabel {
     }
     
     @Override
-    public void setWidthLayout(int width) {
-        int contentOffset = getContentOffset() * 2;
-        int height = 0;
-        for (CompiledText text : lines) {
+    public void flowX(int width, int preferred) {
+        for (CompiledText text : lines)
             text.setDimension(width, Integer.MAX_VALUE);
-            height = Math.max(height, text.getTotalHeight() + contentOffset);
-        }
-        setWidth(width);
     }
     
     @Override
-    public void setHeightLayout(int height) {
+    public void flowY(int height, int preferred) {
         for (CompiledText text : lines)
             text.setMaxHeight(height);
-        setHeight(height);
     }
     
     @Override
-    public int getPreferredWidth() {
+    public int preferredWidth() {
         int contentOffset = getContentOffset() * 2;
         int width = 0;
         for (CompiledText text : lines)
@@ -68,7 +59,7 @@ public class GuiComboBox extends GuiLabel {
     }
     
     @Override
-    public int getPreferredHeight() {
+    public int preferredHeight() {
         int contentOffset = getContentOffset() * 2;
         int height = 0;
         for (CompiledText text : lines)
@@ -91,9 +82,9 @@ public class GuiComboBox extends GuiLabel {
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
         if (extension == null)
-            openBox();
+            openBox(rect);
         else
             closeBox();
         playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -105,28 +96,24 @@ public class GuiComboBox extends GuiLabel {
         return ControlFormatting.CLICKABLE;
     }
     
-    @Override
-    @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect rect, int mouseX, int mouseY) {
-        matrix.translate(rect.getWidth() / 2 - text.usedWidth / 2, rect.getHeight() / 2 - text.usedHeight / 2, 0);
-        text.render(matrix);
-    }
-    
-    public void openBox() {
+    public void openBox(Rect rect) {
         this.extension = createBox();
         GuiLayer layer = getLayer();
-        layer.add(extension);
-        extension.moveTop();
+        GuiChildControl child = layer.addHover(extension);
         extension.init();
-        extension.setX(getControlOffsetX());
-        extension.setY(getControlOffsetY() + getHeight());
+        child.setX((int) rect.minX);
+        child.setY((int) rect.minY);
         
-        if (extension.getY() + extension.getHeight() > layer.getHeight() && this.getY() >= extension.getHeight())
-            extension.setY(extension.getY() - this.getHeight() + extension.getHeight());
+        child.setWidth((int) rect.getWidth());
+        child.flowX();
+        child.flowY();
+        
+        if (child.getY() + child.getHeight() > layer.getHeight() && rect.minY >= child.getHeight())
+            child.setY(child.getY() - (int) rect.getHeight() + child.getHeight());
     }
     
     protected GuiComboBoxExtension createBox() {
-        return new GuiComboBoxExtension(name + "extension", this, getX(), getY() + getHeight(), getWidth(), 100);
+        return new GuiComboBoxExtension(name + "extension", this);
     }
     
     public void closeBox() {

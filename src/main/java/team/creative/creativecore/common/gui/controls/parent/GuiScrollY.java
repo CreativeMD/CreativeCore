@@ -29,6 +29,10 @@ public class GuiScrollY extends GuiBoxY {
         this.scaleFactor = 1;
     }
     
+    public GuiScrollY(String name, int width, int height) {
+        this(name, width, height, 1);
+    }
+    
     public GuiScrollY(String name, int width, int height, float scaleFactor) {
         super(name, width, height);
         this.scaleFactor = scaleFactor;
