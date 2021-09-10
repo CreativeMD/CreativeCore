@@ -5,21 +5,26 @@ import java.util.Map.Entry;
 
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import team.creative.creativecore.common.gui.controls.inventory.SlotViewer;
+import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.controls.inventory.GuiInventoryGrid;
+import team.creative.creativecore.common.gui.controls.inventory.GuiSlotViewer;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.HashMapList;
 
 public class GuiStackSelectorExtension extends GuiScrollY {
     
     public GuiStackSelector comboBox;
     public String search = "";
+    protected int cachedWidth;
     
-    public GuiStackSelectorExtension(String name, Player player, int x, int y, int width, int height, GuiStackSelector comboBox) {
-        super(name, x, y, width, height);
+    public GuiStackSelectorExtension(String name, Player player, GuiStackSelector comboBox) {
+        super(name);
         this.comboBox = comboBox;
         registerEventChanged((event) -> {
             if (event.control.is("searchBar")) {
@@ -28,18 +33,19 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         });
         registerEventClick((event) -> {
-            if (event.control instanceof SlotViewer && event.control.getParent() == this) {
-                comboBox.setSelected(((SlotViewer) event.control).stack);
+            if (event.control instanceof GuiSlotViewer && event.control.getParent() == this) {
+                comboBox.setSelected(((GuiSlotViewer) event.control).stack);
                 playSound(SoundEvents.UI_BUTTON_CLICK);
                 comboBox.closeBox();
             }
         });
+        this.align = Align.STRETCH;
         reloadControls();
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        super.mouseClicked(x, y, button);
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+        super.mouseClicked(rect, x, y, button);
         return true;
     }
     
@@ -49,8 +55,24 @@ public class GuiStackSelectorExtension extends GuiScrollY {
     }
     
     @Override
-    public boolean canOverlap() {
-        return true;
+    public int preferredWidth() {
+        return 100;
+    }
+    
+    @Override
+    public int preferredHeight() {
+        return 100;
+    }
+    
+    @Override
+    public void flowX(int width, int preferred) {
+        this.cachedWidth = width;
+        super.flowX(width, preferred);
+    }
+    
+    public void reflowInternal() {
+        flowX(cachedWidth, getPreferredWidth());
+        flowY(cachedHeight, getPreferredHeight());
     }
     
     public void reloadControls() {
@@ -68,45 +90,27 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         }
         
-        int height = 0;
-        GuiTextfield textfield = null;
-        if (comboBox.searchBar)
-            textfield = (GuiTextfield) get("searchBar");
-        
         clear();
         
         if (comboBox.searchBar) {
-            height += 4;
-            if (textfield == null)
-                textfield = new GuiTextfield("searchBar", search == null ? "" : search, 3, height, getWidth() - 20, 14);
+            GuiTextfield textfield = new GuiTextfield("searchBar", search == null ? "" : search);
             add(textfield);
-            height += textfield.getHeight() + 4;
             textfield.focus();
         }
         
         for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
-            GuiLabel label = new GuiLabel("title", 4, height).setTitle(new TranslatableComponent(entry.getKey()));
-            add(label);
-            height += 12;
+            add(new GuiLabel("title").setTitle(new TranslatableComponent(entry.getKey())));
             
-            int SlotsPerRow = (getWidth() - 10) / 17;
-            
+            SimpleContainer container = new SimpleContainer(entry.getValue().size());
             int i = 0;
             for (ItemStack stack : entry.getValue()) {
-                int row = i / SlotsPerRow;
-                add(new SlotViewer("" + i, 3 + (i - row * SlotsPerRow) * 17, height + row * 17, stack) {
-                    @Override
-                    public boolean mouseClicked(double x, double y, int button) {
-                        return true;
-                    }
-                });
+                container.setItem(i, stack);
                 i++;
             }
-            
-            height += Math.ceil(i / (double) SlotsPerRow) * 17;
+            add(new GuiInventoryGrid(entry.getKey(), container));
         }
         if (getParent() != null)
-            init();
+            reflow();
     }
     
 }

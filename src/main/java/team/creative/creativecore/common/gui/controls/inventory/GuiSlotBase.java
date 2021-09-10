@@ -16,15 +16,13 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public class SlotViewer extends GuiControl {
+public abstract class GuiSlotBase extends GuiControl {
     
+    public static final int SLOT_SIZE = 18;
     private static DisplayColor hover = new DisplayColor(1, 1, 1, 0.2F);
     
-    public ItemStack stack;
-    
-    public SlotViewer(String name, ItemStack stack) {
-        super(name, 18, 18);
-        this.stack = stack;
+    public GuiSlotBase(String name) {
+        super(name);
     }
     
     @Override
@@ -41,16 +39,18 @@ public class SlotViewer extends GuiControl {
         return ControlFormatting.SLIDER;
     }
     
+    public abstract ItemStack getStack();
+    
     @Override
     public List<Component> getTooltip() {
-        return stack.getTooltipLines(getPlayer(), TooltipFlag.Default.NORMAL);
+        return getStack().getTooltipLines(getPlayer(), TooltipFlag.Default.NORMAL);
     }
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         matrix.translate(0, 0, 10);
-        GuiRenderHelper.drawItemStack(matrix, stack);
+        GuiRenderHelper.drawItemStack(matrix, getStack());
         matrix.translate(0, 0, 10);
         if (rect.inside(mouseX, mouseY))
             hover.render(matrix, rect.getWidth(), rect.getHeight());

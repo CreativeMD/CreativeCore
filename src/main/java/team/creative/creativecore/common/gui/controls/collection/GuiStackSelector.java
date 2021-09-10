@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -16,13 +17,16 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.HashMapList;
 
-public class GuiStackSelector extends GuiButton {
+public class GuiStackSelector extends GuiLabel {
     
     protected GuiStackSelectorExtension extension;
     public StackCollector collector;
@@ -32,13 +36,7 @@ public class GuiStackSelector extends GuiButton {
     public boolean searchBar;
     
     public GuiStackSelector(String name, Player player, StackCollector collector, boolean searchBar) {
-        super(name, null);
-        pressed = (button) -> {
-            if (extension == null)
-                openBox();
-            else
-                closeBox();
-        };
+        super(name);
         this.searchBar = searchBar;
         this.player = player;
         this.collector = collector;
@@ -47,13 +45,7 @@ public class GuiStackSelector extends GuiButton {
     }
     
     public GuiStackSelector(String name, int width, Player player, StackCollector collector, boolean searchBar) {
-        super(name, width, 18, null);
-        pressed = (button) -> {
-            if (extension == null)
-                openBox();
-            else
-                closeBox();
-        };
+        super(name, width, 14);
         this.searchBar = searchBar;
         this.player = player;
         this.collector = collector;
@@ -63,6 +55,21 @@ public class GuiStackSelector extends GuiButton {
     
     public GuiStackSelector(String name, int width, Player player, StackCollector collector) {
         this(name, width, player, collector, true);
+    }
+    
+    @Override
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+        if (extension == null)
+            openBox(rect);
+        else
+            closeBox();
+        playSound(SoundEvents.UI_BUTTON_CLICK);
+        return true;
+    }
+    
+    @Override
+    public ControlFormatting getControlFormatting() {
+        return ControlFormatting.CLICKABLE;
     }
     
     public boolean selectFirst() {
@@ -112,16 +119,16 @@ public class GuiStackSelector extends GuiButton {
         return selected;
     }
     
-    public void openBox() {
+    public void openBox(Rect rect) {
         this.extension = createBox();
         GuiLayer layer = getLayer();
-        layer.addHover(extension);
+        GuiChildControl child = layer.addHover(extension);
         extension.init();
-        extension.setX(getControlOffsetX());
-        extension.setY(getControlOffsetY() + getHeight());
+        child.setX((int) rect.minX);
+        child.setY((int) rect.maxY);
         
-        if (extension.getY() + extension.getHeight() > layer.getHeight() && this.getY() >= extension.getHeight())
-            extension.setY(extension.getY() - this.getHeight() + extension.getHeight());
+        if (child.getY() + child.getHeight() > layer.getHeight() && rect.minY >= child.getHeight())
+            child.setY(child.getY() - (int) rect.getHeight() + child.getHeight());
     }
     
     public void closeBox() {
@@ -132,7 +139,7 @@ public class GuiStackSelector extends GuiButton {
     }
     
     protected GuiStackSelectorExtension createBox() {
-        return new GuiStackSelectorExtension(name + "extension", getPlayer(), getX(), getY() + getHeight(), getWidth(), 80, this);
+        return new GuiStackSelectorExtension(name + "extension", getPlayer(), this);
     }
     
     public boolean select(String line) {
