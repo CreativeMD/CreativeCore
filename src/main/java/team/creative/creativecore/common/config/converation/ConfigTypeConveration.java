@@ -491,7 +491,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(value = Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
                 parent.add(new GuiTextfield("search", 30, 14));
-                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", 0, 14, new TextMapBuilder<ResourceLocation>()
+                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
                         .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new TextComponent(x.toString()))));
                 GuiBoxX hBox = new GuiBoxX("vBox");
                 hBox.add(new GuiLabel("volumeLabel", 0, 0).setTitle(new TranslatableComponent("gui.volume")));
