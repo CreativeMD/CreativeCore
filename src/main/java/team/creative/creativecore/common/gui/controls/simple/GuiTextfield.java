@@ -56,6 +56,11 @@ public class GuiTextfield extends GuiFocusControl {
         setText("");
     }
     
+    public GuiTextfield(String name, String text) {
+        super(name);
+        setText(text);
+    }
+    
     public GuiTextfield(String name, int width) {
         this(name, width, 20);
     }
