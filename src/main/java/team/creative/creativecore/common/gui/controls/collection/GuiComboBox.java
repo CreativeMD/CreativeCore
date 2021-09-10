@@ -102,7 +102,7 @@ public class GuiComboBox extends GuiLabel {
         GuiChildControl child = layer.addHover(extension);
         extension.init();
         child.setX((int) rect.minX);
-        child.setY((int) rect.minY);
+        child.setY((int) rect.maxY);
         
         child.setWidth((int) rect.getWidth());
         child.flowX();
