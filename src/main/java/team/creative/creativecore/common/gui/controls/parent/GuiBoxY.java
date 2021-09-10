@@ -30,6 +30,10 @@ public class GuiBoxY extends GuiParent {
         this(name, width, height, Align.LEFT);
     }
     
+    public GuiBoxY(String name, Align align) {
+        this(name, align, VAlign.TOP);
+    }
+    
     public GuiBoxY(String name) {
         this(name, Align.LEFT, VAlign.TOP);
     }

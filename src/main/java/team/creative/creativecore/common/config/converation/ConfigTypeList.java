@@ -69,7 +69,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);
         
-        parent.add(new GuiButton("add", 0, 140, x -> {
+        parent.add(new GuiButton("add", x -> {
             GuiConfigSubControl control;
             if (converation != null) {
                 control = new GuiConfigSubControl("" + 0);

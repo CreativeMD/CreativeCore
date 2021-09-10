@@ -49,11 +49,13 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     @Override
+    @Deprecated
     public GuiChildControl add(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
     @Override
+    @Deprecated
     public GuiChildControl addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }

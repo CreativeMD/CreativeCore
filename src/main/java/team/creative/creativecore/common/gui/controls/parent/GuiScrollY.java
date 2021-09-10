@@ -39,6 +39,11 @@ public class GuiScrollY extends GuiBoxY {
     }
     
     @Override
+    public GuiScrollY setExpandable() {
+        return (GuiScrollY) super.setExpandable();
+    }
+    
+    @Override
     public double getScaleFactor() {
         return scaleFactor;
     }

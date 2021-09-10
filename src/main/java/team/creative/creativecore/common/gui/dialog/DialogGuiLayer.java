@@ -26,7 +26,7 @@ public class DialogGuiLayer extends GuiLayer {
     public void create() {
         GuiBoxY vBox = new GuiBoxY("v", Align.CENTER, VAlign.CENTER);
         GuiBoxX hBox = new GuiBoxX("h");
-        vBox.add(new GuiLabel("text", 0, 0).setTitle(new TranslatableComponent("dialog." + name)));
+        vBox.add(new GuiLabel("text").setTitle(new TranslatableComponent("dialog." + name)));
         for (DialogButton button : buttons)
             hBox.add(new GuiButton(button.name(), x -> closeDialog(button)).setTitle(new TranslatableComponent("dialog.button." + button.name())));
         vBox.add(hBox);

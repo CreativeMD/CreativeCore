@@ -21,6 +21,7 @@ public class GuiTable extends GuiBoxY {
     }
     
     @Override
+    @Deprecated
     public GuiChildControl add(GuiControl control) {
         throw new UnsupportedOperationException();
     }

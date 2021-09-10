@@ -57,6 +57,10 @@ public class GuiStackSelector extends GuiLabel {
         this(name, width, player, collector, true);
     }
     
+    public GuiStackSelector(String name, Player player, StackCollector collector) {
+        this(name, player, collector, true);
+    }
+    
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         if (extension == null)

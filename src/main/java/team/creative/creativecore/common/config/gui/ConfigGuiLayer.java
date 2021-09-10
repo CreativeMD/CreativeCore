@@ -11,12 +11,12 @@ import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.GuiScrollBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
+import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiButtonFixed;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
@@ -58,15 +58,15 @@ public class ConfigGuiLayer extends GuiLayer {
     }
     
     public void savePage() {
-        GuiScrollBox box = (GuiScrollBox) get("box");
+        GuiScrollY box = (GuiScrollY) get("box");
         JsonObject parent = null;
-        for (GuiControl control : box)
-            if (control instanceof GuiConfigControl) {
-                JsonElement element = ((GuiConfigControl) control).save();
+        for (GuiChildControl child : box)
+            if (child.control instanceof GuiConfigControl) {
+                JsonElement element = ((GuiConfigControl) child.control).save();
                 if (element != null) {
                     if (parent == null)
                         parent = JsonUtils.get(ROOT, holder.path());
-                    parent.add(((GuiConfigControl) control).field.name, element);
+                    parent.add(((GuiConfigControl) child.control).field.name, element);
                 }
             }
     }
@@ -76,23 +76,21 @@ public class ConfigGuiLayer extends GuiLayer {
             savePage();
             clear();
         }
-        GuiLeftRightBox upperBox = new GuiLeftRightBox("upperbox", 0, 0);
-        upperBox.add(new GuiLabel("path", 0, 2).setTitle(new TextComponent("/" + String.join("/", holder.path()))));
+        GuiLeftRightBox upperBox = new GuiLeftRightBox();
+        upperBox.addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         
         if (holder != rootHolder)
-            upperBox.addRight(new GuiButton("back", 0, 0, x -> {
+            upperBox.addRight(new GuiButton("back", x -> {
                 loadHolder(holder.parent());
             }).setTitle(new TranslatableComponent("gui.back")));
         this.holder = holder;
         
         add(upperBox);
-        GuiScrollBox box = new GuiScrollBox("box", 0, 17, 406, 186);
+        GuiScrollY box = new GuiScrollY("box").setExpandable();
         add(box);
         
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
-        int offsetX = 1;
-        int offsetY = 1;
         for (ConfigKey key : holder.fields()) {
             if (key.requiresRestart)
                 continue;
@@ -101,49 +99,43 @@ public class ConfigGuiLayer extends GuiLayer {
             String comment = "config." + String.join(".", holder.path()) + "." + key.name + ".comment";
             if (value instanceof ICreativeConfigHolder) {
                 if (!((ICreativeConfigHolder) value).isEmpty(side)) {
-                    box.add(new GuiButtonFixed(caption, offsetX, offsetY, 100, 20, x -> {
+                    box.add(new GuiButton(caption, x -> {
                         loadHolder((ICreativeConfigHolder) value);
                     }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
-                    offsetY += 21;
                 }
             } else {
                 if (!key.is(side))
                     continue;
                 
-                GuiLabel label = new GuiLabel(caption + ":", offsetX, offsetY + 2).setTitle(new TextComponent(caption + ":"));
+                GuiLabel label = new GuiLabel(caption + ":").setTitle(new TextComponent(caption + ":"));
                 
-                GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, 0, offsetY, 100, 16, side);
-                GuiButton resetButton = (GuiButton) new GuiButtonFixed("r", offsetX + 370, offsetY, 14, 14, x -> {
+                GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, side);
+                GuiButton resetButton = (GuiButton) new GuiButton("r", x -> {
                     config.reset();
                     ConfigGuiLayer.this.changed = true;
                 }).setTitle(new TextComponent("r"));
                 
-                int labelWidth = 110;
-                config.setX(label.getX() + labelWidth + 2);
-                config.setWidth(380 - config.getX());
                 config.init(json != null ? json.get(key.name) : null);
                 box.add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
                 box.add(config);
                 box.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
                 config.setResetButton(resetButton);
-                offsetY += config.getHeight() + 1;
             }
             
         }
         
-        GuiLeftRightBox lowerBox = new GuiLeftRightBox("lowerBox", 0, 205);
-        lowerBox.add(new GuiButton("cancel", 0, 205, x -> {
+        GuiLeftRightBox lowerBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
             nextAction = 0;
             closeTopLayer();
         }).setTitle(new TranslatableComponent("gui.cancel")));
         
         if (side == Dist.DEDICATED_SERVER)
-            lowerBox.add(new GuiButton("client-config", 40, 205, x -> {
+            lowerBox.addLeft(new GuiButton("client-config", x -> {
                 nextAction = 1;
                 closeTopLayer();
             }).setTitle(new TranslatableComponent("gui.client-config")));
         
-        lowerBox.addRight(new GuiButton("save", 370, 205, x -> {
+        lowerBox.addRight(new GuiButton("save", x -> {
             nextAction = 0;
             savePage();
             sendUpdate();

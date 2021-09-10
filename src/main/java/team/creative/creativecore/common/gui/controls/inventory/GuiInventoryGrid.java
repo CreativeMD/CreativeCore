@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.controls.inventory;
 
 import net.minecraft.world.Container;
 import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
@@ -33,6 +34,12 @@ public class GuiInventoryGrid extends GuiParent {
         int size = Math.min(container.getContainerSize(), cols * rows);
         for (int i = 0; i < size; i++)
             add(new GuiSlot(container, i));
+    }
+    
+    @Override
+    @Deprecated
+    public GuiChildControl add(GuiControl control) {
+        throw new UnsupportedOperationException();
     }
     
     @Override

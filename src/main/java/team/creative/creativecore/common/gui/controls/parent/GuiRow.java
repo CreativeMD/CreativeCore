@@ -21,6 +21,7 @@ public class GuiRow extends GuiBoxX {
     }
     
     @Override
+    @Deprecated
     public GuiChildControl add(GuiControl control) {
         throw new UnsupportedOperationException();
     }

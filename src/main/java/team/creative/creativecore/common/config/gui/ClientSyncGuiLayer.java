@@ -91,8 +91,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
-        GuiLeftRightBox upperBox = new GuiLeftRightBox();
-        upperBox.add(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
+        GuiLeftRightBox upperBox = new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         if (entry.parent != null)
             upperBox.addRight(new GuiButton("back", x -> {
                 load(entry.parent);
@@ -100,7 +99,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         add(upperBox);
         this.currentView = entry;
         
-        GuiScrollY box = (GuiScrollY) new GuiScrollY().setExpandable();
+        GuiScrollY box = new GuiScrollY().setExpandable();
         add(box);
         
         for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
@@ -118,18 +117,13 @@ public class ClientSyncGuiLayer extends GuiLayer {
             }
         }
         
-        GuiLeftRightBox lowerBox = new GuiLeftRightBox();
-        lowerBox.add(new GuiButton("cancel", x -> {
+        GuiLeftRightBox lowerBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
             nextAction = 0;
             closeTopLayer();
-        }).setTitle(new TranslatableComponent("gui.cancel")));
-        
-        lowerBox.add(new GuiButton("config", x -> {
+        }).setTitle(new TranslatableComponent("gui.cancel"))).addLeft(new GuiButton("config", x -> {
             nextAction = 1;
             closeTopLayer();
-        }).setTitle(new TranslatableComponent("gui.config")));
-        
-        lowerBox.addRight(new GuiButton("save", x -> {
+        }).setTitle(new TranslatableComponent("gui.config"))).addRight(new GuiButton("save", x -> {
             nextAction = 0;
             force = true;
             save();

@@ -494,9 +494,9 @@ public abstract class ConfigTypeConveration<T> {
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
                         .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new TextComponent(x.toString()))));
                 GuiBoxX hBox = new GuiBoxX("vBox");
-                hBox.add(new GuiLabel("volumeLabel", 0, 0).setTitle(new TranslatableComponent("gui.volume")));
+                hBox.add(new GuiLabel("volumeLabel").setTitle(new TranslatableComponent("gui.volume")));
                 hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
-                hBox.add(new GuiLabel("pitchLabel", 0, 0).setTitle(new TranslatableComponent("gui.pitch")));
+                hBox.add(new GuiLabel("pitchLabel").setTitle(new TranslatableComponent("gui.pitch")));
                 hBox.add(new GuiSlider("pitch", 40, 10, 1, 0.5, 2));
                 parent.add(hBox);
             }
