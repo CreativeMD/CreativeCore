@@ -3,20 +3,20 @@ package team.creative.creativecore.common.gui.controls.parent;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 
-public class GuiTable extends GuiBoxY {
+public class GuiRow extends GuiBoxX {
     
-    public GuiTable() {
+    public GuiRow() {
         this.spacing = 0;
     }
     
-    public GuiTable(GuiRow... rows) {
+    public GuiRow(GuiColumn... cols) {
         this();
-        for (int i = 0; i < rows.length; i++)
-            addRow(rows[i]);
+        for (int i = 0; i < cols.length; i++)
+            addColumn(cols[i]);
     }
     
-    public GuiTable addRow(GuiRow row) {
-        super.add(row);
+    public GuiRow addColumn(GuiColumn col) {
+        super.add(col);
         return this;
     }
     
