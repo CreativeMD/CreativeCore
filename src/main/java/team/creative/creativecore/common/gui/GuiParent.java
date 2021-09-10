@@ -93,14 +93,22 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         return get(name) != null;
     }
     
-    public void add(GuiControl control) {
+    public GuiChildControl add(GuiControl control) {
         control.setParent(this);
-        controls.add(new GuiChildControl(control));
+        GuiChildControl child = new GuiChildControl(control);
+        controls.add(child);
+        return child;
     }
     
-    public void addHover(GuiControl control) {
+    public GuiChildControl addHover(GuiControl control) {
         control.setParent(this);
-        hoverControls.add(new GuiChildControl(control));
+        GuiChildControl child = new GuiChildControl(control);
+        hoverControls.add(child);
+        return child;
+    }
+    
+    public boolean remove(GuiChildControl control) {
+        return controls.remove(control) || hoverControls.remove(control);
     }
     
     public GuiChildControl remove(GuiControl control) {
