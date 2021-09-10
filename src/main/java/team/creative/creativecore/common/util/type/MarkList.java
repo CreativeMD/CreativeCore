@@ -68,6 +68,8 @@ public class MarkList<T> implements Iterable<T> {
             
             @Override
             public void mark() {
+                if (!set.get(last))
+                    remaining--;
                 set.set(last);
             }
             
