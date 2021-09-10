@@ -15,8 +15,8 @@ import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.GuiScrollBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
+import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
@@ -24,6 +24,7 @@ import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
+import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.CheckTree;
 
@@ -90,50 +91,45 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
-        GuiLeftRightBox upperBox = new GuiLeftRightBox("upperBox", 0, 0);
-        upperBox.add(new GuiLabel("path", 0, 0).setTitle(new TextComponent("/" + String.join("/", holder.path()))));
+        GuiLeftRightBox upperBox = new GuiLeftRightBox();
+        upperBox.add(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         if (entry.parent != null)
-            upperBox.addRight(new GuiButton("back", 170, 0, x -> {
+            upperBox.addRight(new GuiButton("back", x -> {
                 load(entry.parent);
             }).setTitle(new TranslatableComponent("gui.back")));
         add(upperBox);
         this.currentView = entry;
         
-        GuiScrollBox box = new GuiScrollBox("box", 0, 17, 286, 152);
+        GuiScrollY box = (GuiScrollY) new GuiScrollY().setExpandable();
         add(box);
         
-        int offsetX = 20;
-        int offsetY = 1;
         for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
-            box.add(new GuiTreeCheckBox(key, 5, offsetY + 3));
+            box.add(new GuiTreeCheckBox(key));
             
             String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
             if (key.content != null && key.content.get() instanceof ICreativeConfigHolder) {
-                
-                box.add(new GuiButton(caption, offsetX, offsetY, x -> {
+                box.add(new GuiButton(caption, x -> {
                     load(key);
                 }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
-                offsetY += 21;
             } else {
-                GuiLabel label = new GuiLabel(caption, offsetX, offsetY + 2).setTitle(new TextComponent(caption));
+                GuiLabel label = new GuiLabel(caption).setTitle(new TextComponent(caption));
                 box.add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
-                offsetY += 16;
             }
         }
         
-        GuiLeftRightBox lowerBox = new GuiLeftRightBox("lowerBox", 0, 171);
-        lowerBox.add(new GuiButton("cancel", 0, 180, x -> {
+        GuiLeftRightBox lowerBox = new GuiLeftRightBox();
+        lowerBox.add(new GuiButton("cancel", x -> {
             nextAction = 0;
             closeTopLayer();
         }).setTitle(new TranslatableComponent("gui.cancel")));
         
-        lowerBox.add(new GuiButton("config", 40, 180, x -> {
+        lowerBox.add(new GuiButton("config", x -> {
             nextAction = 1;
             closeTopLayer();
         }).setTitle(new TranslatableComponent("gui.config")));
         
-        lowerBox.addRight(new GuiButton("save", 170, 180, x -> {
+        lowerBox.addRight(new GuiButton("save", x -> {
             nextAction = 0;
             force = true;
             save();
@@ -166,15 +162,15 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         public final CheckTree<ConfigKey>.CheckTreeEntry entry;
         
-        public GuiTreeCheckBox(CheckTree<ConfigKey>.CheckTreeEntry entry, int x, int y) {
-            super(entry.content.name, "", x, y, entry.isEnabled());
+        public GuiTreeCheckBox(CheckTree<ConfigKey>.CheckTreeEntry entry) {
+            super(entry.content.name, "", entry.isEnabled());
             this.entry = entry;
             if (!value)
                 partial = entry.isChildEnabled();
         }
         
         @Override
-        public boolean mouseClicked(double x, double y, int button) {
+        public boolean mouseClicked(Rect rect, double x, double y, int button) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             this.value = !value;
             
