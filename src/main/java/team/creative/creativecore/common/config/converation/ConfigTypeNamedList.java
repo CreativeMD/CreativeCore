@@ -95,7 +95,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield("");
             }
-            listBox.add(control);
+            listBox.addItem(control);
         }));
     }
     
