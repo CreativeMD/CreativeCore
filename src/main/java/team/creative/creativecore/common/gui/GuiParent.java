@@ -26,9 +26,9 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     protected List<GuiChildControl> controls = new ArrayList<>();
     protected List<GuiChildControl> hoverControls = new ArrayList<>();
     
-    protected Align align = Align.LEFT;
-    protected VAlign valign = VAlign.TOP;
-    protected int spacing = 2;
+    public Align align = Align.LEFT;
+    public VAlign valign = VAlign.TOP;
+    public int spacing = 2;
     
     public GuiParent(String name) {
         super(name);
@@ -56,11 +56,35 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     }
     
     @Override
-    public boolean isExpandable() {
-        if (super.isExpandable())
+    public boolean isExpandableX() {
+        if (super.isExpandableX())
             return true;
         for (GuiChildControl child : controls)
-            if (child.control.isExpandable())
+            if (child.control.isExpandableX())
+                return true;
+        return false;
+    }
+    
+    protected boolean areChildrenExpandableX() {
+        for (GuiChildControl child : controls)
+            if (child.control.isExpandableX())
+                return true;
+        return false;
+    }
+    
+    @Override
+    public boolean isExpandableY() {
+        if (super.isExpandableY())
+            return true;
+        for (GuiChildControl child : controls)
+            if (child.control.isExpandableY())
+                return true;
+        return false;
+    }
+    
+    protected boolean areChildrenExpandableY() {
+        for (GuiChildControl child : controls)
+            if (child.control.isExpandableY())
                 return true;
         return false;
     }

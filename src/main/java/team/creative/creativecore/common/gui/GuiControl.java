@@ -32,7 +32,8 @@ public abstract class GuiControl {
     public boolean hasPreferredDimensions;
     public int preferredWidth;
     public int preferredHeight;
-    protected boolean expandable = false;
+    public boolean expandableX = false;
+    public boolean expandableY = false;
     
     public boolean visible = true;
     
@@ -63,12 +64,34 @@ public abstract class GuiControl {
     }
     
     public GuiControl setFixed() {
-        this.expandable = false;
+        this.expandableX = false;
+        this.expandableY = false;
+        return this;
+    }
+    
+    public GuiControl setFixedX() {
+        this.expandableX = false;
+        return this;
+    }
+    
+    public GuiControl setFixedY() {
+        this.expandableY = false;
         return this;
     }
     
     public GuiControl setExpandable() {
-        this.expandable = true;
+        this.expandableX = true;
+        this.expandableY = true;
+        return this;
+    }
+    
+    public GuiControl setExpandableX() {
+        this.expandableX = true;
+        return this;
+    }
+    
+    public GuiControl setExpandableY() {
+        this.expandableY = true;
         return this;
     }
     
@@ -85,8 +108,12 @@ public abstract class GuiControl {
         return parent;
     }
     
-    public boolean isExpandable() {
-        return expandable;
+    public boolean isExpandableX() {
+        return expandableX;
+    }
+    
+    public boolean isExpandableY() {
+        return expandableY;
     }
     
     public String getNestedName() {
