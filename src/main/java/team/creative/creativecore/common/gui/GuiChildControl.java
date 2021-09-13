@@ -81,11 +81,15 @@ public class GuiChildControl {
     }
     
     public boolean isMaxWidth() {
-        return getWidth() >= control.getMaxWidth();
+        if (control.getMaxWidth() != -1)
+            return getWidth() >= control.getMaxWidth();
+        return false;
     }
     
     public boolean isMaxHeight() {
-        return getHeight() >= control.getMaxHeight();
+        if (control.getMaxHeight() != -1)
+            return getHeight() >= control.getMaxHeight();
+        return false;
     }
     
     public void flowX() {
