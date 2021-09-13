@@ -75,7 +75,7 @@ public class GuiBoxX extends GuiParent {
         int available = width - spacing * (controls.size() - 1);
         MarkList<GuiChildControl> list = new MarkList<>(controls);
         if (width >= preferred) { // If there is enough space available
-            if (align == Align.STRETCH && !isExpandable()) { // force expansion
+            if (align == Align.STRETCH && !areChildrenExpandableX()) { // force expansion
                 
                 while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                     int average = (int) Math.ceil((double) available / list.remaing());
@@ -90,20 +90,21 @@ public class GuiBoxX extends GuiParent {
                 for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
                     child.setWidth(child.control.getPreferredWidth());
-                    if (!child.control.isExpandable())
+                    if (!child.control.isExpandableX())
                         itr.mark();
                     available -= child.getWidth();
                 }
                 
-                while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
-                    int average = (int) Math.ceil((double) available / list.remaing());
-                    for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
-                        GuiChildControl child = itr.next();
-                        available -= child.addWidth(Math.min(average, available));
-                        if (child.isMaxWidth())
-                            itr.mark();
+                if (align == Align.STRETCH)
+                    while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
+                        int average = (int) Math.ceil((double) available / list.remaing());
+                        for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                            GuiChildControl child = itr.next();
+                            available -= child.addWidth(Math.min(average, available));
+                            if (child.isMaxWidth())
+                                itr.mark();
+                        }
                     }
-                }
             }
         } else { // If there is not enough space
             for (GuiChildControl child : list) { // Make sure min dimensions are used
@@ -163,7 +164,7 @@ public class GuiBoxX extends GuiParent {
         } else {
             if (valign == VAlign.STRETCH) {
                 for (GuiChildControl child : controls) {
-                    child.setHeight(preferred);
+                    child.setHeight(height);
                     child.setY(0);
                     child.flowY();
                 }
