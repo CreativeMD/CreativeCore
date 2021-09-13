@@ -79,6 +79,7 @@ public class NamedTypeRegistry<T> {
         if (!allowOverwrite && types.containsKey(id))
             throw new IllegalArgumentException("'" + id + "' already exists");
         types.put(id, type);
+        typesInv.put(type, id);
     }
     
     public String getId(T type) {
