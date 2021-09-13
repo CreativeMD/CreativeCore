@@ -273,7 +273,7 @@ public class CompiledText {
             }
             
             int textWidth = font.width(component);
-            if (remainingWidth > textWidth) {
+            if (remainingWidth >= textWidth) {
                 components.add(component);
                 updateDimension(width + textWidth, font.lineHeight);
                 return null;
