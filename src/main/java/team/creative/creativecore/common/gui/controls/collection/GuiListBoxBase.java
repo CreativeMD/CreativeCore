@@ -115,7 +115,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     public void addAllItems(List<T> entries) {
         for (T entry : entries) {
             content.add(entry);
-            add(entry);
+            super.add(entry);
             if (modifiable)
                 removeButtons.add(super.addHover(new GuiButtonRemove(content.size() - 1)));
         }
@@ -125,7 +125,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public void addItem(T entry) {
         content.add(entry);
-        add(entry);
+        super.add(entry);
         if (modifiable)
             removeButtons.add(super.addHover(new GuiButtonRemove(content.size() - 1)));
         
