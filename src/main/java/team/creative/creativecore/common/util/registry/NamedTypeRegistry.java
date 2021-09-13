@@ -6,19 +6,19 @@ import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 
-public class NamedRegistry<T> {
+public class NamedTypeRegistry<T> {
     
     private HashMap<String, Class<? extends T>> types = new HashMap<>();
     private HashMap<Class<? extends T>, String> typesInv = new HashMap<>();
     private List<Class[]> possibleConstructors;
     private boolean allowOverwrite = false;
     
-    public NamedRegistry<T> addConstructorPattern(Class... classes) {
+    public NamedTypeRegistry<T> addConstructorPattern(Class... classes) {
         possibleConstructors.add(classes);
         return this;
     }
     
-    public NamedRegistry<T> allowOverwrite() {
+    public NamedTypeRegistry<T> allowOverwrite() {
         allowOverwrite = true;
         return this;
     }
@@ -129,7 +129,7 @@ public class NamedRegistry<T> {
     public static class ConstructorNotFoundException extends RegistryException {
         
         public ConstructorNotFoundException(Object[] objects) {
-            super("Constructor " + NamedRegistry.toString(objects) + " does not exists");
+            super("Constructor " + NamedTypeRegistry.toString(objects) + " does not exists");
         }
         
     }
@@ -137,7 +137,7 @@ public class NamedRegistry<T> {
     public static class ConstructorForbiddenException extends RegistryException {
         
         public ConstructorForbiddenException(Class[] classes) {
-            super("Constructor " + NamedRegistry.toString(classes) + " is not reachable");
+            super("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable");
         }
         
     }
