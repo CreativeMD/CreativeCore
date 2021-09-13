@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.group.Usergroup;
@@ -33,7 +33,7 @@ public class CreativeCoreConfig {
         usergroups.put("adventure", new Usergroup(new PlayerSelectorGamemode(GameType.ADVENTURE)));
     }
     
-    public boolean is(Player player, String usergroup) {
+    public boolean is(ServerPlayer player, String usergroup) {
         Usergroup group = usergroups.get(usergroup);
         if (group != null)
             return group.is(player);
