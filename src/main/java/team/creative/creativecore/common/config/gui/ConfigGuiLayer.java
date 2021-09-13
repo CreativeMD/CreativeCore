@@ -11,9 +11,12 @@ import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.VAlign;
+import team.creative.creativecore.common.gui.controls.parent.GuiBoxY;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
@@ -43,6 +46,8 @@ public class ConfigGuiLayer extends GuiLayer {
         this.rootHolder = holder;
         this.holder = holder;
         this.side = side;
+        this.align = Align.STRETCH;
+        this.valign = VAlign.STRETCH;
         registerEvent(GuiControlChangedEvent.class, x -> {
             GuiConfigControl config = getConfigControl(x.control);
             if (config != null) {
@@ -76,6 +81,8 @@ public class ConfigGuiLayer extends GuiLayer {
             savePage();
             clear();
         }
+        GuiBoxY overall = new GuiBoxY("", Align.STRETCH, VAlign.STRETCH);
+        add(overall);
         GuiLeftRightBox upperBox = new GuiLeftRightBox();
         upperBox.addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         
@@ -85,9 +92,9 @@ public class ConfigGuiLayer extends GuiLayer {
             }).setTitle(new TranslatableComponent("gui.back")));
         this.holder = holder;
         
-        add(upperBox);
+        overall.add(upperBox);
         GuiScrollY box = new GuiScrollY("box").setExpandable();
-        add(box);
+        overall.add(box);
         
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
@@ -110,14 +117,16 @@ public class ConfigGuiLayer extends GuiLayer {
                 GuiLabel label = new GuiLabel(caption + ":").setTitle(new TextComponent(caption + ":"));
                 
                 GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, side);
+                
+                box.add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                box.add(config);
                 GuiButton resetButton = (GuiButton) new GuiButton("r", x -> {
                     config.reset();
                     ConfigGuiLayer.this.changed = true;
                 }).setTitle(new TextComponent("r"));
                 
                 config.init(json != null ? json.get(key.name) : null);
-                box.add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
-                box.add(config);
+                
                 box.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
                 config.setResetButton(resetButton);
             }
@@ -142,7 +151,8 @@ public class ConfigGuiLayer extends GuiLayer {
             force = true;
             closeTopLayer();
         }).setTitle(new TranslatableComponent("gui.save")));
-        add(lowerBox);
+        overall.add(lowerBox);
+        
         reinit();
     }
     
