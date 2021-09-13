@@ -6,6 +6,9 @@ import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 
+import team.creative.creativecore.common.util.registry.exception.IdNotFoundException;
+import team.creative.creativecore.common.util.registry.exception.RegistryException;
+
 public class NamedTypeRegistry<T> {
     
     private HashMap<String, Class<? extends T>> types = new HashMap<>();
@@ -110,21 +113,6 @@ public class NamedTypeRegistry<T> {
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             throw new ConstructorForbiddenException(classes);
         }
-    }
-    
-    public static class RegistryException extends Exception {
-        
-        public RegistryException(String msg) {
-            super(msg);
-        }
-    }
-    
-    public static class IdNotFoundException extends RegistryException {
-        
-        public IdNotFoundException(String id) {
-            super("'" + id + "' not found");
-        }
-        
     }
     
     public static class ConstructorNotFoundException extends RegistryException {

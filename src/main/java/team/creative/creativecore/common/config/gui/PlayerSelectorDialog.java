@@ -2,23 +2,22 @@ package team.creative.creativecore.common.config.gui;
 
 import java.util.ArrayList;
 
-import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.nbt.NBTTagCompound;
+import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.util.player.PlayerSelector;
 
-public class SubGuiPlayerSelectorDialog extends SubGui {
+public class PlayerSelectorDialog extends GuiLayer {
     
-    public final GuiPlayerSelectorButton button;
+    public GuiPlayerSelectorButton button;
     public GuiPlayerSelectorHandler handler;
     
-    public SubGuiPlayerSelectorDialog(GuiPlayerSelectorButton button) {
-        super(150, 150);
-        this.button = button;
+    public PlayerSelectorDialog() {
+        super("playerselector", 150, 150);
     }
     
     @Override
@@ -50,9 +49,9 @@ public class SubGuiPlayerSelectorDialog extends SubGui {
             
             @Override
             public void onClicked(int x, int y, int button) {
-                PlayerSelector selector = handler.parseSelector(SubGuiPlayerSelectorDialog.this);
+                PlayerSelector selector = handler.parseSelector(PlayerSelectorDialog.this);
                 if (selector != null) {
-                    SubGuiPlayerSelectorDialog.this.button.set(selector);
+                    PlayerSelectorDialog.this.button.set(selector);
                     closeLayer(new NBTTagCompound());
                 }
             }
