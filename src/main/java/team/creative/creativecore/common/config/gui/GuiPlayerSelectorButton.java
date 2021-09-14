@@ -1,27 +1,33 @@
 package team.creative.creativecore.common.config.gui;
 
-import com.creativemd.creativecore.common.gui.container.SubGui;
-import com.creativemd.creativecore.common.gui.premade.SubContainerEmpty;
-import com.creativemd.creativecore.common.packet.PacketHandler;
-import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector;
-
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
+import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
+import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
+import team.creative.creativecore.common.util.player.PlayerSelector;
 
 public class GuiPlayerSelectorButton extends GuiButton {
     
     private PlayerSelector info;
     
-    public GuiPlayerSelectorButton(String name, int x, int y, int width, int height, PlayerSelector info) {
-        super(name, getLabelText(info), x, y, width, height);
+    public GuiPlayerSelectorButton(String name, PlayerSelector info) {
+        super(name, null);
+        pressed = x -> {
+            PlayerSelectorDialog layer = (PlayerSelectorDialog) this.getParent().openLayer(new LayerOpenPacket("player", new CompoundTag()));
+            layer.button = this;
+            layer.init();
+        };
+        setTitle(new TextComponent(getLabelText(info)));
         this.info = info;
     }
     
     public void set(PlayerSelector info) {
         this.info = info;
-        this.caption = getLabelText(info);
+        setTitle(new TextComponent(getLabelText(info)));
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
@@ -32,20 +38,18 @@ public class GuiPlayerSelectorButton extends GuiButton {
         return info;
     }
     
-    @Override
-    public void onClicked(int x, int y, int button) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setBoolean("dialog", true);
-        SubGui gui = new SubGuiPlayerSelectorDialog(this);
-        gui.container = new SubContainerEmpty(getPlayer());
-        gui.gui = getGui().gui;
-        getGui().gui.addLayer(gui);
-        PacketHandler.sendPacketToServer(new GuiLayerPacket(nbt, gui.gui.getLayers().size() - 1, false));
-        gui.onOpened();
-    }
-    
     public PlayerSelector get() {
         return info;
+    }
+    
+    static {
+        GuiLayerHandler.registerGuiLayerHandler("player", new GuiLayerHandler() {
+            
+            @Override
+            public GuiLayer create(IGuiIntegratedParent parent, CompoundTag nbt) {
+                return new PlayerSelectorDialog();
+            }
+        });
     }
     
 }

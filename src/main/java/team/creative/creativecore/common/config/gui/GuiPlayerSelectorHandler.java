@@ -1,83 +1,58 @@
 package team.creative.creativecore.common.config.gui;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-
-import com.creativemd.creativecore.common.config.gui.SubGuiPlayerSelectorDialog;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSelectorAnd;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSelectorCommand;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSelectorCommandSelector;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSelectorGamemode;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSelectorLevel;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSelectorNot;
-import com.creativemd.creativecore.common.utils.player.PlayerSelector.PlayerSelectorOr;
 
 import net.minecraft.world.level.GameType;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.util.player.PlayerSelector;
+import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorAnd;
+import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorCommandSelector;
+import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorGamemode;
+import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorLevel;
+import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorNot;
+import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorOr;
+import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
     
-    @SideOnly(Side.CLIENT)
-    private static LinkedHashMap<String, GuiPlayerSelectorHandler> handlers = new LinkedHashMap<>();
+    public static final NamedHandlerRegistry<GuiPlayerSelectorHandler> REGISTRY = new NamedHandlerRegistry<>(null);
     
-    public static void registerGuiSelectorHandler(String name, GuiPlayerSelectorHandler handler) {
-        handler.name = name;
-        handlers.put(name, handler);
+    public static GuiPlayerSelectorHandler get(PlayerSelector selector) {
+        return REGISTRY.get(PlayerSelector.REGISTRY.getId(selector));
     }
-    
-    public static Set<String> getNames() {
-        return handlers.keySet();
-    }
-    
-    public static GuiPlayerSelectorHandler getHandler(PlayerSelector selector) {
-        GuiPlayerSelectorHandler handler = selector != null ? handlers.get(PlayerSelector.get(selector.getClass())) : null;
-        if (handler != null)
-            return handler;
-        return GuiPlayerSelectorHandler.defaultHandler;
-    }
-    
-    public static GuiPlayerSelectorHandler getHandler(String name) {
-        GuiPlayerSelectorHandler handler = handlers.get(name);
-        if (handler == null)
-            return defaultHandler;
-        return handler;
-    }
-    
-    public static GuiPlayerSelectorHandler defaultHandler;
     
     static {
-        registerGuiSelectorHandler("and", new GuiPlayerSelectorHandlerMultiple<PlayerSelectorAnd>() {
+        REGISTRY.register("and", new GuiPlayerSelectorHandlerMultiple<PlayerSelectorAnd>() {
             
             @Override
             public PlayerSelectorAnd parseSelector(PlayerSelector[] selectors) {
                 return new PlayerSelectorAnd(selectors);
             }
         });
-        registerGuiSelectorHandler("or", new GuiPlayerSelectorHandlerMultiple<PlayerSelectorOr>() {
+        REGISTRY.register("or", new GuiPlayerSelectorHandlerMultiple<PlayerSelectorOr>() {
             
             @Override
             public PlayerSelectorOr parseSelector(PlayerSelector[] selectors) {
                 return new PlayerSelectorOr(selectors);
             }
         });
-        registerGuiSelectorHandler("not", new GuiPlayerSelectorHandler<PlayerSelectorNot>() {
+        REGISTRY.register("not", new GuiPlayerSelectorHandler<PlayerSelectorNot>() {
             
             @Override
-            public void createControls(SubGuiPlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.addControl(new GuiPlayerSelectorButton("not", 0, 30, 100, 10, selector instanceof PlayerSelectorNot ? ((PlayerSelectorNot) selector).selector : new PlayerSelectorLevel(0)));
+            public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
+                gui.add(new GuiPlayerSelectorButton("not", selector instanceof PlayerSelectorNot ? ((PlayerSelectorNot) selector).selector : new PlayerSelectorLevel(0)));
             }
             
             @Override
-            public PlayerSelectorNot parseSelector(SubGuiPlayerSelectorDialog gui) {
+            public PlayerSelectorNot parseSelector(PlayerSelectorDialog gui) {
                 GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) gui.get("not");
                 PlayerSelector selector = button.get();
                 if (selector != null)
@@ -85,65 +60,48 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
                 return null;
             }
         });
-        registerGuiSelectorHandler("level", new GuiPlayerSelectorHandler<PlayerSelectorLevel>() {
+        REGISTRY.register("level", new GuiPlayerSelectorHandler<PlayerSelectorLevel>() {
             
             @Override
-            public void createControls(SubGuiPlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.addControl(new GuiTextfield("content", selector instanceof PlayerSelectorLevel ? "" + ((PlayerSelectorLevel) selector).permissionLevel : "0", 0, 30, 30, 10)
-                        .setNumbersOnly());
+            public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
+                gui.add(new GuiTextfield("content", selector instanceof PlayerSelectorLevel ? "" + ((PlayerSelectorLevel) selector).permissionLevel : "0").setNumbersOnly());
             }
             
             @Override
-            public PlayerSelectorLevel parseSelector(SubGuiPlayerSelectorDialog gui) {
+            public PlayerSelectorLevel parseSelector(PlayerSelectorDialog gui) {
                 GuiTextfield text = (GuiTextfield) gui.get("content");
                 return new PlayerSelectorLevel(text.parseInteger());
             }
             
         });
-        registerGuiSelectorHandler("mode", new GuiPlayerSelectorHandler<PlayerSelectorGamemode>() {
+        REGISTRY.register("mode", new GuiPlayerSelectorHandler<PlayerSelectorGamemode>() {
             
             @Override
-            public void createControls(SubGuiPlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.addControl(new GuiStateButton("mode", selector instanceof PlayerSelectorGamemode ? ((PlayerSelectorGamemode) selector).type
-                        .getID() : 0, 0, 30, "survival", "creative", "adventure", "spectator"));
+            public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
+                gui.add(new GuiStateButton("mode", selector instanceof PlayerSelectorGamemode ? ((PlayerSelectorGamemode) selector).type
+                        .getId() : 0, "survival", "creative", "adventure", "spectator"));
             }
             
             @Override
-            public PlayerSelectorGamemode parseSelector(SubGuiPlayerSelectorDialog gui) {
+            public PlayerSelectorGamemode parseSelector(PlayerSelectorDialog gui) {
                 GuiStateButton mode = (GuiStateButton) gui.get("mode");
-                return new PlayerSelectorGamemode(GameType.getByID(mode.getState()));
+                return new PlayerSelectorGamemode(GameType.byId(mode.getState()));
             }
             
         });
-        registerGuiSelectorHandler("command", new GuiPlayerSelectorHandler<PlayerSelectorCommand>() {
+        REGISTRY.register("selector", new GuiPlayerSelectorHandler<PlayerSelectorCommandSelector>() {
             
             @Override
-            public void createControls(SubGuiPlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.addControl(new GuiTextfield("content", selector instanceof PlayerSelectorCommand ? "" + ((PlayerSelectorCommand) selector).command : "tell", 0, 30, 100, 10));
+            public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
+                gui.add(new GuiTextfield("content", selector instanceof PlayerSelectorCommandSelector ? "" + ((PlayerSelectorCommandSelector) selector).pattern : "@a[]"));
             }
             
             @Override
-            public PlayerSelectorCommand parseSelector(SubGuiPlayerSelectorDialog gui) {
+            public PlayerSelectorCommandSelector parseSelector(PlayerSelectorDialog gui) {
                 GuiTextfield text = (GuiTextfield) gui.get("content");
-                if (text.text.isEmpty())
+                if (text.getText().isEmpty())
                     return null;
-                return new PlayerSelectorCommand(text.text);
-            }
-            
-        });
-        registerGuiSelectorHandler("selector", new GuiPlayerSelectorHandler<PlayerSelectorCommandSelector>() {
-            
-            @Override
-            public void createControls(SubGuiPlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.addControl(new GuiTextfield("content", selector instanceof PlayerSelectorCommandSelector ? "" + ((PlayerSelectorCommandSelector) selector).pattern : "@a[]", 0, 30, 100, 10));
-            }
-            
-            @Override
-            public PlayerSelectorCommandSelector parseSelector(SubGuiPlayerSelectorDialog gui) {
-                GuiTextfield text = (GuiTextfield) gui.get("content");
-                if (text.text.isEmpty())
-                    return null;
-                return new PlayerSelectorCommandSelector(text.text);
+                return new PlayerSelectorCommandSelector(text.getText());
             }
             
         });
@@ -155,11 +113,11 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
         return name;
     }
     
-    public abstract void createControls(SubGuiPlayerSelectorDialog gui, PlayerSelector selector);
+    public abstract void createControls(PlayerSelectorDialog gui, PlayerSelector selector);
     
-    public abstract T parseSelector(SubGuiPlayerSelectorDialog gui);
+    public abstract T parseSelector(PlayerSelectorDialog gui);
     
-    public void onChanged(SubGuiPlayerSelectorDialog gui, GuiControlChangedEvent event) {}
+    public void onChanged(PlayerSelectorDialog gui, GuiControlChangedEvent event) {}
     
     public static abstract class GuiPlayerSelectorHandlerMultiple<T extends PlayerSelector> extends GuiPlayerSelectorHandler<T> {
         
@@ -172,25 +130,21 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
         }
         
         @Override
-        public void createControls(SubGuiPlayerSelectorDialog gui, PlayerSelector selector) {
+        public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
             PlayerSelector[] selectors = getChildren(selector);
             List<GuiPlayerSelectorButton> buttons = new ArrayList<>();
             if (selectors != null)
                 for (int i = 0; i < selectors.length; i++)
-                    buttons.add(new GuiPlayerSelectorButton("" + i, 0, 30, 100, 10, selectors[i]));
-            GuiListBoxBase<GuiPlayerSelectorButton> list = new GuiListBoxBase<>("list", 0, 21, 144, 100, true, buttons);
-            gui.addControl(list);
-            gui.addControl(new GuiButton("add", 50, 130) {
-                
-                @Override
-                public void onClicked(int x, int y, int button) {
-                    list.add(new GuiPlayerSelectorButton("new", 0, 0, 100, 10, new PlayerSelectorLevel(0)));
-                }
-            });
+                    buttons.add(new GuiPlayerSelectorButton("" + i, selectors[i]));
+            GuiListBoxBase<GuiPlayerSelectorButton> list = new GuiListBoxBase<>("list", true, buttons);
+            gui.add(list);
+            gui.add(new GuiButton("add", x -> {
+                list.addItem(new GuiPlayerSelectorButton("new", new PlayerSelectorLevel(0)));
+            }));
         }
         
         @Override
-        public T parseSelector(SubGuiPlayerSelectorDialog gui) {
+        public T parseSelector(PlayerSelectorDialog gui) {
             GuiListBoxBase<GuiPlayerSelectorButton> list = (GuiListBoxBase<GuiPlayerSelectorButton>) gui.get("list");
             PlayerSelector[] selectors = new PlayerSelector[list.size()];
             for (int i = 0; i < selectors.length; i++)

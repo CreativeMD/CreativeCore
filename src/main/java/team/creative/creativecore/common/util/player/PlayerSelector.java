@@ -1,53 +1,34 @@
 package team.creative.creativecore.common.util.player;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map.Entry;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.management.UserListOpsEntry;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.world.level.GameType;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiPlayerSelectorButton;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.mc.PlayerUtils;
+import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 
 public abstract class PlayerSelector {
     
-    private static HashMap<String, Class<? extends PlayerSelector>> selectorTypes = new HashMap<>();
-    
-    public static void registerSelectorType(String id, Class<? extends PlayerSelector> clazz) {
-        selectorTypes.put(id, clazz);
-    }
-    
-    public static Class<? extends PlayerSelector> get(String id) {
-        return selectorTypes.get(id);
-    }
-    
-    public static String get(Class<? extends PlayerSelector> clazz) {
-        for (Entry<String, Class<? extends PlayerSelector>> entry : selectorTypes.entrySet())
-            if (entry.getValue() == clazz)
-                return entry.getKey();
-        throw new RuntimeException("Could not find player selector id for " + clazz);
-    }
+    public static final NamedTypeRegistry<PlayerSelector> REGISTRY = new NamedTypeRegistry<PlayerSelector>().addConstructorPattern();
     
     public static PlayerSelector read(CompoundTag nbt) {
-        Class<? extends PlayerSelector> clazz = get(nbt.getString("id"));
+        Class<? extends PlayerSelector> clazz = REGISTRY.get(nbt.getString("id"));
         if (clazz == null)
             throw new RuntimeException("Could not find player selector for " + nbt.getString("id"));
         
@@ -61,13 +42,12 @@ public abstract class PlayerSelector {
     }
     
     static {
-        registerSelectorType("and", PlayerSelectorAnd.class);
-        registerSelectorType("or", PlayerSelectorOr.class);
-        registerSelectorType("not", PlayerSelectorNot.class);
-        registerSelectorType("level", PlayerSelectorLevel.class);
-        registerSelectorType("mode", PlayerSelectorGamemode.class);
-        registerSelectorType("command", PlayerSelectorCommand.class);
-        registerSelectorType("selector", PlayerSelectorCommandSelector.class);
+        REGISTRY.register("and", PlayerSelectorAnd.class);
+        REGISTRY.register("or", PlayerSelectorOr.class);
+        REGISTRY.register("not", PlayerSelectorNot.class);
+        REGISTRY.register("level", PlayerSelectorLevel.class);
+        REGISTRY.register("mode", PlayerSelectorGamemode.class);
+        REGISTRY.register("selector", PlayerSelectorCommandSelector.class);
         
         ConfigTypeConveration.registerSpecialType((x) -> PlayerSelector.class.isAssignableFrom(x), new ConfigTypeConveration.SimpleConfigTypeConveration<PlayerSelector>() {
             
@@ -75,8 +55,8 @@ public abstract class PlayerSelector {
             public PlayerSelector readElement(PlayerSelector defaultValue, boolean loadDefault, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
-                        return PlayerSelector.read(JsonToNBT.getTagFromJson(element.getAsString()));
-                    } catch (NBTException e) {
+                        return PlayerSelector.read(TagParser.parseTag(element.getAsString()));
+                    } catch (CommandSyntaxException e) {
                         e.printStackTrace();
                     }
                 return defaultValue;
@@ -88,20 +68,20 @@ public abstract class PlayerSelector {
             }
             
             @Override
-            @SideOnly(Side.CLIENT)
-            public void createControls(GuiParent parent, Class clazz, int recommendedWidth) {
-                parent.addControl(new GuiPlayerSelectorButton("data", 0, 0, Math.min(150, parent.width - 50), 14, new PlayerSelectorLevel(0)));
+            @OnlyIn(Dist.CLIENT)
+            public void createControls(GuiParent parent, Class clazz) {
+                parent.add(new GuiPlayerSelectorButton("data", new PlayerSelectorLevel(0)));
             }
             
             @Override
-            @SideOnly(Side.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(PlayerSelector value, GuiParent parent) {
                 GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) parent.get("data");
                 button.set(value);
             }
             
             @Override
-            @SideOnly(Side.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected PlayerSelector saveValue(GuiParent parent, Class clazz) {
                 GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) parent.get("data");
                 return button.get();
@@ -111,10 +91,11 @@ public abstract class PlayerSelector {
             public PlayerSelector set(ConfigKeyField key, PlayerSelector value) {
                 return value;
             }
+            
         });
     }
     
-    public abstract boolean is(Player player);
+    public abstract boolean is(ServerPlayer player);
     
     public abstract void readFromNBT(CompoundTag nbt);
     
@@ -122,9 +103,9 @@ public abstract class PlayerSelector {
     
     public abstract String info();
     
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public CompoundTag writeToNBT(CompoundTag nbt) {
         write(nbt);
-        nbt.setString("id", get(getClass()));
+        nbt.putString("id", REGISTRY.getId(getClass()));
         return nbt;
     }
     
@@ -141,7 +122,7 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(EntityPlayer player) {
+        public boolean is(ServerPlayer player) {
             for (int i = 0; i < selectors.length; i++)
                 if (!selectors[i].is(player))
                     return false;
@@ -149,19 +130,19 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-            NBTTagList list = nbt.getTagList("selectors", 10);
-            selectors = new PlayerSelector[list.tagCount()];
+        public void readFromNBT(CompoundTag nbt) {
+            ListTag list = nbt.getList("selectors", 10);
+            selectors = new PlayerSelector[list.size()];
             for (int i = 0; i < selectors.length; i++)
-                selectors[i] = PlayerSelector.read(list.getCompoundTagAt(i));
+                selectors[i] = PlayerSelector.read(list.getCompound(i));
         }
         
         @Override
-        protected void write(NBTTagCompound nbt) {
-            NBTTagList list = new NBTTagList();
+        protected void write(CompoundTag nbt) {
+            ListTag list = new ListTag();
             for (int i = 0; i < selectors.length; i++)
-                list.appendTag(selectors[i].writeToNBT(new NBTTagCompound()));
-            nbt.setTag("selectors", list);
+                list.add(selectors[i].writeToNBT(new CompoundTag()));
+            nbt.put("selectors", list);
         }
         
         @Override
@@ -190,7 +171,7 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(EntityPlayer player) {
+        public boolean is(ServerPlayer player) {
             for (int i = 0; i < selectors.length; i++)
                 if (selectors[i].is(player))
                     return true;
@@ -198,19 +179,19 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-            NBTTagList list = nbt.getTagList("selectors", 10);
-            selectors = new PlayerSelector[list.tagCount()];
+        public void readFromNBT(CompoundTag nbt) {
+            ListTag list = nbt.getList("selectors", 10);
+            selectors = new PlayerSelector[list.size()];
             for (int i = 0; i < selectors.length; i++)
-                selectors[i] = PlayerSelector.read(list.getCompoundTagAt(i));
+                selectors[i] = PlayerSelector.read(list.getCompound(i));
         }
         
         @Override
-        protected void write(NBTTagCompound nbt) {
-            NBTTagList list = new NBTTagList();
+        protected void write(CompoundTag nbt) {
+            ListTag list = new ListTag();
             for (int i = 0; i < selectors.length; i++)
-                list.appendTag(selectors[i].writeToNBT(new NBTTagCompound()));
-            nbt.setTag("selectors", list);
+                list.add(selectors[i].writeToNBT(new CompoundTag()));
+            nbt.put("selectors", list);
         }
         
         @Override
@@ -239,18 +220,18 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(EntityPlayer player) {
+        public boolean is(ServerPlayer player) {
             return !selector.is(player);
         }
         
         @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-            selector = PlayerSelector.read(nbt.getCompoundTag("child"));
+        public void readFromNBT(CompoundTag nbt) {
+            selector = PlayerSelector.read(nbt.getCompound("child"));
         }
         
         @Override
-        protected void write(NBTTagCompound nbt) {
-            nbt.setTag("child", selector.writeToNBT(new NBTTagCompound()));
+        protected void write(CompoundTag nbt) {
+            nbt.put("child", selector.writeToNBT(new CompoundTag()));
         }
         
         @Override
@@ -273,18 +254,18 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(EntityPlayer player) {
+        public boolean is(ServerPlayer player) {
             return PlayerUtils.getGameType(player) == type;
         }
         
         @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-            type = GameType.getByID(nbt.getInteger("mode"));
+        public void readFromNBT(CompoundTag nbt) {
+            type = GameType.byId(nbt.getInt("mode"));
         }
         
         @Override
-        protected void write(NBTTagCompound nbt) {
-            nbt.setInteger("mode", type.getID());
+        protected void write(CompoundTag nbt) {
+            nbt.putInt("mode", type.getId());
         }
         
         @Override
@@ -307,69 +288,26 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(EntityPlayer player) {
-            if (player instanceof EntityPlayerMP) {
-                UserListOpsEntry entry = player.getServer().getPlayerList().getOppedPlayers().getEntry(player.getGameProfile());
-                
-                if (entry != null)
-                    return entry.getPermissionLevel() >= permissionLevel;
-                return player.getServer().getOpPermissionLevel() >= permissionLevel;
-            }
-            return true;
+        public boolean is(ServerPlayer player) {
+            ServerOpListEntry entry = player.server.getPlayerList().getOps().get(player.getGameProfile());
+            if (entry != null)
+                return entry.getLevel() >= permissionLevel;
+            return player.server.getOperatorUserPermissionLevel() >= permissionLevel;
         }
         
         @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-            this.permissionLevel = nbt.getInteger("level");
+        public void readFromNBT(CompoundTag nbt) {
+            this.permissionLevel = nbt.getInt("level");
         }
         
         @Override
-        protected void write(NBTTagCompound nbt) {
-            nbt.setInteger("level", permissionLevel);
+        protected void write(CompoundTag nbt) {
+            nbt.putInt("level", permissionLevel);
         }
         
         @Override
         public String info() {
             return "level>=" + permissionLevel;
-        }
-        
-    }
-    
-    public static class PlayerSelectorCommand extends PlayerSelector {
-        
-        public String command;
-        
-        public PlayerSelectorCommand() {
-            
-        }
-        
-        public PlayerSelectorCommand(String command) {
-            this.command = command;
-        }
-        
-        @Override
-        public boolean is(EntityPlayer player) {
-            if (player.getServer() == null)
-                return false;
-            ICommand command = player.getServer().getCommandManager().getCommands().get(this.command);
-            if (command != null)
-                return command.checkPermission(player.getServer(), player);
-            return false;
-        }
-        
-        @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-            command = nbt.getString("command");
-        }
-        
-        @Override
-        protected void write(NBTTagCompound nbt) {
-            nbt.setString("command", command);
-        }
-        
-        @Override
-        public String info() {
-            return "/" + command;
         }
         
     }
@@ -387,21 +325,21 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(EntityPlayer player) {
+        public boolean is(ServerPlayer player) {
             try {
-                return EntitySelector.getPlayers(player, pattern).contains(player);
-            } catch (CommandException e) {}
+                return EntityArgument.players().parse(new StringReader(pattern)).findPlayers(player.server.createCommandSourceStack()).contains(player);
+            } catch (CommandSyntaxException e) {}
             return false;
         }
         
         @Override
-        public void readFromNBT(NBTTagCompound nbt) {
+        public void readFromNBT(CompoundTag nbt) {
             this.pattern = nbt.getString("pattern");
         }
         
         @Override
-        protected void write(NBTTagCompound nbt) {
-            nbt.setString("pattern", pattern);
+        protected void write(CompoundTag nbt) {
+            nbt.putString("pattern", pattern);
         }
         
         @Override

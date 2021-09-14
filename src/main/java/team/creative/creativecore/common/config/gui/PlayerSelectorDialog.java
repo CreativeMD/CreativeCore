@@ -1,15 +1,11 @@
 package team.creative.creativecore.common.config.gui;
 
-import java.util.ArrayList;
-
-import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
-
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.util.player.PlayerSelector;
+import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class PlayerSelectorDialog extends GuiLayer {
     
@@ -18,53 +14,38 @@ public class PlayerSelectorDialog extends GuiLayer {
     
     public PlayerSelectorDialog() {
         super("playerselector", 150, 150);
+        registerEventChanged(event -> {
+            if (event.control.is("type")) {
+                reinit();
+            } else
+                handler.onChanged(this, event);
+        });
     }
     
     @Override
-    public void createControls() {
+    public void create() {
         PlayerSelector selector = button.get();
-        handler = GuiPlayerSelectorHandler.getHandler(selector);
+        handler = GuiPlayerSelectorHandler.get(selector);
         
-        GuiComboBox box = (GuiComboBox) get("type");
+        GuiComboBoxMapped<String> box = (GuiComboBoxMapped<String>) get("type");
         if (box != null)
-            handler = GuiPlayerSelectorHandler.getHandler(box.getCaption());
+            handler = GuiPlayerSelectorHandler.REGISTRY.get(box.getSelected());
         
-        controls.clear();
-        ArrayList<String> lines = new ArrayList<String>(GuiPlayerSelectorHandler.getNames());
+        clear();
         
-        box = new GuiComboBox("type", 0, 0, 144, lines);
-        box.select(lines.indexOf(handler.getName()));
-        controls.add(box);
+        box = new GuiComboBoxMapped<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), x -> new TextComponent(x)));
+        box.select(handler.getName());
+        add(box);
         
         handler.createControls(this, selector);
-        
-        controls.add(new GuiButton("Cancel", 0, 130, 41) {
-            
-            @Override
-            public void onClicked(int x, int y, int button) {
-                closeLayer(new NBTTagCompound());
+        add(new GuiButton("Cancel", x -> closeTopLayer()));
+        add(new GuiButton("Save", x -> {
+            PlayerSelector parsed = handler.parseSelector(PlayerSelectorDialog.this);
+            if (parsed != null) {
+                PlayerSelectorDialog.this.button.set(parsed);
+                closeTopLayer();
             }
-        });
-        controls.add(new GuiButton("Save", 103, 130, 41) {
-            
-            @Override
-            public void onClicked(int x, int y, int button) {
-                PlayerSelector selector = handler.parseSelector(PlayerSelectorDialog.this);
-                if (selector != null) {
-                    PlayerSelectorDialog.this.button.set(selector);
-                    closeLayer(new NBTTagCompound());
-                }
-            }
-        });
-    }
-    
-    @CustomEventSubscribe
-    public void onChanged(GuiControlChangedEvent event) {
-        if (event.source.is("type")) {
-            createControls();
-            refreshControls();
-        } else
-            handler.onChanged(this, event);
+        }));
     }
     
 }
