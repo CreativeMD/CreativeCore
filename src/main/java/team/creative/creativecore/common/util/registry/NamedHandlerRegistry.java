@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.registry;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class NamedHandlerRegistry<T> {
@@ -31,6 +32,10 @@ public class NamedHandlerRegistry<T> {
     
     public T get(String id) {
         return handlers.getOrDefault(id, defaultHandler);
+    }
+    
+    public Collection<String> keys() {
+        return handlers.keySet();
     }
     
     protected static String toString(Object[] var0) {
