@@ -3,6 +3,7 @@ package team.creative.creativecore.common.util.registry;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class NamedTypeRegistry<T> {
     
     private HashMap<String, Class<? extends T>> types = new HashMap<>();
     private HashMap<Class<? extends T>, String> typesInv = new HashMap<>();
-    private List<Class[]> possibleConstructors;
+    private List<Class[]> possibleConstructors = new ArrayList<>();
     private boolean allowOverwrite = false;
     
     public NamedTypeRegistry<T> addConstructorPattern(Class... classes) {
