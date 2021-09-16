@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.gui;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -23,8 +23,8 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 public abstract class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
     
     private GuiEventManager eventManager;
-    protected List<GuiChildControl> controls = new ArrayList<>();
-    protected List<GuiChildControl> hoverControls = new ArrayList<>();
+    protected List<GuiChildControl> controls = new CopyOnWriteArrayList<>();
+    protected List<GuiChildControl> hoverControls = new CopyOnWriteArrayList<>();
     
     public Align align = Align.LEFT;
     public VAlign valign = VAlign.TOP;
@@ -136,12 +136,20 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
     }
     
     public GuiChildControl remove(GuiControl control) {
-        for (GuiChildControl child : controls)
-            if (child.control == control)
+        for (int i = 0; i < controls.size(); i++) {
+            GuiChildControl child = controls.get(i);
+            if (child.control == control) {
+                controls.remove(i);
                 return child;
-        for (GuiChildControl child : hoverControls)
-            if (child.control == control)
+            }
+        }
+        for (int i = 0; i < hoverControls.size(); i++) {
+            GuiChildControl child = hoverControls.get(i);
+            if (child.control == control) {
+                controls.remove(i);
                 return child;
+            }
+        }
         return null;
     }
     
@@ -211,7 +219,7 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
                 
                 matrix.pushPose();
                 matrix.translate((child.getX() + xOffset) * scale, (child.getY() + yOffset) * scale, 10);
-                control.render(matrix, child, controlRect, realRect, mouseX, mouseY);
+                control.render(matrix, child, controlRect, hover ? controlRect : realRect, mouseX, mouseY);
                 matrix.popPose();
             }
         }
