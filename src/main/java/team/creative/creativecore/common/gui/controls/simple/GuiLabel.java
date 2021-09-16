@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
@@ -30,6 +31,10 @@ public class GuiLabel extends GuiControl {
     public GuiLabel setAlign(Align align) {
         text.alignment = align;
         return this;
+    }
+    
+    public GuiLabel setTranslate(String translate) {
+        return setTitle(new TranslatableComponent(translate));
     }
     
     public GuiLabel setTitle(Component component) {
