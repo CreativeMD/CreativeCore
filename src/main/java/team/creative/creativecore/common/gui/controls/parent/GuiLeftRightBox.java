@@ -14,19 +14,16 @@ public class GuiLeftRightBox extends GuiRow {
         this.right = new GuiColumn();
         this.right.align = Align.RIGHT;
         addColumn(right);
+        setExpandableX();
     }
     
     public GuiLeftRightBox addLeft(GuiControl control) {
         left.add(control);
-        if (getParent() != null)
-            reflow();
         return this;
     }
     
     public GuiLeftRightBox addRight(GuiControl control) {
         right.add(control);
-        if (getParent() != null)
-            reflow();
         return this;
     }
     
