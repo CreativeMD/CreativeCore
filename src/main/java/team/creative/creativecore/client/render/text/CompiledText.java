@@ -279,10 +279,15 @@ public class CompiledText {
                 return null;
             } else {
                 FormattedTextSplit split = splitByWidth(component, remainingWidth, Style.EMPTY, width == 0);
-                if (split != null) {
-                    updateDimension(width + font.width(split.head), font.lineHeight);
-                    components.add(split.head);
-                    return split.tail;
+                if (split != null && (split.head != null || width == 0)) {
+                    if (split.head != null) {
+                        updateDimension(width + font.width(split.head), font.lineHeight);
+                        components.add(split.head);
+                        return split.tail;
+                    }
+                    updateDimension(width + font.width(split.tail), font.lineHeight);
+                    components.add(split.tail);
+                    return null;
                 } else
                     return component;
             }
@@ -321,10 +326,7 @@ public class CompiledText {
             }
         }, style).orElse(null);
         
-        FormattedTextSplit split = new FormattedTextSplit(head, tail);
-        if (split.head == null)
-            return null;
-        return split;
+        return new FormattedTextSplit(head, tail);
     }
     
     private static Field widthProviderField = ObfuscationReflectionHelper.findField(StringSplitter.class, "f_92333_");
