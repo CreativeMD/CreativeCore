@@ -7,14 +7,16 @@ import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
+import team.creative.creativecore.common.gui.controls.parent.GuiRow;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 
 public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
+    protected List<GuiRow> rows = new ArrayList<>();
     protected List<T> content;
-    protected List<GuiChildControl> removeButtons;
     protected int cachedWidth;
     protected int cachedHeight;
     
@@ -22,30 +24,43 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public GuiListBoxBase(String name, int width, int height, boolean modifiable, List<T> entries) {
         super(name, width, height);
-        this.align = Align.CENTER;
         this.content = entries;
         this.modifiable = modifiable;
-        if (modifiable)
-            removeButtons = new ArrayList<>();
         createItems();
     }
     
     public GuiListBoxBase(String name, boolean modifiable, List<T> entries) {
         super(name);
-        this.align = Align.CENTER;
         this.content = entries;
         this.modifiable = modifiable;
-        if (modifiable)
-            removeButtons = new ArrayList<>();
         createItems();
     }
     
     protected void createItems() {
-        for (int i = 0; i < content.size(); i++) {
-            super.add(content.get(i));
-            if (modifiable)
-                removeButtons.add(super.addHover(new GuiButtonRemove(i)));
+        for (int i = 0; i < content.size(); i++)
+            createControl(i);
+    }
+    
+    protected void createControl(int index) {
+        GuiRow row = new GuiRow();
+        super.add(row);
+        GuiColumn content = (GuiColumn) new GuiColumn().setExpandableX();
+        content.align = Align.CENTER;
+        content.add(this.content.get(index));
+        row.addColumn(content);
+        if (modifiable) {
+            GuiColumn remove = new GuiColumn(20);
+            remove.align = Align.CENTER;
+            remove.add(new GuiButtonRemove(index));
+            row.addColumn(remove);
         }
+        rows.add(row);
+    }
+    
+    protected void removeControl(int index) {
+        remove(rows.get(index));
+        rows.remove(index);
+        content.remove(index);
     }
     
     @Override
@@ -70,54 +85,32 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     public void flowY(int height, int preferred) {
         this.cachedHeight = height;
         super.flowY(height, preferred);
-        
-        for (int i = 0; i < controls.size(); i++) {
-            GuiChildControl control = controls.get(i);
-            if (modifiable) {
-                GuiChildControl button = removeButtons.get(i);
-                ((GuiButtonRemove) button.control).index = i;
-                button.setY(control.getY() + 3);
-            }
-        }
     }
     
     public void reflowInternal() {
-        flowX(cachedWidth, getPreferredWidth());
-        flowY(cachedHeight, getPreferredHeight());
+        super.flowX(cachedWidth, preferredWidth());
+        super.flowY(cachedHeight, preferredHeight());
     }
     
     public void removeItem(int index) {
-        remove(content.get(index));
-        content.remove(index);
-        if (modifiable) {
-            remove(removeButtons.get(index));
-            removeButtons.remove(index);
-            for (int i = 0; i < removeButtons.size(); i++)
-                ((GuiButtonRemove) removeButtons.get(i).control).index = i;
-        }
-        reflow();
+        removeControl(index);
         
+        if (modifiable)
+            for (int i = 0; i < rows.size(); i++)
+                ((GuiButtonRemove) rows.get(i).getCol(1).get("x")).index = i;
+        reflowInternal();
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
     public void clearItems() {
-        for (int i = 0; i < content.size(); i++) {
-            remove(content.get(i));
-            if (modifiable)
-                remove(removeButtons.get(i));
-        }
-        
-        content.clear();
-        if (modifiable)
-            removeButtons.clear();
+        while (content.size() > 0)
+            removeControl(content.size() - 1);
     }
     
     public void addAllItems(List<T> entries) {
         for (T entry : entries) {
             content.add(entry);
-            super.add(entry);
-            if (modifiable)
-                removeButtons.add(super.addHover(new GuiButtonRemove(content.size() - 1)));
+            createControl(content.size() - 1);
         }
         
         reflowInternal();
@@ -125,9 +118,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public void addItem(T entry) {
         content.add(entry);
-        super.add(entry);
-        if (modifiable)
-            removeButtons.add(super.addHover(new GuiButtonRemove(content.size() - 1)));
+        createControl(content.size() - 1);
         
         reflowInternal();
         
@@ -153,7 +144,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         public int index;
         
         public GuiButtonRemove(int index) {
-            super("x", 12, 12, null);
+            super("x", 14, 13, null);
+            setAlign(Align.CENTER);
             setTitle(new TextComponent("x"));
             pressed = (x) -> GuiListBoxBase.this.removeItem(this.index);
             this.index = index;
