@@ -77,6 +77,15 @@ public class GuiBoxX extends GuiParent {
         if (width >= preferred) { // If there is enough space available
             if (align == Align.STRETCH && !areChildrenExpandableX()) { // force expansion
                 
+                for (GuiChildControl child : list) { // Make sure min dimensions are used
+                    int min = child.control.getMinWidth();
+                    if (min != -1) {
+                        available -= min;
+                        child.setWidth(min);
+                    } else
+                        child.setWidth(0);
+                }
+                
                 while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                     int average = (int) Math.ceil((double) available / list.remaing());
                     for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
@@ -95,7 +104,7 @@ public class GuiBoxX extends GuiParent {
                     available -= child.getWidth();
                 }
                 
-                if (align == Align.STRETCH)
+                if (align == Align.STRETCH || areChildrenExpandableX())
                     while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                         int average = (int) Math.ceil((double) available / list.remaing());
                         for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
@@ -145,7 +154,7 @@ public class GuiBoxX extends GuiParent {
             }
         } else if (align == Align.CENTER || align == Align.STRETCH) {
             int contentWidth = width - (available + spacing * (controls.size() - 1));
-            int x = contentWidth / 2 - width / 2;
+            int x = width / 2 - contentWidth / 2;
             for (GuiChildControl child : controls) {
                 child.setX(x);
                 x += child.getWidth() + spacing;
@@ -155,29 +164,33 @@ public class GuiBoxX extends GuiParent {
     
     @Override
     public void flowY(int height, int preferred) {
-        if (valign == VAlign.TOP) {
+        boolean expandable = areChildrenExpandableY();
+        if (valign == VAlign.TOP && !expandable) {
             for (GuiChildControl child : controls) {
                 child.setY(0);
-                child.setHeight(Math.min(preferred, child.control.getPreferredHeight()));
+                child.setHeight(Math.min(height, child.control.getPreferredHeight()));
                 child.flowY();
             }
         } else {
-            if (valign == VAlign.STRETCH) {
+            if (valign == VAlign.STRETCH || expandable) {
                 for (GuiChildControl child : controls) {
-                    child.setHeight(height);
+                    if (child.control.isExpandableY())
+                        child.setHeight(height);
+                    else
+                        child.setHeight(Math.min(height, child.control.getPreferredHeight()));
                     child.setY(0);
                     child.flowY();
                 }
             } else if (valign == VAlign.BOTTOM) {
                 for (GuiChildControl child : controls) {
-                    child.setHeight(Math.min(preferred, child.control.getPreferredHeight()));
-                    child.setY(preferred - child.getHeight());
+                    child.setHeight(Math.min(height, child.control.getPreferredHeight()));
+                    child.setY(height - child.getHeight());
                     child.flowY();
                 }
             } else {
                 for (GuiChildControl child : controls) {
-                    child.setHeight(Math.min(preferred, child.control.getPreferredHeight()));
-                    child.setY(preferred / 2 - child.getHeight() / 2);
+                    child.setHeight(Math.min(height, child.control.getPreferredHeight()));
+                    child.setY(height / 2 - child.getHeight() / 2);
                     child.flowY();
                 }
             }

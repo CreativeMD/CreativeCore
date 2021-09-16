@@ -16,7 +16,7 @@ public class GuiScrollX extends GuiBoxX {
     public SmoothValue scrolled = new SmoothValue(200);
     public double scaleFactor;
     public boolean dragged;
-    public int scrollbarWidth = 3;
+    public int scrollbarHeight = 3;
     protected int cachedWidth;
     
     public GuiScrollX() {
@@ -66,7 +66,7 @@ public class GuiScrollX extends GuiBoxX {
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (button == 0 && rect.getWidth() - x <= scrollbarWidth && needsScrollbar(rect)) {
+        if (button == 0 && rect.getWidth() - x <= scrollbarHeight && needsScrollbar(rect)) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             dragged = true;
             return true;
@@ -118,7 +118,7 @@ public class GuiScrollX extends GuiBoxX {
         double percent = scrolled.current() / maxScroll;
         
         style.get(ControlStyleFace.CLICKABLE, false).render(matrix, controlRect
-                .getWidth() + formatting.padding * 2 - scrollbarWidth + borderWidth, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, scrollbarWidth, scrollThingWidth);
+                .getWidth() + formatting.padding * 2 - scrollbarHeight + borderWidth, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, scrollbarHeight, scrollThingWidth);
         
         maxScroll = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
         
@@ -135,9 +135,15 @@ public class GuiScrollX extends GuiBoxX {
         for (GuiChildControl child : controls) {
             child.setWidth(child.control.getPreferredWidth());
             child.setX(x);
+            child.flowX();
             x += child.getWidth() + spacing;
         }
         cachedWidth = x;
+    }
+    
+    @Override
+    public void flowY(int height, int preferred) {
+        super.flowY(height - scrollbarHeight, preferred);
     }
     
 }
