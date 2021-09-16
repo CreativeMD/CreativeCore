@@ -40,6 +40,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     public GuiParent(String name, GuiFlow flow, int width, int height) {
         super(name, width, height);
+        this.flow = flow;
     }
     
     public GuiParent(String name, GuiFlow flow, Align align, VAlign valign) {
