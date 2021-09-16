@@ -1,45 +1,17 @@
-package team.creative.creativecore.common.gui.controls.parent;
+package team.creative.creativecore.common.gui.flow;
+
+import java.util.List;
 
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.type.MarkIterator;
 import team.creative.creativecore.common.util.type.MarkList;
 
-public class GuiBoxX extends GuiParent {
-    
-    public GuiBoxX(String name, Align align, VAlign valign) {
-        super(name);
-        this.align = align;
-        this.valign = valign;
-    }
-    
-    public GuiBoxX(String name, int width, int height, Align align, VAlign valign) {
-        super(name, width, height);
-        this.align = align;
-        this.valign = valign;
-    }
-    
-    public GuiBoxX(String name, int width, int height, VAlign valign) {
-        this(name, width, height, Align.LEFT, valign);
-    }
-    
-    public GuiBoxX(String name, int width, int height) {
-        this(name, width, height, VAlign.TOP);
-    }
-    
-    public GuiBoxX(String name) {
-        this(name, Align.LEFT, VAlign.TOP);
-    }
-    
-    public GuiBoxX() {
-        this("");
-    }
+public class GuiStackX extends GuiFlow {
     
     @Override
-    public int getMinWidth() {
+    public int minWidth(List<GuiChildControl> controls, int spacing) {
         int width = -spacing;
         for (GuiChildControl child : controls)
             width += child.control.getMinWidth() + spacing;
@@ -47,7 +19,7 @@ public class GuiBoxX extends GuiParent {
     }
     
     @Override
-    public int preferredWidth() {
+    public int preferredWidth(List<GuiChildControl> controls, int spacing) {
         int width = -spacing;
         for (GuiChildControl child : controls)
             width += child.control.getPreferredWidth() + spacing;
@@ -55,7 +27,7 @@ public class GuiBoxX extends GuiParent {
     }
     
     @Override
-    public int getMinHeight() {
+    public int minHeight(List<GuiChildControl> controls, int spacing) {
         int height = 0;
         for (GuiChildControl child : controls)
             height = Math.max(height, child.control.getMinHeight());
@@ -63,7 +35,7 @@ public class GuiBoxX extends GuiParent {
     }
     
     @Override
-    public int preferredHeight() {
+    public int preferredHeight(List<GuiChildControl> controls, int spacing) {
         int height = 0;
         for (GuiChildControl child : controls)
             height = Math.max(height, child.control.getPreferredHeight());
@@ -71,11 +43,11 @@ public class GuiBoxX extends GuiParent {
     }
     
     @Override
-    public void flowX(int width, int preferred) {
+    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred) {
         int available = width - spacing * (controls.size() - 1);
         MarkList<GuiChildControl> list = new MarkList<>(controls);
         if (width >= preferred) { // If there is enough space available
-            if (align == Align.STRETCH && !areChildrenExpandableX()) { // force expansion
+            if (align == Align.STRETCH && !areChildrenExpandableX(controls)) { // force expansion
                 
                 for (GuiChildControl child : list) { // Make sure min dimensions are used
                     int min = child.control.getMinWidth();
@@ -104,7 +76,7 @@ public class GuiBoxX extends GuiParent {
                     available -= child.getWidth();
                 }
                 
-                if (align == Align.STRETCH || areChildrenExpandableX())
+                if (align == Align.STRETCH || areChildrenExpandableX(controls))
                     while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                         int average = (int) Math.ceil((double) available / list.remaing());
                         for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
@@ -163,8 +135,8 @@ public class GuiBoxX extends GuiParent {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
-        boolean expandable = areChildrenExpandableY();
+    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int height, int preferred) {
+        boolean expandable = areChildrenExpandableY(controls);
         if (valign == VAlign.TOP && !expandable) {
             for (GuiChildControl child : controls) {
                 child.setY(0);
@@ -195,11 +167,6 @@ public class GuiBoxX extends GuiParent {
                 }
             }
         }
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
     }
     
 }

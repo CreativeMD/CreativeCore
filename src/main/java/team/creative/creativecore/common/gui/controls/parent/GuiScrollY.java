@@ -4,13 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.math.vec.SmoothValue;
 
-public class GuiScrollY extends GuiBoxY {
+public class GuiScrollY extends GuiParent {
     
     public int maxScroll = 0;
     public SmoothValue scrolled = new SmoothValue(200);
@@ -25,7 +27,7 @@ public class GuiScrollY extends GuiBoxY {
     }
     
     public GuiScrollY(String name) {
-        super(name);
+        super(name, GuiFlow.STACK_Y);
         this.scaleFactor = 1;
     }
     
@@ -34,7 +36,7 @@ public class GuiScrollY extends GuiBoxY {
     }
     
     public GuiScrollY(String name, int width, int height, float scaleFactor) {
-        super(name, width, height);
+        super(name, GuiFlow.STACK_Y, width, height);
         this.scaleFactor = scaleFactor;
     }
     

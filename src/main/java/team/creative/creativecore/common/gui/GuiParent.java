@@ -17,25 +17,57 @@ import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiEventManager;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public abstract class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
+public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
     
     private GuiEventManager eventManager;
     protected List<GuiChildControl> controls = new CopyOnWriteArrayList<>();
     protected List<GuiChildControl> hoverControls = new CopyOnWriteArrayList<>();
     
+    public GuiFlow flow;
     public Align align = Align.LEFT;
     public VAlign valign = VAlign.TOP;
     public int spacing = 2;
     
-    public GuiParent(String name) {
+    public GuiParent(String name, GuiFlow flow) {
         super(name);
+        this.flow = flow;
     }
     
-    public GuiParent(String name, int width, int height) {
+    public GuiParent(String name, GuiFlow flow, int width, int height) {
         super(name, width, height);
+    }
+    
+    public GuiParent(String name, GuiFlow flow, Align align, VAlign valign) {
+        this(name, flow);
+        this.align = align;
+        this.valign = valign;
+    }
+    
+    public GuiParent(String name, GuiFlow flow, int width, int height, Align align, VAlign valign) {
+        this(name, flow, width, height);
+        this.align = align;
+        this.valign = valign;
+    }
+    
+    public GuiParent(String name, GuiFlow flow, int width, int height, VAlign valign) {
+        this(name, flow, width, height, Align.LEFT, valign);
+    }
+    
+    public GuiParent(String name) {
+        this(name, GuiFlow.STACK_X);
+    }
+    
+    public GuiParent() {
+        this("");
+    }
+    
+    public GuiParent(GuiFlow flow) {
+        this("", flow);
     }
     
     @Override
@@ -65,24 +97,10 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
         return false;
     }
     
-    protected boolean areChildrenExpandableX() {
-        for (GuiChildControl child : controls)
-            if (child.control.isExpandableX())
-                return true;
-        return false;
-    }
-    
     @Override
     public boolean isExpandableY() {
         if (super.isExpandableY())
             return true;
-        for (GuiChildControl child : controls)
-            if (child.control.isExpandableY())
-                return true;
-        return false;
-    }
-    
-    protected boolean areChildrenExpandableY() {
         for (GuiChildControl child : controls)
             if (child.control.isExpandableY())
                 return true;
@@ -457,6 +475,31 @@ public abstract class GuiParent extends GuiControl implements IGuiParent, Iterab
             return "";
         }
         return super.getNestedName();
+    }
+    
+    @Override
+    public void flowX(int width, int preferred) {
+        flow.flowX(controls, spacing, align, width, preferred);
+    }
+    
+    @Override
+    public void flowY(int height, int preferred) {
+        flow.flowY(controls, spacing, valign, height, preferred);
+    }
+    
+    @Override
+    protected int preferredWidth() {
+        return flow.preferredWidth(controls, spacing);
+    }
+    
+    @Override
+    protected int preferredHeight() {
+        return flow.preferredHeight(controls, spacing);
+    }
+    
+    @Override
+    public ControlFormatting getControlFormatting() {
+        return ControlFormatting.TRANSPARENT;
     }
     
 }

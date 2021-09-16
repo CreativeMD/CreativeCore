@@ -14,7 +14,6 @@ import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.parent.GuiBoxY;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
@@ -22,6 +21,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
 import team.creative.creativecore.common.util.mc.JsonUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -41,6 +41,7 @@ public class ConfigGuiLayer extends GuiLayer {
     
     public ConfigGuiLayer(ICreativeConfigHolder holder, Dist side) {
         super("config", 420, 234);
+        this.flow = GuiFlow.STACK_Y;
         this.rootHolder = holder;
         this.holder = holder;
         this.side = side;
@@ -77,8 +78,6 @@ public class ConfigGuiLayer extends GuiLayer {
             savePage();
             clear();
         }
-        GuiBoxY overall = new GuiBoxY("");
-        add(overall);
         GuiLeftRightBox upperBox = new GuiLeftRightBox();
         upperBox.addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         
@@ -87,9 +86,9 @@ public class ConfigGuiLayer extends GuiLayer {
         }).setTranslate("gui.back").setEnabled(holder != rootHolder));
         this.holder = holder;
         
-        overall.add(upperBox);
+        add(upperBox);
         GuiScrollY box = new GuiScrollY("box").setExpandable();
-        overall.add(box);
+        add(box);
         
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
@@ -134,7 +133,7 @@ public class ConfigGuiLayer extends GuiLayer {
             force = true;
             closeTopLayer();
         }).setTranslate("gui.save"));
-        overall.add(lowerBox);
+        add(lowerBox);
         
         reinit();
     }

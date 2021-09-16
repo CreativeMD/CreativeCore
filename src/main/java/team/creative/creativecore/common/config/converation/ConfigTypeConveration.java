@@ -36,12 +36,12 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.parent.GuiBoxX;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiSlider;
 import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiSteppedSlider;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.PairList;
@@ -493,7 +493,7 @@ public abstract class ConfigTypeConveration<T> {
                 parent.add(new GuiTextfield("search", 30, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
                         .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new TextComponent(x.toString()))));
-                GuiBoxX hBox = new GuiBoxX("vBox");
+                GuiParent hBox = new GuiParent("vBox", GuiFlow.STACK_X);
                 hBox.add(new GuiLabel("volumeLabel").setTitle(new TranslatableComponent("gui.volume")));
                 hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
                 hBox.add(new GuiLabel("pitchLabel").setTitle(new TranslatableComponent("gui.pitch")));

@@ -20,6 +20,7 @@ import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class ConfigTypeList extends ConfigTypeConveration<List> {
     
@@ -63,6 +64,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Override
     @OnlyIn(value = Dist.CLIENT)
     public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
+        parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", 50, 130, true, new ArrayList<>()).setExpandable();
         parent.add(listBox);
         

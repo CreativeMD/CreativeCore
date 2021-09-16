@@ -1,13 +1,16 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
-public class GuiColumn extends GuiBoxX {
+import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
+
+public class GuiColumn extends GuiParent {
     
     public GuiColumn() {
-        super("");
+        super(GuiFlow.STACK_X);
     }
     
     public GuiColumn(int width) {
-        super("");
+        super(GuiFlow.STACK_X);
         this.preferredWidth = width;
     }
     

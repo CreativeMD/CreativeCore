@@ -1,18 +1,19 @@
 package team.creative.creativecore.common.config.gui;
 
 import net.minecraft.network.chat.TextComponent;
-import team.creative.creativecore.common.gui.controls.parent.GuiBoxX;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
-public class GuiConfigSubControl extends GuiBoxX {
+public class GuiConfigSubControl extends GuiParent {
     
     public GuiTextfield nameField;
     public GuiLabel nameLabel;
     
     public GuiConfigSubControl(String name) {
-        super(name);
+        super(name, GuiFlow.STACK_X);
         setExpandableX();
     }
     

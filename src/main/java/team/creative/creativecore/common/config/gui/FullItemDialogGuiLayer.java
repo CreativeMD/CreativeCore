@@ -7,12 +7,14 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
-import team.creative.creativecore.common.gui.controls.parent.GuiBoxY;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -49,7 +51,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
             handler = GuiCreativeIngredientHandler.get(box.getIndex());
         
         clear();
-        GuiBoxY upperBox = new GuiBoxY("upperBox", Align.STRETCH);
+        GuiParent upperBox = new GuiParent("upperBox", GuiFlow.STACK_Y, Align.STRETCH, VAlign.TOP);
         List<String> lines = new ArrayList<>(GuiCreativeIngredientHandler.getNames());
         box = new GuiComboBox("type", new TextListBuilder().add(lines));
         box.select(lines.indexOf(handler.getName()));

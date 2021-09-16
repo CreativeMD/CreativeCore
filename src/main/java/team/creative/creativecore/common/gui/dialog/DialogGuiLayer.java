@@ -5,11 +5,11 @@ import java.util.function.BiConsumer;
 import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
-import team.creative.creativecore.common.gui.controls.parent.GuiBoxX;
-import team.creative.creativecore.common.gui.controls.parent.GuiBoxY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class DialogGuiLayer extends GuiLayer {
     
@@ -20,17 +20,18 @@ public class DialogGuiLayer extends GuiLayer {
         super(name, 200, 200);
         this.buttons = buttons;
         this.onClicked = onClicked;
+        this.align = Align.CENTER;
+        this.valign = VAlign.CENTER;
+        this.flow = GuiFlow.STACK_Y;
     }
     
     @Override
     public void create() {
-        GuiBoxY vBox = new GuiBoxY("v", Align.CENTER, VAlign.CENTER);
-        GuiBoxX hBox = new GuiBoxX("h");
-        vBox.add(new GuiLabel("text").setTitle(new TranslatableComponent("dialog." + name)));
+        add(new GuiLabel("text").setTitle(new TranslatableComponent("dialog." + name)));
+        GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
         for (DialogButton button : buttons)
             hBox.add(new GuiButton(button.name(), x -> closeDialog(button)).setTitle(new TranslatableComponent("dialog.button." + button.name())));
-        vBox.add(hBox);
-        add(vBox);
+        add(hBox);
     }
     
     public void closeDialog(DialogButton button) {
