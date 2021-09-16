@@ -23,6 +23,10 @@ public class GuiRow extends GuiBoxX {
         return this;
     }
     
+    public GuiColumn getCol(int index) {
+        return (GuiColumn) controls.get(index).control;
+    }
+    
     @Override
     @Deprecated
     public GuiChildControl add(GuiControl control) {
