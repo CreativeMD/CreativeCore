@@ -13,7 +13,7 @@ public class GuiConfigSubControl extends GuiBoxX {
     
     public GuiConfigSubControl(String name) {
         super(name);
-        setExpandable();
+        setExpandableX();
     }
     
     public String getName() {
@@ -37,15 +37,5 @@ public class GuiConfigSubControl extends GuiBoxX {
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.TRANSPARENT;
-    }
-    
-    @Override
-    public int getMinWidth() {
-        return 20;
-    }
-    
-    @Override
-    public int getMinHeight() {
-        return 10;
     }
 }
