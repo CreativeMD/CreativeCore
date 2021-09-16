@@ -200,7 +200,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @OnlyIn(value = Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
-                parent.add(new GuiStateButton("data", 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true"));
+                parent.add(new GuiStateButton("data", 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true").setExpandableX());
             }
             
             @Override
@@ -273,13 +273,13 @@ public abstract class ConfigTypeConveration<T> {
                     if (decimal) {
                         CreativeConfig.DecimalRange decRange = key.field.getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null && decRange.slider()) {
-                            parent.add(new GuiSlider("data", 30, 14, decRange.min(), decRange.min(), decRange.max()));
+                            parent.add(new GuiSlider("data", 30, 14, decRange.min(), decRange.min(), decRange.max()).setExpandableX());
                             return;
                         }
                     } else {
                         CreativeConfig.IntRange intRange = key.field.getAnnotation(CreativeConfig.IntRange.class);
                         if (intRange != null && intRange.slider()) {
-                            parent.add(new GuiSteppedSlider("data", 30, 14, intRange.min(), intRange.min(), intRange.max()));
+                            parent.add(new GuiSteppedSlider("data", 30, 14, intRange.min(), intRange.min(), intRange.max()).setExpandableX());
                             return;
                         }
                     }
@@ -443,7 +443,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @OnlyIn(value = Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
-                parent.add(new GuiTextfield("data", 30, 14));
+                parent.add(new GuiTextfield("data", 30, 14).setExpandableX());
             }
             
             @Override
