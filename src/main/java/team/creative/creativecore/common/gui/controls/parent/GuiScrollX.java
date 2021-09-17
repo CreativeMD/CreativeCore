@@ -135,7 +135,7 @@ public class GuiScrollX extends GuiParent {
     public void flowX(int width, int preferred) {
         int x = 0;
         for (GuiChildControl child : controls) {
-            child.setWidth(child.control.getPreferredWidth());
+            child.setWidth(child.getPreferredWidth());
             child.setX(x);
             child.flowX();
             x += child.getWidth() + spacing;

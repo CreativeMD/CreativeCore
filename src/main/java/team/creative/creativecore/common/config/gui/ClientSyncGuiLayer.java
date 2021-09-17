@@ -23,6 +23,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -42,7 +43,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
     public ClientSyncGuiLayer(ICreativeConfigHolder holder) {
         super("client-sync", 300, 200);
         this.root = holder;
-        
+        this.flow = GuiFlow.STACK_Y;
         registerEvent(GuiControlChangedEvent.class, x -> {
             changed = true;
             if (x.control instanceof GuiTreeCheckBox && !((GuiTreeCheckBox) x.control).value)
@@ -91,12 +92,8 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
-        GuiLeftRightBox upperBox = new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
-        if (entry.parent != null)
-            upperBox.addRight(new GuiButton("back", x -> {
-                load(entry.parent);
-            }).setTitle(new TranslatableComponent("gui.back")));
-        add(upperBox);
+        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))))
+                .addRight(new GuiButton("back", x -> load(entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
         this.currentView = entry;
         
         GuiScrollY box = new GuiScrollY().setExpandable();
@@ -117,19 +114,18 @@ public class ClientSyncGuiLayer extends GuiLayer {
             }
         }
         
-        GuiLeftRightBox lowerBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
+        add(new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
             nextAction = 0;
             closeTopLayer();
-        }).setTitle(new TranslatableComponent("gui.cancel"))).addLeft(new GuiButton("config", x -> {
+        }).setTranslate("gui.cancel")).addLeft(new GuiButton("config", x -> {
             nextAction = 1;
             closeTopLayer();
-        }).setTitle(new TranslatableComponent("gui.config"))).addRight(new GuiButton("save", x -> {
+        }).setTranslate("gui.config")).addRight(new GuiButton("save", x -> {
             nextAction = 0;
             force = true;
             save();
             closeTopLayer();
-        }).setTitle(new TranslatableComponent("gui.save")));
-        add(lowerBox);
+        }).setTitle(new TranslatableComponent("gui.save"))));
         reinit();
     }
     

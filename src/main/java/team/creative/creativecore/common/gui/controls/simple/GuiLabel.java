@@ -89,17 +89,17 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public int preferredWidth() {
-        return text.getTotalWidth() + getContentOffset() * 2;
+        return text.getTotalWidth();
     }
     
     @Override
     public int getMinHeight() {
-        return Minecraft.getInstance().font.lineHeight + getContentOffset() * 2;
+        return Minecraft.getInstance().font.lineHeight;
     }
     
     @Override
     public int preferredHeight() {
-        return text.getTotalHeight() + getContentOffset() * 2;
+        return text.getTotalHeight();
     }
     
 }

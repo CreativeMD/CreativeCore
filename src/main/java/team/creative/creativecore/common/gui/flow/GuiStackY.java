@@ -14,7 +14,7 @@ public class GuiStackY extends GuiFlow {
     public int minWidth(List<GuiChildControl> controls, int spacing) {
         int width = 0;
         for (GuiChildControl child : controls)
-            width = Math.max(width, child.control.getMinWidth());
+            width = Math.max(width, child.getMinWidth());
         return width;
     }
     
@@ -22,23 +22,30 @@ public class GuiStackY extends GuiFlow {
     public int preferredWidth(List<GuiChildControl> controls, int spacing) {
         int width = 0;
         for (GuiChildControl child : controls)
-            width = Math.max(width, child.control.getPreferredWidth());
+            width = Math.max(width, child.getPreferredWidth());
         return width;
     }
     
     @Override
     public int minHeight(List<GuiChildControl> controls, int spacing) {
         int height = -spacing;
-        for (GuiChildControl child : controls)
-            height += child.control.getMinHeight() + spacing;
-        return height;
+        boolean has = false;
+        for (GuiChildControl child : controls) {
+            int min = child.getMinHeight();
+            if (min != -1) {
+                height += min;
+                has = true;
+            }
+            height += spacing;
+        }
+        return has ? height : -1;
     }
     
     @Override
     public int preferredHeight(List<GuiChildControl> controls, int spacing) {
         int height = -spacing;
         for (GuiChildControl child : controls)
-            height += child.control.getPreferredHeight() + spacing;
+            height += child.getPreferredHeight() + spacing;
         return height;
     }
     
@@ -48,7 +55,7 @@ public class GuiStackY extends GuiFlow {
         if (align == Align.LEFT && !expandable) {
             for (GuiChildControl child : controls) {
                 child.setX(0);
-                child.setWidth(Math.min(width, child.control.getPreferredWidth()));
+                child.setWidth(Math.min(width, child.getPreferredWidth()));
                 child.flowX();
             }
         } else {
@@ -57,19 +64,19 @@ public class GuiStackY extends GuiFlow {
                     if (child.control.isExpandableX())
                         child.setWidth(width);
                     else
-                        child.setWidth(Math.min(width, child.control.getPreferredWidth()));
+                        child.setWidth(Math.min(width, child.getPreferredWidth()));
                     child.setX(0);
                     child.flowX();
                 }
             } else if (align == Align.RIGHT) {
                 for (GuiChildControl child : controls) {
-                    child.setWidth(Math.min(width, child.control.getPreferredWidth()));
+                    child.setWidth(Math.min(width, child.getPreferredWidth()));
                     child.setX(width - child.getWidth());
                     child.flowX();
                 }
             } else {
                 for (GuiChildControl child : controls) {
-                    child.setWidth(Math.min(width, child.control.getPreferredWidth()));
+                    child.setWidth(Math.min(width, child.getPreferredWidth()));
                     child.setX(width / 2 - child.getWidth() / 2);
                     child.flowX();
                 }
@@ -96,7 +103,7 @@ public class GuiStackY extends GuiFlow {
             } else { // let expandable controls take over the empty area
                 for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
-                    child.setHeight(child.control.getPreferredHeight());
+                    child.setHeight(child.getPreferredHeight());
                     if (!child.control.isExpandableY())
                         itr.mark();
                     available -= child.getHeight();
@@ -115,7 +122,7 @@ public class GuiStackY extends GuiFlow {
             }
         } else { // If there is not enough space
             for (GuiChildControl child : list) { // Make sure min dimensions are used
-                int min = child.control.getMinHeight();
+                int min = child.getMinHeight();
                 if (min != -1) {
                     available -= min;
                     child.setHeight(min);

@@ -489,8 +489,18 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
+    public int getMinWidth() {
+        return flow.minWidth(controls, spacing);
+    }
+    
+    @Override
     protected int preferredWidth() {
         return flow.preferredWidth(controls, spacing);
+    }
+    
+    @Override
+    public int getMinHeight() {
+        return flow.minHeight(controls, spacing);
     }
     
     @Override

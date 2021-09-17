@@ -144,7 +144,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         public int index;
         
         public GuiButtonRemove(int index) {
-            super("x", 14, 13, null);
+            super("x", 6, 8, null);
             setAlign(Align.CENTER);
             setTitle(new TextComponent("x"));
             pressed = (x) -> GuiListBoxBase.this.removeItem(this.index);
