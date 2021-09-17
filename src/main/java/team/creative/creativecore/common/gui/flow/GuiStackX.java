@@ -153,7 +153,7 @@ public class GuiStackX extends GuiFlow {
         } else {
             if (valign == VAlign.STRETCH || expandable) {
                 for (GuiChildControl child : controls) {
-                    if (child.control.isExpandableY())
+                    if (child.control.isExpandableY() || valign == VAlign.STRETCH)
                         child.setHeight(height);
                     else
                         child.setHeight(Math.min(height, child.getPreferredHeight()));
@@ -169,7 +169,7 @@ public class GuiStackX extends GuiFlow {
             } else {
                 for (GuiChildControl child : controls) {
                     child.setHeight(Math.min(height, child.getPreferredHeight()));
-                    child.setY(height / 2 - child.getHeight() / 2);
+                    child.setY((int) Math.ceil(height / 2D - child.getHeight() / 2D));
                     child.flowY();
                 }
             }

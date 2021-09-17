@@ -14,8 +14,12 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.VAlign;
+import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
+import team.creative.creativecore.common.gui.controls.parent.GuiRow;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiCheckBox;
@@ -100,18 +104,24 @@ public class ClientSyncGuiLayer extends GuiLayer {
         add(box);
         
         for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
-            box.add(new GuiTreeCheckBox(key));
+            GuiRow row = new GuiRow();
+            box.add(row);
+            GuiColumn first = new GuiColumn(20);
+            row.addColumn(first);
+            first.valign = VAlign.CENTER;
+            first.align = Align.CENTER;
+            first.add(new GuiTreeCheckBox(key));
             
+            GuiColumn second = (GuiColumn) new GuiColumn().setExpandableX();
+            row.addColumn(second);
             String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
-            if (key.content != null && key.content.get() instanceof ICreativeConfigHolder) {
-                box.add(new GuiButton(caption, x -> {
+            if (key.content != null && key.content.get() instanceof ICreativeConfigHolder)
+                second.add(new GuiButton(caption, x -> {
                     load(key);
                 }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
-            } else {
-                GuiLabel label = new GuiLabel(caption).setTitle(new TextComponent(caption));
-                box.add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
-            }
+            else
+                second.add(new GuiLabel(caption).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         }
         
         add(new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {

@@ -6,6 +6,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
 import team.creative.creativecore.common.gui.controls.parent.GuiRow;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
@@ -26,6 +27,7 @@ public class GuiConfigControl extends GuiRow {
         this.side = side;
         this.setExpandableX();
         GuiColumn text = new GuiColumn(100);
+        text.valign = VAlign.CENTER;
         addColumn(text);
         text.add(new GuiLabel(caption + ":").setTitle(new TextComponent(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         addColumn(main = (GuiColumn) new GuiColumn(200).setExpandableX());

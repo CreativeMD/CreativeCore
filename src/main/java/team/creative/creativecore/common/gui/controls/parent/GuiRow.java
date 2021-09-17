@@ -4,6 +4,7 @@ import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiRow extends GuiParent {
@@ -13,6 +14,7 @@ public class GuiRow extends GuiParent {
         this.spacing = 0;
         setExpandableX();
         align = Align.STRETCH;
+        valign = VAlign.STRETCH;
     }
     
     public GuiRow(GuiColumn... cols) {
