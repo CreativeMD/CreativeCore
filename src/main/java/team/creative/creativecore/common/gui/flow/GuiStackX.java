@@ -108,6 +108,19 @@ public class GuiStackX extends GuiFlow {
                 int average = (int) Math.ceil((double) available / list.remaing());
                 for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
+                    int prefer = child.getPreferredWidth();
+                    available -= child.addWidth(Math.min(average, Math.min(prefer - child.getWidth(), available)));
+                    if (child.isMaxWidth() || prefer <= child.getWidth())
+                        itr.mark();
+                }
+            }
+            
+            list.clear();
+            
+            while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
+                int average = (int) Math.ceil((double) available / list.remaing());
+                for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                    GuiChildControl child = itr.next();
                     available -= child.addWidth(Math.min(average, available));
                     if (child.isMaxWidth())
                         itr.mark();

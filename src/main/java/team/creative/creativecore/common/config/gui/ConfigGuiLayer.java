@@ -87,7 +87,7 @@ public class ConfigGuiLayer extends GuiLayer {
         this.holder = holder;
         
         add(upperBox);
-        GuiScrollY box = new GuiScrollY("box").setExpandable();
+        GuiScrollY box = new GuiScrollY("box", 100, 100).setExpandable();
         add(box);
         
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());

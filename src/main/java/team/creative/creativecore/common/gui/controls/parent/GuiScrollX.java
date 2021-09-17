@@ -127,6 +127,11 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
+    public int getMinWidth() {
+        return 10;
+    }
+    
+    @Override
     public int getMinHeight() {
         return 10;
     }

@@ -134,6 +134,19 @@ public class GuiStackY extends GuiFlow {
                 int average = (int) Math.ceil((double) available / list.remaing());
                 for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
+                    int prefer = child.getPreferredHeight();
+                    available -= child.addHeight(Math.min(average, Math.min(prefer - child.getHeight(), available)));
+                    if (child.isMaxHeight() || prefer <= child.getHeight())
+                        itr.mark();
+                }
+            }
+            
+            list.clear();
+            
+            while (available > 0 && !list.isEmpty()) { // add height to remaining controls until there is no space available or everything is at max
+                int average = (int) Math.ceil((double) available / list.remaing());
+                for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                    GuiChildControl child = itr.next();
                     available -= child.addHeight(Math.min(average, available));
                     if (child.isMaxHeight())
                         itr.mark();

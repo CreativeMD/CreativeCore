@@ -100,7 +100,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
                 .addRight(new GuiButton("back", x -> load(entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
         this.currentView = entry;
         
-        GuiScrollY box = new GuiScrollY().setExpandable();
+        GuiScrollY box = new GuiScrollY("", 100, 100).setExpandable();
         add(box);
         
         for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {

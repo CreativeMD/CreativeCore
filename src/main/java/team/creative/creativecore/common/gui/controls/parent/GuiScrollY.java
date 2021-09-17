@@ -142,6 +142,11 @@ public class GuiScrollY extends GuiParent {
     }
     
     @Override
+    public int getMinHeight() {
+        return 10;
+    }
+    
+    @Override
     public void flowX(int width, int preferred) {
         super.flowX(width - scrollbarWidth, preferred);
     }
@@ -150,7 +155,7 @@ public class GuiScrollY extends GuiParent {
     public void flowY(int height, int preferred) {
         int y = 0;
         for (GuiChildControl child : controls) {
-            child.setHeight(child.control.getPreferredHeight());
+            child.setHeight(child.getPreferredHeight());
             child.setY(y);
             child.flowY();
             y += child.getHeight() + spacing;
