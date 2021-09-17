@@ -123,37 +123,6 @@ public class CompiledText {
         return height;
     }
     
-    public void calculateDimensions() {
-        if (lines == null)
-            return;
-        
-        usedWidth = 0;
-        usedHeight = -lineSpacing;
-        
-        for (CompiledLine line : lines) {
-            switch (alignment) {
-            case LEFT:
-                usedWidth = Math.max(usedWidth, line.width);
-                break;
-            case CENTER:
-                usedWidth = Math.max(usedWidth, maxWidth);
-                break;
-            case RIGHT:
-                usedWidth = Math.max(usedWidth, maxWidth);
-                break;
-            case STRETCH:
-                break;
-            default:
-                break;
-            }
-            int height = line.height + lineSpacing;
-            usedHeight += height;
-            
-            if (usedHeight > maxHeight)
-                break;
-        }
-    }
-    
     public void render(PoseStack stack) {
         if (lines == null)
             return;
@@ -308,7 +277,7 @@ public class CompiledText {
                         String sHead;
                         String sTail;
                         if (charSink.hasLastWord()) {
-                            sHead = text.substring(0, charSink.getLastWord());
+                            sHead = text.substring(0, charSink.getLastWord() + (charSink.requiresSplitChar() ? 1 : 0));
                             sTail = text.substring(charSink.getLastWord() + 1);
                         } else {
                             sHead = text.substring(0, charSink.getPosition());
@@ -336,6 +305,7 @@ public class CompiledText {
         private float maxWidth;
         private int position;
         private int lastWordPos;
+        private boolean requiresSplitChar = false;
         
         public WidthLimitedCharSink(float maxWidth, StringSplitter splitter) {
             this.maxWidth = maxWidth;
@@ -349,8 +319,10 @@ public class CompiledText {
         @Override
         public boolean accept(int pos, Style style, int character) {
             this.maxWidth -= widthProvider.getWidth(character, style);
-            if (character == 32) // Empty
+            if (character == 32 || character == '/') { // Empty
                 this.lastWordPos = position;
+                this.requiresSplitChar = character == '/';
+            }
             if (this.maxWidth >= 0.0F) {
                 this.position = pos + Character.charCount(character);
                 return true;
@@ -360,6 +332,10 @@ public class CompiledText {
         
         public boolean hasLastWord() {
             return lastWordPos > 0;
+        }
+        
+        public boolean requiresSplitChar() {
+            return requiresSplitChar;
         }
         
         public int getLastWord() {
