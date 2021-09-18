@@ -15,10 +15,10 @@ public class GuiColumn extends GuiParent {
     }
     
     @Override
-    public int preferredWidth() {
+    public int getPreferredWidth() {
         if (preferredWidth != 0)
             return preferredWidth;
-        return super.preferredWidth();
+        return super.getPreferredWidth();
     }
     
 }

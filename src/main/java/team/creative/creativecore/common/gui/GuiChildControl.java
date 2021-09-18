@@ -129,11 +129,11 @@ public class GuiChildControl {
     }
     
     public void flowX() {
-        control.flowX(getWidth() - control.getContentOffset() * 2, control.getPreferredWidth());
+        control.flowX(getWidth() - control.getContentOffset() * 2, control.preferredWidth());
     }
     
     public void flowY() {
-        control.flowY(getHeight() - control.getContentOffset() * 2, control.getPreferredHeight());
+        control.flowY(getHeight() - control.getContentOffset() * 2, control.preferredHeight());
     }
     
     public int getBottom() {
