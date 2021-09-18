@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.config.converation;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,6 +48,15 @@ import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.PairList;
 
 public abstract class ConfigTypeConveration<T> {
+    
+    private static final NumberFormat numberFormat = createFormat();
+    
+    private static NumberFormat createFormat() {
+        NumberFormat format = NumberFormat.getInstance();
+        format.setMaximumFractionDigits(Integer.MAX_VALUE);
+        format.setGroupingUsed(true);
+        return format;
+    }
     
     private static HashMap<Class, Supplier> typeCreators = new HashMap<>();
     private static HashMap<Class, ConfigTypeConveration> types = new HashMap<>();
@@ -273,19 +283,19 @@ public abstract class ConfigTypeConveration<T> {
                     if (decimal) {
                         CreativeConfig.DecimalRange decRange = key.field.getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null && decRange.slider()) {
-                            parent.add(new GuiSlider("data", 30, 12, decRange.min(), decRange.min(), decRange.max()).setExpandableX());
+                            parent.add(new GuiSlider("data", decRange.min(), decRange.min(), decRange.max()).setExpandableX());
                             return;
                         }
                     } else {
                         CreativeConfig.IntRange intRange = key.field.getAnnotation(CreativeConfig.IntRange.class);
                         if (intRange != null && intRange.slider()) {
-                            parent.add(new GuiSteppedSlider("data", 30, 12, intRange.min(), intRange.min(), intRange.max()).setExpandableX());
+                            parent.add(new GuiSteppedSlider("data", intRange.min(), intRange.min(), intRange.max()).setExpandableX());
                             return;
                         }
                     }
                 }
                 
-                GuiTextfield textfield = new GuiTextfield("data", 30, 8);
+                GuiTextfield textfield = (GuiTextfield) new GuiTextfield("data", 30, 8).setExpandableX();
                 if (decimal)
                     textfield.setFloatOnly();
                 else
@@ -304,7 +314,7 @@ public abstract class ConfigTypeConveration<T> {
                     GuiSlider button = (GuiSlider) control;
                     button.setValue(value.doubleValue());
                 } else
-                    ((GuiTextfield) control).setText(value.toString());
+                    ((GuiTextfield) control).setText(numberFormat.format(value));
             }
             
             public Number parseDecimal(Class clazz, double decimal) {
