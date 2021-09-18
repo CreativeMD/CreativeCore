@@ -202,7 +202,7 @@ public class GuiTextfield extends GuiFocusControl {
             else
                 this.text = textIn;
             
-            this.setCursorPositionEnd();
+            this.setCursorPositionZero();
             this.setSelectionPos(this.cursorPosition);
             this.onTextChanged(textIn);
         }
