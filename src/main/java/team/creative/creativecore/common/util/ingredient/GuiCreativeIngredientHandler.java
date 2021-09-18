@@ -17,11 +17,11 @@ import team.creative.creativecore.common.config.gui.FullItemDialogGuiLayer;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
 import team.creative.creativecore.common.gui.controls.collection.GuiStackSelector;
-import team.creative.creativecore.common.gui.controls.parent.GuiBoxY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
@@ -179,12 +179,12 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
-                GuiBoxY test = new GuiBoxY("test", 0, 30, Align.STRETCH);
+                gui.flow = GuiFlow.STACK_Y;
+                gui.align = Align.STRETCH;
                 GuiComboBoxMapped<Tag<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<Tag<Block>>().addComponents(BlockTags.getAllTags().getAllTags()
                         .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(BlockTags.getAllTags().getId(x).toString()).build()));
-                test.add(box);
-                test.add(new GuiTextfield("search"));
-                gui.add(test);
+                gui.add(box);
+                gui.add(new GuiTextfield("search"));
                 if (info instanceof CreativeIngredientBlockTag)
                     box.select(((CreativeIngredientBlockTag) info).tag);
             }
@@ -218,12 +218,12 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
-                GuiBoxY test = new GuiBoxY("test", 0, 30, Align.STRETCH);
+                gui.flow = GuiFlow.STACK_Y;
+                gui.align = Align.STRETCH;
                 GuiComboBoxMapped<Tag<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<Tag<Item>>().addComponents(ItemTags.getAllTags().getAllTags()
                         .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(ItemTags.getAllTags().getId(x).toString()).build()));
-                test.add(box);
-                test.add(new GuiTextfield("search"));
-                gui.add(test);
+                gui.add(box);
+                gui.add(new GuiTextfield("search"));
                 if (info instanceof CreativeIngredientItemTag)
                     box.select(((CreativeIngredientItemTag) info).tag);
             }
