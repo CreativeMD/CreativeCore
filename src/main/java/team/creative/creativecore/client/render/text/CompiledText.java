@@ -1,6 +1,5 @@
 package team.creative.creativecore.client.render.text;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,17 +10,13 @@ import com.mojang.blaze3d.vertex.Tesselator;
 
 import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.StringSplitter;
-import net.minecraft.client.StringSplitter.WidthProvider;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.FormattedCharSink;
 import net.minecraft.util.StringDecomposer;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.IAdvancedTextComponent;
@@ -273,12 +268,14 @@ public class CompiledText {
             public Optional<FormattedText> accept(Style style, String text) {
                 charSink.resetPosition();
                 if (!StringDecomposer.iterateFormatted(text, style, charSink)) {
-                    if (force || charSink.hasLastWord()) {
+                    Linebreaker breaker = charSink.lastBreaker();
+                    if (force || breaker != null) {
                         String sHead;
                         String sTail;
-                        if (charSink.hasLastWord()) {
-                            sHead = text.substring(0, charSink.getLastWord() + (charSink.requiresSplitChar() ? 1 : 0));
-                            sTail = text.substring(charSink.getLastWord() + 1);
+                        if (breaker != null) {
+                            int pos = charSink.lastBreakerPos();
+                            sHead = text.substring(0, pos + (breaker.includeChar && breaker.head ? 1 : 0));
+                            sTail = text.substring(pos + (breaker.includeChar && !breaker.head ? 0 : 1));
                         } else {
                             sHead = text.substring(0, charSink.getPosition());
                             sTail = text.substring(charSink.getPosition());
@@ -296,60 +293,6 @@ public class CompiledText {
         }, style).orElse(null);
         
         return new FormattedTextSplit(head, tail);
-    }
-    
-    private static Field widthProviderField = ObfuscationReflectionHelper.findField(StringSplitter.class, "f_92333_");
-    
-    static class WidthLimitedCharSink implements FormattedCharSink {
-        private final StringSplitter.WidthProvider widthProvider;
-        private float maxWidth;
-        private int position;
-        private int lastWordPos;
-        private boolean requiresSplitChar = false;
-        
-        public WidthLimitedCharSink(float maxWidth, StringSplitter splitter) {
-            this.maxWidth = maxWidth;
-            try {
-                this.widthProvider = (WidthProvider) widthProviderField.get(splitter);
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        
-        @Override
-        public boolean accept(int pos, Style style, int character) {
-            this.maxWidth -= widthProvider.getWidth(character, style);
-            if (character == 32 || character == '/') { // Empty
-                this.lastWordPos = position;
-                this.requiresSplitChar = character == '/';
-            }
-            if (this.maxWidth >= 0.0F) {
-                this.position = pos + Character.charCount(character);
-                return true;
-            } else
-                return false;
-        }
-        
-        public boolean hasLastWord() {
-            return lastWordPos > 0;
-        }
-        
-        public boolean requiresSplitChar() {
-            return requiresSplitChar;
-        }
-        
-        public int getLastWord() {
-            return this.lastWordPos;
-        }
-        
-        public int getPosition() {
-            return this.position;
-        }
-        
-        public void resetPosition() {
-            this.position = 0;
-            this.lastWordPos = 0;
-        }
     }
     
     static class FormattedTextSplit {
