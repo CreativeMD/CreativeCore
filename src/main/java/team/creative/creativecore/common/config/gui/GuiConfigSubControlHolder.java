@@ -8,9 +8,6 @@ import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
-import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     
@@ -29,23 +26,14 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
             if (key.requiresRestart)
                 continue;
             Object value = key.get();
-            String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.name + ".name", key.name);
-            String comment = "config." + String.join(".", holder.path()) + "." + key.name + ".comment";
+            
             if (value instanceof ICreativeConfigHolder)
                 continue;
             
-            GuiLabel label = new GuiLabel(caption + ":");
-            
-            GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, Dist.DEDICATED_SERVER);
-            GuiButton resetButton = new GuiButton("r", x -> {
-                config.reset();
-            });
-            
+            String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.name + ".name", key.name);
+            String comment = "config." + String.join(".", holder.path()) + "." + key.name + ".comment";
+            GuiConfigControl config = new GuiConfigControl(null, (ConfigKeyField) key, Dist.DEDICATED_SERVER, caption, comment);
             config.init(null);
-            add(label.setTooltip(new TextBuilder().translateIfCan(comment).build()));
-            add(config);
-            add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
-            config.setResetButton(resetButton);
             
         }
     }

@@ -37,7 +37,8 @@ public class GuiConfigControl extends GuiRow {
         
         this.resetButton = (GuiButton) new GuiButton("r", x -> {
             GuiConfigControl.this.reset();
-            layer.changed = true;
+            if (layer != null)
+                layer.changed = true;
         }).setTitle(new TextComponent("r")).setAlign(Align.CENTER);
         end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
     }
