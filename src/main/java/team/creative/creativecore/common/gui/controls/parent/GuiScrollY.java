@@ -78,7 +78,7 @@ public class GuiScrollY extends GuiParent {
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (button == 0 && rect.getHeight() - y <= scrollbarWidth && needsScrollbar(rect)) {
+        if (button == 0 && rect.getWidth() - x <= scrollbarWidth && needsScrollbar(rect)) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             dragged = true;
             return true;
