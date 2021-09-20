@@ -54,7 +54,7 @@ public abstract class ConfigTypeConveration<T> {
     private static NumberFormat createFormat() {
         NumberFormat format = NumberFormat.getInstance();
         format.setMaximumFractionDigits(Integer.MAX_VALUE);
-        format.setGroupingUsed(true);
+        format.setGroupingUsed(false);
         return format;
     }
     
