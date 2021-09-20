@@ -252,6 +252,7 @@ public class GuiTextfield extends GuiFocusControl {
             this.deleteWords(p_212950_1_);
         else
             this.deleteFromCursor(p_212950_1_);
+        onTextChanged(text);
     }
     
     public void deleteWords(int num) {
