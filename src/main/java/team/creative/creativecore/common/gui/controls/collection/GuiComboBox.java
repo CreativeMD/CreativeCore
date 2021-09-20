@@ -106,6 +106,7 @@ public class GuiComboBox extends GuiLabel {
         
         child.setWidth((int) rect.getWidth());
         child.flowX();
+        child.setHeight(child.getPreferredHeight());
         child.flowY();
         
         if (child.getY() + child.getHeight() > layer.getHeight() && rect.minY >= child.getHeight())
