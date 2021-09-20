@@ -84,6 +84,11 @@ public interface IGuiIntegratedParent extends IGuiParent {
     public void closeLayer(int layer);
     
     @Override
+    public default boolean isParent(IGuiParent parent) {
+        return parent == this;
+    }
+    
+    @Override
     public default boolean hasGui() {
         return true;
     }

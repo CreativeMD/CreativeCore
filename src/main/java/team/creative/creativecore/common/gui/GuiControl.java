@@ -110,6 +110,12 @@ public abstract class GuiControl {
         this.parent = parent;
     }
     
+    public boolean isParent(IGuiParent parent) {
+        if (this.parent == parent)
+            return true;
+        return this.parent.isParent(parent);
+    }
+    
     public IGuiParent getParent() {
         return parent;
     }

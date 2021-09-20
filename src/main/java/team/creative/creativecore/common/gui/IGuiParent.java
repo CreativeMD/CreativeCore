@@ -22,4 +22,6 @@ public interface IGuiParent {
     
     public boolean hasGui();
     
+    public boolean isParent(IGuiParent parent);
+    
 }
