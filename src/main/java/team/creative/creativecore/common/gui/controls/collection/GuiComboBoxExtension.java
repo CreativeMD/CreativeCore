@@ -9,7 +9,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxExtension.GuiComboBoxEntry;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
@@ -31,7 +30,7 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
     
     @Override
     public void looseFocus() {
-        comboBox.closeBox();
+        comboBox.extensionLostFocus = true;
     }
     
     public class GuiComboBoxEntry extends GuiLabel {
@@ -43,7 +42,7 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
             super(name);
             this.index = index;
             this.selected = selected;
-            this.text.alignment = Align.CENTER;
+            this.setExpandableX();
         }
         
         public GuiComboBoxEntry set(CompiledText text) {

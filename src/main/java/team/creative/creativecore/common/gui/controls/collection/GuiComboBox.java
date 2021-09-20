@@ -2,28 +2,29 @@ package team.creative.creativecore.common.gui.controls.collection;
 
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.render.text.CompiledText;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
-import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.ITextCollection;
 
 public class GuiComboBox extends GuiLabel {
     
-    protected boolean autosize;
-    public int color = ColorUtils.WHITE;
     protected GuiComboBoxExtension extension;
     public CompiledText[] lines;
     private int index;
+    public boolean extensionLostFocus;
     
     public GuiComboBox(String name, ITextCollection builder) {
         super(name);
         lines = builder.build();
         if (index >= lines.length)
             index = 0;
+        for (int i = 0; i < lines.length; i++)
+            lines[i].alignment = Align.CENTER;
         updateDisplay();
     }
     
@@ -122,5 +123,11 @@ public class GuiComboBox extends GuiLabel {
             getLayer().remove(extension);
             extension = null;
         }
+    }
+    
+    @Override
+    public void looseFocus() {
+        if (extensionLostFocus && extension != null)
+            closeBox();
     }
 }
