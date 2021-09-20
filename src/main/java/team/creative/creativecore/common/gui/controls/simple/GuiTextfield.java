@@ -330,7 +330,7 @@ public class GuiTextfield extends GuiFocusControl {
         if (!this.shift)
             this.setSelectionPos(this.cursorPosition);
         
-        this.onTextChanged(this.text);
+        //this.onTextChanged(this.text);
     }
     
     public void clampCursorPosition(int pos) {
