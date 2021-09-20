@@ -12,7 +12,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 
 import net.minecraft.SharedConstants;
@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -457,24 +458,26 @@ public class GuiTextfield extends GuiFocusControl {
             endY = j;
         }
         
-        if (endX > control.getX() + control.getWidth())
-            endX = control.getX() + control.getWidth();
+        if (endX > control.rect.maxX)
+            endX = (int) control.rect.maxX;
         
-        if (startX > control.getX() + control.getWidth())
-            startX = control.getX() + control.getWidth();
+        if (startX > control.rect.maxX)
+            startX = (int) control.rect.maxX;
         
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
         RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION);
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
         bufferbuilder.vertex(matrix, startX, endY, 0).endVertex();
         bufferbuilder.vertex(matrix, endX, endY, 0).endVertex();
         bufferbuilder.vertex(matrix, endX, startY, 0).endVertex();
         bufferbuilder.vertex(matrix, startX, startY, 0).endVertex();
-        tessellator.end();
+        tesselator.end();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableColorLogicOp();
         RenderSystem.enableTexture();
     }
