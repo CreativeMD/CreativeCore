@@ -60,7 +60,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         List<GuiConfigSubControl> controls = new ArrayList<>(length);
         for (int i = 0; i < length; i++) {
             Object entry = Array.get(value, i);
-            GuiConfigSubControl control = (GuiConfigSubControl) new GuiConfigSubControl("" + i).setExpandable();
+            GuiConfigSubControl control = new GuiConfigSubControl("" + i);
             converation.createControls(control, null, clazz);
             converation.loadValue(entry, control, null);
             controls.add(control);
