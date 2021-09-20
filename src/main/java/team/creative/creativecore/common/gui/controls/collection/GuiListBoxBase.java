@@ -88,8 +88,10 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     public void reflowInternal() {
-        super.flowX(cachedWidth, preferredWidth());
-        super.flowY(cachedHeight, preferredHeight());
+        if (hasGui()) {
+            super.flowX(cachedWidth, preferredWidth());
+            super.flowY(cachedHeight, preferredHeight());
+        }
     }
     
     public void removeItem(int index) {
