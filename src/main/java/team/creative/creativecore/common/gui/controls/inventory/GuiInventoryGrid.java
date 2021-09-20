@@ -32,14 +32,27 @@ public class GuiInventoryGrid extends GuiParent {
         this.rows = rows;
         this.container = container;
         int size = Math.min(container.getContainerSize(), cols * rows);
-        for (int i = 0; i < size; i++)
-            add(new GuiSlot(container, i));
+        for (int i = 0; i < size; i++) {
+            GuiChildControl child = super.add(new GuiSlot(container, i));
+            child.rect.maxX = GuiSlotBase.SLOT_SIZE;
+            child.rect.maxY = GuiSlotBase.SLOT_SIZE;
+        }
     }
     
     @Override
     @Deprecated
     public GuiChildControl add(GuiControl control) {
         throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    public int getMinWidth() {
+        return hasFixedSize ? cols * GuiSlotBase.SLOT_SIZE : GuiSlotBase.SLOT_SIZE;
+    }
+    
+    @Override
+    public int getMinHeight() {
+        return hasFixedSize ? rows * GuiSlotBase.SLOT_SIZE : GuiSlotBase.SLOT_SIZE;
     }
     
     @Override
