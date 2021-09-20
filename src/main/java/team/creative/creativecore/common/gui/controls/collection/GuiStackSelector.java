@@ -192,7 +192,7 @@ public class GuiStackSelector extends GuiLabel {
                             collect((IItemHandler) result.cast(), tempStacks);
                     }
                 
-                stacks.add("selector.inventory", tempStacks);
+                stacks.add("collector.inventory", tempStacks);
             }
             
             return stacks;
@@ -235,7 +235,7 @@ public class GuiStackSelector extends GuiLabel {
                 if (!stack.isEmpty() && selector.allow(stack))
                     newStacks.add(stack);
             }
-            stacks.add("selector.all", newStacks);
+            stacks.add("collector.all", newStacks);
             
             return stacks;
         }
