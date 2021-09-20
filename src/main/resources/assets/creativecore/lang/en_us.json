@@ -2,5 +2,13 @@
 	"gui.client-config": "Client Config",
 	"gui.config": "Config",
 	"gui.save": "Save",
-	"gui.add": "Add"
+	"gui.add": "Add",
+	"dialog.savechanges": "Do you want to save your changes?",
+	"dialog.button.OK": "Okay",
+    "dialog.button.YES": "Yes",
+    "dialog.button.NO": "No",
+    "dialog.button.MAYBE": "Maybe",
+    "dialog.button.CANCEL": "Cancel",
+    "dialog.button.ABORT": "Abort",
+    "dialog.button.CONFIRM": "Confirm"
 }
