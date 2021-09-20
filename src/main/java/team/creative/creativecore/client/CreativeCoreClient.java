@@ -11,6 +11,8 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -21,6 +23,7 @@ import team.creative.creativecore.client.test.GuiTest;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
@@ -100,5 +103,11 @@ public class CreativeCoreClient {
             event.setCanceled(true);
             mc.gui.getChat().addRecentChat(message);
         }
+    }
+    
+    @SubscribeEvent
+    public static void clientTick(ClientTickEvent event) {
+        if (event.phase == Phase.START && Minecraft.getInstance().screen instanceof IScaleableGuiScreen)
+            ((IScaleableGuiScreen) Minecraft.getInstance().screen).clientTick();
     }
 }

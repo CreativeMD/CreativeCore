@@ -17,6 +17,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
@@ -42,6 +43,7 @@ public class GuiStackSelector extends GuiLabel {
         this.collector = collector;
         updateCollectedStacks();
         selectFirst();
+        setAlign(Align.CENTER);
     }
     
     public GuiStackSelector(String name, int width, Player player, StackCollector collector, boolean searchBar) {
@@ -51,6 +53,7 @@ public class GuiStackSelector extends GuiLabel {
         this.collector = collector;
         updateCollectedStacks();
         selectFirst();
+        setAlign(Align.CENTER);
     }
     
     public GuiStackSelector(String name, int width, Player player, StackCollector collector) {
@@ -99,7 +102,7 @@ public class GuiStackSelector extends GuiLabel {
     protected ItemStack selected = ItemStack.EMPTY;
     
     public boolean setSelectedForce(ItemStack stack) {
-        setTitle(new TextBuilder().stack(stack).add(stack.getDisplayName()).build());
+        setTitle(new TextBuilder().stack(stack).add(stack.getHoverName()).build());
         this.selected = stack;
         raiseEvent(new GuiControlChangedEvent(this));
         return true;
@@ -107,7 +110,7 @@ public class GuiStackSelector extends GuiLabel {
     
     public boolean setSelected(ItemStack stack) {
         if (stacks.contains(stack)) {
-            setTitle(new TextBuilder().stack(stack).add(stack.getDisplayName()).build());
+            setTitle(new TextBuilder().stack(stack).add(stack.getHoverName()).build());
             this.selected = stack;
             raiseEvent(new GuiControlChangedEvent(this));
             return true;
@@ -130,6 +133,11 @@ public class GuiStackSelector extends GuiLabel {
         extension.init();
         child.setX((int) rect.minX);
         child.setY((int) rect.maxY);
+        
+        child.setWidth((int) rect.getWidth());
+        child.flowX();
+        child.setHeight(child.getPreferredHeight());
+        child.flowY();
         
         if (child.getY() + child.getHeight() > layer.getHeight() && rect.minY >= child.getHeight())
             child.setY(child.getY() - (int) rect.getHeight() + child.getHeight());

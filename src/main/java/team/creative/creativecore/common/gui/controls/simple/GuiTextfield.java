@@ -38,7 +38,7 @@ public class GuiTextfield extends GuiFocusControl {
     
     private String text = "";
     private int maxStringLength = 128;
-    private int cursorCounter;
+    private int frame;
     private boolean shift;
     private int lineScrollOffset;
     private int cursorPosition;
@@ -139,7 +139,7 @@ public class GuiTextfield extends GuiFocusControl {
     
     @Override
     public void tick() {
-        ++this.cursorCounter;
+        ++this.frame;
     }
     
     @Override
@@ -157,41 +157,41 @@ public class GuiTextfield extends GuiFocusControl {
         int color = enabled ? style.fontColor.toInt() : style.fontColorDisabled.toInt();
         String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
         boolean flag = j >= 0 && j <= s.length();
-        boolean flag1 = this.isFocused() && this.cursorCounter / 6 % 2 == 0 && flag;
-        int i1 = 0;
-        int j1 = 0;
-        //if (k > s.length())
-        //k = s.length();
+        boolean flag1 = this.isFocused() && this.frame / 6 % 2 == 0 && flag;
+        int yOffset = 0;
+        int xOffset = 0;
+        if (k > s.length())
+            k = s.length();
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            j1 = fontRenderer.draw(matrix, this.textFormatter.apply(s1, this.lineScrollOffset), 0, i1, color);
+            xOffset = fontRenderer.draw(matrix, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
         }
         
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
-        int k1 = j1;
-        if (!flag) {
+        int k1 = xOffset;
+        if (!flag)
             k1 = j > 0 ? control.getWidth() : 0;
-        } else if (flag2) {
-            k1 = j1 - 1;
-            --j1;
+        else if (flag2) {
+            k1 = xOffset - 1;
+            --xOffset;
         }
         
         if (!s.isEmpty() && flag && j < s.length())
-            fontRenderer.draw(matrix, this.textFormatter.apply(s.substring(j), this.cursorPosition), j1, i1, color);
+            fontRenderer.draw(matrix, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
         
         if (!flag2 && this.suggestion != null)
-            fontRenderer.drawShadow(matrix, this.suggestion, k1 - 1, i1, -8355712);
+            fontRenderer.drawShadow(matrix, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
             if (flag2)
-                GuiComponent.fill(matrix, k1, i1 - 1, k1 + 1, i1 + 1 + 9, -3092272);
+                GuiComponent.fill(matrix, k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
             else
-                fontRenderer.drawShadow(matrix, "_", k1, i1, color);
+                fontRenderer.drawShadow(matrix, "_", k1, yOffset, color);
             
         if (k != j) {
             int l1 = fontRenderer.width(s.substring(0, k));
-            this.drawSelectionBox(control, matrix.last().pose(), k1, i1 - 1, l1 - 1, i1 + 1 + 9);
+            this.drawSelectionBox(control, matrix.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
     }
     
@@ -436,6 +436,7 @@ public class GuiTextfield extends GuiFocusControl {
             int i = Mth.floor(mouseX);
             Font fontRenderer = GuiRenderHelper.getFont();
             String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
+            this.shift = Screen.hasShiftDown();
             this.setCursorPosition(fontRenderer.plainSubstrByWidth(s, i).length() + this.lineScrollOffset);
             return true;
         }
@@ -497,7 +498,7 @@ public class GuiTextfield extends GuiFocusControl {
     @Override
     protected void focusChanged() {
         if (isFocused())
-            this.cursorCounter = 0;
+            this.frame = 0;
     }
     
     @Override

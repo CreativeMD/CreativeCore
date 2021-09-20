@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.controls.inventory.GuiInventoryGrid;
-import team.creative.creativecore.common.gui.controls.inventory.GuiSlotViewer;
+import team.creative.creativecore.common.gui.controls.inventory.GuiSlot;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
@@ -33,8 +33,8 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         });
         registerEventClick((event) -> {
-            if (event.control instanceof GuiSlotViewer && event.control.getParent() == this) {
-                comboBox.setSelected(((GuiSlotViewer) event.control).stack);
+            if (event.control instanceof GuiSlot && event.control.isParent(this)) {
+                comboBox.setSelected(((GuiSlot) event.control).getStack());
                 playSound(SoundEvents.UI_BUTTON_CLICK);
                 comboBox.closeBox();
             }
@@ -90,10 +90,13 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         }
         
+        GuiTextfield textfield = (GuiTextfield) get("searchBar");
+        
         clear();
         
         if (comboBox.searchBar) {
-            GuiTextfield textfield = new GuiTextfield("searchBar", search == null ? "" : search);
+            if (textfield == null)
+                textfield = new GuiTextfield("searchBar", search == null ? "" : search);
             add(textfield);
             textfield.focus();
         }
@@ -109,8 +112,8 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
             add(new GuiInventoryGrid(entry.getKey(), container));
         }
-        if (getParent() != null)
-            reflow();
+        if (hasGui())
+            reflowInternal();
     }
     
 }

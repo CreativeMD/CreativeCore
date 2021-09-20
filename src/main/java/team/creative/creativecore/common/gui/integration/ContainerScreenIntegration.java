@@ -28,6 +28,12 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
+    public void clientTick() {
+        for (GuiLayer layer : getMenu().getLayers())
+            layer.tick();
+    }
+    
+    @Override
     public int getWidth() {
         int width = 0;
         for (GuiLayer layer : getMenu().getLayers())

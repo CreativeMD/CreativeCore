@@ -13,4 +13,6 @@ public interface IScaleableGuiScreen {
         return scaleFactor;
     }
     
+    public void clientTick();
+    
 }
