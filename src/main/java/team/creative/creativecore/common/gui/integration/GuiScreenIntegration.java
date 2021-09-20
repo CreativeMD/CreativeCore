@@ -50,7 +50,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     }
     
     @Override
-    public void tick() {
+    public void clientTick() {
         for (GuiLayer layer : layers)
             layer.tick();
     }

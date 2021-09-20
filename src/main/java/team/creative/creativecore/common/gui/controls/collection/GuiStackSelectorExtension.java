@@ -45,13 +45,9 @@ public class GuiStackSelectorExtension extends GuiScrollY {
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        super.mouseClicked(rect, x, y, button);
+        if (super.mouseClicked(rect, x, y, button))
+            comboBox.extensionLostFocus = false;
         return true;
-    }
-    
-    @Override
-    public void looseFocus() {
-        comboBox.closeBox();
     }
     
     @Override
@@ -114,6 +110,11 @@ public class GuiStackSelectorExtension extends GuiScrollY {
         }
         if (hasGui())
             reflowInternal();
+    }
+    
+    @Override
+    public void looseFocus() {
+        comboBox.extensionLostFocus = true;
     }
     
 }

@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.config.gui.FullItemDialogGuiLayer;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
 import team.creative.creativecore.common.gui.controls.collection.GuiStackSelector;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
@@ -73,8 +73,9 @@ public abstract class GuiCreativeIngredientHandler {
         defaultHandler = new GuiCreativeIngredientHandler() {
             
             @Override
-            public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
-                GuiStackSelector selector = new GuiStackSelector("inv", null, new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector()));
+            public void createControls(GuiParent gui, CreativeIngredient info) {
+                GuiStackSelector selector = (GuiStackSelector) new GuiStackSelector("inv", null, new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector()))
+                        .setExpandableX();
                 gui.add(selector);
                 
                 gui.add(new GuiLabel("guilabel1"));
@@ -103,7 +104,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
-            public CreativeIngredient parseInfo(FullItemDialogGuiLayer gui) {
+            public CreativeIngredient parseControls(GuiParent gui) {
                 ItemStack stack = ((GuiStackSelector) gui.get("inv")).getSelected();
                 if (stack != null) {
                     boolean damage = ((GuiStateButton) gui.get("damage")).getState() == 1;
@@ -121,7 +122,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
-            public void onChanged(FullItemDialogGuiLayer gui, GuiControlChangedEvent event) {
+            public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("inv")) {
                     GuiStackSelector selector = (GuiStackSelector) event.control;
                     if (selector != null) {
@@ -142,7 +143,7 @@ public abstract class GuiCreativeIngredientHandler {
         registerGuiInfoHandler("Material", new GuiCreativeIngredientHandler() {
             
             @Override
-            public CreativeIngredient parseInfo(FullItemDialogGuiLayer gui) {
+            public CreativeIngredient parseControls(GuiParent gui) {
                 ItemStack blockStack = ((GuiStackSelector) gui.get("inv")).getSelected();
                 if (blockStack != null) {
                     Block block = Block.byItem(blockStack.getItem());
@@ -153,8 +154,9 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
-            public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
+            public void createControls(GuiParent gui, CreativeIngredient info) {
                 GuiStackSelector selector = new GuiStackSelector("inv", null, new GuiStackSelector.CreativeCollector(new GuiStackSelector.GuiBlockSelector()));
+                selector.setExpandableX();
                 gui.add(selector);
                 if (info instanceof CreativeIngredientMaterial)
                     selector.setSelectedForce(info.getExample());
@@ -169,7 +171,7 @@ public abstract class GuiCreativeIngredientHandler {
         registerGuiInfoHandler("Blocktag", new GuiCreativeIngredientHandler() {
             
             @Override
-            public CreativeIngredient parseInfo(FullItemDialogGuiLayer gui) {
+            public CreativeIngredient parseControls(GuiParent gui) {
                 GuiComboBoxMapped<Tag<Block>> box = (GuiComboBoxMapped<Tag<Block>>) gui.get("tag");
                 Tag<Block> tag = box.getSelected();
                 if (tag != null)
@@ -178,11 +180,16 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
-            public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
+            public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<Tag<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<Tag<Block>>().addComponents(BlockTags.getAllTags().getAllTags()
-                        .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(BlockTags.getAllTags().getId(x).toString()).build()));
+                GuiComboBoxMapped<Tag<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<Tag<Block>>()
+                        .addComponents(BlockTags.getAllTags().getAllTags().values(), x -> {
+                            TextBuilder builder = new TextBuilder();
+                            if (x.getValues().size() > 0)
+                                builder.stack(new ItemStack(x.getValues().get(0)));
+                            return builder.text(BlockTags.getAllTags().getId(x).toString()).build();
+                        }));
                 gui.add(box);
                 gui.add(new GuiTextfield("search"));
                 if (info instanceof CreativeIngredientBlockTag)
@@ -195,7 +202,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
-            public void onChanged(FullItemDialogGuiLayer gui, GuiControlChangedEvent event) {
+            public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<Tag<Block>> box = (GuiComboBoxMapped<Tag<Block>>) gui.get("tag");
                     box.setLines(new TextMapBuilder<Tag<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
@@ -208,7 +215,7 @@ public abstract class GuiCreativeIngredientHandler {
         registerGuiInfoHandler("Itemtag", new GuiCreativeIngredientHandler() {
             
             @Override
-            public CreativeIngredient parseInfo(FullItemDialogGuiLayer gui) {
+            public CreativeIngredient parseControls(GuiParent gui) {
                 GuiComboBoxMapped<Tag<Item>> box = (GuiComboBoxMapped<Tag<Item>>) gui.get("tag");
                 Tag<Item> tag = box.getSelected();
                 if (tag != null)
@@ -217,7 +224,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
-            public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
+            public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
                 GuiComboBoxMapped<Tag<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<Tag<Item>>().addComponents(ItemTags.getAllTags().getAllTags()
@@ -234,7 +241,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
-            public void onChanged(FullItemDialogGuiLayer gui, GuiControlChangedEvent event) {
+            public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<Tag<Item>> box = (GuiComboBoxMapped<Tag<Item>>) gui.get("tag");
                     box.setLines(new TextMapBuilder<Tag<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
@@ -247,12 +254,12 @@ public abstract class GuiCreativeIngredientHandler {
         registerGuiInfoHandler("Fuel", new GuiCreativeIngredientHandler() {
             
             @Override
-            public CreativeIngredient parseInfo(FullItemDialogGuiLayer gui) {
+            public CreativeIngredient parseControls(GuiParent gui) {
                 return new CreativeIngredientFuel();
             }
             
             @Override
-            public void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info) {
+            public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.add(new GuiLabel("info").setTitle(new TextComponent("Nothing to select")));
             }
             
@@ -271,10 +278,10 @@ public abstract class GuiCreativeIngredientHandler {
     
     public abstract boolean canHandle(CreativeIngredient info);
     
-    public abstract void createControls(FullItemDialogGuiLayer gui, CreativeIngredient info);
+    public abstract void createControls(GuiParent gui, CreativeIngredient info);
     
-    public abstract CreativeIngredient parseInfo(FullItemDialogGuiLayer gui);
+    public abstract CreativeIngredient parseControls(GuiParent gui);
     
-    public void onChanged(FullItemDialogGuiLayer gui, GuiControlChangedEvent event) {}
+    public void onChanged(GuiParent gui, GuiControlChangedEvent event) {}
     
 }

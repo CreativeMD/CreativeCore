@@ -32,6 +32,7 @@ public class GuiStackSelector extends GuiLabel {
     protected GuiStackSelectorExtension extension;
     public StackCollector collector;
     protected HashMapList<String, ItemStack> stacks;
+    public boolean extensionLostFocus;
     
     public Player player;
     public boolean searchBar;
@@ -156,6 +157,12 @@ public class GuiStackSelector extends GuiLabel {
     
     public boolean select(String line) {
         return false;
+    }
+    
+    @Override
+    public void looseFocus() {
+        if (extensionLostFocus && extension != null)
+            closeBox();
     }
     
     public static abstract class StackCollector {

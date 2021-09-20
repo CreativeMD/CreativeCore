@@ -10,10 +10,10 @@ public class GuiLeftRightBox extends GuiRow {
     
     public GuiLeftRightBox() {
         this.left = (GuiColumn) new GuiColumn().setExpandableX();
-        addColumn(left);
+        super.addColumn(left);
         this.right = new GuiColumn();
         this.right.align = Align.RIGHT;
-        addColumn(right);
+        super.addColumn(right);
         setExpandableX();
     }
     
@@ -25,6 +25,12 @@ public class GuiLeftRightBox extends GuiRow {
     public GuiLeftRightBox addRight(GuiControl control) {
         right.add(control);
         return this;
+    }
+    
+    @Override
+    @Deprecated
+    public GuiRow addColumn(GuiColumn col) {
+        throw new UnsupportedOperationException();
     }
     
 }

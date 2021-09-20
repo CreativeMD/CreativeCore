@@ -23,6 +23,12 @@ public class TextBuilder {
         
     }
     
+    public TextBuilder add(List<Component> components) {
+        for (Component component : components)
+            add(component);
+        return this;
+    }
+    
     public TextBuilder add(Component component) {
         if (components.isEmpty())
             components.add(component);

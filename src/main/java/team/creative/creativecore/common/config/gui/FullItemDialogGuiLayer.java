@@ -7,18 +7,14 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
+import team.creative.creativecore.common.gui.controls.parent.GuiTopBottomBox;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
-import team.creative.creativecore.common.util.math.geo.Rect;
-import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 
 public class FullItemDialogGuiLayer extends GuiLayer {
@@ -29,6 +25,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
     
     public FullItemDialogGuiLayer() {
         super("info", 250, 230);
+        this.flow = GuiFlow.STACK_Y;
         registerEventChanged(x -> {
             if (x.control.is("type")) {
                 init();
@@ -51,33 +48,29 @@ public class FullItemDialogGuiLayer extends GuiLayer {
             handler = GuiCreativeIngredientHandler.get(box.getIndex());
         
         clear();
-        GuiParent upperBox = new GuiParent("upperBox", GuiFlow.STACK_Y, Align.STRETCH, VAlign.TOP);
+        
+        GuiTopBottomBox topBottom = new GuiTopBottomBox();
+        add(topBottom);
         List<String> lines = new ArrayList<>(GuiCreativeIngredientHandler.getNames());
         box = new GuiComboBox("type", new TextListBuilder().add(lines));
+        box.setExpandableX();
         box.select(lines.indexOf(handler.getName()));
-        upperBox.add(box);
-        add(upperBox);
-        handler.createControls(this, info);
+        topBottom.addTop(box);
         
-        GuiScrollY scroll = new GuiScrollY("latest").setExpandable();
+        handler.createControls(topBottom.top, info);
+        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest", 100, 80).setExpandableX();
         for (int i = 0; i < latest.size(); i++) {
-            GuiLabel label = (GuiLabel) new GuiLabel("" + i, 18, 18) {
-                
-                @Override
-                public boolean mouseClicked(Rect rect, double x, double y, int button) {
-                    FullItemDialogGuiLayer.this.button.set(latest.get(Integer.parseInt(name)));
-                    closeTopLayer();
-                    playSound(SoundEvents.UI_BUTTON_CLICK);
-                    return true;
-                }
-            }.setTitle(new TextBuilder().stack(latest.get(i).getExample()).build()).setTooltip(GuiInfoStackButton.getLabelText(latest.get(i)));
-            scroll.add(label);
+            scroll.add(new GuiButton("" + i, x -> {
+                FullItemDialogGuiLayer.this.button.set(latest.get(Integer.parseInt(name)));
+                closeTopLayer();
+                playSound(SoundEvents.UI_BUTTON_CLICK);
+            }).setTitle(GuiInfoStackButton.getLabelText(latest.get(i))).setAlign(Align.CENTER).setExpandableX());
         }
-        add(scroll);
+        topBottom.addBottom(scroll);
         
-        GuiLeftRightBox actionBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", 0, 130, x -> closeTopLayer()).setTitle(new TranslatableComponent("gui.cancel")))
-                .addRight(new GuiButton("save", 100, 130, x -> {
-                    CreativeIngredient parsedInfo = handler.parseInfo(FullItemDialogGuiLayer.this);
+        GuiLeftRightBox actionBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> closeTopLayer()).setTitle(new TranslatableComponent("gui.cancel")))
+                .addRight(new GuiButton("save", x -> {
+                    CreativeIngredient parsedInfo = handler.parseControls(topBottom.top);
                     if (parsedInfo != null) {
                         FullItemDialogGuiLayer.this.button.set(parsedInfo);
                         if (!latest.contains(parsedInfo))
@@ -85,7 +78,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
                         closeTopLayer();
                     }
                 }).setTitle(new TranslatableComponent("gui.save")));
-        add(actionBox);
+        topBottom.addBottom(actionBox);
     }
     
 }

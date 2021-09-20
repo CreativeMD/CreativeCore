@@ -24,13 +24,27 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
         this.comboBox = comboBox;
         List<GuiComboBoxEntry> entries = new ArrayList<>();
         for (int i = 0; i < comboBox.lines.length; i++)
-            entries.add(new GuiComboBoxEntry("" + i, i, i == comboBox.getIndex()).set(comboBox.lines[i]));
+            entries.add(new GuiComboBoxEntry("" + i, i, i == comboBox.getIndex()).set(comboBox.lines[i].copy()));
         addAllItems(entries);
     }
     
     @Override
     public void looseFocus() {
         comboBox.extensionLostFocus = true;
+    }
+    
+    @Override
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+        if (super.mouseClicked(rect, x, y, button)) {
+            comboBox.extensionLostFocus = false;
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    public int getMaxHeight() {
+        return 100;
     }
     
     public class GuiComboBoxEntry extends GuiLabel {
