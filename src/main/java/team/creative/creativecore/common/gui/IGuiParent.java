@@ -20,4 +20,6 @@ public interface IGuiParent {
     
     public void reflow();
     
+    public boolean hasGui();
+    
 }

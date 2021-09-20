@@ -100,6 +100,12 @@ public abstract class GuiControl {
         return this;
     }
     
+    public boolean hasGui() {
+        if (parent != null)
+            return parent.hasGui();
+        return false;
+    }
+    
     public void setParent(IGuiParent parent) {
         this.parent = parent;
     }

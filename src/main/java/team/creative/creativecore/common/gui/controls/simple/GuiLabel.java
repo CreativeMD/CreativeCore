@@ -39,14 +39,14 @@ public class GuiLabel extends GuiControl {
     
     public GuiLabel setTitle(Component component) {
         text.setText(component);
-        if (getParent() != null)
+        if (hasGui())
             reflow();
         return this;
     }
     
     public GuiLabel setTitle(List<Component> components) {
         text.setText(components);
-        if (getParent() != null)
+        if (hasGui())
             reflow();
         return this;
     }
