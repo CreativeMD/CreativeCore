@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
@@ -67,6 +68,7 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
         public boolean mouseClicked(Rect rect, double x, double y, int button) {
             comboBox.select(index);
             comboBox.closeBox();
+            playSound(SoundEvents.UI_BUTTON_CLICK);
             return true;
         }
         
