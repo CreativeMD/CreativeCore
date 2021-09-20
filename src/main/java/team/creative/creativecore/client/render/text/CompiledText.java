@@ -340,6 +340,19 @@ public class CompiledText {
         return width;
     }
     
+    public CompiledText copy() {
+        CompiledText copy = new CompiledText(maxWidth, maxHeight);
+        copy.alignment = alignment;
+        copy.lineSpacing = lineSpacing;
+        copy.shadow = shadow;
+        List<Component> components = new ArrayList<>();
+        for (Component component : original) {
+            components.add(component.copy());
+        }
+        copy.setText(components);
+        return copy;
+    }
+    
     public static CompiledText createAnySize() {
         return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
