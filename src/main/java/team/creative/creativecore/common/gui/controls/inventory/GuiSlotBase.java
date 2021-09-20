@@ -58,6 +58,11 @@ public abstract class GuiSlotBase extends GuiControl {
     }
     
     @Override
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+        return true;
+    }
+    
+    @Override
     public void flowX(int width, int preferred) {}
     
     @Override
