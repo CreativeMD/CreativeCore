@@ -17,7 +17,7 @@ public class DialogGuiLayer extends GuiLayer {
     public BiConsumer<DialogGuiLayer, DialogButton> onClicked;
     
     public DialogGuiLayer(String name, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
-        super(name, 200, 200);
+        super(name);
         this.buttons = buttons;
         this.onClicked = onClicked;
         this.align = Align.CENTER;

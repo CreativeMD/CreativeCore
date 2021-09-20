@@ -14,6 +14,12 @@ public abstract class GuiLayer extends GuiParent {
     public final GuiStyle style;
     public final Rect rect;
     
+    public GuiLayer(String name) {
+        super(name, GuiFlow.STACK_X);
+        this.rect = new Rect(0, 0, 0, 0);
+        this.style = GuiStyle.getStyle(name);
+    }
+    
     public GuiLayer(String name, int width, int height) {
         super(name, GuiFlow.STACK_X, width, height);
         this.rect = new Rect(0, 0, width, height);
@@ -21,11 +27,11 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     public int getWidth() {
-        return preferredWidth;
+        return (int) rect.getWidth();
     }
     
     public int getHeight() {
-        return preferredHeight;
+        return (int) rect.getHeight();
     }
     
     @Override
@@ -42,6 +48,10 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public void reflow() {
+        if (!hasPreferredDimensions) {
+            rect.maxX = preferredWidth() + getContentOffset() * 2;
+            rect.maxY = preferredHeight() + getContentOffset() * 2;
+        }
         flowX((int) rect.getWidth() - getContentOffset() * 2, preferredWidth());
         flowY((int) rect.getHeight() - getContentOffset() * 2, preferredHeight());
     }
