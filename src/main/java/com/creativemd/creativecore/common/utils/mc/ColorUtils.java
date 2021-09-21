@@ -131,6 +131,10 @@ public class ColorUtils {
         return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
     
+    public static int RGBAToInt(float red, float green, float blue, float alpha) {
+        return RGBAToInt((int) (red * 255F), (int) (green * 255F), (int) (blue * 255F), (int) (alpha * 255F));
+    }
+    
     public static int RGBAToInt(Color color) {
         return (color.getAlpha() & 255) << 24 | (color.getRed() & 255) << 16 | (color.getGreen() & 255) << 8 | color.getBlue() & 255;
     }
