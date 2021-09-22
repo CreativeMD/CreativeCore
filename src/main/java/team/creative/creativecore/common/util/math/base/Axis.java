@@ -1,7 +1,11 @@
 package team.creative.creativecore.common.util.math.base;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.Mirror;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
+import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public enum Axis {
     
@@ -45,6 +49,16 @@ public enum Axis {
         public Direction.Axis toVanilla() {
             return Direction.Axis.X;
         }
+        
+        @Override
+        public Vec3i mirror(Vec3i vec) {
+            return new Vec3i(-vec.getX(), vec.getY(), vec.getZ());
+        }
+        
+        @Override
+        public BlockPos mirror(BlockPos vec) {
+            return new BlockPos(-vec.getX(), vec.getY(), vec.getZ());
+        }
     },
     Y {
         @Override
@@ -86,6 +100,16 @@ public enum Axis {
         public Direction.Axis toVanilla() {
             return Direction.Axis.Y;
         }
+        
+        @Override
+        public Vec3i mirror(Vec3i vec) {
+            return new Vec3i(vec.getX(), -vec.getY(), vec.getZ());
+        }
+        
+        @Override
+        public BlockPos mirror(BlockPos vec) {
+            return new BlockPos(vec.getX(), -vec.getY(), vec.getZ());
+        }
     },
     Z {
         @Override
@@ -126,6 +150,16 @@ public enum Axis {
         @Override
         public Direction.Axis toVanilla() {
             return Direction.Axis.Z;
+        }
+        
+        @Override
+        public Vec3i mirror(Vec3i vec) {
+            return new Vec3i(vec.getX(), vec.getY(), -vec.getZ());
+        }
+        
+        @Override
+        public BlockPos mirror(BlockPos vec) {
+            return new BlockPos(vec.getX(), vec.getY(), -vec.getZ());
         }
     };
     
@@ -185,5 +219,23 @@ public enum Axis {
     public abstract <T> T get(T x, T y, T z);
     
     public abstract Direction.Axis toVanilla();
+    
+    public Direction mirror(Direction facing) {
+        if (facing.getAxis() == this.toVanilla())
+            return facing.getOpposite();
+        return facing;
+    }
+    
+    public abstract Vec3i mirror(Vec3i vec);
+    
+    public abstract BlockPos mirror(BlockPos vec);
+    
+    public void mirror(Vec3d vec) {
+        vec.set(this, -vec.get(this));
+    }
+    
+    public void mirror(Vec3f vec) {
+        vec.set(this, -vec.get(this));
+    }
     
 }
