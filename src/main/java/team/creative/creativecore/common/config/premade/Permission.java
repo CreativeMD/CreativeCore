@@ -31,4 +31,16 @@ public class Permission<T> extends NamedList<T> {
         return value;
     }
     
+    @Override
+    @Deprecated
+    public T get(Object key) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    @Deprecated
+    public T getOrDefault(Object key, T defaultValue) {
+        throw new UnsupportedOperationException();
+    }
+    
 }
