@@ -8,4 +8,8 @@ public class LanguageUtils {
         return I18n.get(name);
     }
     
+    public static String translate(String name, Object... args) {
+        return I18n.get(name, args);
+    }
+    
 }
