@@ -172,6 +172,22 @@ public class ColorUtils {
         return color & 255;
     }
     
+    public static float alphaF(int color) {
+        return (color >> 24 & 255) / 255F;
+    }
+    
+    public static float redF(int color) {
+        return (color >> 16 & 255) / 255F;
+    }
+    
+    public static float greenF(int color) {
+        return (color >> 8 & 255) / 255F;
+    }
+    
+    public static float blueF(int color) {
+        return (color & 255) / 255F;
+    }
+    
     public static int toInt(int red, int green, int blue, int alpha) {
         return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
