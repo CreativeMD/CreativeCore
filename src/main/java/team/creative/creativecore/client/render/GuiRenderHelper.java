@@ -34,13 +34,13 @@ public class GuiRenderHelper {
         return mc.font;
     }
     
-    public static void drawItemStack(PoseStack mat, ItemStack stack) {
+    public static void drawItemStack(PoseStack mat, ItemStack stack, float alpha) {
         ItemRenderer renderer = mc.getItemRenderer();
         mc.getTextureManager().getTexture(InventoryMenu.BLOCK_ATLAS).setFilter(false, false);
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         PoseStack matrix = RenderSystem.getModelViewStack();
         matrix.pushPose();
         matrix.mulPoseMatrix(mat.last().pose());

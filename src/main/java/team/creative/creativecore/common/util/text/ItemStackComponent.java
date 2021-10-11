@@ -46,7 +46,7 @@ public class ItemStackComponent extends BaseComponent implements IAdvancedTextCo
     public void render(PoseStack stack, Font font, int defaultColor) {
         stack.pushPose();
         stack.translate(-2, -2, 10);
-        GuiRenderHelper.drawItemStack(stack, this.stack);
+        GuiRenderHelper.drawItemStack(stack, this.stack, 1);
         stack.popPose();
     }
     
