@@ -3,6 +3,7 @@ package team.creative.creativecore.common.util.filter.block;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.Property;
 import team.creative.creativecore.common.util.filter.Filter;
 
 public class BlockFilters {
@@ -29,6 +30,10 @@ public class BlockFilters {
     
     public static Filter<Block> not(Filter<Block> filter) {
         return Filter.not(filter);
+    }
+    
+    public static Filter<Block> property(Property<?> property) {
+        return new BlockPropertyFilter(property);
     }
     
     private static class BlockFilter implements Filter<Block> {
@@ -72,6 +77,21 @@ public class BlockFilters {
         @Override
         public boolean is(Block t) {
             return clazz.isInstance(t);
+        }
+        
+    }
+    
+    private static class BlockPropertyFilter implements Filter<Block> {
+        
+        public final Property<?> property;
+        
+        public BlockPropertyFilter(Property<?> property) {
+            this.property = property;
+        }
+        
+        @Override
+        public boolean is(Block t) {
+            return t.defaultBlockState().hasProperty(property);
         }
         
     }
