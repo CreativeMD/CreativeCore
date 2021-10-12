@@ -220,6 +220,12 @@ public enum Axis {
     
     public abstract Direction.Axis toVanilla();
     
+    public Facing mirror(Facing facing) {
+        if (facing.axis == this)
+            return facing.opposite();
+        return facing;
+    }
+    
     public Direction mirror(Direction facing) {
         if (facing.getAxis() == this.toVanilla())
             return facing.getOpposite();
