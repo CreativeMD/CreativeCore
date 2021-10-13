@@ -13,6 +13,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.ServerOpListEntry;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -95,7 +96,7 @@ public abstract class PlayerSelector {
         });
     }
     
-    public abstract boolean is(ServerPlayer player);
+    public abstract boolean is(Player player);
     
     public abstract void readFromNBT(CompoundTag nbt);
     
@@ -122,7 +123,7 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(ServerPlayer player) {
+        public boolean is(Player player) {
             for (int i = 0; i < selectors.length; i++)
                 if (!selectors[i].is(player))
                     return false;
@@ -171,7 +172,7 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(ServerPlayer player) {
+        public boolean is(Player player) {
             for (int i = 0; i < selectors.length; i++)
                 if (selectors[i].is(player))
                     return true;
@@ -220,7 +221,7 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(ServerPlayer player) {
+        public boolean is(Player player) {
             return !selector.is(player);
         }
         
@@ -254,7 +255,7 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(ServerPlayer player) {
+        public boolean is(Player player) {
             return PlayerUtils.getGameType(player) == type;
         }
         
@@ -288,11 +289,14 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(ServerPlayer player) {
-            ServerOpListEntry entry = player.server.getPlayerList().getOps().get(player.getGameProfile());
-            if (entry != null)
-                return entry.getLevel() >= permissionLevel;
-            return player.server.getOperatorUserPermissionLevel() >= permissionLevel;
+        public boolean is(Player player) {
+            if (player instanceof ServerPlayer) {
+                ServerOpListEntry entry = player.getServer().getPlayerList().getOps().get(player.getGameProfile());
+                if (entry != null)
+                    return entry.getLevel() >= permissionLevel;
+                return player.getServer().getOperatorUserPermissionLevel() >= permissionLevel;
+            }
+            return true;
         }
         
         @Override
@@ -325,9 +329,11 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public boolean is(ServerPlayer player) {
+        public boolean is(Player player) {
             try {
-                return EntityArgument.players().parse(new StringReader(pattern)).findPlayers(player.server.createCommandSourceStack()).contains(player);
+                if (player instanceof ServerPlayer)
+                    return EntityArgument.players().parse(new StringReader(pattern)).findPlayers(player.getServer().createCommandSourceStack()).contains(player);
+                return true;
             } catch (CommandSyntaxException e) {}
             return false;
         }

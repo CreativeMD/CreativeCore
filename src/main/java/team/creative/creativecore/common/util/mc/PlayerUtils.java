@@ -19,4 +19,9 @@ public class PlayerUtils {
             return ((ServerPlayer) player).gameMode.getGameModeForPlayer();
         return getGameTypeClient(player);
     }
+    
+    public static double getReach(Player player) {
+        double attrib = player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getValue();
+        return player.isCreative() ? attrib : attrib - 0.5;
+    }
 }

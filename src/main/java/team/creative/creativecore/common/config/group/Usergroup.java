@@ -3,7 +3,7 @@ package team.creative.creativecore.common.config.group;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.util.player.PlayerSelector;
 
@@ -21,7 +21,7 @@ public class Usergroup {
             filters.add(selector);
     }
     
-    public boolean is(ServerPlayer player) {
+    public boolean is(Player player) {
         for (PlayerSelector selector : filters)
             if (!selector.is(player))
                 return false;
