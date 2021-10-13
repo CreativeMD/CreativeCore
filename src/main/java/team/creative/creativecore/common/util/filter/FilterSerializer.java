@@ -10,22 +10,22 @@ import team.creative.creativecore.common.util.filter.Filter.FilterOr;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 
-public class FilterSerializer<T> {
+public class FilterSerializer {
     
-    private final NamedTypeRegistry<Filter<T>> REGISTRY = new NamedTypeRegistry<Filter<T>>().addConstructorPattern(CompoundTag.class);
+    private final NamedTypeRegistry<Filter> REGISTRY = new NamedTypeRegistry<Filter>().addConstructorPattern(CompoundTag.class);
     
     public FilterSerializer() {}
     
-    public <V extends Filter<T> & CompoundSerializer> FilterSerializer<T> register(String id, Class<V> clazz) {
+    public <V extends Filter & CompoundSerializer> FilterSerializer register(String id, Class<V> clazz) {
         REGISTRY.register(id, clazz);
         return this;
     }
     
-    public CompoundTag write(Filter<T> filter) throws RegistryException {
+    public CompoundTag write(Filter filter) throws RegistryException {
         if (filter instanceof FilterAnd) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (Filter<T> child : ((FilterAnd<T>) filter).filters)
+            for (Filter child : ((FilterAnd) filter).filters)
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "&");
@@ -33,7 +33,7 @@ public class FilterSerializer<T> {
         } else if (filter instanceof FilterOr) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (Filter<T> child : ((FilterOr<T>) filter).filters)
+            for (Filter child : ((FilterOr) filter).filters)
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "+");
@@ -52,17 +52,17 @@ public class FilterSerializer<T> {
         throw new RegistryException("Type not registered " + filter.getClass());
     }
     
-    public Filter<T> read(CompoundTag tag) throws RegistryException {
+    public Filter read(CompoundTag tag) throws RegistryException {
         String type = tag.getString("t");
         if (type.equals("&")) {
             ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            Filter<T>[] filters = new Filter[list.size()];
+            Filter[] filters = new Filter[list.size()];
             for (int i = 0; i < list.size(); i++)
                 filters[i] = read(list.getCompound(i));
             return new FilterAnd<>(filters);
         } else if (type.equals("+")) {
             ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            Filter<T>[] filters = new Filter[list.size()];
+            Filter[] filters = new Filter[list.size()];
             for (int i = 0; i < list.size(); i++)
                 filters[i] = read(list.getCompound(i));
             return new FilterOr<>(filters);

@@ -3,6 +3,8 @@ package team.creative.creativecore.common.util.filter;
 @FunctionalInterface
 public interface Filter<T> {
     
+    public static final FilterSerializer SERIALIZER = new FilterSerializer();
+    
     public boolean is(T t);
     
     public static <T> Filter<T> and(Filter<T>... filters) {

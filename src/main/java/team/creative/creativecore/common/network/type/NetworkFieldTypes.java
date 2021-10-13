@@ -23,12 +23,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import team.creative.creativecore.common.util.filter.BiFilter;
+import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.math.vec.Vec1d;
 import team.creative.creativecore.common.util.math.vec.Vec1f;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
+import team.creative.creativecore.common.util.registry.exception.RegistryException;
 
 public class NetworkFieldTypes {
     
@@ -518,6 +521,52 @@ public class NetworkFieldTypes {
                 return buffer.readEnum(classType);
             }
         });
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<Filter>() {
+            
+            @Override
+            protected void writeContent(Filter content, FriendlyByteBuf buffer) {
+                try {
+                    buffer.writeNbt(Filter.SERIALIZER.write(content));
+                } catch (RegistryException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            @Override
+            protected Filter readContent(FriendlyByteBuf buffer) {
+                try {
+                    return Filter.SERIALIZER.read(buffer.readAnySizeNbt());
+                } catch (RegistryException e) {
+                    e.printStackTrace();
+                    return Filter.or();
+                }
+            }
+            
+        }, Filter.class);
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<BiFilter>() {
+            
+            @Override
+            protected void writeContent(BiFilter content, FriendlyByteBuf buffer) {
+                try {
+                    buffer.writeNbt(BiFilter.SERIALIZER.write(content));
+                } catch (RegistryException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            @Override
+            protected BiFilter readContent(FriendlyByteBuf buffer) {
+                try {
+                    return BiFilter.SERIALIZER.read(buffer.readAnySizeNbt());
+                } catch (RegistryException e) {
+                    e.printStackTrace();
+                    return BiFilter.or();
+                }
+            }
+            
+        }, BiFilter.class);
     }
     
 }

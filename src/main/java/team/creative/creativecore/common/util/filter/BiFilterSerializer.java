@@ -10,22 +10,22 @@ import team.creative.creativecore.common.util.filter.BiFilter.BiFilterOr;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 
-public class BiFilterSerializer<T, U> {
+public class BiFilterSerializer {
     
-    private final NamedTypeRegistry<BiFilter<T, U>> REGISTRY = new NamedTypeRegistry<BiFilter<T, U>>().addConstructorPattern(CompoundTag.class);
+    private final NamedTypeRegistry<BiFilter> REGISTRY = new NamedTypeRegistry<BiFilter>().addConstructorPattern(CompoundTag.class);
     
     public BiFilterSerializer() {}
     
-    public <V extends BiFilter<T, U> & CompoundSerializer> BiFilterSerializer<T, U> register(String id, Class<V> clazz) {
+    public <V extends BiFilter & CompoundSerializer> BiFilterSerializer register(String id, Class<V> clazz) {
         REGISTRY.register(id, clazz);
         return this;
     }
     
-    public CompoundTag write(BiFilter<T, U> filter) throws RegistryException {
+    public CompoundTag write(BiFilter filter) throws RegistryException {
         if (filter instanceof BiFilterAnd) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (BiFilter<T, U> child : ((BiFilterAnd<T, U>) filter).filters)
+            for (BiFilter child : ((BiFilterAnd) filter).filters)
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "&");
@@ -33,7 +33,7 @@ public class BiFilterSerializer<T, U> {
         } else if (filter instanceof BiFilterOr) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (BiFilter<T, U> child : ((BiFilterOr<T, U>) filter).filters)
+            for (BiFilter child : ((BiFilterOr) filter).filters)
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "+");
@@ -52,17 +52,17 @@ public class BiFilterSerializer<T, U> {
         throw new RegistryException("Type not registered " + filter.getClass());
     }
     
-    public BiFilter<T, U> read(CompoundTag tag) throws RegistryException {
+    public BiFilter read(CompoundTag tag) throws RegistryException {
         String type = tag.getString("t");
         if (type.equals("&")) {
             ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            BiFilter<T, U>[] filters = new BiFilter[list.size()];
+            BiFilter[] filters = new BiFilter[list.size()];
             for (int i = 0; i < list.size(); i++)
                 filters[i] = read(list.getCompound(i));
             return new BiFilterAnd<>(filters);
         } else if (type.equals("+")) {
             ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            BiFilter<T, U>[] filters = new BiFilter[list.size()];
+            BiFilter[] filters = new BiFilter[list.size()];
             for (int i = 0; i < list.size(); i++)
                 filters[i] = read(list.getCompound(i));
             return new BiFilterOr<>(filters);

@@ -3,6 +3,8 @@ package team.creative.creativecore.common.util.filter;
 @FunctionalInterface
 public interface BiFilter<T, U> {
     
+    public static final BiFilterSerializer SERIALIZER = new BiFilterSerializer();
+    
     public boolean is(T t, U u);
     
     public static <T, U> BiFilter<T, U> and(BiFilter<T, U>... filters) {

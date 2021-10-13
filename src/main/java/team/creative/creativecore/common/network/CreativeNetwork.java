@@ -6,16 +6,19 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
+import team.creative.creativecore.common.level.SubLevel;
 
 public class CreativeNetwork {
     
@@ -65,12 +68,23 @@ public class CreativeNetwork {
         this.instance.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
     
+    public void sendToClient(CreativePacket message, Level level, BlockPos pos) {
+        if (level instanceof SubLevel)
+            sendToClientTracking(message, ((SubLevel) level).parent);
+        else
+            
+            sendToClient(message, level.getChunkAt(pos));
+    }
+    
     public void sendToClient(CreativePacket message, LevelChunk chunk) {
         this.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), message);
     }
     
     public void sendToClientTracking(CreativePacket message, Entity entity) {
-        this.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+        if (entity.level instanceof SubLevel)
+            sendToClientTracking(message, ((SubLevel) entity.level).parent);
+        else
+            this.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
     }
     
     public void sendToClientAll(CreativePacket message) {
