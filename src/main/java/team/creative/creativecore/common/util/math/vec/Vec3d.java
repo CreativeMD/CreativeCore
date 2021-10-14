@@ -40,8 +40,8 @@ public class Vec3d extends VecNd<Vec3d> {
         this(vec.x, vec.y, vec.z);
     }
     
-    public Vector3d toVanilla() {
-        return new Vector3d(x, y, z);
+    public Vec3 toVanilla() {
+        return new Vec3(x, y, z);
     }
     
     public BlockPos toBlockPos() {
