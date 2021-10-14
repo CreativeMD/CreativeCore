@@ -7,16 +7,19 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.FuzzyOffsetConstantColumnBiomeZoomer;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -35,9 +38,8 @@ import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.config.sync.ConfigurationPacket;
-import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
-import team.creative.creativecore.common.gui.handler.GuiContainerHandler.GuiHandlerPlayer;
+import team.creative.creativecore.common.gui.handler.GuiHandler;
+import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.sync.LayerClosePacket;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
@@ -56,27 +58,34 @@ public class CreativeCore {
     public static final ResourceLocation FAKE_WORLD_LOCATION = new ResourceLocation(MODID, "fake");
     public static DimensionType FAKE_DIMENSION;
     public static ResourceKey<Level> FAKE_DIMENSION_NAME = ResourceKey.create(Registry.DIMENSION_REGISTRY, FAKE_WORLD_LOCATION);
+    public static MenuType<ContainerIntegration> GUI_CONTAINER;
     
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(MenuType.class, this::registerMenus);
+        
         MinecraftForge.EVENT_BUS.addListener(this::server);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
-        GuiContainerHandler.CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
-        GuiContainerHandler.registerGuiHandler("clientconfig", new GuiHandlerPlayer() {
+        GuiHandler.register("clientconfig", (player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT));
+        GuiHandler.register("config", (player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.DEDICATED_SERVER));
+        
+        GUI_CONTAINER = new MenuType<>(null) {
+            @Override
+            public ContainerIntegration create(int windowId, Inventory playerInv, net.minecraft.network.FriendlyByteBuf extraData) {
+                return new ContainerIntegration(this, windowId, playerInv.player);
+            }
             
             @Override
-            public GuiLayer create(Player player) {
-                return new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT);
+            public ContainerIntegration create(int windowId, Inventory playerInv) {
+                throw new UnsupportedOperationException();
             }
-        });
-        GuiContainerHandler.registerGuiHandler("config", new GuiHandlerPlayer() {
-            
-            @Override
-            public GuiLayer create(Player player) {
-                return new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.DEDICATED_SERVER);
-            }
-        });
+        };
+        GUI_CONTAINER.setRegistryName("container");
+    }
+    
+    public void registerMenus(RegistryEvent.Register<MenuType<?>> event) {
+        event.getRegistry().registerAll(GUI_CONTAINER);
     }
     
     @OnlyIn(Dist.CLIENT)
@@ -89,7 +98,7 @@ public class CreativeCore {
     
     private void server(final FMLServerStartingEvent event) {
         event.getServer().getCommands().getDispatcher().register(Commands.literal("cmdconfig").executes(x -> {
-            GuiContainerHandler.openGui(x.getSource().getPlayerOrException(), "config");
+            GuiHandler.openGui("config", new CompoundTag(), x.getSource().getPlayerOrException());
             return 0;
         }));
     }

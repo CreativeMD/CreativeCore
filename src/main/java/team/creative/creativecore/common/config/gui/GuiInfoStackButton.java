@@ -75,7 +75,7 @@ public class GuiInfoStackButton extends GuiButton {
     }
     
     static {
-        GuiLayerHandler.registerGuiLayerHandler("info", new GuiLayerHandler() {
+        GuiLayerHandler.REGISTRY.register("info", new GuiLayerHandler() {
             
             @Override
             public GuiLayer create(IGuiIntegratedParent parent, CompoundTag nbt) {

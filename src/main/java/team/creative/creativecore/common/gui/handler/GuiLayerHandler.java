@@ -1,21 +1,16 @@
 package team.creative.creativecore.common.gui.handler;
 
-import java.util.HashMap;
-
 import net.minecraft.nbt.CompoundTag;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
+import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
 public abstract class GuiLayerHandler {
     
-    private static HashMap<String, GuiLayerHandler> handlers = new HashMap<>();
-    
-    public static void registerGuiLayerHandler(String id, GuiLayerHandler handler) {
-        handlers.put(id, handler);
-    }
+    public static final NamedHandlerRegistry<GuiLayerHandler> REGISTRY = new NamedHandlerRegistry<>(null);
     
     public static GuiLayer create(IGuiIntegratedParent parent, String id, CompoundTag nbt) {
-        GuiLayerHandler handler = handlers.get(id);
+        GuiLayerHandler handler = REGISTRY.get(id);
         if (handler != null)
             return handler.create(parent, nbt);
         return null;

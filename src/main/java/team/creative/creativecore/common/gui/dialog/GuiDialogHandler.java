@@ -34,7 +34,7 @@ public class GuiDialogHandler extends GuiLayerHandler {
     }
     
     static {
-        GuiLayerHandler.registerGuiLayerHandler("dialog", new GuiDialogHandler());
+        GuiLayerHandler.REGISTRY.register("dialog", new GuiDialogHandler());
     }
     
 }

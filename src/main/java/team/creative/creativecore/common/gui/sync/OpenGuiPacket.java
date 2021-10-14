@@ -1,20 +1,23 @@
 package team.creative.creativecore.common.gui.sync;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
+import team.creative.creativecore.common.gui.handler.GuiHandler;
 import team.creative.creativecore.common.network.CreativePacket;
 
 public class OpenGuiPacket extends CreativePacket {
     
     public String name;
+    public CompoundTag nbt;
     
     public OpenGuiPacket() {
         
     }
     
-    public OpenGuiPacket(String name) {
+    public OpenGuiPacket(String name, CompoundTag nbt) {
         this.name = name;
+        this.nbt = nbt;
     }
     
     @Override
@@ -24,7 +27,7 @@ public class OpenGuiPacket extends CreativePacket {
     
     @Override
     public void executeServer(ServerPlayer player) {
-        GuiContainerHandler.openGui(player, name);
+        GuiHandler.openGui(name, nbt, player);
     }
     
 }

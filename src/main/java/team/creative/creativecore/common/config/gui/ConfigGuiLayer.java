@@ -3,6 +3,7 @@ package team.creative.creativecore.common.config.gui;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +23,7 @@ import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
-import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
+import team.creative.creativecore.common.gui.handler.GuiHandler;
 import team.creative.creativecore.common.util.mc.JsonUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
@@ -153,7 +154,7 @@ public class ConfigGuiLayer extends GuiLayer {
             if (nextAction == 0)
                 super.closeTopLayer();
             else if (nextAction == 1)
-                GuiContainerHandler.openGui(getPlayer(), "clientconfig");
+                GuiHandler.openGui("clientconfig", new CompoundTag(), getPlayer());
         } else
             GuiDialogHandler.openDialog(getParent(), "savechanges", (x, y) -> {
                 if (y == DialogButton.YES) {

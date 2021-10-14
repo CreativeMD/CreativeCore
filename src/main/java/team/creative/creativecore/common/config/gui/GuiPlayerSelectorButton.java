@@ -43,7 +43,7 @@ public class GuiPlayerSelectorButton extends GuiButton {
     }
     
     static {
-        GuiLayerHandler.registerGuiLayerHandler("player", new GuiLayerHandler() {
+        GuiLayerHandler.REGISTRY.register("player", new GuiLayerHandler() {
             
             @Override
             public GuiLayer create(IGuiIntegratedParent parent, CompoundTag nbt) {

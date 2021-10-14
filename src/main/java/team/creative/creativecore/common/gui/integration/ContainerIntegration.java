@@ -28,6 +28,11 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
         layer.init();
     }
     
+    public ContainerIntegration(MenuType<ContainerIntegration> type, int id, Player player) {
+        super(type, id);
+        this.player = player;
+    }
+    
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();

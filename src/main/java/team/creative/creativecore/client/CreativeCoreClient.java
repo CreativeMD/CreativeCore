@@ -3,12 +3,16 @@ package team.creative.creativecore.client;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -18,13 +22,15 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fmlclient.ConfigGuiHandler.ConfigGuiFactory;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.client.command.ClientCommandRegistry;
 import team.creative.creativecore.client.test.GuiTest;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
-import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
+import team.creative.creativecore.common.gui.integration.ContainerIntegration;
+import team.creative.creativecore.common.gui.integration.ContainerScreenIntegration;
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -93,7 +99,14 @@ public class CreativeCoreClient {
                 GuiStyle.reload();
             }
         });
-        GuiContainerHandler.initClient();
+        
+        MenuScreens.register(CreativeCore.GUI_CONTAINER, new ScreenConstructor<ContainerIntegration, ContainerScreenIntegration>() {
+            
+            @Override
+            public ContainerScreenIntegration create(ContainerIntegration container, Inventory inventory, Component p_create_3_) {
+                return new ContainerScreenIntegration(container, inventory);
+            }
+        });
     }
     
     @SubscribeEvent(priority = EventPriority.LOWEST)

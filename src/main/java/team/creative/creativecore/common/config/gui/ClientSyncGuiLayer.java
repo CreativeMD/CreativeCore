@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -28,7 +29,7 @@ import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
-import team.creative.creativecore.common.gui.handler.GuiContainerHandler;
+import team.creative.creativecore.common.gui.handler.GuiHandler;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.CheckTree;
@@ -145,7 +146,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
             if (nextAction == 0)
                 super.closeTopLayer();
             else if (nextAction == 1)
-                GuiContainerHandler.openGui(getPlayer(), "config");
+                GuiHandler.openGui("config", new CompoundTag(), getPlayer());
         } else
             GuiDialogHandler.openDialog(getParent(), "savechanges", (x, y) -> {
                 if (y == DialogButton.YES) {
