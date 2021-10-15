@@ -19,6 +19,10 @@ public class NamedHandlerRegistry<T> {
         return this;
     }
     
+    public T getDefault() {
+        return defaultHandler;
+    }
+    
     public void register(String id, T handler) {
         if (!allowOverwrite && handlers.containsKey(id))
             throw new IllegalArgumentException("'" + id + "' already exists");
