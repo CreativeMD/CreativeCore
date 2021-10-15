@@ -62,6 +62,10 @@ public abstract class VecNd<T extends VecNd> {
         return epsilonEquals(vec, VectorFan.EPSILON);
     }
     
+    public abstract double distance(T vec);
+    
+    public abstract double distanceSqr(T vec);
+    
     public abstract double length();
     
     public abstract double lengthSquared();

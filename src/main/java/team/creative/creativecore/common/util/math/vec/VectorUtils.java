@@ -86,6 +86,10 @@ public class VectorUtils {
         return get(axis, vec.x, vec.y, vec.z);
     }
     
+    public static double get(net.minecraft.core.Direction.Axis axis, Vec3 vec) {
+        return get(axis, vec.x, vec.y, vec.z);
+    }
+    
     public static float get(Axis axis, Vector3f vec) {
         return get(axis, vec.x(), vec.y(), vec.z());
     }
@@ -119,6 +123,42 @@ public class VectorUtils {
     }
     
     public static int get(Axis axis, int x, int y, int z) {
+        switch (axis) {
+        case X:
+            return x;
+        case Y:
+            return y;
+        case Z:
+            return z;
+        }
+        return 0;
+    }
+    
+    public static float get(net.minecraft.core.Direction.Axis axis, float x, float y, float z) {
+        switch (axis) {
+        case X:
+            return x;
+        case Y:
+            return y;
+        case Z:
+            return z;
+        }
+        return 0;
+    }
+    
+    public static double get(net.minecraft.core.Direction.Axis axis, double x, double y, double z) {
+        switch (axis) {
+        case X:
+            return x;
+        case Y:
+            return y;
+        case Z:
+            return z;
+        }
+        return 0;
+    }
+    
+    public static int get(net.minecraft.core.Direction.Axis axis, int x, int y, int z) {
         switch (axis) {
         case X:
             return x;

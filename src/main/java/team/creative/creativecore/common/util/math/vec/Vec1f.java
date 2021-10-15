@@ -76,6 +76,17 @@ public class Vec1f extends VecNf<Vec1f> {
     }
     
     @Override
+    public double distance(Vec1f vec) {
+        return Math.abs(x - vec.x);
+    }
+    
+    @Override
+    public double distanceSqr(Vec1f vec) {
+        float x = this.x - vec.x;
+        return x * x;
+    }
+    
+    @Override
     public double length() {
         return Math.abs(x);
     }

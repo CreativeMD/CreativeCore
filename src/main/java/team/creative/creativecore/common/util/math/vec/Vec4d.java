@@ -173,6 +173,24 @@ public class Vec4d extends VecNd<Vec4d> {
     }
     
     @Override
+    public double distance(Vec4d vec) {
+        double x = this.x - vec.x;
+        double y = this.y - vec.y;
+        double z = this.z - vec.z;
+        double w = this.w - vec.w;
+        return Math.sqrt(x * x + y * y + z * z + w * w);
+    }
+    
+    @Override
+    public double distanceSqr(Vec4d vec) {
+        double x = this.x - vec.x;
+        double y = this.y - vec.y;
+        double z = this.z - vec.z;
+        double w = this.w - vec.w;
+        return x * x + y * y + z * z + w * w;
+    }
+    
+    @Override
     public double length() {
         return Math.sqrt(x * x + y * y + z * z + w * w);
     }

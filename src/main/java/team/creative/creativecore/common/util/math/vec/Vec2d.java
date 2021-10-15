@@ -101,6 +101,20 @@ public class Vec2d extends VecNd<Vec2d> {
     }
     
     @Override
+    public double distance(Vec2d vec) {
+        double x = this.x - vec.x;
+        double y = this.y - vec.y;
+        return Math.sqrt(x * x + y * y);
+    }
+    
+    @Override
+    public double distanceSqr(Vec2d vec) {
+        double x = this.x - vec.x;
+        double y = this.y - vec.y;
+        return x * x + y * y;
+    }
+    
+    @Override
     public double length() {
         return Math.sqrt(x * x + y * y);
     }

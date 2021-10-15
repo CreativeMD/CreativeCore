@@ -177,6 +177,22 @@ public class Vec3d extends VecNd<Vec3d> {
     }
     
     @Override
+    public double distance(Vec3d vec) {
+        double x = this.x - vec.x;
+        double y = this.y - vec.y;
+        double z = this.z - vec.z;
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+    
+    @Override
+    public double distanceSqr(Vec3d vec) {
+        double x = this.x - vec.x;
+        double y = this.y - vec.y;
+        double z = this.z - vec.z;
+        return x * x + y * y + z * z;
+    }
+    
+    @Override
     public double length() {
         return Math.sqrt(x * x + y * y + z * z);
     }

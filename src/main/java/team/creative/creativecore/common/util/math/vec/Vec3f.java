@@ -163,6 +163,22 @@ public class Vec3f extends VecNf<Vec3f> {
     }
     
     @Override
+    public double distance(Vec3f vec) {
+        float x = this.x - vec.x;
+        float y = this.y - vec.y;
+        float z = this.z - vec.z;
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+    
+    @Override
+    public double distanceSqr(Vec3f vec) {
+        float x = this.x - vec.x;
+        float y = this.y - vec.y;
+        float z = this.z - vec.z;
+        return x * x + y * y + z * z;
+    }
+    
+    @Override
     public double length() {
         return Math.sqrt(x * x + y * y + z * z);
     }
