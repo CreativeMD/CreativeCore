@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.synchronization.ArgumentTypes;
+import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -45,6 +47,7 @@ import team.creative.creativecore.common.gui.sync.LayerClosePacket;
 import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
 import team.creative.creativecore.common.gui.sync.OpenGuiPacket;
 import team.creative.creativecore.common.network.CreativeNetwork;
+import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
 
 @Mod(value = CreativeCore.MODID)
 public class CreativeCore {
@@ -116,6 +119,7 @@ public class CreativeCore {
                 .empty(), true, false, false, false, 1, false, true, true, false, false, 0, 256, 256, FuzzyOffsetConstantColumnBiomeZoomer.INSTANCE, BlockTags.INFINIBURN_OVERWORLD
                         .getName(), DimensionType.OVERWORLD_EFFECTS, 0.0F);
         
+        ArgumentTypes.register("names", StringArrayArgumentType.class, new EmptyArgumentSerializer<>(() -> StringArrayArgumentType.stringArray()));
     }
     
 }
