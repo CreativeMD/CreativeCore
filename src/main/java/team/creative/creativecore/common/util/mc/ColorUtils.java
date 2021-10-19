@@ -190,11 +190,23 @@ public class ColorUtils {
         return (color & 255) / 255F;
     }
     
-    public static int toInt(int red, int green, int blue, int alpha) {
+    public static int rgba(int red, int green, int blue, int alpha) {
         return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
     
-    public static int toInt(Vec3i color) {
+    public static int rgba(float red, float green, float blue, float alpha) {
+        return (((int) (alpha * 255)) & 255) << 24 | (((int) (red * 255)) & 255) << 16 | (((int) (green * 255)) & 255) << 8 | ((int) (blue * 255)) & 255;
+    }
+    
+    public static int rgb(int red, int green, int blue) {
+        return (255 & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
+    }
+    
+    public static int rgb(float red, float green, float blue) {
+        return (255 & 255) << 24 | (((int) (red * 255)) & 255) << 16 | (((int) (green * 255)) & 255) << 8 | ((int) (blue * 255)) & 255;
+    }
+    
+    public static int rgb(Vec3i color) {
         return (255 & 255) << 24 | (color.getX() & 255) << 16 | (color.getY() & 255) << 8 | color.getZ() & 255;
     }
     

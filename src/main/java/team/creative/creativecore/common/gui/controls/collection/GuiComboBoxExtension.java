@@ -68,7 +68,7 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
         @OnlyIn(value = Dist.CLIENT)
         protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
             if (selected)
-                text.defaultColor = rect.inside(mouseX, mouseY) ? ColorUtils.toInt(230, 230, 0, 255) : ColorUtils.toInt(200, 200, 0, 255);
+                text.defaultColor = rect.inside(mouseX, mouseY) ? ColorUtils.rgba(230, 230, 0, 255) : ColorUtils.rgba(200, 200, 0, 255);
             else if (rect.inside(mouseX, mouseY))
                 text.defaultColor = ColorUtils.YELLOW;
             else
