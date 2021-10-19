@@ -14,6 +14,10 @@ public class PlayerUtils {
         return Minecraft.getInstance().gameMode.getPlayerMode();
     }
     
+    public static boolean isAdventure(Player player) {
+        return getGameType(player) == GameType.ADVENTURE;
+    }
+    
     public static GameType getGameType(Player player) {
         if (player instanceof ServerPlayer)
             return ((ServerPlayer) player).gameMode.getGameModeForPlayer();
