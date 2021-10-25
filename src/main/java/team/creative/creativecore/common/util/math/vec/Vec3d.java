@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.math.vec;
 
 import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -38,6 +39,10 @@ public class Vec3d extends VecNd<Vec3d> {
     
     public Vec3d(Vec3 vec) {
         this(vec.x, vec.y, vec.z);
+    }
+    
+    public Vec3d(Vector3f step) {
+        this(step.x(), step.y(), step.z());
     }
     
     public Vec3 toVanilla() {
