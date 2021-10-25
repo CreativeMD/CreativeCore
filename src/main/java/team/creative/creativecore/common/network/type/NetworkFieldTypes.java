@@ -19,10 +19,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.math.vec.Vec1d;
@@ -277,6 +279,32 @@ public class NetworkFieldTypes {
                 return Block.stateById(buffer.readInt());
             }
         }, BlockState.class);
+        
+        register(new NetworkFieldTypeClass<Block>() {
+            
+            @Override
+            protected void writeContent(Block content, FriendlyByteBuf buffer) {
+                buffer.writeResourceLocation(content.getRegistryName());
+            }
+            
+            @Override
+            protected Block readContent(FriendlyByteBuf buffer) {
+                return ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
+            }
+        }, Block.class);
+        
+        register(new NetworkFieldTypeClass<Item>() {
+            
+            @Override
+            protected void writeContent(Item content, FriendlyByteBuf buffer) {
+                buffer.writeResourceLocation(content.getRegistryName());
+            }
+            
+            @Override
+            protected Item readContent(FriendlyByteBuf buffer) {
+                return ForgeRegistries.ITEMS.getValue(buffer.readResourceLocation());
+            }
+        }, Item.class);
         
         register(new NetworkFieldTypeClass<Vector3d>() {
             
