@@ -34,7 +34,7 @@ public class RenderBox extends AlignedBox {
     private static final VectorFan WEST = new VectorFanSimple(new Vec3f[] { new Vec3f(0, 1, 0), new Vec3f(0, 0, 0), new Vec3f(0, 0, 1), new Vec3f(0, 1, 1) });
     private static final VectorFan EAST = new VectorFanSimple(new Vec3f[] { new Vec3f(1, 1, 1), new Vec3f(1, 0, 1), new Vec3f(1, 0, 0), new Vec3f(1, 1, 0) });
     
-    public Block block;
+    public BlockState state;
     public int color = -1;
     
     public boolean keepVU = false;
@@ -59,9 +59,13 @@ public class RenderBox extends AlignedBox {
     
     public Object customData;
     
+    public RenderBox(AlignedBox cube) {
+        super(cube);
+    }
+    
     public RenderBox(AlignedBox cube, RenderBox box) {
         super(cube);
-        this.block = box.block;
+        this.state = box.state;
         this.color = box.color;
         this.renderEast = box.renderEast;
         this.renderWest = box.renderWest;
@@ -71,14 +75,22 @@ public class RenderBox extends AlignedBox {
         this.renderNorth = box.renderNorth;
     }
     
-    public RenderBox(AlignedBox cube, Block block) {
+    public RenderBox(AlignedBox cube, BlockState state) {
         super(cube);
-        this.block = block;
+        this.state = state;
+    }
+    
+    public RenderBox(AlignedBox cube, Block block) {
+        this(cube, block.defaultBlockState());
+    }
+    
+    public RenderBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, BlockState state) {
+        super(minX, minY, minZ, maxX, maxY, maxZ);
+        this.state = state;
     }
     
     public RenderBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Block block) {
-        super(minX, minY, minZ, maxX, maxY, maxZ);
-        this.block = block;
+        this(minX, minY, minZ, maxX, maxY, maxZ, block.defaultBlockState());
     }
     
     public RenderBox setColor(int color) {
@@ -148,10 +160,6 @@ public class RenderBox extends AlignedBox {
         if (quadNorth != null)
             quads += quadNorth instanceof List ? ((List) quadNorth).size() : 1;
         return quads;
-    }
-    
-    public BlockState getBlockState() {
-        return block.defaultBlockState();
     }
     
     public void setType(Facing facing, IFaceRenderType renderer) {
@@ -428,7 +436,7 @@ public class RenderBox extends AlignedBox {
     public boolean isTranslucent() {
         if (ColorUtils.isTransparent(color))
             return true;
-        return !getBlockState().getMaterial().isSolidBlocking() || !getBlockState().getMaterial().isSolid();
+        return !state.getMaterial().isSolidBlocking() || !state.getMaterial().isSolid();
     }
     
     private static int uvOffset(VertexFormat format) {
