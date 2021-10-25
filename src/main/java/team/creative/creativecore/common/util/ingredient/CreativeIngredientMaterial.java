@@ -21,12 +21,12 @@ public class CreativeIngredientMaterial extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundTag nbt) {
+    protected void saveExtra(CompoundTag nbt) {
         nbt.putString("material", getBlock().getRegistryName().toString());
     }
     
     @Override
-    protected void readExtra(CompoundTag nbt) {
+    protected void loadExtra(CompoundTag nbt) {
         Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("material")));
         if (block != null)
             material = block.defaultBlockState().getMaterial();

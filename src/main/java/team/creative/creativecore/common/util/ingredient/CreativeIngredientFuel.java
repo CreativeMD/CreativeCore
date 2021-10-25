@@ -12,14 +12,10 @@ public class CreativeIngredientFuel extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundTag nbt) {
-        
-    }
+    protected void saveExtra(CompoundTag nbt) {}
     
     @Override
-    protected void readExtra(CompoundTag nbt) {
-        
-    }
+    protected void loadExtra(CompoundTag nbt) {}
     
     @Override
     public ItemStack getExample() {

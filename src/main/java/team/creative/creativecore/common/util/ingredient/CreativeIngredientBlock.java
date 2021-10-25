@@ -19,12 +19,12 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundTag nbt) {
+    protected void loadExtra(CompoundTag nbt) {
         nbt.putString("block", block.getRegistryName().toString());
     }
     
     @Override
-    protected void readExtra(CompoundTag nbt) {
+    protected void saveExtra(CompoundTag nbt) {
         block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("block")));
     }
     

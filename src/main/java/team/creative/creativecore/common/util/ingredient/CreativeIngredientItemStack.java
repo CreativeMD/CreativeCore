@@ -18,13 +18,13 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundTag nbt) {
+    protected void saveExtra(CompoundTag nbt) {
         stack.save(nbt);
         nbt.putBoolean("needNBT", needNBT);
     }
     
     @Override
-    protected void readExtra(CompoundTag nbt) {
+    protected void loadExtra(CompoundTag nbt) {
         stack = ItemStack.of(nbt);
         needNBT = nbt.getBoolean("needNBT");
     }

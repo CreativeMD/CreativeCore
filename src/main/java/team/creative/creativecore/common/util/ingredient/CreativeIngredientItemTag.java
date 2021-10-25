@@ -20,12 +20,12 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundTag nbt) {
+    protected void saveExtra(CompoundTag nbt) {
         nbt.putString("tag", ItemTags.getAllTags().getId(tag).toString());
     }
     
     @Override
-    protected void readExtra(CompoundTag nbt) {
+    protected void loadExtra(CompoundTag nbt) {
         tag = ItemTags.getAllTags().getTag(new ResourceLocation(nbt.getString("tag")));
     }
     

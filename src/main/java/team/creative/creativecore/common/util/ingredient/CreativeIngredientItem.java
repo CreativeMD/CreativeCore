@@ -19,12 +19,12 @@ public class CreativeIngredientItem extends CreativeIngredient {
     }
     
     @Override
-    protected void writeExtra(CompoundTag nbt) {
+    protected void saveExtra(CompoundTag nbt) {
         nbt.putString("item", item.getRegistryName().toString());
     }
     
     @Override
-    protected void readExtra(CompoundTag nbt) {
+    protected void loadExtra(CompoundTag nbt) {
         item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(nbt.getString("item")));
     }
     

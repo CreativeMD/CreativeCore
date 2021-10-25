@@ -1,9 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import java.lang.reflect.InvocationTargetException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
@@ -27,39 +25,17 @@ import team.creative.creativecore.common.config.converation.ConfigTypeConveratio
 import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 
 public abstract class CreativeIngredient {
     
-    private static HashMap<String, Class<? extends CreativeIngredient>> types = new HashMap<>();
-    private static HashMap<Class<? extends CreativeIngredient>, String> typesInv = new HashMap<>();
+    public static final NamedTypeRegistry<CreativeIngredient> REGISTRY = new NamedTypeRegistry<CreativeIngredient>().addConstructorPattern();
     private static List<Function<Object, ? extends CreativeIngredient>> objectParsers = new ArrayList<>();
     
     public static <T extends CreativeIngredient> void registerType(String id, Class<T> classType, Function<Object, T> parser) {
-        if (types.containsKey(id))
-            throw new IllegalArgumentException("Id '" + id + "' is already taken");
-        
-        try {
-            classType.getConstructor();
-        } catch (NoSuchMethodException | SecurityException e) {
-            throw new InvalidParameterException("The class does not contain an empty constructor");
-        }
-        
-        types.put(id, classType);
-        typesInv.put(classType, id);
+        REGISTRY.register(id, classType);
         if (parser != null)
             objectParsers.add(parser);
-    }
-    
-    public static String getId(CreativeIngredient ingredient) {
-        return getId(ingredient.getClass());
-    }
-    
-    public static String getId(Class<? extends CreativeIngredient> clazz) {
-        return typesInv.get(clazz);
-    }
-    
-    public static Class<? extends CreativeIngredient> getClass(String id) {
-        return types.get(id);
     }
     
     public static CreativeIngredient parse(Object object) {
@@ -78,14 +54,14 @@ public abstract class CreativeIngredient {
         return null;
     }
     
-    public static CreativeIngredient read(CompoundTag nbt) {
-        Class<? extends CreativeIngredient> classType = getClass(nbt.getString("id"));
+    public static CreativeIngredient load(CompoundTag nbt) {
+        Class<? extends CreativeIngredient> classType = REGISTRY.get(nbt.getString("id"));
         if (classType == null)
             throw new IllegalArgumentException("'" + nbt.getString("id") + "' is an invalid type");
         
         try {
             CreativeIngredient ingredient = classType.getConstructor().newInstance();
-            ingredient.readExtra(nbt);
+            ingredient.loadExtra(nbt);
             return ingredient;
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             throw new RuntimeException(e);
@@ -135,7 +111,7 @@ public abstract class CreativeIngredient {
             public CreativeIngredient readElement(CreativeIngredient defaultValue, boolean loadDefault, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
-                        return CreativeIngredient.read(TagParser.parseTag(element.getAsString()));
+                        return CreativeIngredient.load(TagParser.parseTag(element.getAsString()));
                     } catch (CommandSyntaxException e) {
                         e.printStackTrace();
                     }
@@ -144,7 +120,7 @@ public abstract class CreativeIngredient {
             
             @Override
             public JsonElement writeElement(CreativeIngredient value, CreativeIngredient defaultValue, boolean saveDefault) {
-                return new JsonPrimitive(value.write(new CompoundTag()).toString());
+                return new JsonPrimitive(value.save().toString());
             }
             
             @Override
@@ -178,15 +154,16 @@ public abstract class CreativeIngredient {
         
     }
     
-    public CompoundTag write(CompoundTag nbt) {
-        nbt.putString("id", getId(this));
-        writeExtra(nbt);
+    public CompoundTag save() {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString("id", REGISTRY.getId(this));
+        saveExtra(nbt);
         return nbt;
     }
     
-    protected abstract void writeExtra(CompoundTag nbt);
+    protected abstract void saveExtra(CompoundTag nbt);
     
-    protected abstract void readExtra(CompoundTag nbt);
+    protected abstract void loadExtra(CompoundTag nbt);
     
     public abstract boolean is(ItemStack stack);
     
