@@ -13,8 +13,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.FuzzyOffsetConstantColumnBiomeZoomer;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -120,6 +122,14 @@ public class CreativeCore {
                         .getName(), DimensionType.OVERWORLD_EFFECTS, 0.0F);
         
         ArgumentTypes.register("names", StringArrayArgumentType.class, new EmptyArgumentSerializer<>(() -> StringArrayArgumentType.stringArray()));
+        
+        GuiHandler.register("item", (player, nbt) -> {
+            InteractionHand hand = nbt.getBoolean("main_hand") ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            ItemStack stack = player.getItemInHand(hand);
+            if (stack.getItem() instanceof GuiHandler)
+                return ((GuiHandler) stack.getItem()).create(player, nbt);
+            return null;
+        });
     }
     
 }

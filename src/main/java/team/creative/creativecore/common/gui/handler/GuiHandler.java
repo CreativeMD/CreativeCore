@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.handler;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
@@ -30,6 +31,15 @@ public interface GuiHandler {
                     return integration;
                 }, new TextComponent(name)));
         }
+    }
+    
+    public static void openItemGui(Player player, InteractionHand hand, CompoundTag nbt) {
+        nbt.putBoolean("main_hand", hand == InteractionHand.MAIN_HAND);
+        openGui("item", nbt, player);
+    }
+    
+    public static void openItemGui(Player player, InteractionHand hand) {
+        openItemGui(player, hand, new CompoundTag());
     }
     
     public GuiLayer create(Player player, CompoundTag nbt);
