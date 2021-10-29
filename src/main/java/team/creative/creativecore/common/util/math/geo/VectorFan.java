@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Vector3d;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -230,21 +231,23 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
+            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
             tessellator.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
+            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
             tessellator.end();
         }
         
@@ -255,21 +258,23 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
+            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
             tessellator.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
                 bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
+            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
             tessellator.end();
         }
     }
@@ -279,17 +284,19 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            renderLinePoint(bufferbuilder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
             tessellator.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            renderLinePoint(bufferbuilder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
             tessellator.end();
         }
         
@@ -344,17 +351,19 @@ public class VectorFan {
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         int index = 0;
         while (index < coords.length - 3) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
+            renderLinePoint(bufferbuilder, coords[index], red, green, blue, alpha, center, grow);
             tessellator.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            //bufferbuilder.begin(GL11.GL_LINE_LOOP, DefaultVertexFormat.POSITION_COLOR);
+            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
+            renderLinePoint(bufferbuilder, coords[index], red, green, blue, alpha, center, grow);
             tessellator.end();
         }
         
@@ -441,7 +450,6 @@ public class VectorFan {
             }
         }
         
-        //List<Vec3f> left = new ArrayList<>();
         List<Vec3f> right = new ArrayList<>();
         Boolean beforeCutted = cutted[cutted.length - 1];
         Vec3f beforeVec = coords[coords.length - 1];
@@ -453,7 +461,6 @@ public class VectorFan {
                 if (BooleanUtils.isFalse(beforeCutted)) {
                     //Intersection
                     Vec3f intersection = plane.intersect(vec, beforeVec);
-                    //left.add(intersection);
                     if (intersection != null)
                         right.add(intersection);
                 }
@@ -462,22 +469,15 @@ public class VectorFan {
                 if (BooleanUtils.isTrue(beforeCutted)) {
                     //Intersection
                     Vec3f intersection = plane.intersect(vec, beforeVec);
-                    //left.add(intersection);
                     if (intersection != null)
                         right.add(intersection);
                 }
-                //left.add(vec);
-            } else {
-                //left.add(vec);
+            } else
                 right.add(vec);
-            }
             
             beforeCutted = cutted[i];
             beforeVec = vec;
         }
-        
-        //if (left.size() >= 3 && done != null)
-        //done.add(new VectorFan(left.toArray(new Vec3f[left.size()])));
         
         if (isPointBetween(right.get(right.size() - 2), right.get(0), right.get(right.size() - 1)))
             right.remove(right.size() - 1);
@@ -747,7 +747,6 @@ public class VectorFan {
             return true;
         
         int parrallel = 0;
-        //boolean allAtEdge = true;
         
         Vec3f before1 = coords[0];
         Ray2d ray1 = new Ray2d(one, two, 0, 0, 0, 0);
@@ -772,9 +771,6 @@ public class VectorFan {
                     double otherT = ray2.intersectWhen(ray1);
                     if (t > EPSILON && t < 1 - EPSILON && otherT > EPSILON && otherT < 1 - EPSILON)
                         return true;
-                    //else if (t > -EPSILON && t < 1 + EPSILON && otherT > -EPSILON && otherT < 1 + EPSILON)
-                    //edge = true;
-                    
                 } catch (ParallelException e) {
                     double startT = ray1.getT(one, ray2.originOne);
                     double endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
@@ -788,12 +784,9 @@ public class VectorFan {
                 before2 = vec2;
             }
             
-            //if (!edge)
-            //allAtEdge = false;
-            
             before1 = vec1;
         }
-        if (/*allAtEdge && */(isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse)))
+        if ((isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse)))
             return true;
         return false;
     }

@@ -59,7 +59,7 @@ public enum BoxCorner {
         throw new RuntimeException("null axis not permitted");
     }
     
-    public BoxCorner flip(Axis axis) {
+    public BoxCorner mirror(Axis axis) {
         switch (axis) {
         case X:
             return getCorner(x.opposite(), y, z);

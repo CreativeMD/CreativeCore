@@ -36,7 +36,7 @@ import net.minecraft.world.level.storage.WritableLevelData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
-import team.creative.creativecore.client.render.world.IRenderChunkSupplier;
+import team.creative.creativecore.client.render.level.IRenderChunkSupplier;
 
 public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     

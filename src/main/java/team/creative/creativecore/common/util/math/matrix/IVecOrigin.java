@@ -12,7 +12,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
-import team.creative.creativecore.common.util.math.collision.OrientatedVoxelShape;
+import team.creative.creativecore.common.util.math.box.BoxCorner;
+import team.creative.creativecore.common.util.math.box.OBB;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public interface IVecOrigin {
@@ -134,7 +135,7 @@ public interface IVecOrigin {
     }
     
     public default AABB getAxisAlignedBox(AABB box) {
-        /*double minX = Double.MAX_VALUE;
+        double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         double minZ = Double.MAX_VALUE;
         double maxX = -Double.MAX_VALUE;
@@ -142,7 +143,7 @@ public interface IVecOrigin {
         double maxZ = -Double.MAX_VALUE;
         
         for (int i = 0; i < BoxCorner.values().length; i++) {
-            Vec3d vec = BoxCorner.values()[i].getVector(box);
+            Vec3d vec = BoxCorner.values()[i].get(box);
             
             transformPointToWorld(vec);
             
@@ -154,12 +155,11 @@ public interface IVecOrigin {
             maxZ = Math.max(maxZ, vec.z);
         }
         
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);*/
-        return null;
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
-    public default OrientatedVoxelShape getOrientatedBox(AABB box) {
-        /*double minX = Double.MAX_VALUE;
+    public default OBB getOrientatedBox(AABB box) {
+        double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         double minZ = Double.MAX_VALUE;
         double maxX = -Double.MAX_VALUE;
@@ -167,7 +167,7 @@ public interface IVecOrigin {
         double maxZ = -Double.MAX_VALUE;
         
         for (int i = 0; i < BoxCorner.values().length; i++) {
-            Vec3d vec = BoxCorner.values()[i].getVector(box);
+            Vec3d vec = BoxCorner.values()[i].get(box);
             
             transformPointToFakeWorld(vec);
             
@@ -179,8 +179,7 @@ public interface IVecOrigin {
             maxZ = Math.max(maxZ, vec.z);
         }
         
-        return new OrientatedVoxelShape(this, minX, minY, minZ, maxX, maxY, maxZ);*/
-        return null;
+        return new OBB(this, minX, minY, minZ, maxX, maxY, maxZ);
     }
     
     @OnlyIn(value = Dist.CLIENT)
@@ -208,7 +207,6 @@ public interface IVecOrigin {
     
     @OnlyIn(value = Dist.CLIENT)
     public default void setupRendering(PoseStack matrixStack, Entity entity, float partialTicks) {
-        //matrixStack.translate(-TileEntityRendererDispatcher.staticPlayerX, -TileEntityRendererDispatcher.staticPlayerY, -TileEntityRendererDispatcher.staticPlayerZ); TODO
         setupRenderingInternal(matrixStack, entity, partialTicks);
     }
     
