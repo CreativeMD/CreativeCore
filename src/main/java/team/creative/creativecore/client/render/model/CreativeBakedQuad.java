@@ -6,7 +6,6 @@ import team.creative.creativecore.client.render.box.RenderBox;
 
 public class CreativeBakedQuad extends BakedQuad {
     
-    //public static TextureAtlasSprite missingSprite = MissingTextureSprite.getTexture();
     public static final ThreadLocal<CreativeBakedQuad> lastRenderedQuad = new ThreadLocal<>();
     public final RenderBox cube;
     public boolean shouldOverrideColor;

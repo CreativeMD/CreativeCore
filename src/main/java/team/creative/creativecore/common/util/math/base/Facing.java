@@ -185,7 +185,7 @@ public enum Facing {
         return axis.two();
     }
     
-    public Axis getUAxisFromFacing() {
+    public Axis getUAxis() {
         switch (axis) {
         case X:
             return Axis.Z;
@@ -197,7 +197,7 @@ public enum Facing {
         return null;
     }
     
-    public Axis getVAxisFromFacing() {
+    public Axis getVAxis() {
         switch (axis) {
         case X:
             return Axis.Y;
@@ -209,7 +209,7 @@ public enum Facing {
         return null;
     }
     
-    public float getUFromFacing(float x, float y, float z) {
+    public float getU(float x, float y, float z) {
         switch (axis) {
         case X:
             return z;
@@ -221,7 +221,7 @@ public enum Facing {
         return 0;
     }
     
-    public float getVFromFacing(float x, float y, float z) {
+    public float getV(float x, float y, float z) {
         switch (axis) {
         case X:
             return y;

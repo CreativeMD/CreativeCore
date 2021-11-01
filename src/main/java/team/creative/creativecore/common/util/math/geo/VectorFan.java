@@ -184,15 +184,11 @@ public class VectorFan {
             float uOffset;
             float vOffset;
             if (holder.uvInverted) {
-                uOffset = ((holder.facing.getVFromFacing(oldX, oldY, oldZ) - holder.facing.getVFromFacing(x, y, z)) / holder.facing
-                        .getVFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
-                vOffset = ((holder.facing.getUFromFacing(oldX, oldY, oldZ) - holder.facing.getUFromFacing(x, y, z)) / holder.facing
-                        .getUFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
+                uOffset = ((holder.facing.getV(oldX, oldY, oldZ) - holder.facing.getV(x, y, z)) / holder.facing.getV(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
+                vOffset = ((holder.facing.getU(oldX, oldY, oldZ) - holder.facing.getU(x, y, z)) / holder.facing.getU(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
             } else {
-                uOffset = ((holder.facing.getUFromFacing(oldX, oldY, oldZ) - holder.facing.getUFromFacing(x, y, z)) / holder.facing
-                        .getUFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
-                vOffset = ((holder.facing.getVFromFacing(oldX, oldY, oldZ) - holder.facing.getVFromFacing(x, y, z)) / holder.facing
-                        .getVFromFacing(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
+                uOffset = ((holder.facing.getU(oldX, oldY, oldZ) - holder.facing.getU(x, y, z)) / holder.facing.getU(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
+                vOffset = ((holder.facing.getV(oldX, oldY, oldZ) - holder.facing.getV(x, y, z)) / holder.facing.getV(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
             }
             quad.getVertices()[uvIndex] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex]) - uOffset);
             quad.getVertices()[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex + 1]) - vOffset);

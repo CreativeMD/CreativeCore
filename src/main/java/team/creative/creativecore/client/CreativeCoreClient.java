@@ -13,6 +13,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -24,6 +26,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fmlclient.ConfigGuiHandler.ConfigGuiFactory;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.client.command.ClientCommandRegistry;
+import team.creative.creativecore.client.render.model.ICreativeRenderedBlock;
+import team.creative.creativecore.client.render.model.ICreativeRenderedItem;
 import team.creative.creativecore.client.test.GuiTest;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
@@ -34,10 +38,14 @@ import team.creative.creativecore.common.gui.integration.ContainerScreenIntegrat
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.util.registry.FilteredHandlerRegistry;
 
 public class CreativeCoreClient {
     
     private static Minecraft mc = Minecraft.getInstance();
+    
+    public static final FilteredHandlerRegistry<Item, ICreativeRenderedItem> RENDERED_ITEMS = new FilteredHandlerRegistry<>(null);
+    public static final FilteredHandlerRegistry<Block, ICreativeRenderedBlock> RENDERED_BLOCKS = new FilteredHandlerRegistry<>(null);
     
     public static void registerClientConfig(String modid) {
         ModLoadingContext.get().registerExtensionPoint(ConfigGuiFactory.class, () -> new ConfigGuiFactory((a, b) -> {

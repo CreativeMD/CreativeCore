@@ -1,20 +1,30 @@
 package team.creative.creativecore.client.render.box;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
+import javax.annotation.Nullable;
+
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 import com.mojang.math.Vector3d;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.face.FaceRenderType;
 import team.creative.creativecore.client.render.face.IFaceRenderType;
+import team.creative.creativecore.common.mod.OptifineHelper;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
@@ -437,6 +447,94 @@ public class RenderBox extends AlignedBox {
         if (ColorUtils.isTransparent(color))
             return true;
         return !state.getMaterial().isSolidBlocking() || !state.getMaterial().isSolid();
+    }
+    
+    @SuppressWarnings("deprecation")
+    protected List<BakedQuad> getBakedQuad(LevelAccessor level, BakedModel blockModel, BlockState state, Facing facing, BlockPos pos, RenderType layer, Random rand) {
+        return OptifineHelper.getBakedQuad(blockModel.getQuads(state, facing.toVanilla(), rand), level, state, facing, pos, layer, rand);
+    }
+    
+    public List<BakedQuad> getBakedQuad(LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, Random rand, boolean overrideTint, int defaultColor) {
+        List<BakedQuad> blockQuads = getBakedQuad(level, blockModel, state, facing, pos, layer, rand);
+        
+        if (blockQuads.isEmpty())
+            return Collections.emptyList();
+        RenderInformationHolder holder = new RenderInformationHolder(DefaultVertexFormat.BLOCK, facing, this.color != -1 ? this.color : defaultColor);
+        holder.offset = offset;
+        
+        List<BakedQuad> quads = new ArrayList<>();
+        for (int i = 0; i < blockQuads.size(); i++) {
+            
+            holder.setQuad(blockQuads.get(i), overrideTint, defaultColor);
+            if (!needsResorting && OptifineHelper.isEmissive(holder.quad.getSprite()))
+                needsResorting = true;
+            
+            int[] data = holder.quad.getVertices();
+            
+            int index = 0;
+            int uvIndex = index + holder.uvOffset / 4;
+            float tempMinX = Float.intBitsToFloat(data[index]);
+            float tempMinY = Float.intBitsToFloat(data[index + 1]);
+            float tempMinZ = Float.intBitsToFloat(data[index + 2]);
+            
+            float tempU = Float.intBitsToFloat(data[uvIndex]);
+            
+            holder.uvInverted = false;
+            
+            index = 1 * holder.format.getIntegerSize();
+            uvIndex = index + holder.uvOffset / 4;
+            if (tempMinX != Float.intBitsToFloat(data[index])) {
+                if (tempU != Float.intBitsToFloat(data[uvIndex]))
+                    holder.uvInverted = Axis.X != facing.getUAxis();
+                else
+                    holder.uvInverted = Axis.X != facing.getVAxis();
+            } else if (tempMinY != Float.intBitsToFloat(data[index + 1])) {
+                if (tempU != Float.intBitsToFloat(data[uvIndex]))
+                    holder.uvInverted = Axis.Y != facing.getUAxis();
+                else
+                    holder.uvInverted = Axis.Y != facing.getVAxis();
+            } else {
+                if (tempU != Float.intBitsToFloat(data[uvIndex]))
+                    holder.uvInverted = Axis.Z != facing.getUAxis();
+                else
+                    holder.uvInverted = Axis.Z != facing.getVAxis();
+            }
+            
+            index = 2 * holder.format.getIntegerSize();
+            float tempMaxX = Float.intBitsToFloat(data[index]);
+            float tempMaxY = Float.intBitsToFloat(data[index + 1]);
+            float tempMaxZ = Float.intBitsToFloat(data[index + 2]);
+            
+            holder.setBounds(tempMinX, tempMinY, tempMinZ, tempMaxX, tempMaxY, tempMaxZ);
+            
+            // Check if it is intersecting, otherwise there is no need to render it
+            if (!intersectsWithFace(facing, holder, offset))
+                continue;
+            
+            uvIndex = holder.uvOffset / 4;
+            float u1 = Float.intBitsToFloat(data[uvIndex]);
+            float v1 = Float.intBitsToFloat(data[uvIndex + 1]);
+            uvIndex = 2 * holder.format.getIntegerSize() + holder.uvOffset / 4;
+            float u2 = Float.intBitsToFloat(data[uvIndex]);
+            float v2 = Float.intBitsToFloat(data[uvIndex + 1]);
+            
+            if (holder.uvInverted) {
+                holder.sizeU = facing.getV(tempMinX, tempMinY, tempMinZ) < facing.getV(tempMaxX, tempMaxY, tempMaxZ) ? u2 - u1 : u1 - u2;
+                holder.sizeV = facing.getU(tempMinX, tempMinY, tempMinZ) < facing.getU(tempMaxX, tempMaxY, tempMaxZ) ? v2 - v1 : v1 - v2;
+            } else {
+                holder.sizeU = facing.getU(tempMinX, tempMinY, tempMinZ) < facing.getU(tempMaxX, tempMaxY, tempMaxZ) ? u2 - u1 : u1 - u2;
+                holder.sizeV = facing.getV(tempMinX, tempMinY, tempMinZ) < facing.getV(tempMaxX, tempMaxY, tempMaxZ) ? v2 - v1 : v1 - v2;
+            }
+            
+            Object renderQuads = getRenderQuads(holder.facing);
+            if (renderQuads instanceof List)
+                for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
+                    ((List<VectorFan>) renderQuads).get(j).generate(holder, quads);
+            else if (renderQuads instanceof VectorFan)
+                ((VectorFan) renderQuads).generate(holder, quads);
+        }
+        return quads;
+        
     }
     
     private static int uvOffset(VertexFormat format) {
