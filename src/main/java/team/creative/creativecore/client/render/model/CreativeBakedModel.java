@@ -95,14 +95,14 @@ public class CreativeBakedModel implements BakedModel {
     
     public static List<BakedQuad> getQuads(BlockState state, Facing facing, Random rand, IModelData extraData, boolean threaded) {
         if (state != null) {
-            ICreativeRenderedBlock renderer = CreativeCoreClient.RENDERED_BLOCKS.get(state.getBlock());
+            CreativeRenderBlock renderer = CreativeCoreClient.RENDERED_BLOCKS.get(state.getBlock());
             if (renderer != null)
                 return compileBoxes(renderer.getBoxes(state), facing, MinecraftForgeClient.getRenderLayer(), rand, false);
             return Collections.EMPTY_LIST;
         }
         
         ItemStack stack = lastItemStack;
-        ICreativeRenderedItem renderer = CreativeCoreClient.RENDERED_ITEMS.get(stack.getItem());
+        CreativeRenderItem renderer = CreativeCoreClient.RENDERED_ITEMS.get(stack.getItem());
         
         if (renderer != null) {
             RenderType layer = MinecraftForgeClient.getRenderLayer();
@@ -143,7 +143,7 @@ public class CreativeBakedModel implements BakedModel {
     @Override
     public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack poseStack) {
         if (lastItemStack != null) {
-            ICreativeRenderedItem renderer = CreativeCoreClient.RENDERED_ITEMS.get(lastItemStack.getItem());
+            CreativeRenderItem renderer = CreativeCoreClient.RENDERED_ITEMS.get(lastItemStack.getItem());
             if (renderer != null)
                 renderer.applyCustomOpenGLHackery(poseStack, lastItemStack, cameraTransformType);
         }
@@ -162,12 +162,12 @@ public class CreativeBakedModel implements BakedModel {
     
     @Override
     public List<com.mojang.datafixers.util.Pair<BakedModel, RenderType>> getLayerModels(ItemStack itemStack, boolean fabulous) {
-        ICreativeRenderedItem renderer = CreativeCoreClient.RENDERED_ITEMS.get(lastItemStack.getItem());
+        CreativeRenderItem renderer = CreativeCoreClient.RENDERED_ITEMS.get(lastItemStack.getItem());
         if (renderer != null) {
-            List<RenderType> itemLayers = renderer.getLayers(itemStack, fabulous);
-            List<com.mojang.datafixers.util.Pair<BakedModel, RenderType>> layers = new ArrayList<>(itemLayers.size());
-            for (RenderType layer : itemLayers)
-                layers.add(new Pair<BakedModel, RenderType>(this, layer));
+            RenderType[] itemLayers = renderer.getLayers(itemStack, fabulous);
+            List<com.mojang.datafixers.util.Pair<BakedModel, RenderType>> layers = new ArrayList<>(itemLayers.length);
+            for (int i = 0; i < itemLayers.length; i++)
+                layers.add(new Pair<BakedModel, RenderType>(this, itemLayers[i]));
             return layers;
             
         }

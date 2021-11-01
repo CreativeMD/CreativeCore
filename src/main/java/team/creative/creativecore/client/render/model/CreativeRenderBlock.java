@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.box.RenderBox;
 
 @OnlyIn(value = Dist.CLIENT)
-public abstract class ICreativeRenderedBlock {
+public abstract class CreativeRenderBlock {
     
     public abstract List<? extends RenderBox> getBoxes(BlockState state);
     

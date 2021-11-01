@@ -3,6 +3,7 @@ package team.creative.creativecore.client;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -26,8 +27,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fmlclient.ConfigGuiHandler.ConfigGuiFactory;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.client.command.ClientCommandRegistry;
-import team.creative.creativecore.client.render.model.ICreativeRenderedBlock;
-import team.creative.creativecore.client.render.model.ICreativeRenderedItem;
+import team.creative.creativecore.client.render.model.CreativeRenderBlock;
+import team.creative.creativecore.client.render.model.CreativeRenderItem;
 import team.creative.creativecore.client.test.GuiTest;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
@@ -44,8 +45,10 @@ public class CreativeCoreClient {
     
     private static Minecraft mc = Minecraft.getInstance();
     
-    public static final FilteredHandlerRegistry<Item, ICreativeRenderedItem> RENDERED_ITEMS = new FilteredHandlerRegistry<>(null);
-    public static final FilteredHandlerRegistry<Block, ICreativeRenderedBlock> RENDERED_BLOCKS = new FilteredHandlerRegistry<>(null);
+    public static final FilteredHandlerRegistry<Item, CreativeRenderItem> RENDERED_ITEMS = new FilteredHandlerRegistry<>(null);
+    public static final FilteredHandlerRegistry<Block, CreativeRenderBlock> RENDERED_BLOCKS = new FilteredHandlerRegistry<>(null);
+    
+    private static final ItemColor ITEM_COLOR = (stack, tint) -> tint;
     
     public static void registerClientConfig(String modid) {
         ModLoadingContext.get().registerExtensionPoint(ConfigGuiFactory.class, () -> new ConfigGuiFactory((a, b) -> {
@@ -54,6 +57,11 @@ public class CreativeCoreClient {
                 return new GuiScreenIntegration(new ConfigGuiLayer(holder, Dist.CLIENT));
             return null;
         }));
+    }
+    
+    public static void registerItem(Item item, CreativeRenderItem renderer) {
+        RENDERED_ITEMS.register(item, renderer);
+        mc.getItemColors().register(ITEM_COLOR, item);
     }
     
     public static float getDeltaFrameTime() {
