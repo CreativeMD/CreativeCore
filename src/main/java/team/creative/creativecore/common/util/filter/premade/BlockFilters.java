@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.filter.block;
+package team.creative.creativecore.common.util.filter.premade;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -51,7 +51,7 @@ public class BlockFilters {
     static {
         Filter.SERIALIZER.register("block", BlockFilter.class);
         Filter.SERIALIZER.register("blocks", BlocksFilter.class);
-        Filter.SERIALIZER.register("class", BlockClassFilter.class);
+        Filter.SERIALIZER.register("bclass", BlockClassFilter.class);
     }
     
     private static class BlockFilter implements Filter<Block>, CompoundSerializer {
