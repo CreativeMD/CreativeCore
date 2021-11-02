@@ -2,10 +2,13 @@ package team.creative.creativecore.common.util.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.type.Pair;
+import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
+import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
 public class FilteredHandlerRegistry<U, T> {
     
@@ -46,4 +49,15 @@ public class FilteredHandlerRegistry<U, T> {
                 return pair.getValue();
         return defaultHandler;
     }
+    
+    public Iterable<T> handlers() {
+        return new Iterable<T>() {
+            
+            @Override
+            public Iterator<T> iterator() {
+                return new ConsecutiveIterator<T>(map.values().iterator(), new FunctionIterator<T>(handlers, (pair) -> pair.value));
+            }
+        };
+    }
+    
 }
