@@ -95,8 +95,8 @@ public class HashMapList<K, V> implements Iterable<V> {
             list.add(value);
     }
     
-    public boolean removeKey(K key) {
-        return keys.remove(key) != null;
+    public ArrayList<V> removeKey(K key) {
+        return keys.remove(key);
     }
     
     public boolean removeValue(K key, V value) {

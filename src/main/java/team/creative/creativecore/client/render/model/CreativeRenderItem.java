@@ -26,7 +26,13 @@ public abstract class CreativeRenderItem {
     public abstract List<? extends RenderBox> getBoxes(ItemStack stack, RenderType layer);
     
     public RenderType[] getLayers(ItemStack stack, boolean fabulous) {
+        if (hasTranslucentLayer(stack))
+            return ADVANCED;
         return STANDARD;
+    }
+    
+    public boolean hasTranslucentLayer(ItemStack stack) {
+        return false;
     }
     
     public void applyCustomOpenGLHackery(PoseStack pose, ItemStack stack, TransformType cameraTransformType) {}

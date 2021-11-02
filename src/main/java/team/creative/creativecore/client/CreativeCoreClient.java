@@ -59,7 +59,7 @@ public class CreativeCoreClient {
         }));
     }
     
-    public static void registerItem(Item item, CreativeRenderItem renderer) {
+    public static void registerItem(CreativeRenderItem renderer, Item item) {
         RENDERED_ITEMS.register(item, renderer);
         mc.getItemColors().register(ITEM_COLOR, item);
     }
