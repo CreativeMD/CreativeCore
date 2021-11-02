@@ -59,6 +59,15 @@ public class CreativeCoreClient {
         }));
     }
     
+    public static void registerBlocks(CreativeRenderBlock renderer, Block... blocks) {
+        for (int i = 0; i < blocks.length; i++)
+            RENDERED_BLOCKS.register(blocks[i], renderer);
+    }
+    
+    public static void registerBlock(CreativeRenderBlock renderer, Block block) {
+        RENDERED_BLOCKS.register(block, renderer);
+    }
+    
     public static void registerItem(CreativeRenderItem renderer, Item item) {
         RENDERED_ITEMS.register(item, renderer);
         mc.getItemColors().register(ITEM_COLOR, item);
