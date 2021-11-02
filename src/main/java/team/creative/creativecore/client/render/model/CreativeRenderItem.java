@@ -43,4 +43,6 @@ public abstract class CreativeRenderItem {
     
     public void saveCachedModel(Facing facing, RenderType layer, List<BakedQuad> cachedQuads, ItemStack stack, boolean threaded) {}
     
+    public void reload() {}
+    
 }

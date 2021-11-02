@@ -113,6 +113,8 @@ public class CreativeCoreClient {
             @Override
             protected void apply(Object p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
                 GuiStyle.reload();
+                for (CreativeRenderItem handler : RENDERED_ITEMS.handlers())
+                    handler.reload();
             }
         });
         
