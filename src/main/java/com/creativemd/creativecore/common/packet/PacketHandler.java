@@ -104,7 +104,7 @@ public class PacketHandler {
     public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, World world, BlockPos pos, @Nullable Predicate<EntityPlayer> predicate) {
         if (world instanceof IOrientatedWorld) {
             CreativeWorld subWorld = getParentSubWorld((IOrientatedWorld) world);
-            sendPacketToTrackingPlayers(packet, subWorld.parent, (WorldServer) ((IOrientatedWorld) world).getRealWorld(), predicate);
+            sendPacketToTrackingPlayers(packet, subWorld.parent, ((IOrientatedWorld) world).getRealWorld(), predicate);
         } else {
             try {
                 PlayerChunkMapEntry entry = ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4);
@@ -116,10 +116,13 @@ public class PacketHandler {
         }
     }
     
-    public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, Entity entity, WorldServer world, @Nullable Predicate<EntityPlayer> predicate) {
-        for (EntityPlayer player : world.getEntityTracker().getTrackingPlayers(entity))
-            if (predicate == null || predicate.apply(player))
-                sendPacketToPlayer(packet, (EntityPlayerMP) player);
+    public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, Entity entity, World world, @Nullable Predicate<EntityPlayer> predicate) {
+        if (world instanceof IOrientatedWorld)
+            sendPacketToTrackingPlayers(packet, getParentSubWorld((IOrientatedWorld) world).parent, ((IOrientatedWorld) world).getRealWorld(), predicate);
+        else
+            for (EntityPlayer player : ((WorldServer) world).getEntityTracker().getTrackingPlayers(entity))
+                if (predicate == null || predicate.apply(player))
+                    sendPacketToPlayer(packet, (EntityPlayerMP) player);
     }
     
     public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, EntityPlayerMP player) {
