@@ -33,25 +33,24 @@ public abstract class TileEntityCreative extends TileEntity {
         tempWorld = null;
     }
     
-    public void getDescriptionNBT(NBTTagCompound nbt) {
-        
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(pos, getBlockMetadata(), getUpdateTag());
     }
     
-    @SideOnly(Side.CLIENT)
-    public void receiveUpdatePacket(NBTTagCompound nbt) {
-        
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        handleUpdateTag(pkt.getNbtCompound());
+    }
+    
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        readFromNBT(tag);
     }
     
     @Override
     public NBTTagCompound getUpdateTag() {
         return writeToNBT(new NBTTagCompound());
-    }
-    
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        getDescriptionNBT(nbt);
-        return new SPacketUpdateTileEntity(pos, getBlockMetadata(), nbt);
     }
     
     public double getDistance(BlockPos coord) {
@@ -69,13 +68,6 @@ public abstract class TileEntityCreative extends TileEntity {
             world.notifyBlockUpdate(pos, state, state, 3);
             world.markChunkDirty(getPos(), this);
         }
-    }
-    
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        receiveUpdatePacket(pkt.getNbtCompound());
-        updateRender();
     }
     
 }

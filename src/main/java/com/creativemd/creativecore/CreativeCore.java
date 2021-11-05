@@ -27,7 +27,6 @@ import com.creativemd.creativecore.common.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.common.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.gui.premade.SubContainerEmpty;
-import com.creativemd.creativecore.common.packet.BlockUpdatePacket;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler;
 import com.creativemd.creativecore.common.packet.CreativeSplittedMessageHandler;
@@ -201,7 +200,6 @@ public class CreativeCore {
         CreativeCorePacket.registerPacket(GuiUpdatePacket.class);
         CreativeCorePacket.registerPacket(GuiLayerPacket.class);
         CreativeCorePacket.registerPacket(OpenGuiPacket.class);
-        CreativeCorePacket.registerPacket(BlockUpdatePacket.class);
         CreativeCorePacket.registerPacket(ContainerControlUpdatePacket.class);
         CreativeCorePacket.registerPacket(GuiNBTPacket.class);
         CreativeCorePacket.registerPacket(ConfigurationPacket.class);
