@@ -6,6 +6,7 @@ import com.creativemd.creativecore.common.utils.math.vec.ChildVecOrigin;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 import com.creativemd.creativecore.common.utils.math.vec.VecOrigin;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
@@ -106,10 +107,16 @@ public class SubWorld extends CreativeWorld {
         return parentWorld;
     }
     
+    @Override
     public World getRealWorld() {
         if (parentWorld instanceof SubWorld)
             return ((SubWorld) parentWorld).getRealWorld();
         return parentWorld;
+    }
+    
+    @Override
+    public Entity getParentEntity() {
+        return parent;
     }
     
 }

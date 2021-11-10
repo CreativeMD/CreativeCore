@@ -5,6 +5,7 @@ import javax.vecmath.Vector3d;
 import com.creativemd.creativecore.common.utils.math.vec.IVecOrigin;
 import com.creativemd.creativecore.common.utils.math.vec.VecOrigin;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
@@ -127,4 +128,8 @@ public class FakeWorld extends CreativeWorld {
         return null;
     }
     
+    @Override
+    public Entity getParentEntity() {
+        return null;
+    }
 }

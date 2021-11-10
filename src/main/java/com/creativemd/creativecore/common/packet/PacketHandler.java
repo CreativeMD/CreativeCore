@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 
 import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.packet.CreativeMessageHandler.MessageType;
-import com.creativemd.creativecore.common.world.CreativeWorld;
 import com.creativemd.creativecore.common.world.IOrientatedWorld;
 import com.google.common.base.Predicate;
 
@@ -95,16 +94,9 @@ public class PacketHandler {
                 sendPacketToPlayer(packet, (EntityPlayerMP) player);
     }
     
-    private static CreativeWorld getParentSubWorld(IOrientatedWorld world) {
-        if (world.getParent() instanceof IOrientatedWorld)
-            return getParentSubWorld((IOrientatedWorld) world.getParent());
-        return (CreativeWorld) world;
-    }
-    
     public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, World world, BlockPos pos, @Nullable Predicate<EntityPlayer> predicate) {
         if (world instanceof IOrientatedWorld) {
-            CreativeWorld subWorld = getParentSubWorld((IOrientatedWorld) world);
-            sendPacketToTrackingPlayers(packet, subWorld.parent, ((IOrientatedWorld) world).getRealWorld(), predicate);
+            sendPacketToTrackingPlayers(packet, ((IOrientatedWorld) world).getTopEntity(), predicate);
         } else {
             try {
                 PlayerChunkMapEntry entry = ((WorldServer) world).getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4);
@@ -116,9 +108,10 @@ public class PacketHandler {
         }
     }
     
-    public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, Entity entity, World world, @Nullable Predicate<EntityPlayer> predicate) {
+    public static void sendPacketToTrackingPlayers(CreativeCorePacket packet, Entity entity, @Nullable Predicate<EntityPlayer> predicate) {
+        World world = entity.world;
         if (world instanceof IOrientatedWorld)
-            sendPacketToTrackingPlayers(packet, getParentSubWorld((IOrientatedWorld) world).parent, ((IOrientatedWorld) world).getRealWorld(), predicate);
+            sendPacketToTrackingPlayers(packet, ((IOrientatedWorld) world).getTopEntity(), predicate);
         else
             for (EntityPlayer player : ((WorldServer) world).getEntityTracker().getTrackingPlayers(entity))
                 if (predicate == null || predicate.apply(player))

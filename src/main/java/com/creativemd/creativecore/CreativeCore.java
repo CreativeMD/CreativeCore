@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.creativemd.creativecore.client.CreativeCoreClient;
-import com.creativemd.creativecore.client.avatar.AvatarItemStack;
 import com.creativemd.creativecore.common.config.event.ConfigEventHandler;
 import com.creativemd.creativecore.common.config.gui.SubGuiClientSync;
 import com.creativemd.creativecore.common.config.gui.SubGuiConfig;
@@ -15,14 +14,8 @@ import com.creativemd.creativecore.common.config.sync.ConfigurationPacket;
 import com.creativemd.creativecore.common.event.CreativeTickHandler;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiAvatarLabel;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiCheckBox;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiLabel;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiProgressBar;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiScrollBox;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiStateButton;
-import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
+import com.creativemd.creativecore.common.gui.controls.gui.text.GuiTextarea;
 import com.creativemd.creativecore.common.gui.event.gui.GuiControlClickEvent;
 import com.creativemd.creativecore.common.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.common.gui.opener.GuiHandler;
@@ -37,14 +30,11 @@ import com.creativemd.creativecore.common.packet.gui.GuiLayerPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiNBTPacket;
 import com.creativemd.creativecore.common.packet.gui.GuiUpdatePacket;
 import com.creativemd.creativecore.common.packet.gui.OpenGuiPacket;
-import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.server.command.ConfigCommand;
 import com.creativemd.creativecore.server.command.GuiCommand;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -128,7 +118,7 @@ public class CreativeCore {
                     
                     @Override
                     public void createControls() {
-                        GuiScrollBox box = new GuiScrollBox("box", 0, 0, 150, 150);
+                        /*GuiScrollBox box = new GuiScrollBox("box", 0, 0, 150, 150);
                         box.controls.add(new GuiLabel("Test", 0, 0, 194, 20, ColorUtils.WHITE));
                         box.controls.add(new GuiButton("dialog", 0, 20) {
                             
@@ -146,7 +136,8 @@ public class CreativeCore {
                             @Override
                             public void onClicked(int x, int y, int button) {}
                         });
-                        controls.add(box);
+                        controls.add(box);*/
+                        controls.add(new GuiTextarea("text", 0, 0, 196, 196));
                     }
                     
                     @CustomEventSubscribe
