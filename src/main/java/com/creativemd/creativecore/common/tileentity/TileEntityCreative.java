@@ -40,13 +40,15 @@ public abstract class TileEntityCreative extends TileEntity {
     
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-        handleUpdateTag(pkt.getNbtCompound());
+        handleUpdate(pkt.getNbtCompound(), false);
     }
     
     @Override
     public void handleUpdateTag(NBTTagCompound tag) {
-        readFromNBT(tag);
+        handleUpdate(tag, true);
     }
+    
+    public abstract void handleUpdate(NBTTagCompound nbt, boolean chunkUpdate);
     
     @Override
     public NBTTagCompound getUpdateTag() {
