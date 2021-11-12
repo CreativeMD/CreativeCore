@@ -5,6 +5,7 @@ import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
+import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollidingPlane.PlaneCache;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 
@@ -28,8 +29,52 @@ public class OBB extends CreativeAABB {
     }
     
     @Override
-    public OBB setMaxY(double y2) {
-        return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, y2, this.maxZ);
+    public OBB setMinX(double value) {
+        return new OBB(origin, value, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+    }
+    
+    @Override
+    public OBB setMinY(double value) {
+        return new OBB(origin, this.minX, value, this.minZ, this.maxX, this.maxY, this.maxZ);
+    }
+    
+    @Override
+    public OBB setMinZ(double value) {
+        return new OBB(origin, this.minX, this.minY, value, this.maxX, this.maxY, this.maxZ);
+    }
+    
+    @Override
+    public OBB setMaxX(double value) {
+        return new OBB(origin, this.minX, this.minY, this.minZ, value, this.maxY, this.maxZ);
+    }
+    
+    @Override
+    public OBB setMaxY(double value) {
+        return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, value, this.maxZ);
+    }
+    
+    @Override
+    public OBB setMaxZ(double value) {
+        return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, this.maxY, value);
+    }
+    
+    public OBB set(Facing facing, double value) {
+        switch (facing) {
+        case EAST:
+            return new OBB(origin, this.minX, this.minY, this.minZ, value, this.maxY, this.maxZ);
+        case WEST:
+            return new OBB(origin, value, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+        case UP:
+            return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, value, this.maxZ);
+        case DOWN:
+            return new OBB(origin, this.minX, value, this.minZ, this.maxX, this.maxY, this.maxZ);
+        case SOUTH:
+            return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, this.maxY, value);
+        case NORTH:
+            return new OBB(origin, this.minX, this.minY, value, this.maxX, this.maxY, this.maxZ);
+        default:
+            throw new UnsupportedOperationException();
+        }
     }
     
     @Override
