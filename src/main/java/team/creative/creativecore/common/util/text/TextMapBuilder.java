@@ -15,9 +15,7 @@ public class TextMapBuilder<K> implements ITextCollection {
     private LinkedHashMap<K, List<Component>> lines = new LinkedHashMap<>();
     private Predicate<String> filter;
     
-    public TextMapBuilder() {
-        
-    }
+    public TextMapBuilder() {}
     
     public TextMapBuilder<K> setFilter(Predicate<String> predicate) {
         this.filter = predicate;
