@@ -25,4 +25,12 @@ public class OptifineHelper {
         return quads;
     }
     
+    public static boolean isShaders() {
+        return false;
+    }
+    
+    public static void preRenderChunkLayer(RenderType type) {}
+    
+    public static void postRenderChunkLayer(RenderType type) {}
+    
 }
