@@ -37,6 +37,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.client.render.level.IRenderChunkSupplier;
+import team.creative.creativecore.common.level.listener.LevelBoundsListener;
+import team.creative.creativecore.common.level.system.BlockUpdateLevelSystem;
 
 public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     
@@ -50,12 +52,18 @@ public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     private final List<AbstractClientPlayer> players = Lists.newArrayList();
     private final FakeChunkCache chunkSource;
     
+    public final BlockUpdateLevelSystem blockUpdate = new BlockUpdateLevelSystem(this);
+    
     public boolean hasChanged = false;
     public boolean preventNeighborUpdate = false;
     
     protected CreativeLevel(WritableLevelData worldInfo, int radius, Supplier<ProfilerFiller> supplier, boolean client, boolean debug, long seed) {
         super(worldInfo, CreativeCore.FAKE_DIMENSION_NAME, CreativeCore.FAKE_DIMENSION, supplier, client, debug, seed);
         this.chunkSource = new FakeChunkCache(this, radius);
+    }
+    
+    public void registerLevelBoundListener(LevelBoundsListener listener) {
+        this.blockUpdate.registerLevelBoundListener(listener);
     }
     
     @Override
@@ -140,8 +148,12 @@ public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     }
     
     @Override
-    protected LevelEntityGetter<Entity> getEntities() {
+    public LevelEntityGetter<Entity> getEntities() {
         return this.entityStorage.getEntityGetter();
+    }
+    
+    public Iterable<Entity> loadedEntities() {
+        return getEntities().getAll();
     }
     
     @Override
