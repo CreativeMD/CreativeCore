@@ -10,6 +10,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ScreenEvent.BackgroundDrawnEvent;
+import net.minecraftforge.common.MinecraftForge;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
@@ -18,6 +20,12 @@ import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public interface IGuiIntegratedParent extends IGuiParent {
+    
+    public GuiLayer EMPTY = new GuiLayer("empty") {
+        
+        @Override
+        public void create() {}
+    };
     
     public List<GuiLayer> getLayers();
     
@@ -45,7 +53,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             if (i == layers.size() - 1) {
                 if (layer.hasGrayBackground())
                     GuiRenderHelper.fillGradient(matrixStack, 0, 0, width, height, -1072689136, -804253680);
-                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiScreenEvent.BackgroundDrawnEvent(screen, matrixStack));
+                MinecraftForge.EVENT_BUS.post(new BackgroundDrawnEvent(screen, matrixStack));
             }
             
             matrixStack.pushPose();

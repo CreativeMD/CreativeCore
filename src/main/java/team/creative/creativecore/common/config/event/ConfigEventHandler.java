@@ -30,9 +30,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
@@ -82,7 +82,7 @@ public class ConfigEventHandler {
     }
     
     @SubscribeEvent
-    public void startServer(FMLServerAboutToStartEvent event) {
+    public void startServer(ServerAboutToStartEvent event) {
         load(Dist.DEDICATED_SERVER);
     }
     

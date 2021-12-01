@@ -27,14 +27,13 @@ public class GuiStyle {
     public static final ResourceLocation DEFAULT_STYLE_LOCATION = new ResourceLocation(CreativeCore.MODID, "gui/default_style.json");
     private static final Minecraft mc = Minecraft.getInstance();
     private static final Gson GSON = new GsonBuilder().create();
-    private static final JsonParser PARSER = new JsonParser();
     public static GuiStyle defaultStyle;
     private static HashMap<String, GuiStyle> cachedStyles = new HashMap<>();
     
     public static void reload() {
         try {
             Resource resource = mc.getResourceManager().getResource(DEFAULT_STYLE_LOCATION);
-            JsonObject root = PARSER.parse(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
+            JsonObject root = JsonParser.parseString(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
             
             defaultStyle = GSON.fromJson(root, GuiStyle.class);
             
@@ -53,7 +52,7 @@ public class GuiStyle {
         
         try {
             Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name));
-            JsonObject root = PARSER.parse(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
+            JsonObject root = JsonParser.parseString(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
             
             cached = GSON.fromJson(root, GuiStyle.class);
             cachedStyles.put(name, cached);

@@ -18,12 +18,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.FuzzyOffsetConstantColumnBiomeZoomer;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -32,8 +32,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.network.NetworkConstants;
 import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer;
@@ -83,7 +82,7 @@ public class CreativeCore {
             
             @Override
             public ContainerIntegration create(int windowId, Inventory playerInv) {
-                throw new UnsupportedOperationException();
+                return new ContainerIntegration(this, windowId, playerInv.player);
             }
         };
         GUI_CONTAINER.setRegistryName("container");
@@ -98,10 +97,10 @@ public class CreativeCore {
         MinecraftForge.EVENT_BUS.register(CreativeCoreClient.class);
         CreativeCoreClient.init(event);
         ModLoadingContext.get()
-                .registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+                .registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     }
     
-    private void server(final FMLServerStartingEvent event) {
+    private void server(final ServerStartingEvent event) {
         event.getServer().getCommands().getDispatcher().register(Commands.literal("cmdconfig").executes(x -> {
             GuiHandler.openGui("config", new CompoundTag(), x.getSource().getPlayerOrException());
             return 0;
@@ -118,7 +117,7 @@ public class CreativeCore {
         CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
         MinecraftForge.EVENT_BUS.register(GuiEventHandler.class);
         FAKE_DIMENSION = DimensionType.create(OptionalLong
-                .empty(), true, false, false, false, 1, false, true, true, false, false, 0, 256, 256, FuzzyOffsetConstantColumnBiomeZoomer.INSTANCE, BlockTags.INFINIBURN_OVERWORLD
+                .empty(), true, false, false, false, 1, false, true, true, false, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD
                         .getName(), DimensionType.OVERWORLD_EFFECTS, 0.0F);
         
         ArgumentTypes.register("names", StringArrayArgumentType.class, new EmptyArgumentSerializer<>(() -> StringArrayArgumentType.stringArray()));

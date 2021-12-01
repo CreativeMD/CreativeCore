@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.handler;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -25,11 +26,13 @@ public interface GuiHandler {
         if (handler != null) {
             if (player.level.isClientSide)
                 CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
-            else
+            else {
                 player.openMenu(new SimpleMenuProvider((id, inventory, x) -> {
                     ContainerIntegration integration = new ContainerIntegration(CreativeCore.GUI_CONTAINER, id, x, handler.create(player, nbt));
                     return integration;
                 }, new TextComponent(name)));
+                CreativeCore.NETWORK.sendToClient(new OpenGuiPacket(name, nbt), (ServerPlayer) player);
+            }
         }
     }
     

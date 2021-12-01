@@ -19,9 +19,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.EmptyTickList;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.TickList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkSource;
@@ -33,6 +31,8 @@ import net.minecraft.world.level.entity.TransientEntitySectionManager;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.level.storage.WritableLevelData;
+import net.minecraft.world.ticks.BlackholeTickAccess;
+import net.minecraft.world.ticks.LevelTickAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
@@ -111,22 +111,12 @@ public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     }
     
     @Override
-    public TickList<Block> getBlockTicks() {
-        return EmptyTickList.empty();
-    }
-    
-    @Override
-    public TickList<Fluid> getLiquidTicks() {
-        return EmptyTickList.empty();
-    }
-    
-    @Override
     public ChunkSource getChunkSource() {
         return chunkSource;
     }
     
     public void unload(LevelChunk chunk) {
-        chunk.invalidateAllBlockEntities();
+        chunk.clearAllBlockEntities();
         this.chunkSource.getLightEngine().enableLightSources(chunk.getPos(), false);
     }
     
@@ -178,6 +168,16 @@ public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     
     @Override
     public void destroyBlockProgress(int p_175715_1_, BlockPos p_175715_2_, int p_175715_3_) {}
+    
+    @Override
+    public LevelTickAccess<Block> getBlockTicks() {
+        return BlackholeTickAccess.emptyLevelList();
+    }
+
+    @Override
+    public LevelTickAccess<Fluid> getFluidTicks() {
+        return BlackholeTickAccess.emptyLevelList();
+    }
     
     final class EntityCallbacks implements LevelCallback<Entity> {
         @Override

@@ -51,6 +51,8 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     
     @Override
     public GuiLayer getTopLayer() {
+        if (layers.isEmpty())
+            return EMPTY;
         return layers.get(layers.size() - 1);
     }
     

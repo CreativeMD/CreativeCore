@@ -97,7 +97,7 @@ public class CreativeBakedModel implements BakedModel {
         if (state != null) {
             CreativeRenderBlock renderer = CreativeCoreClient.RENDERED_BLOCKS.get(state.getBlock());
             if (renderer != null)
-                return compileBoxes(renderer.getBoxes(state), facing, MinecraftForgeClient.getRenderLayer(), rand, false);
+                return compileBoxes(renderer.getBoxes(state), facing, MinecraftForgeClient.getRenderType(), rand, false);
             return Collections.EMPTY_LIST;
         }
         
@@ -105,7 +105,7 @@ public class CreativeBakedModel implements BakedModel {
         CreativeRenderItem renderer = CreativeCoreClient.RENDERED_ITEMS.get(stack.getItem());
         
         if (renderer != null) {
-            RenderType layer = MinecraftForgeClient.getRenderLayer();
+            RenderType layer = MinecraftForgeClient.getRenderType();
             List<BakedQuad> cached = renderer.getCachedModel(facing, layer, stack, threaded);
             if (cached != null)
                 return cached;
