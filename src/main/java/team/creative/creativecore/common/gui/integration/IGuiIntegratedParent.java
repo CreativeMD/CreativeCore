@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui.integration;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -9,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
@@ -69,7 +69,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
-                GuiUtils.drawHoveringText(matrixStack, event.tooltip, mouseX, mouseY, width, height, -1, Minecraft.getInstance().font);
+                ((Screen) this).renderTooltip(matrixStack, event.tooltip, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font);
         }
     }
     
