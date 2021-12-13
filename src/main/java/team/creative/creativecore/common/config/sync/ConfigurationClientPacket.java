@@ -12,7 +12,7 @@ import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.network.CreativePacket;
-import team.creative.creativecore.common.util.type.CheckTree;
+import team.creative.creativecore.common.util.type.tree.CheckTree;
 
 public class ConfigurationClientPacket extends CreativePacket {
     

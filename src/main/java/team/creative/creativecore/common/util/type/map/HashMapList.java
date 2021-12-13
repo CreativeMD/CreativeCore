@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.type;
+package team.creative.creativecore.common.util.type.map;
 
 import java.util.ArrayList;
 import java.util.Arrays;

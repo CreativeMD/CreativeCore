@@ -25,7 +25,7 @@ import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
-import team.creative.creativecore.common.util.type.HashMapList;
+import team.creative.creativecore.common.util.type.map.HashMapList;
 
 public class GuiStackSelector extends GuiLabel {
     

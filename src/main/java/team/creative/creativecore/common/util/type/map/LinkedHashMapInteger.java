@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.type;
+package team.creative.creativecore.common.util.type.map;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

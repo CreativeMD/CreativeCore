@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import team.creative.creativecore.common.util.filter.Filter;
-import team.creative.creativecore.common.util.type.Pair;
 import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
 import team.creative.creativecore.common.util.type.itr.FunctionIterator;
+import team.creative.creativecore.common.util.type.list.Pair;
 
 public class FilteredHandlerRegistry<U, T> {
     

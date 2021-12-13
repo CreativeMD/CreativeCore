@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.type;
+package team.creative.creativecore.common.util.type.list;
 
 import java.io.Serializable;
 import java.util.AbstractList;

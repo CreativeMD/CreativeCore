@@ -32,7 +32,7 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.handler.GuiHandler;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
-import team.creative.creativecore.common.util.type.CheckTree;
+import team.creative.creativecore.common.util.type.tree.CheckTree;
 
 public class ClientSyncGuiLayer extends GuiLayer {
     

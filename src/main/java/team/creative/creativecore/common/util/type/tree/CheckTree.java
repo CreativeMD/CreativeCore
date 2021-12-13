@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.type;
+package team.creative.creativecore.common.util.type.tree;
 
 import java.util.ArrayList;
 import java.util.Collection;

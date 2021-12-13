@@ -15,7 +15,7 @@ import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.util.math.geo.Rect;
-import team.creative.creativecore.common.util.type.HashMapList;
+import team.creative.creativecore.common.util.type.map.HashMapList;
 
 public class GuiStackSelectorExtension extends GuiScrollY {
     

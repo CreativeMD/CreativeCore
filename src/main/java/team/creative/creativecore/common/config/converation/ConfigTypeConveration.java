@@ -45,7 +45,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
-import team.creative.creativecore.common.util.type.PairList;
+import team.creative.creativecore.common.util.type.list.PairList;
 
 public abstract class ConfigTypeConveration<T> {
     

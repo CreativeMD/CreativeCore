@@ -20,7 +20,7 @@ import net.minecraft.util.StringDecomposer;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.IAdvancedTextComponent;
-import team.creative.creativecore.common.util.type.SingletonList;
+import team.creative.creativecore.common.util.type.list.SingletonList;
 
 public class CompiledText {
     

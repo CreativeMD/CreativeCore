@@ -5,8 +5,8 @@ import java.util.List;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.VAlign;
-import team.creative.creativecore.common.util.type.MarkIterator;
-import team.creative.creativecore.common.util.type.MarkList;
+import team.creative.creativecore.common.util.type.list.MarkIterator;
+import team.creative.creativecore.common.util.type.list.MarkList;
 
 public class GuiStackX extends GuiFlow {
     

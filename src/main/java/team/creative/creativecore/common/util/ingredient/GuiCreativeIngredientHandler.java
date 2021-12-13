@@ -25,7 +25,7 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
-import team.creative.creativecore.common.util.type.PairList;
+import team.creative.creativecore.common.util.type.list.PairList;
 
 @OnlyIn(value = Dist.CLIENT)
 public abstract class GuiCreativeIngredientHandler {

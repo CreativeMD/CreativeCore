@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.type;
+package team.creative.creativecore.common.util.type.list;
 
 import java.util.BitSet;
 import java.util.List;

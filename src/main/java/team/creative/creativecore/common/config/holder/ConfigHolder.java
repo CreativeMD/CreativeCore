@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
-import team.creative.creativecore.common.util.type.PairList;
+import team.creative.creativecore.common.util.type.list.PairList;
 
 public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConfigHolder {
     
