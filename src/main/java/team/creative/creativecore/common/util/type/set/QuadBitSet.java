@@ -121,6 +121,9 @@ public class QuadBitSet {
     public boolean get(int x, int y) {
         int chunkX = chunkIndex(x);
         
+        if (chunks == null)
+            return false;
+        
         if (chunkX < minChunkX || chunkX >= minChunkX + chunks.length)
             return false;
         
