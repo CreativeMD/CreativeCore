@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.type.map;
 
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,5 +30,34 @@ public class LinkedHashMapDouble<K> extends LinkedHashMap<K, Double> {
         for (Entry<? extends K, ? extends Double> entry : paramMap.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("[");
+        boolean first = true;
+        for (Entry<K, Double> entry : entrySet()) {
+            if (first)
+                first = false;
+            else
+                builder.append(",");
+            builder.append(entry.getKey() + ": " + entry.getValue() + "");
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+    
+    public String toString(DecimalFormat df) {
+        StringBuilder builder = new StringBuilder("[");
+        boolean first = true;
+        for (Entry<K, Double> entry : entrySet()) {
+            if (first)
+                first = false;
+            else
+                builder.append(",");
+            builder.append(entry.getKey() + ": " + df.format(entry.getValue()) + "");
+        }
+        builder.append("]");
+        return builder.toString();
     }
 }

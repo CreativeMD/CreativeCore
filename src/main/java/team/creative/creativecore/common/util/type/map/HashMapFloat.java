@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.type.map;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,5 +34,34 @@ public class HashMapFloat<K> extends HashMap<K, Float> {
         for (Entry<? extends K, ? extends Float> entry : paramMap.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("[");
+        boolean first = true;
+        for (Entry<K, Float> entry : entrySet()) {
+            if (first)
+                first = false;
+            else
+                builder.append(",");
+            builder.append(entry.getKey() + ": " + entry.getValue() + "");
+        }
+        builder.append("]");
+        return builder.toString();
+    }
+    
+    public String toString(DecimalFormat df) {
+        StringBuilder builder = new StringBuilder("[");
+        boolean first = true;
+        for (Entry<K, Float> entry : entrySet()) {
+            if (first)
+                first = false;
+            else
+                builder.append(",");
+            builder.append(entry.getKey() + ": " + df.format(entry.getValue()) + "");
+        }
+        builder.append("]");
+        return builder.toString();
     }
 }
