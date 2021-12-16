@@ -114,7 +114,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     
     @Override
     public GuiLayer openLayer(LayerOpenPacket packet) {
-        packet.execute(getPlayer());
+        packet.executeClient(getPlayer());
         return layers.get(layers.size() - 1);
     }
     

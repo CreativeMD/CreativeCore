@@ -14,7 +14,7 @@ public abstract class LayerPacket extends CreativePacket {
     
     @Override
     public void executeClient(Player player) {
-        if (player.containerMenu instanceof IGuiIntegratedParent)
+        if (player != null && player.containerMenu instanceof IGuiIntegratedParent)
             execute(player, (IGuiIntegratedParent) player.containerMenu);
         else if (Minecraft.getInstance().screen instanceof IGuiIntegratedParent)
             execute(player, (IGuiIntegratedParent) Minecraft.getInstance().screen);
