@@ -31,6 +31,13 @@ public class GuiComboBoxMapped<K> extends GuiComboBox {
         return null;
     }
     
+    public K getSelected(K defaultValue) {
+        int index = getIndex();
+        if (index < keys.size())
+            return keys.get(getIndex());
+        return defaultValue;
+    }
+    
     public void select(K key) {
         int index = keys.indexOf(key);
         if (index != -1)
