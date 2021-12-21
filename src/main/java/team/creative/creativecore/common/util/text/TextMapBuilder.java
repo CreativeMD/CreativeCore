@@ -39,6 +39,11 @@ public class TextMapBuilder<K> implements ITextCollection {
         lines.put(key, line);
     }
     
+    public TextMapBuilder addComponent(K key, Component component) {
+        addNewLine(key, component);
+        return this;
+    }
+    
     public TextMapBuilder addComponent(K[] array, Function<K, Component> toComponent) {
         for (int i = 0; i < array.length; i++)
             addNewLine(array[i], toComponent.apply(array[i]));
