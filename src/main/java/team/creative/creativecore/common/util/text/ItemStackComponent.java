@@ -9,7 +9,7 @@ import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 
-public class ItemStackComponent extends BaseComponent implements IAdvancedTextComponent {
+public class ItemStackComponent extends BaseComponent implements AdvancedComponent {
     
     public final ItemStack stack;
     
@@ -33,7 +33,7 @@ public class ItemStackComponent extends BaseComponent implements IAdvancedTextCo
     }
     
     @Override
-    public List<IAdvancedTextComponent> split(int width, boolean force) {
+    public List<AdvancedComponent> split(int width, boolean force) {
         return null;
     }
     

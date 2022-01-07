@@ -10,15 +10,21 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mojang.math.Vector3d;
 import com.mojang.math.Vector3f;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -34,6 +40,7 @@ import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
+import team.creative.creativecore.common.util.text.AdvancedComponent;
 
 public class NetworkFieldTypes {
     
@@ -595,6 +602,29 @@ public class NetworkFieldTypes {
             }
             
         }, BiFilter.class);
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<Component>() {
+            
+            private static final Gson GSON = Util.make(() -> {
+                GsonBuilder gsonbuilder = new GsonBuilder();
+                gsonbuilder.disableHtmlEscaping();
+                gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponent.Serializer());
+                gsonbuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
+                gsonbuilder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
+                return gsonbuilder.create();
+            });
+            
+            @Override
+            protected void writeContent(Component content, FriendlyByteBuf buffer) {
+                buffer.writeUtf(GSON.toJson(content));
+            }
+            
+            @Override
+            protected Component readContent(FriendlyByteBuf buffer) {
+                return GsonHelper.fromJson(GSON, buffer.readUtf(), MutableComponent.class, false);
+            }
+            
+        }, Component.class);
     }
     
 }

@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.StringDecomposer;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-import team.creative.creativecore.common.util.text.IAdvancedTextComponent;
+import team.creative.creativecore.common.util.text.AdvancedComponent;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 
 public class CompiledText {
@@ -178,9 +178,9 @@ public class CompiledText {
             for (FormattedText text : components) {
                 int height;
                 int width;
-                if (text instanceof IAdvancedTextComponent) {
-                    width = ((IAdvancedTextComponent) text).getWidth(font);
-                    height = ((IAdvancedTextComponent) text).getHeight(font);
+                if (text instanceof AdvancedComponent) {
+                    width = ((AdvancedComponent) text).getWidth(font);
+                    height = ((AdvancedComponent) text).getHeight(font);
                 } else {
                     width = font.width(text);
                     height = font.lineHeight;
@@ -191,8 +191,8 @@ public class CompiledText {
                     yOffset = (this.height - height) / 2;
                 stack.pushPose();
                 stack.translate(xOffset, yOffset, 0);
-                if (text instanceof IAdvancedTextComponent)
-                    ((IAdvancedTextComponent) text).render(stack, font, defaultColor);
+                if (text instanceof AdvancedComponent)
+                    ((AdvancedComponent) text).render(stack, font, defaultColor);
                 else {
                     font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, stack.last().pose(), renderType, false, 0, 15728880);
                     renderType.endBatch();
@@ -209,8 +209,8 @@ public class CompiledText {
         
         public FormattedText add(FormattedText component) {
             int remainingWidth = maxWidth - width;
-            if (component instanceof IAdvancedTextComponent) {
-                IAdvancedTextComponent advanced = (IAdvancedTextComponent) component;
+            if (component instanceof AdvancedComponent) {
+                AdvancedComponent advanced = (AdvancedComponent) component;
                 if (advanced.isEmpty())
                     return null;
                 
@@ -220,8 +220,8 @@ public class CompiledText {
                     updateDimension(width + textWidth, advanced.getHeight(font));
                     return null;
                 } else if (advanced.canSplit()) {
-                    List<IAdvancedTextComponent> remaining = advanced.split(remainingWidth, width == 0);
-                    IAdvancedTextComponent toAdd = remaining.remove(0);
+                    List<AdvancedComponent> remaining = advanced.split(remainingWidth, width == 0);
+                    AdvancedComponent toAdd = remaining.remove(0);
                     components.add(toAdd);
                     updateDimension(width + toAdd.getWidth(font), toAdd.getHeight(font));
                     if (remaining.isEmpty())
@@ -328,8 +328,8 @@ public class CompiledText {
     
     private int calculateWidth(FormattedText component) {
         int width = 0;
-        if (component instanceof IAdvancedTextComponent) {
-            IAdvancedTextComponent advanced = (IAdvancedTextComponent) component;
+        if (component instanceof AdvancedComponent) {
+            AdvancedComponent advanced = (AdvancedComponent) component;
             if (!advanced.isEmpty())
                 width += advanced.getWidth(font);
         } else
