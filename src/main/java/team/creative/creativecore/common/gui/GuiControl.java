@@ -337,10 +337,6 @@ public abstract class GuiControl {
         return parent.getPlayer();
     }
     
-    public boolean isClientSide() {
-        return getPlayer().level.isClientSide;
-    }
-    
     // UTILS
     
     @OnlyIn(value = Dist.CLIENT)

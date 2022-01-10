@@ -109,8 +109,17 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     }
     
     @Override
+    public void closeLayer(GuiLayer layer) {
+        int index = layers.indexOf(layer);
+        if (index != -1) {
+            sendPacket(new LayerClosePacket());
+            closeLayer(index);
+        }
+    }
+    
+    @Override
     public void closeLayer(int layer) {
-        layers.remove(layer);
+        layers = layers.subList(0, layer);
         if (layers.isEmpty())
             if (isClient())
                 Minecraft.getInstance().setScreen((Screen) null);

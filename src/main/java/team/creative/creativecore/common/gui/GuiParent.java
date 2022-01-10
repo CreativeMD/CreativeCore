@@ -291,6 +291,15 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         getParent().closeTopLayer();
     }
     
+    public void closeThisLayer() {
+        getParent().closeLayer(getLayer());
+    }
+    
+    @Override
+    public void closeLayer(GuiLayer layer) {
+        getParent().closeLayer(layer);
+    }
+    
     @Override
     public GuiLayer openLayer(LayerOpenPacket packet) {
         return getParent().openLayer(packet);

@@ -16,6 +16,8 @@ public interface IGuiParent {
     
     public void closeTopLayer();
     
+    public void closeLayer(GuiLayer layer);
+    
     public void raiseEvent(GuiEvent event);
     
     public void reflow();

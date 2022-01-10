@@ -212,4 +212,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         return 10;
     }
     
+    @Override
+    public void closeLayer(GuiLayer layer) {
+        getParent().closeLayer(layer);;
+    }
+    
 }
