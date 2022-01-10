@@ -190,6 +190,10 @@ public class ColorUtils {
         return (color & 255) / 255F;
     }
     
+    public static int setAlpha(int color, int alpha) {
+        return (alpha & 255) << 24 | (color & ~ColorPart.ALPHA.code);
+    }
+    
     public static int rgba(int red, int green, int blue, int alpha) {
         return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
