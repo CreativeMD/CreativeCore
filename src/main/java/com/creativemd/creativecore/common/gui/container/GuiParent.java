@@ -105,7 +105,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
         Rect scaledRect = relativeMaximumRect.mergeRects(getRect());
         lastRenderedHeight = 0;
         
-        scaledRect.scale(scale);
+        scaledRect.scale(1 / scale);
         
         for (int i = controls.size() - 1; i >= 0; i--) {
             GuiControl control = controls.get(i);
@@ -128,7 +128,7 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
                 GlStateManager.scale(scale, scale, 1);
                 GlStateManager.translate(xOffset, yOffset, 0);
                 control.renderControl(helper, 1, control.canOverlap() ? getScreenRect() : scaledRect
-                    .getOffsetRect((int) -xOffset - control.posX - control.getContentOffset(), (int) -yOffset - control.posY - control.getContentOffset()));
+                        .getOffsetRect((int) -xOffset - control.posX - control.getContentOffset(), (int) -yOffset - control.posY - control.getContentOffset()));
                 GlStateManager.popMatrix();
                 
                 GL11.glDisable(GL11.GL_STENCIL_TEST);
@@ -193,7 +193,8 @@ public abstract class GuiParent extends GuiControl implements IControlParent {
             scale = 1 / getScaleFactor();
         if (parent != null)
             return getParent().getMousePos()
-                .addVector(-getContentOffset() - getOffsetX() * getScaleFactor() - this.posX, -getContentOffset() - getOffsetY() * getScaleFactor() - this.posY, 0).scale(scale);
+                    .addVector(-getContentOffset() - getOffsetX() * getScaleFactor() - this.posX, -getContentOffset() - getOffsetY() * getScaleFactor() - this.posY, 0)
+                    .scale(scale);
         ScaledResolution scaledresolution = new ScaledResolution(mc);
         int i = scaledresolution.getScaledWidth();
         int j = scaledresolution.getScaledHeight();
