@@ -65,6 +65,10 @@ public class GuiRenderHelper {
         RenderSystem.applyModelViewMatrix();
     }
     
+    public static void drawItemStackDecorations(ItemStack stack) {
+        mc.getItemRenderer().renderGuiItemDecorations(getFont(), stack, 0, 0);
+    }
+    
     public static void drawStringCentered(PoseStack stack, String text, float width, float height, int color, boolean shadow) {
         int textWidth = mc.font.width(text);
         if (textWidth > width) {

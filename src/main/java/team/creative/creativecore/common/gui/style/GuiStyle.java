@@ -19,12 +19,14 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
+import team.creative.creativecore.common.gui.style.display.DisplayTexture;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiStyle {
     
     public static final ResourceLocation DEFAULT_STYLE_LOCATION = new ResourceLocation(CreativeCore.MODID, "gui/default_style.json");
+    public static final ResourceLocation GUI_ASSETS = new ResourceLocation(CreativeCore.MODID, "textures/gui_assets.png");
     private static final Minecraft mc = Minecraft.getInstance();
     private static final Gson GSON = new GsonBuilder().create();
     public static GuiStyle defaultStyle;
@@ -58,6 +60,7 @@ public class GuiStyle {
             cachedStyles.put(name, cached);
             return cached;
         } catch (FileNotFoundException e) {
+            cachedStyles.put(name, defaultStyle);
             return defaultStyle;
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +70,6 @@ public class GuiStyle {
     }
     
     @SerializedName("font-color")
-    
     public Color fontColor = new Color(255, 255, 255);
     @SerializedName("font-color-highlight")
     public Color fontColorHighlight = new Color(255, 255, 200);
@@ -95,6 +97,8 @@ public class GuiStyle {
     @SerializedName("clickable-highlight")
     public StyleDisplay clickableHighlight = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
     
+    public StyleDisplay slot = new DisplayTexture(GUI_ASSETS, 0, 0);
+    
     public StyleDisplay get(ControlStyleBorder border) {
         switch (border) {
         case BIG:
@@ -118,6 +122,8 @@ public class GuiStyle {
             return clickable;
         case NESTED_BACKGROUND:
             return secondaryBackground;
+        case SLOT:
+            return slot;
         default:
             return StyleDisplay.NONE;
         }

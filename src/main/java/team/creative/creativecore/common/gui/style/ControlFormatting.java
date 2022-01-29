@@ -9,6 +9,7 @@ public class ControlFormatting {
     public static final ControlFormatting GUI = new ControlFormatting(ControlStyleBorder.BIG, 5, ControlStyleFace.BACKGROUND);
     public static final ControlFormatting TRANSPARENT = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE);
     public static final ControlFormatting TRANSPARENT_NO_DISABLE = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE, false);
+    public static final ControlFormatting SLOT = new ControlFormatting(ControlStyleBorder.NONE, 1, ControlStyleFace.SLOT, false);
     
     public final ControlStyleBorder border;
     public final int padding;
@@ -43,6 +44,7 @@ public class ControlFormatting {
         CLICKABLE,
         NESTED_BACKGROUND,
         BACKGROUND,
+        SLOT,
         NONE;
         
     }

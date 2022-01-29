@@ -77,7 +77,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
-                ((Screen) this).renderTooltip(matrixStack, event.tooltip, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font);
+                screen.renderTooltip(matrixStack, event.tooltip, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font);
         }
     }
     

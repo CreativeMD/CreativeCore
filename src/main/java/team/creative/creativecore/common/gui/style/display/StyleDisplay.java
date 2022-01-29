@@ -9,7 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,7 +22,7 @@ public abstract class StyleDisplay {
     public static final StyleDisplay NONE = new StyleDisplay() {
         
         @Override
-        protected void render(Matrix4f mat, double x, double y, double width, double height) {}
+        public void render(PoseStack pose, double x, double y, double width, double height) {}
     };
     
     private static HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
@@ -43,16 +42,11 @@ public abstract class StyleDisplay {
         render(matrix, rect.getWidth(), rect.getHeight());
     }
     
-    public void render(PoseStack matrix, double x, double y, double width, double height) {
-        matrix.pushPose();
-        render(matrix.last().pose(), x, y, width, height);
-        matrix.popPose();
-    }
-    
-    protected abstract void render(Matrix4f mat, double x, double y, double width, double height);
+    public abstract void render(PoseStack pose, double x, double y, double width, double height);
     
     static {
         registerType("color", DisplayColor.class);
+        registerType("tex", DisplayTexture.class);
     }
     
     public static class StyleDisplayDeserializer implements JsonDeserializer<StyleDisplay> {
