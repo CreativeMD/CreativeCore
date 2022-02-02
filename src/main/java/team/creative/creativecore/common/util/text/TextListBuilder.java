@@ -86,6 +86,12 @@ public class TextListBuilder implements ITextCollection {
         return this;
     }
     
+    public TextListBuilder addTranslated(String prefix, Collection<String> collection) {
+        for (String entry : collection)
+            addNewLine(GuiControl.translateOrDefault(prefix + entry, entry));
+        return this;
+    }
+    
     public <T> TextListBuilder addTranslated(String prefix, T[] array, Function<T, String> toString) {
         for (int i = 0; i < array.length; i++) {
             String text = toString.apply(array[i]);
