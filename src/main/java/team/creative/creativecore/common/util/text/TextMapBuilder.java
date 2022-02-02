@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -53,6 +55,12 @@ public class TextMapBuilder<K> implements ITextCollection {
     public TextMapBuilder addComponent(Collection<K> collection, Function<K, Component> toComponent) {
         for (K t : collection)
             addNewLine(t, toComponent.apply(t));
+        return this;
+    }
+    
+    public TextMapBuilder addEntrySet(Set<Entry<String, K>> map, Function<Entry<String, K>, Component> toComponent) {
+        for (Entry<String, K> entry : map)
+            addNewLine(entry.getValue(), toComponent.apply(entry));
         return this;
     }
     
