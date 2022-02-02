@@ -2,6 +2,8 @@ package team.creative.creativecore.common.util.registry;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class NamedHandlerRegistry<T> {
     
@@ -40,5 +42,9 @@ public class NamedHandlerRegistry<T> {
     
     public Collection<String> keys() {
         return handlers.keySet();
+    }
+    
+    public Set<Entry<String, T>> entrySet() {
+        return handlers.entrySet();
     }
 }
