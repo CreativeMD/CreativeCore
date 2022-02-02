@@ -11,8 +11,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.sync.LayerClosePacket;
-import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
+import team.creative.creativecore.common.gui.packet.LayerClosePacket;
+import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.network.CreativePacket;
 
 public class ContainerIntegration extends AbstractContainerMenu implements IGuiIntegratedParent {

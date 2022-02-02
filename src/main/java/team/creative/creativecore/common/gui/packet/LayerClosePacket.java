@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.sync;
+package team.creative.creativecore.common.gui.packet;
 
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;

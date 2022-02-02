@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
-import team.creative.creativecore.common.gui.sync.OpenGuiPacket;
+import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
 @FunctionalInterface

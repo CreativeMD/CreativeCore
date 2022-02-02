@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.sync;
+package team.creative.creativecore.common.gui.packet;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;

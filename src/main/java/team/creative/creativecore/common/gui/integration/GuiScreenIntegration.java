@@ -11,7 +11,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
-import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
+import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 
 public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {
     

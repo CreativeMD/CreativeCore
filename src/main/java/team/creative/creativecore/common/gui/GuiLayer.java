@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
@@ -112,4 +113,6 @@ public abstract class GuiLayer extends GuiParent {
     public boolean hasLayer() {
         return true;
     }
+    
+    public void sendPacket(CompoundTag tag)
 }

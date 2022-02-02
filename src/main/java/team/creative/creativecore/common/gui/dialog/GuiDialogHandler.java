@@ -8,7 +8,7 @@ import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
-import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
+import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 
 public class GuiDialogHandler extends GuiLayerHandler {
     

@@ -12,7 +12,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
-import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
+import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlock;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlockTag;

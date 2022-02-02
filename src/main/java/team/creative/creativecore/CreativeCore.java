@@ -44,9 +44,9 @@ import team.creative.creativecore.common.config.sync.ConfigurationPacket;
 import team.creative.creativecore.common.gui.handler.GuiHandler;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
-import team.creative.creativecore.common.gui.sync.LayerClosePacket;
-import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
-import team.creative.creativecore.common.gui.sync.OpenGuiPacket;
+import team.creative.creativecore.common.gui.packet.LayerClosePacket;
+import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
+import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
 import team.creative.creativecore.common.network.CreativeNetwork;
 import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
 

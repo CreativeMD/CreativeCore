@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui;
 
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.event.GuiEvent;
-import team.creative.creativecore.common.gui.sync.LayerOpenPacket;
+import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 
 public interface IGuiParent {
     
