@@ -10,6 +10,7 @@ public class GuiInventoryGrid extends GuiParent {
     
     public final Container container;
     protected boolean hasFixedSize = false;
+    protected boolean reverse = false;
     private int cols;
     private int rows;
     
@@ -75,7 +76,7 @@ public class GuiInventoryGrid extends GuiParent {
         if (hasFixedSize)
             cachedRows = Math.min(cachedRows, this.rows);
         int offset = (height - cachedRows * GuiSlotBase.SLOT_SIZE) / 2;
-        int i = 0;
+        int i = reverse ? controls.size() - 1 : 0;
         for (GuiChildControl control : controls) {
             int row = i / cachedCols;
             control.setY(offset + row * GuiSlotBase.SLOT_SIZE);
@@ -84,7 +85,10 @@ public class GuiInventoryGrid extends GuiParent {
                 control.control.visible = false;
             else
                 control.control.visible = true;
-            i++;
+            if (reverse)
+                i--;
+            else
+                i++;
         }
     }
     
