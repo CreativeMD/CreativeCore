@@ -53,7 +53,7 @@ public abstract class GuiSlotBase extends GuiControl {
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         matrix.translate(0, 0, 10);
         GuiRenderHelper.drawItemStack(matrix, getStack(), 1F);
-        GuiRenderHelper.drawItemStackDecorations(getStack());
+        GuiRenderHelper.drawItemStackDecorations(matrix, getStack());
         matrix.translate(0, 0, 10);
         if (rect.inside(mouseX, mouseY))
             hover.render(matrix, rect.getWidth(), rect.getHeight());

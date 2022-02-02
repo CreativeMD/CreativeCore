@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -12,12 +13,14 @@ import com.mojang.math.Matrix4f;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -65,8 +68,49 @@ public class GuiRenderHelper {
         RenderSystem.applyModelViewMatrix();
     }
     
-    public static void drawItemStackDecorations(ItemStack stack) {
-        mc.getItemRenderer().renderGuiItemDecorations(getFont(), stack, 0, 0);
+    public static void drawItemStackDecorations(PoseStack posestack, ItemStack stack) {
+        //mc.getItemRenderer().renderGuiItemDecorations(getFont(), stack, 0, 0);
+        
+        if (!stack.isEmpty()) {
+            int x = 0;
+            int y = 0;
+            if (stack.getCount() != 1l) {
+                String s = String.valueOf(stack.getCount());
+                posestack.translate(0.0D, 0.0D, 0 + 200.0F);
+                MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last().pose(), multibuffersource$buffersource, false, 0, 15728880);
+                multibuffersource$buffersource.endBatch();
+            }
+            if (stack.isBarVisible()) {
+                RenderSystem.disableDepthTest();
+                RenderSystem.disableTexture();
+                RenderSystem.disableBlend();
+                Tesselator tesselator = Tesselator.getInstance();
+                BufferBuilder bufferbuilder = tesselator.getBuilder();
+                int i = stack.getBarWidth();
+                int j = stack.getBarColor();
+                fillRect(posestack, bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+                fillRect(posestack, bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
+                RenderSystem.enableBlend();
+                RenderSystem.enableTexture();
+                RenderSystem.enableDepthTest();
+            }
+            
+            LocalPlayer localplayer = Minecraft.getInstance().player;
+            float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack.getItem(), Minecraft.getInstance().getFrameTime());
+            if (f > 0.0F) {
+                RenderSystem.disableDepthTest();
+                RenderSystem.disableTexture();
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                Tesselator tesselator1 = Tesselator.getInstance();
+                BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
+                fillRect(posestack, bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
+                RenderSystem.enableTexture();
+                RenderSystem.enableDepthTest();
+            }
+            
+        }
     }
     
     public static void drawStringCentered(PoseStack stack, String text, float width, float height, int color, boolean shadow) {
@@ -102,6 +146,18 @@ public class GuiRenderHelper {
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
+    }
+    
+    public static void fillRect(PoseStack pose, BufferBuilder p_115153_, int p_115154_, int p_115155_, int p_115156_, int p_115157_, int p_115158_, int p_115159_, int p_115160_, int p_115161_) {
+        Matrix4f mat = pose.last().pose();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        p_115153_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        p_115153_.vertex(mat, p_115154_ + 0, p_115155_ + 0, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
+        p_115153_.vertex(mat, p_115154_ + 0, p_115155_ + p_115157_, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
+        p_115153_.vertex(mat, p_115154_ + p_115156_, p_115155_ + p_115157_, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
+        p_115153_.vertex(mat, p_115154_ + p_115156_, p_115155_ + 0, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
+        p_115153_.end();
+        BufferUploader.end(p_115153_);
     }
     
     public static void fillGradient(Matrix4f matrix, BufferBuilder builder, int x1, int y1, int x2, int y2, int z, int colorA, int colorB) {
