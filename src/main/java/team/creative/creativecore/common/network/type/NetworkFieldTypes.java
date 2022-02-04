@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.network.type;
 
+import java.io.DataInput;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -15,9 +17,17 @@ import com.google.gson.JsonObject;
 import com.mojang.math.Vector3d;
 import com.mojang.math.Vector3f;
 
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import net.minecraft.CrashReport;
+import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.EndTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -625,6 +635,35 @@ public class NetworkFieldTypes {
             }
             
         }, Component.class);
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<Tag>() {
+            
+            @Override
+            protected void writeContent(Tag content, FriendlyByteBuf buffer) {
+                buffer.writeByte(content.getId());
+                if (content.getId() != 0)
+                    try {
+                        content.write(new ByteBufOutputStream(buffer));
+                    } catch (IOException e) {}
+            }
+            
+            @Override
+            protected Tag readContent(FriendlyByteBuf buffer) {
+                DataInput in = new ByteBufInputStream(buffer);
+                try {
+                    byte b0 = in.readByte();
+                    if (b0 == 0)
+                        return EndTag.INSTANCE;
+                    
+                    return TagTypes.getType(b0).load(in, 0, NbtAccounter.UNLIMITED);
+                } catch (IOException e) {
+                    CrashReport crashreport = CrashReport.forThrowable(e, "Loading NBT data");
+                    crashreport.addCategory("NBT Tag");
+                    throw new ReportedException(crashreport);
+                }
+                
+            }
+        }, Tag.class);
     }
     
 }
