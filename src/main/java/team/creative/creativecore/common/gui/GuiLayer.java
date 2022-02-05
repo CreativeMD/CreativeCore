@@ -2,18 +2,20 @@ package team.creative.creativecore.common.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
+import team.creative.creativecore.common.gui.sync.GuiSyncHolder.GuiSyncHolderLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiLayer extends GuiParent {
     
     public final GuiStyle style;
     public final Rect rect;
+    private final GuiSyncHolderLayer sync = new GuiSyncHolderLayer(this);
     
     public GuiLayer(String name) {
         super(name, GuiFlow.STACK_X);
@@ -27,6 +29,10 @@ public abstract class GuiLayer extends GuiParent {
         this.style = GuiStyle.getStyle(name);
     }
     
+    public GuiSyncHolderLayer getSyncHolder() {
+        return sync;
+    }
+    
     public int getWidth() {
         return (int) rect.getWidth();
     }
@@ -37,6 +43,7 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public void init() {
+        createSync(sync);
         create();
         super.init();
         reflow();
@@ -58,6 +65,8 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     public abstract void create();
+    
+    public void createSync(GuiSyncHolder holder) {}
     
     @Override
     public ControlFormatting getControlFormatting() {
@@ -113,6 +122,4 @@ public abstract class GuiLayer extends GuiParent {
     public boolean hasLayer() {
         return true;
     }
-    
-    public void sendPacket(CompoundTag tag)
 }

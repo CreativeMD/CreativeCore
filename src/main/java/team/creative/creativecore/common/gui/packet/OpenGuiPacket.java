@@ -12,9 +12,7 @@ public class OpenGuiPacket extends CreativePacket {
     public String name;
     public CompoundTag nbt;
     
-    public OpenGuiPacket() {
-        
-    }
+    public OpenGuiPacket() {}
     
     public OpenGuiPacket(String name, CompoundTag nbt) {
         this.name = name;

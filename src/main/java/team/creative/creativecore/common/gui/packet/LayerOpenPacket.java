@@ -15,9 +15,7 @@ public class LayerOpenPacket extends LayerPacket {
         this.nbt = nbt;
     }
     
-    public LayerOpenPacket() {
-        
-    }
+    public LayerOpenPacket() {}
     
     @Override
     public void execute(Player player, IGuiIntegratedParent container) {

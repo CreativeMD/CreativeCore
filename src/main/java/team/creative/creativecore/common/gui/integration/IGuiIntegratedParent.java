@@ -13,6 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ScreenEvent.BackgroundDrawnEvent;
 import net.minecraftforge.common.MinecraftForge;
 import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -99,5 +100,12 @@ public interface IGuiIntegratedParent extends IGuiParent {
     @Override
     public default boolean hasGui() {
         return true;
+    }
+    
+    public default GuiControl get(String control) {
+        for (GuiLayer layer : getLayers())
+            if (control.startsWith(layer.getNestedName()))
+                return layer.get(control.substring(layer.getNestedName().length()));
+        return null;
     }
 }

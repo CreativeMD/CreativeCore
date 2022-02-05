@@ -44,6 +44,7 @@ import team.creative.creativecore.common.config.sync.ConfigurationPacket;
 import team.creative.creativecore.common.gui.handler.GuiHandler;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
+import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
 import team.creative.creativecore.common.gui.packet.LayerClosePacket;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
@@ -114,11 +115,11 @@ public class CreativeCore {
         NETWORK.registerType(LayerClosePacket.class, LayerClosePacket::new);
         NETWORK.registerType(LayerOpenPacket.class, LayerOpenPacket::new);
         NETWORK.registerType(OpenGuiPacket.class, OpenGuiPacket::new);
+        NETWORK.registerType(ControlSyncPacket.class, ControlSyncPacket::new);
         CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
         MinecraftForge.EVENT_BUS.register(GuiEventHandler.class);
-        FAKE_DIMENSION = DimensionType.create(OptionalLong
-                .empty(), true, false, false, false, 1, false, true, true, false, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD
-                        .getName(), DimensionType.OVERWORLD_EFFECTS, 0.0F);
+        FAKE_DIMENSION = DimensionType.create(OptionalLong.empty(), true, false, false, false, 1, false, true, true, false, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD
+                .getName(), DimensionType.OVERWORLD_EFFECTS, 0.0F);
         
         ArgumentTypes.register("names", StringArrayArgumentType.class, new EmptyArgumentSerializer<>(() -> StringArrayArgumentType.stringArray()));
         

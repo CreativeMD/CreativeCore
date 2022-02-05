@@ -8,9 +8,7 @@ import team.creative.creativecore.common.network.CreativePacket;
 
 public abstract class LayerPacket extends CreativePacket {
     
-    public LayerPacket() {
-        
-    }
+    public LayerPacket() {}
     
     @Override
     public void executeClient(Player player) {

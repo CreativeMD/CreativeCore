@@ -5,9 +5,7 @@ import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 
 public class LayerClosePacket extends LayerPacket {
     
-    public LayerClosePacket() {
-        
-    }
+    public LayerClosePacket() {}
     
     @Override
     public void execute(Player player, IGuiIntegratedParent container) {
