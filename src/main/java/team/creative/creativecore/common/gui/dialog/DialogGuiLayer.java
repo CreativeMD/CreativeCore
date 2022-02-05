@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.dialog;
 
 import java.util.function.BiConsumer;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -15,9 +16,11 @@ public class DialogGuiLayer extends GuiLayer {
     
     public DialogButton[] buttons;
     public BiConsumer<DialogGuiLayer, DialogButton> onClicked;
+    public Component title;
     
-    public DialogGuiLayer(String name, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
+    public DialogGuiLayer(String name, Component title, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
         super(name);
+        this.title = title;
         this.buttons = buttons;
         this.onClicked = onClicked;
         this.align = Align.CENTER;
@@ -27,7 +30,7 @@ public class DialogGuiLayer extends GuiLayer {
     
     @Override
     public void create() {
-        add(new GuiLabel("text").setTitle(new TranslatableComponent("dialog." + name)));
+        add(new GuiLabel("text").setTitle(title));
         GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
         for (DialogButton button : buttons)
             hBox.add(new GuiButton(button.name(), x -> closeDialog(button)).setTitle(new TranslatableComponent("dialog.button." + button.name())));
