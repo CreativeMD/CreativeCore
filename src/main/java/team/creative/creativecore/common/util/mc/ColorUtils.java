@@ -1,150 +1,67 @@
 package team.creative.creativecore.common.util.mc;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3d;
 
 import net.minecraft.core.Vec3i;
+import team.creative.creativecore.common.util.type.Color;
 
 public class ColorUtils {
     
-    public static class Color {
-        
-        public int red;
-        public int green;
-        public int blue;
-        public int alpha;
-        
-        public Color(int color) {
-            this.red = red(color);
-            this.green = green(color);
-            this.blue = blue(color);
-            this.alpha = alpha(color);
-        }
-        
-        public Color(Vec3i vec) {
-            this.red = vec.getX();
-            this.green = vec.getY();
-            this.blue = vec.getZ();
-            this.alpha = 255;
-        }
-        
-        public Color(Vector3d vec) {
-            this.red = (int) (vec.x * 255);
-            this.green = (int) (vec.y * 255);
-            this.blue = (int) (vec.z * 255);
-            this.alpha = 255;
-        }
-        
-        public Color(int red, int green, int blue) {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-            this.alpha = 255;
-        }
-        
-        public Color(int red, int green, int blue, int alpha) {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-            this.alpha = alpha;
-        }
-        
-        public void glColor() {
-            RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
-        }
-        
-        public Vector3d toVec(ColorPart part) {
-            return new Vector3d(red / 255D, green / 255D, blue / 255D);
-        }
-        
-        public float getDecimal(ColorPart part) {
-            return get(part) / 255F;
-        }
-        
-        public int get(ColorPart part) {
-            switch (part) {
-            case RED:
-                return red;
-            case GREEN:
-                return green;
-            case BLUE:
-                return blue;
-            case ALPHA:
-                return alpha;
-            }
-            return 0;
-        }
-        
-        public void set(ColorPart part, int value) {
-            switch (part) {
-            case RED:
-                this.red = value;
-                break;
-            case GREEN:
-                this.green = value;
-                break;
-            case BLUE:
-                this.blue = value;
-                break;
-            case ALPHA:
-                this.alpha = value;
-                break;
-            }
-        }
-        
-        public int toInt() {
-            return (alpha & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
-        }
-        
-        public boolean isWhite(int color) {
-            return red == 255 && green == 255 && blue == 255;
-        }
-        
-        public boolean isTransparent() {
-            return alpha < 255;
-        }
-        
-        public boolean isInvisible() {
-            return alpha == 0;
-        }
-        
-        public int blend(Color color) {
-            return blend(color, 0.5F);
-        }
-        
-        /** @param color
-         *            color to blend with
-         * @param ratio
-         *            intensity of object color, the ratio of color parameter is 1 - ratio
-         * @return */
-        public int blend(Color color, float ratio) {
-            if (ratio > 1f)
-                ratio = 1f;
-            else if (ratio < 0f)
-                ratio = 0f;
-            float iRatio = 1.0f - ratio;
-            
-            int a = (int) ((color.alpha * iRatio) + (alpha * ratio));
-            int r = (int) ((color.red * iRatio) + (red * ratio));
-            int g = (int) ((color.green * iRatio) + (green * ratio));
-            int b = (int) ((color.blue * iRatio) + (blue * ratio));
-            
-            return a << 24 | r << 16 | g << 8 | b;
-        }
-        
-    }
-    
     public static enum ColorPart {
-        RED(0xFF000000),
-        GREEN(0x00FF0000),
-        BLUE(0x0000FF00),
-        ALPHA(0x000000FF);
+        RED(0xFF000000) {
+            @Override
+            public int get(Color color) {
+                return color.getRed();
+            }
+            
+            @Override
+            public void set(Color color, int value) {
+                color.setRed(value);
+            }
+        },
+        GREEN(0x00FF0000) {
+            @Override
+            public int get(Color color) {
+                return color.getGreen();
+            }
+            
+            @Override
+            public void set(Color color, int value) {
+                color.setGreen(value);
+            }
+        },
+        BLUE(0x0000FF00) {
+            @Override
+            public int get(Color color) {
+                return color.getBlue();
+            }
+            
+            @Override
+            public void set(Color color, int value) {
+                color.setBlue(value);
+            }
+        },
+        ALPHA(0x000000FF) {
+            @Override
+            public int get(Color color) {
+                return color.getAlpha();
+            }
+            
+            @Override
+            public void set(Color color, int value) {
+                color.setAlpha(value);
+            }
+        };
         
         public final int code;
         
         private ColorPart(int code) {
             this.code = code;
         }
+        
+        public abstract int get(Color color);
+        
+        public abstract void set(Color color, int value);
     }
     
     public static final int WHITE = -1;

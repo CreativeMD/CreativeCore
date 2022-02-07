@@ -1,5 +1,11 @@
 package team.creative.creativecore.common.util.type;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Vector3d;
+
+import net.minecraft.core.Vec3i;
+import team.creative.creativecore.common.util.mc.ColorUtils.ColorPart;
+
 public class Color {
     
     public static final int WHITE = -1;
@@ -57,6 +63,20 @@ public class Color {
         this.green = g;
         this.blue = b;
         this.alpha = a;
+    }
+    
+    public Color(Vec3i vec) {
+        this.red = (byte) vec.getX();
+        this.green = (byte) vec.getY();
+        this.blue = (byte) vec.getZ();
+        this.alpha = (byte) 255;
+    }
+    
+    public Color(Vector3d vec) {
+        this.red = (byte) (vec.x * 255);
+        this.green = (byte) (vec.y * 255);
+        this.blue = (byte) (vec.z * 255);
+        this.alpha = (byte) 255;
     }
     
     public void set(ColorType type, int value) {
@@ -209,6 +229,14 @@ public class Color {
         this.red = (byte) ((red * iRatio) + (color.red * ratio));
         this.green = (byte) ((green * iRatio) + (color.green * ratio));
         this.blue = (byte) ((blue * iRatio) + (color.blue * ratio));
+    }
+    
+    public void glColor() {
+        RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
+    }
+    
+    public Vector3d toVec(ColorPart part) {
+        return new Vector3d(red / 255D, green / 255D, blue / 255D);
     }
     
     public static boolean isWhite(int color) {
