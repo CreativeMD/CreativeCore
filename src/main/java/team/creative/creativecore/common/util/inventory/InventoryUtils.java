@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.util.mc;
+package team.creative.creativecore.common.util.inventory;
 
 import java.util.ArrayList;
 import java.util.Collections;
