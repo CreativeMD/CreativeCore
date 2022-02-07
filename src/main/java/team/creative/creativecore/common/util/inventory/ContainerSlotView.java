@@ -7,6 +7,19 @@ import net.minecraft.world.item.ItemStack;
 
 public class ContainerSlotView {
     
+    public static final ContainerSlotView EMPTY = new ContainerSlotView(null, 0) {
+        @Override
+        public ItemStack get() {
+            return ItemStack.EMPTY;
+        }
+        
+        @Override
+        public void set(ItemStack stack) {}
+        
+        @Override
+        public void changed() {}
+    };
+    
     public static ContainerSlotView mainHand(Player player) {
         return new ContainerSlotView(player.getInventory(), player.getInventory().selected);
     }
