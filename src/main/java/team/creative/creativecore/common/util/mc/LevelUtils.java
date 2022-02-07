@@ -11,7 +11,7 @@ import net.minecraft.world.level.chunk.EmptyLevelChunk;
 import net.minecraft.world.level.chunk.LevelChunk;
 import team.creative.creativecore.common.level.CreativeLevel;
 
-public class WorldUtils {
+public class LevelUtils {
     
     public static boolean checkIfChunkExists(LevelChunk chunk) {
         if (chunk == null)
