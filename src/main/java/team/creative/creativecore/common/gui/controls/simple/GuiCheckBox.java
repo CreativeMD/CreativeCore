@@ -37,6 +37,11 @@ public class GuiCheckBox extends GuiLabel {
     }
     
     @Override
+    public GuiCheckBox setTranslate(String translate) {
+        return (GuiCheckBox) super.setTranslate(translate);
+    }
+    
+    @Override
     public int getPreferredWidth() {
         return super.getPreferredWidth() + checkBoxWidth + 3;
     }

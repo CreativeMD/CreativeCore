@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.util.mc.ColorUtils;
 
 @OnlyIn(value = Dist.CLIENT)
 public class GuiRenderHelper {
@@ -163,6 +164,20 @@ public class GuiRenderHelper {
     
     public static void gradientMaskRect(PoseStack pose, int x, int y, int x2, int y2, int color, int mask) {
         gradientRect(pose, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
+    }
+    
+    public static void colorRect(PoseStack pose, int x, int y, int width, int height, int color) {
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        colorRect(pose, bufferbuilder, x, y, x + width, y + height, ColorUtils.red(color), ColorUtils.green(color), ColorUtils.blue(color), ColorUtils.alpha(color));
+        tesselator.end();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
     }
     
     public static void colorRect(PoseStack pose, BufferBuilder builder, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
