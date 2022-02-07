@@ -47,4 +47,8 @@ public class NamedHandlerRegistry<T> {
     public Set<Entry<String, T>> entrySet() {
         return handlers.entrySet();
     }
+    
+    public Collection<T> values() {
+        return handlers.values();
+    }
 }
