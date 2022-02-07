@@ -32,6 +32,11 @@ public class NamedHandlerRegistry<T> {
         handlersInv.put(handler, id);
     }
     
+    public void registerDefault(String id, T handler) {
+        defaultHandler = handler;
+        register(id, handler);
+    }
+    
     public String getId(T type) {
         return handlersInv.get(type);
     }
