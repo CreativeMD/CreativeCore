@@ -4,20 +4,21 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3d;
 
 import net.minecraft.core.Vec3i;
+import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.mc.ColorUtils.ColorPart;
 
 public class Color {
     
-    public static final int WHITE = -1;
-    public static final int RED = -65536;
-    public static final int GREEN = -16711936;
-    public static final int BLUE = -16776961;
-    public static final int LIGHT_BLUE = -16740609;
-    public static final int ORANGE = -23296;
-    public static final int YELLOW = -256;
-    public static final int CYAN = 16711681;
-    public static final int MAGENTA = -65281;
-    public static final int BLACK = -16777216;
+    public static final Color WHITE = new Color(ColorUtils.WHITE);
+    public static final Color RED = new Color(ColorUtils.RED);
+    public static final Color GREEN = new Color(ColorUtils.GREEN);
+    public static final Color BLUE = new Color(ColorUtils.BLUE);
+    public static final Color LIGHT_BLUE = new Color(ColorUtils.LIGHT_BLUE);
+    public static final Color ORANGE = new Color(ColorUtils.ORANGE);
+    public static final Color YELLOW = new Color(ColorUtils.YELLOW);
+    public static final Color CYAN = new Color(ColorUtils.CYAN);
+    public static final Color MAGENTA = new Color(ColorUtils.MAGENTA);
+    public static final Color BLACK = new Color(ColorUtils.BLACK);
     
     protected byte red;
     protected byte green;
