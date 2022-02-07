@@ -290,7 +290,7 @@ public abstract class GuiControl {
     // RENDERING
     
     @OnlyIn(value = Dist.CLIENT)
-    public void render(PoseStack matrix, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
@@ -300,36 +300,36 @@ public abstract class GuiControl {
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
         
-        style.get(formatting.border).render(matrix, 0, 0, controlRect.getWidth(), controlRect.getHeight());
+        style.get(formatting.border).render(pose, 0, 0, controlRect.getWidth(), controlRect.getHeight());
         
         int borderWidth = style.getBorder(formatting.border);
         controlRect.shrink(borderWidth);
-        style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)).render(matrix, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
+        style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)).render(pose, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
         
-        renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
+        renderContent(pose, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
-            style.disabled.render(matrix, realRect, rectCopy);
+            style.disabled.render(pose, realRect, rectCopy);
         }
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         controlRect.shrink(formatting.padding);
-        matrix.pushPose();
-        matrix.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(matrix, control, controlRect, controlRect.intersection(realRect), mouseX, mouseY);
-        matrix.popPose();
+        pose.pushPose();
+        pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
+        renderContent(pose, control, controlRect, controlRect.intersection(realRect), mouseX, mouseY);
+        pose.popPose();
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        renderContent(matrix, control, controlRect, mouseX, mouseY);
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+        renderContent(pose, control, controlRect, mouseX, mouseY);
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    protected abstract void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY);
+    protected abstract void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY);
     
     // MINECRAFT
     
