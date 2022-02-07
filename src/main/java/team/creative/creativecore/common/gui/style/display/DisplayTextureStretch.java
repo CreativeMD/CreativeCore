@@ -3,24 +3,23 @@ package team.creative.creativecore.common.gui.style.display;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import team.creative.creativecore.client.render.GuiRenderHelper;
 
-public class DisplayTexture extends StyleDisplay {
+public class DisplayTextureStretch extends DisplayTexture {
     
-    public ResourceLocation location;
-    public int u;
-    public int v;
+    public int w;
+    public int h;
     
-    public DisplayTexture() {
-        this(new ResourceLocation("missing"), 0, 0);
+    public DisplayTextureStretch() {
+        super();
     }
     
-    public DisplayTexture(ResourceLocation location, int u, int v) {
-        this.location = location;
-        this.u = u;
-        this.v = v;
+    public DisplayTextureStretch(ResourceLocation location, int u, int v, int width, int height) {
+        super(location, u, v);
+        this.w = width;
+        this.h = height;
     }
     
     @Override
@@ -33,7 +32,7 @@ public class DisplayTexture extends StyleDisplay {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.enableTexture();
         
-        GuiComponent.blit(pose, 0, 0, 0, u, v, (int) width, (int) height, 256, 256);
+        GuiRenderHelper.textureRect(pose, 0, 0, (int) width, (int) height, u, v, w, h);
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }

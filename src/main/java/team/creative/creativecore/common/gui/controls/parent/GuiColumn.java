@@ -9,8 +9,17 @@ public class GuiColumn extends GuiParent {
         super(GuiFlow.STACK_X);
     }
     
+    public GuiColumn(GuiFlow flow) {
+        super(flow);
+    }
+    
     public GuiColumn(int width) {
         super(GuiFlow.STACK_X);
+        this.preferredWidth = width;
+    }
+    
+    public GuiColumn(int width, GuiFlow flow) {
+        super(flow);
         this.preferredWidth = width;
     }
     

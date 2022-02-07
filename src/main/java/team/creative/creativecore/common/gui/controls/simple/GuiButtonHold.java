@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public abstract class GuiButtonHold extends GuiButton {
+public class GuiButtonHold extends GuiButton {
     
     public static final int initialWait = 250;
     public static final int continousWait = 100;

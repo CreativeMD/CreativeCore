@@ -69,8 +69,6 @@ public class GuiRenderHelper {
     }
     
     public static void drawItemStackDecorations(PoseStack posestack, ItemStack stack) {
-        //mc.getItemRenderer().renderGuiItemDecorations(getFont(), stack, 0, 0);
-        
         if (!stack.isEmpty()) {
             int x = 0;
             int y = 0;
@@ -89,8 +87,8 @@ public class GuiRenderHelper {
                 BufferBuilder bufferbuilder = tesselator.getBuilder();
                 int i = stack.getBarWidth();
                 int j = stack.getBarColor();
-                fillRect(posestack, bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
-                fillRect(posestack, bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
+                colorRect(posestack, bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+                colorRect(posestack, bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
                 RenderSystem.enableBlend();
                 RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
@@ -105,7 +103,7 @@ public class GuiRenderHelper {
                 RenderSystem.defaultBlendFunc();
                 Tesselator tesselator1 = Tesselator.getInstance();
                 BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
-                fillRect(posestack, bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
+                colorRect(posestack, bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
                 RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
@@ -134,7 +132,7 @@ public class GuiRenderHelper {
         mc.font.drawShadow(stack, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, color);
     }
     
-    public static void fillGradient(PoseStack matrixStack, int x1, int y1, int x2, int y2, int colorFrom, int colorTo) {
+    public static void gradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -142,25 +140,13 @@ public class GuiRenderHelper {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        fillGradient(matrixStack.last().pose(), bufferbuilder, x1, y1, x2, y2, 0, colorFrom, colorTo);
+        gradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }
     
-    public static void fillRect(PoseStack pose, BufferBuilder p_115153_, int p_115154_, int p_115155_, int p_115156_, int p_115157_, int p_115158_, int p_115159_, int p_115160_, int p_115161_) {
-        Matrix4f mat = pose.last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        p_115153_.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        p_115153_.vertex(mat, p_115154_ + 0, p_115155_ + 0, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.vertex(mat, p_115154_ + 0, p_115155_ + p_115157_, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.vertex(mat, p_115154_ + p_115156_, p_115155_ + p_115157_, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.vertex(mat, p_115154_ + p_115156_, p_115155_ + 0, 0.0F).color(p_115158_, p_115159_, p_115160_, p_115161_).endVertex();
-        p_115153_.end();
-        BufferUploader.end(p_115153_);
-    }
-    
-    public static void fillGradient(Matrix4f matrix, BufferBuilder builder, int x1, int y1, int x2, int y2, int z, int colorA, int colorB) {
+    public static void gradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
         float f = (colorA >> 24 & 255) / 255.0F;
         float f1 = (colorA >> 16 & 255) / 255.0F;
         float f2 = (colorA >> 8 & 255) / 255.0F;
@@ -169,10 +155,58 @@ public class GuiRenderHelper {
         float f5 = (colorB >> 16 & 255) / 255.0F;
         float f6 = (colorB >> 8 & 255) / 255.0F;
         float f7 = (colorB & 255) / 255.0F;
-        builder.vertex(matrix, x2, y1, z).color(f1, f2, f3, f).endVertex();
-        builder.vertex(matrix, x1, y1, z).color(f1, f2, f3, f).endVertex();
-        builder.vertex(matrix, x1, y2, z).color(f5, f6, f7, f4).endVertex();
+        builder.vertex(matrix, x2, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y2, z).color(f5, f6, f7, f4).endVertex();
         builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();
+    }
+    
+    public static void gradientMaskRect(PoseStack pose, int x, int y, int x2, int y2, int color, int mask) {
+        gradientRect(pose, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
+    }
+    
+    public static void colorRect(PoseStack pose, BufferBuilder builder, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
+        Matrix4f mat = pose.last().pose();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        builder.vertex(mat, x, y, 0.0F).color(red, green, blue, alpha).endVertex();
+        builder.vertex(mat, x, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
+        builder.vertex(mat, x + width, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
+        builder.vertex(mat, x + width, y, 0.0F).color(red, green, blue, alpha).endVertex();
+        builder.end();
+        BufferUploader.end(builder);
+    }
+    
+    private static void textureRect(PoseStack pose, int x, int y, int width, int height, int z, float u, float v, int textureWidth, int textureHeight) {
+        textureRect(pose, x, x + width, y, y + height, z, u, v, width, height, textureWidth, textureHeight);
+    }
+    
+    public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v) {
+        textureRect(pose, x, y, 0, width, height, u, v, 256, 256);
+    }
+    
+    public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v, float u2, float v2) {
+        textureRect(pose, x, y, 0, width, height, u, v, u2, v2, 256, 256);
+    }
+    
+    private static void textureRect(PoseStack pose, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth, int textureHeight) {
+        drawTextureRect(pose.last().pose(), x, x2, y, y2, z, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight);
+    }
+    
+    private static void textureRect(PoseStack pose, int x, int x2, int y, int y2, int z, float u, float v, int uWidth, int vHeight, int textureWidth, int textureHeight) {
+        drawTextureRect(pose.last().pose(), x, x2, y, y2, z, u / textureWidth, (u + uWidth) / textureWidth, v / textureHeight, (v + vHeight) / textureHeight);
+    }
+    
+    private static void drawTextureRect(Matrix4f matrix, int x, int x2, int y, int y2, int z, float u, float u2, float v, float v2) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.vertex(matrix, x, y2, z).uv(u, v2).endVertex();
+        bufferbuilder.vertex(matrix, x2, y2, z).uv(u2, v2).endVertex();
+        bufferbuilder.vertex(matrix, x2, y, z).uv(u2, v).endVertex();
+        bufferbuilder.vertex(matrix, x, y, z).uv(u, v).endVertex();
+        bufferbuilder.end();
+        BufferUploader.end(bufferbuilder);
     }
     
 }

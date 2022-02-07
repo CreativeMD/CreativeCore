@@ -47,6 +47,7 @@ public abstract class StyleDisplay {
     static {
         registerType("color", DisplayColor.class);
         registerType("tex", DisplayTexture.class);
+        registerType("texs", DisplayTextureStretch.class);
     }
     
     public static class StyleDisplayDeserializer implements JsonDeserializer<StyleDisplay> {

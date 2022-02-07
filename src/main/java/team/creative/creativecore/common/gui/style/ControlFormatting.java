@@ -5,7 +5,7 @@ public class ControlFormatting {
     public static final ControlFormatting PROGRESSBAR = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.BAR);
     public static final ControlFormatting CLICKABLE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
     public static final ControlFormatting NESTED = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.NESTED_BACKGROUND);
-    public static final ControlFormatting SLIDER = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.NESTED_BACKGROUND);
+    public static final ControlFormatting NESTED_NO_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.NESTED_BACKGROUND);
     public static final ControlFormatting GUI = new ControlFormatting(ControlStyleBorder.BIG, 5, ControlStyleFace.BACKGROUND);
     public static final ControlFormatting TRANSPARENT = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE);
     public static final ControlFormatting TRANSPARENT_NO_DISABLE = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE, false);

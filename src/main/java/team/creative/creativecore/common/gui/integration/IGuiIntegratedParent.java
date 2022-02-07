@@ -53,7 +53,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             
             if (i == layers.size() - 1) {
                 if (layer.hasGrayBackground())
-                    GuiRenderHelper.fillGradient(matrixStack, 0, 0, width, height, -1072689136, -804253680);
+                    GuiRenderHelper.gradientRect(matrixStack, 0, 0, width, height, -1072689136, -804253680);
                 MinecraftForge.EVENT_BUS.post(new BackgroundDrawnEvent(screen, matrixStack));
             }
             

@@ -172,22 +172,22 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     
     @Override
     public ControlFormatting getControlFormatting() {
-        return ControlFormatting.SLIDER;
+        return ControlFormatting.NESTED_NO_PADDING;
     }
     
     @Override
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         double percent = getPercentage();
         
         int posX = (int) ((control.getContentWidth() - sliderWidth) * percent);
         
         GuiStyle style = getStyle();
-        style.get(ControlStyleFace.CLICKABLE, false).render(matrix, posX, 0, sliderWidth, rect.getHeight());
+        style.get(ControlStyleFace.CLICKABLE, false).render(pose, posX, 0, sliderWidth, rect.getHeight());
         
         if (textfield != null)
-            textfield.render(matrix, control, rect, rect, mouseX, mouseY);
+            textfield.render(pose, control, rect, rect, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(matrix, getTextByValue(), (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE, true);
+            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE, true);
     }
     
     @Override

@@ -28,6 +28,10 @@ public class Color {
         this((byte) 255, (byte) 255, (byte) 255, (byte) 255);
     }
     
+    public Color(Color color) {
+        set(color);
+    }
+    
     public Color(int color) {
         this.alpha = (byte) (color >> 24 & 255);
         this.red = (byte) (color >> 16 & 255);
@@ -77,6 +81,13 @@ public class Color {
         this.green = (byte) (vec.y * 255);
         this.blue = (byte) (vec.z * 255);
         this.alpha = (byte) 255;
+    }
+    
+    public void set(Color color) {
+        this.red = color.getRed();
+        this.green = color.getGreen();
+        this.blue = color.getBlue();
+        this.alpha = color.getAlpha();
     }
     
     public void set(ColorType type, int value) {

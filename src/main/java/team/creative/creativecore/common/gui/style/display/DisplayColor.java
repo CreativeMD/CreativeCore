@@ -9,6 +9,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 
 import net.minecraft.client.renderer.GameRenderer;
+import team.creative.creativecore.common.util.mc.ColorUtils;
+import team.creative.creativecore.common.util.type.Color;
 
 public class DisplayColor extends StyleDisplay {
     
@@ -21,11 +23,19 @@ public class DisplayColor extends StyleDisplay {
         this(1, 1, 1, 1);
     }
     
+    public DisplayColor(int color) {
+        this(ColorUtils.redF(color), ColorUtils.greenF(color), ColorUtils.blueF(color), ColorUtils.alphaF(color));
+    }
+    
     public DisplayColor(float r, float g, float b, float a) {
         this.red = r;
         this.green = g;
         this.blue = b;
         this.alpha = a;
+    }
+    
+    public DisplayColor(Color color) {
+        this(color.getRedDecimal(), color.getGreenDecimal(), color.getBlueDecimal(), color.getAlphaDecimal());
     }
     
     @Override
@@ -35,7 +45,6 @@ public class DisplayColor extends StyleDisplay {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        //RenderSystem.shadeModel(GL11.GL_SMOOTH);
         
         Matrix4f mat = pose.last().pose();
         Tesselator tessellator = Tesselator.getInstance();
@@ -47,7 +56,6 @@ public class DisplayColor extends StyleDisplay {
         buffer.vertex(mat, (float) (x + width), (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
         tessellator.end();
         
-        //RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }

@@ -23,6 +23,14 @@ public class GuiSteppedSlider extends GuiSlider {
         return ((int) value) + "";
     }
     
+    public void stepUp() {
+        setValue(getValue() + 1);
+    }
+    
+    public void stepDown() {
+        setValue(getValue() - 1);
+    }
+    
     @Override
     public boolean mouseScrolled(Rect rect, double x, double y, double scrolled) {
         setValue(value + (Screen.hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1));
@@ -38,6 +46,10 @@ public class GuiSteppedSlider extends GuiSlider {
     @Override
     public void setValue(double value) {
         super.setValue((int) value);
+    }
+    
+    public int getValue() {
+        return (int) value;
     }
     
     @Override

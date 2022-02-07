@@ -20,6 +20,7 @@ import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyl
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.gui.style.display.DisplayTexture;
+import team.creative.creativecore.common.gui.style.display.DisplayTextureStretch;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.type.Color;
 
@@ -98,6 +99,8 @@ public class GuiStyle {
     public StyleDisplay clickableHighlight = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
     
     public StyleDisplay slot = new DisplayTexture(GUI_ASSETS, 0, 0);
+    @SerializedName("transparency-background")
+    public StyleDisplay transparencyBackground = new DisplayTextureStretch(GUI_ASSETS, 224, 240, 16, 16);
     
     public StyleDisplay get(ControlStyleBorder border) {
         switch (border) {
