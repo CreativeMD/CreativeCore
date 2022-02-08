@@ -9,6 +9,7 @@ import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.util.text.ITextCollection;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 
 public class GuiStateButton extends GuiButton {
@@ -17,7 +18,11 @@ public class GuiStateButton extends GuiButton {
     public CompiledText[] states;
     public boolean autosize;
     
-    public GuiStateButton(String name, int index, TextListBuilder states) {
+    public GuiStateButton(String name, ITextCollection states) {
+        this(name, 0, states);
+    }
+    
+    public GuiStateButton(String name, int index, ITextCollection states) {
         super(name, null);
         this.pressed = button -> {
             if (button == 1)
@@ -34,12 +39,8 @@ public class GuiStateButton extends GuiButton {
         this(name, index, new TextListBuilder().add(states));
     }
     
-    protected void buildStates(TextListBuilder builder) {
-        states = new CompiledText[builder.size()];
-        for (int i = 0; i < builder.size(); i++) {
-            states[i] = CompiledText.createAnySize();
-            states[i].setText(builder.get(i));
-        }
+    protected void buildStates(ITextCollection builder) {
+        states = builder.build();
         if (index >= states.length)
             index = 0;
     }
