@@ -63,6 +63,11 @@ public abstract class GuiControl {
         return this;
     }
     
+    public GuiControl setVisible(boolean visible) {
+        this.visible = visible;
+        return this;
+    }
+    
     public GuiControl setFixed() {
         this.expandableX = false;
         this.expandableY = false;
