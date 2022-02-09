@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.EmptyLevelChunk;
 import net.minecraft.world.level.chunk.LevelChunk;
-import team.creative.creativecore.common.level.CreativeLevel;
+import team.creative.creativecore.common.level.ISubLevel;
 
 public class LevelUtils {
     
@@ -29,9 +29,9 @@ public class LevelUtils {
     public static void dropItem(Level level, ItemStack stack, BlockPos pos) {
         if (stack == null)
             return;
-        if (level instanceof CreativeLevel) {
-            pos = ((CreativeLevel) level).transformToRealWorld(pos);
-            level = ((CreativeLevel) level).getRealLevel();
+        if (level instanceof ISubLevel) {
+            pos = ((ISubLevel) level).transformToRealWorld(pos);
+            level = ((ISubLevel) level).getRealLevel();
         }
         Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
     }

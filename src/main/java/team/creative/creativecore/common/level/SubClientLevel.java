@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagContainer;
@@ -28,22 +27,14 @@ import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.VecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
-public class SubLevel extends CreativeLevel {
+public class SubClientLevel extends CreativeClientLevel implements ISubLevel {
     
     public Level parentLevel;
-    public IVecOrigin origin;
     
-    @OnlyIn(value = Dist.CLIENT)
     public boolean shouldRender;
     
-    public static SubLevel createFakeWorld(Level level) {
-        if (level instanceof ServerLevel)
-            return new SubServerLevel(level, 6);
-        return new SubLevel(level, 6);
-    }
-    
-    protected SubLevel(Level parent, int radius) {
-        super((WritableLevelData) parent.getLevelData(), radius, parent.getProfilerSupplier(), parent.isClientSide, parent.isDebug(), 0);
+    protected SubClientLevel(Level parent, int radius) {
+        super((WritableLevelData) parent.getLevelData(), radius, parent.getProfilerSupplier(), parent.isDebug(), 0);
         this.parentLevel = parent;
         this.gatherCapabilities();
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.WorldEvent.Load(this));
@@ -63,19 +54,14 @@ public class SubLevel extends CreativeLevel {
     }
     
     @Override
-    public boolean hasParent() {
-        return true;
-    }
-    
-    @Override
     public Level getParent() {
         return parentLevel;
     }
     
     @Override
     public Level getRealLevel() {
-        if (parentLevel instanceof SubLevel)
-            return ((SubLevel) parentLevel).getRealLevel();
+        if (parentLevel instanceof SubClientLevel)
+            return ((SubClientLevel) parentLevel).getRealLevel();
         return parentLevel;
     }
     
@@ -183,7 +169,10 @@ public class SubLevel extends CreativeLevel {
     public void gameEvent(Entity p_151549_, GameEvent p_151550_, BlockPos p_151551_) {
         getRealLevel().gameEvent(p_151549_, p_151550_, p_151551_);
     }
-
-   
+    
+    @Override
+    public String toString() {
+        return "SubClientLevel[" + holder.getStringUUID() + "]";
+    }
     
 }

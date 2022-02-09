@@ -14,6 +14,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundLevelChunkPacketData;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LightLayer;
@@ -85,25 +86,25 @@ public class FakeChunkCache extends ChunkSource {
     
     @Nullable
     public LevelChunk replaceWithPacketData(int p_194117_, int p_194118_, FriendlyByteBuf p_194119_, CompoundTag p_194120_, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> p_194121_) {
-       if (!this.storage.inRange(p_194117_, p_194118_)) {
-          LOGGER.warn("Ignoring chunk since it's not in the view range: {}, {}", p_194117_, p_194118_);
-          return null;
-       } else {
-          int i = this.storage.getIndex(p_194117_, p_194118_);
-          LevelChunk levelchunk = this.storage.chunks.get(i);
-          ChunkPos chunkpos = new ChunkPos(p_194117_, p_194118_);
-          if (!isValidChunk(levelchunk, p_194117_, p_194118_)) {
-             levelchunk = new LevelChunk(this.level, chunkpos);
-             levelchunk.replaceWithPacketData(p_194119_, p_194120_, p_194121_);
-             this.storage.replace(i, levelchunk);
-          } else {
-             levelchunk.replaceWithPacketData(p_194119_, p_194120_, p_194121_);
-          }
-
-          this.level.onChunkLoaded(chunkpos);
-          net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.ChunkEvent.Load(levelchunk));
-          return levelchunk;
-       }
+        if (!this.storage.inRange(p_194117_, p_194118_)) {
+            LOGGER.warn("Ignoring chunk since it's not in the view range: {}, {}", p_194117_, p_194118_);
+            return null;
+        } else {
+            int i = this.storage.getIndex(p_194117_, p_194118_);
+            LevelChunk levelchunk = this.storage.chunks.get(i);
+            ChunkPos chunkpos = new ChunkPos(p_194117_, p_194118_);
+            if (!isValidChunk(levelchunk, p_194117_, p_194118_)) {
+                levelchunk = new LevelChunk(this.level, chunkpos);
+                levelchunk.replaceWithPacketData(p_194119_, p_194120_, p_194121_);
+                this.storage.replace(i, levelchunk);
+            } else {
+                levelchunk.replaceWithPacketData(p_194119_, p_194120_, p_194121_);
+            }
+            
+            this.level.onChunkLoaded(chunkpos);
+            net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.ChunkEvent.Load(levelchunk));
+            return levelchunk;
+        }
     }
     
     @Override
@@ -205,5 +206,13 @@ public class FakeChunkCache extends ChunkSource {
         protected LevelChunk getChunk(int p_104480_) {
             return this.chunks.get(p_104480_);
         }
+    }
+    
+    public void addEntity(Entity p_143371_) {
+        // TODO Auto-generated method stub
+    }
+    
+    public void removeEntity(Entity p_143375_) {
+        // TODO Auto-generated method stub
     }
 }

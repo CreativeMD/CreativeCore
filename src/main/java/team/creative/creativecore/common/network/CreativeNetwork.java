@@ -18,7 +18,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
-import team.creative.creativecore.common.level.SubLevel;
+import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
     
@@ -69,8 +69,8 @@ public class CreativeNetwork {
     }
     
     public void sendToClient(CreativePacket message, Level level, BlockPos pos) {
-        if (level instanceof SubLevel)
-            sendToClientTracking(message, ((SubLevel) level).parent);
+        if (level instanceof ISubLevel)
+            sendToClientTracking(message, ((ISubLevel) level).getHolder());
         else
             
             sendToClient(message, level.getChunkAt(pos));
@@ -81,8 +81,8 @@ public class CreativeNetwork {
     }
     
     public void sendToClientTracking(CreativePacket message, Entity entity) {
-        if (entity.level instanceof SubLevel)
-            sendToClientTracking(message, ((SubLevel) entity.level).parent);
+        if (entity.level instanceof ISubLevel)
+            sendToClientTracking(message, ((ISubLevel) entity.level).getHolder());
         else
             this.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
     }

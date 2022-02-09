@@ -8,55 +8,35 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagContainer;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.WritableLevelData;
 import net.minecraft.world.scores.Scoreboard;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.VecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
-public class FakeLevel extends CreativeLevel {
+public class FakeClientLevel extends CreativeClientLevel {
     
-    public MinecraftServer server;
-    public IVecOrigin origin;
-    
-    private final Scoreboard scoreboard;
+    public boolean shouldRender;
+    private final Scoreboard scoreboard = new Scoreboard();
     private DimensionSpecialEffects effects;
     
-    @OnlyIn(value = Dist.CLIENT)
-    public boolean shouldRender;
-    
-    public static FakeLevel createFakeWorld(MinecraftServer server, String name, boolean client) {
-        FakeLevelInfo info = new FakeLevelInfo(Difficulty.PEACEFUL, false, true);
-        if (!client)
-            return new FakeLevel(info, 6, server::getProfiler, false, false, 0);
-        return createFakeWorldClient(name, info, 6);
+    public static FakeClientLevel createFakeWorldClient(String name, FakeLevelInfo info, int radius) {
+        return new FakeClientLevel(info, radius, Minecraft.getInstance()::getProfiler, false, 0);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    public static FakeLevel createFakeWorldClient(String name, FakeLevelInfo info, int radius) {
-        return new FakeLevel(info, radius, Minecraft.getInstance()::getProfiler, true, false, 0);
-    }
-    
-    protected FakeLevel(WritableLevelData worldInfo, int radius, Supplier<ProfilerFiller> supplier, boolean client, boolean debug, long seed) {
-        super(worldInfo, radius, supplier, client, debug, seed);
-        this.scoreboard = new Scoreboard();
-        if (client)
-            effects = DimensionSpecialEffects.forType(dimensionType());
+    protected FakeClientLevel(WritableLevelData worldInfo, int radius, Supplier<ProfilerFiller> supplier, boolean debug, long seed) {
+        super(worldInfo, radius, supplier, debug, seed);
+        effects = DimensionSpecialEffects.forType(dimensionType());
     }
     
     @Override
@@ -67,21 +47,6 @@ public class FakeLevel extends CreativeLevel {
     @Override
     public void setOrigin(Vec3d vec) {
         this.origin = new VecOrigin(vec);
-    }
-    
-    @Override
-    public boolean hasParent() {
-        return false;
-    }
-    
-    @Override
-    public Level getParent() {
-        return null;
-    }
-    
-    @Override
-    public Level getRealLevel() {
-        return null;
     }
     
     @Override
@@ -150,4 +115,8 @@ public class FakeLevel extends CreativeLevel {
     @Override
     public void gameEvent(Entity p_151549_, GameEvent p_151550_, BlockPos p_151551_) {}
     
+    @Override
+    public String toString() {
+        return "FakeClientLevel";
+    }
 }
