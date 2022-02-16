@@ -71,6 +71,7 @@ public class CreativeCore {
         
         MinecraftForge.EVENT_BUS.addListener(this::server);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.addListener(CreativeCoreClient::commands));
         
         GuiHandler.register("clientconfig", (player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT));
         GuiHandler.register("config", (player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.DEDICATED_SERVER));

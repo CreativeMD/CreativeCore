@@ -6,9 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
-import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
@@ -18,18 +17,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory;
-import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import team.creative.creativecore.CreativeCore;
-import team.creative.creativecore.client.command.ClientCommandRegistry;
 import team.creative.creativecore.client.render.model.CreativeRenderBlock;
 import team.creative.creativecore.client.render.model.CreativeRenderItem;
-import team.creative.creativecore.client.test.GuiTest;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -79,34 +75,18 @@ public class CreativeCoreClient {
         return mc.getDeltaFrameTime();
     }
     
+    public static void commands(RegisterClientCommandsEvent event) {
+        event.getDispatcher().register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
+            try {
+                GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.CLIENT)));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return 1;
+        }));
+    }
+    
     public static void init(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            ClientCommandRegistry
-                    .register((LiteralArgumentBuilder<SharedSuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-client")).executes((x) -> {
-                        mc.player.createCommandSourceStack().sendSuccess(new TextComponent("Successful!"), false);
-                        return 1;
-                    }));
-                    
-            ClientCommandRegistry
-                    .register((LiteralArgumentBuilder<SharedSuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("test-gui")).executes((x) -> {
-                        try {
-                            GuiEventHandler.queueScreen(new GuiScreenIntegration(new GuiTest(200, 200)));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return 1;
-                    }));
-                    
-            ClientCommandRegistry
-                    .register((LiteralArgumentBuilder<SharedSuggestionProvider>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
-                        try {
-                            GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.CLIENT)));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return 1;
-                    }));
-        });
         
         GuiStyle.reload();
         Minecraft minecraft = Minecraft.getInstance();
@@ -134,15 +114,6 @@ public class CreativeCoreClient {
                 return new ContainerScreenIntegration(container, inventory);
             }
         });
-    }
-    
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void chat(ClientChatEvent event) {
-        String message = event.getMessage();
-        if (message.startsWith("/") && ClientCommandRegistry.handleCommand(mc.player.createCommandSourceStack(), message) != -1) {
-            event.setCanceled(true);
-            mc.gui.getChat().addRecentChat(message);
-        }
     }
     
     @SubscribeEvent
