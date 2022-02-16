@@ -33,4 +33,16 @@ public class OptifineHelper {
     
     public static void postRenderChunkLayer(RenderType type) {}
     
+    public static boolean isRenderRegions() {
+        return false;
+    }
+    
+    public static boolean isAnisotropicFiltering() {
+        return false;
+    }
+    
+    public static boolean isAntialiasing() {
+        return false;
+    }
+    
 }
