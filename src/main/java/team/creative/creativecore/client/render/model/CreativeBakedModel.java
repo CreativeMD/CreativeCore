@@ -33,6 +33,7 @@ import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class CreativeBakedModel implements BakedModel {
     
+    public static final CreativeBakedModel INSTANCE = new CreativeBakedModel();
     public static Minecraft mc = Minecraft.getInstance();
     
     public static ItemColors itemColores = null;

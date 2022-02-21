@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
@@ -17,7 +18,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -75,6 +78,7 @@ public class CreativeCoreClient {
         return mc.getDeltaFrameTime();
     }
     
+    @SubscribeEvent
     public static void commands(RegisterClientCommandsEvent event) {
         event.getDispatcher().register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
             try {
@@ -113,6 +117,10 @@ public class CreativeCoreClient {
                 return new ContainerScreenIntegration(container, inventory);
             }
         });
+    }
+    
+    public static void modelEvent(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(CreativeCore.MODID, "rendered"), null);
     }
     
     @SubscribeEvent
