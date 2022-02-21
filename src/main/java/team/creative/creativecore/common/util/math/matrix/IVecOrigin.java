@@ -198,6 +198,7 @@ public interface IVecOrigin {
         
         matrixStack.translate(rotationCenter.x, rotationCenter.y, rotationCenter.z);
         
+        // TODO USE PROPER MATRIX ROTATIOn
         GL11.glRotated(rotX, 1, 0, 0);
         GL11.glRotated(rotY, 0, 1, 0);
         GL11.glRotated(rotZ, 0, 0, 1);

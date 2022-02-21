@@ -87,7 +87,6 @@ public class CreativeCoreClient {
     }
     
     public static void init(FMLClientSetupEvent event) {
-        
         GuiStyle.reload();
         Minecraft minecraft = Minecraft.getInstance();
         ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
