@@ -168,6 +168,27 @@ public enum Facing {
         throw new IllegalArgumentException();
     }
     
+    /** gets the direction from the first position to the second. It assumes the positions are next to each other.
+     * 
+     * @param pos
+     * @param second
+     * @return */
+    public static Facing direction(Vec3i pos, Vec3i second) {
+        if (pos.getX() == second.getX())
+            if (pos.getY() == second.getY())
+                if (pos.getZ() == second.getZ() + 1)
+                    return Facing.SOUTH;
+                else
+                    return Facing.NORTH;
+            else if (pos.getY() == second.getY() + 1)
+                return Facing.UP;
+            else
+                return Facing.DOWN;
+        else if (pos.getX() == second.getX() + 1)
+            return Facing.EAST;
+        return Facing.WEST;
+    }
+    
     public final String name;
     public final Axis axis;
     public final boolean positive;
