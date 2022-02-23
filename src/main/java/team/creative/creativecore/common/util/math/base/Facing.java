@@ -8,6 +8,7 @@ import team.creative.creativecore.common.util.math.geo.NormalPlane;
 public enum Facing {
     
     DOWN(Axis.Y, false, new Vec3i(0, -1, 0)) {
+        
         @Override
         public Facing opposite() {
             return Facing.UP;
@@ -22,8 +23,10 @@ public enum Facing {
         public double get(AABB bb) {
             return bb.minY;
         }
+        
     },
     UP(Axis.Y, true, new Vec3i(0, 1, 0)) {
+        
         @Override
         public Facing opposite() {
             return Facing.DOWN;
@@ -38,8 +41,10 @@ public enum Facing {
         public double get(AABB bb) {
             return bb.maxY;
         }
+        
     },
     NORTH(Axis.Z, false, new Vec3i(0, 0, -1)) {
+        
         @Override
         public Facing opposite() {
             return SOUTH;
@@ -54,8 +59,10 @@ public enum Facing {
         public double get(AABB bb) {
             return bb.minZ;
         }
+        
     },
     SOUTH(Axis.Z, true, new Vec3i(0, 0, 1)) {
+        
         @Override
         public Facing opposite() {
             return Facing.NORTH;
@@ -70,8 +77,10 @@ public enum Facing {
         public double get(AABB bb) {
             return bb.maxZ;
         }
+        
     },
     WEST(Axis.X, false, new Vec3i(-1, 0, 0)) {
+        
         @Override
         public Facing opposite() {
             return Facing.EAST;
@@ -86,8 +95,10 @@ public enum Facing {
         public double get(AABB bb) {
             return bb.minX;
         }
+        
     },
     EAST(Axis.X, true, new Vec3i(1, 0, 0)) {
+        
         @Override
         public Facing opposite() {
             return Facing.WEST;
@@ -103,6 +114,8 @@ public enum Facing {
             return bb.maxX;
         }
     };
+    
+    public static final Facing[] VALUES = new Facing[] { DOWN, UP, NORTH, SOUTH, WEST, EAST };
     
     public static final String[] FACING_NAMES = new String[] { "down", "up", "north", "south", "west", "east" };
     public static final String[] HORIZONTAL_FACING_NAMES = new String[] { "north", "south", "west", "east" };
