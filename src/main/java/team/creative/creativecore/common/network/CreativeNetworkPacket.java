@@ -21,7 +21,7 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
         
         for (Field field : this.classType.getFields()) {
             
-            if (Modifier.isTransient(field.getModifiers()) && field.isAnnotationPresent(OnlyIn.class))
+            if (Modifier.isTransient(field.getModifiers()) || field.isAnnotationPresent(OnlyIn.class))
                 continue;
             
             CreativeNetworkField parser = CreativeNetworkField.create(field);
