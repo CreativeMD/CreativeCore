@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import team.creative.creativecore.common.util.registry.exception.IdNotFoundException;
@@ -12,8 +13,8 @@ import team.creative.creativecore.common.util.registry.exception.RegistryExcepti
 
 public class NamedTypeRegistry<T> {
     
-    private HashMap<String, Class<? extends T>> types = new HashMap<>();
-    private HashMap<Class<? extends T>, String> typesInv = new HashMap<>();
+    private HashMap<String, Class<? extends T>> types = new LinkedHashMap<>();
+    private HashMap<Class<? extends T>, String> typesInv = new LinkedHashMap<>();
     private List<Class[]> possibleConstructors = new ArrayList<>();
     private boolean allowOverwrite = false;
     
