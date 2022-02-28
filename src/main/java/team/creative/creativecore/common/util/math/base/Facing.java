@@ -207,6 +207,12 @@ public enum Facing {
         return positive ? 1 : -1;
     }
     
+    public int offset(Axis axis) {
+        if (this.axis == axis)
+            return offset();
+        return 0;
+    }
+    
     public abstract Facing opposite();
     
     public abstract Direction toVanilla();
