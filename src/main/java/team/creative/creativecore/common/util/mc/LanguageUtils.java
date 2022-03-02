@@ -4,6 +4,10 @@ import net.minecraft.client.resources.language.I18n;
 
 public class LanguageUtils {
     
+    public static boolean can(String name) {
+        return I18n.exists(name);
+    }
+    
     public static String translate(String name) {
         return I18n.get(name);
     }
