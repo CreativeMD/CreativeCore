@@ -13,10 +13,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,7 +39,8 @@ import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.config.sync.ConfigurationPacket;
-import team.creative.creativecore.common.gui.handler.GuiHandler;
+import team.creative.creativecore.common.gui.handler.GuiCreator;
+import team.creative.creativecore.common.gui.handler.GuiCreator.GuiCreatorBasic;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
@@ -65,6 +64,11 @@ public class CreativeCore {
     public static ResourceKey<Level> FAKE_DIMENSION_NAME = ResourceKey.create(Registry.DIMENSION_REGISTRY, FAKE_WORLD_LOCATION);
     public static MenuType<ContainerIntegration> GUI_CONTAINER;
     
+    public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator
+            .register("config", new GuiCreatorBasic((player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.DEDICATED_SERVER)));
+    public static final GuiCreatorBasic CLIENT_CONFIG_OPEN = GuiCreator
+            .register("clientconfig", new GuiCreatorBasic((player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT)));
+    
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(MenuType.class, this::registerMenus);
@@ -72,9 +76,6 @@ public class CreativeCore {
         MinecraftForge.EVENT_BUS.addListener(this::server);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(CreativeCoreClient::modelEvent));
-        
-        GuiHandler.register("clientconfig", (player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT));
-        GuiHandler.register("config", (player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.DEDICATED_SERVER));
         
         GUI_CONTAINER = new MenuType<>(null) {
             @Override
@@ -104,7 +105,7 @@ public class CreativeCore {
     
     private void server(final ServerStartingEvent event) {
         event.getServer().getCommands().getDispatcher().register(Commands.literal("cmdconfig").executes(x -> {
-            GuiHandler.openGui("config", new CompoundTag(), x.getSource().getPlayerOrException());
+            CLIENT_CONFIG_OPEN.open(new CompoundTag(), x.getSource().getPlayerOrException());
             return 0;
         }));
     }
@@ -124,13 +125,6 @@ public class CreativeCore {
         
         ArgumentTypes.register("names", StringArrayArgumentType.class, new EmptyArgumentSerializer<>(() -> StringArrayArgumentType.stringArray()));
         
-        GuiHandler.register("item", (player, nbt) -> {
-            InteractionHand hand = nbt.getBoolean("main_hand") ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            ItemStack stack = player.getItemInHand(hand);
-            if (stack.getItem() instanceof GuiHandler)
-                return ((GuiHandler) stack.getItem()).create(player, nbt);
-            return null;
-        });
     }
     
 }
