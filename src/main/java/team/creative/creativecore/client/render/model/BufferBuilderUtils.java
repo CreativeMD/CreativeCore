@@ -113,7 +113,7 @@ public class BufferBuilderUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
     
     public static void addBuffer(BufferBuilder buffer, ByteBuffer toAdd, int length, int count) {
         try {
@@ -121,7 +121,7 @@ public class BufferBuilderUtils {
             toAdd.limit(length);
             
             //growBuffer(buffer, size + buffer.getVertexFormat().getNextOffset());
-            ByteBuffer chunkByteBuffer = (ByteBuffer) byteBufferField.get(buffer);
+            ByteBuffer chunkByteBuffer = (ByteBuffer) bufferField.get(buffer);
             int size = getBufferSizeByte(buffer);
             chunkByteBuffer.limit(size + length);
             chunkByteBuffer.position(size);
@@ -130,10 +130,10 @@ public class BufferBuilderUtils {
             
             chunkByteBuffer.rewind();
             
-            vertexCountField.setInt(buffer, buffer.getVertexCount() + count);
+            verticesField.setInt(buffer, verticesField.getInt(buffer) + count);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }
     
 }
