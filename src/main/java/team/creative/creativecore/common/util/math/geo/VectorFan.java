@@ -6,9 +6,9 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3d;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -200,105 +200,95 @@ public class VectorFan {
         return false;
     }
     
-    public void renderPreview(int red, int green, int blue, int alpha) {
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+    public void renderPreview(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha) {
+        builder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
+            builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
         }
-        tessellator.end();
+        builder.end();
     }
     
-    public void renderPreview(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+    public void renderPreview(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
+        builder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+            builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
         }
-        tessellator.end();
+        builder.end();
     }
     
-    public void renderLines(int red, int green, int blue, int alpha) {
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
+    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha) {
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
+                builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
-            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            tessellator.end();
+            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            builder.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.vertex(vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
+                builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
-            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            tessellator.end();
+            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            builder.end();
         }
         
     }
     
-    public void renderLines(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
+    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+                builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
-            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            tessellator.end();
+            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            builder.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++) {
                 Vec3f vec = coords[i];
-                bufferbuilder.vertex(vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+                builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
-            bufferbuilder.vertex(coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            tessellator.end();
+            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            builder.end();
         }
     }
     
-    public void renderLines(float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
+    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
-                renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            renderLinePoint(bufferbuilder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            tessellator.end();
+                renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            builder.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
-                renderLinePoint(bufferbuilder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            renderLinePoint(bufferbuilder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            tessellator.end();
+                renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
+            builder.end();
         }
         
     }
     
-    protected void renderLinePoint(BufferBuilder bufferbuilder, Vec3f vec, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
         float x = vec.x * scaleX + offX;
         if (x > center.x)
             x += grow;
@@ -317,10 +307,10 @@ public class VectorFan {
         else
             z -= grow;
         
-        bufferbuilder.vertex(x, y, z).color(red, green, blue, alpha).endVertex();
+        builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
     }
     
-    protected void renderLinePoint(BufferBuilder bufferbuilder, Vec3f vec, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, int red, int green, int blue, int alpha, Vector3d center, double grow) {
         float x = vec.x;
         if (x > center.x)
             x += grow;
@@ -339,28 +329,26 @@ public class VectorFan {
         else
             z -= grow;
         
-        bufferbuilder.vertex(x, y, z).color(red, green, blue, alpha).endVertex();
+        builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
     }
     
-    public void renderLines(int red, int green, int blue, int alpha, Vector3d center, double grow) {
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
+    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha, Vector3d center, double grow) {
         int index = 0;
         while (index < coords.length - 3) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 4; i++)
-                renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
-            renderLinePoint(bufferbuilder, coords[index], red, green, blue, alpha, center, grow);
-            tessellator.end();
+                renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
+            renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
+            builder.end();
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            bufferbuilder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             for (int i = index; i < index + 3; i++)
-                renderLinePoint(bufferbuilder, coords[i], red, green, blue, alpha, center, grow);
-            renderLinePoint(bufferbuilder, coords[index], red, green, blue, alpha, center, grow);
-            tessellator.end();
+                renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
+            renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
+            builder.end();
         }
         
     }
