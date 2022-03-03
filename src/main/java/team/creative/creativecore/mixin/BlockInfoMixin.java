@@ -1,4 +1,4 @@
-package team.creative.creativecore.client.render.model;
+package team.creative.creativecore.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraftforge.client.model.pipeline.BlockInfo;
+import team.creative.creativecore.client.render.model.BlockInfoExtension;
 
 @Mixin(BlockInfo.class)
 public abstract class BlockInfoMixin implements BlockInfoExtension {
