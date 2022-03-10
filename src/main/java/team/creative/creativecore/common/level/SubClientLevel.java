@@ -6,11 +6,11 @@ import com.mojang.math.Vector3d;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -131,7 +131,7 @@ public class SubClientLevel extends CreativeClientLevel implements ISubLevel {
     }
     
     @Override
-    public Biome getUncachedNoiseBiome(int p_225604_1_, int p_225604_2_, int p_225604_3_) {
+    public Holder<Biome> getUncachedNoiseBiome(int p_225604_1_, int p_225604_2_, int p_225604_3_) {
         return getRealLevel().getUncachedNoiseBiome(p_225604_1_, p_225604_2_, p_225604_3_);
     }
     
@@ -148,11 +148,6 @@ public class SubClientLevel extends CreativeClientLevel implements ISubLevel {
     @Override
     public RecipeManager getRecipeManager() {
         return getRealLevel().getRecipeManager();
-    }
-    
-    @Override
-    public TagContainer getTagManager() {
-        return getRealLevel().getTagManager();
     }
     
     @Override

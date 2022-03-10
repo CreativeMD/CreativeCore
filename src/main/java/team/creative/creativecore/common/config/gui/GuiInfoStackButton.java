@@ -5,8 +5,6 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -52,11 +50,11 @@ public class GuiInfoStackButton extends GuiButton {
             if (value instanceof CreativeIngredientBlock)
                 text.text("Block: " + ChatFormatting.YELLOW + ((CreativeIngredientBlock) value).block.getRegistryName().toString());
             else if (value instanceof CreativeIngredientBlockTag)
-                text.text("Blocktag: " + ChatFormatting.YELLOW + BlockTags.getAllTags().getId(((CreativeIngredientBlockTag) value).tag).toString());
+                text.text("Blocktag: " + ChatFormatting.YELLOW + ((CreativeIngredientBlockTag) value).tag.location().toString());
             else if (value instanceof CreativeIngredientItem)
                 text.text("Item: " + ChatFormatting.YELLOW + ((CreativeIngredientItem) value).item.getRegistryName().toString());
             else if (value instanceof CreativeIngredientItemTag)
-                text.text("Itemtag: " + ChatFormatting.YELLOW + ItemTags.getAllTags().getId(((CreativeIngredientItemTag) value).tag).toString());
+                text.text("Itemtag: " + ChatFormatting.YELLOW + ((CreativeIngredientItemTag) value).tag.location().toString());
             else if (value instanceof CreativeIngredientItemStack)
                 text.text("Stack: " + ChatFormatting.YELLOW).add(((CreativeIngredientItemStack) value).stack.getDisplayName());
             else if (value instanceof CreativeIngredientMaterial)

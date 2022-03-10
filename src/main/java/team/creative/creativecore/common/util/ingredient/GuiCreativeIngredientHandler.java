@@ -1,12 +1,14 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AirBlock;
@@ -172,8 +174,8 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
-                GuiComboBoxMapped<Tag<Block>> box = (GuiComboBoxMapped<Tag<Block>>) gui.get("tag");
-                Tag<Block> tag = box.getSelected();
+                GuiComboBoxMapped<TagKey<Block>> box = (GuiComboBoxMapped<TagKey<Block>>) gui.get("tag");
+                TagKey<Block> tag = box.getSelected();
                 if (tag != null)
                     return new CreativeIngredientBlockTag(tag);
                 return null;
@@ -183,12 +185,15 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<Tag<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<Tag<Block>>()
-                        .addComponents(BlockTags.getAllTags().getAllTags().values(), x -> {
+                @SuppressWarnings("deprecation")
+                GuiComboBoxMapped<TagKey<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Block>>()
+                        .addComponents(Registry.BLOCK.getTagNames().toList(), x -> {
                             TextBuilder builder = new TextBuilder();
-                            if (x.getValues().size() > 0)
-                                builder.stack(new ItemStack(x.getValues().get(0)));
-                            return builder.text(BlockTags.getAllTags().getId(x).toString()).build();
+                            @SuppressWarnings("deprecation")
+                            Optional<Named<Block>> tag = Registry.BLOCK.getTag(x);
+                            if (tag.isPresent() && tag.get().size() > 0)
+                                builder.stack(new ItemStack(tag.get().get(0).value()));
+                            return builder.text(x.location().toString()).build();
                         }));
                 gui.add(box);
                 gui.add(new GuiTextfield("search"));
@@ -202,12 +207,18 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
+            @SuppressWarnings("deprecation")
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<Tag<Block>> box = (GuiComboBoxMapped<Tag<Block>>) gui.get("tag");
-                    box.setLines(new TextMapBuilder<Tag<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
-                            .addComponents(BlockTags.getAllTags().getAllTags()
-                                    .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(BlockTags.getAllTags().getId(x).toString()).build()));
+                    box.setLines(new TextMapBuilder<TagKey<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
+                            .addComponents(Registry.BLOCK.getTagNames().toList(), x -> {
+                                TextBuilder builder = new TextBuilder();
+                                Optional<Named<Block>> tag = Registry.BLOCK.getTag(x);
+                                if (tag.isPresent() && tag.get().size() > 0)
+                                    builder.stack(new ItemStack(tag.get().get(0).value()));
+                                return builder.text(x.location().toString()).build();
+                            }));
                 }
             }
         });
@@ -216,8 +227,8 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
-                GuiComboBoxMapped<Tag<Item>> box = (GuiComboBoxMapped<Tag<Item>>) gui.get("tag");
-                Tag<Item> tag = box.getSelected();
+                GuiComboBoxMapped<TagKey<Item>> box = (GuiComboBoxMapped<TagKey<Item>>) gui.get("tag");
+                TagKey<Item> tag = box.getSelected();
                 if (tag != null)
                     return new CreativeIngredientItemTag(tag);
                 return null;
@@ -227,8 +238,15 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<Tag<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<Tag<Item>>().addComponents(ItemTags.getAllTags().getAllTags()
-                        .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(ItemTags.getAllTags().getId(x).toString()).build()));
+                @SuppressWarnings("deprecation")
+                GuiComboBoxMapped<TagKey<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(Registry.ITEM.getTagNames().toList(), x -> {
+                    TextBuilder builder = new TextBuilder();
+                    @SuppressWarnings("deprecation")
+                    Optional<Named<Item>> tag = Registry.ITEM.getTag(x);
+                    if (tag.isPresent() && tag.get().size() > 0)
+                        builder.stack(new ItemStack(tag.get().get(0).value()));
+                    return builder.text(x.location().toString()).build();
+                }));
                 gui.add(box);
                 gui.add(new GuiTextfield("search"));
                 if (info instanceof CreativeIngredientItemTag)
@@ -241,12 +259,18 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
+            @SuppressWarnings("deprecation")
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
-                    GuiComboBoxMapped<Tag<Item>> box = (GuiComboBoxMapped<Tag<Item>>) gui.get("tag");
-                    box.setLines(new TextMapBuilder<Tag<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
-                            .addComponents(ItemTags.getAllTags().getAllTags()
-                                    .values(), x -> new TextBuilder().stack(new ItemStack(x.getValues().get(0))).text(ItemTags.getAllTags().getId(x).toString()).build()));
+                    GuiComboBoxMapped<TagKey<Item>> box = (GuiComboBoxMapped<TagKey<Item>>) gui.get("tag");
+                    box.setLines(new TextMapBuilder<TagKey<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
+                            .addComponents(Registry.ITEM.getTagNames().toList(), x -> {
+                                TextBuilder builder = new TextBuilder();
+                                Optional<Named<Item>> tag = Registry.ITEM.getTag(x);
+                                if (tag.isPresent() && tag.get().size() > 0)
+                                    builder.stack(new ItemStack(tag.get().get(0).value()));
+                                return builder.text(x.location().toString()).build();
+                            }));
                 }
             }
         });

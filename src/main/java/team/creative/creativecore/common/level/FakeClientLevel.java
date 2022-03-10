@@ -6,11 +6,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -50,8 +50,8 @@ public class FakeClientLevel extends CreativeClientLevel {
     }
     
     @Override
-    public Biome getUncachedNoiseBiome(int p_225604_1_, int p_225604_2_, int p_225604_3_) {
-        return this.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOrThrow(Biomes.PLAINS);
+    public Holder<Biome> getUncachedNoiseBiome(int p_225604_1_, int p_225604_2_, int p_225604_3_) {
+        return this.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getHolderOrThrow(Biomes.PLAINS);
     }
     
     @Override
@@ -93,13 +93,6 @@ public class FakeClientLevel extends CreativeClientLevel {
         if (isClientSide)
             return Minecraft.getInstance().getConnection().getRecipeManager();
         return getServer().getRecipeManager();
-    }
-    
-    @Override
-    public TagContainer getTagManager() {
-        if (isClientSide)
-            return Minecraft.getInstance().getConnection().getTags();
-        return getServer().getTags();
     }
     
     @Override

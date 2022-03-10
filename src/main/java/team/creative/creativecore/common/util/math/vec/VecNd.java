@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.math.vec;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
@@ -78,6 +79,13 @@ public abstract class VecNd<T extends VecNd> {
     
     public abstract double dot(T vec);
     
+    public long[] toLong() {
+        long[] array = new long[dimensions()];
+        for (int i = 0; i < array.length; i++)
+            array[i] = Double.doubleToRawLongBits(get(i));
+        return array;
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -89,6 +97,17 @@ public abstract class VecNd<T extends VecNd> {
         }
         builder.append("]");
         return builder.toString();
+    }
+    
+    public static VecNd load(long[] array) {
+        if (array.length == 1)
+            return new Vec1d(Double.longBitsToDouble(array[0]));
+        else if (array.length == 2)
+            return new Vec2d(Double.longBitsToDouble(array[0]), Double.longBitsToDouble(array[1]));
+        else if (array.length == 3)
+            return new Vec3d(Double.longBitsToDouble(array[0]), Double.longBitsToDouble(array[1]), Double.longBitsToDouble(array[2]));
+        throw new IllegalArgumentException("Invalid long array for vector: " + Arrays.toString(array));
+        
     }
     
     public static <T extends VecNd> T createEmptyVec(Class<T> className) {

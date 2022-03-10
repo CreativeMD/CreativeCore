@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.chunk.EmptyLevelChunk;
@@ -35,7 +37,7 @@ public class FakeChunkCache extends ChunkSource {
     
     public FakeChunkCache(CreativeLevel level, int radius) {
         this.level = level;
-        this.emptyChunk = new EmptyLevelChunk(level, new ChunkPos(0, 0));
+        this.emptyChunk = new EmptyLevelChunk(level, new ChunkPos(0, 0), level.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getHolderOrThrow(Biomes.PLAINS));
         this.lightEngine = new LevelLightEngine(this, true, level.dimensionType().hasSkyLight());
         this.storage = new FakeChunkCache.Storage(calculateStorageRange(radius));
     }
@@ -108,7 +110,7 @@ public class FakeChunkCache extends ChunkSource {
     }
     
     @Override
-    public void tick(BooleanSupplier p_104447_) {}
+    public void tick(BooleanSupplier p_202162_, boolean p_202163_) {}
     
     public void updateViewCenter(int p_104460_, int p_104461_) {
         this.storage.viewCenterX = p_104460_;
@@ -208,11 +210,8 @@ public class FakeChunkCache extends ChunkSource {
         }
     }
     
-    public void addEntity(Entity p_143371_) {
-        // TODO Auto-generated method stub
-    }
+    public void addEntity(Entity p_143371_) {}
     
-    public void removeEntity(Entity p_143375_) {
-        // TODO Auto-generated method stub
-    }
+    public void removeEntity(Entity p_143375_) {}
+    
 }

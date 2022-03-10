@@ -6,12 +6,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
@@ -23,17 +23,22 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.level.storage.WritableLevelData;
 import net.minecraft.world.scores.Scoreboard;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.VecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public class FakeServerLevel extends CreativeServerLevel {
     
-    public static CreativeLevel createFakeLevel(MinecraftServer server, String name, boolean client) {
-        FakeLevelInfo info = new FakeLevelInfo(Difficulty.PEACEFUL, false, true);
+    public static CreativeLevel createFakeLevel(String name, boolean client) {
         if (client)
-            return FakeClientLevel.createFakeWorldClient(name, info, 6);
-        return new FakeServerLevel(server, info, 6, server::getProfiler, false, 0);
+            return createClient(name);
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        return new FakeServerLevel(server, new FakeLevelInfo(Difficulty.PEACEFUL, false, true), 6, server::getProfiler, false, 0);
+    }
+    
+    public static FakeClientLevel createClient(String name) {
+        return FakeClientLevel.createFakeWorldClient(name, new FakeLevelInfo(Difficulty.PEACEFUL, false, true), 6);
     }
     
     private final Scoreboard scoreboard = new Scoreboard();
@@ -54,8 +59,8 @@ public class FakeServerLevel extends CreativeServerLevel {
     }
     
     @Override
-    public Biome getUncachedNoiseBiome(int p_225604_1_, int p_225604_2_, int p_225604_3_) {
-        return this.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOrThrow(Biomes.PLAINS);
+    public Holder<Biome> getUncachedNoiseBiome(int p_225604_1_, int p_225604_2_, int p_225604_3_) {
+        return this.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getHolderOrThrow(Biomes.PLAINS);
     }
     
     @Override
@@ -97,13 +102,6 @@ public class FakeServerLevel extends CreativeServerLevel {
         if (isClientSide)
             return Minecraft.getInstance().getConnection().getRecipeManager();
         return getServer().getRecipeManager();
-    }
-    
-    @Override
-    public TagContainer getTagManager() {
-        if (isClientSide)
-            return Minecraft.getInstance().getConnection().getTags();
-        return getServer().getTags();
     }
     
     @Override

@@ -79,11 +79,11 @@ public abstract class CreativeServerLevel extends CreativeLevel {
     }
     
     public boolean isPositionEntityTicking(BlockPos p_143341_) {
-        return this.entityManager.isPositionTicking(p_143341_);
+        return this.entityManager.canPositionTick(p_143341_);
     }
     
     public boolean isPositionEntityTicking(ChunkPos p_143276_) {
-        return this.entityManager.isPositionTicking(p_143276_);
+        return this.entityManager.canPositionTick(p_143276_);
     }
     
     final class EntityCallbacks implements LevelCallback<Entity> {

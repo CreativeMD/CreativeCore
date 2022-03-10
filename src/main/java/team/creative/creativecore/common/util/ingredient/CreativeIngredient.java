@@ -9,9 +9,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -82,8 +83,8 @@ public abstract class CreativeIngredient {
             return null;
         });
         registerType("blocktag", CreativeIngredientBlockTag.class, (x) -> {
-            if (x instanceof Tag && !((Tag) x).getValues().isEmpty() && ((Tag) x).getValues().iterator().next() instanceof Block)
-                return new CreativeIngredientBlockTag((Tag<Block>) x);
+            if (x instanceof TagKey key && key.isFor(Registry.BLOCK_REGISTRY))
+                return new CreativeIngredientBlockTag((TagKey<Block>) x);
             return null;
         });
         
@@ -93,8 +94,8 @@ public abstract class CreativeIngredient {
             return null;
         });
         registerType("itemtag", CreativeIngredientItemTag.class, (x) -> {
-            if (x instanceof Tag && !((Tag) x).getValues().isEmpty() && ((Tag) x).getValues().iterator().next() instanceof Item)
-                return new CreativeIngredientItemTag((Tag<Item>) x);
+            if (x instanceof TagKey key && key.isFor(Registry.ITEM_REGISTRY))
+                return new CreativeIngredientItemTag((TagKey<Item>) x);
             return null;
         });
         

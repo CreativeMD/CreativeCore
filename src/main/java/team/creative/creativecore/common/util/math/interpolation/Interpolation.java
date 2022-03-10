@@ -81,9 +81,8 @@ public abstract class Interpolation<T extends VecNd> {
             double pointDistance = secondPoint.getKey() - firstPoint.getKey();
             double mu = (t - firstPoint.getKey()) / pointDistance;
             
-            for (int dim = 0; dim < vec.dimensions(); dim++) {
+            for (int dim = 0; dim < vec.dimensions(); dim++)
                 vec.set(dim, valueAt(mu, indexFirst, indexSecond, dim));
-            }
             
             return vec;
         }

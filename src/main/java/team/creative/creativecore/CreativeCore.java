@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -31,6 +32,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.network.NetworkConstants;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer;
@@ -60,7 +62,7 @@ public class CreativeCore {
     public static ConfigEventHandler CONFIG_HANDLER;
     
     public static final ResourceLocation FAKE_WORLD_LOCATION = new ResourceLocation(MODID, "fake");
-    public static DimensionType FAKE_DIMENSION;
+    public static Holder<DimensionType> FAKE_DIMENSION;
     public static ResourceKey<Level> FAKE_DIMENSION_NAME = ResourceKey.create(Registry.DIMENSION_REGISTRY, FAKE_WORLD_LOCATION);
     public static MenuType<ContainerIntegration> GUI_CONTAINER;
     
@@ -105,7 +107,7 @@ public class CreativeCore {
     
     private void server(final ServerStartingEvent event) {
         event.getServer().getCommands().getDispatcher().register(Commands.literal("cmdconfig").executes(x -> {
-            CLIENT_CONFIG_OPEN.open(new CompoundTag(), x.getSource().getPlayerOrException());
+            CONFIG_OPEN.open(new CompoundTag(), x.getSource().getPlayerOrException());
             return 0;
         }));
     }
@@ -120,11 +122,11 @@ public class CreativeCore {
         NETWORK.registerType(ControlSyncPacket.class, ControlSyncPacket::new);
         CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
         MinecraftForge.EVENT_BUS.register(GuiEventHandler.class);
-        FAKE_DIMENSION = DimensionType.create(OptionalLong.empty(), true, false, false, false, 1, false, true, true, false, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD
-                .getName(), DimensionType.OVERWORLD_EFFECTS, 0.0F);
+        ForgeRegistries.WORLD_TYPES.register(null);
+        FAKE_DIMENSION = Holder.direct(DimensionType.create(OptionalLong
+                .empty(), true, false, false, false, 1, false, true, true, false, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD, DimensionType.OVERWORLD_EFFECTS, 0.0F));
         
         ArgumentTypes.register("names", StringArrayArgumentType.class, new EmptyArgumentSerializer<>(() -> StringArrayArgumentType.stringArray()));
         
     }
-    
 }
