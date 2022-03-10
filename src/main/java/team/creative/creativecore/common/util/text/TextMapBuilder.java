@@ -41,30 +41,30 @@ public class TextMapBuilder<K> implements ITextCollection {
         lines.put(key, line);
     }
     
-    public TextMapBuilder addComponent(K key, Component component) {
+    public TextMapBuilder<K> addComponent(K key, Component component) {
         addNewLine(key, component);
         return this;
     }
     
-    public TextMapBuilder addComponent(K[] array, Function<K, Component> toComponent) {
+    public TextMapBuilder<K> addComponent(K[] array, Function<K, Component> toComponent) {
         for (int i = 0; i < array.length; i++)
             addNewLine(array[i], toComponent.apply(array[i]));
         return this;
     }
     
-    public TextMapBuilder addComponent(Collection<K> collection, Function<K, Component> toComponent) {
+    public TextMapBuilder<K> addComponent(Collection<K> collection, Function<K, Component> toComponent) {
         for (K t : collection)
             addNewLine(t, toComponent.apply(t));
         return this;
     }
     
-    public TextMapBuilder addEntrySet(Set<Entry<String, K>> map, Function<Entry<String, K>, Component> toComponent) {
+    public TextMapBuilder<K> addEntrySet(Set<Entry<String, K>> map, Function<Entry<String, K>, Component> toComponent) {
         for (Entry<String, K> entry : map)
             addNewLine(entry.getValue(), toComponent.apply(entry));
         return this;
     }
     
-    public TextMapBuilder addComponents(Collection<K> collection, Function<K, List<Component>> toComponent) {
+    public TextMapBuilder<K> addComponents(Collection<K> collection, Function<K, List<Component>> toComponent) {
         for (K t : collection)
             addNewLine(t, toComponent.apply(t));
         return this;

@@ -7,7 +7,6 @@ import java.util.Set;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -210,7 +209,7 @@ public abstract class GuiCreativeIngredientHandler {
             @SuppressWarnings("deprecation")
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
-                    GuiComboBoxMapped<Tag<Block>> box = (GuiComboBoxMapped<Tag<Block>>) gui.get("tag");
+                    GuiComboBoxMapped<TagKey<Block>> box = (GuiComboBoxMapped<TagKey<Block>>) gui.get("tag");
                     box.setLines(new TextMapBuilder<TagKey<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
                             .addComponents(Registry.BLOCK.getTagNames().toList(), x -> {
                                 TextBuilder builder = new TextBuilder();

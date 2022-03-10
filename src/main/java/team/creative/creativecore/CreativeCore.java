@@ -32,7 +32,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.network.NetworkConstants;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer;
@@ -122,7 +121,6 @@ public class CreativeCore {
         NETWORK.registerType(ControlSyncPacket.class, ControlSyncPacket::new);
         CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
         MinecraftForge.EVENT_BUS.register(GuiEventHandler.class);
-        ForgeRegistries.WORLD_TYPES.register(null);
         FAKE_DIMENSION = Holder.direct(DimensionType.create(OptionalLong
                 .empty(), true, false, false, false, 1, false, true, true, false, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD, DimensionType.OVERWORLD_EFFECTS, 0.0F));
         

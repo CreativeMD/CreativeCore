@@ -38,7 +38,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     public boolean is(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
         if (block != null)
-            return Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(block).get()).is(tag);
+            return block.builtInRegistryHolder().is(tag);
         return false;
     }
     
@@ -53,7 +53,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
         Optional<Named<Block>> optional = Registry.BLOCK.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;
-        return new ItemStack(optional.get().iterator().next().value());
+        return new ItemStack(optional.get().get(0).value());
     }
     
     @Override
