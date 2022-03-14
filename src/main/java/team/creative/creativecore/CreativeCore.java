@@ -50,10 +50,12 @@ import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
 import team.creative.creativecore.common.network.CreativeNetwork;
 import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
+import team.creative.creativecore.loader.CreativeForgeLoader;
 
 @Mod(value = CreativeCore.MODID)
 public class CreativeCore {
     
+    private static final ICreativeLoader LOADER = new CreativeForgeLoader();
     public static final String MODID = "creativecore";
     public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
     public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
@@ -125,6 +127,9 @@ public class CreativeCore {
                 .empty(), true, false, false, false, 1, false, true, true, false, false, -64, 384, 384, BlockTags.INFINIBURN_OVERWORLD, DimensionType.OVERWORLD_EFFECTS, 0.0F));
         
         ArgumentTypes.register("names", StringArrayArgumentType.class, new EmptyArgumentSerializer<>(() -> StringArrayArgumentType.stringArray()));
-        
+    }
+    
+    public static ICreativeLoader loader() {
+        return LOADER;
     }
 }
