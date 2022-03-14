@@ -50,7 +50,6 @@ import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
 import team.creative.creativecore.common.network.CreativeNetwork;
 import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
-import team.creative.creativecore.loader.CreativeForgeLoader;
 
 @Mod(value = CreativeCore.MODID)
 public class CreativeCore {

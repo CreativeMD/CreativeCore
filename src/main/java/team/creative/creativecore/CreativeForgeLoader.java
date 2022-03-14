@@ -1,4 +1,4 @@
-package team.creative.creativecore.loader;
+package team.creative.creativecore;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -16,7 +16,6 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkConstants;
-import team.creative.creativecore.ICreativeLoader;
 import team.creative.creativecore.client.ClientLoader;
 
 public class CreativeForgeLoader implements ICreativeLoader {
