@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.google.gson.JsonObject;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public interface ICreativeConfigHolder {
@@ -25,17 +25,17 @@ public interface ICreativeConfigHolder {
     
     public ConfigKey getField(String key);
     
-    public boolean isDefault(Dist side);
+    public boolean isDefault(Side side);
     
-    public void restoreDefault(Dist side, boolean ignoreRestart);
+    public void restoreDefault(Side side, boolean ignoreRestart);
     
-    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Dist side);
+    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side);
     
-    public JsonObject save(boolean saveDefault, boolean ignoreRestart, Dist side);
+    public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side);
     
-    public boolean isEmpty(Dist side);
+    public boolean isEmpty(Side side);
     
-    public boolean isEmptyWithoutForce(Dist side);
+    public boolean isEmptyWithoutForce(Side side);
     
     public ConfigSynchronization synchronization();
     

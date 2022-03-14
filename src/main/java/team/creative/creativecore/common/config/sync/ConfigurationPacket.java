@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
@@ -21,7 +21,7 @@ public class ConfigurationPacket extends CreativePacket {
     
     public ConfigurationPacket(ICreativeConfigHolder holder, boolean ignoreRestart) {
         this.path = holder.path();
-        this.json = holder.save(false, ignoreRestart, Dist.DEDICATED_SERVER);
+        this.json = holder.save(false, ignoreRestart, Side.SERVER);
         this.ignoreRestart = ignoreRestart;
     }
     
@@ -33,7 +33,7 @@ public class ConfigurationPacket extends CreativePacket {
     public void executeClient(Player player) {
         ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(path);
         if (holder != null)
-            holder.load(true, ignoreRestart, json, Dist.DEDICATED_SERVER);
+            holder.load(true, ignoreRestart, json, Side.SERVER);
         updateGui(player);
     }
     

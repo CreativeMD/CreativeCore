@@ -3,7 +3,7 @@ package team.creative.creativecore.common.config.gui;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -32,7 +32,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
             
             String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.name + ".name", key.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.name + ".comment";
-            GuiConfigControl config = new GuiConfigControl(null, (ConfigKeyField) key, Dist.DEDICATED_SERVER, caption, comment);
+            GuiConfigControl config = new GuiConfigControl(null, (ConfigKeyField) key, Side.SERVER, caption, comment);
             config.init(null);
             
         }
@@ -47,7 +47,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                     json.add(((GuiConfigControl) child.control).field.name, element);
             }
         
-        holder.load(false, true, json, Dist.DEDICATED_SERVER);
+        holder.load(false, true, json, Side.SERVER);
     }
     
 }

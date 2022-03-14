@@ -34,6 +34,7 @@ import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -78,12 +79,12 @@ public class ConfigEventHandler {
     @SubscribeEvent
     public void loadWorld(Load event) {
         if (event.getWorld().isClientSide())
-            load(Dist.CLIENT);
+            load(Side.CLIENT);
     }
     
     @SubscribeEvent
     public void startServer(ServerAboutToStartEvent event) {
-        load(Dist.DEDICATED_SERVER);
+        load(Side.SERVER);
     }
     
     public void sync(ICreativeConfigHolder holder) {
@@ -126,7 +127,7 @@ public class ConfigEventHandler {
         }
     }
     
-    public void save(String modid, Dist side) {
+    public void save(String modid, Side side) {
         try {
             Object object = CreativeConfigRegistry.ROOT.get(modid);
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
@@ -172,7 +173,7 @@ public class ConfigEventHandler {
         
     }
     
-    public void save(Dist side) {
+    public void save(Side side) {
         for (String modid : CreativeConfigRegistry.ROOT.names())
             save(modid, side);
     }
@@ -205,7 +206,7 @@ public class ConfigEventHandler {
         saveClientFieldList(CreativeConfigRegistry.ROOT, list);
     }
     
-    public void load(String modid, Dist side) {
+    public void load(String modid, Side side) {
         Object object = CreativeConfigRegistry.ROOT.get(modid);
         if (object instanceof ICreativeConfigHolder) {
             ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
@@ -230,7 +231,7 @@ public class ConfigEventHandler {
         }
     }
     
-    public void load(Dist side) {
+    public void load(Side side) {
         loadClientFields();
         
         for (String modid : CreativeConfigRegistry.ROOT.names())
@@ -243,14 +244,14 @@ public class ConfigEventHandler {
         String[] path = key.split(".");
         ConfigKey config = CreativeConfigRegistry.ROOT.findKey(path);
         if (config != null)
-            return config.is(Dist.DEDICATED_SERVER);
+            return config.is(Side.SERVER);
         return false;
     }
     
     public static List<String> loadClientFieldList(ICreativeConfigHolder holder) {
         List<String> enabled = new ArrayList<>();
         for (ConfigKey key : holder.fields())
-            if (key.isWithoutForce(Dist.CLIENT))
+            if (key.isWithoutForce(Side.CLIENT))
                 ConfigEventHandler.loadClientFieldList(holder, key, enabled);
         return enabled;
     }
@@ -264,7 +265,7 @@ public class ConfigEventHandler {
         if (field.get() instanceof ICreativeConfigHolder) {
             ICreativeConfigHolder holder = (ICreativeConfigHolder) field.get();
             for (ConfigKey key : holder.fields())
-                if (key.isWithoutForce(Dist.CLIENT))
+                if (key.isWithoutForce(Side.CLIENT))
                     loadClientFieldList(holder, key, list);
         }
         
@@ -273,7 +274,7 @@ public class ConfigEventHandler {
     
     public static void saveClientFieldList(ICreativeConfigHolder holder, List<String> enabled) {
         for (ConfigKey key : holder.fields())
-            if (key.isWithoutForce(Dist.CLIENT))
+            if (key.isWithoutForce(Side.CLIENT))
                 saveClientFieldList(String.join(".", holder.path()), key, enabled);
     }
     
@@ -288,7 +289,7 @@ public class ConfigEventHandler {
             Object object = field.get();
             if (object instanceof ICreativeConfigHolder)
                 for (ConfigKey key : ((ICreativeConfigHolder) object).fields())
-                    if (key.isWithoutForce(Dist.CLIENT))
+                    if (key.isWithoutForce(Side.CLIENT))
                         saveClientFieldList(path, key, enabled);
         }
     }
@@ -298,7 +299,7 @@ public class ConfigEventHandler {
         Object object = field.get();
         if (object instanceof ICreativeConfigHolder)
             for (ConfigKey key : ((ICreativeConfigHolder) object).fields())
-                if (key.isWithoutForce(Dist.CLIENT))
+                if (key.isWithoutForce(Side.CLIENT))
                     enable(key);
     }
     

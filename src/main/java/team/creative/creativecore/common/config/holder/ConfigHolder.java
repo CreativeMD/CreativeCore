@@ -5,7 +5,7 @@ import java.util.Collection;
 import com.google.common.collect.ObjectArrays;
 import com.google.gson.JsonObject;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
@@ -70,7 +70,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public boolean isEmpty(Dist side) {
+    public boolean isEmpty(Side side) {
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.get() instanceof ICreativeConfigHolder) {
@@ -83,7 +83,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public boolean isEmptyWithoutForce(Dist side) {
+    public boolean isEmptyWithoutForce(Side side) {
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.get() instanceof ICreativeConfigHolder) {
@@ -96,7 +96,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public boolean isDefault(Dist side) {
+    public boolean isDefault(Side side) {
         for (int i = 0; i < fields.size(); i++)
             if (fields.get(i).value.is(side) && !fields.get(i).value.isDefault(side))
                 return false;
@@ -104,7 +104,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public void restoreDefault(Dist side, boolean ignoreRestart) {
+    public void restoreDefault(Side side, boolean ignoreRestart) {
         for (int i = 0; i < fields.size(); i++) {
             T key = fields.get(i).value;
             if (key.is(side) && (!ignoreRestart || !key.requiresRestart) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
@@ -113,7 +113,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Dist side) {
+    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.is(side) && (!ignoreRestart || !field.requiresRestart))
@@ -127,7 +127,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public JsonObject save(boolean saveDefault, boolean ignoreRestart, Dist side) {
+    public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side) {
         JsonObject object = new JsonObject();
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;

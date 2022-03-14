@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -28,7 +28,7 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 public class ConfigGuiLayer extends GuiLayer {
     
     public JsonObject ROOT = new JsonObject();
-    public Dist side;
+    public Side side;
     
     public final ICreativeConfigHolder rootHolder;
     public ICreativeConfigHolder holder;
@@ -38,7 +38,7 @@ public class ConfigGuiLayer extends GuiLayer {
     public int nextAction;
     public boolean force;
     
-    public ConfigGuiLayer(ICreativeConfigHolder holder, Dist side) {
+    public ConfigGuiLayer(ICreativeConfigHolder holder, Side side) {
         super("config", 420, 234);
         this.flow = GuiFlow.STACK_Y;
         this.rootHolder = holder;
@@ -119,7 +119,7 @@ public class ConfigGuiLayer extends GuiLayer {
             closeTopLayer();
         }).setTitle(new TranslatableComponent("gui.cancel")));
         
-        if (side == Dist.DEDICATED_SERVER)
+        if (side.isServer())
             lowerBox.addLeft(new GuiButton("client-config", x -> {
                 nextAction = 1;
                 closeTopLayer();
@@ -138,11 +138,11 @@ public class ConfigGuiLayer extends GuiLayer {
     }
     
     public void sendUpdate() {
-        if (side == Dist.DEDICATED_SERVER)
+        if (side.isServer())
             CreativeCore.NETWORK.sendToServer(new ConfigurationChangePacket(rootHolder, ROOT));
         else {
-            rootHolder.load(false, true, JsonUtils.get(ROOT, rootHolder.path()), Dist.CLIENT);
-            CreativeCore.CONFIG_HANDLER.save(Dist.CLIENT);
+            rootHolder.load(false, true, JsonUtils.get(ROOT, rootHolder.path()), Side.CLIENT);
+            CreativeCore.CONFIG_HANDLER.save(Side.CLIENT);
         }
     }
     

@@ -1,49 +1,49 @@
 package team.creative.creativecore.common.config.sync;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 
 public enum ConfigSynchronization {
     
     CLIENT {
         @Override
-        public boolean useFolder(boolean forceSynchronization, Dist side) {
+        public boolean useFolder(boolean forceSynchronization, Side side) {
             if (forceSynchronization)
-                return side.isDedicatedServer();
+                return side.isServer();
             return side.isClient();
         }
         
         @Override
-        public boolean useValue(boolean forceSynchronization, Dist side) {
+        public boolean useValue(boolean forceSynchronization, Side side) {
             if (forceSynchronization)
-                return side.isDedicatedServer();
+                return side.isServer();
             return side.isClient();
         }
     },
     UNIVERSAL {
         @Override
-        public boolean useFolder(boolean forceSynchronization, Dist side) {
+        public boolean useFolder(boolean forceSynchronization, Side side) {
             return true;
         }
         
         @Override
-        public boolean useValue(boolean forceSynchronization, Dist side) {
-            return side.isDedicatedServer();
+        public boolean useValue(boolean forceSynchronization, Side side) {
+            return side.isServer();
         }
     },
     SERVER {
         @Override
-        public boolean useFolder(boolean forceSynchronization, Dist side) {
-            return side.isDedicatedServer();
+        public boolean useFolder(boolean forceSynchronization, Side side) {
+            return side.isServer();
         }
         
         @Override
-        public boolean useValue(boolean forceSynchronization, Dist side) {
-            return side.isDedicatedServer();
+        public boolean useValue(boolean forceSynchronization, Side side) {
+            return side.isServer();
         }
     };
     
-    public abstract boolean useFolder(boolean forceSynchronization, Dist side);
+    public abstract boolean useFolder(boolean forceSynchronization, Side side);
     
-    public abstract boolean useValue(boolean forceSynchronization, Dist side);
+    public abstract boolean useValue(boolean forceSynchronization, Side side);
     
 }

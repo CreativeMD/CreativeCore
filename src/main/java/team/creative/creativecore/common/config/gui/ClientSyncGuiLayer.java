@@ -9,8 +9,8 @@ import java.util.function.Function;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
@@ -59,9 +59,9 @@ public class ClientSyncGuiLayer extends GuiLayer {
             if (x.getDefault() instanceof ICreativeConfigHolder) {
                 List<ConfigKey> keys = new ArrayList<>();
                 for (ConfigKey key : ((ICreativeConfigHolder) x.getDefault()).fields())
-                    if (key.isWithoutForce(Dist.CLIENT)) {
+                    if (key.isWithoutForce(Side.CLIENT)) {
                         Object object = key.get();
-                        if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Dist.CLIENT))
+                        if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
                             keys.add(key);
                     }
                 return keys;
@@ -71,9 +71,9 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         List<ConfigKey> keys = new ArrayList<>();
         for (ConfigKey key : holder.fields())
-            if (key.isWithoutForce(Dist.CLIENT)) {
+            if (key.isWithoutForce(Side.CLIENT)) {
                 Object object = key.get();
-                if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Dist.CLIENT))
+                if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
                     keys.add(key);
             }
         this.tree = new CheckTree<>(keys, setter, getter, getChildren);

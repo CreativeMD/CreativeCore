@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.config.holder;
 
-import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public class CreativeConfigRegistry extends ConfigHolderDynamic {
@@ -53,7 +53,7 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
         return fields.removeKey(modid);
     }
     
-    public static void load(String modid, Dist side) {
+    public static void load(String modid, Side side) {
         CreativeCore.CONFIG_HANDLER.load(modid, side);
     }
     

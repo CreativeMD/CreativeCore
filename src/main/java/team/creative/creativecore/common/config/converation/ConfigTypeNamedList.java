@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
@@ -25,7 +26,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 
 public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     
-    private ConfigHolderObject constructHolder(Dist side, Object value) {
+    private ConfigHolderObject constructHolder(Side side, Object value) {
         return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
     }
     
@@ -38,7 +39,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
-    public NamedList readElement(NamedList defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key) {
+    public NamedList readElement(NamedList defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         if (element.isJsonObject()) {
             JsonObject object = (JsonObject) element;
             Class clazz = getListType(key);
@@ -61,7 +62,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
-    public JsonElement writeElement(NamedList value, NamedList defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(NamedList value, NamedList defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         JsonObject array = new JsonObject();
         Class clazz = getListType(key);
         ConfigTypeConveration conversation = getUnsafe(clazz);
@@ -90,7 +91,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                 control.addNameTextfield("");
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
-                ConfigHolderObject holder = constructHolder(Dist.DEDICATED_SERVER, value);
+                ConfigHolderObject holder = constructHolder(Side.SERVER, value);
                 control = new GuiConfigSubControlHolder("" + 0, holder, value);
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield("");
@@ -119,7 +120,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                 converation.loadValue(entry.getValue(), control, null);
                 control.addNameTextfield(entry.getKey());
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Dist.DEDICATED_SERVER, entry.getValue()), entry.getValue());
+                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry.getValue()), entry.getValue());
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield(entry.getKey());
             }

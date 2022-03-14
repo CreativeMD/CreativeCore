@@ -23,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.holder.ConfigHolderDynamic;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
@@ -70,12 +71,12 @@ public abstract class ConfigTypeConveration<T> {
         }
         
         @Override
-        public JsonObject save(boolean saveDefault, boolean ignoreRestart, Dist side) {
+        public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side) {
             return null;
         }
         
         @Override
-        public void restoreDefault(Dist side, boolean ignoreRestart) {}
+        public void restoreDefault(Side side, boolean ignoreRestart) {}
         
         @Override
         public String[] path() {
@@ -93,20 +94,20 @@ public abstract class ConfigTypeConveration<T> {
         }
         
         @Override
-        public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Dist side) {}
+        public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {}
         
         @Override
-        public boolean isEmptyWithoutForce(Dist side) {
+        public boolean isEmptyWithoutForce(Side side) {
             return false;
         }
         
         @Override
-        public boolean isEmpty(Dist side) {
+        public boolean isEmpty(Side side) {
             return false;
         }
         
         @Override
-        public boolean isDefault(Dist side) {
+        public boolean isDefault(Side side) {
             return false;
         }
         
@@ -174,11 +175,11 @@ public abstract class ConfigTypeConveration<T> {
         return null;
     }
     
-    public static Object read(Class typeClass, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key) {
+    public static Object read(Class typeClass, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         return get(typeClass).readElement(defaultValue, loadDefault, ignoreRestart, element, side, key);
     }
     
-    public static JsonElement write(Class typeClass, Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key) {
+    public static JsonElement write(Class typeClass, Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         return get(typeClass).writeElement(value, defaultValue, saveDefault, ignoreRestart, side, key);
     }
     
@@ -481,7 +482,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override
-            public SoundConfig readElement(SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, ConfigKeyField key) {
+            public SoundConfig readElement(SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKeyField key) {
                 if (element.isJsonObject())
                     return new SoundConfig(new ResourceLocation(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume").getAsFloat(), element
                             .getAsJsonObject().get("pitch").getAsFloat());
@@ -489,7 +490,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            public JsonElement writeElement(SoundConfig value, SoundConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, ConfigKeyField key) {
+            public JsonElement writeElement(SoundConfig value, SoundConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKeyField key) {
                 JsonObject json = new JsonObject();
                 json.addProperty("sound", value.event.toString());
                 json.addProperty("volume", value.volume);
@@ -547,7 +548,7 @@ public abstract class ConfigTypeConveration<T> {
         holderConveration = registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
             
             @Override
-            public ConfigHolderObject readElement(ConfigHolderObject defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key) {
+            public ConfigHolderObject readElement(ConfigHolderObject defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
                 if (element.isJsonObject())
                     defaultValue.load(loadDefault, ignoreRestart, (JsonObject) element, side);
                 else
@@ -556,7 +557,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            public JsonElement writeElement(ConfigHolderObject value, ConfigHolderObject defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key) {
+            public JsonElement writeElement(ConfigHolderObject value, ConfigHolderObject defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
                 return value.save(saveDefault, ignoreRestart, side);
             }
             
@@ -583,7 +584,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(ConfigHolderDynamic.class, new ConfigTypeConveration<ConfigHolderDynamic>() {
             
             @Override
-            public ConfigHolderDynamic readElement(ConfigHolderDynamic defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key) {
+            public ConfigHolderDynamic readElement(ConfigHolderDynamic defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
                 if (element.isJsonObject())
                     defaultValue.load(loadDefault, ignoreRestart, (JsonObject) element, side);
                 else
@@ -592,7 +593,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            public JsonElement writeElement(ConfigHolderDynamic value, ConfigHolderDynamic defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key) {
+            public JsonElement writeElement(ConfigHolderDynamic value, ConfigHolderDynamic defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
                 return value.save(saveDefault, ignoreRestart, side);
             }
             
@@ -669,9 +670,9 @@ public abstract class ConfigTypeConveration<T> {
         registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeList());
     }
     
-    public abstract T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key);
+    public abstract T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key);
     
-    public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key);
+    public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key);
     
     @OnlyIn(value = Dist.CLIENT)
     public abstract void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz);
@@ -705,14 +706,14 @@ public abstract class ConfigTypeConveration<T> {
     public static abstract class SimpleConfigTypeConveration<T> extends ConfigTypeConveration<T> {
         
         @Override
-        public T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key) {
+        public T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
             return readElement(defaultValue, loadDefault, element);
         }
         
         public abstract T readElement(T defaultValue, boolean loadDefault, JsonElement element);
         
         @Override
-        public JsonElement writeElement(T value, T defaultValue, boolean ignoreRestart, boolean saveDefault, Dist side, @Nullable ConfigKeyField key) {
+        public JsonElement writeElement(T value, T defaultValue, boolean ignoreRestart, boolean saveDefault, Side side, @Nullable ConfigKeyField key) {
             return writeElement(value, defaultValue, saveDefault);
         }
         

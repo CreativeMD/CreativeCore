@@ -12,6 +12,7 @@ import com.google.gson.JsonElement;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
@@ -24,12 +25,12 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class ConfigTypeList extends ConfigTypeConveration<List> {
     
-    private ConfigHolderObject constructHolder(Dist side, Object value) {
+    private ConfigHolderObject constructHolder(Side side, Object value) {
         return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
     }
     
     @Override
-    public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key) {
+    public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
             Class clazz = getListType(key);
@@ -49,7 +50,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     }
     
     @Override
-    public JsonElement writeElement(List value, List defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(List value, List defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         JsonArray array = new JsonArray();
         Class clazz = getListType(key);
         ConfigTypeConveration conversation = getUnsafe(clazz);
@@ -78,7 +79,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 converation.createControls(control, null, subClass);
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
-                ConfigHolderObject holder = constructHolder(Dist.DEDICATED_SERVER, value);
+                ConfigHolderObject holder = constructHolder(Side.SERVER, value);
                 control = new GuiConfigSubControlHolder("" + 0, holder, value);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
@@ -105,7 +106,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 converation.createControls(control, null, clazz);
                 converation.loadValue(entry, control, null);
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Dist.DEDICATED_SERVER, entry), entry);
+                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry), entry);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             controls.add(control);

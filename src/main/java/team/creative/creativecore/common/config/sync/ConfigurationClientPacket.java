@@ -5,8 +5,8 @@ import java.util.List;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
@@ -70,7 +70,7 @@ public class ConfigurationClientPacket extends CreativePacket {
     public void executeServer(ServerPlayer player) {
         CreativeCore.NETWORK.sendToClientAll(new ConfigurationClientPacket(run()));
         CreativeCore.CONFIG_HANDLER.saveClientFields();
-        CreativeCore.CONFIG_HANDLER.save(Dist.DEDICATED_SERVER);
+        CreativeCore.CONFIG_HANDLER.save(Side.SERVER);
     }
     
 }

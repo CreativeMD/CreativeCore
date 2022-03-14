@@ -16,7 +16,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
@@ -27,6 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.client.render.model.CreativeRenderBlock;
 import team.creative.creativecore.client.render.model.CreativeRenderItem;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
@@ -52,8 +52,8 @@ public class CreativeCoreClient {
     public static void registerClientConfig(String modid) {
         ModLoadingContext.get().registerExtensionPoint(ConfigGuiFactory.class, () -> new ConfigGuiFactory((a, b) -> {
             ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(modid);
-            if (holder != null && !holder.isEmpty(Dist.CLIENT))
-                return new GuiScreenIntegration(new ConfigGuiLayer(holder, Dist.CLIENT));
+            if (holder != null && !holder.isEmpty(Side.CLIENT))
+                return new GuiScreenIntegration(new ConfigGuiLayer(holder, Side.CLIENT));
             return null;
         }));
     }
@@ -82,7 +82,7 @@ public class CreativeCoreClient {
     public static void commands(RegisterClientCommandsEvent event) {
         event.getDispatcher().register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
             try {
-                GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.CLIENT)));
+                GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
             } catch (Exception e) {
                 e.printStackTrace();
             }

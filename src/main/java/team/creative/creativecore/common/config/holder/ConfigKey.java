@@ -2,7 +2,7 @@ package team.creative.creativecore.common.config.holder;
 
 import java.lang.reflect.Field;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
@@ -51,19 +51,19 @@ public abstract class ConfigKey {
         return one.equals(two);
     }
     
-    public boolean isDefault(Dist side) {
+    public boolean isDefault(Side side) {
         if (defaultValue instanceof ICreativeConfigHolder)
             return ((ICreativeConfigHolder) defaultValue).isDefault(side);
         return checkEqual(defaultValue, get());
     }
     
-    public boolean isDefault(Object value, Dist side) {
+    public boolean isDefault(Object value, Side side) {
         if (defaultValue instanceof ICreativeConfigHolder)
             return ((ICreativeConfigHolder) defaultValue).isDefault(side);
         return checkEqual(defaultValue, value);
     }
     
-    public void restoreDefault(Dist side, boolean ignoreRestart) {
+    public void restoreDefault(Side side, boolean ignoreRestart) {
         if (defaultValue instanceof ICreativeConfigHolder)
             ((ICreativeConfigHolder) defaultValue).restoreDefault(side, ignoreRestart);
         else
@@ -78,13 +78,13 @@ public abstract class ConfigKey {
         return defaultValue.getClass();
     }
     
-    public boolean is(Dist side) {
+    public boolean is(Side side) {
         if (defaultValue instanceof ICreativeConfigHolder)
             return synchronization.useFolder(forceSynchronization, side);
         return synchronization.useValue(forceSynchronization, side);
     }
     
-    public boolean isWithoutForce(Dist side) {
+    public boolean isWithoutForce(Side side) {
         if (defaultValue instanceof ICreativeConfigHolder)
             return synchronization.useFolder(false, side);
         return synchronization.useValue(false, side);

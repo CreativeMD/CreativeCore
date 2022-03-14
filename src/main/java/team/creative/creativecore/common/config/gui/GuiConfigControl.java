@@ -3,7 +3,7 @@ package team.creative.creativecore.common.config.gui;
 import com.google.gson.JsonElement;
 
 import net.minecraft.network.chat.TextComponent;
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.VAlign;
@@ -17,11 +17,11 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 public class GuiConfigControl extends GuiRow {
     
     public final ConfigKeyField field;
-    public final Dist side;
+    public final Side side;
     private GuiButton resetButton;
     private final GuiColumn main;
     
-    public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Dist side, String caption, String comment) {
+    public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, String caption, String comment) {
         super();
         this.field = field;
         this.side = side;

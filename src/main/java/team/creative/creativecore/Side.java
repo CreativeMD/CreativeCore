@@ -1,4 +1,4 @@
-package team.creative.creativecore.loader;
+package team.creative.creativecore;
 
 public enum Side {
     

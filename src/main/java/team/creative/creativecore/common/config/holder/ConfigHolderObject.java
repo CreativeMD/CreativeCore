@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
@@ -55,14 +55,14 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
     }
     
     @Override
-    public void restoreDefault(Dist side, boolean ignoreRestart) {
+    public void restoreDefault(Side side, boolean ignoreRestart) {
         super.restoreDefault(side, ignoreRestart);
         if (object instanceof ICreativeConfig)
             ((ICreativeConfig) object).configured(side);
     }
     
     @Override
-    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Dist side) {
+    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
         super.load(loadDefault, ignoreRestart, json, side);
         if (object instanceof ICreativeConfig)
             ((ICreativeConfig) object).configured(side);

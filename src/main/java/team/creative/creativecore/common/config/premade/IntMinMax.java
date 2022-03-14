@@ -2,7 +2,7 @@ package team.creative.creativecore.common.config.premade;
 
 import java.util.Random;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 
@@ -25,7 +25,7 @@ public class IntMinMax implements ICreativeConfig {
     }
     
     @Override
-    public void configured(Dist side) {
+    public void configured(Side side) {
         if (min > max) {
             int temp = min;
             this.min = max;

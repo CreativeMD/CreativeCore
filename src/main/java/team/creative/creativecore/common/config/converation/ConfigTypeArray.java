@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -19,7 +20,7 @@ import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 public class ConfigTypeArray extends ConfigTypeConveration {
     
     @Override
-    public Object readElement(Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Dist side, @Nullable ConfigKeyField key) {
+    public Object readElement(Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
             int size = Math.min(array.size(), Array.getLength(defaultValue));
@@ -32,7 +33,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     }
     
     @Override
-    public JsonElement writeElement(Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Dist side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         int length = Array.getLength(value);
         JsonArray array = new JsonArray();
         for (int i = 0; i < length; i++)

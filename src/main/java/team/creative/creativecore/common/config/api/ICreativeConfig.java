@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.config.api;
 
-import net.minecraftforge.api.distmarker.Dist;
+import team.creative.creativecore.Side;
 
 public interface ICreativeConfig {
     
-    public void configured(Dist side);
+    public void configured(Side side);
     
 }

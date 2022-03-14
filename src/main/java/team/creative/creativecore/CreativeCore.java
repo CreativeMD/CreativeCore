@@ -68,7 +68,7 @@ public class CreativeCore {
     public static MenuType<ContainerIntegration> GUI_CONTAINER;
     
     public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator
-            .register("config", new GuiCreatorBasic((player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Dist.DEDICATED_SERVER)));
+            .register("config", new GuiCreatorBasic((player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.SERVER)));
     public static final GuiCreatorBasic CLIENT_CONFIG_OPEN = GuiCreator
             .register("clientconfig", new GuiCreatorBasic((player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT)));
     

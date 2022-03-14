@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.network.CreativePacket;
@@ -32,8 +32,8 @@ public class ConfigurationChangePacket extends CreativePacket {
     @Override
     public void executeServer(ServerPlayer player) {
         if (player.hasPermissions(2)) {
-            CreativeConfigRegistry.ROOT.followPath(path).load(false, true, json, Dist.DEDICATED_SERVER);
-            CreativeCore.CONFIG_HANDLER.save(Dist.DEDICATED_SERVER);
+            CreativeConfigRegistry.ROOT.followPath(path).load(false, true, json, Side.SERVER);
+            CreativeCore.CONFIG_HANDLER.save(Side.SERVER);
             CreativeCore.CONFIG_HANDLER.syncAll();
         } else
             CreativeCore.CONFIG_HANDLER.syncAll(player);
