@@ -9,20 +9,20 @@ public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
     
     public CubicInterpolation(double[] times, T[] points) {
         super(times, points);
-        beginVec = createVec();
+        beginVec = (T) points[0].copy();
         beginVec.sub(points[1]);
         beginVec.add(points[0]);
-        endVec = createVec();
+        endVec = (T) points[points.length - 1].copy();
         endVec.sub(points[points.length - 2]);
         endVec.add(points[points.length - 1]);
     }
     
     public CubicInterpolation(T... points) {
         super(points);
-        beginVec = createVec();
+        beginVec = (T) points[0].copy();
         beginVec.sub(points[1]);
         beginVec.add(points[0]);
-        endVec = createVec();
+        endVec = (T) points[points.length - 1].copy();
         endVec.sub(points[points.length - 2]);
         endVec.add(points[points.length - 1]);
     }
