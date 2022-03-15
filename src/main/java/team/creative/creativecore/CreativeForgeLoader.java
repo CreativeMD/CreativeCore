@@ -57,4 +57,14 @@ public class CreativeForgeLoader implements ICreativeLoader {
         MinecraftForge.EVENT_BUS.addListener((WorldEvent.Load x) -> consumer.accept(x.getWorld()));
     }
     
+    @Override
+    public void registerListener(Consumer consumer) {
+        MinecraftForge.EVENT_BUS.addListener(consumer);
+    }
+    
+    @Override
+    public void registerClientStarted(Runnable run) {
+        run.run();
+    }
+    
 }
