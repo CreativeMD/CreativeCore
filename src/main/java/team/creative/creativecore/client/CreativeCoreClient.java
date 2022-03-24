@@ -27,6 +27,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
+import team.creative.creativecore.client.render.model.CreativeModelLoader;
 import team.creative.creativecore.client.render.model.CreativeRenderBlock;
 import team.creative.creativecore.client.render.model.CreativeRenderItem;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
@@ -120,7 +121,7 @@ public class CreativeCoreClient {
     }
     
     public static void modelEvent(ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(CreativeCore.MODID, "rendered"), null);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(CreativeCore.MODID, "rendered"), new CreativeModelLoader());
     }
     
     @SubscribeEvent
