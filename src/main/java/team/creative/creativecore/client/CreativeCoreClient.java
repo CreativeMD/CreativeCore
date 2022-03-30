@@ -1,5 +1,8 @@
 package team.creative.creativecore.client;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
@@ -9,9 +12,9 @@ import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
@@ -96,18 +99,15 @@ public class CreativeCoreClient {
         Minecraft minecraft = Minecraft.getInstance();
         ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
         
-        reloadableResourceManager.registerReloadListener(new SimplePreparableReloadListener() {
+        reloadableResourceManager.registerReloadListener(new PreparableReloadListener() {
             
             @Override
-            protected Object prepare(ResourceManager p_10796_, ProfilerFiller p_10797_) {
-                return GuiStyle.class; // No idea
-            }
-            
-            @Override
-            protected void apply(Object p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
-                GuiStyle.reload();
-                for (CreativeRenderItem handler : RENDERED_ITEMS.handlers())
-                    handler.reload();
+            public CompletableFuture<Void> reload(PreparationBarrier p_10638_, ResourceManager p_10639_, ProfilerFiller p_10640_, ProfilerFiller p_10641_, Executor p_10642_, Executor p_10643_) {
+                return CompletableFuture.runAsync(() -> {
+                    GuiStyle.reload();
+                    for (CreativeRenderItem handler : RENDERED_ITEMS.handlers())
+                        handler.reload();
+                }, p_10643_);
             }
         });
         
