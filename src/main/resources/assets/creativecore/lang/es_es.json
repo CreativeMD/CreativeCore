@@ -1,6 +1,14 @@
 {
-	"gui.client-config": "Configuración del cliente",
-	"gui.config": "Configuración",
-	"gui.save": "Guardar",
-	"gui.add": "Añadir"
+    "gui.client-config": "Configuración del cliente",
+    "gui.config": "Configuración",
+    "gui.save": "Guardar",
+    "gui.add": "Añadir"
+    "dialog.button.YES": "Sí",
+    "dialog.button.NO": "No",
+    "dialog.button.MAYBE": "Quizás",
+    "dialog.button.CANCEL": "Cancelar",
+    "dialog.button.ABORT": "Abortar",
+    "dialog.button.CONFIRM": "Confirmar",
+    "collector.inventory": "Inventario",
+    "collector.all": "Creativo"
 }
