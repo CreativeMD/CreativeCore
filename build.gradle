@@ -117,15 +117,11 @@ dependencies {
     implementation fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}") {
         transitive = false
     }
-    //deobfCompile "mcp.mobius.waila:Hwyla:${waila_version}"
-    //deobfCompile "cofh:RedstoneFlux:${redstoneflux_version}"
-    //deobfCompile "net.darkhax.tesla:Tesla-1.12.2:1.0.63"
-
-    //implementation "li.cil.oc:OpenComputers:${oc_version}"
 }
 
 jar {
   duplicatesStrategy = DuplicatesStrategy.INCLUDE
+  archiveFileName.set(project.modname + "_FORGE_v" + project.version + "_mc" + project.minecraft_version + ".jar")
 }
 
 mixin {
