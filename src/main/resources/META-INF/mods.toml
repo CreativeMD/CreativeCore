@@ -6,7 +6,7 @@ license="GNU General Public License v3.0"
 
 [[mods]]
 	modId="creativecore"
-	version="2.6.0"
+	version="${file.jarVersion}"
 	displayName="CreativeCore"
 	side="CLIENT"
 	displayURL="https://minecraft.curseforge.com/projects/creativecore"
