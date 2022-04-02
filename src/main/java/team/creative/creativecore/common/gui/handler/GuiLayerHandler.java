@@ -5,7 +5,8 @@ import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
-public abstract class GuiLayerHandler {
+@FunctionalInterface
+public abstract interface GuiLayerHandler {
     
     public static final NamedHandlerRegistry<GuiLayerHandler> REGISTRY = new NamedHandlerRegistry<>(null);
     

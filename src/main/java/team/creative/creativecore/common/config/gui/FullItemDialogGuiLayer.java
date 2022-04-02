@@ -60,8 +60,9 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         handler.createControls(topBottom.top, info);
         GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest", 100, 80).setExpandableX();
         for (int i = 0; i < latest.size(); i++) {
+            final int id = i;
             scroll.add(new GuiButton("" + i, x -> {
-                FullItemDialogGuiLayer.this.button.set(latest.get(Integer.parseInt(name)));
+                FullItemDialogGuiLayer.this.button.set(latest.get(id));
                 closeTopLayer();
                 playSound(SoundEvents.UI_BUTTON_CLICK);
             }).setTitle(GuiInfoStackButton.getLabelText(latest.get(i))).setAlign(Align.CENTER).setExpandableX());

@@ -5,11 +5,9 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
-import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlock;
@@ -24,12 +22,14 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiInfoStackButton extends GuiButton {
     
+    public static final GuiLayerHandler INFO_LAYER = (parent, nbt) -> new FullItemDialogGuiLayer();
+    
     private CreativeIngredient info;
     
     public GuiInfoStackButton(String name, CreativeIngredient info) {
         super(name, null);
         pressed = button -> {
-            FullItemDialogGuiLayer layer = (FullItemDialogGuiLayer) this.getParent().openLayer(new LayerOpenPacket("info", new CompoundTag()));
+            FullItemDialogGuiLayer layer = (FullItemDialogGuiLayer) this.getParent().openLayer(new LayerOpenPacket(INFO_LAYER, new CompoundTag()));
             layer.button = this;
             layer.init();
         };
@@ -72,13 +72,4 @@ public class GuiInfoStackButton extends GuiButton {
         return info;
     }
     
-    static {
-        GuiLayerHandler.REGISTRY.register("info", new GuiLayerHandler() {
-            
-            @Override
-            public GuiLayer create(IGuiIntegratedParent parent, CompoundTag nbt) {
-                return new FullItemDialogGuiLayer();
-            }
-        });
-    }
 }

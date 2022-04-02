@@ -10,8 +10,8 @@ public class LayerOpenPacket extends LayerPacket {
     public String handler;
     public CompoundTag nbt;
     
-    public LayerOpenPacket(String handler, CompoundTag nbt) {
-        this.handler = handler;
+    public LayerOpenPacket(GuiLayerHandler handler, CompoundTag nbt) {
+        this.handler = GuiLayerHandler.REGISTRY.getId(handler);
         this.nbt = nbt;
     }
     
