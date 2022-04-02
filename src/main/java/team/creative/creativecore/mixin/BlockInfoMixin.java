@@ -13,7 +13,7 @@ import team.creative.creativecore.client.render.model.BlockInfoExtension;
 public abstract class BlockInfoMixin implements BlockInfoExtension {
     
     @Unique
-    public int customTint;
+    public int customTint = -1;
     
     @Inject(at = @At(value = "HEAD"), method = "getColorMultiplier(I)I", cancellable = true, remap = false)
     public void getColorMultiplierHook(int tint, CallbackInfoReturnable<Integer> info) {
