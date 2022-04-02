@@ -8,7 +8,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
@@ -21,6 +20,7 @@ import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.util.mc.LanguageUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
 public abstract class GuiControl {
@@ -151,6 +151,7 @@ public abstract class GuiControl {
         throw new RuntimeException("Invalid layer control");
     }
     
+    @OnlyIn(Dist.CLIENT)
     public GuiStyle getStyle() {
         if (parent instanceof GuiControl)
             return ((GuiControl) parent).getStyle();
@@ -264,6 +265,7 @@ public abstract class GuiControl {
     
     public abstract ControlFormatting getControlFormatting();
     
+    @OnlyIn(Dist.CLIENT)
     public int getContentOffset() {
         return getStyle().getContentOffset(getControlFormatting());
     }
@@ -344,16 +346,12 @@ public abstract class GuiControl {
     
     // UTILS
     
-    @OnlyIn(value = Dist.CLIENT)
     public static String translate(String text, Object... parameters) {
-        return I18n.get(text, parameters);
+        return LanguageUtils.translate(text, parameters);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
     public static String translateOrDefault(String text, String defaultText) {
-        if (I18n.exists(text))
-            return translate(text);
-        return defaultText;
+        return LanguageUtils.translateOr(text, defaultText);
     }
     
     @OnlyIn(value = Dist.CLIENT)

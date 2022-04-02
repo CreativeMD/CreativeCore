@@ -1,6 +1,10 @@
 package team.creative.creativecore.common.util.mc;
 
+import java.util.IllegalFormatException;
+
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class LanguageUtils {
     
@@ -9,18 +13,26 @@ public class LanguageUtils {
     }
     
     public static String translate(String name) {
-        return I18n.get(name);
+        if (FMLEnvironment.dist.isClient())
+            return I18n.get(name);
+        return Language.getInstance().getOrDefault(name);
     }
     
     public static String translateOr(String name, String defaultString) {
-        String result = I18n.get(name);
+        String result = translate(name);
         if (name.equals(result))
             return defaultString;
         return name;
     }
     
     public static String translate(String name, Object... args) {
-        return I18n.get(name, args);
+        if (FMLEnvironment.dist.isClient())
+            return I18n.get(name, args);
+        try {
+            return String.format(Language.getInstance().getOrDefault(name), args);
+        } catch (IllegalFormatException illegalformatexception) {
+            return "Format error: " + name;
+        }
     }
     
 }

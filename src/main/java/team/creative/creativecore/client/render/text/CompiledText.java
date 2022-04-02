@@ -17,14 +17,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.StringDecomposer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.AdvancedComponent;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 
 public class CompiledText {
-    
-    private static final Font font = Minecraft.getInstance().font;
     
     private int maxWidth;
     private int maxHeight;
@@ -71,6 +72,9 @@ public class CompiledText {
     }
     
     private void compile() {
+        if (FMLEnvironment.dist.isDedicatedServer())
+            return;
+        
         List<Component> copy = new ArrayList<>();
         for (Component component : original)
             copy.add(component.copy());
@@ -78,6 +82,7 @@ public class CompiledText {
         compileNext(null, true, copy);
     }
     
+    @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
             if (newLine)
@@ -87,6 +92,7 @@ public class CompiledText {
         return currentLine;
     }
     
+    @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, FormattedText component) {
         if (newLine)
             lines.add(currentLine = new CompiledLine());
@@ -111,6 +117,7 @@ public class CompiledText {
         return currentLine;
     }
     
+    @OnlyIn(Dist.CLIENT)
     public int getTotalHeight() {
         int height = -lineSpacing;
         for (CompiledLine line : lines)
@@ -118,6 +125,7 @@ public class CompiledText {
         return height;
     }
     
+    @OnlyIn(Dist.CLIENT)
     public void render(PoseStack stack) {
         if (lines == null)
             return;
@@ -168,11 +176,11 @@ public class CompiledText {
         private int height = 0;
         private int width = 0;
         
-        public CompiledLine() {
-            
-        }
+        public CompiledLine() {}
         
+        @OnlyIn(Dist.CLIENT)
         public void render(PoseStack stack) {
+            Font font = Minecraft.getInstance().font;
             int xOffset = 0;
             MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             for (FormattedText text : components) {
@@ -202,12 +210,14 @@ public class CompiledText {
             }
         }
         
+        @OnlyIn(Dist.CLIENT)
         public void updateDimension(int width, int height) {
             this.width = Math.max(width, this.width);
             this.height = Math.max(height, this.height);
         }
         
         public FormattedText add(FormattedText component) {
+            Font font = Minecraft.getInstance().font;
             int remainingWidth = maxWidth - width;
             if (component instanceof AdvancedComponent) {
                 AdvancedComponent advanced = (AdvancedComponent) component;
@@ -259,7 +269,9 @@ public class CompiledText {
         
     }
     
+    @OnlyIn(Dist.CLIENT)
     public FormattedTextSplit splitByWidth(FormattedText text, int width, Style style, boolean force) {
+        Font font = Minecraft.getInstance().font;
         final WidthLimitedCharSink charSink = new WidthLimitedCharSink(width, font.getSplitter());
         ComponentCollector head = new ComponentCollector();
         ComponentCollector tail = new ComponentCollector();
@@ -311,10 +323,12 @@ public class CompiledText {
         }
     }
     
+    @OnlyIn(Dist.CLIENT)
     public int getTotalWidth() {
         return calculateWidth(0, true, original);
     }
     
+    @OnlyIn(Dist.CLIENT)
     private int calculateWidth(int width, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
             int result = calculateWidth(component);
@@ -326,7 +340,9 @@ public class CompiledText {
         return width;
     }
     
+    @OnlyIn(Dist.CLIENT)
     private int calculateWidth(FormattedText component) {
+        Font font = Minecraft.getInstance().font;
         int width = 0;
         if (component instanceof AdvancedComponent) {
             AdvancedComponent advanced = (AdvancedComponent) component;
