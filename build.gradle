@@ -34,7 +34,6 @@ repositories {
 }
 
 group= "team.creative" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "creativecore"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
