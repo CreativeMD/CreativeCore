@@ -32,6 +32,7 @@ import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.config.premade.Permission;
+import team.creative.creativecore.common.config.premade.RegistryObjectConfig;
 import team.creative.creativecore.common.config.premade.SoundConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -479,6 +480,48 @@ public abstract class ConfigTypeConveration<T> {
         });
         registerTypeCreator(String.class, () -> "");
         
+        registerType(ResourceLocation.class, new SimpleConfigTypeConveration<ResourceLocation>() {
+            
+            @Override
+            public ResourceLocation readElement(ResourceLocation defaultValue, boolean loadDefault, JsonElement element) {
+                if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
+                    return new ResourceLocation(element.getAsString());
+                return defaultValue;
+            }
+            
+            @Override
+            public JsonElement writeElement(ResourceLocation value, ResourceLocation defaultValue, boolean saveDefault) {
+                return new JsonPrimitive(value.toString());
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            public void createControls(GuiParent parent, Class clazz) {
+                parent.add(new GuiTextfield("data", 30, 8).setExpandableX());
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            public void loadValue(ResourceLocation value, GuiParent parent) {
+                GuiTextfield button = (GuiTextfield) parent.get("data");
+                button.setText(value.toString());
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            protected ResourceLocation saveValue(GuiParent parent, Class clazz) {
+                GuiTextfield button = (GuiTextfield) parent.get("data");
+                return new ResourceLocation(button.getText());
+            }
+            
+            @Override
+            public ResourceLocation set(ConfigKeyField key, ResourceLocation value) {
+                return value;
+            }
+            
+        });
+        registerTypeCreator(ResourceLocation.class, () -> new ResourceLocation(""));
+        
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override
@@ -541,6 +584,52 @@ public abstract class ConfigTypeConveration<T> {
             
         });
         registerTypeCreator(SoundConfig.class, () -> new SoundConfig(new ResourceLocation("missing")));
+        
+        registerType(RegistryObjectConfig.class, new ConfigTypeConveration<RegistryObjectConfig>() {
+            
+            @Override
+            public RegistryObjectConfig readElement(RegistryObjectConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKeyField key) {
+                if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
+                    return new RegistryObjectConfig(defaultValue.registry, new ResourceLocation(element.getAsString()));
+                return defaultValue;
+            }
+            
+            @Override
+            public JsonElement writeElement(RegistryObjectConfig value, RegistryObjectConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKeyField key) {
+                return new JsonPrimitive(value.value.getRegistryName().toString());
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
+                RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
+                parent.add(new GuiTextfield("search", 30, 14));
+                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
+                        .addComponent(value.registry.getKeys(), x -> new TextComponent(x.toString()))));
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            public void loadValue(RegistryObjectConfig value, GuiParent parent, ConfigKeyField key) {
+                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
+                box.select(value.location);
+            }
+            
+            @Override
+            @OnlyIn(value = Dist.CLIENT)
+            protected RegistryObjectConfig saveValue(GuiParent parent, Class clazz, ConfigKeyField key) {
+                RegistryObjectConfig object = (RegistryObjectConfig) key.getDefault();
+                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
+                
+                return new RegistryObjectConfig(object.registry, box.getSelected());
+            }
+            
+            @Override
+            public RegistryObjectConfig set(ConfigKeyField key, RegistryObjectConfig value) {
+                return value;
+            }
+            
+        });
         
         registerType(NamedList.class, new ConfigTypeNamedList());
         registerType(Permission.class, new ConfigTypePermission());
