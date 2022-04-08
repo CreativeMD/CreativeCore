@@ -2,9 +2,13 @@ package team.creative.creativecore.common.util.ingredient;
 
 import java.util.Optional;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -64,6 +68,16 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     @Override
     public CreativeIngredient copy() {
         return new CreativeIngredientBlockTag(tag);
+    }
+    
+    @Override
+    public Component description() {
+        return new TextComponent(tag.location().toString());
+    }
+    
+    @Override
+    public Component descriptionDetail() {
+        return new TranslatableComponent("minecraft.block_tag").append(": " + ChatFormatting.YELLOW).append(tag.location().toString());
     }
     
 }

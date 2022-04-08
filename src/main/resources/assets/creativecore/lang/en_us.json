@@ -12,5 +12,12 @@
     "dialog.button.ABORT": "Abort",
     "dialog.button.CONFIRM": "Confirm",
     "collector.inventory": "Inventory",
-    "collector.all": "Creative"
+    "collector.all": "Creative",
+    "minecraft.block": "Block",
+    "minecraft.item": "Item",
+    "minecraft.block_tag": "Blocktag",
+    "minecraft.item_tag": "Itemtag",
+    "minecraft.fuel": "Fuel",
+    "minecraft.stack": "Stack",
+    "minecraft.material": "Material"
 }
