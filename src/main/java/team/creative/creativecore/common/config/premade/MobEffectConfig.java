@@ -9,7 +9,7 @@ import team.creative.creativecore.common.config.api.CreativeConfig;
 public class MobEffectConfig {
     
     @CreativeConfig
-    public final RegistryObjectConfig<MobEffect> effect;
+    public RegistryObjectConfig<MobEffect> effect;
     @CreativeConfig
     public int amplifier;
     @CreativeConfig
