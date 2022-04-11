@@ -596,14 +596,13 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public JsonElement writeElement(RegistryObjectConfig value, RegistryObjectConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKeyField key) {
-                return new JsonPrimitive(value.value.getRegistryName().toString());
+                return new JsonPrimitive(value.location.toString());
             }
             
             @Override
             @OnlyIn(value = Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
                 RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
-                parent.add(new GuiTextfield("search", 30, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
                         .addComponent(value.registry.getKeys(), x -> new TextComponent(x.toString()))));
             }
@@ -626,6 +625,7 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public RegistryObjectConfig set(ConfigKeyField key, RegistryObjectConfig value) {
+                value.configured(null);
                 return value;
             }
             
