@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class PlayerUtils {
     
     public static CompoundTag getPersistentData(Player player) {
-        return new CompoundTag();
+        return player.getPersistentData();
     }
     
     @OnlyIn(Dist.CLIENT)
