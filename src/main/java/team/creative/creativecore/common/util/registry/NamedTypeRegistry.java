@@ -117,6 +117,22 @@ public class NamedTypeRegistry<T> {
         }
     }
     
+    public T createSafe(Class<? extends T> ifFailed, String id, Object... objects) {
+        try {
+            return create(id, objects);
+        } catch (RegistryException e) {
+            Class[] classes = new Class[objects.length];
+            for (int i = 0; i < classes.length; i++)
+                classes[i] = objects[i].getClass();
+            
+            try {
+                return ifFailed.getConstructor(classes).newInstance(objects);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e2) {
+                throw new RuntimeException("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable");
+            }
+        }
+    }
+    
     public static class ConstructorNotFoundException extends RegistryException {
         
         public ConstructorNotFoundException(Object[] objects) {
