@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.math.interpolation;
 
+import java.util.List;
+
 import team.creative.creativecore.common.util.math.vec.VecNd;
 
 public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
@@ -15,6 +17,16 @@ public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
         endVec = (T) points[points.length - 1].copy();
         endVec.sub(points[points.length - 2]);
         endVec.add(points[points.length - 1]);
+    }
+    
+    public CubicInterpolation(List<T> points) {
+        super(points);
+        beginVec = (T) points.get(0).copy();
+        beginVec.sub(points.get(1));
+        beginVec.add(points.get(0));
+        endVec = (T) points.get(points.size() - 1).copy();
+        endVec.sub(points.get(points.size() - 2));
+        endVec.add(points.get(points.size() - 1));
     }
     
     public CubicInterpolation(T... points) {
@@ -33,7 +45,7 @@ public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
             return beginVec.get(dim);
         if (index >= points.size())
             return endVec.get(dim);
-        return pointVecs.get(index).get(dim);
+        return points.get(index).value.get(dim);
     }
     
     @Override

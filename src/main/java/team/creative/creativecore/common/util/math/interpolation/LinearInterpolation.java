@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.math.interpolation;
 
+import java.util.List;
+
 import team.creative.creativecore.common.util.math.vec.VecNd;
 
 public class LinearInterpolation<T extends VecNd> extends Interpolation<T> {
@@ -9,6 +11,10 @@ public class LinearInterpolation<T extends VecNd> extends Interpolation<T> {
     }
     
     public LinearInterpolation(T... points) {
+        super(points);
+    }
+    
+    public LinearInterpolation(List<T> points) {
         super(points);
     }
     

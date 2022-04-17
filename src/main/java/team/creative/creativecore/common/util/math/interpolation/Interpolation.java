@@ -1,16 +1,15 @@
 package team.creative.creativecore.common.util.math.interpolation;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import team.creative.creativecore.common.util.math.vec.VecNd;
+import team.creative.creativecore.common.util.type.list.Pair;
+import team.creative.creativecore.common.util.type.list.PairList;
 
 public abstract class Interpolation<T extends VecNd> {
     
-    protected LinkedHashMap<Double, T> points = new LinkedHashMap<>();
-    protected ArrayList<T> pointVecs = new ArrayList<>();
+    protected PairList<Double, T> points = new PairList<>();
     private final Class classOfT;
     
     public Interpolation(double[] times, T[] points) {
@@ -20,32 +19,50 @@ public abstract class Interpolation<T extends VecNd> {
         if (times.length != points.length)
             throw new IllegalArgumentException("Invalid times array!");
         
-        classOfT = points[0].getClass();
-        for (int i = 0; i < points.length; i++) {
-            this.points.put(times[i], points[i]);
+        this.classOfT = points[0].getClass();
+        for (int i = 0; i < points.length; i++)
+            this.points.add(times[i], points[i]);
+    }
+    
+    public Interpolation(PairList<Double, T> points) {
+        if (points.size() < 2)
+            throw new IllegalArgumentException("At least two points are needed!");
+        
+        this.classOfT = points.getFirst().value.getClass();
+        this.points = new PairList<Double, T>(points);
+    }
+    
+    public Interpolation(List<T> points) {
+        if (points.size() < 2)
+            throw new IllegalArgumentException("At least two points are needed!");
+        
+        double time = 0;
+        double stepLength = 1D / (points.size() - 1);
+        this.classOfT = points.get(0).getClass();
+        for (T t : points) {
+            this.points.add(time, t);
+            time += stepLength;
         }
-        pointVecs = new ArrayList<>(this.points.values());
     }
     
     public Interpolation(T... points) {
         if (points.length < 2)
             throw new IllegalArgumentException("At least two points are needed!");
         
-        classOfT = points[0].getClass();
+        this.classOfT = points[0].getClass();
         double time = 0;
         double stepLength = 1D / (points.length - 1);
         for (int i = 0; i < points.length; i++) {
-            this.points.put(time, points[i]);
+            this.points.add(time, points[i]);
             time += stepLength;
         }
-        pointVecs = new ArrayList<>(this.points.values());
     }
     
     protected double getValue(int index, int dim) {
-        return pointVecs.get(index).get(dim);
+        return points.get(index).value.get(dim);
     }
     
-    /** 1 <= t <= 1 **/
+    /** 0 <= t <= 1 **/
     public T valueAt(double t) {
         if (t >= 0 && t <= 1) {
             Entry<Double, T> firstPoint = null;
@@ -54,20 +71,19 @@ public abstract class Interpolation<T extends VecNd> {
             int indexSecond = -1;
             
             int i = 0;
-            for (Iterator<Entry<Double, T>> iterator = points.entrySet().iterator(); iterator.hasNext();) {
-                Entry<Double, T> entry = iterator.next();
-                if (entry.getKey() >= t) {
+            for (Pair<Double, T> pair : points) {
+                if (pair.getKey() >= t) {
                     if (firstPoint == null) {
-                        firstPoint = entry;
+                        firstPoint = pair;
                         indexFirst = i;
                     } else {
-                        secondPoint = entry;
+                        secondPoint = pair;
                         indexSecond = i;
                     }
                     break;
                 }
                 
-                firstPoint = entry;
+                firstPoint = pair;
                 indexFirst = i;
                 
                 i++;

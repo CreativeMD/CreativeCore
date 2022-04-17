@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.math.interpolation;
 
+import java.util.List;
+
 import team.creative.creativecore.common.util.math.vec.VecNd;
 
 public class HermiteInterpolation<T extends VecNd> extends CubicInterpolation<T> {
@@ -27,11 +29,25 @@ public class HermiteInterpolation<T extends VecNd> extends CubicInterpolation<T>
         this.tension = tension;
     }
     
+    public HermiteInterpolation(double bias, Tension tension, List<T> points) {
+        super(points);
+        this.bias = bias;
+        this.tension = tension;
+    }
+    
     public HermiteInterpolation(Tension tension, T... points) {
         this(0, tension, points);
     }
     
+    public HermiteInterpolation(Tension tension, List<T> points) {
+        this(0, tension, points);
+    }
+    
     public HermiteInterpolation(T... points) {
+        this(Tension.Normal, points);
+    }
+    
+    public HermiteInterpolation(List<T> points) {
         this(Tension.Normal, points);
     }
     
