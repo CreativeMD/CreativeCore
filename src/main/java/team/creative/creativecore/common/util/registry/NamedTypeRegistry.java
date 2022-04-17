@@ -4,9 +4,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import team.creative.creativecore.common.util.registry.exception.IdNotFoundException;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
@@ -133,6 +136,18 @@ public class NamedTypeRegistry<T> {
         }
     }
     
+    public Collection<String> keys() {
+        return types.keySet();
+    }
+    
+    public Set<Entry<String, Class<? extends T>>> entrySet() {
+        return types.entrySet();
+    }
+    
+    public Collection<Class<? extends T>> values() {
+        return types.values();
+    }
+    
     public static class ConstructorNotFoundException extends RegistryException {
         
         public ConstructorNotFoundException(Object[] objects) {
@@ -198,4 +213,5 @@ public class NamedTypeRegistry<T> {
             }
         }
     }
+    
 }
