@@ -20,13 +20,25 @@ public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
     }
     
     public CubicInterpolation(List<T> points) {
+        this(null, points, null);
+    }
+    
+    public CubicInterpolation(T before, List<T> points, T after) {
         super(points);
-        beginVec = (T) points.get(0).copy();
-        beginVec.sub(points.get(1));
-        beginVec.add(points.get(0));
-        endVec = (T) points.get(points.size() - 1).copy();
-        endVec.sub(points.get(points.size() - 2));
-        endVec.add(points.get(points.size() - 1));
+        if (before != null)
+            beginVec = before;
+        else {
+            beginVec = (T) points.get(0).copy();
+            beginVec.sub(points.get(1));
+            beginVec.add(points.get(0));
+        }
+        if (after != null)
+            endVec = after;
+        else {
+            endVec = (T) points.get(points.size() - 1).copy();
+            endVec.sub(points.get(points.size() - 2));
+            endVec.add(points.get(points.size() - 1));
+        }
     }
     
     public CubicInterpolation(T... points) {
@@ -46,6 +58,31 @@ public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
         if (index >= points.size())
             return endVec.get(dim);
         return points.get(index).value.get(dim);
+    }
+    
+    @Override
+    public double[] estimateDistance() {
+        double[] data = new double[points.size()];
+        double startTime = points.getFirst().key;
+        double endTime = points.getLast().key;
+        double pointDuration = (endTime - startTime) / (points.size() - 1);
+        int steps = 3;
+        double stepDuration = 1 / (steps + 1);
+        
+        for (int i = 1; i < points.size(); i++) {
+            double distance = 0;
+            T last = points.get(i - 1).value;
+            for (int j = 1; j <= steps; j++) {
+                T vec = valueAt((i - 1 + steps * stepDuration) * pointDuration);
+                distance += vec.distance(last);
+                last = vec;
+            }
+            distance += points.get(i).value.distance(last);
+            
+            data[0] += distance;
+            data[i] = distance;
+        }
+        return data;
     }
     
     @Override

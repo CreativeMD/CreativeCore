@@ -35,6 +35,12 @@ public class HermiteInterpolation<T extends VecNd> extends CubicInterpolation<T>
         this.tension = tension;
     }
     
+    public HermiteInterpolation(double bias, Tension tension, T before, List<T> points, T after) {
+        super(before, points, after);
+        this.bias = bias;
+        this.tension = tension;
+    }
+    
     public HermiteInterpolation(Tension tension, T... points) {
         this(0, tension, points);
     }
@@ -49,6 +55,10 @@ public class HermiteInterpolation<T extends VecNd> extends CubicInterpolation<T>
     
     public HermiteInterpolation(List<T> points) {
         this(Tension.Normal, points);
+    }
+    
+    public HermiteInterpolation(T before, List<T> points, T after) {
+        this(0, Tension.Normal, before, points, after);
     }
     
     @Override

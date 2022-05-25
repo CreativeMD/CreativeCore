@@ -111,4 +111,21 @@ public abstract class Interpolation<T extends VecNd> {
     
     public abstract double valueAt(double mu, int pointIndex, int pointIndexNext, int dim);
     
+    public abstract double[] estimateDistance();
+    
+    public void makeTimingDistanceBased() {
+        double[] data = estimateDistance();
+        double totalDistance = data[0];
+        double startTime = points.getFirst().key;
+        double endTime = points.getLast().key;
+        double duration = endTime - startTime;
+        double speed = totalDistance / duration;
+        
+        double time = startTime;
+        for (int i = 1; i < data.length - 1; i++) {
+            time += data[i] * speed;
+            points.setKey(i, time);
+        }
+    }
+    
 }
