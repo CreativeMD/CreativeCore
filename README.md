@@ -6,6 +6,9 @@
 - OpticManager
 - ItemPhysic Full
 
+## Formatting
+You can find the formatter I use for eclipse [here](https://www.dropbox.com/s/ikb4hvxnowt4ubj/CreativeFormater.xml?dl=1).
+
 ## Features
 - Gui-Api
 - Packet system (supports splitted packets)
