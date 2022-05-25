@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
+import team.creative.creativecore.common.util.type.itr.SingleIterator;
 
 public class SingletonList<E> extends AbstractList<E> implements RandomAccess, Serializable {
     
@@ -29,37 +30,7 @@ public class SingletonList<E> extends AbstractList<E> implements RandomAccess, S
     
     @Override
     public Iterator<E> iterator() {
-        return new Iterator<E>() {
-            private boolean hasNext = true;
-            
-            @Override
-            public boolean hasNext() {
-                return hasNext;
-            }
-            
-            @Override
-            public E next() {
-                if (hasNext) {
-                    hasNext = false;
-                    return element;
-                }
-                throw new NoSuchElementException();
-            }
-            
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-            
-            @Override
-            public void forEachRemaining(Consumer<? super E> action) {
-                Objects.requireNonNull(action);
-                if (hasNext) {
-                    action.accept(element);
-                    hasNext = false;
-                }
-            }
-        };
+        return new SingleIterator<>(element);
     }
     
     @Override
