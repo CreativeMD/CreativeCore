@@ -242,4 +242,8 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
         return null;
     }
     
+    public void setKey(int index, K key) {
+        set(index, new Pair<>(key, get(index).value));
+        updateEntireMap();
+    }
 }
