@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3d;
 
 import net.minecraft.core.Vec3i;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-import team.creative.creativecore.common.util.mc.ColorUtils.ColorPart;
 
 public class Color {
     
@@ -97,18 +97,18 @@ public class Color {
     
     public void set(ColorType type, byte value) {
         switch (type) {
-        case ALPHA:
-            alpha = value;
-            break;
-        case RED:
-            red = value;
-            break;
-        case GREEN:
-            green = value;
-            break;
-        case BLUE:
-            blue = value;
-            break;
+            case ALPHA:
+                alpha = value;
+                break;
+            case RED:
+                red = value;
+                break;
+            case GREEN:
+                green = value;
+                break;
+            case BLUE:
+                blue = value;
+                break;
         }
     }
     
@@ -146,16 +146,16 @@ public class Color {
     
     public byte get(ColorType type) {
         switch (type) {
-        case ALPHA:
-            return alpha;
-        case RED:
-            return red;
-        case GREEN:
-            return green;
-        case BLUE:
-            return blue;
-        default:
-            return 0;
+            case ALPHA:
+                return alpha;
+            case RED:
+                return red;
+            case GREEN:
+                return green;
+            case BLUE:
+                return blue;
+            default:
+                return 0;
         }
     }
     
@@ -177,16 +177,16 @@ public class Color {
     
     public float getDecimal(ColorType type) {
         switch (type) {
-        case ALPHA:
-            return alpha / 255F;
-        case RED:
-            return red / 255F;
-        case GREEN:
-            return green / 255F;
-        case BLUE:
-            return blue / 255F;
-        default:
-            return 0;
+            case ALPHA:
+                return alpha / 255F;
+            case RED:
+                return red / 255F;
+            case GREEN:
+                return green / 255F;
+            case BLUE:
+                return blue / 255F;
+            default:
+                return 0;
         }
     }
     
@@ -247,8 +247,8 @@ public class Color {
         RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
     }
     
-    public Vector3d toVec(ColorPart part) {
-        return new Vector3d(red / 255D, green / 255D, blue / 255D);
+    public Vec3d toVec() {
+        return new Vec3d(red / 255D, green / 255D, blue / 255D);
     }
     
     public static boolean isWhite(int color) {

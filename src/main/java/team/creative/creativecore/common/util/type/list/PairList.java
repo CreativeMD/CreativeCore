@@ -16,6 +16,9 @@ import com.google.common.collect.ImmutableList;
 
 public class PairList<K, V> extends ArrayList<Pair<K, V>> {
     
+    protected HashMap<K, Integer> keyIndex = new LinkedHashMap<>();
+    protected List<V> values = new ArrayList<>();
+    
     public PairList() {
         super();
     }
@@ -24,9 +27,6 @@ public class PairList<K, V> extends ArrayList<Pair<K, V>> {
         super(list);
         updateEntireMap();
     }
-    
-    protected HashMap<K, Integer> keyIndex = new LinkedHashMap<>();
-    protected List<V> values = new ArrayList<>();
     
     protected void updateEntireMap() {
         keyIndex.clear();
