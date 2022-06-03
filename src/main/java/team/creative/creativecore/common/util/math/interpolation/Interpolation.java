@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import team.creative.creativecore.common.util.math.vec.VecNd;
-import team.creative.creativecore.common.util.type.list.Pair;
-import team.creative.creativecore.common.util.type.list.PairList;
+import team.creative.creativecore.common.util.type.list.Tuple;
+import team.creative.creativecore.common.util.type.list.TupleList;
 
 public abstract class Interpolation<T extends VecNd> {
     
-    protected PairList<Double, T> points = new PairList<>();
+    protected TupleList<Double, T> points = new TupleList<>();
     private final Class classOfT;
     
     public Interpolation(double[] times, T[] points) {
@@ -24,12 +24,24 @@ public abstract class Interpolation<T extends VecNd> {
             this.points.add(times[i], points[i]);
     }
     
-    public Interpolation(PairList<Double, T> points) {
+    public Interpolation(TupleList<Double, T> points) {
         if (points.size() < 2)
             throw new IllegalArgumentException("At least two points are needed!");
         
         this.classOfT = points.getFirst().value.getClass();
-        this.points = new PairList<Double, T>(points);
+        this.points = new TupleList<Double, T>(points);
+    }
+    
+    public Interpolation(double[] times, List<T> points) {
+        if (points.size() < 2)
+            throw new IllegalArgumentException("At least two points are needed!");
+        
+        if (times.length != points.size())
+            throw new IllegalArgumentException("Invalid times array!");
+        
+        this.classOfT = points.get(0).getClass();
+        for (int i = 0; i < points.size(); i++)
+            this.points.add(times[i], points.get(i));
     }
     
     public Interpolation(List<T> points) {
@@ -62,47 +74,43 @@ public abstract class Interpolation<T extends VecNd> {
         return points.get(index).value.get(dim);
     }
     
-    /** 0 <= t <= 1 **/
     public T valueAt(double t) {
-        if (t >= 0 && t <= 1) {
-            Entry<Double, T> firstPoint = null;
-            int indexFirst = -1;
-            Entry<Double, T> secondPoint = null;
-            int indexSecond = -1;
-            
-            int i = 0;
-            for (Pair<Double, T> pair : points) {
-                if (pair.getKey() >= t) {
-                    if (firstPoint == null) {
-                        firstPoint = pair;
-                        indexFirst = i;
-                    } else {
-                        secondPoint = pair;
-                        indexSecond = i;
-                    }
-                    break;
+        Entry<Double, T> firstPoint = null;
+        int indexFirst = -1;
+        Entry<Double, T> secondPoint = null;
+        int indexSecond = -1;
+        
+        int i = 0;
+        for (Tuple<Double, T> pair : points) {
+            if (pair.getKey() >= t) {
+                if (firstPoint == null) {
+                    firstPoint = pair;
+                    indexFirst = i;
+                } else {
+                    secondPoint = pair;
+                    indexSecond = i;
                 }
-                
-                firstPoint = pair;
-                indexFirst = i;
-                
-                i++;
+                break;
             }
             
-            if (secondPoint == null)
-                return (T) firstPoint.getValue().copy();
+            firstPoint = pair;
+            indexFirst = i;
             
-            T vec = (T) firstPoint.getValue().copy();
-            
-            double pointDistance = secondPoint.getKey() - firstPoint.getKey();
-            double mu = (t - firstPoint.getKey()) / pointDistance;
-            
-            for (int dim = 0; dim < vec.dimensions(); dim++)
-                vec.set(dim, valueAt(mu, indexFirst, indexSecond, dim));
-            
-            return vec;
+            i++;
         }
-        return createVec();
+        
+        if (secondPoint == null)
+            return (T) firstPoint.getValue().copy();
+        
+        T vec = (T) firstPoint.getValue().copy();
+        
+        double pointDistance = secondPoint.getKey() - firstPoint.getKey();
+        double mu = (t - firstPoint.getKey()) / pointDistance;
+        
+        for (int dim = 0; dim < vec.dimensions(); dim++)
+            vec.set(dim, valueAt(mu, indexFirst, indexSecond, dim));
+        
+        return vec;
     }
     
     protected T createVec() {
@@ -112,20 +120,5 @@ public abstract class Interpolation<T extends VecNd> {
     public abstract double valueAt(double mu, int pointIndex, int pointIndexNext, int dim);
     
     public abstract double[] estimateDistance();
-    
-    public void makeTimingDistanceBased() {
-        double[] data = estimateDistance();
-        double totalDistance = data[0];
-        double startTime = points.getFirst().key;
-        double endTime = points.getLast().key;
-        double duration = endTime - startTime;
-        double speed = totalDistance / duration;
-        
-        double time = startTime;
-        for (int i = 1; i < data.length - 1; i++) {
-            time += data[i] * speed;
-            points.setKey(i, time);
-        }
-    }
     
 }

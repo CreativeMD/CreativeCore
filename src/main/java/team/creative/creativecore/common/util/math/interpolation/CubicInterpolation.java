@@ -41,6 +41,24 @@ public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
         }
     }
     
+    public CubicInterpolation(double[] times, T before, List<T> points, T after) {
+        super(times, points);
+        if (before != null)
+            beginVec = before;
+        else {
+            beginVec = (T) points.get(0).copy();
+            beginVec.sub(points.get(1));
+            beginVec.add(points.get(0));
+        }
+        if (after != null)
+            endVec = after;
+        else {
+            endVec = (T) points.get(points.size() - 1).copy();
+            endVec.sub(points.get(points.size() - 2));
+            endVec.add(points.get(points.size() - 1));
+        }
+    }
+    
     public CubicInterpolation(T... points) {
         super(points);
         beginVec = (T) points[0].copy();

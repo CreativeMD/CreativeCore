@@ -10,8 +10,16 @@ public class CosineInterpolation<T extends VecNd> extends Interpolation<T> {
         super(points);
     }
     
+    public CosineInterpolation(double[] times, T... points) {
+        super(times, points);
+    }
+    
     public CosineInterpolation(List<T> points) {
         super(points);
+    }
+    
+    public CosineInterpolation(double[] times, List<T> points) {
+        super(times, points);
     }
     
     @Override

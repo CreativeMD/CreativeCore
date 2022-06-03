@@ -14,6 +14,10 @@ public class LinearInterpolation<T extends VecNd> extends Interpolation<T> {
         super(points);
     }
     
+    public LinearInterpolation(double[] times, List<T> points) {
+        super(times, points);
+    }
+    
     public LinearInterpolation(List<T> points) {
         super(points);
     }
