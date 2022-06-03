@@ -46,6 +46,10 @@ public class NamedHandlerRegistry<T> {
         return handlers.getOrDefault(id, defaultHandler);
     }
     
+    public boolean contains(String id) {
+        return handlers.containsKey(id);
+    }
+    
     public Collection<String> keys() {
         return handlers.keySet();
     }

@@ -131,7 +131,7 @@ public class NamedTypeRegistry<T> {
             try {
                 return ifFailed.getConstructor(classes).newInstance(objects);
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e2) {
-                throw new RuntimeException("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable");
+                throw new RuntimeException("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable", e2);
             }
         }
     }
@@ -146,6 +146,10 @@ public class NamedTypeRegistry<T> {
     
     public Collection<Class<? extends T>> values() {
         return types.values();
+    }
+    
+    public boolean contains(String id) {
+        return types.containsKey(id);
     }
     
     public static class ConstructorNotFoundException extends RegistryException {
