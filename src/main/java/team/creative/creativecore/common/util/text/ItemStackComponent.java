@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 
-public class ItemStackComponent extends MutableComponent implements AdvancedComponent {
+public class ItemStackComponent extends MutableComponentCreative implements AdvancedComponent {
     
     public final ItemStack stack;
     
@@ -56,7 +56,7 @@ public class ItemStackComponent extends MutableComponent implements AdvancedComp
     
     @Override
     public MutableComponent plainCopy() {
-        return new ItemStackComponent(stack);
+        return null; // new ItemStackComponent(stack);
     }
     
 }

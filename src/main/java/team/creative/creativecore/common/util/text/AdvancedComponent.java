@@ -16,6 +16,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -70,12 +71,12 @@ public interface AdvancedComponent extends FormattedText {
             JsonObject jsonobject = json.getAsJsonObject();
             if (jsonobject.has("stack"))
                 try {
-                    return new ItemStackComponent(ItemStack.of(TagParser.parseTag(jsonobject.get("stack").getAsString())));
+                    return MutableComponent.create(ComponentContents.EMPTY).append(new ItemStackComponent(ItemStack.of(TagParser.parseTag(jsonobject.get("stack").getAsString()))));
                 } catch (CommandSyntaxException e) {
                     throw new JsonParseException(e);
                 }
             else if (jsonobject.has("linebreak"))
-                return new LinebreakComponent();
+                return MutableComponent.create(ComponentContents.EMPTY).append(new LinebreakComponent());
             
             return super.deserialize(json, typeOfT, context);
         }

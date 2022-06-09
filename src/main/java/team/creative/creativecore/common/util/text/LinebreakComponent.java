@@ -10,7 +10,7 @@ import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
-public class LinebreakComponent extends MutableComponent implements AdvancedComponent {
+public class LinebreakComponent extends MutableComponentCreative implements AdvancedComponent {
     
     public LinebreakComponent() {
         super(ComponentContents.EMPTY, Lists.newArrayList(), Style.EMPTY);
@@ -18,7 +18,7 @@ public class LinebreakComponent extends MutableComponent implements AdvancedComp
     
     @Override
     public MutableComponent plainCopy() {
-        return new LinebreakComponent();
+        return null; //new LinebreakComponent();
     }
     
     @Override
