@@ -3,6 +3,7 @@ package team.creative.creativecore.common.gui.style;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.io.IOUtils;
 
@@ -71,7 +72,7 @@ public class GuiStyle {
             } finally {
                 input.close();
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | NoSuchElementException e) {
             cachedStyles.put(name, defaultStyle);
             return defaultStyle;
         } catch (Exception e) {
