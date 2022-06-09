@@ -98,6 +98,22 @@ public class SubClientLevel extends CreativeClientLevel implements ISubLevel {
     }
     
     @Override
+    public void playSeededSound(Player player, double x, double y, double z, SoundEvent event, SoundSource source, float p_220369_, float p_220370_, long p_220371_) {
+        if (getOrigin() == null)
+            return;
+        Vec3 vec = getOrigin().transformPointToWorld(new Vec3(x, y, z));
+        getRealLevel().playSeededSound(player, vec.x, vec.y, vec.z, event, source, p_220369_, p_220370_, p_220371_);
+    }
+    
+    @Override
+    public void playSeededSound(Player player, Entity entity, SoundEvent event, SoundSource source, float p_220376_, float p_220377_, long p_220378_) {
+        if (getOrigin() == null)
+            return;
+        Vec3 vec = getOrigin().transformPointToWorld(entity.getEyePosition());
+        getRealLevel().playSeededSound(player, vec.x, vec.y, vec.z, event, source, p_220376_, p_220377_, p_220378_);
+    }
+    
+    @Override
     public void addParticle(ParticleOptions p_195594_1_, double x, double y, double z, double p_195594_8_, double p_195594_10_, double p_195594_12_) {
         if (getOrigin() == null)
             return;

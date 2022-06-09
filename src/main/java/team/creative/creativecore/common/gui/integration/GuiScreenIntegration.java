@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
@@ -20,7 +20,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     protected ScreenEventListener listener;
     
     public GuiScreenIntegration(GuiLayer layer) {
-        super(new TextComponent("gui-api"));
+        super(Component.literal("gui-api"));
         layer.setParent(this);
         this.layers.add(layer);
         layer.init();

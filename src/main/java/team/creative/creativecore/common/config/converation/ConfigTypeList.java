@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
@@ -84,7 +84,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             listBox.addItem(control);
-        }).setTitle(new TranslatableComponent("gui.add")));
+        }).setTitle(Component.translatable("gui.add")));
     }
     
     @Override

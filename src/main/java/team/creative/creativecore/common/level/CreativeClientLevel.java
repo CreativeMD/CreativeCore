@@ -94,6 +94,9 @@ public abstract class CreativeClientLevel extends CreativeLevel {
             entity.onRemovedFromWorld();
             net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityLeaveWorldEvent(entity, CreativeClientLevel.this));
         }
+        
+        @Override
+        public void onSectionChange(Entity entity) {}
     }
     
 }

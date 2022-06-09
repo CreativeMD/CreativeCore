@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.LayerClosePacket;
@@ -140,6 +141,11 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     
     public void sendPacketToClient(CreativePacket packet) {
         CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
+    }
+    
+    @Override
+    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+        return null;
     }
     
 }

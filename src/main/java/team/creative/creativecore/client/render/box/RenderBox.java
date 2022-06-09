@@ -3,7 +3,6 @@ package team.creative.creativecore.client.render.box;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -18,6 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -118,41 +118,41 @@ public class RenderBox extends AlignedBox {
     public void setQuad(Facing facing, List<BakedQuad> quads) {
         Object quad = quads == null || quads.isEmpty() ? null : quads.size() == 1 ? quads.get(0) : quads;
         switch (facing) {
-        case DOWN:
-            quadDown = quad;
-            break;
-        case EAST:
-            quadEast = quad;
-            break;
-        case NORTH:
-            quadNorth = quad;
-            break;
-        case SOUTH:
-            quadSouth = quad;
-            break;
-        case UP:
-            quadUp = quad;
-            break;
-        case WEST:
-            quadWest = quad;
-            break;
+            case DOWN:
+                quadDown = quad;
+                break;
+            case EAST:
+                quadEast = quad;
+                break;
+            case NORTH:
+                quadNorth = quad;
+                break;
+            case SOUTH:
+                quadSouth = quad;
+                break;
+            case UP:
+                quadUp = quad;
+                break;
+            case WEST:
+                quadWest = quad;
+                break;
         }
     }
     
     public Object getQuad(Facing facing) {
         switch (facing) {
-        case DOWN:
-            return quadDown;
-        case EAST:
-            return quadEast;
-        case NORTH:
-            return quadNorth;
-        case SOUTH:
-            return quadSouth;
-        case UP:
-            return quadUp;
-        case WEST:
-            return quadWest;
+            case DOWN:
+                return quadDown;
+            case EAST:
+                return quadEast;
+            case NORTH:
+                return quadNorth;
+            case SOUTH:
+                return quadSouth;
+            case UP:
+                return quadUp;
+            case WEST:
+                return quadWest;
         }
         return null;
     }
@@ -176,74 +176,74 @@ public class RenderBox extends AlignedBox {
     
     public void setType(Facing facing, IFaceRenderType renderer) {
         switch (facing) {
-        case DOWN:
-            renderDown = renderer;
-            break;
-        case EAST:
-            renderEast = renderer;
-            break;
-        case NORTH:
-            renderNorth = renderer;
-            break;
-        case SOUTH:
-            renderSouth = renderer;
-            break;
-        case UP:
-            renderUp = renderer;
-            break;
-        case WEST:
-            renderWest = renderer;
-            break;
+            case DOWN:
+                renderDown = renderer;
+                break;
+            case EAST:
+                renderEast = renderer;
+                break;
+            case NORTH:
+                renderNorth = renderer;
+                break;
+            case SOUTH:
+                renderSouth = renderer;
+                break;
+            case UP:
+                renderUp = renderer;
+                break;
+            case WEST:
+                renderWest = renderer;
+                break;
         }
     }
     
     public IFaceRenderType getType(Facing facing) {
         switch (facing) {
-        case DOWN:
-            return renderDown;
-        case EAST:
-            return renderEast;
-        case NORTH:
-            return renderNorth;
-        case SOUTH:
-            return renderSouth;
-        case UP:
-            return renderUp;
-        case WEST:
-            return renderWest;
+            case DOWN:
+                return renderDown;
+            case EAST:
+                return renderEast;
+            case NORTH:
+                return renderNorth;
+            case SOUTH:
+                return renderSouth;
+            case UP:
+                return renderUp;
+            case WEST:
+                return renderWest;
         }
         return FaceRenderType.INSIDE_RENDERED;
     }
     
     public boolean renderSide(Facing facing) {
         switch (facing) {
-        case DOWN:
-            return renderDown.shouldRender();
-        case EAST:
-            return renderEast.shouldRender();
-        case NORTH:
-            return renderNorth.shouldRender();
-        case SOUTH:
-            return renderSouth.shouldRender();
-        case UP:
-            return renderUp.shouldRender();
-        case WEST:
-            return renderWest.shouldRender();
+            case DOWN:
+                return renderDown.shouldRender();
+            case EAST:
+                return renderEast.shouldRender();
+            case NORTH:
+                return renderNorth.shouldRender();
+            case SOUTH:
+                return renderSouth.shouldRender();
+            case UP:
+                return renderUp.shouldRender();
+            case WEST:
+                return renderWest.shouldRender();
         }
         return true;
     }
     
     public boolean intersectsWithFace(Facing facing, RenderInformationHolder holder, BlockPos offset) {
         switch (facing.axis) {
-        case X:
-            return holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset.getZ() && holder.minZ < this.maxZ - offset
-                    .getZ();
-        case Y:
-            return holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxZ > this.minZ - offset.getZ() && holder.minZ < this.maxZ - offset
-                    .getZ();
-        case Z:
-            return holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset
-                    .getY();
+            case X:
+                return holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset
+                        .getZ() && holder.minZ < this.maxZ - offset.getZ();
+            case Y:
+                return holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxZ > this.minZ - offset
+                        .getZ() && holder.minZ < this.maxZ - offset.getZ();
+            case Z:
+                return holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxY > this.minY - offset
+                        .getY() && holder.minY < this.maxY - offset.getY();
         }
         return false;
     }
@@ -252,18 +252,18 @@ public class RenderBox extends AlignedBox {
         if (getType(facing).hasCachedFans())
             return getType(facing).getCachedFans();
         switch (facing) {
-        case DOWN:
-            return DOWN;
-        case EAST:
-            return EAST;
-        case NORTH:
-            return NORTH;
-        case SOUTH:
-            return SOUTH;
-        case UP:
-            return UP;
-        case WEST:
-            return WEST;
+            case DOWN:
+                return DOWN;
+            case EAST:
+                return EAST;
+            case NORTH:
+                return NORTH;
+            case SOUTH:
+                return SOUTH;
+            case UP:
+                return UP;
+            case WEST:
+                return WEST;
         }
         return null;
     }
@@ -438,11 +438,11 @@ public class RenderBox extends AlignedBox {
         return !state.getMaterial().isSolidBlocking() || !state.getMaterial().isSolid();
     }
     
-    protected List<BakedQuad> getBakedQuad(LevelAccessor level, BakedModel blockModel, BlockState state, Facing facing, BlockPos pos, RenderType layer, Random rand) {
+    protected List<BakedQuad> getBakedQuad(LevelAccessor level, BakedModel blockModel, BlockState state, Facing facing, BlockPos pos, RenderType layer, RandomSource rand) {
         return OptifineHelper.getBakedQuad(blockModel.getQuads(state, facing.toVanilla(), rand, EmptyModelData.INSTANCE), level, state, facing, pos, layer, rand);
     }
     
-    public List<BakedQuad> getBakedQuad(LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, Random rand, boolean overrideTint, int defaultColor) {
+    public List<BakedQuad> getBakedQuad(LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
         List<BakedQuad> blockQuads = getBakedQuad(level, blockModel, state, facing, pos, layer, rand);
         
         if (blockQuads.isEmpty())
@@ -624,12 +624,12 @@ public class RenderBox extends AlignedBox {
         
         public boolean hasBounds() {
             switch (facing.axis) {
-            case X:
-                return minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
-            case Y:
-                return minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
-            case Z:
-                return minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
+                case X:
+                    return minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
+                case Y:
+                    return minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
+                case Z:
+                    return minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
             }
             return false;
         }

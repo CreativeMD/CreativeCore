@@ -3,8 +3,7 @@ package team.creative.creativecore.common.config.gui;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey;
@@ -78,7 +77,7 @@ public class ConfigGuiLayer extends GuiLayer {
             clear();
         }
         GuiLeftRightBox upperBox = new GuiLeftRightBox();
-        upperBox.addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
+        upperBox.addLeft(new GuiLabel("path").setTitle(Component.literal("/" + String.join("/", holder.path()))));
         
         upperBox.addRight(new GuiButton("back", x -> {
             loadHolder(holder.parent());
@@ -101,7 +100,7 @@ public class ConfigGuiLayer extends GuiLayer {
                 if (!((ICreativeConfigHolder) value).isEmpty(side)) {
                     box.add(new GuiButton(caption, x -> {
                         loadHolder((ICreativeConfigHolder) value);
-                    }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                    }).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
                 }
             } else {
                 if (!key.is(side))
@@ -117,13 +116,13 @@ public class ConfigGuiLayer extends GuiLayer {
         GuiLeftRightBox lowerBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
             nextAction = 0;
             closeTopLayer();
-        }).setTitle(new TranslatableComponent("gui.cancel")));
+        }).setTitle(Component.translatable("gui.cancel")));
         
         if (side.isServer())
             lowerBox.addLeft(new GuiButton("client-config", x -> {
                 nextAction = 1;
                 closeTopLayer();
-            }).setTitle(new TranslatableComponent("gui.client-config")));
+            }).setTitle(Component.translatable("gui.client-config")));
         
         lowerBox.addRight(new GuiButton("save", x -> {
             nextAction = 0;

@@ -3,7 +3,6 @@ package team.creative.creativecore.common.util.ingredient;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 
 public class CreativeIngredientItemStack extends CreativeIngredient {
@@ -85,7 +84,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.stack").append(": " + ChatFormatting.YELLOW).append(stack.getDisplayName());
+        return Component.translatable("minecraft.stack").append(": " + ChatFormatting.YELLOW).append(stack.getDisplayName());
     }
     
 }

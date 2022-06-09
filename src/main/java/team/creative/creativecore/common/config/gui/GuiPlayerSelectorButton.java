@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.config.gui;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
@@ -21,13 +21,13 @@ public class GuiPlayerSelectorButton extends GuiButton {
             layer.button = this;
             layer.init();
         };
-        setTitle(new TextComponent(getLabelText(info)));
+        setTitle(Component.literal(getLabelText(info)));
         this.info = info;
     }
     
     public void set(PlayerSelector info) {
         this.info = info;
-        setTitle(new TextComponent(getLabelText(info)));
+        setTitle(Component.literal(getLabelText(info)));
         raiseEvent(new GuiControlChangedEvent(this));
     }
     

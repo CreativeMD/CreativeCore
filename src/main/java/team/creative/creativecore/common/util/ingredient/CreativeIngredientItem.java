@@ -3,7 +3,6 @@ package team.creative.creativecore.common.util.ingredient;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +22,7 @@ public class CreativeIngredientItem extends CreativeIngredient {
     
     @Override
     protected void saveExtra(CompoundTag nbt) {
-        nbt.putString("item", item.getRegistryName().toString());
+        nbt.putString("item", ForgeRegistries.ITEMS.getKey(item).toString());
     }
     
     @Override
@@ -62,12 +61,12 @@ public class CreativeIngredientItem extends CreativeIngredient {
     
     @Override
     public Component description() {
-        return new TranslatableComponent(item.getDescriptionId());
+        return Component.translatable(item.getDescriptionId());
     }
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.item").append(": " + ChatFormatting.YELLOW).append(item.getRegistryName().toString());
+        return Component.translatable("minecraft.item").append(": " + ChatFormatting.YELLOW).append(ForgeRegistries.ITEMS.getKey(item).toString());
     }
     
 }

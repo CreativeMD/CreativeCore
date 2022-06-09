@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui.style;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 import org.apache.commons.io.IOUtils;
@@ -35,12 +36,17 @@ public class GuiStyle {
     
     public static void reload() {
         try {
-            Resource resource = mc.getResourceManager().getResource(DEFAULT_STYLE_LOCATION);
-            JsonObject root = JsonParser.parseString(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
-            
-            defaultStyle = GSON.fromJson(root, GuiStyle.class);
-            
-            cachedStyles.clear();
+            Resource resource = mc.getResourceManager().getResource(DEFAULT_STYLE_LOCATION).orElseThrow();
+            InputStream input = resource.open();
+            try {
+                JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
+                
+                defaultStyle = GSON.fromJson(root, GuiStyle.class);
+                
+                cachedStyles.clear();
+            } finally {
+                input.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             CreativeCore.LOGGER.error("Could not load default style");
@@ -54,12 +60,17 @@ public class GuiStyle {
             return cached;
         
         try {
-            Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name));
-            JsonObject root = JsonParser.parseString(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
-            
-            cached = GSON.fromJson(root, GuiStyle.class);
-            cachedStyles.put(name, cached);
-            return cached;
+            Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name)).orElseThrow();
+            InputStream input = resource.open();
+            try {
+                JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
+                
+                cached = GSON.fromJson(root, GuiStyle.class);
+                cachedStyles.put(name, cached);
+                return cached;
+            } finally {
+                input.close();
+            }
         } catch (FileNotFoundException e) {
             cachedStyles.put(name, defaultStyle);
             return defaultStyle;
@@ -104,42 +115,42 @@ public class GuiStyle {
     
     public StyleDisplay get(ControlStyleBorder border) {
         switch (border) {
-        case BIG:
-            return this.borderThick;
-        case SMALL:
-            return this.border;
-        default:
-            return StyleDisplay.NONE;
+            case BIG:
+                return this.borderThick;
+            case SMALL:
+                return this.border;
+            default:
+                return StyleDisplay.NONE;
         }
     }
     
     public StyleDisplay get(ControlStyleFace face, boolean mouseOver) {
         switch (face) {
-        case BACKGROUND:
-            return background;
-        case BAR:
-            return bar;
-        case CLICKABLE:
-            if (mouseOver)
-                return clickableHighlight;
-            return clickable;
-        case NESTED_BACKGROUND:
-            return secondaryBackground;
-        case SLOT:
-            return slot;
-        default:
-            return StyleDisplay.NONE;
+            case BACKGROUND:
+                return background;
+            case BAR:
+                return bar;
+            case CLICKABLE:
+                if (mouseOver)
+                    return clickableHighlight;
+                return clickable;
+            case NESTED_BACKGROUND:
+                return secondaryBackground;
+            case SLOT:
+                return slot;
+            default:
+                return StyleDisplay.NONE;
         }
     }
     
     public int getBorder(ControlStyleBorder border) {
         switch (border) {
-        case BIG:
-            return this.borderThickWidth;
-        case SMALL:
-            return this.borderWidth;
-        default:
-            return 0;
+            case BIG:
+                return this.borderThickWidth;
+            case SMALL:
+                return this.borderWidth;
+            default:
+                return 0;
         }
     }
     

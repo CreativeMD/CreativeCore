@@ -65,7 +65,7 @@ public class ItemFilters {
         @Override
         public CompoundTag write() {
             CompoundTag nbt = new CompoundTag();
-            nbt.putString("i", item.getRegistryName().toString());
+            nbt.putString("i", ForgeRegistries.ITEMS.getKey(item).toString());
             return nbt;
         }
         
@@ -97,7 +97,7 @@ public class ItemFilters {
             CompoundTag nbt = new CompoundTag();
             ListTag list = new ListTag();
             for (int i = 0; i < items.length; i++)
-                list.add(StringTag.valueOf(items[i].getRegistryName().toString()));
+                list.add(StringTag.valueOf(ForgeRegistries.ITEMS.getKey(items[i]).toString()));
             nbt.put("i", list);
             return nbt;
         }

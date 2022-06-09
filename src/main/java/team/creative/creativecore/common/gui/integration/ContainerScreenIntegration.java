@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.integration;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
@@ -13,7 +13,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     protected ScreenEventListener listener;
     
     public ContainerScreenIntegration(ContainerIntegration screenContainer, Inventory inv) {
-        super(screenContainer, inv, new TextComponent("gui-api"));
+        super(screenContainer, inv, Component.literal("gui-api"));
         listener = new ScreenEventListener(this.getMenu(), this);
     }
     

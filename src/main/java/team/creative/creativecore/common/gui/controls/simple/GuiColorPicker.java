@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
@@ -29,36 +29,36 @@ public class GuiColorPicker extends GuiParent {
         red.add(new GuiButtonHold("r-", x -> {
             ((GuiColoredSteppedSlider) get("r")).stepDown();
             onColorChanged();
-        }).setTitle(new TextComponent("<")));
+        }).setTitle(Component.literal("<")));
         red.add(new GuiColoredSteppedSlider("r", this, ColorPart.RED).setExpandableX());
         red.add(new GuiButtonHold("r+", x -> {
             ((GuiColoredSteppedSlider) get("r")).stepUp();
             onColorChanged();
-        }).setTitle(new TextComponent(">")));
+        }).setTitle(Component.literal(">")));
         
         GuiParent green = new GuiParent(GuiFlow.STACK_X);
         sliders.add(green);
         green.add(new GuiButtonHold("g-", x -> {
             ((GuiColoredSteppedSlider) get("g")).stepDown();
             onColorChanged();
-        }).setTitle(new TextComponent("<")));
+        }).setTitle(Component.literal("<")));
         green.add(new GuiColoredSteppedSlider("g", this, ColorPart.GREEN).setExpandableX());
         green.add(new GuiButtonHold("g+", x -> {
             ((GuiColoredSteppedSlider) get("g")).stepUp();
             onColorChanged();
-        }).setTitle(new TextComponent(">")));
+        }).setTitle(Component.literal(">")));
         
         GuiParent blue = new GuiParent(GuiFlow.STACK_X);
         sliders.add(blue);
         blue.add(new GuiButtonHold("b-", x -> {
             ((GuiColoredSteppedSlider) get("b")).stepDown();
             onColorChanged();
-        }).setTitle(new TextComponent("<")));
+        }).setTitle(Component.literal("<")));
         blue.add(new GuiColoredSteppedSlider("b", this, ColorPart.BLUE).setExpandableX());
         blue.add(new GuiButtonHold("b+", x -> {
             ((GuiColoredSteppedSlider) get("b")).stepUp();
             onColorChanged();
-        }).setTitle(new TextComponent(">")));
+        }).setTitle(Component.literal(">")));
         
         if (hasAlpha) {
             GuiParent alpha = new GuiParent(GuiFlow.STACK_X);
@@ -66,12 +66,12 @@ public class GuiColorPicker extends GuiParent {
             alpha.add(new GuiButtonHold("a-", x -> {
                 ((GuiColoredSteppedSlider) get("a")).stepDown();
                 onColorChanged();
-            }).setTitle(new TextComponent("<")));
+            }).setTitle(Component.literal("<")));
             alpha.add(new GuiColoredSteppedSlider("a", this, ColorPart.ALPHA).setExpandableX());
             alpha.add(new GuiButtonHold("a+", x -> {
                 ((GuiColoredSteppedSlider) get("a")).stepUp();
                 onColorChanged();
-            }).setTitle(new TextComponent(">")));
+            }).setTitle(Component.literal(">")));
         } else
             color.setAlpha(255);
         

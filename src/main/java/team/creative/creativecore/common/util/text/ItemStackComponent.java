@@ -2,18 +2,22 @@ package team.creative.creativecore.common.util.text;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 
-public class ItemStackComponent extends BaseComponent implements AdvancedComponent {
+public class ItemStackComponent extends MutableComponent implements AdvancedComponent {
     
     public final ItemStack stack;
     
     public ItemStackComponent(ItemStack stack) {
+        super(ComponentContents.EMPTY, Lists.newArrayList(), Style.EMPTY);
         this.stack = stack;
     }
     
@@ -51,7 +55,7 @@ public class ItemStackComponent extends BaseComponent implements AdvancedCompone
     }
     
     @Override
-    public BaseComponent plainCopy() {
+    public MutableComponent plainCopy() {
         return new ItemStackComponent(stack);
     }
     

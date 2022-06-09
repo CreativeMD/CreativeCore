@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.controls.collection;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -98,7 +98,7 @@ public class GuiStackSelectorExtension extends GuiScrollY {
         }
         
         for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
-            add(new GuiLabel("title").setTitle(new TranslatableComponent(entry.getKey())));
+            add(new GuiLabel("title").setTitle(Component.translatable(entry.getKey())));
             
             SimpleContainer container = new SimpleContainer(entry.getValue().size());
             int i = 0;

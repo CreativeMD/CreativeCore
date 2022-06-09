@@ -73,7 +73,7 @@ public class ConfigEventHandler {
     
     @OnlyIn(value = Dist.CLIENT)
     public boolean isOwner(MinecraftServer server) {
-        return server.getSingleplayerName().equals(Minecraft.getInstance().getUser().getName());
+        return server.getSingleplayerProfile().getName().equals(Minecraft.getInstance().getUser().getName());
     }
     
     @SubscribeEvent

@@ -3,7 +3,6 @@ package team.creative.creativecore.common.util.ingredient;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -28,7 +27,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     protected void saveExtra(CompoundTag nbt) {
-        nbt.putString("block", block.getRegistryName().toString());
+        nbt.putString("block", ForgeRegistries.BLOCKS.getKey(block).toString());
     }
     
     @Override
@@ -67,7 +66,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.block").append(": " + ChatFormatting.YELLOW).append(block.getRegistryName().toString());
+        return Component.translatable("minecraft.block").append(": " + ChatFormatting.YELLOW).append(ForgeRegistries.BLOCKS.getKey(block).toString());
     }
     
 }

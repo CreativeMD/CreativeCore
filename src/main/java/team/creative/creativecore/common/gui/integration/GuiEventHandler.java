@@ -37,21 +37,21 @@ public class GuiEventHandler {
                 IScaleableGuiScreen gui = (IScaleableGuiScreen) mc.screen;
                 
                 if (!changed)
-                    defaultScale = mc.options.guiScale;
+                    defaultScale = mc.options.guiScale().get();
                 int maxScale = gui.getMaxScale(mc.getWindow().getWidth(), mc.getWindow().getHeight());
                 int scale = Math.min(defaultScale, maxScale);
                 if (defaultScale == 0)
                     scale = maxScale;
-                if (scale != mc.options.guiScale) {
+                if (scale != mc.options.guiScale().get()) {
                     changed = true;
-                    mc.options.guiScale = scale;
+                    mc.options.guiScale().set(scale);
                     mc.getWindow().setGuiScale(scale);
                     mc.screen.resize(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
                 }
             } else if (changed) {
                 changed = false;
-                mc.options.guiScale = defaultScale;
-                mc.getWindow().setGuiScale(mc.getWindow().calculateScale(mc.options.guiScale, mc.isEnforceUnicode()));
+                mc.options.guiScale().set(defaultScale);
+                mc.getWindow().setGuiScale(mc.getWindow().calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode()));
                 if (mc.screen != null)
                     mc.screen.resize(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
             }

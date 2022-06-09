@@ -75,7 +75,7 @@ public class BlockFilters {
         @Override
         public CompoundTag write() {
             CompoundTag nbt = new CompoundTag();
-            nbt.putString("b", block.getRegistryName().toString());
+            nbt.putString("b", ForgeRegistries.BLOCKS.getKey(block).toString());
             return nbt;
         }
         
@@ -107,7 +107,7 @@ public class BlockFilters {
             CompoundTag nbt = new CompoundTag();
             ListTag list = new ListTag();
             for (int i = 0; i < blocks.length; i++)
-                list.add(StringTag.valueOf(blocks[i].getRegistryName().toString()));
+                list.add(StringTag.valueOf(ForgeRegistries.BLOCKS.getKey(blocks[i]).toString()));
             nbt.put("b", list);
             return nbt;
         }

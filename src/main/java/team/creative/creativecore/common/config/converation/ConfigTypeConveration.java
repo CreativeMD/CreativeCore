@@ -16,8 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -546,11 +545,11 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
                 parent.add(new GuiTextfield("search", 30, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
-                        .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> new TextComponent(x.toString()))));
+                        .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> Component.literal(x.toString()))));
                 GuiParent hBox = new GuiParent("vBox", GuiFlow.STACK_X);
-                hBox.add(new GuiLabel("volumeLabel").setTitle(new TranslatableComponent("gui.volume")));
+                hBox.add(new GuiLabel("volumeLabel").setTitle(Component.translatable("gui.volume")));
                 hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
-                hBox.add(new GuiLabel("pitchLabel").setTitle(new TranslatableComponent("gui.pitch")));
+                hBox.add(new GuiLabel("pitchLabel").setTitle(Component.translatable("gui.pitch")));
                 hBox.add(new GuiSlider("pitch", 40, 10, 1, 0.5, 2));
                 parent.add(hBox);
             }
@@ -604,7 +603,7 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
                 RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
-                        .addComponent(value.registry.getKeys(), x -> new TextComponent(x.toString()))));
+                        .addComponent(value.registry.getKeys(), x -> Component.literal(x.toString()))));
             }
             
             @Override

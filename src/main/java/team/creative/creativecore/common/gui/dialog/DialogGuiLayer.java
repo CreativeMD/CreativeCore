@@ -3,7 +3,6 @@ package team.creative.creativecore.common.gui.dialog;
 import java.util.function.BiConsumer;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -33,7 +32,7 @@ public class DialogGuiLayer extends GuiLayer {
         add(new GuiLabel("text").setTitle(title));
         GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
         for (DialogButton button : buttons)
-            hBox.add(new GuiButton(button.name(), x -> closeDialog(button)).setTitle(new TranslatableComponent("dialog.button." + button.name())));
+            hBox.add(new GuiButton(button.name(), x -> closeDialog(button)).setTitle(Component.translatable("dialog.button." + button.name())));
         add(hBox);
     }
     

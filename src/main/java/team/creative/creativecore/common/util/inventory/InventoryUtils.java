@@ -10,6 +10,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 
 public class InventoryUtils {
@@ -150,7 +151,7 @@ public class InventoryUtils {
                 
                 @Override
                 public int compare(ItemStack arg0, ItemStack arg1) {
-                    return arg0.getItem().getRegistryName().toString().compareToIgnoreCase(arg1.getItem().getRegistryName().toString());
+                    return ForgeRegistries.ITEMS.getKey(arg0.getItem()).toString().compareToIgnoreCase(ForgeRegistries.ITEMS.getKey(arg1.getItem()).toString());
                 }
                 
             });
@@ -171,7 +172,7 @@ public class InventoryUtils {
                     if (arg0.getDamageValue() > arg1.getDamageValue())
                         return 1;
                     
-                    return arg0.getItem().getRegistryName().toString().compareToIgnoreCase(arg1.getItem().getRegistryName().toString());
+                    return ForgeRegistries.ITEMS.getKey(arg0.getItem()).toString().compareToIgnoreCase(ForgeRegistries.ITEMS.getKey(arg1.getItem()).toString());
                 }
                 
             });

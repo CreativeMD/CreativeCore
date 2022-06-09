@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.mod;
 
 import java.util.List;
-import java.util.Random;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 
@@ -10,6 +9,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import team.creative.creativecore.common.util.math.base.Facing;
@@ -28,7 +28,7 @@ public class OptifineHelper {
         return model;
     }
     
-    public static List<BakedQuad> getBakedQuad(List<BakedQuad> quads, LevelAccessor level, BlockState state, Facing facing, BlockPos pos, RenderType layer, Random rand) {
+    public static List<BakedQuad> getBakedQuad(List<BakedQuad> quads, LevelAccessor level, BlockState state, Facing facing, BlockPos pos, RenderType layer, RandomSource rand) {
         return quads;
     }
     

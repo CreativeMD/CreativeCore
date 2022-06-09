@@ -301,7 +301,7 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Block content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(content.getRegistryName());
+                buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(content));
             }
             
             @Override
@@ -314,7 +314,7 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Item content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(content.getRegistryName());
+                buffer.writeResourceLocation(ForgeRegistries.ITEMS.getKey(content));
             }
             
             @Override

@@ -2,7 +2,6 @@ package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
@@ -51,7 +50,7 @@ public class CreativeIngredientFuel extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.fuel");
+        return Component.translatable("minecraft.fuel");
     }
     
 }

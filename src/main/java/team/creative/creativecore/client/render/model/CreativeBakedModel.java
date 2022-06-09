@@ -3,7 +3,6 @@ package team.creative.creativecore.client.render.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
@@ -20,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -67,11 +67,11 @@ public class CreativeBakedModel implements BakedModel {
     }
     
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
+    public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, IModelData extraData) {
         return getQuads(state, Facing.get(side), rand, extraData, false);
     }
     
-    public static List<BakedQuad> compileBoxes(List<? extends RenderBox> boxes, Facing side, RenderType layer, Random rand, boolean item) {
+    public static List<BakedQuad> compileBoxes(List<? extends RenderBox> boxes, Facing side, RenderType layer, RandomSource rand, boolean item) {
         List<BakedQuad> baked = new ArrayList<>();
         for (int i = 0; i < boxes.size(); i++) {
             RenderBox box = boxes.get(i);
@@ -94,7 +94,7 @@ public class CreativeBakedModel implements BakedModel {
         return baked;
     }
     
-    public static List<BakedQuad> getQuads(BlockState state, Facing facing, Random rand, IModelData extraData, boolean threaded) {
+    public static List<BakedQuad> getQuads(BlockState state, Facing facing, RandomSource rand, IModelData extraData, boolean threaded) {
         if (state != null) {
             CreativeRenderBlock renderer = CreativeCoreClient.RENDERED_BLOCKS.get(state.getBlock());
             if (renderer != null)
@@ -177,7 +177,7 @@ public class CreativeBakedModel implements BakedModel {
     
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(BlockState state, Direction direction, Random rand) {
+    public List<BakedQuad> getQuads(BlockState state, Direction direction, RandomSource rand) {
         return null;
     }
     

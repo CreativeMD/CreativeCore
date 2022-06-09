@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
@@ -95,7 +94,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
-        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))))
+        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(Component.literal("/" + String.join("/", holder.path()))))
                 .addRight(new GuiButton("back", x -> load(entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
         this.currentView = entry;
         
@@ -118,9 +117,9 @@ public class ClientSyncGuiLayer extends GuiLayer {
             if (key.content != null && key.content.get() instanceof ICreativeConfigHolder)
                 second.add(new GuiButton(caption, x -> {
                     load(key);
-                }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                }).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
             else
-                second.add(new GuiLabel(caption).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                second.add(new GuiLabel(caption).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         }
         
         add(new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
@@ -134,7 +133,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
             force = true;
             save();
             closeTopLayer();
-        }).setTitle(new TranslatableComponent("gui.save"))));
+        }).setTitle(Component.translatable("gui.save"))));
         reinit();
     }
     

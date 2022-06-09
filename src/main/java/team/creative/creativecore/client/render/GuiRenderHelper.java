@@ -188,8 +188,7 @@ public class GuiRenderHelper {
         builder.vertex(mat, x, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
         builder.vertex(mat, x + width, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
         builder.vertex(mat, x + width, y, 0.0F).color(red, green, blue, alpha).endVertex();
-        builder.end();
-        BufferUploader.end(builder);
+        BufferUploader.drawWithShader(builder.end());
     }
     
     private static void textureRect(PoseStack pose, int x, int y, int width, int height, int z, float u, float v, int textureWidth, int textureHeight) {
@@ -220,8 +219,7 @@ public class GuiRenderHelper {
         bufferbuilder.vertex(matrix, x2, y2, z).uv(u2, v2).endVertex();
         bufferbuilder.vertex(matrix, x2, y, z).uv(u2, v).endVertex();
         bufferbuilder.vertex(matrix, x, y, z).uv(u, v).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
+        BufferUploader.drawWithShader(bufferbuilder.end());
     }
     
 }

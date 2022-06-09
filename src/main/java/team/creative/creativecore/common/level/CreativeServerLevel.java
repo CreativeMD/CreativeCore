@@ -20,8 +20,11 @@ import net.minecraft.world.level.entity.EntityTickList;
 import net.minecraft.world.level.entity.LevelCallback;
 import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.entity.PersistentEntitySectionManager;
-import net.minecraft.world.level.gameevent.GameEventListenerRegistrar;
+import net.minecraft.world.level.gameevent.DynamicGameEventListener;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.world.level.storage.WritableLevelData;
+import net.minecraft.world.phys.Vec3;
 
 public abstract class CreativeServerLevel extends CreativeLevel {
     
@@ -86,41 +89,43 @@ public abstract class CreativeServerLevel extends CreativeLevel {
         return this.entityManager.canPositionTick(p_143276_);
     }
     
+    @Override
+    public void gameEvent(GameEvent p_220404_, Vec3 p_220405_, Context p_220406_) {}
+    
     final class EntityCallbacks implements LevelCallback<Entity> {
-        @Override
-        public void onCreated(Entity p_143355_) {}
         
         @Override
-        public void onDestroyed(Entity p_143359_) {
-            CreativeServerLevel.this.getScoreboard().entityRemoved(p_143359_);
+        public void onCreated(Entity entity) {}
+        
+        @Override
+        public void onDestroyed(Entity entity) {
+            CreativeServerLevel.this.getScoreboard().entityRemoved(entity);
         }
         
         @Override
-        public void onTickingStart(Entity p_143363_) {
-            CreativeServerLevel.this.entityTickList.add(p_143363_);
+        public void onTickingStart(Entity entity) {
+            CreativeServerLevel.this.entityTickList.add(entity);
         }
         
         @Override
-        public void onTickingEnd(Entity p_143367_) {
-            CreativeServerLevel.this.entityTickList.remove(p_143367_);
+        public void onTickingEnd(Entity entity) {
+            CreativeServerLevel.this.entityTickList.remove(entity);
         }
         
         @Override
-        public void onTrackingStart(Entity p_143371_) {
-            CreativeServerLevel.this.getChunkSource().addEntity(p_143371_);
+        public void onTrackingStart(Entity entity) {
+            CreativeServerLevel.this.getChunkSource().addEntity(entity);
             
         }
         
         @Override
-        public void onTrackingEnd(Entity p_143375_) {
-            CreativeServerLevel.this.getChunkSource().removeEntity(p_143375_);
-            
-            GameEventListenerRegistrar gameeventlistenerregistrar = p_143375_.getGameEventListenerRegistrar();
-            if (gameeventlistenerregistrar != null) {
-                gameeventlistenerregistrar.onListenerRemoved(p_143375_.level);
-            }
-            
+        public void onTrackingEnd(Entity entity) {
+            CreativeServerLevel.this.getChunkSource().removeEntity(entity);
+            entity.updateDynamicGameEventListener(DynamicGameEventListener::move);
         }
+        
+        @Override
+        public void onSectionChange(Entity entity) {}
     }
     
 }

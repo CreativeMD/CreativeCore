@@ -6,7 +6,7 @@ import java.util.Set;
 
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -129,11 +129,11 @@ public abstract class GuiCreativeIngredientHandler {
                     if (selector != null) {
                         ItemStack stack = selector.getSelected();
                         if (!stack.isEmpty()) {
-                            ((GuiLabel) gui.get("guilabel1")).setTitle(new TextComponent("damage: " + stack.getDamageValue()));
-                            ((GuiLabel) gui.get("guilabel2")).setTitle(new TextComponent("nbt: " + stack.getTag()));
+                            ((GuiLabel) gui.get("guilabel1")).setTitle(Component.literal("damage: " + stack.getDamageValue()));
+                            ((GuiLabel) gui.get("guilabel2")).setTitle(Component.literal("nbt: " + stack.getTag()));
                         } else {
-                            ((GuiLabel) gui.get("guilabel1")).setTitle(new TextComponent(""));
-                            ((GuiLabel) gui.get("guilabel2")).setTitle(new TextComponent(""));
+                            ((GuiLabel) gui.get("guilabel1")).setTitle(Component.literal(""));
+                            ((GuiLabel) gui.get("guilabel2")).setTitle(Component.literal(""));
                         }
                     }
                 }
@@ -283,7 +283,7 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
-                gui.add(new GuiLabel("info").setTitle(new TextComponent("Nothing to select")));
+                gui.add(new GuiLabel("info").setTitle(Component.literal("Nothing to select")));
             }
             
             @Override

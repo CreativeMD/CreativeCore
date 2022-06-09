@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.controls.collection;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -148,7 +148,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         public GuiButtonRemove(int index) {
             super("x", 6, 8, null);
             setAlign(Align.CENTER);
-            setTitle(new TextComponent("x"));
+            setTitle(Component.literal("x"));
             pressed = (x) -> GuiListBoxBase.this.removeItem(this.index);
             this.index = index;
         }

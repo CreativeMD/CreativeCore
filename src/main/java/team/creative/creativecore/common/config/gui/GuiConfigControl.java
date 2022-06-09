@@ -2,7 +2,7 @@ package team.creative.creativecore.common.config.gui;
 
 import com.google.gson.JsonElement;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.Align;
@@ -29,7 +29,7 @@ public class GuiConfigControl extends GuiRow {
         GuiColumn text = new GuiColumn(100);
         text.valign = VAlign.CENTER;
         addColumn(text);
-        text.add(new GuiLabel(caption + ":").setTitle(new TextComponent(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+        text.add(new GuiLabel(caption + ":").setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         addColumn(main = (GuiColumn) new GuiColumn(200).setExpandableX());
         GuiColumn end = new GuiColumn(20);
         end.align = Align.CENTER;
@@ -39,7 +39,7 @@ public class GuiConfigControl extends GuiRow {
             GuiConfigControl.this.reset();
             if (layer != null)
                 layer.changed = true;
-        }).setTitle(new TextComponent("r")).setAlign(Align.CENTER);
+        }).setTitle(Component.literal("r")).setAlign(Align.CENTER);
         end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
     }
     

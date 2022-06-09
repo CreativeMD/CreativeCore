@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.util.mc.ColorUtils;
@@ -34,8 +32,8 @@ public class TextBuilder {
             components.add(component);
         else {
             Component last = components.get(components.size() - 1);
-            if (last instanceof BaseComponent)
-                ((BaseComponent) last).append(component);
+            if (last instanceof MutableComponent)
+                ((MutableComponent) last).append(component);
             else
                 components.add(component);
         }
@@ -49,22 +47,22 @@ public class TextBuilder {
     public TextBuilder translateIfCan(String text) {
         String translated = GuiControl.translate(text);
         if (!translated.equals(text))
-            add(new TranslatableComponent(text));
+            add(Component.translatable(text));
         return this;
     }
     
     public TextBuilder translate(String text) {
-        add(new TranslatableComponent(text));
+        add(Component.translatable(text));
         return this;
     }
     
     public TextBuilder translate(String text, Object... param) {
-        add(new TranslatableComponent(text, param));
+        add(Component.translatable(text, param));
         return this;
     }
     
     public TextBuilder text(String text) {
-        add(new TextComponent(text));
+        add(Component.literal(text));
         return this;
     }
     

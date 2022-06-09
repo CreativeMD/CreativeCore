@@ -293,7 +293,7 @@ public class GuiStackSelector extends GuiLabel {
         try {
             itemName = stack.getDisplayName().getString();
         } catch (Exception e) {
-            itemName = stack.getItem().getRegistryName().toString();
+            itemName = ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
         }
         return itemName;
     }
