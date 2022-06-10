@@ -32,6 +32,7 @@ import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.config.premade.RegistryObjectConfig;
+import team.creative.creativecore.common.config.premade.SelectableConfig;
 import team.creative.creativecore.common.config.premade.SoundConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -209,20 +210,20 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiStateButton("data", 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true").setExpandableX());
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(Boolean value, GuiParent parent) {
                 GuiStateButton button = (GuiStateButton) parent.get("data");
                 button.setState(value ? 1 : 0);
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected Boolean saveValue(GuiParent parent, Class clazz) {
                 GuiStateButton button = (GuiStateButton) parent.get("data");
                 return button.getState() == 1;
@@ -273,11 +274,11 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {}
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
                 boolean decimal = isDecimal(clazz);
                 if (key != null) {
@@ -305,7 +306,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(Number value, GuiParent parent) {
                 GuiControl control = parent.get("data");
                 if (control instanceof GuiSteppedSlider) {
@@ -377,7 +378,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected Number saveValue(GuiParent parent, Class clazz) {
                 GuiControl control = parent.get("data");
                 String text;
@@ -452,20 +453,20 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiTextfield("data", 30, 8).setExpandableX());
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(String value, GuiParent parent) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
                 button.setText(value);
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected String saveValue(GuiParent parent, Class clazz) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
                 return button.getText();
@@ -494,20 +495,20 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiTextfield("data", 30, 8).setExpandableX());
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(ResourceLocation value, GuiParent parent) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
                 button.setText(value.toString());
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected ResourceLocation saveValue(GuiParent parent, Class clazz) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
                 return new ResourceLocation(button.getText());
@@ -541,7 +542,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
                 parent.add(new GuiTextfield("search", 30, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
@@ -555,7 +556,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(SoundConfig value, GuiParent parent, ConfigKeyField key) {
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
                 GuiSlider volume = (GuiSlider) parent.get("volume");
@@ -567,7 +568,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected SoundConfig saveValue(GuiParent parent, Class clazz, ConfigKeyField key) {
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
                 GuiSlider volume = (GuiSlider) parent.get("volume");
@@ -599,7 +600,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKeyField key, Class clazz) {
                 RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
@@ -607,14 +608,14 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(RegistryObjectConfig value, GuiParent parent, ConfigKeyField key) {
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
                 box.select(value.location);
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected RegistryObjectConfig saveValue(GuiParent parent, Class clazz, ConfigKeyField key) {
                 RegistryObjectConfig object = (RegistryObjectConfig) key.getDefault();
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
@@ -625,6 +626,51 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             public RegistryObjectConfig set(ConfigKeyField key, RegistryObjectConfig value) {
                 value.configured(null);
+                return value;
+            }
+            
+        });
+        
+        registerType(SelectableConfig.class, new ConfigTypeConveration<SelectableConfig>() {
+            
+            @Override
+            public SelectableConfig readElement(SelectableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKeyField key) {
+                if (element.isJsonPrimitive() && ((JsonPrimitive) element).isNumber())
+                    defaultValue.select(element.getAsInt());
+                else
+                    defaultValue.reset();
+                return defaultValue;
+            }
+            
+            @Override
+            public JsonElement writeElement(SelectableConfig value, SelectableConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKeyField key) {
+                return new JsonPrimitive(value.getSelected());
+            }
+            
+            @Override
+            @OnlyIn(Dist.CLIENT)
+            public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
+                parent.add(new GuiComboBox("data", new TextListBuilder().add(((SelectableConfig) key.get()).getArray(), x -> x.toString())).setExpandableX());
+            }
+            
+            @Override
+            @OnlyIn(Dist.CLIENT)
+            public void loadValue(SelectableConfig value, GuiParent parent, ConfigKeyField key) {
+                GuiComboBox box = (GuiComboBox) parent.get("data");
+                box.select(value.getSelected());
+            }
+            
+            @Override
+            @OnlyIn(Dist.CLIENT)
+            protected SelectableConfig saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
+                SelectableConfig config = (SelectableConfig) key.get();
+                GuiComboBox box = (GuiComboBox) parent.get("data");
+                config.select(box.getIndex());
+                return config;
+            }
+            
+            @Override
+            public SelectableConfig set(ConfigKeyField key, SelectableConfig value) {
                 return value;
             }
             
@@ -650,15 +696,15 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {}
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(ConfigHolderObject value, GuiParent parent, @Nullable ConfigKeyField key) {}
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected ConfigHolderObject saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
                 return null;
             }
@@ -686,15 +732,15 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {}
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(ConfigHolderDynamic value, GuiParent parent, @Nullable ConfigKeyField key) {}
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected ConfigHolderDynamic saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
                 return null;
             }
@@ -730,20 +776,20 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiComboBox("data", new TextListBuilder().add(clazz.getEnumConstants(), (x) -> ((Enum) x).name())));
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(Enum value, GuiParent parent) {
                 GuiComboBox box = (GuiComboBox) parent.get("data");
                 box.select(value.ordinal());
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected Enum saveValue(GuiParent parent, Class clazz) {
                 GuiComboBox box = (GuiComboBox) parent.get("data");
                 return (Enum) clazz.getEnumConstants()[box.getIndex()];
@@ -762,18 +808,18 @@ public abstract class ConfigTypeConveration<T> {
     
     public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key);
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public abstract void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz);
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public abstract void loadValue(T value, GuiParent parent, @Nullable ConfigKeyField key);
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected abstract T saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key);
     
     public abstract T set(ConfigKeyField key, T value);
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public T save(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
         T value = saveValue(parent, clazz, key);
         if (value != null && key != null)
@@ -808,30 +854,30 @@ public abstract class ConfigTypeConveration<T> {
         public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault);
         
         @Override
-        @OnlyIn(value = Dist.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
             createControls(parent, clazz);
         }
         
-        @OnlyIn(value = Dist.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public abstract void createControls(GuiParent parent, Class clazz);
         
         @Override
-        @OnlyIn(value = Dist.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void loadValue(T value, GuiParent parent, @Nullable ConfigKeyField key) {
             loadValue(value, parent);
         }
         
-        @OnlyIn(value = Dist.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public abstract void loadValue(T value, GuiParent parent);
         
         @Override
-        @OnlyIn(value = Dist.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         protected T saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
             return saveValue(parent, clazz);
         }
         
-        @OnlyIn(value = Dist.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         protected abstract T saveValue(GuiParent parent, Class clazz);
         
     }
