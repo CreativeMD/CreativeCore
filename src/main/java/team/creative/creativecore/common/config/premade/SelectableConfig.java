@@ -2,7 +2,10 @@ package team.creative.creativecore.common.config.premade;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public class SelectableConfig<T> {
+import team.creative.creativecore.Side;
+import team.creative.creativecore.common.config.api.IConfigObject;
+
+public class SelectableConfig<T> implements IConfigObject {
     
     private T[] array;
     private int selected;
@@ -52,6 +55,16 @@ public class SelectableConfig<T> {
             else
                 select(index);
         }
+    }
+    
+    @Override
+    public boolean isDefault(Side side) {
+        return selected == defaultSelected;
+    }
+    
+    @Override
+    public void restoreDefault(Side side, boolean ignoreRestart) {
+        reset();
     }
     
 }

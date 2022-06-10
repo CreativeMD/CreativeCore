@@ -3,6 +3,7 @@ package team.creative.creativecore.common.config.holder;
 import java.lang.reflect.Field;
 
 import team.creative.creativecore.Side;
+import team.creative.creativecore.common.config.api.IConfigObject;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
@@ -52,20 +53,20 @@ public abstract class ConfigKey {
     }
     
     public boolean isDefault(Side side) {
-        if (defaultValue instanceof ICreativeConfigHolder)
-            return ((ICreativeConfigHolder) defaultValue).isDefault(side);
+        if (defaultValue instanceof IConfigObject)
+            return ((IConfigObject) defaultValue).isDefault(side);
         return checkEqual(defaultValue, get());
     }
     
     public boolean isDefault(Object value, Side side) {
-        if (defaultValue instanceof ICreativeConfigHolder)
-            return ((ICreativeConfigHolder) defaultValue).isDefault(side);
+        if (defaultValue instanceof IConfigObject)
+            return ((IConfigObject) defaultValue).isDefault(side);
         return checkEqual(defaultValue, value);
     }
     
     public void restoreDefault(Side side, boolean ignoreRestart) {
-        if (defaultValue instanceof ICreativeConfigHolder)
-            ((ICreativeConfigHolder) defaultValue).restoreDefault(side, ignoreRestart);
+        if (defaultValue instanceof IConfigObject)
+            ((IConfigObject) defaultValue).restoreDefault(side, ignoreRestart);
         else
             set(defaultValue);
     }

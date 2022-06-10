@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
+import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
@@ -64,7 +65,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", 50, 130, true, new ArrayList<>()).setExpandable();
         parent.add(listBox);
@@ -76,7 +77,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             GuiConfigSubControl control;
             if (converation != null) {
                 control = new GuiConfigSubControl("" + 0);
-                converation.createControls(control, null, subClass);
+                converation.createControls(control, null, null, subClass);
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
                 ConfigHolderObject holder = constructHolder(Side.SERVER, value);
@@ -89,7 +90,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    public void loadValue(List value, GuiParent parent, @Nullable ConfigKeyField key) {
+    public void loadValue(List value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
         if (!box.isEmpty())
             box.clearItems();
@@ -103,8 +104,8 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             GuiConfigSubControl control;
             if (converation != null) {
                 control = new GuiConfigSubControl("" + i);
-                converation.createControls(control, null, clazz);
-                converation.loadValue(entry, control, null);
+                converation.createControls(control, null, null, clazz);
+                converation.loadValue(entry, control, null, null);
             } else {
                 control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry), entry);
                 ((GuiConfigSubControlHolder) control).createControls();
@@ -117,7 +118,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected List saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
+    protected List saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);
         
@@ -125,7 +126,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         List value = new ArrayList(box.size());
         for (int i = 0; i < box.size(); i++)
             if (converation != null)
-                value.add(converation.save(box.get(i), subClass, null));
+                value.add(converation.save(box.get(i), null, subClass, null));
             else {
                 ((GuiConfigSubControlHolder) box.get(i)).save();
                 value.add(((GuiConfigSubControlHolder) box.get(i)).value);

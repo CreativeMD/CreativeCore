@@ -14,12 +14,13 @@ import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
-public class GuiConfigControl extends GuiRow {
+public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     
     public final ConfigKeyField field;
     public final Side side;
     private GuiButton resetButton;
     private final GuiColumn main;
+    private Object extra;
     
     public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, String caption, String comment) {
         super();
@@ -49,18 +50,19 @@ public class GuiConfigControl extends GuiRow {
     }
     
     public void updateButton() {
-        this.resetButton.enabled = !field.isDefault(field.converation.save(main, field.getType(), field), side);
+        this.resetButton.enabled = !field.isDefault(field.converation.save(main, this, field.getType(), field), side);
     }
     
     public void init(JsonElement initalValue) {
-        field.converation.createControls(main, field, field.getType());
-        field.converation.loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, false, initalValue, side, field) : field.get(), main, field);
+        field.converation.createControls(main, this, field, field.getType());
+        field.converation
+                .loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, false, initalValue, side, field) : field.get(), main, this, field);
         
         updateButton();
     }
     
     public void reset() {
-        field.converation.loadValue(field.getDefault(), main, field);
+        field.converation.restoreDefault(field.getDefault(), main, this, field);
         updateButton();
     }
     
@@ -69,10 +71,20 @@ public class GuiConfigControl extends GuiRow {
     }
     
     public JsonElement save() {
-        Object value = field.converation.save(main, field.getType(), field);
-        if (!field.get().equals(value))
+        Object value = field.converation.save(main, this, field.getType(), field);
+        if (field.converation.shouldSave(value, main, this, field))
             return field.converation.writeElement(value, field.getDefault(), true, false, side, field);
         return null;
+    }
+    
+    @Override
+    public void setCustomData(Object object) {
+        this.extra = object;
+    }
+    
+    @Override
+    public Object getCustomData() {
+        return extra;
     }
     
 }
