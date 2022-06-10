@@ -21,4 +21,14 @@ public class ReflectionHelper {
             throw new RuntimeException("Unable to locate field " + clazz.getSimpleName() + "." + offical + " (" + obfuscated + ")", e);
         }
     }
+    
+    public static <T> Field findField(Class<? super T> clazz, String offical) {
+        try {
+            Field f = clazz.getDeclaredField(offical);
+            f.setAccessible(true);
+            return f;
+        } catch (Exception e2) {
+            throw new RuntimeException("Unable to locate field " + clazz.getSimpleName() + "." + offical, e2);
+        }
+    }
 }
