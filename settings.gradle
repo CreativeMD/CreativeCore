@@ -6,9 +6,13 @@ pluginManagement {
 }
 buildscript {
     repositories {
+		maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = "https://repo.spongepowered.org/maven" }
+        jcenter()
+        mavenCentral()
 		mavenLocal()
 	}
     dependencies {
-		classpath 'org.spongepowered:mixingradle:0.7.33'
+		classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
