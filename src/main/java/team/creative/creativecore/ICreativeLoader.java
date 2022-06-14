@@ -4,6 +4,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -23,11 +24,19 @@ public interface ICreativeLoader {
     
     public void registerClientTick(Runnable run);
     
+    public void registerClientRenderStart(Runnable run);
+    
     public void registerClientRender(Runnable run);
     
     public void registerClientStarted(Runnable run);
     
+    public void registerLevelTick(Consumer<ServerLevel> consumer);
+    
+    public void registerLevelTickStart(Consumer<ServerLevel> consumer);
+    
     public void registerLoadLevel(Consumer<LevelAccessor> consumer);
+    
+    public void registerUnloadLevel(Consumer<LevelAccessor> consumer);
     
     public <T> void registerListener(Consumer<T> consumer);
     
