@@ -1,4 +1,11 @@
 # CreativeCore
+This is a common library which works for both forge and fabric but is incompatble with out one of its loaders.
+
+## Forge Loader
+Created by @CreativeMD: https://github.com/FreezePhoenix/CreativeLoaderForge
+
+## Fabric Loader
+Created by @FreezePhoenix: https://github.com/FreezePhoenix/CreativeLoaderFabric
 
 ## Dependants
 - AmbientSounds
@@ -22,7 +29,3 @@ You can find the formatter I use for eclipse [here](https://www.dropbox.com/s/ik
 ## Terms of use
 Feel free to use this mod as a dependency, but you may not copy add files to your mod directly.
 
-## Fabric version
-Created by @FreezePhoenix: https://github.com/FreezePhoenix/CreativeCoreFabric
-
-## [How to setup a repository](https://www.youtube.com/watch?v=7Ahshi_QjM4)
