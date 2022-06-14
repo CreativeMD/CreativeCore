@@ -2,8 +2,7 @@ package team.creative.creativecore.reflection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper.UnableToFindMethodException;
+import java.util.Arrays;
 
 public class ReflectionHelper {
     
@@ -41,7 +40,7 @@ public class ReflectionHelper {
             m.setAccessible(true);
             return m;
         } catch (Exception e) {
-            throw new UnableToFindMethodException(e);
+            throw new RuntimeException("Unable to locate method " + clazz.getSimpleName() + "." + methodName + "(" + Arrays.toString(parameterTypes) + ")", e);
         }
     }
 }
