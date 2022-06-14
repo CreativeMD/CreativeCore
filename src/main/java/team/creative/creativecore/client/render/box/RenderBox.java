@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import team.creative.creativecore.client.render.face.FaceRenderType;
 import team.creative.creativecore.client.render.face.IFaceRenderType;
 import team.creative.creativecore.common.mod.OptifineHelper;
@@ -439,7 +438,7 @@ public class RenderBox extends AlignedBox {
     }
     
     protected List<BakedQuad> getBakedQuad(LevelAccessor level, BakedModel blockModel, BlockState state, Facing facing, BlockPos pos, RenderType layer, RandomSource rand) {
-        return OptifineHelper.getBakedQuad(blockModel.getQuads(state, facing.toVanilla(), rand, EmptyModelData.INSTANCE), level, state, facing, pos, layer, rand);
+        return OptifineHelper.getBakedQuad(blockModel.getQuads(state, facing.toVanilla(), rand), level, state, facing, pos, layer, rand);
     }
     
     public List<BakedQuad> getBakedQuad(LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
