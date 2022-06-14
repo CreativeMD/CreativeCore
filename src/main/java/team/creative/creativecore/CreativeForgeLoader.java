@@ -4,6 +4,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -13,6 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
+import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.DistExecutor;
@@ -65,6 +67,36 @@ public class CreativeForgeLoader implements ICreativeLoader {
             if (x.phase == Phase.END)
                 run.run();
         });
+    }
+    
+    @Override
+    public void registerClientRenderStart(Runnable run) {
+        MinecraftForge.EVENT_BUS.addListener((RenderTickEvent x) -> {
+            if (x.phase == Phase.START)
+                run.run();
+        });
+    }
+    
+    @Override
+    public void registerLevelTick(Consumer<ServerLevel> consumer) {
+        MinecraftForge.EVENT_BUS.addListener((WorldTickEvent x) -> {
+            if (x.phase == Phase.END)
+                consumer.accept((ServerLevel) x.world);
+        });
+    }
+    
+    @Override
+    public void registerLevelTickStart(Consumer<ServerLevel> consumer) {
+        MinecraftForge.EVENT_BUS.addListener((WorldTickEvent x) -> {
+            if (x.phase == Phase.START)
+                consumer.accept((ServerLevel) x.world);
+        });
+        
+    }
+    
+    @Override
+    public void registerUnloadLevel(Consumer<LevelAccessor> consumer) {
+        MinecraftForge.EVENT_BUS.addListener((WorldEvent.Unload x) -> consumer.accept(x.getWorld()));
     }
     
     @Override
