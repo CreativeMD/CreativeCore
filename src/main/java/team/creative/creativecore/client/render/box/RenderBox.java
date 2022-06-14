@@ -526,10 +526,11 @@ public class RenderBox extends AlignedBox {
     }
     
     private static int uvOffset(VertexFormat format) {
+        int offset = 0;
         for (int i = 0; i < format.getElements().size(); i++) {
-            if (format.getElements().get(i).getUsage() == Usage.UV) {
-                return format.getOffset(i);
-            }
+            if (format.getElements().get(i).getUsage() == Usage.UV)
+                return offset;
+            offset += format.getElements().get(i).getByteSize();
         }
         return -1;
     }
