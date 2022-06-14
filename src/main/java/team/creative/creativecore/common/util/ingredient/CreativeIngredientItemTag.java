@@ -35,7 +35,6 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     }
     
     @Override
-    @SuppressWarnings("deprecation")
     public boolean is(ItemStack stack) {
         return stack.getItem().builtInRegistryHolder().is(tag);
     }

@@ -59,7 +59,6 @@ public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     }
     
     @Override
-    @SuppressWarnings("deprecation")
     public void neighborChanged(BlockPos pos, Block block, BlockPos fromPos) {
         if (preventNeighborUpdate)
             return;
