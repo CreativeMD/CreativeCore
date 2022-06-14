@@ -8,7 +8,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +31,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        tag = ItemTags.create(new ResourceLocation(nbt.getString("tag")));
+        tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(nbt.getString("tag")));
     }
     
     @Override
@@ -48,7 +47,6 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        @SuppressWarnings("deprecation")
         Optional<Named<Item>> optional = Registry.ITEM.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;

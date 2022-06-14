@@ -16,12 +16,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -547,7 +547,7 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 parent.add(new GuiTextfield("search", 30, 14));
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
-                        .addComponent(ForgeRegistries.SOUND_EVENTS.getKeys(), x -> Component.literal(x.toString()))));
+                        .addComponent(Registry.SOUND_EVENT.keySet(), x -> Component.literal(x.toString()))));
                 GuiParent hBox = new GuiParent("vBox", GuiFlow.STACK_X);
                 hBox.add(new GuiLabel("volumeLabel").setTitle(Component.translatable("gui.volume")));
                 hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
@@ -605,7 +605,7 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
-                        .addComponent(value.registry.getKeys(), x -> Component.literal(x.toString()))));
+                        .addComponent(value.registry.keySet(), x -> Component.literal(x.toString()))));
             }
             
             @Override

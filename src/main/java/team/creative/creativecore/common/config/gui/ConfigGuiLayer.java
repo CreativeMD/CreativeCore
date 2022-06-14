@@ -151,7 +151,7 @@ public class ConfigGuiLayer extends GuiLayer {
             if (nextAction == 0)
                 super.closeTopLayer();
             else if (nextAction == 1)
-                CreativeCore.CLIENT_CONFIG_OPEN.open(getPlayer());
+                CreativeCore.CONFIG_CLIENT_SYNC_OPEN.open(getPlayer());
         } else
             GuiDialogHandler.openDialog(getParent(), "savechanges", (x, y) -> {
                 if (y == DialogButton.YES) {

@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -8,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.util.mc.MaterialUtils;
 
 public class CreativeIngredientMaterial extends CreativeIngredient {
@@ -25,18 +25,18 @@ public class CreativeIngredientMaterial extends CreativeIngredient {
     
     @Override
     protected void saveExtra(CompoundTag nbt) {
-        nbt.putString("material", ForgeRegistries.BLOCKS.getKey(getBlock()).toString());
+        nbt.putString("material", Registry.BLOCK.getKey(getBlock()).toString());
     }
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("material")));
+        Block block = Registry.BLOCK.get(new ResourceLocation(nbt.getString("material")));
         if (block != null)
             material = block.defaultBlockState().getMaterial();
     }
     
     public Block getBlock() {
-        for (Block block : ForgeRegistries.BLOCKS)
+        for (Block block : Registry.BLOCK)
             if (block.defaultBlockState().getMaterial() == material)
                 return block;
         return null;

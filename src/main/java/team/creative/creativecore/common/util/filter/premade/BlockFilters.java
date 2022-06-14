@@ -2,6 +2,7 @@ package team.creative.creativecore.common.util.filter.premade;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -10,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.util.CompoundSerializer;
 import team.creative.creativecore.common.util.filter.Filter;
 
@@ -64,7 +64,7 @@ public class BlockFilters {
         
         @SuppressWarnings("unused")
         public BlockFilter(CompoundTag nbt) {
-            this.block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("b")));
+            this.block = Registry.BLOCK.get(new ResourceLocation(nbt.getString("b")));
         }
         
         @Override
@@ -75,7 +75,7 @@ public class BlockFilters {
         @Override
         public CompoundTag write() {
             CompoundTag nbt = new CompoundTag();
-            nbt.putString("b", ForgeRegistries.BLOCKS.getKey(block).toString());
+            nbt.putString("b", Registry.BLOCK.getKey(block).toString());
             return nbt;
         }
         
@@ -94,7 +94,7 @@ public class BlockFilters {
             ListTag list = nbt.getList("b", Tag.TAG_STRING);
             this.blocks = new Block[list.size()];
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(list.getString(i)));
+                blocks[i] = Registry.BLOCK.get(new ResourceLocation(list.getString(i)));
         }
         
         @Override
@@ -107,7 +107,7 @@ public class BlockFilters {
             CompoundTag nbt = new CompoundTag();
             ListTag list = new ListTag();
             for (int i = 0; i < blocks.length; i++)
-                list.add(StringTag.valueOf(ForgeRegistries.BLOCKS.getKey(blocks[i]).toString()));
+                list.add(StringTag.valueOf(Registry.BLOCK.getKey(blocks[i]).toString()));
             nbt.put("b", list);
             return nbt;
         }

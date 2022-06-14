@@ -1,20 +1,16 @@
 package team.creative.creativecore.common.gui.integration;
 
-import java.lang.reflect.Field;
-
 import com.mojang.blaze3d.Blaze3D;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import team.creative.creativecore.mixin.MouseHandlerAccessor;
 
 public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
-    private static final Field eventTime = ObfuscationReflectionHelper.findField(MouseHandler.class, "f_91513_");
     public static final double DOUBLE_CLICK_TIME = 0.2;
     
     private final IGuiIntegratedParent gui;
@@ -44,12 +40,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     }
     
     public double getEventTime() {
-        try {
-            return eventTime.getDouble(Minecraft.getInstance().mouseHandler);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-            return 0;
-        }
+        return ((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).getLastMouseEventTime();
     }
     
     protected void fireRemaingEvents() {

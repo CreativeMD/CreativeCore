@@ -23,6 +23,7 @@ import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -40,7 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.math.vec.Vec1d;
@@ -301,12 +301,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Block content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(content));
+                buffer.writeResourceLocation(Registry.BLOCK.getKey(content));
             }
             
             @Override
             protected Block readContent(FriendlyByteBuf buffer) {
-                return ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
+                return Registry.BLOCK.get(buffer.readResourceLocation());
             }
         }, Block.class);
         
@@ -314,12 +314,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Item content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(ForgeRegistries.ITEMS.getKey(content));
+                buffer.writeResourceLocation(Registry.ITEM.getKey(content));
             }
             
             @Override
             protected Item readContent(FriendlyByteBuf buffer) {
-                return ForgeRegistries.ITEMS.getValue(buffer.readResourceLocation());
+                return Registry.ITEM.get(buffer.readResourceLocation());
             }
         }, Item.class);
         

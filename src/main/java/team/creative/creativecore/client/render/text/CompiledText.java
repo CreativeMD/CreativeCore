@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.StringDecomposer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.AdvancedComponent;
@@ -72,7 +72,7 @@ public class CompiledText {
     }
     
     private void compile() {
-        if (FMLEnvironment.dist.isDedicatedServer())
+        if (CreativeCore.loader().getOverallSide().isServer())
             return;
         
         List<Component> copy = new ArrayList<>();
@@ -136,28 +136,28 @@ public class CompiledText {
         stack.pushPose();
         for (CompiledLine line : lines) {
             switch (alignment) {
-            case LEFT:
-                line.render(stack);
-                usedWidth = Math.max(usedWidth, line.width);
-                break;
-            case CENTER:
-                stack.pushPose();
-                stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
-                line.render(stack);
-                usedWidth = Math.max(usedWidth, maxWidth);
-                stack.popPose();
-                break;
-            case RIGHT:
-                stack.pushPose();
-                stack.translate(maxWidth - line.width, 0, 0);
-                line.render(stack);
-                usedWidth = Math.max(usedWidth, maxWidth);
-                stack.popPose();
-                break;
-            case STRETCH:
-                break;
-            default:
-                break;
+                case LEFT:
+                    line.render(stack);
+                    usedWidth = Math.max(usedWidth, line.width);
+                    break;
+                case CENTER:
+                    stack.pushPose();
+                    stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
+                    line.render(stack);
+                    usedWidth = Math.max(usedWidth, maxWidth);
+                    stack.popPose();
+                    break;
+                case RIGHT:
+                    stack.pushPose();
+                    stack.translate(maxWidth - line.width, 0, 0);
+                    line.render(stack);
+                    usedWidth = Math.max(usedWidth, maxWidth);
+                    stack.popPose();
+                    break;
+                case STRETCH:
+                    break;
+                default:
+                    break;
             }
             int height = line.height + lineSpacing;
             stack.translate(0, height, 0);

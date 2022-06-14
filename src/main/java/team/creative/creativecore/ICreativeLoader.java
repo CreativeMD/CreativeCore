@@ -14,6 +14,8 @@ import team.creative.creativecore.common.CommonLoader;
 
 public interface ICreativeLoader {
     
+    public Side getOverallSide();
+    
     public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest);
     
     public String ignoreServerNetworkConstant();

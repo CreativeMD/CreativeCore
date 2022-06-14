@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -14,9 +15,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -24,6 +23,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.util.mc.StackUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
 
@@ -194,7 +194,7 @@ public class GuiStackSelector extends GuiLabel {
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
                     else {
-                        LazyOptional<IItemHandler> result = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+                        LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
                         if (result.isPresent())
                             collect((IItemHandler) result.cast(), tempStacks);
                     }
@@ -211,7 +211,7 @@ public class GuiStackSelector extends GuiLabel {
                 if (!stack.isEmpty() && selector.allow(stack))
                     stacks.add(stack.copy());
                 else {
-                    LazyOptional<IItemHandler> result = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+                    LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
                     if (result.isPresent())
                         collect((IItemHandler) result.cast(), stacks);
                 }
@@ -233,10 +233,9 @@ public class GuiStackSelector extends GuiLabel {
             
             NonNullList<ItemStack> tempStacks = NonNullList.create();
             
-            for (Item item : ForgeRegistries.ITEMS)
-                if (!item.getCreativeTabs().isEmpty())
-                    item.fillItemCategory(CreativeModeTab.TAB_SEARCH, tempStacks);
-                
+            for (Item item : Registry.ITEM)
+                item.fillItemCategory(CreativeModeTab.TAB_SEARCH, tempStacks);
+            
             List<ItemStack> newStacks = new ArrayList<>();
             for (ItemStack stack : tempStacks) {
                 if (!stack.isEmpty() && selector.allow(stack))
@@ -293,7 +292,7 @@ public class GuiStackSelector extends GuiLabel {
         try {
             itemName = stack.getDisplayName().getString();
         } catch (Exception e) {
-            itemName = ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
+            itemName = Registry.ITEM.getKey(stack.getItem()).toString();
         }
         return itemName;
     }
