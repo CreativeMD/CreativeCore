@@ -1,5 +1,5 @@
 # CreativeCore
-This is a common library which works for both forge and fabric but is incompatble with out one of its loaders.
+This is a common library which works for both forge and fabric but is incomplete without one of its loaders.
 
 ## Forge Loader
 Created by @CreativeMD: https://github.com/FreezePhoenix/CreativeLoaderForge
