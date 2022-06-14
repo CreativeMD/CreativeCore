@@ -1,4 +1,5 @@
 plugins {
+    id 'java-library'
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.+'
@@ -18,7 +19,7 @@ minecraft {
 dependencies {
     minecraft "net.minecraftforge:forge:${project.property 'minecraft_version'}-${project.property 'forge_version'}"
     
-    implementation project(':CreativeLoaderForge')
+    api project(':CreativeLoaderForge')
 }
 
 jar {
