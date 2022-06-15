@@ -1,16 +1,19 @@
 package team.creative.creativecore;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.Event;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
+import team.creative.creativecore.common.loader.UniEvent;
 
 public interface ICreativeLoader {
     
@@ -39,6 +42,8 @@ public interface ICreativeLoader {
     public void registerLoadLevel(Consumer<LevelAccessor> consumer);
     
     public void registerUnloadLevel(Consumer<LevelAccessor> consumer);
+    
+    public void registerPlayerInteraction(BiConsumer<Player, UniEvent> consumer);
     
     public <T> void registerListener(Consumer<T> consumer);
     
