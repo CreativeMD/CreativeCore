@@ -35,6 +35,8 @@ public interface ICreativeLoader {
     
     public void registerClientStarted(Runnable run);
     
+    public void registerKeybind(Supplier supplier);
+    
     public void registerLevelTick(Consumer<ServerLevel> consumer);
     
     public void registerLevelTickStart(Consumer<ServerLevel> consumer);
