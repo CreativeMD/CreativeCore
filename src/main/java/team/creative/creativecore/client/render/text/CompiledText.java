@@ -8,6 +8,8 @@ import java.util.Optional;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -82,6 +84,7 @@ public class CompiledText {
         compileNext(null, true, copy);
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
@@ -92,6 +95,7 @@ public class CompiledText {
         return currentLine;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, FormattedText component) {
         if (newLine)
@@ -117,6 +121,7 @@ public class CompiledText {
         return currentLine;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public int getTotalHeight() {
         int height = -lineSpacing;
@@ -125,6 +130,7 @@ public class CompiledText {
         return height;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void render(PoseStack stack) {
         if (lines == null)
@@ -178,6 +184,7 @@ public class CompiledText {
         
         public CompiledLine() {}
         
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void render(PoseStack stack) {
             Font font = Minecraft.getInstance().font;
@@ -210,6 +217,7 @@ public class CompiledText {
             }
         }
         
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void updateDimension(int width, int height) {
             this.width = Math.max(width, this.width);
@@ -269,6 +277,7 @@ public class CompiledText {
         
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public FormattedTextSplit splitByWidth(FormattedText text, int width, Style style, boolean force) {
         Font font = Minecraft.getInstance().font;
@@ -323,11 +332,13 @@ public class CompiledText {
         }
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public int getTotalWidth() {
         return calculateWidth(0, true, original);
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     private int calculateWidth(int width, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
@@ -340,6 +351,7 @@ public class CompiledText {
         return width;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     private int calculateWidth(FormattedText component) {
         Font font = Minecraft.getInstance().font;

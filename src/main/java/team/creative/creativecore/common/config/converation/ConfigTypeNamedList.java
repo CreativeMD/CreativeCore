@@ -11,6 +11,8 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
@@ -76,6 +78,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", 50, 130, true, new ArrayList<>()).setExpandable();
@@ -102,6 +105,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void loadValue(NamedList value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
@@ -133,6 +137,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected NamedList saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
         Class subClass = getListType(key);

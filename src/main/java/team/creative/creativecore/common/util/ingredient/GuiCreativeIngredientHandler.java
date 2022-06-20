@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -28,7 +30,8 @@ import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.list.PairList;
 
-@OnlyIn(value = Dist.CLIENT)
+@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class GuiCreativeIngredientHandler {
     
     private static PairList<String, GuiCreativeIngredientHandler> handlers = new PairList<>();

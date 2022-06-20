@@ -2,6 +2,8 @@ package team.creative.creativecore.common.gui.handler;
 
 import java.util.function.BiFunction;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,6 +48,7 @@ public abstract class GuiCreator {
             OpenGuiPacket.openGuiOnServer(this, nbt, (ServerPlayer) player);
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public static void openClientSide(GuiLayer layer) {
         Minecraft.getInstance().forceSetScreen(new GuiScreenIntegration(layer));

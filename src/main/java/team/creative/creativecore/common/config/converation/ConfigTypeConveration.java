@@ -15,6 +15,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -211,12 +213,14 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiStateButton("data", 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true").setExpandableX());
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(Boolean value, GuiParent parent) {
                 GuiStateButton button = (GuiStateButton) parent.get("data");
@@ -224,6 +228,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected Boolean saveValue(GuiParent parent, Class clazz) {
                 GuiStateButton button = (GuiStateButton) parent.get("data");
@@ -275,10 +280,12 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {}
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
                 boolean decimal = isDecimal(clazz);
@@ -307,6 +314,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(Number value, GuiParent parent) {
                 GuiControl control = parent.get("data");
@@ -379,6 +387,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected Number saveValue(GuiParent parent, Class clazz) {
                 GuiControl control = parent.get("data");
@@ -454,12 +463,14 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiTextfield("data", 30, 8).setExpandableX());
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(String value, GuiParent parent) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
@@ -467,6 +478,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected String saveValue(GuiParent parent, Class clazz) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
@@ -496,12 +508,14 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiTextfield("data", 30, 8).setExpandableX());
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(ResourceLocation value, GuiParent parent) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
@@ -509,6 +523,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected ResourceLocation saveValue(GuiParent parent, Class clazz) {
                 GuiTextfield button = (GuiTextfield) parent.get("data");
@@ -543,6 +558,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 parent.add(new GuiTextfield("search", 30, 14));
@@ -557,6 +573,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(SoundConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
@@ -569,6 +586,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected SoundConfig saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, ConfigKeyField key) {
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
@@ -601,6 +619,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
@@ -609,6 +628,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(RegistryObjectConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
@@ -616,6 +636,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected RegistryObjectConfig saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, ConfigKeyField key) {
                 RegistryObjectConfig object = (RegistryObjectConfig) key.getDefault();
@@ -649,6 +670,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
                 SelectableConfig value = (SelectableConfig) key.get();
@@ -657,6 +679,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(SelectableConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
                 GuiComboBox box = (GuiComboBox) parent.get("data");
@@ -664,6 +687,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void restoreDefault(SelectableConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
                 value.reset();
@@ -671,6 +695,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected SelectableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
                 SelectableConfig config = (SelectableConfig) key.get();
@@ -685,6 +710,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public boolean shouldSave(SelectableConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
                 return value.getSelected() != (int) configParent.getCustomData();
@@ -712,14 +738,17 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {}
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(ConfigHolderObject value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {}
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected ConfigHolderObject saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
                 return null;
@@ -748,14 +777,17 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {}
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(ConfigHolderDynamic value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {}
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected ConfigHolderDynamic saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
                 return null;
@@ -792,12 +824,14 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiComboBox("data", new TextListBuilder().add(clazz.getEnumConstants(), (x) -> ((Enum) x).name())));
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(Enum value, GuiParent parent) {
                 GuiComboBox box = (GuiComboBox) parent.get("data");
@@ -805,6 +839,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected Enum saveValue(GuiParent parent, Class clazz) {
                 GuiComboBox box = (GuiComboBox) parent.get("data");
@@ -824,27 +859,33 @@ public abstract class ConfigTypeConveration<T> {
     
     public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key);
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public abstract void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz);
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public abstract void loadValue(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key);
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void restoreDefault(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
         loadValue(value, parent, configParent, key);
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public boolean shouldSave(T value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
         return !key.get().equals(value);
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected abstract T saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key);
     
     public abstract T set(ConfigKeyField key, T value);
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public T save(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
         T value = saveValue(parent, configParent, clazz, key);
@@ -880,29 +921,35 @@ public abstract class ConfigTypeConveration<T> {
         public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault);
         
         @Override
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
             createControls(parent, clazz);
         }
         
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public abstract void createControls(GuiParent parent, Class clazz);
         
         @Override
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void loadValue(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
             loadValue(value, parent);
         }
         
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public abstract void loadValue(T value, GuiParent parent);
         
         @Override
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         protected T saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
             return saveValue(parent, clazz);
         }
         
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         protected abstract T saveValue(GuiParent parent, Class clazz);
         

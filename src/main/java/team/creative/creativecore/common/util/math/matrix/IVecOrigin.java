@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3d;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
@@ -182,7 +184,8 @@ public interface IVecOrigin {
         return new OBB(this, minX, minY, minZ, maxX, maxY, maxZ);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public default void setupRenderingInternal(PoseStack matrixStack, Entity entity, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
@@ -206,7 +209,8 @@ public interface IVecOrigin {
         matrixStack.translate(-rotationCenter.x, -rotationCenter.y, -rotationCenter.z);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public default void setupRendering(PoseStack matrixStack, Entity entity, float partialTicks) {
         setupRenderingInternal(matrixStack, entity, partialTicks);
     }

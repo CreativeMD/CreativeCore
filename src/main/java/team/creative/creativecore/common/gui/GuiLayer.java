@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,6 +16,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiLayer extends GuiParent {
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public GuiStyle style;
     public final Rect rect;
@@ -91,6 +94,7 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public GuiStyle getStyle() {
         return style;
@@ -100,12 +104,14 @@ public abstract class GuiLayer extends GuiParent {
         return true;
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public Options getSettings() {
         return Minecraft.getInstance().options;
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public boolean hasGrayBackground() {
         return true;
     }

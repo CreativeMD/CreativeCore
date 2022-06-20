@@ -3,6 +3,8 @@ package team.creative.creativecore.common.util.math.geo;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +24,8 @@ public class Rect {
         this.maxY = y2;
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static Rect getScreenRect() {
         Minecraft mc = Minecraft.getInstance();
         return new Rect(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
@@ -60,16 +63,17 @@ public class Rect {
     
     public double getSize(Axis axis) {
         switch (axis) {
-        case X:
-            return getWidth();
-        case Y:
-            return getHeight();
-        default:
-            return 0;
+            case X:
+                return getWidth();
+            case Y:
+                return getHeight();
+            default:
+                return 0;
         }
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void scissor() {
         Window window = Minecraft.getInstance().getWindow();
         double realMinX = minX * window.getGuiScale();

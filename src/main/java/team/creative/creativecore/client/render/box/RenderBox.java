@@ -13,6 +13,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 import com.mojang.math.Vector3d;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -643,7 +645,8 @@ public class RenderBox extends AlignedBox {
         }
         
         @Override
-        @OnlyIn(value = Dist.CLIENT)
+        @Environment(EnvType.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
             int index = 0;
             while (index < coords.length - 3) {

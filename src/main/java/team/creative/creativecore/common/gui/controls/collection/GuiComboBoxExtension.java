@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,7 +67,8 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
         }
         
         @Override
-        @OnlyIn(value = Dist.CLIENT)
+        @Environment(EnvType.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
             if (selected)
                 text.defaultColor = rect.inside(mouseX, mouseY) ? ColorUtils.rgba(230, 230, 0, 255) : ColorUtils.rgba(200, 200, 0, 255);

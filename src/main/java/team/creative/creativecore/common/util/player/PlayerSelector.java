@@ -7,6 +7,8 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -69,12 +71,14 @@ public abstract class PlayerSelector {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiPlayerSelectorButton("data", new PlayerSelectorLevel(0)));
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(PlayerSelector value, GuiParent parent) {
                 GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) parent.get("data");
@@ -82,6 +86,7 @@ public abstract class PlayerSelector {
             }
             
             @Override
+            @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected PlayerSelector saveValue(GuiParent parent, Class clazz) {
                 GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) parent.get("data");

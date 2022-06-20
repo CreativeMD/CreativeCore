@@ -3,6 +3,8 @@ package team.creative.creativecore.common.config.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -20,6 +22,7 @@ import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelect
 import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorOr;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
+@Environment(EnvType.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
     

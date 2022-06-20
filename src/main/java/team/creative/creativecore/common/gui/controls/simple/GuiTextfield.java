@@ -15,6 +15,8 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -149,7 +151,8 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         Font fontRenderer = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
@@ -371,45 +374,45 @@ public class GuiTextfield extends GuiFocusControl {
                 return true;
             } else {
                 switch (keyCode) {
-                case 259:
-                    this.shift = false;
-                    this.delete(-1);
-                    this.shift = Screen.hasShiftDown();
-                    
-                    return true;
-                case 260:
-                case 264:
-                case 265:
-                case 266:
-                case 267:
-                default:
-                    return false;
-                case 261:
-                    this.shift = false;
-                    this.delete(1);
-                    this.shift = Screen.hasShiftDown();
-                    
-                    return true;
-                case 262:
-                    if (Screen.hasControlDown())
-                        this.setCursorPosition(this.getNthWordFromCursor(1));
-                    else
-                        this.moveCursorBy(1);
-                    
-                    return true;
-                case 263:
-                    if (Screen.hasControlDown())
-                        this.setCursorPosition(this.getNthWordFromCursor(-1));
-                    else
-                        this.moveCursorBy(-1);
-                    
-                    return true;
-                case 268:
-                    this.setCursorPositionZero();
-                    return true;
-                case 269:
-                    this.setCursorPositionEnd();
-                    return true;
+                    case 259:
+                        this.shift = false;
+                        this.delete(-1);
+                        this.shift = Screen.hasShiftDown();
+                        
+                        return true;
+                    case 260:
+                    case 264:
+                    case 265:
+                    case 266:
+                    case 267:
+                    default:
+                        return false;
+                    case 261:
+                        this.shift = false;
+                        this.delete(1);
+                        this.shift = Screen.hasShiftDown();
+                        
+                        return true;
+                    case 262:
+                        if (Screen.hasControlDown())
+                            this.setCursorPosition(this.getNthWordFromCursor(1));
+                        else
+                            this.moveCursorBy(1);
+                        
+                        return true;
+                    case 263:
+                        if (Screen.hasControlDown())
+                            this.setCursorPosition(this.getNthWordFromCursor(-1));
+                        else
+                            this.moveCursorBy(-1);
+                        
+                        return true;
+                    case 268:
+                        this.setCursorPositionZero();
+                        return true;
+                    case 269:
+                        this.setCursorPositionEnd();
+                        return true;
                 }
             }
         }

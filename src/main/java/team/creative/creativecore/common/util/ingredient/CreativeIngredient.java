@@ -9,6 +9,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -126,20 +128,23 @@ public abstract class CreativeIngredient {
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiInfoStackButton("data", temp).setExpandable());
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public void loadValue(CreativeIngredient value, GuiParent parent) {
                 GuiInfoStackButton button = (GuiInfoStackButton) parent.get("data");
                 button.set(value);
             }
             
             @Override
-            @OnlyIn(value = Dist.CLIENT)
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             protected CreativeIngredient saveValue(GuiParent parent, Class clazz) {
                 GuiInfoStackButton button = (GuiInfoStackButton) parent.get("data");
                 return button.get();
