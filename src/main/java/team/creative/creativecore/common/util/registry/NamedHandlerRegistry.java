@@ -46,6 +46,13 @@ public class NamedHandlerRegistry<T> {
         return handlers.getOrDefault(id, defaultHandler);
     }
     
+    public T getOrThrow(String id) {
+        T handler = handlers.get(id);
+        if (handler == null)
+            throw new IllegalArgumentException("'" + id + "' does not exist");
+        return handler;
+    }
+    
     public boolean contains(String id) {
         return handlers.containsKey(id);
     }
