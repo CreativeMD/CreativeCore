@@ -90,6 +90,16 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return 0;
     }
     
+    public GuiParent setAlign(Align align) {
+        this.align = align;
+        return this;
+    }
+    
+    public GuiParent setVAlign(VAlign valign) {
+        this.valign = valign;
+        return this;
+    }
+    
     @Override
     public boolean isExpandableX() {
         if (super.isExpandableX())
@@ -132,6 +142,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         if (result != null)
             return result;
         return get(name, hoverControls);
+    }
+    
+    public <T extends GuiControl> T get(String name, Class<T> clazz) {
+        GuiControl result = get(name);
+        if (clazz.isInstance(result))
+            return (T) result;
+        return null;
     }
     
     public boolean has(String name) {
