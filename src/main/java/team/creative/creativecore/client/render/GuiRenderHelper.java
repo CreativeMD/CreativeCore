@@ -206,6 +206,10 @@ public class GuiRenderHelper {
         textureRect(pose, x, y, 0, width, height, u, v, u2, v2, 256, 256);
     }
     
+    public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v, int uWidth, int vHeight) {
+        textureRect(pose, x, y, 0, width, height, u, v, uWidth, vHeight, 256, 256);
+    }
+    
     private static void textureRect(PoseStack pose, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth, int textureHeight) {
         drawTextureRect(pose.last().pose(), x, x2, y, y2, z, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight);
     }
