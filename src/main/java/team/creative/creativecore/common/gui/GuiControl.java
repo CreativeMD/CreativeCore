@@ -167,6 +167,12 @@ public abstract class GuiControl {
     
     public abstract void tick();
     
+    public boolean is(String name) {
+        if (this.name.equalsIgnoreCase(name))
+            return true;
+        return false;
+    }
+    
     public boolean is(String... name) {
         for (int i = 0; i < name.length; i++) {
             if (this.name.equalsIgnoreCase(name[i]))
