@@ -3,7 +3,11 @@ package team.creative.creativecore.common.util.type;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3d;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.Vec3i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
@@ -243,6 +247,8 @@ public class Color {
         this.blue = (byte) ((blue * iRatio) + (color.blue * ratio));
     }
     
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void glColor() {
         RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
     }
