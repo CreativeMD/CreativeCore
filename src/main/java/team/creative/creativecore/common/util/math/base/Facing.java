@@ -140,21 +140,16 @@ public enum Facing {
     }
     
     public static Facing get(Direction direction) {
-        switch (direction) {
-            case DOWN:
-                return Facing.DOWN;
-            case UP:
-                return Facing.UP;
-            case NORTH:
-                return Facing.NORTH;
-            case SOUTH:
-                return Facing.SOUTH;
-            case WEST:
-                return Facing.WEST;
-            case EAST:
-                return Facing.EAST;
-        }
-        throw new IllegalArgumentException();
+        if (direction == null)
+            return null;
+        return switch (direction) {
+            case DOWN -> Facing.DOWN;
+            case UP -> Facing.UP;
+            case NORTH -> Facing.NORTH;
+            case SOUTH -> Facing.SOUTH;
+            case WEST -> Facing.WEST;
+            case EAST -> Facing.EAST;
+        };
     }
     
     public static Facing get(Axis axis, boolean positive) {
