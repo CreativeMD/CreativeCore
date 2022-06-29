@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
@@ -210,7 +211,7 @@ public class VectorFan {
             Vec3f vec = coords[i];
             builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
         }
-        builder.end();
+        BufferUploader.drawWithShader(builder.end());
     }
     
     public void renderPreview(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
@@ -219,7 +220,7 @@ public class VectorFan {
             Vec3f vec = coords[i];
             builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
         }
-        builder.end();
+        BufferUploader.drawWithShader(builder.end());
     }
     
     public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha) {
@@ -231,7 +232,7 @@ public class VectorFan {
                 builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
             builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
             index += 2;
         }
         
@@ -242,7 +243,7 @@ public class VectorFan {
                 builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
             builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
         }
         
     }
@@ -256,7 +257,7 @@ public class VectorFan {
                 builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
             builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
             index += 2;
         }
         
@@ -267,7 +268,7 @@ public class VectorFan {
                 builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
             builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
         }
     }
     
@@ -278,7 +279,7 @@ public class VectorFan {
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
             renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
             index += 2;
         }
         
@@ -287,7 +288,7 @@ public class VectorFan {
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
             renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
         }
         
     }
@@ -343,7 +344,7 @@ public class VectorFan {
             for (int i = index; i < index + 4; i++)
                 renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
             renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
             index += 2;
         }
         
@@ -352,7 +353,7 @@ public class VectorFan {
             for (int i = index; i < index + 3; i++)
                 renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
             renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
-            builder.end();
+            BufferUploader.drawWithShader(builder.end());
         }
         
     }
