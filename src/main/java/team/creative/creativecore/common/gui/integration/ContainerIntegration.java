@@ -105,21 +105,22 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     @Override
     public void closeTopLayer() {
         int index = layers.size() - 1;
-        sendPacket(new LayerClosePacket());
-        closeLayer(index);
+        if (index != -1)
+            closeLayer(index);
     }
     
     @Override
     public void closeLayer(GuiLayer layer) {
         int index = layers.indexOf(layer);
-        if (index != -1) {
-            sendPacket(new LayerClosePacket());
+        if (index != -1)
             closeLayer(index);
-        }
     }
     
     @Override
     public void closeLayer(int layer) {
+        for (int i = 0; i <= layer; i++)
+            layers.get(i).closed();
+        sendPacket(new LayerClosePacket(layer));
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
             if (isClient())
