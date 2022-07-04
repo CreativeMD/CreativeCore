@@ -1,0 +1,23 @@
+{
+    "gui.client-config": "Конфігурація клієнта",
+    "gui.config": "Конфігурація",
+    "gui.save": "Зберегти",
+    "gui.add": "Додати",
+    "dialog.savechanges": "Бажаєте зберегти зміни?",
+    "dialog.button.OK": "Окей",
+    "dialog.button.YES": "Так",
+    "dialog.button.NO": "Ні",
+    "dialog.button.MAYBE": "Можливо",
+    "dialog.button.CANCEL": "Скасувати",
+    "dialog.button.ABORT": "Перервати",
+    "dialog.button.CONFIRM": "Підтвердити",
+    "collector.inventory": "Інвентар",
+    "collector.all": "Творчість",
+    "minecraft.block": "Блок",
+    "minecraft.item": "Предмет",
+    "minecraft.block_tag": "Тег блока",
+    "minecraft.item_tag": "Тег предмета",
+    "minecraft.fuel": "Паливо",
+    "minecraft.stack": "Стак",
+    "minecraft.material": "Матеріал"
+}
