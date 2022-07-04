@@ -444,6 +444,9 @@ public class RenderBox extends AlignedBox {
     }
     
     public List<BakedQuad> getBakedQuad(LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
+        if (pos != null)
+            rand.setSeed(state.getSeed(pos));
+        
         List<BakedQuad> blockQuads = getBakedQuad(level, blockModel, state, facing, pos, layer, rand);
         
         if (blockQuads.isEmpty())
