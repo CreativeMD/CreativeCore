@@ -4,28 +4,19 @@ import java.util.List;
 
 import team.creative.creativecore.common.util.math.geo.VectorFan;
 
-public class CachedFaceRenderType implements IFaceRenderType {
+public class RenderBoxFaceSpecial extends RenderBoxFace {
     
-    private final boolean shouldBeRendered;
-    private final boolean outside;
     private final List<VectorFan> fans;
     private final float scale;
     
-    public CachedFaceRenderType(List<VectorFan> fans, float scale, boolean shouldBeRendered, boolean outside) {
+    public RenderBoxFaceSpecial(List<VectorFan> fans, float scale) {
         this.fans = fans;
         this.scale = scale;
-        this.shouldBeRendered = shouldBeRendered;
-        this.outside = outside;
     }
     
     @Override
     public boolean shouldRender() {
-        return shouldBeRendered;
-    }
-    
-    @Override
-    public boolean isOutside() {
-        return outside;
+        return !fans.isEmpty();
     }
     
     @Override

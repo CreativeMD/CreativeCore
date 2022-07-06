@@ -25,8 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.face.FaceRenderType;
-import team.creative.creativecore.client.render.face.IFaceRenderType;
+import team.creative.creativecore.client.render.face.RenderBoxFace;
 import team.creative.creativecore.common.mod.OptifineHelper;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
@@ -56,12 +55,12 @@ public class RenderBox extends AlignedBox {
     public boolean needsResorting = false;
     public boolean emissive = false;
     
-    private IFaceRenderType renderEast = FaceRenderType.INSIDE_RENDERED;
-    private IFaceRenderType renderWest = FaceRenderType.INSIDE_RENDERED;
-    private IFaceRenderType renderUp = FaceRenderType.INSIDE_RENDERED;
-    private IFaceRenderType renderDown = FaceRenderType.INSIDE_RENDERED;
-    private IFaceRenderType renderSouth = FaceRenderType.INSIDE_RENDERED;
-    private IFaceRenderType renderNorth = FaceRenderType.INSIDE_RENDERED;
+    private RenderBoxFace renderEast = RenderBoxFace.RENDER;
+    private RenderBoxFace renderWest = RenderBoxFace.RENDER;
+    private RenderBoxFace renderUp = RenderBoxFace.RENDER;
+    private RenderBoxFace renderDown = RenderBoxFace.RENDER;
+    private RenderBoxFace renderSouth = RenderBoxFace.RENDER;
+    private RenderBoxFace renderNorth = RenderBoxFace.RENDER;
     
     private Object quadEast = null;
     private Object quadWest = null;
@@ -175,63 +174,49 @@ public class RenderBox extends AlignedBox {
         return quads;
     }
     
-    public void setType(Facing facing, IFaceRenderType renderer) {
+    public void setFace(Facing facing, RenderBoxFace face) {
         switch (facing) {
             case DOWN:
-                renderDown = renderer;
+                renderDown = face;
                 break;
             case EAST:
-                renderEast = renderer;
+                renderEast = face;
                 break;
             case NORTH:
-                renderNorth = renderer;
+                renderNorth = face;
                 break;
             case SOUTH:
-                renderSouth = renderer;
+                renderSouth = face;
                 break;
             case UP:
-                renderUp = renderer;
+                renderUp = face;
                 break;
             case WEST:
-                renderWest = renderer;
+                renderWest = face;
                 break;
         }
     }
     
-    public IFaceRenderType getType(Facing facing) {
-        switch (facing) {
-            case DOWN:
-                return renderDown;
-            case EAST:
-                return renderEast;
-            case NORTH:
-                return renderNorth;
-            case SOUTH:
-                return renderSouth;
-            case UP:
-                return renderUp;
-            case WEST:
-                return renderWest;
-        }
-        return FaceRenderType.INSIDE_RENDERED;
+    public RenderBoxFace getFace(Facing facing) {
+        return switch (facing) {
+            case EAST -> renderEast;
+            case WEST -> renderWest;
+            case UP -> renderUp;
+            case DOWN -> renderDown;
+            case SOUTH -> renderSouth;
+            case NORTH -> renderNorth;
+        };
     }
     
-    public boolean renderSide(Facing facing) {
-        switch (facing) {
-            case DOWN:
-                return renderDown.shouldRender();
-            case EAST:
-                return renderEast.shouldRender();
-            case NORTH:
-                return renderNorth.shouldRender();
-            case SOUTH:
-                return renderSouth.shouldRender();
-            case UP:
-                return renderUp.shouldRender();
-            case WEST:
-                return renderWest.shouldRender();
-        }
-        return true;
+    public boolean shouldRenderFace(Facing facing) {
+        return switch (facing) {
+            case EAST -> renderEast.shouldRender();
+            case WEST -> renderWest.shouldRender();
+            case UP -> renderUp.shouldRender();
+            case DOWN -> renderDown.shouldRender();
+            case SOUTH -> renderSouth.shouldRender();
+            case NORTH -> renderNorth.shouldRender();
+        };
     }
     
     public boolean intersectsWithFace(Facing facing, RenderInformationHolder holder, BlockPos offset) {
@@ -250,8 +235,8 @@ public class RenderBox extends AlignedBox {
     }
     
     protected Object getRenderQuads(Facing facing) {
-        if (getType(facing).hasCachedFans())
-            return getType(facing).getCachedFans();
+        if (getFace(facing).hasCachedFans())
+            return getFace(facing).getCachedFans();
         switch (facing) {
             case DOWN:
                 return DOWN;
@@ -282,7 +267,7 @@ public class RenderBox extends AlignedBox {
     }
     
     protected float getOverallScale(Facing facing) {
-        return getType(facing).getScale();
+        return getFace(facing).getScale();
     }
     
     protected float getScaleX() {
@@ -302,7 +287,7 @@ public class RenderBox extends AlignedBox {
     }
     
     protected boolean onlyScaleOnceNoOffset(Facing facing) {
-        return getType(facing).hasCachedFans();
+        return getFace(facing).hasCachedFans();
     }
     
     public void deleteQuadCache() {
