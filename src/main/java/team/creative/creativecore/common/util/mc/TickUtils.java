@@ -11,13 +11,13 @@ public class TickUtils {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    private static float getDeltaFrameTimeClient() {
-        return CreativeCoreClient.getDeltaFrameTime();
+    private static float getFrameTimeClient() {
+        return CreativeCoreClient.getFrameTime();
     }
     
-    public static float getDeltaFrameTime(Level level) {
+    public static float getFrameTime(Level level) {
         if (level.isClientSide)
-            return getDeltaFrameTimeClient();
+            return getFrameTimeClient();
         return 1.0F;
     }
     
