@@ -256,9 +256,9 @@ public class CollidingPlane {
     
     public static class PushCache {
         public Facing facing;
-        public OrientatedVoxelShape pushBox;
+        public OBB pushBox;
         
         public AABB entityBox;
-        public OrientatedVoxelShape entityBoxOrientated;
+        public OBB entityBoxOrientated;
     }
 }

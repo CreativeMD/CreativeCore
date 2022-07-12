@@ -1,13 +1,12 @@
 package team.creative.creativecore.common.util.math.box;
 
-import com.mojang.math.Vector3d;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollidingPlane.PlaneCache;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public class OBB extends CreativeAABB {
     
@@ -60,20 +59,20 @@ public class OBB extends CreativeAABB {
     
     public OBB set(Facing facing, double value) {
         switch (facing) {
-        case EAST:
-            return new OBB(origin, this.minX, this.minY, this.minZ, value, this.maxY, this.maxZ);
-        case WEST:
-            return new OBB(origin, value, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
-        case UP:
-            return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, value, this.maxZ);
-        case DOWN:
-            return new OBB(origin, this.minX, value, this.minZ, this.maxX, this.maxY, this.maxZ);
-        case SOUTH:
-            return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, this.maxY, value);
-        case NORTH:
-            return new OBB(origin, this.minX, this.minY, value, this.maxX, this.maxY, this.maxZ);
-        default:
-            throw new UnsupportedOperationException();
+            case EAST:
+                return new OBB(origin, this.minX, this.minY, this.minZ, value, this.maxY, this.maxZ);
+            case WEST:
+                return new OBB(origin, value, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+            case UP:
+                return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, value, this.maxZ);
+            case DOWN:
+                return new OBB(origin, this.minX, value, this.minZ, this.maxX, this.maxY, this.maxZ);
+            case SOUTH:
+                return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, this.maxY, value);
+            case NORTH:
+                return new OBB(origin, this.minX, this.minY, value, this.maxX, this.maxY, this.maxZ);
+            default:
+                throw new UnsupportedOperationException();
         }
     }
     
@@ -237,11 +236,11 @@ public class OBB extends CreativeAABB {
         return "box[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
     }
     
-    public Vector3d getCenter3d() {
-        return new Vector3d(this.minX + (this.maxX - this.minX) * 0.5D, this.minY + (this.maxY - this.minY) * 0.5D, this.minZ + (this.maxZ - this.minZ) * 0.5D);
+    public Vec3d getCenter3d() {
+        return new Vec3d(this.minX + (this.maxX - this.minX) * 0.5D, this.minY + (this.maxY - this.minY) * 0.5D, this.minZ + (this.maxZ - this.minZ) * 0.5D);
     }
     
-    public double getPushOutScale(double minScale, OBB fakeBox, Vector3d pushVec) {
+    public double getPushOutScale(double minScale, OBB fakeBox, Vec3d pushVec) {
         double scale = Double.MAX_VALUE;
         
         boolean pushX = pushVec.x != 0;
