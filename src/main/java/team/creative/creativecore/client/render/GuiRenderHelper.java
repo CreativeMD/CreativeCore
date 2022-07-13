@@ -173,12 +173,8 @@ public class GuiRenderHelper {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        colorRect(pose, bufferbuilder, x, y, x + width, y + height, ColorUtils.red(color), ColorUtils.green(color), ColorUtils.blue(color), ColorUtils.alpha(color));
-        tesselator.end();
+        colorRect(pose, Tesselator.getInstance().getBuilder(), x, y, x + width, y + height, ColorUtils.red(color), ColorUtils.green(color), ColorUtils.blue(color), ColorUtils
+                .alpha(color));
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }
