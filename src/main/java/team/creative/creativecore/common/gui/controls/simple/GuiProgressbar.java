@@ -13,7 +13,6 @@ import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
@@ -59,11 +58,16 @@ public class GuiProgressbar extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        GuiStyle style = getStyle();
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         double percent = pos / max;
-        style.clickable.render(matrix, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
-        GuiRenderHelper.drawStringCentered(matrix, ((int) Math.round(percent * 100)) + "%", (float) rect.getWidth(), (float) rect.getHeight(), style.fontColor.toInt(), true);
+        renderProgress(pose, control, rect, percent);
+        GuiRenderHelper.drawStringCentered(pose, ((int) Math.round(percent * 100)) + "%", (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderProgress(PoseStack pose, GuiChildControl control, Rect rect, double percent) {
+        getStyle().clickable.render(pose, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
     }
     
     @Override
