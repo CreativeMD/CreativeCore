@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui;
 
+import java.util.HashMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -8,6 +10,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.manager.GuiManager;
+import team.creative.creativecore.common.gui.manager.GuiManager.GuiManagerType;
+import team.creative.creativecore.common.gui.manager.GuiManagerItem;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
@@ -21,6 +26,7 @@ public abstract class GuiLayer extends GuiParent {
     public GuiStyle style;
     public final Rect rect;
     private final GuiSyncHolderLayer sync = new GuiSyncHolderLayer(this);
+    private HashMap<GuiManagerType, GuiManager> managers;
     
     public GuiLayer(String name) {
         super(name, GuiFlow.STACK_X);
@@ -34,6 +40,21 @@ public abstract class GuiLayer extends GuiParent {
         this.rect = new Rect(0, 0, width, height);
         if (CreativeCore.loader().getOverallSide().isClient())
             this.style = GuiStyle.getStyle(name);
+    }
+    
+    public boolean has(GuiManagerType type) {
+        return managers.containsKey(type);
+    }
+    
+    public <T extends GuiManager> T getOrCreate(GuiManagerType<T> type) {
+        T manager = (T) managers.get(type);
+        if (manager == null)
+            managers.put(type, manager = type.factory().apply(this));
+        return manager;
+    }
+    
+    public GuiManagerItem itemManager() {
+        return getOrCreate(GuiManager.ITEM);
     }
     
     public GuiSyncHolderLayer getSyncHolder() {

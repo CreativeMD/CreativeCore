@@ -7,13 +7,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
+import team.creative.creativecore.common.gui.creator.GuiLayerCreator;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
-import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 
 public class GuiDialogHandler {
     
-    public static final GuiLayerHandler DIALOG_HANDLER = (parent, nbt) -> {
+    public static final GuiLayerCreator DIALOG_HANDLER = (parent, nbt) -> {
         int[] array = nbt.getIntArray("buttons");
         DialogButton[] buttons = new DialogButton[array.length];
         for (int i = 0; i < array.length; i++)

@@ -3,14 +3,14 @@ package team.creative.creativecore.common.config.gui;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.creator.GuiLayerCreator;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.util.player.PlayerSelector;
 
 public class GuiPlayerSelectorButton extends GuiButton {
     
-    public static final GuiLayerHandler PLAYER_LAYER = (parent, nbt) -> new PlayerSelectorDialog();
+    public static final GuiLayerCreator PLAYER_LAYER = (parent, nbt) -> new PlayerSelectorDialog();
     
     private PlayerSelector info;
     
