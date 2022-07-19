@@ -1,12 +1,19 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+
 import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
-public class GuiInventoryGrid extends GuiParent {
+public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     public final Container container;
     protected boolean hasFixedSize = false;
@@ -16,6 +23,9 @@ public class GuiInventoryGrid extends GuiParent {
     
     private int cachedCols;
     private int cachedRows;
+    private boolean allChanged = false;
+    private HashSet<Integer> changed = new HashSet<>();
+    private List<Consumer<GuiSlot>> listeners;
     
     public GuiInventoryGrid(String name, Container container) {
         this(name, container, (int) Math.ceil(Math.sqrt(container.getContainerSize())));
@@ -27,6 +37,10 @@ public class GuiInventoryGrid extends GuiParent {
     }
     
     public GuiInventoryGrid(String name, Container container, int cols, int rows) {
+        this(name, container, cols, rows, (c, i) -> new Slot(c, i, 0, 0));
+    }
+    
+    public GuiInventoryGrid(String name, Container container, int cols, int rows, BiFunction<Container, Integer, Slot> slotFactory) {
         super(name);
         this.hasFixedSize = true;
         this.cols = cols;
@@ -34,10 +48,22 @@ public class GuiInventoryGrid extends GuiParent {
         this.container = container;
         int size = Math.min(container.getContainerSize(), cols * rows);
         for (int i = 0; i < size; i++) {
-            GuiChildControl child = super.add(new GuiSlot(container, i));
+            GuiChildControl child = super.add(new GuiSlot(slotFactory.apply(container, i)));
             child.rect.maxX = GuiSlotBase.SLOT_SIZE;
             child.rect.maxY = GuiSlotBase.SLOT_SIZE;
         }
+    }
+    
+    public GuiInventoryGrid disableSlot(int index) {
+        getSlot(index).enabled = false;
+        return this;
+    }
+    
+    public GuiInventoryGrid addListener(Consumer<GuiSlot> slot) {
+        if (listeners == null)
+            listeners = new ArrayList<>();
+        listeners.add(slot);
+        return this;
     }
     
     @Override
@@ -105,6 +131,53 @@ public class GuiInventoryGrid extends GuiParent {
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.TRANSPARENT;
+    }
+    
+    @Override
+    public GuiSlot getSlot(int index) {
+        return (GuiSlot) controls.get(index).control;
+    }
+    
+    @Override
+    public int inventorySize() {
+        return container.getContainerSize();
+    }
+    
+    @Override
+    public String name() {
+        return name;
+    }
+    
+    @Override
+    public void tick() {
+        if (allChanged) {
+            container.setChanged();
+            syncAll();
+            allChanged = false;
+            changed.clear();
+        } else if (!changed.isEmpty()) {
+            container.setChanged();
+            sync(changed);
+            changed.clear();
+        }
+        super.tick();
+    }
+    
+    @Override
+    public void setChanged() {
+        allChanged = true;
+        if (listeners != null)
+            for (Consumer<GuiSlot> listener : listeners)
+                listener.accept(null);
+    }
+    
+    @Override
+    public void setChanged(int slotIndex) {
+        changed.add(slotIndex);
+        GuiSlot slot = getSlot(slotIndex);
+        if (listeners != null)
+            for (Consumer<GuiSlot> listener : listeners)
+                listener.accept(slot);
     }
     
 }

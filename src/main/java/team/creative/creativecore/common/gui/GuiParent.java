@@ -241,6 +241,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         };
     }
     
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, List<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
         for (int i = collection.size() - 1; i >= 0; i--) {
             GuiChildControl child = collection.get(i);

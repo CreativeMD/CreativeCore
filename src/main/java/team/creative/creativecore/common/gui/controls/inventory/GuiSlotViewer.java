@@ -21,4 +21,9 @@ public class GuiSlotViewer extends GuiSlotBase {
         return stack;
     }
     
+    @Override
+    protected ItemStack getStackToRender() {
+        return stack;
+    }
+    
 }

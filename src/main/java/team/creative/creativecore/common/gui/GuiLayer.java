@@ -1,6 +1,11 @@
 package team.creative.creativecore.common.gui;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,6 +14,7 @@ import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.common.gui.controls.inventory.IGuiInventory;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManager.GuiManagerType;
@@ -42,11 +48,37 @@ public abstract class GuiLayer extends GuiParent {
             this.style = GuiStyle.getStyle(name);
     }
     
+    protected static void collectInventories(Iterable<GuiChildControl> parent, List<IGuiInventory> inventories) {
+        for (GuiChildControl child : parent) {
+            if (child.control instanceof IGuiInventory)
+                inventories.add((IGuiInventory) child.control);
+            else if (child.control instanceof GuiParent)
+                collectInventories((GuiParent) child.control, inventories);
+        }
+    }
+    
+    public Iterable<IGuiInventory> inventoriesToInsert() {
+        List<IGuiInventory> inventories = new ArrayList<>();
+        collectInventories(this, inventories);
+        return inventories;
+    }
+    
+    public Iterable<IGuiInventory> inventoriesToExract() {
+        List<IGuiInventory> inventories = new ArrayList<>();
+        collectInventories(this, inventories);
+        Collections.reverse(inventories);
+        return inventories;
+    }
+    
     public boolean has(GuiManagerType type) {
+        if (managers == null)
+            return false;
         return managers.containsKey(type);
     }
     
     public <T extends GuiManager> T getOrCreate(GuiManagerType<T> type) {
+        if (managers == null)
+            managers = new HashMap<>();
         T manager = (T) managers.get(type);
         if (manager == null)
             managers.put(type, manager = type.factory().apply(this));
@@ -55,6 +87,12 @@ public abstract class GuiLayer extends GuiParent {
     
     public GuiManagerItem itemManager() {
         return getOrCreate(GuiManager.ITEM);
+    }
+    
+    public Iterable<GuiManager> managers() {
+        if (managers == null)
+            return Collections.EMPTY_LIST;
+        return managers.values();
     }
     
     public GuiSyncHolderLayer getSyncHolder() {
@@ -124,6 +162,14 @@ public abstract class GuiLayer extends GuiParent {
         return style;
     }
     
+    @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        for (GuiManager manager : managers())
+            manager.renderOverlay(matrix, control, rect, mouseX - (int) rect.minX, mouseY - (int) rect.minY);
+    }
+    
     public boolean closeLayerUsingEscape() {
         return true;
     }
@@ -138,6 +184,24 @@ public abstract class GuiLayer extends GuiParent {
     @OnlyIn(Dist.CLIENT)
     public boolean hasGrayBackground() {
         return true;
+    }
+    
+    @Override
+    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+        if (!this.rect.inside(x, y)) {
+            for (GuiManager manager : managers())
+                manager.mouseClickedOutside(x, y);
+            return false;
+        }
+        return super.mouseClicked(rect, x, y, button);
+    }
+    
+    @Override
+    public void mouseReleased(Rect rect, double x, double y, int button) {
+        super.mouseReleased(rect, x, y, button);
+        
+        for (GuiManager manager : managers())
+            manager.mouseReleased(x, y, button);
     }
     
     @Override
@@ -159,5 +223,19 @@ public abstract class GuiLayer extends GuiParent {
     @Override
     public boolean hasLayer() {
         return true;
+    }
+    
+    @Override
+    public void tick() {
+        for (GuiManager manager : managers())
+            manager.tick();
+        super.tick();
+    }
+    
+    @Override
+    public void closed() {
+        for (GuiManager manager : managers())
+            manager.closed();
+        super.closed();
     }
 }

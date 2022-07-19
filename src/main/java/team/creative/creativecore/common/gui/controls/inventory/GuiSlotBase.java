@@ -43,6 +43,8 @@ public abstract class GuiSlotBase extends GuiControl {
     
     public abstract ItemStack getStack();
     
+    protected abstract ItemStack getStackToRender();
+    
     @Override
     public List<Component> getTooltip() {
         if (getStack().isEmpty())
@@ -55,8 +57,9 @@ public abstract class GuiSlotBase extends GuiControl {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         matrix.translate(0, 0, 10);
-        GuiRenderHelper.drawItemStack(matrix, getStack(), 1F);
-        GuiRenderHelper.drawItemStackDecorations(matrix, getStack());
+        ItemStack stack = getStackToRender();
+        GuiRenderHelper.drawItemStack(matrix, stack, 1F);
+        GuiRenderHelper.drawItemStackDecorations(matrix, stack);
         matrix.translate(0, 0, 10);
         if (rect.inside(mouseX, mouseY))
             HOVER.render(matrix, rect.getWidth(), rect.getHeight());

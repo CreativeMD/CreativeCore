@@ -73,11 +73,15 @@ public class GuiRenderHelper {
     }
     
     public static void drawItemStackDecorations(PoseStack posestack, ItemStack stack) {
+        drawItemStackDecorations(posestack, stack, stack.getCount());
+    }
+    
+    public static void drawItemStackDecorations(PoseStack posestack, ItemStack stack, int count) {
         if (!stack.isEmpty()) {
             int x = 0;
             int y = 0;
-            if (stack.getCount() != 1l) {
-                String s = String.valueOf(stack.getCount());
+            if (count != 1l) {
+                String s = String.valueOf(count);
                 posestack.translate(0.0D, 0.0D, 0 + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
                 mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last().pose(), multibuffersource$buffersource, false, 0, 15728880);
