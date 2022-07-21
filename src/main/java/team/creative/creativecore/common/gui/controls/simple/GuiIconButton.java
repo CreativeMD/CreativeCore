@@ -52,7 +52,7 @@ public class GuiIconButton extends GuiControl {
     public void flowX(int width, int preferred) {}
     
     @Override
-    public void flowY(int height, int preferred) {}
+    public void flowY(int width, int height, int preferred) {}
     
     @Override
     protected int preferredWidth() {
@@ -60,7 +60,7 @@ public class GuiIconButton extends GuiControl {
     }
     
     @Override
-    protected int preferredHeight() {
+    protected int preferredHeight(int width) {
         return 12;
     }
     

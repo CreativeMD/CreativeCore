@@ -79,7 +79,7 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         text.setMaxHeight(height);
     }
     
@@ -94,12 +94,12 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    public int getMinHeight() {
+    public int getMinHeight(int width) {
         return Minecraft.getInstance().font.lineHeight;
     }
     
     @Override
-    public int preferredHeight() {
+    public int preferredHeight(int width) {
         return text.getTotalHeight();
     }
     

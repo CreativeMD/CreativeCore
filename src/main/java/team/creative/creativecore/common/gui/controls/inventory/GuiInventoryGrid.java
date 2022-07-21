@@ -78,7 +78,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     }
     
     @Override
-    public int getMinHeight() {
+    public int getMinHeight(int width) {
         return hasFixedSize ? rows * GuiSlotBase.SLOT_SIZE : GuiSlotBase.SLOT_SIZE;
     }
     
@@ -97,7 +97,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int witdh, int height, int preferred) {
         cachedRows = height / GuiSlotBase.SLOT_SIZE;
         if (hasFixedSize)
             cachedRows = Math.min(cachedRows, this.rows);
@@ -124,7 +124,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     }
     
     @Override
-    protected int preferredHeight() {
+    protected int preferredHeight(int width) {
         return (int) Math.ceil(container.getContainerSize() / (double) cachedCols) * GuiSlotBase.SLOT_SIZE;
     }
     

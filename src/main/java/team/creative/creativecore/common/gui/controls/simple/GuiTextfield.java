@@ -514,10 +514,10 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     @Override
-    public void flowY(int height, int preferred) {}
+    public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredHeight() {
+    protected int preferredHeight(int width) {
         return 10;
     }
     

@@ -45,7 +45,7 @@ public class GuiComboBox extends GuiLabel {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         for (CompiledText text : lines)
             text.setMaxHeight(height);
     }
@@ -60,7 +60,7 @@ public class GuiComboBox extends GuiLabel {
     }
     
     @Override
-    public int preferredHeight() {
+    public int preferredHeight(int width) {
         int contentOffset = getContentOffset() * 2;
         int height = 0;
         for (CompiledText text : lines)

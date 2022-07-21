@@ -111,29 +111,30 @@ public class GuiChildControl {
     }
     
     public int getMinHeight() {
-        int min = control.getMinHeight();
+        int min = control.getMinHeight(getContentWidth());
         if (min != -1)
             return min + control.getContentOffset() * 2;
         return -1;
     }
     
     public int getMaxHeight() {
-        int max = control.getMaxHeight();
+        int max = control.getMaxHeight(getContentWidth());
         if (max != -1)
             return max + control.getContentOffset() * 2;
         return -1;
     }
     
     public int getPreferredHeight() {
-        return control.getPreferredHeight() + control.getContentOffset() * 2;
+        return control.getPreferredHeight(getContentWidth()) + control.getContentOffset() * 2;
     }
     
     public void flowX() {
-        control.flowX(getWidth() - control.getContentOffset() * 2, control.preferredWidth());
+        control.flowX(getContentWidth(), control.preferredWidth());
     }
     
     public void flowY() {
-        control.flowY(getHeight() - control.getContentOffset() * 2, control.preferredHeight());
+        int width = getContentWidth();
+        control.flowY(width, getContentHeight(), control.preferredHeight(width));
     }
     
     public int getBottom() {

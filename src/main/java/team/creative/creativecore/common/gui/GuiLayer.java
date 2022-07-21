@@ -126,13 +126,15 @@ public abstract class GuiLayer extends GuiParent {
             return;
         
         if (!hasPreferredDimensions) {
-            rect.maxX = preferredWidth() + getContentOffset() * 2;
-            flowX((int) rect.getWidth() - getContentOffset() * 2, preferredWidth());
-            rect.maxY = preferredHeight() + getContentOffset() * 2;
-            flowY((int) rect.getHeight() - getContentOffset() * 2, preferredHeight());
+            int preferredWidth = preferredWidth();
+            rect.maxX = preferredWidth + getContentOffset() * 2;
+            int width = (int) rect.getWidth() - getContentOffset() * 2;
+            flowX(width, preferredWidth);
+            rect.maxY = preferredHeight((int) rect.getWidth()) + getContentOffset() * 2;
+            flowY(width, (int) rect.getHeight() - getContentOffset() * 2, preferredHeight(width));
         } else {
             flowX((int) rect.getWidth() - getContentOffset() * 2, preferredWidth());
-            flowY((int) rect.getHeight() - getContentOffset() * 2, preferredHeight());
+            flowY((int) rect.getWidth() - getContentOffset() * 2, (int) rect.getHeight() - getContentOffset() * 2, preferredHeight((int) rect.getWidth()));
         }
     }
     

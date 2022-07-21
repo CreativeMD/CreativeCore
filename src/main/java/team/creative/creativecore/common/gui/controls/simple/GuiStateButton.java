@@ -54,7 +54,7 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         for (CompiledText text : states)
             text.setMaxHeight(height);
     }
@@ -68,7 +68,7 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public int preferredHeight() {
+    public int preferredHeight(int width) {
         int height = 0;
         for (CompiledText text : states)
             height = Math.max(height, text.getTotalHeight());

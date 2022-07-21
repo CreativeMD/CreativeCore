@@ -518,8 +518,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
-    public void flowY(int height, int preferred) {
-        flow.flowY(controls, spacing, valign, height, preferred);
+    public void flowY(int width, int height, int preferred) {
+        flow.flowY(controls, spacing, valign, width, height, preferred);
     }
     
     @Override
@@ -533,13 +533,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
-    public int getMinHeight() {
-        return flow.minHeight(controls, spacing);
+    public int getMinHeight(int width) {
+        return flow.minHeight(controls, spacing, width);
     }
     
     @Override
-    protected int preferredHeight() {
-        return flow.preferredHeight(controls, spacing);
+    protected int preferredHeight(int width) {
+        return flow.preferredHeight(controls, spacing, width);
     }
     
     @Override

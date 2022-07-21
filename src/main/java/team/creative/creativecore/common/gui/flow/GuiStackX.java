@@ -34,7 +34,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public int minHeight(List<GuiChildControl> controls, int spacing) {
+    public int minHeight(List<GuiChildControl> controls, int spacing, int width) {
         int height = -1;
         for (GuiChildControl child : controls)
             height = Math.max(height, child.getMinHeight());
@@ -42,7 +42,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public int preferredHeight(List<GuiChildControl> controls, int spacing) {
+    public int preferredHeight(List<GuiChildControl> controls, int spacing, int width) {
         int height = 0;
         for (GuiChildControl child : controls)
             height = Math.max(height, child.getPreferredHeight());
@@ -155,7 +155,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int height, int preferred) {
+    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred) {
         boolean expandable = areChildrenExpandableY(controls);
         if (valign == VAlign.TOP && !expandable) {
             for (GuiChildControl child : controls) {

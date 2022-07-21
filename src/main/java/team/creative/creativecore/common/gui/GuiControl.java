@@ -21,6 +21,7 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -185,7 +186,7 @@ public abstract class GuiControl {
     
     public abstract void flowX(int width, int preferred);
     
-    public abstract void flowY(int height, int preferred);
+    public abstract void flowY(int width, int height, int preferred);
     
     public void reflow() {
         parent.reflow();
@@ -207,19 +208,19 @@ public abstract class GuiControl {
         return -1;
     }
     
-    public int getMinHeight() {
+    public int getMinHeight(int width) {
         return -1;
     }
     
-    protected abstract int preferredHeight();
+    protected abstract int preferredHeight(int width);
     
-    public int getPreferredHeight() {
+    public int getPreferredHeight(int width) {
         if (hasPreferredDimensions)
             return preferredHeight;
-        return preferredHeight();
+        return preferredHeight(width);
     }
     
-    public int getMaxHeight() {
+    public int getMaxHeight(int width) {
         return -1;
     }
     
@@ -308,6 +309,12 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
+    public StyleDisplay getBorder(GuiStyle style, StyleDisplay display) {
+        return display;
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
@@ -318,7 +325,7 @@ public abstract class GuiControl {
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
         
-        style.get(formatting.border).render(pose, 0, 0, controlRect.getWidth(), controlRect.getHeight());
+        getBorder(style, style.get(formatting.border)).render(pose, 0, 0, controlRect.getWidth(), controlRect.getHeight());
         
         int borderWidth = style.getBorder(formatting.border);
         controlRect.shrink(borderWidth);

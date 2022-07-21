@@ -27,7 +27,7 @@ public class GuiStackY extends GuiFlow {
     }
     
     @Override
-    public int minHeight(List<GuiChildControl> controls, int spacing) {
+    public int minHeight(List<GuiChildControl> controls, int spacing, int width) {
         int height = -spacing;
         boolean has = false;
         for (GuiChildControl child : controls) {
@@ -42,7 +42,7 @@ public class GuiStackY extends GuiFlow {
     }
     
     @Override
-    public int preferredHeight(List<GuiChildControl> controls, int spacing) {
+    public int preferredHeight(List<GuiChildControl> controls, int spacing, int width) {
         int height = -spacing;
         for (GuiChildControl child : controls)
             height += child.getPreferredHeight() + spacing;
@@ -85,7 +85,7 @@ public class GuiStackY extends GuiFlow {
     }
     
     @Override
-    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int height, int preferred) {
+    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred) {
         int available = height - spacing * (controls.size() - 1);
         MarkList<GuiChildControl> list = new MarkList<>(controls);
         if (height >= preferred) { // If there is enough space available

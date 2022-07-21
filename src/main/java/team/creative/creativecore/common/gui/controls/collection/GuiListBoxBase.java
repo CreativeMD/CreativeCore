@@ -82,15 +82,15 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         this.cachedHeight = height;
-        super.flowY(height, preferred);
+        super.flowY(width, height, preferred);
     }
     
     public void reflowInternal() {
         if (hasGui()) {
             super.flowX(cachedWidth, preferredWidth());
-            super.flowY(cachedHeight, preferredHeight());
+            super.flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth));
         }
     }
     

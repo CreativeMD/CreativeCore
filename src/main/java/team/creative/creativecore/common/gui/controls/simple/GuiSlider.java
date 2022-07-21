@@ -197,9 +197,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         if (textfield != null)
-            textfield.flowY(height, preferred);
+            textfield.flowY(width, height, preferred);
     }
     
     @Override
@@ -208,7 +208,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
-    protected int preferredHeight() {
+    protected int preferredHeight(int width) {
         return 10;
     }
     

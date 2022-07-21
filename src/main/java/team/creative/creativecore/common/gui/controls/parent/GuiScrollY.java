@@ -142,7 +142,7 @@ public class GuiScrollY extends GuiParent {
     }
     
     @Override
-    public int getMinHeight() {
+    public int getMinHeight(int width) {
         return 10;
     }
     
@@ -152,7 +152,7 @@ public class GuiScrollY extends GuiParent {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         int y = 0;
         for (GuiChildControl child : controls) {
             child.setHeight(child.getPreferredHeight());

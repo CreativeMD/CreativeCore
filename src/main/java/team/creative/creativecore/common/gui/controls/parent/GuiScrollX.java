@@ -132,7 +132,7 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
-    public int getMinHeight() {
+    public int getMinHeight(int width) {
         return 10;
     }
     
@@ -149,8 +149,8 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
-        super.flowY(height - scrollbarHeight, preferred);
+    public void flowY(int width, int height, int preferred) {
+        super.flowY(width, height - scrollbarHeight, preferred);
     }
     
 }
