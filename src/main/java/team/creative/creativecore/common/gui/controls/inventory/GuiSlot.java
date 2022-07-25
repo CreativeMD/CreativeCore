@@ -28,7 +28,7 @@ public class GuiSlot extends GuiSlotBase {
     }
     
     public GuiSlot(Slot slot) {
-        this("" + slot.getSlotIndex(), slot);
+        this("" + slot.getContainerSlot(), slot);
     }
     
     public GuiSlot(String name, Slot slot) {
@@ -121,7 +121,7 @@ public class GuiSlot extends GuiSlotBase {
     }
     
     public void changed() {
-        inventory().setChanged(slot.getSlotIndex());
+        inventory().setChanged(slot.getContainerSlot());
         if (draggedIndex != -1)
             itemManager().modifyDrag(this);
     }

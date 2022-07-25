@@ -338,7 +338,7 @@ public class GuiManagerItem extends GuiManager {
                 names.add(StringTag.valueOf(inventory));
             }
             ids[i] = inventoryId;
-            ids[i + 1] = slot.slot.getSlotIndex();
+            ids[i + 1] = slot.slot.getContainerSlot();
             i += 2;
         }
         nbt.putIntArray("ids", ids);
