@@ -35,9 +35,9 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
             startColor.setAlpha(0);
             Color endColor = new Color(picker.color);
             endColor.setAlpha(255);
-            GuiRenderHelper.gradientRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), startColor.toInt(), endColor.toInt());
+            GuiRenderHelper.horizontalGradientRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), startColor.toInt(), endColor.toInt());
         } else
-            GuiRenderHelper.gradientMaskRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), picker.color.toInt(), part.code);
+            GuiRenderHelper.horizontalGradientMaskRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), picker.color.toInt(), part.code);
         super.renderContent(pose, control, rect, mouseX, mouseY);
     }
 }
