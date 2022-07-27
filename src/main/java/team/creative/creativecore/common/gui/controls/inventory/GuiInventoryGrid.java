@@ -17,6 +17,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     public final Container container;
     protected boolean hasFixedSize = false;
+    private int fixedSize;
     protected boolean reverse = false;
     private int cols;
     private int rows;
@@ -46,8 +47,8 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
         this.cols = cols;
         this.rows = rows;
         this.container = container;
-        int size = Math.min(container.getContainerSize(), cols * rows);
-        for (int i = 0; i < size; i++) {
+        this.fixedSize = Math.min(container.getContainerSize(), cols * rows);
+        for (int i = 0; i < fixedSize; i++) {
             GuiChildControl child = super.add(new GuiSlot(slotFactory.apply(container, i)));
             child.rect.maxX = GuiSlotBase.SLOT_SIZE;
             child.rect.maxY = GuiSlotBase.SLOT_SIZE;
@@ -140,6 +141,8 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     @Override
     public int inventorySize() {
+        if (hasFixedSize)
+            return fixedSize;
         return container.getContainerSize();
     }
     
