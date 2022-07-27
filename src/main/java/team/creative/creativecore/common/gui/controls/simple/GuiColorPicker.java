@@ -20,55 +20,56 @@ public class GuiColorPicker extends GuiParent {
         super(name);
         this.color = color;
         GuiRow row = new GuiRow();
+        add(row);
         
         GuiColumn sliders = new GuiColumn(GuiFlow.STACK_Y);
         row.addColumn(sliders);
         
-        GuiParent red = new GuiParent(GuiFlow.STACK_X);
+        GuiParent red = new GuiParent(GuiFlow.STACK_X).setVAlign(VAlign.CENTER);
         sliders.add(red);
-        red.add(new GuiButtonHold("r-", x -> {
+        red.add(new GuiButtonHoldSlim("r-", x -> {
             ((GuiColoredSteppedSlider) get("r")).stepDown();
             onColorChanged();
         }).setTitle(Component.literal("<")));
         red.add(new GuiColoredSteppedSlider("r", this, ColorPart.RED).setExpandableX());
-        red.add(new GuiButtonHold("r+", x -> {
+        red.add(new GuiButtonHoldSlim("r+", x -> {
             ((GuiColoredSteppedSlider) get("r")).stepUp();
             onColorChanged();
         }).setTitle(Component.literal(">")));
         
-        GuiParent green = new GuiParent(GuiFlow.STACK_X);
+        GuiParent green = new GuiParent(GuiFlow.STACK_X).setVAlign(VAlign.CENTER);
         sliders.add(green);
-        green.add(new GuiButtonHold("g-", x -> {
+        green.add(new GuiButtonHoldSlim("g-", x -> {
             ((GuiColoredSteppedSlider) get("g")).stepDown();
             onColorChanged();
         }).setTitle(Component.literal("<")));
         green.add(new GuiColoredSteppedSlider("g", this, ColorPart.GREEN).setExpandableX());
-        green.add(new GuiButtonHold("g+", x -> {
+        green.add(new GuiButtonHoldSlim("g+", x -> {
             ((GuiColoredSteppedSlider) get("g")).stepUp();
             onColorChanged();
         }).setTitle(Component.literal(">")));
         
-        GuiParent blue = new GuiParent(GuiFlow.STACK_X);
+        GuiParent blue = new GuiParent(GuiFlow.STACK_X).setVAlign(VAlign.CENTER);
         sliders.add(blue);
-        blue.add(new GuiButtonHold("b-", x -> {
+        blue.add(new GuiButtonHoldSlim("b-", x -> {
             ((GuiColoredSteppedSlider) get("b")).stepDown();
             onColorChanged();
         }).setTitle(Component.literal("<")));
         blue.add(new GuiColoredSteppedSlider("b", this, ColorPart.BLUE).setExpandableX());
-        blue.add(new GuiButtonHold("b+", x -> {
+        blue.add(new GuiButtonHoldSlim("b+", x -> {
             ((GuiColoredSteppedSlider) get("b")).stepUp();
             onColorChanged();
         }).setTitle(Component.literal(">")));
         
         if (hasAlpha) {
-            GuiParent alpha = new GuiParent(GuiFlow.STACK_X);
+            GuiParent alpha = new GuiParent(GuiFlow.STACK_X).setVAlign(VAlign.CENTER);
             sliders.add(alpha);
-            alpha.add(new GuiButtonHold("a-", x -> {
+            alpha.add(new GuiButtonHoldSlim("a-", x -> {
                 ((GuiColoredSteppedSlider) get("a")).stepDown();
                 onColorChanged();
             }).setTitle(Component.literal("<")));
             alpha.add(new GuiColoredSteppedSlider("a", this, ColorPart.ALPHA).setExpandableX());
-            alpha.add(new GuiButtonHold("a+", x -> {
+            alpha.add(new GuiButtonHoldSlim("a+", x -> {
                 ((GuiColoredSteppedSlider) get("a")).stepUp();
                 onColorChanged();
             }).setTitle(Component.literal(">")));
@@ -81,6 +82,11 @@ public class GuiColorPicker extends GuiParent {
         row.addColumn(plate);
         
         plate.add(new GuiColorPlate("plate", 20, 20, color));
+        
+        registerEventChanged(x -> {
+            if (x.control.is("r", "g", "b", "a"))
+                onColorChanged();
+        });
     }
     
     public void setColor(Color color) {
