@@ -41,7 +41,6 @@ public abstract class StyleDisplay {
     }
     
     public void render(PoseStack matrix, Rect origin, Rect rect) {
-        //render(matrix, rect.minX - origin.minX, rect.minY - origin.minY, rect.getWidth(), rect.getHeight());
         render(matrix, rect.getWidth(), rect.getHeight());
     }
     

@@ -20,22 +20,34 @@ public class DisplayColor extends StyleDisplay {
     public float blue;
     
     public DisplayColor() {
-        this(1, 1, 1, 1);
+        set(1, 1, 1, 1);
     }
     
     public DisplayColor(int color) {
-        this(ColorUtils.redF(color), ColorUtils.greenF(color), ColorUtils.blueF(color), ColorUtils.alphaF(color));
+        set(ColorUtils.redF(color), ColorUtils.greenF(color), ColorUtils.blueF(color), ColorUtils.alphaF(color));
     }
     
     public DisplayColor(float r, float g, float b, float a) {
+        set(r, g, b, a);
+    }
+    
+    public DisplayColor(Color color) {
+        set(color.getRedDecimal(), color.getGreenDecimal(), color.getBlueDecimal(), color.getAlphaDecimal());
+    }
+    
+    public void set(int color) {
+        set(ColorUtils.redF(color), ColorUtils.greenF(color), ColorUtils.blueF(color), ColorUtils.alphaF(color));
+    }
+    
+    public void set(float r, float g, float b, float a) {
         this.red = r;
         this.green = g;
         this.blue = b;
         this.alpha = a;
     }
     
-    public DisplayColor(Color color) {
-        this(color.getRedDecimal(), color.getGreenDecimal(), color.getBlueDecimal(), color.getAlphaDecimal());
+    public void set(Color color) {
+        set(color.getRedDecimal(), color.getGreenDecimal(), color.getBlueDecimal(), color.getAlphaDecimal());
     }
     
     @Override
