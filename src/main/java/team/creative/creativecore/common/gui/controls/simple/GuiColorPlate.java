@@ -6,14 +6,13 @@ import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
-import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiColorPlate extends GuiControl {
     
     private Color color;
-    private StyleDisplay colorPlate;
+    private DisplayColor colorPlate;
     
     public GuiColorPlate(String name, Color color) {
         super(name);
@@ -41,6 +40,8 @@ public class GuiColorPlate extends GuiControl {
     
     @Override
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        getStyle().transparencyBackground.render(matrix, rect.getWidth(), rect.getHeight());
+        colorPlate.set(color);
         colorPlate.render(matrix, rect.getWidth(), rect.getHeight());
     }
     
