@@ -8,7 +8,7 @@ import team.creative.creativecore.common.util.type.Color;
 public class ColorUtils {
     
     public static enum ColorPart {
-        RED(0xFF000000) {
+        RED(0xFF0000) {
             @Override
             public int get(Color color) {
                 return color.getRed();
@@ -19,7 +19,7 @@ public class ColorUtils {
                 color.setRed(value);
             }
         },
-        GREEN(0x00FF0000) {
+        GREEN(0x00FF00) {
             @Override
             public int get(Color color) {
                 return color.getGreen();
@@ -30,7 +30,7 @@ public class ColorUtils {
                 color.setGreen(value);
             }
         },
-        BLUE(0x0000FF00) {
+        BLUE(0x0000FF) {
             @Override
             public int get(Color color) {
                 return color.getBlue();
