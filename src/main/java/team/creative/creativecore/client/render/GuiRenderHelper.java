@@ -140,7 +140,7 @@ public class GuiRenderHelper {
         mc.font.drawShadow(stack, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, color);
     }
     
-    public static void gradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
+    public static void horizontalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -148,13 +148,47 @@ public class GuiRenderHelper {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        gradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
+        horizontalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
         tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }
     
-    public static void gradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
+    public static void horizontalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
+        float f = (colorA >> 24 & 255) / 255.0F;
+        float f1 = (colorA >> 16 & 255) / 255.0F;
+        float f2 = (colorA >> 8 & 255) / 255.0F;
+        float f3 = (colorA & 255) / 255.0F;
+        float f4 = (colorB >> 24 & 255) / 255.0F;
+        float f5 = (colorB >> 16 & 255) / 255.0F;
+        float f6 = (colorB >> 8 & 255) / 255.0F;
+        float f7 = (colorB & 255) / 255.0F;
+        
+        /*builder.vertex(matrix, x2, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y2, z).color(f5, f6, f7, f4).endVertex();
+        builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();*/
+        builder.vertex(matrix, x2, y, z).color(f5, f6, f7, f4).endVertex();
+        builder.vertex(matrix, x, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y2, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();
+    }
+    
+    public static void verticalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
+        RenderSystem.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        verticalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
+        tesselator.end();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
+    }
+    
+    public static void verticalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
         float f = (colorA >> 24 & 255) / 255.0F;
         float f1 = (colorA >> 16 & 255) / 255.0F;
         float f2 = (colorA >> 8 & 255) / 255.0F;
@@ -169,8 +203,8 @@ public class GuiRenderHelper {
         builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();
     }
     
-    public static void gradientMaskRect(PoseStack pose, int x, int y, int x2, int y2, int color, int mask) {
-        gradientRect(pose, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
+    public static void horizontalGradientMaskRect(PoseStack pose, int x, int y, int x2, int y2, int color, int mask) {
+        horizontalGradientRect(pose, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
     }
     
     public static void colorRect(PoseStack pose, int x, int y, int width, int height, int color) {
@@ -194,7 +228,7 @@ public class GuiRenderHelper {
         BufferUploader.drawWithShader(builder.end());
     }
     
-    private static void textureRect(PoseStack pose, int x, int y, int width, int height, int z, float u, float v, int textureWidth, int textureHeight) {
+    private static void textureRect(PoseStack pose, int x, int y, int z, int width, int height, float u, float v, int textureWidth, int textureHeight) {
         textureRect(pose, x, x + width, y, y + height, z, u, v, width, height, textureWidth, textureHeight);
     }
     
@@ -203,11 +237,7 @@ public class GuiRenderHelper {
     }
     
     public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v, float u2, float v2) {
-        textureRect(pose, x, y, 0, width, height, u, v, u2, v2, 256, 256);
-    }
-    
-    public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v, int uWidth, int vHeight) {
-        textureRect(pose, x, y, 0, width, height, u, v, uWidth, vHeight, 256, 256);
+        textureRect(pose, x, x + width, y, y + height, 0, u, v, u2, v2, 256, 256);
     }
     
     private static void textureRect(PoseStack pose, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth, int textureHeight) {
