@@ -23,6 +23,7 @@ public class GuiColorPicker extends GuiParent {
         add(row);
         
         GuiColumn sliders = new GuiColumn(GuiFlow.STACK_Y);
+        sliders.spacing = -1;
         row.addColumn(sliders);
         
         GuiParent red = new GuiParent(GuiFlow.STACK_X).setVAlign(VAlign.CENTER);
