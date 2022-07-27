@@ -121,12 +121,12 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         if (grabbedSlider) {
             int width = (int) rect.getWidth() - getContentOffset() * 2 - sliderWidth;
             
-            if (x < rect.minX + getContentOffset())
+            if (x < getContentOffset())
                 this.value = this.minValue;
-            else if (x > rect.minX + getContentOffset() + width + sliderWidth / 2)
+            else if (x > getContentOffset() + width + sliderWidth / 2)
                 this.value = this.maxValue;
             else {
-                int mouseOffsetX = (int) (x - rect.minX - getContentOffset() - sliderWidth / 2);
+                int mouseOffsetX = (int) (x - getContentOffset() - sliderWidth / 2);
                 this.value = (float) (this.minValue + (float) ((this.maxValue - this.minValue) * ((float) mouseOffsetX / (float) width)));
             }
             setValue(value);
