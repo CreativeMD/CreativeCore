@@ -18,16 +18,34 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.Mth;
 import net.minecraft.util.StringDecomposer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-import team.creative.creativecore.common.util.text.AdvancedComponent;
+import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
+import team.creative.creativecore.common.util.text.content.AdvancedContent;
+import team.creative.creativecore.common.util.text.content.AdvancedContentConsumer;
+import team.creative.creativecore.common.util.text.content.AdvancedFormattedText;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 
 public class CompiledText {
+    
+    private static int width(FormattedText text) {
+        if (text instanceof AdvancedFormattedText adv)
+            return adv.width(AdvancedComponentHelper.SPLITTER.width, Style.EMPTY);
+        return Mth.ceil(AdvancedComponentHelper.SPLITTER.stringWidth(text));
+    }
+    
+    private static int lineHeight(FormattedText text) {
+        if (text instanceof AdvancedContent adv)
+            return adv.height();
+        if (text instanceof Component comp && comp.getContents() instanceof AdvancedContent adv)
+            return adv.height();
+        return AdvancedComponentHelper.SPLITTER.lineHeight;
+    }
     
     private int maxWidth;
     private int maxHeight;
@@ -65,7 +83,7 @@ public class CompiledText {
     }
     
     public void setText(Component component) {
-        setText(new SingletonList<Component>(component));
+        setText(new SingletonList<>(component));
     }
     
     public void setText(List<Component> components) {
@@ -186,33 +204,26 @@ public class CompiledText {
         
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
-        public void render(PoseStack stack) {
+        public void render(PoseStack pose) {
             Font font = Minecraft.getInstance().font;
             int xOffset = 0;
             MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
             for (FormattedText text : components) {
-                int height;
-                int width;
-                if (text instanceof AdvancedComponent) {
-                    width = ((AdvancedComponent) text).getWidth(font);
-                    height = ((AdvancedComponent) text).getHeight(font);
-                } else {
-                    width = font.width(text);
-                    height = font.lineHeight;
-                }
+                int height = lineHeight(text);
+                int width = width(text);
                 
                 int yOffset = 0;
                 if (height < this.height)
                     yOffset = (this.height - height) / 2;
-                stack.pushPose();
-                stack.translate(xOffset, yOffset, 0);
-                if (text instanceof AdvancedComponent)
-                    ((AdvancedComponent) text).render(stack, font, defaultColor);
+                pose.pushPose();
+                pose.translate(xOffset, yOffset, 0);
+                if (text instanceof AdvancedFormattedText adv)
+                    adv.render(pose, defaultColor);
                 else {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, stack.last().pose(), renderType, false, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), renderType, false, 0, 15728880);
                     renderType.endBatch();
                 }
-                stack.popPose();
+                pose.popPose();
                 xOffset += width;
             }
         }
@@ -225,49 +236,24 @@ public class CompiledText {
         }
         
         public FormattedText add(FormattedText component) {
-            Font font = Minecraft.getInstance().font;
             int remainingWidth = maxWidth - width;
-            if (component instanceof AdvancedComponent) {
-                AdvancedComponent advanced = (AdvancedComponent) component;
-                if (advanced.isEmpty())
-                    return null;
-                
-                int textWidth = advanced.getWidth(font);
-                if (remainingWidth > textWidth) {
-                    components.add(advanced);
-                    updateDimension(width + textWidth, advanced.getHeight(font));
-                    return null;
-                } else if (advanced.canSplit()) {
-                    List<AdvancedComponent> remaining = advanced.split(remainingWidth, width == 0);
-                    AdvancedComponent toAdd = remaining.remove(0);
-                    components.add(toAdd);
-                    updateDimension(width + toAdd.getWidth(font), toAdd.getHeight(font));
-                    if (remaining.isEmpty())
-                        return null;
-                    else
-                        return remaining.get(0);
-                } else if (width == 0) {
-                    components.add(advanced);
-                    updateDimension(width + textWidth, advanced.getHeight(font));
-                    return null;
-                } else
-                    return advanced;
-            }
-            
-            int textWidth = font.width(component);
+            int textWidth = width(component);
             if (remainingWidth >= textWidth) {
-                components.add(component);
-                updateDimension(width + textWidth, font.lineHeight);
+                if (component instanceof Component comp && comp.getContents() instanceof AdvancedContent)
+                    components.add((FormattedText) comp.getContents());
+                else
+                    components.add(component);
+                updateDimension(width + textWidth, lineHeight(component));
                 return null;
             } else {
                 FormattedTextSplit split = splitByWidth(component, remainingWidth, Style.EMPTY, width == 0);
                 if (split != null && (split.head != null || width == 0)) {
                     if (split.head != null) {
-                        updateDimension(width + font.width(split.head), font.lineHeight);
+                        updateDimension(width + width(split.head), lineHeight(split.head));
                         components.add(split.head);
                         return split.tail;
                     }
-                    updateDimension(width + font.width(split.tail), font.lineHeight);
+                    updateDimension(width + width(split.tail), lineHeight(split.tail));
                     components.add(split.tail);
                     return null;
                 } else
@@ -280,39 +266,79 @@ public class CompiledText {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public FormattedTextSplit splitByWidth(FormattedText text, int width, Style style, boolean force) {
-        Font font = Minecraft.getInstance().font;
-        final WidthLimitedCharSink charSink = new WidthLimitedCharSink(width, font.getSplitter());
+        final WidthLimitedCharSink charSink = new WidthLimitedCharSink(width, Minecraft.getInstance().font.getSplitter());
         ComponentCollector head = new ComponentCollector();
         ComponentCollector tail = new ComponentCollector();
-        text.visit(new FormattedText.StyledContentConsumer<FormattedText>() {
-            @Override
-            public Optional<FormattedText> accept(Style style, String text) {
-                charSink.resetPosition();
-                if (!StringDecomposer.iterateFormatted(text, style, charSink)) {
-                    Linebreaker breaker = charSink.lastBreaker();
-                    if (force || breaker != null) {
-                        String sHead;
-                        String sTail;
-                        if (breaker != null) {
-                            int pos = charSink.lastBreakerPos();
-                            sHead = text.substring(0, pos + (breaker.includeChar && breaker.head ? 1 : 0));
-                            sTail = text.substring(pos + (breaker.includeChar && !breaker.head ? 0 : 1));
-                        } else {
-                            sHead = text.substring(0, charSink.getPosition());
-                            sTail = text.substring(charSink.getPosition());
-                        }
-                        if (!sHead.isEmpty())
-                            head.append(FormattedText.of(sHead, style));
-                        if (!sTail.isEmpty())
-                            tail.append(FormattedText.of(sTail, style));
-                    } else
-                        tail.append(FormattedText.of(text, style));
-                } else if (!text.isEmpty())
-                    head.append(FormattedText.of(text, style));
-                return Optional.empty();
-            }
-        }, style).orElse(null);
         
+        if (text instanceof Component comp) {
+            AdvancedComponentHelper.visit(comp, new AdvancedContentConsumer() {
+                
+                @Override
+                public Optional accept(Style style, AdvancedContent content) {
+                    if (charSink.accept(style, content) || force)
+                        head.append(content.asText());
+                    else
+                        tail.append(content.asText());
+                    return Optional.empty();
+                }
+                
+                @Override
+                public Optional accept(Style style, String text) {
+                    charSink.resetPosition();
+                    if (!StringDecomposer.iterateFormatted(text, style, charSink)) {
+                        Linebreaker breaker = charSink.lastBreaker();
+                        if (force || breaker != null) {
+                            String sHead;
+                            String sTail;
+                            if (breaker != null) {
+                                int pos = charSink.lastBreakerPos();
+                                sHead = text.substring(0, pos + (breaker.includeChar && breaker.head ? 1 : 0));
+                                sTail = text.substring(pos + (breaker.includeChar && !breaker.head ? 0 : 1));
+                            } else {
+                                sHead = text.substring(0, charSink.getPosition());
+                                sTail = text.substring(charSink.getPosition());
+                            }
+                            if (!sHead.isEmpty())
+                                head.append(FormattedText.of(sHead, style));
+                            if (!sTail.isEmpty())
+                                tail.append(FormattedText.of(sTail, style));
+                        } else
+                            tail.append(FormattedText.of(text, style));
+                    } else if (!text.isEmpty())
+                        head.append(FormattedText.of(text, style));
+                    return Optional.empty();
+                }
+            }, style);
+        } else {
+            text.visit(new FormattedText.StyledContentConsumer<FormattedText>() {
+                @Override
+                public Optional<FormattedText> accept(Style style, String text) {
+                    charSink.resetPosition();
+                    if (!StringDecomposer.iterateFormatted(text, style, charSink)) {
+                        Linebreaker breaker = charSink.lastBreaker();
+                        if (force || breaker != null) {
+                            String sHead;
+                            String sTail;
+                            if (breaker != null) {
+                                int pos = charSink.lastBreakerPos();
+                                sHead = text.substring(0, pos + (breaker.includeChar && breaker.head ? 1 : 0));
+                                sTail = text.substring(pos + (breaker.includeChar && !breaker.head ? 0 : 1));
+                            } else {
+                                sHead = text.substring(0, charSink.getPosition());
+                                sTail = text.substring(charSink.getPosition());
+                            }
+                            if (!sHead.isEmpty())
+                                head.append(FormattedText.of(sHead, style));
+                            if (!sTail.isEmpty())
+                                tail.append(FormattedText.of(sTail, style));
+                        } else
+                            tail.append(FormattedText.of(text, style));
+                    } else if (!text.isEmpty())
+                        head.append(FormattedText.of(text, style));
+                    return Optional.empty();
+                }
+            }, style).orElse(null);
+        }
         return new FormattedTextSplit(head, tail);
     }
     
@@ -342,29 +368,12 @@ public class CompiledText {
     @OnlyIn(Dist.CLIENT)
     private int calculateWidth(int width, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
-            int result = calculateWidth(component);
+            int result = width(component);
             if (newLine)
                 width = Math.max(width, result);
             else
                 width += result;
         }
-        return width;
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    private int calculateWidth(FormattedText component) {
-        Font font = Minecraft.getInstance().font;
-        int width = 0;
-        if (component instanceof AdvancedComponent) {
-            AdvancedComponent advanced = (AdvancedComponent) component;
-            if (!advanced.isEmpty())
-                width += advanced.getWidth(font);
-        } else
-            width += font.width(component);
-        
-        if (component instanceof Component && !((Component) component).getSiblings().isEmpty())
-            width += calculateWidth(0, false, ((Component) component).getSiblings());
         return width;
     }
     

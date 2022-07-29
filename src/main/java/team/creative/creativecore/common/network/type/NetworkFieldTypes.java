@@ -50,7 +50,7 @@ import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
-import team.creative.creativecore.common.util.text.AdvancedComponent;
+import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
 
 public class NetworkFieldTypes {
     
@@ -618,7 +618,7 @@ public class NetworkFieldTypes {
             private static final Gson GSON = Util.make(() -> {
                 GsonBuilder gsonbuilder = new GsonBuilder();
                 gsonbuilder.disableHtmlEscaping();
-                gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponent.Serializer());
+                gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponentHelper.Serializer());
                 gsonbuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
                 gsonbuilder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
                 return gsonbuilder.create();
