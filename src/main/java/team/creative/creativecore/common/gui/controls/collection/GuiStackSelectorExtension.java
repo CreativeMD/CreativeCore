@@ -9,8 +9,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.controls.inventory.GuiInventoryGrid;
-import team.creative.creativecore.common.gui.controls.inventory.GuiSlot;
+import team.creative.creativecore.common.gui.controls.inventory.GuiInventoryGridPreview;
+import team.creative.creativecore.common.gui.controls.inventory.GuiSlotViewer;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
@@ -33,8 +33,8 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         });
         registerEventClick((event) -> {
-            if (event.control instanceof GuiSlot && event.control.isParent(this)) {
-                comboBox.setSelected(((GuiSlot) event.control).getStack());
+            if (event.control instanceof GuiSlotViewer && event.control.isParent(this)) {
+                comboBox.setSelected(((GuiSlotViewer) event.control).getStack());
                 playSound(SoundEvents.UI_BUTTON_CLICK);
                 comboBox.closeBox();
             }
@@ -106,7 +106,7 @@ public class GuiStackSelectorExtension extends GuiScrollY {
                 container.setItem(i, stack);
                 i++;
             }
-            add(new GuiInventoryGrid(entry.getKey(), container));
+            add(new GuiInventoryGridPreview(entry.getKey(), container));
         }
         if (hasGui())
             reflowInternal();
