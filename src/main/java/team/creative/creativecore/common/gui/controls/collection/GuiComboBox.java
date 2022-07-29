@@ -4,7 +4,7 @@ import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -99,8 +99,7 @@ public class GuiComboBox extends GuiLabel {
     
     public void openBox(Rect rect) {
         this.extension = createBox();
-        GuiLayer layer = getLayer();
-        GuiChildControl child = layer.addHover(extension);
+        GuiChildControl child = ((GuiParent) getParent()).addHover(extension);
         extension.init();
         child.setX((int) rect.minX);
         child.setY((int) rect.maxY);
@@ -110,8 +109,11 @@ public class GuiComboBox extends GuiLabel {
         child.setHeight(child.getPreferredHeight());
         child.flowY();
         
-        if (child.getY() + child.getHeight() > layer.getHeight() && rect.minY >= child.getHeight())
-            child.setY(child.getY() - (int) rect.getHeight() + child.getHeight());
+        Rect absolute = toScreenRect(child.rect.copy());
+        Rect screen = Rect.getScreenRect();
+        
+        if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
+            child.setY(child.getY() - ((int) rect.getHeight() + child.getHeight()));
     }
     
     protected GuiComboBoxExtension createBox() {

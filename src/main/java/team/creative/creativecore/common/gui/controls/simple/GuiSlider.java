@@ -162,6 +162,11 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
+    public Rect toScreenRect(GuiControl control, Rect rect) {
+        return getParent().toScreenRect(this, rect);
+    }
+    
+    @Override
     public void init() {}
     
     @Override

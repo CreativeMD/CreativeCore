@@ -175,6 +175,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return controls.remove(control) || hoverControls.remove(control);
     }
     
+    public GuiChildControl find(GuiControl control) {
+        for (GuiChildControl child : controls)
+            if (child.control == control)
+                return child;
+            
+        for (GuiChildControl child : hoverControls)
+            if (child.control == control)
+                return child;
+        return null;
+    }
+    
     public GuiChildControl remove(GuiControl control) {
         for (int i = 0; i < controls.size(); i++) {
             GuiChildControl child = controls.get(i);
@@ -328,6 +339,15 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     @Override
     public GuiLayer openLayer(LayerOpenPacket packet) {
         return getParent().openLayer(packet);
+    }
+    
+    @Override
+    public Rect toScreenRect(GuiControl control, Rect rect) {
+        GuiChildControl child = find(control);
+        if (child == null)
+            return rect;
+        rect.move(child.rect.minX, child.rect.minY);
+        return getParent().toScreenRect(this, rect);
     }
     
     @Override

@@ -224,6 +224,12 @@ public abstract class GuiControl {
         return -1;
     }
     
+    public Rect toScreenRect(Rect rect) {
+        if (getParent() instanceof GuiParent parent)
+            return parent.getParent().toScreenRect(parent, rect);
+        return getParent().toScreenRect(this, rect);
+    }
+    
     // INTERACTION
     
     public boolean testForDoubleClick(Rect rect, double x, double y) {

@@ -46,6 +46,13 @@ public class Rect {
         return null;
     }
     
+    public void move(double x, double y) {
+        this.minX += x;
+        this.maxX += x;
+        this.minY += y;
+        this.maxY += y;
+    }
+    
     public void shrink(double shrink) {
         minX += shrink;
         minY += shrink;
