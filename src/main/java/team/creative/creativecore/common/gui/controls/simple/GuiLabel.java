@@ -29,6 +29,11 @@ public class GuiLabel extends GuiControl {
         super(name, width, height);
     }
     
+    public GuiLabel setDefaultColor(int color) {
+        text.defaultColor = color;
+        return this;
+    }
+    
     public GuiLabel setAlign(Align align) {
         text.alignment = align;
         return this;
