@@ -321,6 +321,12 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
+    public StyleDisplay getBackground(GuiStyle style, StyleDisplay display) {
+        return display;
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
@@ -335,7 +341,8 @@ public abstract class GuiControl {
         
         int borderWidth = style.getBorder(formatting.border);
         controlRect.shrink(borderWidth);
-        style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)).render(pose, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
+        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)))
+                .render(pose, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
         
         renderContent(pose, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
         
