@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
@@ -18,19 +19,20 @@ public class GuiCounterDecimal extends GuiParent {
         this.min = min;
         this.max = max;
         flow = GuiFlow.STACK_X;
+        valign = VAlign.STRETCH;
         spacing = 0;
-        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max), 20, 8).setNumbersOnly();
-        add(textfield);
+        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max), 20, 8).setFloatOnly();
+        add(textfield.setExpandableX());
         GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
         add(buttons);
-        buttons.add(new GuiButton("-", x -> {
-            textfield.setText("" + stepDown(textfield.parseFloat()));
-            raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
-        }).setTranslate("gui.minus"));
-        buttons.add(new GuiButton("+", x -> {
+        buttons.add(new GuiButtonHoldSlim("+", x -> {
             textfield.setText("" + stepUp(textfield.parseFloat()));
             raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
         }).setTranslate("gui.plus"));
+        buttons.add(new GuiButtonHoldSlim("-", x -> {
+            textfield.setText("" + stepDown(textfield.parseFloat()));
+            raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
+        }).setTranslate("gui.minus"));
         
     }
     
@@ -45,6 +47,11 @@ public class GuiCounterDecimal extends GuiParent {
             super.raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
         else
             super.raiseEvent(event);
+    }
+    
+    @Override
+    public boolean isExpandableX() {
+        return expandableX;
     }
     
     public float stepUp(float value) {
