@@ -38,7 +38,6 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     }
     
     @Override
-    @SuppressWarnings("deprecation")
     public boolean is(ItemStack stack) {
         return stack.getItem().builtInRegistryHolder().is(tag);
     }
@@ -50,7 +49,6 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        @SuppressWarnings("deprecation")
         Optional<Named<Item>> optional = Registry.ITEM.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;

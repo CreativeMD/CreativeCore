@@ -22,11 +22,17 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkConstants;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
 public class CreativeForgeLoader implements ICreativeLoader {
+    
+    @Override
+    public Side getOverallSide() {
+        return FMLEnvironment.dist.isClient() ? Side.CLIENT : Side.SERVER;
+    }
     
     @Override
     public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest) {

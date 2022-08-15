@@ -6,7 +6,6 @@ import team.creative.creativecore.client.render.box.RenderBox;
 
 public class CreativeBakedQuad extends BakedQuad {
     
-    public static final ThreadLocal<CreativeBakedQuad> lastRenderedQuad = new ThreadLocal<>();
     public final RenderBox cube;
     public boolean shouldOverrideColor;
     
@@ -25,13 +24,6 @@ public class CreativeBakedQuad extends BakedQuad {
         for (int i = 0; i < array.length; i++)
             newarray[i] = array[i];
         return newarray;
-    }
-    
-    @Override
-    public void pipe(net.minecraftforge.client.model.pipeline.IVertexConsumer consumer) {
-        lastRenderedQuad.set(this);
-        net.minecraftforge.client.model.pipeline.LightUtil.putBakedQuad(consumer, this);
-        lastRenderedQuad.set(null);
     }
     
 }

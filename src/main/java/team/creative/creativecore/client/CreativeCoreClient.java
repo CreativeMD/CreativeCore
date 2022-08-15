@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandSourceStack;
@@ -15,7 +16,6 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.ConfigGuiHandler.ConfigGuiFactory;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
@@ -27,9 +27,9 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
+import team.creative.creativecore.client.render.model.CreativeBlockModel;
+import team.creative.creativecore.client.render.model.CreativeItemModel;
 import team.creative.creativecore.client.render.model.CreativeModelLoader;
-import team.creative.creativecore.client.render.model.CreativeRenderBlock;
-import team.creative.creativecore.client.render.model.CreativeRenderItem;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -39,14 +39,14 @@ import team.creative.creativecore.common.gui.integration.ContainerScreenIntegrat
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.util.registry.FilteredHandlerRegistry;
+import team.creative.creativecore.common.util.registry.LocatedHandlerRegistry;
 
 public class CreativeCoreClient {
     
     private static Minecraft mc = Minecraft.getInstance();
     
-    public static final FilteredHandlerRegistry<Item, CreativeRenderItem> RENDERED_ITEMS = new FilteredHandlerRegistry<>(null);
-    public static final FilteredHandlerRegistry<Block, CreativeRenderBlock> RENDERED_BLOCKS = new FilteredHandlerRegistry<>(null);
+    public static final LocatedHandlerRegistry<CreativeBlockModel> BLOCK_MODEL_TYPES = new LocatedHandlerRegistry<>(null);
+    public static final LocatedHandlerRegistry<CreativeItemModel> ITEM_MODEL_TYPES = new LocatedHandlerRegistry<>(null);
     
     private static final ItemColor ITEM_COLOR = (stack, tint) -> tint;
     
@@ -59,24 +59,22 @@ public class CreativeCoreClient {
         }));
     }
     
-    public static void registerBlocks(CreativeRenderBlock renderer, Block... blocks) {
-        for (int i = 0; i < blocks.length; i++)
-            RENDERED_BLOCKS.register(blocks[i], renderer);
+    public static void registerBlockModel(ResourceLocation location, CreativeBlockModel renderer) {
+        BLOCK_MODEL_TYPES.register(location, renderer);
     }
     
-    public static void registerBlock(CreativeRenderBlock renderer, Block block) {
-        RENDERED_BLOCKS.register(block, renderer);
+    public static void registerItemModel(ResourceLocation location, CreativeItemModel renderer) {
+        ITEM_MODEL_TYPES.register(location, renderer);
     }
     
-    public static void registerItem(CreativeRenderItem renderer, Item item) {
-        RENDERED_ITEMS.register(item, renderer);
-        mc.getItemColors().register(ITEM_COLOR, item);
+    public static void registerItemColor(ItemColors colors, Item item) {
+        colors.register(ITEM_COLOR, item);
     }
     
     public static float getDeltaFrameTime() {
         if (mc.isPaused())
             return 1.0F;
-        return mc.getDeltaFrameTime();
+        return mc.getFrameTime();
     }
     
     @SubscribeEvent
@@ -106,8 +104,6 @@ public class CreativeCoreClient {
             @Override
             protected void apply(Object p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
                 GuiStyle.reload();
-                for (CreativeRenderItem handler : RENDERED_ITEMS.handlers())
-                    handler.reload();
             }
         });
         

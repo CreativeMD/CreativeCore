@@ -5,6 +5,8 @@ import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
@@ -109,6 +111,14 @@ public class AlignedBox {
         return new AABB(minX + pos.getX(), minY + pos.getY(), minZ + pos.getZ(), maxX + pos.getX(), maxY + pos.getY(), maxZ + pos.getZ());
     }
     
+    public VoxelShape voxelShape() {
+        return Shapes.box(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+    
+    public VoxelShape voxelShape(BlockPos pos) {
+        return Shapes.box(minX + pos.getX(), minY + pos.getY(), minZ + pos.getZ(), maxX + pos.getX(), maxY + pos.getY(), maxZ + pos.getZ());
+    }
+    
     public void rotate(Rotation rotation, Vec3f center) {
         Vec3f low = new Vec3f(minX, minY, minZ);
         Vec3f high = new Vec3f(maxX, maxY, maxZ);
@@ -156,83 +166,83 @@ public class AlignedBox {
     
     public float get(Facing facing) {
         switch (facing) {
-        case EAST:
-            return maxX;
-        case WEST:
-            return minX;
-        case UP:
-            return maxY;
-        case DOWN:
-            return minY;
-        case SOUTH:
-            return maxZ;
-        case NORTH:
-            return minZ;
-        
+            case EAST:
+                return maxX;
+            case WEST:
+                return minX;
+            case UP:
+                return maxY;
+            case DOWN:
+                return minY;
+            case SOUTH:
+                return maxZ;
+            case NORTH:
+                return minZ;
+            
         }
         return 0;
     }
     
     public float getSize(Axis axis) {
         switch (axis) {
-        case X:
-            return maxX - minX;
-        case Y:
-            return maxY - minY;
-        case Z:
-            return maxZ - minZ;
+            case X:
+                return maxX - minX;
+            case Y:
+                return maxY - minY;
+            case Z:
+                return maxZ - minZ;
         }
         return 0;
     }
     
     public void setMin(Axis axis, float value) {
         switch (axis) {
-        case X:
-            minX = value;
-            break;
-        case Y:
-            minY = value;
-            break;
-        case Z:
-            minZ = value;
-            break;
+            case X:
+                minX = value;
+                break;
+            case Y:
+                minY = value;
+                break;
+            case Z:
+                minZ = value;
+                break;
         }
     }
     
     public float getMin(Axis axis) {
         switch (axis) {
-        case X:
-            return minX;
-        case Y:
-            return minY;
-        case Z:
-            return minZ;
+            case X:
+                return minX;
+            case Y:
+                return minY;
+            case Z:
+                return minZ;
         }
         return 0;
     }
     
     public void setMax(Axis axis, float value) {
         switch (axis) {
-        case X:
-            maxX = value;
-            break;
-        case Y:
-            maxY = value;
-            break;
-        case Z:
-            maxZ = value;
-            break;
+            case X:
+                maxX = value;
+                break;
+            case Y:
+                maxY = value;
+                break;
+            case Z:
+                maxZ = value;
+                break;
         }
     }
     
     public float getMax(Axis axis) {
         switch (axis) {
-        case X:
-            return maxX;
-        case Y:
-            return maxY;
-        case Z:
-            return maxZ;
+            case X:
+                return maxX;
+            case Y:
+                return maxY;
+            case Z:
+                return maxZ;
         }
         return 0;
     }

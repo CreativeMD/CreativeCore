@@ -105,7 +105,10 @@ public interface IGuiIntegratedParent extends IGuiParent {
     public default GuiControl get(String control) {
         for (GuiLayer layer : getLayers())
             if (control.startsWith(layer.getNestedName()))
-                return layer.get(control.substring(layer.getNestedName().length()));
+                if (control.equals(layer.getNestedName()))
+                    return layer;
+                else
+                    return layer.get(control.substring(layer.getNestedName().length() + 1));
         return null;
     }
 }

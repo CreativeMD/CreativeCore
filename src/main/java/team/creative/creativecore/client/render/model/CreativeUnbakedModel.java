@@ -17,14 +17,19 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
+import team.creative.creativecore.client.CreativeCoreClient;
 
-public class CreativeUnbakedModel implements IModelGeometry<CreativeUnbakedModel> {
-    
-    public static final CreativeUnbakedModel INSTANCE = new CreativeUnbakedModel();
+public record CreativeUnbakedModel(ResourceLocation item, ResourceLocation block) implements IModelGeometry<CreativeUnbakedModel> {
     
     @Override
     public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
-        return CreativeBakedModel.INSTANCE;
+        CreativeBlockModel renderBlock = CreativeCoreClient.BLOCK_MODEL_TYPES.get(block);
+        CreativeItemModel renderItem = CreativeCoreClient.ITEM_MODEL_TYPES.get(item);
+        if (renderBlock == null && renderItem == null)
+            throw new RuntimeException("Could not find renderer " + block + ", " + item + "");
+        if (renderItem != null)
+            return renderItem.create(renderBlock);
+        return CreativeItemBoxModel.EMPTY.create(renderBlock);
     }
     
     @Override

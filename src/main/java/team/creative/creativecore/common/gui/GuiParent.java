@@ -132,6 +132,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return get(name, hoverControls);
     }
     
+    public <T extends GuiControl> T get(String name, Class<T> clazz) {
+        GuiControl result = get(name);
+        if (clazz.isInstance(result))
+            return (T) result;
+        return null;
+    }
+    
     public boolean has(String name) {
         return get(name) != null;
     }

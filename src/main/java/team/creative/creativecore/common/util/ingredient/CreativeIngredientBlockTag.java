@@ -38,7 +38,6 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     }
     
     @Override
-    @SuppressWarnings("deprecation")
     public boolean is(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
         if (block != null)
@@ -53,7 +52,6 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        @SuppressWarnings("deprecation")
         Optional<Named<Block>> optional = Registry.BLOCK.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;
