@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.math.base;
 
+import com.mojang.math.Vector3f;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
@@ -24,6 +26,11 @@ public enum Facing {
             return bb.minY;
         }
         
+        @Override
+        public Vector3f rotation() {
+            return Vector3f.YN;
+        }
+        
     },
     UP(Axis.Y, true, new Vec3i(0, 1, 0), -1) {
         
@@ -40,6 +47,11 @@ public enum Facing {
         @Override
         public double get(AABB bb) {
             return bb.maxY;
+        }
+        
+        @Override
+        public Vector3f rotation() {
+            return Vector3f.YP;
         }
         
     },
@@ -60,6 +72,11 @@ public enum Facing {
             return bb.minZ;
         }
         
+        @Override
+        public Vector3f rotation() {
+            return Vector3f.ZN;
+        }
+        
     },
     SOUTH(Axis.Z, true, new Vec3i(0, 0, 1), 0) {
         
@@ -76,6 +93,11 @@ public enum Facing {
         @Override
         public double get(AABB bb) {
             return bb.maxZ;
+        }
+        
+        @Override
+        public Vector3f rotation() {
+            return Vector3f.ZP;
         }
         
     },
@@ -96,6 +118,11 @@ public enum Facing {
             return bb.minX;
         }
         
+        @Override
+        public Vector3f rotation() {
+            return Vector3f.XN;
+        }
+        
     },
     EAST(Axis.X, true, new Vec3i(1, 0, 0), 3) {
         
@@ -112,6 +139,11 @@ public enum Facing {
         @Override
         public double get(AABB bb) {
             return bb.maxX;
+        }
+        
+        @Override
+        public Vector3f rotation() {
+            return Vector3f.XP;
         }
     };
     
@@ -276,5 +308,7 @@ public enum Facing {
     }
     
     public abstract double get(AABB bb);
+    
+    public abstract Vector3f rotation();
     
 }
