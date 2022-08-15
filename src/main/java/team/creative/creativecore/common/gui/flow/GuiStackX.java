@@ -5,6 +5,7 @@ import java.util.List;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.VAlign;
+import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.type.list.MarkIterator;
 import team.creative.creativecore.common.util.type.list.MarkList;
 
@@ -65,6 +66,22 @@ public class GuiStackX extends GuiFlow {
                         child.setWidth(0);
                 }
                 
+                while (available > 0 && !list.isEmpty()) { // add width to remaining controls which are smaller than their preferred width
+                    int average = (int) Math.ceil((double) available / list.remaing());
+                    for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                        GuiChildControl child = itr.next();
+                        int toAdd = Maths.min(average, available, child.getPreferredWidth() - child.getWidth());
+                        if (toAdd <= 0) {
+                            itr.mark();
+                            continue;
+                        }
+                        available -= child.addWidth(toAdd);
+                        if (child.isMaxWidth())
+                            itr.mark();
+                    }
+                }
+                
+                list.clear();
                 while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                     int average = (int) Math.ceil((double) available / list.remaing());
                     for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
