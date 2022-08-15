@@ -22,7 +22,7 @@ public class LanguageUtils {
         String result = translate(name);
         if (name.equals(result))
             return defaultString;
-        return name;
+        return result;
     }
     
     public static String translate(String name, Object... args) {
