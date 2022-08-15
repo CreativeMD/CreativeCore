@@ -68,7 +68,10 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             textfield = createTextfield(rect);
             textfield.focus();
             textfield.setText(getTextfieldValue());
+            textfield.setCursorPositionEnd();
             textfield.setParent(this);
+            int width = (int) rect.getWidth();
+            textfield.flowX(width, width);
             return true;
         }
         return false;
