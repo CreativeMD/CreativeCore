@@ -201,7 +201,7 @@ public class GuiRenderHelper {
     }
     
     public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v, float u2, float v2) {
-        textureRect(pose, x, y, 0, width, height, u, v, u2, v2, 256, 256);
+        textureRect(pose, x, x + width, y, y + height, 0, u, v, u2, v2, 256, 256);
     }
     
     private static void textureRect(PoseStack pose, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth, int textureHeight) {
