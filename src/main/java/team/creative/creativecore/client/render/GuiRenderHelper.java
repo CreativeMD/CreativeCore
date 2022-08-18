@@ -214,14 +214,14 @@ public class GuiRenderHelper {
     
     private static void drawTextureRect(Matrix4f matrix, int x, int x2, int y, int y2, int z, float u, float u2, float v, float v2) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferbuilder.vertex(matrix, x, y2, z).uv(u, v2).endVertex();
         bufferbuilder.vertex(matrix, x2, y2, z).uv(u2, v2).endVertex();
         bufferbuilder.vertex(matrix, x2, y, z).uv(u2, v).endVertex();
         bufferbuilder.vertex(matrix, x, y, z).uv(u, v).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
+        tesselator.end();
     }
     
 }

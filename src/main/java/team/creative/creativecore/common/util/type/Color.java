@@ -3,7 +3,11 @@ package team.creative.creativecore.common.util.type;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Vector3d;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.Vec3i;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
@@ -20,13 +24,13 @@ public class Color {
     public static final Color MAGENTA = new Color(ColorUtils.MAGENTA);
     public static final Color BLACK = new Color(ColorUtils.BLACK);
     
-    protected byte red;
-    protected byte green;
-    protected byte blue;
-    protected byte alpha;
+    protected short red;
+    protected short green;
+    protected short blue;
+    protected short alpha;
     
     public Color() {
-        this((byte) 255, (byte) 255, (byte) 255, (byte) 255);
+        this((short) 255, (short) 255, (short) 255, (short) 255);
     }
     
     public Color(Color color) {
@@ -34,10 +38,10 @@ public class Color {
     }
     
     public Color(int color) {
-        this.alpha = (byte) (color >> 24 & 255);
-        this.red = (byte) (color >> 16 & 255);
-        this.green = (byte) (color >> 8 & 255);
-        this.blue = (byte) (color & 255);
+        this.alpha = (short) (color >> 24 & 255);
+        this.red = (short) (color >> 16 & 255);
+        this.green = (short) ((color >> 8 & 255));
+        this.blue = (short) (color & 255);
     }
     
     public Color(float r, float g, float b) {
@@ -48,8 +52,8 @@ public class Color {
         this(r, g, b, 255);
     }
     
-    public Color(byte r, byte g, byte b) {
-        this(r, g, b, (byte) 255);
+    public Color(short r, short g, short b) {
+        this(r, g, b, (short) 255);
     }
     
     public Color(float r, float g, float b, float a) {
@@ -57,13 +61,13 @@ public class Color {
     }
     
     public Color(int r, int g, int b, int a) {
-        this.red = (byte) r;
-        this.green = (byte) g;
-        this.blue = (byte) b;
-        this.alpha = (byte) a;
+        this.red = (short) r;
+        this.green = (short) g;
+        this.blue = (short) b;
+        this.alpha = (short) a;
     }
     
-    public Color(byte r, byte g, byte b, byte a) {
+    public Color(short r, short g, short b, short a) {
         this.red = r;
         this.green = g;
         this.blue = b;
@@ -71,17 +75,17 @@ public class Color {
     }
     
     public Color(Vec3i vec) {
-        this.red = (byte) vec.getX();
-        this.green = (byte) vec.getY();
-        this.blue = (byte) vec.getZ();
-        this.alpha = (byte) 255;
+        this.red = (short) vec.getX();
+        this.green = (short) vec.getY();
+        this.blue = (short) vec.getZ();
+        this.alpha = (short) 255;
     }
     
     public Color(Vector3d vec) {
-        this.red = (byte) (vec.x * 255);
-        this.green = (byte) (vec.y * 255);
-        this.blue = (byte) (vec.z * 255);
-        this.alpha = (byte) 255;
+        this.red = (short) (vec.x * 255);
+        this.green = (short) (vec.y * 255);
+        this.blue = (short) (vec.z * 255);
+        this.alpha = (short) 255;
     }
     
     public void set(Color color) {
@@ -92,10 +96,10 @@ public class Color {
     }
     
     public void set(ColorType type, int value) {
-        set(type, (byte) value);
+        set(type, (short) value);
     }
     
-    public void set(ColorType type, byte value) {
+    public void set(ColorType type, short value) {
         switch (type) {
             case ALPHA:
                 alpha = value;
@@ -113,38 +117,38 @@ public class Color {
     }
     
     public void setAlpha(int a) {
-        this.alpha = (byte) a;
+        this.alpha = (short) a;
     }
     
-    public void setAlpha(byte a) {
+    public void setAlpha(short a) {
         this.alpha = a;
     }
     
     public void setRed(int r) {
-        this.red = (byte) r;
+        this.red = (short) r;
     }
     
-    public void setRed(byte r) {
+    public void setRed(short r) {
         this.red = r;
     }
     
     public void setGreen(int g) {
-        this.green = (byte) g;
+        this.green = (short) g;
     }
     
-    public void setGreen(byte g) {
+    public void setGreen(short g) {
         this.green = g;
     }
     
     public void setBlue(int b) {
-        this.blue = (byte) b;
+        this.blue = (short) b;
     }
     
-    public void setBlue(byte b) {
+    public void setBlue(short b) {
         this.blue = b;
     }
     
-    public byte get(ColorType type) {
+    public short get(ColorType type) {
         switch (type) {
             case ALPHA:
                 return alpha;
@@ -159,19 +163,19 @@ public class Color {
         }
     }
     
-    public byte getAlpha() {
+    public short getAlpha() {
         return alpha;
     }
     
-    public byte getRed() {
+    public short getRed() {
         return red;
     }
     
-    public byte getGreen() {
+    public short getGreen() {
         return green;
     }
     
-    public byte getBlue() {
+    public short getBlue() {
         return blue;
     }
     
@@ -237,12 +241,14 @@ public class Color {
             ratio = 0f;
         float iRatio = 1.0f - ratio;
         
-        this.alpha = (byte) ((alpha * iRatio) + (color.alpha * ratio));
-        this.red = (byte) ((red * iRatio) + (color.red * ratio));
-        this.green = (byte) ((green * iRatio) + (color.green * ratio));
-        this.blue = (byte) ((blue * iRatio) + (color.blue * ratio));
+        this.alpha = (short) ((alpha * iRatio) + (color.alpha * ratio));
+        this.red = (short) ((red * iRatio) + (color.red * ratio));
+        this.green = (short) ((green * iRatio) + (color.green * ratio));
+        this.blue = (short) ((blue * iRatio) + (color.blue * ratio));
     }
     
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void glColor() {
         RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
     }
@@ -279,10 +285,10 @@ public class Color {
             ratio = 0f;
         float iRatio = 1.0f - ratio;
         
-        byte a = (byte) ((color1.alpha * iRatio) + (color2.alpha * ratio));
-        byte r = (byte) ((color1.red * iRatio) + (color2.red * ratio));
-        byte g = (byte) ((color1.green * iRatio) + (color2.green * ratio));
-        byte b = (byte) ((color1.blue * iRatio) + (color2.blue * ratio));
+        short a = (short) ((color1.alpha * iRatio) + (color2.alpha * ratio));
+        short r = (short) ((color1.red * iRatio) + (color2.red * ratio));
+        short g = (short) ((color1.green * iRatio) + (color2.green * ratio));
+        short b = (short) ((color1.blue * iRatio) + (color2.blue * ratio));
         
         return new Color(r, g, b, a);
     }
