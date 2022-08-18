@@ -28,6 +28,20 @@ public class GuiComboBox extends GuiLabel {
         updateDisplay();
     }
     
+    public void next() {
+        int index = this.index + 1;
+        if (index >= lines.length)
+            index = 0;
+        select(index);
+    }
+    
+    public void previous() {
+        int index = this.index - 1;
+        if (index < 0)
+            index = lines.length - 1;
+        select(index);
+    }
+    
     @Override
     public void tick() {}
     
@@ -122,7 +136,7 @@ public class GuiComboBox extends GuiLabel {
     
     public void closeBox() {
         if (extension != null) {
-            getLayer().remove(extension);
+            ((GuiParent) getParent()).remove(extension);
             extension = null;
         }
     }

@@ -148,7 +148,7 @@ public class GuiStackSelector extends GuiLabel {
     
     public void closeBox() {
         if (extension != null) {
-            getLayer().remove(extension);
+            ((GuiParent) getParent()).remove(extension);
             extension = null;
         }
     }
