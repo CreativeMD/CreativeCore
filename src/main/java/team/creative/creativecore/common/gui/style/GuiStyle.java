@@ -26,8 +26,6 @@ import team.creative.creativecore.common.util.type.Color;
 
 public class GuiStyle {
     
-    public static final ResourceLocation DEFAULT_STYLE_LOCATION = new ResourceLocation(CreativeCore.MODID, "gui/default_style.json");
-    public static final ResourceLocation GUI_ASSETS = new ResourceLocation(CreativeCore.MODID, "textures/gui_assets.png");
     private static final Minecraft mc = Minecraft.getInstance();
     private static final Gson GSON = new GsonBuilder().create();
     public static GuiStyle defaultStyle;
@@ -35,7 +33,7 @@ public class GuiStyle {
     
     public static void reload() {
         try {
-            Resource resource = mc.getResourceManager().getResource(DEFAULT_STYLE_LOCATION);
+            Resource resource = mc.getResourceManager().getResource(GuiStyleUtils.DEFAULT_STYLE_LOCATION);
             JsonObject root = JsonParser.parseString(IOUtils.toString(resource.getInputStream(), Charsets.UTF_8)).getAsJsonObject();
             
             defaultStyle = GSON.fromJson(root, GuiStyle.class);
@@ -98,48 +96,48 @@ public class GuiStyle {
     @SerializedName("clickable-highlight")
     public StyleDisplay clickableHighlight = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
     
-    public StyleDisplay slot = new DisplayTexture(GUI_ASSETS, 0, 0);
+    public StyleDisplay slot = new DisplayTexture(GuiStyleUtils.GUI_ASSETS, 0, 0);
     @SerializedName("transparency-background")
-    public StyleDisplay transparencyBackground = new DisplayTextureStretch(GUI_ASSETS, 224, 240, 16, 16);
+    public StyleDisplay transparencyBackground = new DisplayTextureStretch(GuiStyleUtils.GUI_ASSETS, 224, 240, 16, 16);
     
     public StyleDisplay get(ControlStyleBorder border) {
         switch (border) {
-        case BIG:
-            return this.borderThick;
-        case SMALL:
-            return this.border;
-        default:
-            return StyleDisplay.NONE;
+            case BIG:
+                return this.borderThick;
+            case SMALL:
+                return this.border;
+            default:
+                return StyleDisplay.NONE;
         }
     }
     
     public StyleDisplay get(ControlStyleFace face, boolean mouseOver) {
         switch (face) {
-        case BACKGROUND:
-            return background;
-        case BAR:
-            return bar;
-        case CLICKABLE:
-            if (mouseOver)
-                return clickableHighlight;
-            return clickable;
-        case NESTED_BACKGROUND:
-            return secondaryBackground;
-        case SLOT:
-            return slot;
-        default:
-            return StyleDisplay.NONE;
+            case BACKGROUND:
+                return background;
+            case BAR:
+                return bar;
+            case CLICKABLE:
+                if (mouseOver)
+                    return clickableHighlight;
+                return clickable;
+            case NESTED_BACKGROUND:
+                return secondaryBackground;
+            case SLOT:
+                return slot;
+            default:
+                return StyleDisplay.NONE;
         }
     }
     
     public int getBorder(ControlStyleBorder border) {
         switch (border) {
-        case BIG:
-            return this.borderThickWidth;
-        case SMALL:
-            return this.borderWidth;
-        default:
-            return 0;
+            case BIG:
+                return this.borderThickWidth;
+            case SMALL:
+                return this.borderWidth;
+            default:
+                return 0;
         }
     }
     

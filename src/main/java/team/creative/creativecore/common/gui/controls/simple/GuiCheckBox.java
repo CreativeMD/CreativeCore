@@ -19,7 +19,8 @@ import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiCheckBox extends GuiLabel {
     
-    public static final StyleDisplay partialStyle = new DisplayColor();
+    @OnlyIn(Dist.CLIENT)
+    private static StyleDisplay partialStyle;
     public static final int checkBoxWidth = 7;
     
     public boolean value = false;
@@ -71,8 +72,11 @@ public class GuiCheckBox extends GuiLabel {
         
         if (value)
             Minecraft.getInstance().font.draw(matrix, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt());
-        else if (partial)
+        else if (partial) {
+            if (partialStyle == null)
+                partialStyle = new DisplayColor();
             partialStyle.render(matrix, 2, yoffset + 2, checkBoxWidth - 4, checkBoxWidth - 4);
+        }
         
         matrix.pushPose();
         matrix.translate(checkBoxWidth + 3, 0, 0);
