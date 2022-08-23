@@ -28,8 +28,6 @@ import team.creative.creativecore.common.util.type.Color;
 
 public class GuiStyle {
     
-    public static final ResourceLocation DEFAULT_STYLE_LOCATION = new ResourceLocation(CreativeCore.MODID, "gui/default_style.json");
-    public static final ResourceLocation GUI_ASSETS = new ResourceLocation(CreativeCore.MODID, "textures/gui_assets.png");
     private static final Minecraft mc = Minecraft.getInstance();
     private static final Gson GSON = new GsonBuilder().create();
     public static GuiStyle defaultStyle;
@@ -37,7 +35,7 @@ public class GuiStyle {
     
     public static void reload() {
         try {
-            Resource resource = mc.getResourceManager().getResource(DEFAULT_STYLE_LOCATION).orElseThrow();
+            Resource resource = mc.getResourceManager().getResource(GuiStyleUtils.DEFAULT_STYLE_LOCATION).orElseThrow();
             InputStream input = resource.open();
             try {
                 JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
@@ -110,9 +108,9 @@ public class GuiStyle {
     @SerializedName("clickable-highlight")
     public StyleDisplay clickableHighlight = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
     
-    public StyleDisplay slot = new DisplayTexture(GUI_ASSETS, 0, 0);
+    public StyleDisplay slot = new DisplayTexture(GuiStyleUtils.GUI_ASSETS, 0, 0);
     @SerializedName("transparency-background")
-    public StyleDisplay transparencyBackground = new DisplayTextureRepeat(GUI_ASSETS, 224, 240, 16, 16);
+    public StyleDisplay transparencyBackground = new DisplayTextureRepeat(GuiStyleUtils.GUI_ASSETS, 224, 240, 16, 16);
     
     public StyleDisplay get(ControlStyleBorder border) {
         switch (border) {
