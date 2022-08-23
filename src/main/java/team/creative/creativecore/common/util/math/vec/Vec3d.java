@@ -63,28 +63,28 @@ public class Vec3d extends VecNd<Vec3d> {
     @Override
     public double get(int dim) {
         switch (dim) {
-        case 0:
-            return x;
-        case 1:
-            return y;
-        case 2:
-            return z;
-        default:
-            return 0;
+            case 0:
+                return x;
+            case 1:
+                return y;
+            case 2:
+                return z;
+            default:
+                return 0;
         }
     }
     
     @Override
     public double get(Axis axis) {
         switch (axis) {
-        case X:
-            return x;
-        case Y:
-            return y;
-        case Z:
-            return z;
-        default:
-            return 0;
+            case X:
+                return x;
+            case Y:
+                return y;
+            case Z:
+                return z;
+            default:
+                return 0;
         }
     }
     
@@ -97,30 +97,30 @@ public class Vec3d extends VecNd<Vec3d> {
     @Override
     public void set(Axis axis, double value) {
         switch (axis) {
-        case X:
-            this.x = value;
-            break;
-        case Y:
-            this.y = value;
-            break;
-        case Z:
-            this.z = value;
-            break;
+            case X:
+                this.x = value;
+                break;
+            case Y:
+                this.y = value;
+                break;
+            case Z:
+                this.z = value;
+                break;
         }
     }
     
     @Override
     public void set(int dim, double value) {
         switch (dim) {
-        case 0:
-            this.x = value;
-            break;
-        case 1:
-            this.y = value;
-            break;
-        case 2:
-            this.z = value;
-            break;
+            case 0:
+                this.x = value;
+                break;
+            case 1:
+                this.y = value;
+                break;
+            case 2:
+                this.z = value;
+                break;
         }
     }
     
@@ -181,6 +181,10 @@ public class Vec3d extends VecNd<Vec3d> {
             return (var3 < 0.0F ? -var3 : var3) <= var2;
     }
     
+    public double distance(Vec3 vec) {
+        return distance(vec.x, vec.y, vec.z);
+    }
+    
     @Override
     public double distance(Vec3d vec) {
         double x = this.x - vec.x;
@@ -195,6 +199,20 @@ public class Vec3d extends VecNd<Vec3d> {
         double y = this.y - vec.y;
         double z = this.z - vec.z;
         return x * x + y * y + z * z;
+    }
+    
+    public double distance(double x, double y, double z) {
+        double posX = this.x - x;
+        double posY = this.y - y;
+        double posZ = this.z - z;
+        return Math.sqrt(posX * posX + posY * posY + posZ * posZ);
+    }
+    
+    public double distanceSqr(double x, double y, double z) {
+        double posX = this.x - x;
+        double posY = this.y - y;
+        double posZ = this.z - z;
+        return posX * posX + posY * posY + posZ * posZ;
     }
     
     @Override
