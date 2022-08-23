@@ -181,6 +181,10 @@ public class Vec3d extends VecNd<Vec3d> {
             return (var3 < 0.0F ? -var3 : var3) <= var2;
     }
     
+    public double distance(Vec3 vec) {
+        return distance(vec.x, vec.y, vec.z);
+    }
+    
     @Override
     public double distance(Vec3d vec) {
         double x = this.x - vec.x;
