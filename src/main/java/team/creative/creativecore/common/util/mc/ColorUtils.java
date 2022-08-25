@@ -41,7 +41,7 @@ public class ColorUtils {
                 color.setBlue(value);
             }
         },
-        ALPHA(0x000000FF) {
+        ALPHA(0xFF000000) {
             @Override
             public int get(Color color) {
                 return color.getAlpha();
