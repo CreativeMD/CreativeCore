@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
+import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.mod.OptifineHelper;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
@@ -510,6 +511,10 @@ public class RenderBox extends AlignedBox {
             else if (renderQuads instanceof VectorFan)
                 ((VectorFan) renderQuads).generate(holder, quads);
         }
+        
+        for (BakedQuad quad : quads)
+            if (quad instanceof CreativeBakedQuad c)
+                c.updateAlpha();
         return quads;
         
     }
