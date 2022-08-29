@@ -273,7 +273,7 @@ public class GuiTextfield extends GuiFocusControl {
             if (this.selectionEnd != this.cursorPosition)
                 this.writeText("");
             else {
-                int i = this.func_238516_r_(num);
+                int i = this.getCursorPos(num);
                 int j = Math.min(i, this.cursorPosition);
                 int k = Math.max(i, this.cursorPosition);
                 if (j != k) {
@@ -323,10 +323,10 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     public void moveCursorBy(int num) {
-        this.setCursorPosition(this.func_238516_r_(num));
+        this.setCursorPosition(this.getCursorPos(num));
     }
     
-    private int func_238516_r_(int p_238516_1_) {
+    private int getCursorPos(int p_238516_1_) {
         return Util.offsetByCodepoints(this.text, this.cursorPosition, p_238516_1_);
     }
     
@@ -354,66 +354,66 @@ public class GuiTextfield extends GuiFocusControl {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (!this.canWrite())
             return false;
-        else {
-            this.shift = Screen.hasShiftDown();
-            if (Screen.isSelectAll(keyCode)) {
-                this.setCursorPositionEnd();
-                this.setSelectionPos(0);
-                return true;
-            } else if (Screen.isCopy(keyCode)) {
-                Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
-                return true;
-            } else if (Screen.isPaste(keyCode)) {
-                this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
-                
-                return true;
-            } else if (Screen.isCut(keyCode)) {
-                Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
-                this.writeText("");
-                
-                return true;
-            } else {
-                switch (keyCode) {
-                    case 259:
-                        this.shift = false;
-                        this.delete(-1);
-                        this.shift = Screen.hasShiftDown();
-                        
-                        return true;
-                    case 260:
-                    case 264:
-                    case 265:
-                    case 266:
-                    case 267:
-                    default:
-                        return false;
-                    case 261:
-                        this.shift = false;
-                        this.delete(1);
-                        this.shift = Screen.hasShiftDown();
-                        
-                        return true;
-                    case 262:
-                        if (Screen.hasControlDown())
-                            this.setCursorPosition(this.getNthWordFromCursor(1));
-                        else
-                            this.moveCursorBy(1);
-                        
-                        return true;
-                    case 263:
-                        if (Screen.hasControlDown())
-                            this.setCursorPosition(this.getNthWordFromCursor(-1));
-                        else
-                            this.moveCursorBy(-1);
-                        
-                        return true;
-                    case 268:
-                        this.setCursorPositionZero();
-                        return true;
-                    case 269:
-                        this.setCursorPositionEnd();
-                        return true;
-                }
+        this.shift = Screen.hasShiftDown();
+        if (Screen.isSelectAll(keyCode)) {
+            this.setCursorPositionEnd();
+            this.setSelectionPos(0);
+            return true;
+        } else if (Screen.isCopy(keyCode)) {
+            Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
+            return true;
+        } else if (Screen.isPaste(keyCode)) {
+            this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
+            
+            return true;
+        } else if (Screen.isCut(keyCode)) {
+            Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
+            this.writeText("");
+            
+            return true;
+        } else {
+            switch (keyCode) {
+                case 259:
+                    this.shift = false;
+                    this.delete(-1);
+                    this.shift = Screen.hasShiftDown();
+                    
+                    return true;
+                case 258:
+                case 260:
+                case 264:
+                case 265:
+                case 266:
+                case 267:
+                    return false;
+                default:
+                    return SharedConstants.isAllowedChatCharacter((char) keyCode);
+                case 261:
+                    this.shift = false;
+                    this.delete(1);
+                    this.shift = Screen.hasShiftDown();
+                    
+                    return true;
+                case 262:
+                    if (Screen.hasControlDown())
+                        this.setCursorPosition(this.getNthWordFromCursor(1));
+                    else
+                        this.moveCursorBy(1);
+                    
+                    return true;
+                case 263:
+                    if (Screen.hasControlDown())
+                        this.setCursorPosition(this.getNthWordFromCursor(-1));
+                    else
+                        this.moveCursorBy(-1);
+                    
+                    return true;
+                case 268:
+                    this.setCursorPositionZero();
+                    return true;
+                case 269:
+                    this.setCursorPositionEnd();
+                    return true;
             }
         }
     }
