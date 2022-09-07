@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 
-public class ContentItemStack implements AdvancedContent, AdvancedFormattedText {
+public class ContentItemStack implements AdvancedContent {
     
     public final ItemStack stack;
     
@@ -39,18 +39,32 @@ public class ContentItemStack implements AdvancedContent, AdvancedFormattedText 
     }
     
     @Override
-    public void render(PoseStack pose, int defaultColor) {
-        pose.pushPose();
-        
-        pose.translate(0, -2, 10);
-        pose.scale(0.8F, 0.8F, 0.8F);
-        GuiRenderHelper.drawItemStack(pose, stack, 1);
-        pose.popPose();
+    public FormattedText asText() {
+        return new ContentItemStackText(this);
     }
     
-    @Override
-    public FormattedText asText() {
-        return this;
+    private static record ContentItemStackText(ContentItemStack content) implements AdvancedFormattedText {
+        
+        @Override
+        public int width(WidthProvider widthProvider, Style style) {
+            return content.width(widthProvider, style);
+        }
+        
+        @Override
+        public int height() {
+            return content.height();
+        }
+        
+        @Override
+        public void render(PoseStack pose, int defaultColor) {
+            pose.pushPose();
+            
+            pose.translate(0, -2, 10);
+            pose.scale(0.8F, 0.8F, 0.8F);
+            GuiRenderHelper.drawItemStack(pose, content.stack, 1);
+            pose.popPose();
+        }
+        
     }
     
 }
