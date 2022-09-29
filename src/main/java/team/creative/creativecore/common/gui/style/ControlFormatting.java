@@ -10,6 +10,7 @@ public class ControlFormatting {
     public static final ControlFormatting TRANSPARENT = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE);
     public static final ControlFormatting TRANSPARENT_NO_DISABLE = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE, false);
     public static final ControlFormatting SLOT = new ControlFormatting(ControlStyleBorder.NONE, 1, ControlStyleFace.SLOT, false);
+    public static final ControlFormatting OUTLINE = new ControlFormatting(ControlStyleBorder.SMALL, 1, ControlStyleFace.NONE);
     
     public final ControlStyleBorder border;
     public final int padding;
