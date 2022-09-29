@@ -378,7 +378,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
         for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.control.testForDoubleClick(child.rect, x - child.getX(), y - child.getY()))
+            if (child.control.isInteractable() && child.rect.inside(x, y) && child.control.testForDoubleClick(child.rect, x - child.getX(), y - child.getY()))
                 return true;
         return false;
         
