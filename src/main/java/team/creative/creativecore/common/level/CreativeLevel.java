@@ -144,4 +144,13 @@ public abstract class CreativeLevel extends Level implements IOrientatedLevel {
     @Override
     public void gameEvent(GameEvent p_220404_, Vec3 p_220405_, Context p_220406_) {}
     
+    public Iterable<Entity> entities() {
+        return getEntities().getAll();
+    }
+    
+    @Override
+    public void tickBlockEntities() {
+        super.tickBlockEntities();
+    }
+    
 }
