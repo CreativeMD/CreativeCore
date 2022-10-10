@@ -45,6 +45,16 @@ public class AdvancedComponentHelper {
     public static final AdvancedStringSplitter SPLITTER = new AdvancedStringSplitter(Minecraft.getInstance().font);
     private static final Optional<Object> STOP_ITERATION = Optional.of(Unit.INSTANCE);
     
+    public static Component copy(Component component) {
+        MutableComponent copy = MutableComponent.create(component.getContents());
+        
+        for (Component sibling : component.getSiblings())
+            copy.getSiblings().add(copy(sibling));
+        
+        copy.setStyle(component.getStyle());
+        return copy;
+    }
+    
     public static boolean iterateFormatted(Component text, Style style, FormattedSingleSink sink) {
         return !visit(text, new AdvancedContentConsumer() {
             

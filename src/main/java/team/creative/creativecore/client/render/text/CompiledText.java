@@ -97,7 +97,7 @@ public class CompiledText {
         
         List<Component> copy = new ArrayList<>();
         for (Component component : original)
-            copy.add(component.copy());
+            copy.add(AdvancedComponentHelper.copy(component));
         lines = new ArrayList<>();
         compileNext(null, true, copy);
     }
@@ -239,8 +239,8 @@ public class CompiledText {
             int remainingWidth = maxWidth - width;
             int textWidth = width(component);
             if (remainingWidth >= textWidth) {
-                if (component instanceof Component comp && comp.getContents() instanceof AdvancedContent)
-                    components.add((FormattedText) comp.getContents());
+                if (component instanceof Component comp && comp.getContents() instanceof AdvancedContent adv)
+                    components.add(adv.asText());
                 else
                     components.add(component);
                 updateDimension(width + textWidth, lineHeight(component));
@@ -383,9 +383,8 @@ public class CompiledText {
         copy.lineSpacing = lineSpacing;
         copy.shadow = shadow;
         List<Component> components = new ArrayList<>();
-        for (Component component : original) {
+        for (Component component : original)
             components.add(component.copy());
-        }
         copy.setText(components);
         return copy;
     }
