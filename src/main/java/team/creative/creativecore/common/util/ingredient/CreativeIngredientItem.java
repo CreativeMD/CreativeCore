@@ -66,7 +66,7 @@ public class CreativeIngredientItem extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.item").append(": " + ChatFormatting.YELLOW).append(Registry.ITEM.getKey(item).toString());
+        return Component.translatable("minecraft.item").append(": " + ChatFormatting.YELLOW + Registry.ITEM.getKey(item).toString());
     }
     
 }

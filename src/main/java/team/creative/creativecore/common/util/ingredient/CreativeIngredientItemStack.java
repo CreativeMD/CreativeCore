@@ -84,7 +84,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.stack").append(": " + ChatFormatting.YELLOW).append(stack.getDisplayName());
+        return Component.translatable("minecraft.stack").append(": " + ChatFormatting.YELLOW + stack.getDisplayName());
     }
     
 }

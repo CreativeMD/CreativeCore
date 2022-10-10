@@ -84,7 +84,7 @@ public class CreativeIngredientMaterial extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.material").append(": " + ChatFormatting.YELLOW).append(MaterialUtils.getName(material));
+        return Component.translatable("minecraft.material").append(": " + ChatFormatting.YELLOW + MaterialUtils.getName(material));
     }
     
 }

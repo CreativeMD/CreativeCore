@@ -72,7 +72,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.block_tag").append(": " + ChatFormatting.YELLOW).append(tag.location().toString());
+        return Component.translatable("minecraft.block_tag").append(": " + ChatFormatting.YELLOW + tag.location().toString());
     }
     
 }
