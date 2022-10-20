@@ -6,15 +6,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 
-public class FakeBlockGetter implements BlockGetter {
+public class BlockGetterFake implements BlockGetter {
     
     public BlockGetter parent;
     public BlockPos pos;
     public BlockState fakeState;
     
-    public FakeBlockGetter() {
-        
-    }
+    public BlockGetterFake() {}
     
     public void set(BlockGetter world, BlockPos pos, BlockState fakeState) {
         this.parent = world;
