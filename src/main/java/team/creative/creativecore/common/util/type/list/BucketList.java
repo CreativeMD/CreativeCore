@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
 import team.creative.creativecore.common.util.type.itr.InverseConsecutiveIterator;
 import team.creative.creativecore.common.util.type.itr.InverseListIterator;
+import team.creative.creativecore.common.util.type.itr.NestedIterator;
 
 public class BucketList<T> implements Iterable<T> {
     
@@ -95,7 +95,7 @@ public class BucketList<T> implements Iterable<T> {
     
     @Override
     public Iterator<T> iterator() {
-        return new ConsecutiveIterator<>(buckets.toArray(new List[buckets.size()]));
+        return new NestedIterator<>(buckets);
     }
     
     public Iterator<T> inverseIterator() {
