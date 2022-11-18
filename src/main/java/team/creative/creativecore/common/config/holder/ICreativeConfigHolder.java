@@ -36,4 +36,6 @@ public interface ICreativeConfigHolder extends IConfigObject {
     
     public ConfigSynchronization synchronization();
     
+    public void configured(Side side);
+    
 }

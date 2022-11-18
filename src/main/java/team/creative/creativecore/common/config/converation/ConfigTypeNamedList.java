@@ -22,16 +22,11 @@ import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.premade.NamedList;
-import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 
 public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
-    
-    private ConfigHolderObject constructHolder(Side side, Object value) {
-        return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
-    }
     
     protected void addToList(NamedList list, String name, Object object) {
         list.put(name, object);
@@ -54,7 +49,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                     addToList(list, entry.getKey(), conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, entry.getValue(), side, null));
                 else {
                     Object value = ConfigTypeConveration.createObject(clazz);
-                    holderConveration.readElement(constructHolder(side, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
+                    holderConveration.readElement(ConfigTypeList.constructHolder(side, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
                     addToList(list, entry.getKey(), value);
                 }
             }
@@ -73,7 +68,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
             if (conversation != null)
                 array.add(entry.getKey(), conversation.writeElement(entry.getValue(), null, true, ignoreRestart, side, key));
             else
-                array.add(entry.getKey(), holderConveration.writeElement(constructHolder(side, entry.getValue()), null, true, ignoreRestart, side, key));
+                array.add(entry.getKey(), holderConveration.writeElement(ConfigTypeList.constructHolder(side, entry.getValue()), null, true, ignoreRestart, side, key));
         return array;
     }
     
@@ -95,7 +90,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                 control.addNameTextfield("");
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
-                ConfigHolderObject holder = constructHolder(Side.SERVER, value);
+                ConfigHolderObject holder = ConfigTypeList.constructHolder(Side.SERVER, value);
                 control = new GuiConfigSubControlHolder("" + 0, holder, value, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield("");
@@ -125,7 +120,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                 converation.loadValue(entry.getValue(), control, null, null);
                 control.addNameTextfield(entry.getKey());
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry.getValue()), entry.getValue(), configParent::changed);
+                control = new GuiConfigSubControlHolder("" + 0, ConfigTypeList.constructHolder(Side.SERVER, entry.getValue()), entry.getValue(), configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield(entry.getKey());
             }

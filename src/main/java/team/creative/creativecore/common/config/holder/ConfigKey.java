@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.IConfigObject;
+import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
@@ -44,7 +45,7 @@ public abstract class ConfigKey {
         return name;
     }
     
-    public abstract void set(Object object);
+    public abstract void set(Object object, Side side);
     
     public abstract Object get();
     
@@ -67,8 +68,10 @@ public abstract class ConfigKey {
     public void restoreDefault(Side side, boolean ignoreRestart) {
         if (defaultValue instanceof IConfigObject)
             ((IConfigObject) defaultValue).restoreDefault(side, ignoreRestart);
+        if (defaultValue instanceof ICreativeConfigHolder holder)
+            holder.restoreDefault(side, ignoreRestart);
         else
-            set(defaultValue);
+            set(defaultValue, side);
     }
     
     public Object getDefault() {
@@ -91,6 +94,13 @@ public abstract class ConfigKey {
         return synchronization.useValue(false, side);
     }
     
+    public void triggerConfigured(Side side) {
+        if (defaultValue instanceof ICreativeConfigHolder con)
+            con.configured(side);
+        else if (get() instanceof ICreativeConfig con)
+            con.configured(side);
+    }
+    
     public static class ConfigKeyDynamic extends ConfigKey {
         
         private Object value;
@@ -104,7 +114,7 @@ public abstract class ConfigKey {
         }
         
         @Override
-        public void set(Object object) {
+        public void set(Object object, Side side) {
             if (!(defaultValue instanceof ICreativeConfigHolder))
                 this.value = object;
         }
@@ -135,10 +145,11 @@ public abstract class ConfigKey {
         public abstract Object getParent();
         
         @Override
-        public void set(Object object) {
+        public void set(Object object, Side side) {
             try {
                 if (!(defaultValue instanceof ICreativeConfigHolder))
                     field.set(getParent(), converation.set(this, object));
+                
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }

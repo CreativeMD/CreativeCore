@@ -28,7 +28,7 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class ConfigTypeList extends ConfigTypeConveration<List> {
     
-    private ConfigHolderObject constructHolder(Side side, Object value) {
+    public static ConfigHolderObject constructHolder(Side side, Object value) {
         return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
     }
     

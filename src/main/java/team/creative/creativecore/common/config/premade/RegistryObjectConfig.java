@@ -14,6 +14,7 @@ public class RegistryObjectConfig<T> implements ICreativeConfig {
     public RegistryObjectConfig(Registry<T> registry, ResourceLocation location) {
         this.registry = registry;
         this.location = location;
+        configured(null);
     }
     
     @Override

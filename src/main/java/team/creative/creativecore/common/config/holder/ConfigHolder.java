@@ -117,12 +117,12 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.is(side) && (!ignoreRestart || !field.requiresRestart))
-                if (json.has(field.name))
+                if (json.has(field.name)) {
                     field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json
-                            .get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
-                else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
+                            .get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null), side);
+                    field.triggerConfigured(side);
+                } else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
                     field.restoreDefault(side, ignoreRestart);
-                
         }
     }
     

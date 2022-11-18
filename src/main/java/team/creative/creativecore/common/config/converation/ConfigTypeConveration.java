@@ -130,6 +130,9 @@ public abstract class ConfigTypeConveration<T> {
         public Collection<? extends ConfigKey> fields() {
             return null;
         }
+        
+        @Override
+        public void configured(Side side) {}
     };
     public static ConfigTypeConveration<ConfigHolderObject> holderConveration;
     
@@ -649,7 +652,6 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public RegistryObjectConfig set(ConfigKeyField key, RegistryObjectConfig value) {
-                value.configured(null);
                 return value;
             }
             
