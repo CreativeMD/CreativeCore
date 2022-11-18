@@ -567,8 +567,11 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 parent.flow = GuiFlow.STACK_Y;
                 parent.add(new GuiTextfield("search", 30, 14).setExpandableX());
-                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
-                        .addComponent(Registry.SOUND_EVENT.keySet(), x -> Component.literal(x.toString()))));
+                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>().addComponent(Registry.SOUND_EVENT.keySet(), x -> {
+                    if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
+                        return Component.literal(x.getPath());
+                    return Component.literal(x.toString());
+                })));
                 GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
                 hBox.add(new GuiLabel("volumeLabel").setTranslate("gui.volume"));
                 hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
@@ -628,8 +631,11 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
-                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
-                        .addComponent(value.registry.keySet(), x -> Component.literal(x.toString()))));
+                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>().addComponent(value.registry.keySet(), x -> {
+                    if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
+                        return Component.literal(x.getPath());
+                    return Component.literal(x.toString());
+                })));
             }
             
             @Override
