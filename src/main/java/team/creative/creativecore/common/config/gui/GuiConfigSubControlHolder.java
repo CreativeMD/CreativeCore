@@ -30,8 +30,11 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
             if (value instanceof ICreativeConfigHolder)
                 continue;
             
-            String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.name + ".name", key.name);
-            String comment = "config." + String.join(".", holder.path()) + "." + key.name + ".comment";
+            String path = "config." + String.join(".", holder.path());
+            if (!path.endsWith("."))
+                path += ".";
+            String caption = translateOrDefault(path + key.name + ".name", key.name);
+            String comment = path + key.name + ".comment";
             GuiConfigControl config = new GuiConfigControl(null, (ConfigKeyField) key, Side.SERVER, caption, comment);
             config.init(null);
             

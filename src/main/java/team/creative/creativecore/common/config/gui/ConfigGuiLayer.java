@@ -94,8 +94,12 @@ public class ConfigGuiLayer extends GuiLayer {
             if (key.requiresRestart)
                 continue;
             Object value = key.get();
-            String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.name + ".name", key.name);
-            String comment = "config." + String.join(".", holder.path()) + "." + key.name + ".comment";
+            
+            String path = "config." + String.join(".", holder.path());
+            if (!path.endsWith("."))
+                path += ".";
+            String caption = translateOrDefault(path + key.name + ".name", key.name);
+            String comment = path + key.name + ".comment";
             if (value instanceof ICreativeConfigHolder) {
                 if (!((ICreativeConfigHolder) value).isEmpty(side)) {
                     box.add(new GuiButton(caption, x -> {
