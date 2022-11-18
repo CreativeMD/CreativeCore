@@ -102,6 +102,13 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
+    public void restoreDefault(NamedList value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
+        loadValue(readElement(value, true, false, writeElement(value, value, true, false, Side.SERVER, key), Side.SERVER, key), parent, configParent, key);
+    }
+    
+    @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void loadValue(NamedList value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
         if (!box.isEmpty())
