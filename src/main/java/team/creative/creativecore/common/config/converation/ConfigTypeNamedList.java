@@ -96,7 +96,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
                 ConfigHolderObject holder = constructHolder(Side.SERVER, value);
-                control = new GuiConfigSubControlHolder("" + 0, holder, value);
+                control = new GuiConfigSubControlHolder("" + 0, holder, value, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield("");
             }
@@ -125,7 +125,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
                 converation.loadValue(entry.getValue(), control, null, null);
                 control.addNameTextfield(entry.getKey());
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry.getValue()), entry.getValue());
+                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry.getValue()), entry.getValue(), configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield(entry.getKey());
             }

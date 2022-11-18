@@ -8,17 +8,21 @@ import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     
     public final ICreativeConfigHolder holder;
     public final Object value;
+    private final Runnable updateListener;
     
-    public GuiConfigSubControlHolder(String name, ICreativeConfigHolder holder, Object value) {
+    public GuiConfigSubControlHolder(String name, ICreativeConfigHolder holder, Object value, Runnable updateListener) {
         super(name);
         setExpandable();
         this.holder = holder;
         this.value = value;
+        this.updateListener = updateListener;
+        flow = GuiFlow.STACK_Y;
     }
     
     public void createControls() {
@@ -35,7 +39,16 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                 path += ".";
             String caption = translateOrDefault(path + key.name + ".name", key.name);
             String comment = path + key.name + ".comment";
-            GuiConfigControl config = new GuiConfigControl(null, (ConfigKeyField) key, Side.SERVER, caption, comment);
+            GuiConfigControl config = new GuiConfigControl(null, (ConfigKeyField) key, Side.SERVER, caption, comment) {
+                
+                @Override
+                public void updateButton() {
+                    super.updateButton();
+                    updateListener.run();
+                }
+                
+            };
+            add(config);
             config.init(null);
             
         }

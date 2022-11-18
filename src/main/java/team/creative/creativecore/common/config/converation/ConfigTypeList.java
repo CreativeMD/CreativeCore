@@ -84,7 +84,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
                 ConfigHolderObject holder = constructHolder(Side.SERVER, value);
-                control = new GuiConfigSubControlHolder("" + 0, holder, value);
+                control = new GuiConfigSubControlHolder("" + 0, holder, value, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             listBox.addItem(control);
@@ -111,7 +111,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 converation.createControls(control, null, null, clazz);
                 converation.loadValue(entry, control, null, null);
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry), entry);
+                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry), entry, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             controls.add(control);

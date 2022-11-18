@@ -66,6 +66,7 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
         updateButton();
     }
     
+    @Override
     public void changed() {
         updateButton();
     }

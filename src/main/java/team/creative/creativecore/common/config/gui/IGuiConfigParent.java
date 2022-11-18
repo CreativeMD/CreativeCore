@@ -6,4 +6,6 @@ public interface IGuiConfigParent {
     
     public Object getCustomData();
     
+    public void changed();
+    
 }
