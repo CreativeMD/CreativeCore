@@ -32,6 +32,7 @@ import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.config.premade.RegistryObjectConfig;
@@ -561,13 +562,14 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
-                parent.add(new GuiTextfield("search", 30, 14));
+                parent.flow = GuiFlow.STACK_Y;
+                parent.add(new GuiTextfield("search", 30, 14).setExpandableX());
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>()
                         .addComponent(Registry.SOUND_EVENT.keySet(), x -> Component.literal(x.toString()))));
-                GuiParent hBox = new GuiParent("vBox", GuiFlow.STACK_X);
-                hBox.add(new GuiLabel("volumeLabel").setTitle(Component.translatable("gui.volume")));
+                GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
+                hBox.add(new GuiLabel("volumeLabel").setTranslate("gui.volume"));
                 hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
-                hBox.add(new GuiLabel("pitchLabel").setTitle(Component.translatable("gui.pitch")));
+                hBox.add(new GuiLabel("pitchLabel").setTranslate("gui.pitch"));
                 hBox.add(new GuiSlider("pitch", 40, 10, 1, 0.5, 2));
                 parent.add(hBox);
             }
@@ -576,9 +578,9 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(SoundConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
-                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
-                GuiSlider volume = (GuiSlider) parent.get("volume");
-                GuiSlider pitch = (GuiSlider) parent.get("pitch");
+                GuiComboBoxMapped<ResourceLocation> box = parent.get("sound");
+                GuiSlider volume = parent.get("volume");
+                GuiSlider pitch = parent.get("pitch");
                 
                 box.select(value.event);
                 volume.setValue(value.volume);
@@ -590,8 +592,8 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             protected SoundConfig saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, ConfigKeyField key) {
                 GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
-                GuiSlider volume = (GuiSlider) parent.get("volume");
-                GuiSlider pitch = (GuiSlider) parent.get("pitch");
+                GuiSlider volume = parent.get("volume");
+                GuiSlider pitch = parent.get("pitch");
                 
                 return new SoundConfig(box.getSelected(), (float) volume.value, (float) pitch.value);
             }
