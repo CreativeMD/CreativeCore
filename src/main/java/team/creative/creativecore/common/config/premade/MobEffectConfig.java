@@ -25,4 +25,11 @@ public class MobEffectConfig {
         return new MobEffectInstance(effect.value, duration, amplifier);
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MobEffectConfig mob)
+            return mob.effect.equals(effect) && mob.amplifier == amplifier && mob.duration == duration;
+        return super.equals(obj);
+    }
+    
 }

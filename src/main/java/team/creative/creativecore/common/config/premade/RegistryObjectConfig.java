@@ -21,4 +21,11 @@ public class RegistryObjectConfig<T> implements ICreativeConfig {
         value = registry.get(location);
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof RegistryObjectConfig re)
+            return re.registry == registry && re.location.equals(location);
+        return super.equals(obj);
+    }
+    
 }

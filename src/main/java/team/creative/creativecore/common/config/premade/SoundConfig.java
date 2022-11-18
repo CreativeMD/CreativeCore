@@ -29,4 +29,11 @@ public class SoundConfig {
     public void play(Level level, double x, double y, double z, SoundSource category) {
         level.playSound(null, x, y, z, Registry.SOUND_EVENT.get(event), category, volume, pitch);
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SoundConfig sound)
+            return sound.event.equals(event) && sound.volume == volume && sound.pitch == pitch;
+        return super.equals(obj);
+    }
 }
