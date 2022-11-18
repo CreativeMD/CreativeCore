@@ -721,6 +721,8 @@ public abstract class ConfigTypeConveration<T> {
         registerType(NamedList.class, new ConfigTypeNamedList());
         registerType(Permission.class, new ConfigTypePermission());
         
+        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1));
+        
         holderConveration = registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
             
             @Override
