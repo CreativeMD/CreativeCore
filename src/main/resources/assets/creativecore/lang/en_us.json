@@ -5,6 +5,8 @@
     "gui.add": "Add",
     "gui.minus": "-",
     "gui.plus": "+",
+    "gui.volume": "volume",
+    "gui.pitch": "pitch",
     "dialog.savechanges": "Do you want to save your changes?",
     "dialog.button.OK": "Okay",
     "dialog.button.YES": "Yes",
