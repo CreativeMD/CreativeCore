@@ -129,7 +129,10 @@ public class GuiStackSelector extends GuiLabel {
     
     public void openBox(Rect rect) {
         this.extension = createBox();
-        GuiChildControl child = ((GuiParent) getParent()).addHover(extension);
+        GuiChildControl child = getLayer().addHover(extension);
+        
+        rect = toLayerRect(rect.copy());
+        
         extension.init();
         child.setX((int) rect.minX);
         child.setY((int) rect.maxY);
@@ -148,7 +151,7 @@ public class GuiStackSelector extends GuiLabel {
     
     public void closeBox() {
         if (extension != null) {
-            ((GuiParent) getParent()).remove(extension);
+            ((GuiParent) getLayer()).remove(extension);
             extension = null;
         }
     }

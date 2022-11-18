@@ -241,4 +241,13 @@ public abstract class GuiLayer extends GuiParent {
             manager.closed();
         super.closed();
     }
+    
+    @Override
+    public Rect toLayerRect(GuiControl control, Rect rect) {
+        GuiChildControl child = find(control);
+        if (child == null)
+            return rect;
+        rect.move(child.rect.minX + getOffsetX(), child.rect.minY + getOffsetY());
+        return rect;
+    }
 }

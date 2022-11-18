@@ -224,9 +224,11 @@ public abstract class GuiControl {
         return -1;
     }
     
+    public Rect toLayerRect(Rect rect) {
+        return getParent().toLayerRect(this, rect);
+    }
+    
     public Rect toScreenRect(Rect rect) {
-        if (getParent() instanceof GuiParent parent)
-            return parent.getParent().toScreenRect(parent, rect);
         return getParent().toScreenRect(this, rect);
     }
     

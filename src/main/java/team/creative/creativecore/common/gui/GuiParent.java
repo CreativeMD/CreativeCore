@@ -342,11 +342,20 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
+    public Rect toLayerRect(GuiControl control, Rect rect) {
+        GuiChildControl child = find(control);
+        if (child == null)
+            return rect;
+        rect.move(child.rect.minX + getOffsetX() + getContentOffset(), child.rect.minY + getOffsetY() + getContentOffset());
+        return getParent().toLayerRect(this, rect);
+    }
+    
+    @Override
     public Rect toScreenRect(GuiControl control, Rect rect) {
         GuiChildControl child = find(control);
         if (child == null)
             return rect;
-        rect.move(child.rect.minX, child.rect.minY);
+        rect.move(child.rect.minX + getOffsetX() + getContentOffset(), child.rect.minY + getOffsetY() + getContentOffset());
         return getParent().toScreenRect(this, rect);
     }
     

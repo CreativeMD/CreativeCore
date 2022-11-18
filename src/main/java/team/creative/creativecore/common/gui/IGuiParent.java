@@ -29,4 +29,6 @@ public interface IGuiParent {
     
     public Rect toScreenRect(GuiControl control, Rect rect);
     
+    public Rect toLayerRect(GuiControl control, Rect rect);
+    
 }
