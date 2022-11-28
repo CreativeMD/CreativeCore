@@ -29,10 +29,13 @@ import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagTypes;
+import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
@@ -664,6 +667,34 @@ public class NetworkFieldTypes {
                 
             }
         }, Tag.class);
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeSpecial((x, y) -> Packet.class.isAssignableFrom(x)) {
+            
+            @Override
+            public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
+                Packet packet = (Packet) content;
+                ConnectionProtocol protocol = ConnectionProtocol.getProtocolForPacket(packet);
+                if (protocol != ConnectionProtocol.PLAY)
+                    throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
+                Integer id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
+                if (id != null) {
+                    buffer.writeVarInt(id);
+                    packet.write(buffer);
+                } else {
+                    buffer.writeVarInt(-protocol.getPacketId(PacketFlow.SERVERBOUND, packet));
+                    packet.write(buffer);
+                }
+                
+            }
+            
+            @Override
+            public Object read(Class classType, Type genericType, FriendlyByteBuf buffer) {
+                int id = buffer.readVarInt();
+                if (id < 0)
+                    return ConnectionProtocol.PLAY.createPacket(PacketFlow.SERVERBOUND, -id, buffer);
+                return ConnectionProtocol.PLAY.createPacket(PacketFlow.CLIENTBOUND, id, buffer);
+            }
+        });
     }
     
 }
