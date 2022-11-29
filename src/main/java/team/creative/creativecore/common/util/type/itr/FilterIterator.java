@@ -28,7 +28,7 @@ public class FilterIterator<T> implements Iterator<T> {
     }
     
     private void findNext() {
-        while (next != null && itr.hasNext()) {
+        while (next == null && itr.hasNext()) {
             Object object = itr.next();
             if (predicate.test(object)) {
                 next = (T) object;
