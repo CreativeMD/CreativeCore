@@ -11,7 +11,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
-import com.mojang.math.Vector3d;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,6 +33,7 @@ import team.creative.creativecore.common.util.math.box.AlignedBox;
 import team.creative.creativecore.common.util.math.geo.NormalPlane;
 import team.creative.creativecore.common.util.math.geo.Ray2d;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
@@ -388,7 +388,7 @@ public class RenderBox extends AlignedBox {
         }
     }
     
-    public void renderLines(PoseStack pose, BufferBuilder builder, int alpha, Vector3d center, double grow) {
+    public void renderLines(PoseStack pose, BufferBuilder builder, int alpha, Vec3d center, double grow) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);

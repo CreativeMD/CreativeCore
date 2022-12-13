@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.mc;
 
-import com.mojang.math.Vector3d;
+import org.joml.Vector3d;
 
 import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.type.Color;

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3d;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -272,7 +272,7 @@ public class VectorFan {
         }
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double grow) {
         int index = 0;
         while (index < coords.length - 3) {
             builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
@@ -293,7 +293,7 @@ public class VectorFan {
         
     }
     
-    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double grow) {
         float x = vec.x * scaleX + offX;
         if (x > center.x)
             x += grow;
@@ -315,7 +315,7 @@ public class VectorFan {
         builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
     }
     
-    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, int red, int green, int blue, int alpha, Vec3d center, double grow) {
         float x = vec.x;
         if (x > center.x)
             x += grow;
@@ -337,7 +337,7 @@ public class VectorFan {
         builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha, Vector3d center, double grow) {
+    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha, Vec3d center, double grow) {
         int index = 0;
         while (index < coords.length - 3) {
             builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);

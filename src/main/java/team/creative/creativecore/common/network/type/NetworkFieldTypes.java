@@ -11,11 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.mojang.math.Vector3d;
-import com.mojang.math.Vector3f;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -23,7 +24,7 @@ import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -304,12 +305,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Block content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(Registry.BLOCK.getKey(content));
+                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(content));
             }
             
             @Override
             protected Block readContent(FriendlyByteBuf buffer) {
-                return Registry.BLOCK.get(buffer.readResourceLocation());
+                return BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
             }
         }, Block.class);
         
@@ -317,12 +318,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Item content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(Registry.ITEM.getKey(content));
+                buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(content));
             }
             
             @Override
             protected Item readContent(FriendlyByteBuf buffer) {
-                return Registry.ITEM.get(buffer.readResourceLocation());
+                return BuiltInRegistries.ITEM.get(buffer.readResourceLocation());
             }
         }, Item.class);
         

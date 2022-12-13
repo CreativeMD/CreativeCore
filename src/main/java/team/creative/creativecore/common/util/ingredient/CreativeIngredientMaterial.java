@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,18 +25,18 @@ public class CreativeIngredientMaterial extends CreativeIngredient {
     
     @Override
     protected void saveExtra(CompoundTag nbt) {
-        nbt.putString("material", Registry.BLOCK.getKey(getBlock()).toString());
+        nbt.putString("material", BuiltInRegistries.BLOCK.getKey(getBlock()).toString());
     }
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        Block block = Registry.BLOCK.get(new ResourceLocation(nbt.getString("material")));
+        Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString("material")));
         if (block != null)
             material = block.defaultBlockState().getMaterial();
     }
     
     public Block getBlock() {
-        for (Block block : Registry.BLOCK)
+        for (Block block : BuiltInRegistries.BLOCK)
             if (block.defaultBlockState().getMaterial() == material)
                 return block;
         return null;

@@ -12,6 +12,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
@@ -398,6 +399,12 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
+    public static void playSound(Holder.Reference<SoundEvent> sound) {
+        playSound(sound.value());
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundEvent event) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F));
     }
@@ -406,5 +413,11 @@ public abstract class GuiControl {
     @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundEvent event, float volume, float pitch) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public static void playSound(Holder.Reference<SoundEvent> event, float volume, float pitch) {
+        playSound(event.value(), volume, pitch);
     }
 }

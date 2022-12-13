@@ -4,7 +4,8 @@ import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +32,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(nbt.getString("tag")));
+        tag = TagKey.create(Registries.BLOCK, new ResourceLocation(nbt.getString("tag")));
     }
     
     @Override
@@ -49,7 +50,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        Optional<Named<Block>> optional = Registry.BLOCK.getTag(tag);
+        Optional<Named<Block>> optional = BuiltInRegistries.BLOCK.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;
         return new ItemStack(optional.get().get(0).value());

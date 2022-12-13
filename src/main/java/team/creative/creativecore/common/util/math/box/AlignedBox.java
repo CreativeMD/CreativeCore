@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.box;
 
-import com.mojang.math.Vector3d;
+import org.joml.Vector3d;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -11,6 +11,7 @@ import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
 import team.creative.creativecore.common.util.math.transformation.Rotation;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public class AlignedBox {
@@ -86,12 +87,12 @@ public class AlignedBox {
         this.maxZ *= scale;
     }
     
-    public Vector3d getSize() {
-        return new Vector3d(maxX - minX, maxY - minY, maxZ - minZ);
+    public Vec3d getSize() {
+        return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
     }
     
-    public Vector3d getCenter() {
-        return new Vector3d((maxX + minX) * 0.5, (maxY + minY) * 0.5, (maxZ + minZ) * 0.5);
+    public Vec3d getCenter() {
+        return new Vec3d((maxX + minX) * 0.5, (maxY + minY) * 0.5, (maxZ + minZ) * 0.5);
     }
     
     @Override

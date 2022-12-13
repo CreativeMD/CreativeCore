@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.transformation;
 
-import com.mojang.math.Vector3d;
+import org.joml.Vector3d;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -72,12 +72,12 @@ public enum Rotation {
     
     public static Rotation getRotation(Axis axis, boolean clockwise) {
         switch (axis) {
-        case X:
-            return clockwise ? X_CLOCKWISE : X_COUNTER_CLOCKWISE;
-        case Y:
-            return clockwise ? Y_CLOCKWISE : Y_COUNTER_CLOCKWISE;
-        case Z:
-            return clockwise ? Z_CLOCKWISE : Z_COUNTER_CLOCKWISE;
+            case X:
+                return clockwise ? X_CLOCKWISE : X_COUNTER_CLOCKWISE;
+            case Y:
+                return clockwise ? Y_CLOCKWISE : Y_COUNTER_CLOCKWISE;
+            case Z:
+                return clockwise ? Z_CLOCKWISE : Z_COUNTER_CLOCKWISE;
         }
         return null;
     }
@@ -100,14 +100,14 @@ public enum Rotation {
     
     public static Rotation getRotation(net.minecraft.world.level.block.Rotation rotationIn) {
         switch (rotationIn) {
-        case CLOCKWISE_90:
-            return Rotation.Y_CLOCKWISE;
-        case CLOCKWISE_180:
-            return Rotation.Y_CLOCKWISE;
-        case COUNTERCLOCKWISE_90:
-            return Rotation.Y_COUNTER_CLOCKWISE;
-        default:
-            return null;
+            case CLOCKWISE_90:
+                return Rotation.Y_CLOCKWISE;
+            case CLOCKWISE_180:
+                return Rotation.Y_CLOCKWISE;
+            case COUNTERCLOCKWISE_90:
+                return Rotation.Y_COUNTER_CLOCKWISE;
+            default:
+                return null;
         }
     }
     
@@ -134,54 +134,54 @@ public enum Rotation {
     
     public boolean getRotatedComponentPositive(Axis axis) {
         switch (axis) {
-        case X:
-            if (rotationMatrix.m00 != 0)
-                return rotationMatrix.m00 > 0;
-            else if (rotationMatrix.m10 != 0)
-                return rotationMatrix.m10 > 0;
-            else
-                return rotationMatrix.m20 > 0;
-        case Y:
-            if (rotationMatrix.m01 != 0)
-                return rotationMatrix.m01 > 0;
-            else if (rotationMatrix.m11 != 0)
-                return rotationMatrix.m11 > 0;
-            else
-                return rotationMatrix.m21 > 0;
-        case Z:
-            if (rotationMatrix.m02 != 0)
-                return rotationMatrix.m02 > 0;
-            else if (rotationMatrix.m12 != 0)
-                return rotationMatrix.m12 > 0;
-            else
-                return rotationMatrix.m22 > 0;
+            case X:
+                if (rotationMatrix.m00 != 0)
+                    return rotationMatrix.m00 > 0;
+                else if (rotationMatrix.m10 != 0)
+                    return rotationMatrix.m10 > 0;
+                else
+                    return rotationMatrix.m20 > 0;
+            case Y:
+                if (rotationMatrix.m01 != 0)
+                    return rotationMatrix.m01 > 0;
+                else if (rotationMatrix.m11 != 0)
+                    return rotationMatrix.m11 > 0;
+                else
+                    return rotationMatrix.m21 > 0;
+            case Z:
+                if (rotationMatrix.m02 != 0)
+                    return rotationMatrix.m02 > 0;
+                else if (rotationMatrix.m12 != 0)
+                    return rotationMatrix.m12 > 0;
+                else
+                    return rotationMatrix.m22 > 0;
         }
         return true;
     }
     
     public Axis getRotatedComponent(Axis axis) {
         switch (axis) {
-        case X:
-            if (rotationMatrix.m00 != 0)
-                return Axis.X;
-            else if (rotationMatrix.m10 != 0)
-                return Axis.Y;
-            else
-                return Axis.Z;
-        case Y:
-            if (rotationMatrix.m01 != 0)
-                return Axis.X;
-            else if (rotationMatrix.m11 != 0)
-                return Axis.Y;
-            else
-                return Axis.Z;
-        case Z:
-            if (rotationMatrix.m02 != 0)
-                return Axis.X;
-            else if (rotationMatrix.m12 != 0)
-                return Axis.Y;
-            else
-                return Axis.Z;
+            case X:
+                if (rotationMatrix.m00 != 0)
+                    return Axis.X;
+                else if (rotationMatrix.m10 != 0)
+                    return Axis.Y;
+                else
+                    return Axis.Z;
+            case Y:
+                if (rotationMatrix.m01 != 0)
+                    return Axis.X;
+                else if (rotationMatrix.m11 != 0)
+                    return Axis.Y;
+                else
+                    return Axis.Z;
+            case Z:
+                if (rotationMatrix.m02 != 0)
+                    return Axis.X;
+                else if (rotationMatrix.m12 != 0)
+                    return Axis.Y;
+                else
+                    return Axis.Z;
         }
         return axis;
     }
@@ -229,18 +229,18 @@ public enum Rotation {
             return axis;
         
         switch (axis) {
-        case X:
-            if (this.axis == Axis.Y)
-                return Axis.Z;
-            return Axis.Y;
-        case Y:
-            if (this.axis == Axis.Z)
-                return Axis.X;
-            return Axis.Y;
-        case Z:
-            if (this.axis == Axis.X)
+            case X:
+                if (this.axis == Axis.Y)
+                    return Axis.Z;
                 return Axis.Y;
-            return Axis.X;
+            case Y:
+                if (this.axis == Axis.Z)
+                    return Axis.X;
+                return Axis.Y;
+            case Z:
+                if (this.axis == Axis.X)
+                    return Axis.Y;
+                return Axis.X;
         }
         return axis;
     }

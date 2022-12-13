@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.util.math.base;
 
-import com.mojang.math.Vector3f;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
@@ -27,8 +25,8 @@ public enum Facing {
         }
         
         @Override
-        public Vector3f rotation() {
-            return Vector3f.YN;
+        public com.mojang.math.Axis rotation() {
+            return com.mojang.math.Axis.YN;
         }
         
     },
@@ -50,8 +48,8 @@ public enum Facing {
         }
         
         @Override
-        public Vector3f rotation() {
-            return Vector3f.YP;
+        public com.mojang.math.Axis rotation() {
+            return com.mojang.math.Axis.YP;
         }
         
     },
@@ -73,8 +71,8 @@ public enum Facing {
         }
         
         @Override
-        public Vector3f rotation() {
-            return Vector3f.ZN;
+        public com.mojang.math.Axis rotation() {
+            return com.mojang.math.Axis.ZN;
         }
         
     },
@@ -96,8 +94,8 @@ public enum Facing {
         }
         
         @Override
-        public Vector3f rotation() {
-            return Vector3f.ZP;
+        public com.mojang.math.Axis rotation() {
+            return com.mojang.math.Axis.ZP;
         }
         
     },
@@ -119,8 +117,8 @@ public enum Facing {
         }
         
         @Override
-        public Vector3f rotation() {
-            return Vector3f.XN;
+        public com.mojang.math.Axis rotation() {
+            return com.mojang.math.Axis.XN;
         }
         
     },
@@ -142,8 +140,8 @@ public enum Facing {
         }
         
         @Override
-        public Vector3f rotation() {
-            return Vector3f.XP;
+        public com.mojang.math.Axis rotation() {
+            return com.mojang.math.Axis.XP;
         }
     };
     
@@ -309,6 +307,6 @@ public enum Facing {
     
     public abstract double get(AABB bb);
     
-    public abstract Vector3f rotation();
+    public abstract com.mojang.math.Axis rotation();
     
 }

@@ -3,12 +3,10 @@ package team.creative.creativecore.common.gui.controls.collection;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -236,16 +234,13 @@ public class GuiStackSelector extends GuiLabel {
         public HashMapList<String, ItemStack> collect(Player player) {
             HashMapList<String, ItemStack> stacks = super.collect(player);
             
-            NonNullList<ItemStack> tempStacks = NonNullList.create();
-            
-            for (Item item : Registry.ITEM)
-                item.fillItemCategory(CreativeModeTab.TAB_SEARCH, tempStacks);
-            
             List<ItemStack> newStacks = new ArrayList<>();
-            for (ItemStack stack : tempStacks) {
-                if (!stack.isEmpty() && selector.allow(stack))
+            for (Item item : BuiltInRegistries.ITEM) {
+                ItemStack stack = new ItemStack(item);
+                if (selector.allow(stack))
                     newStacks.add(stack);
             }
+            
             stacks.add("collector.all", newStacks);
             
             return stacks;
@@ -297,7 +292,7 @@ public class GuiStackSelector extends GuiLabel {
         try {
             itemName = stack.getDisplayName().getString();
         } catch (Exception e) {
-            itemName = Registry.ITEM.getKey(stack.getItem()).toString();
+            itemName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
         }
         return itemName;
     }
