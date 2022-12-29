@@ -309,7 +309,7 @@ public abstract class ConfigTypeConveration<T> {
                     }
                 }
                 
-                GuiTextfield textfield = (GuiTextfield) new GuiTextfield("data", 30, 8).setExpandableX();
+                GuiTextfield textfield = (GuiTextfield) new GuiTextfield("data").setDim(30, 8).setExpandableX();
                 if (decimal)
                     textfield.setFloatOnly();
                 else
@@ -470,7 +470,7 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
-                parent.add(new GuiTextfield("data", 30, 8).setExpandableX());
+                parent.add(new GuiTextfield("data").setDim(30, 8).setExpandableX());
             }
             
             @Override
@@ -515,7 +515,7 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
-                parent.add(new GuiTextfield("data", 30, 8).setExpandableX());
+                parent.add(new GuiTextfield("data").setDim(30, 8).setExpandableX());
             }
             
             @Override
@@ -566,7 +566,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 parent.flow = GuiFlow.STACK_Y;
-                parent.add(new GuiTextfield("search", 30, 14).setExpandableX());
+                parent.add(new GuiTextfield("search").setDim(30, 14).setExpandableX());
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
                     if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                         return Component.literal(x.getPath());
@@ -574,9 +574,9 @@ public abstract class ConfigTypeConveration<T> {
                 })));
                 GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
                 hBox.add(new GuiLabel("volumeLabel").setTranslate("gui.volume"));
-                hBox.add(new GuiSlider("volume", 40, 10, 1, 0, 1));
+                hBox.add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10));
                 hBox.add(new GuiLabel("pitchLabel").setTranslate("gui.pitch"));
-                hBox.add(new GuiSlider("pitch", 40, 10, 1, 0.5, 2));
+                hBox.add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
                 parent.add(hBox);
             }
             

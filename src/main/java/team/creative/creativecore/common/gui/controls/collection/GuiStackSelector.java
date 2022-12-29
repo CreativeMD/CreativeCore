@@ -45,22 +45,13 @@ public class GuiStackSelector extends GuiLabel {
         setAlign(Align.CENTER);
     }
     
-    public GuiStackSelector(String name, int width, Player player, StackCollector collector, boolean searchBar) {
-        super(name, width, 14);
-        this.searchBar = searchBar;
-        this.player = player;
-        this.collector = collector;
-        updateCollectedStacks();
-        selectFirst();
-        setAlign(Align.CENTER);
-    }
-    
-    public GuiStackSelector(String name, int width, Player player, StackCollector collector) {
-        this(name, width, player, collector, true);
-    }
-    
     public GuiStackSelector(String name, Player player, StackCollector collector) {
         this(name, player, collector, true);
+    }
+    
+    public GuiStackSelector setWidth(int width) {
+        setDim(width, 14);
+        return this;
     }
     
     @Override
@@ -135,9 +126,10 @@ public class GuiStackSelector extends GuiLabel {
         child.setX((int) rect.minX);
         child.setY((int) rect.maxY);
         
-        child.setWidth((int) rect.getWidth());
+        child.setWidth((int) rect.getWidth(), (int) getLayer().rect.getWidth() - getContentOffset() * 2);
         child.flowX();
-        child.setHeight(child.getPreferredHeight());
+        int height = (int) getLayer().rect.getHeight() - getContentOffset() * 2;
+        child.setHeight(child.getPreferredHeight(height), height);
         child.flowY();
         
         Rect absolute = toScreenRect(child.rect.copy());

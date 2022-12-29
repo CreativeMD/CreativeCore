@@ -28,13 +28,6 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     
     protected GuiTextfield textfield;
     
-    public GuiSlider(String name, int width, int height, double value, double min, double max) {
-        super(name, width, height);
-        this.minValue = min;
-        this.maxValue = max;
-        setValue(value);
-    }
-    
     public GuiSlider(String name, double value, double min, double max) {
         super(name);
         this.minValue = min;
@@ -78,7 +71,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     protected GuiTextfield createTextfield(Rect rect) {
-        return new GuiTextfield(getNestedName() + ".text", (int) rect.getWidth() - getContentOffset() * 2, (int) rect.getHeight() - getContentOffset() * 2).setFloatOnly();
+        return new GuiTextfield(getNestedName() + ".text").setFloatOnly().setDim((int) rect.getWidth() - getContentOffset() * 2, (int) rect.getHeight() - getContentOffset() * 2);
     }
     
     public void closeTextField() {
@@ -216,12 +209,12 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 40;
     }
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return 10;
     }
     

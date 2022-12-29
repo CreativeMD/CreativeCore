@@ -17,10 +17,6 @@ public class GuiButtonHold extends GuiButton {
         super(name, pressed);
     }
     
-    public GuiButtonHold(String name, int width, int height, Consumer<Integer> pressed) {
-        super(name, width, height, pressed);
-    }
-    
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         wait = System.currentTimeMillis();

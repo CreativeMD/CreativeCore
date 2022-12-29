@@ -74,12 +74,12 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return hasFixedSize ? cols * GuiSlotBase.SLOT_SIZE : GuiSlotBase.SLOT_SIZE;
     }
     
     @Override
-    public int getMinHeight(int width) {
+    protected int minHeight(int width, int availableHeight) {
         return hasFixedSize ? rows * GuiSlotBase.SLOT_SIZE : GuiSlotBase.SLOT_SIZE;
     }
     
@@ -120,12 +120,12 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     }
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return cols * GuiSlotBase.SLOT_SIZE;
     }
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return (int) Math.ceil(container.getContainerSize() / (double) cachedCols) * GuiSlotBase.SLOT_SIZE;
     }
     

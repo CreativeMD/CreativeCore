@@ -65,17 +65,13 @@ public class GuiTextfield extends GuiFocusControl {
         setText(text);
     }
     
-    public GuiTextfield(String name, int width) {
-        this(name, width, 20);
+    @Override
+    public GuiTextfield setDim(int width, int height) {
+        return (GuiTextfield) super.setDim(width, height);
     }
     
-    public GuiTextfield(String name, int width, int height) {
-        this(name, "", width, height);
-    }
-    
-    public GuiTextfield(String name, String text, int width, int height) {
-        super(name, width, height);
-        setText(text);
+    public GuiTextfield setDim(int width) {
+        return (GuiTextfield) super.setDim(width, 20);
     }
     
     public GuiTextfield setFloatOnly() {
@@ -518,12 +514,12 @@ public class GuiTextfield extends GuiFocusControl {
     public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return 10;
     }
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 40;
     }
     

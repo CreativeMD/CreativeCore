@@ -78,32 +78,32 @@ public abstract class GuiSlotBase extends GuiControl {
     public void flowY(int width, int height, int preferred) {}
     
     @Override
-    public int getMaxWidth() {
+    protected int maxWidth(int availableWidth) {
         return 18;
     }
     
     @Override
-    public int getMaxHeight(int width) {
+    protected int maxHeight(int width, int availableHeight) {
         return 18;
     }
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 18;
     }
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return 18;
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return 18;
     }
     
     @Override
-    public int getMinHeight(int width) {
+    protected int minHeight(int width, int availableHeight) {
         return 18;
     }
 }

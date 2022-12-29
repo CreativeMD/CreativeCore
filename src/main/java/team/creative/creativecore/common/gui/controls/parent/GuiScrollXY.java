@@ -44,14 +44,6 @@ public class GuiScrollXY extends GuiParent {
         super(name, flow);
     }
     
-    public GuiScrollXY(String name, int width, int height) {
-        this(name, GuiFlow.STACK_X, width, height);
-    }
-    
-    public GuiScrollXY(String name, GuiFlow flow, int width, int height) {
-        super(name, flow, width, height);
-    }
-    
     @Override
     public double getScaleFactor() {
         return scaleFactor;
@@ -212,12 +204,12 @@ public class GuiScrollXY extends GuiParent {
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return 10;
     }
     
     @Override
-    public int getMinHeight(int width) {
+    protected int minHeight(int width, int availableHeight) {
         return 10;
     }
     

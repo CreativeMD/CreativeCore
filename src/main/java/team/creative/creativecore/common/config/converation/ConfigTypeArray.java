@@ -48,7 +48,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
-        parent.add(new GuiListBoxBase<>("data", 50, 150, false, new ArrayList<>()).setExpandable());
+        parent.add(new GuiListBoxBase<>("data", false, new ArrayList<>()).setDim(50, 150).setExpandable());
     }
     
     @Override

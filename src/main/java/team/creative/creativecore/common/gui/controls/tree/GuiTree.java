@@ -56,18 +56,6 @@ public class GuiTree extends GuiScrollXY {
         setLineThickness(1);
     }
     
-    public GuiTree(String name, int width, int height, boolean searchbar) {
-        super(name, GuiFlow.STACK_Y, width, height);
-        this.searchbar = searchbar;
-        if (searchbar)
-            search = new GuiTextfield(name);
-        else
-            search = null;
-        this.root = new GuiTreeItem("root", this);
-        spacing = 3;
-        setLineThickness(1);
-    }
-    
     public void select(GuiTreeItem item) {
         if (selected != null)
             selected.deselect();
@@ -100,8 +88,8 @@ public class GuiTree extends GuiScrollXY {
             addItem(root);
         
         if (lastWidth != 0) {
-            flowX(lastWidth, getPreferredWidth());
-            flowY(lastWidth, lastHeight, getPreferredHeight(lastWidth));
+            flowX(lastWidth, preferredWidth(lastWidth));
+            flowY(lastWidth, lastHeight, preferredHeight(lastWidth, lastHeight));
         }
     }
     
@@ -120,13 +108,13 @@ public class GuiTree extends GuiScrollXY {
     }
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         int width = 0;
         for (GuiChildControl child : controls)
             if (child.control instanceof GuiTreeItem item)
-                width = Math.max(width, offsetByLevel(item.getLevel()) + 1 + child.getPreferredWidth());
+                width = Math.max(width, offsetByLevel(item.getLevel()) + 1 + child.getPreferredWidth(availableWidth));
             else
-                width = Math.max(width, child.getPreferredWidth());
+                width = Math.max(width, child.getPreferredWidth(availableWidth));
         return width;
     }
     

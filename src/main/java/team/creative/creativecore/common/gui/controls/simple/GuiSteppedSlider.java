@@ -5,10 +5,6 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiSteppedSlider extends GuiSlider {
     
-    public GuiSteppedSlider(String name, int width, int height, int value, int min, int max) {
-        super(name, width, height, value, min, max);
-    }
-    
     public GuiSteppedSlider(String name, int value, int min, int max) {
         super(name, value, min, max);
     }

@@ -45,7 +45,7 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
     }
     
     @Override
-    public int getMaxHeight(int width) {
+    protected int maxHeight(int width, int availableWidth) {
         return 100;
     }
     

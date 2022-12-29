@@ -12,13 +12,13 @@ public abstract class GuiFlow {
     public static final GuiFlowFitX FIT_X = new GuiFlowFitX();
     public static final GuiStackY STACK_Y = new GuiStackY();
     
-    public abstract int minWidth(List<GuiChildControl> controls, int spacing);
+    public abstract int minWidth(List<GuiChildControl> controls, int spacing, int availableWidth);
     
-    public abstract int preferredWidth(List<GuiChildControl> controls, int spacing);
+    public abstract int preferredWidth(List<GuiChildControl> controls, int spacing, int availableWidth);
     
-    public abstract int minHeight(List<GuiChildControl> controls, int spacing, int width);
+    public abstract int minHeight(List<GuiChildControl> controls, int spacing, int width, int availableWidth);
     
-    public abstract int preferredHeight(List<GuiChildControl> controls, int spacing, int width);
+    public abstract int preferredHeight(List<GuiChildControl> controls, int spacing, int width, int availableWidth);
     
     public abstract void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred);
     

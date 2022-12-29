@@ -82,7 +82,7 @@ public class GuiColorPicker extends GuiParent {
         plate.valign = VAlign.CENTER;
         row.addColumn(plate);
         
-        plate.add(new GuiColorPlate("plate", 20, 20, color));
+        plate.add(new GuiColorPlate("plate", color).setDim(20, 20));
         
         registerEventChanged(x -> {
             if (x.control.is("r", "g", "b", "a"))

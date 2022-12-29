@@ -20,6 +20,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiFixedDimension;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
@@ -33,9 +35,7 @@ public abstract class GuiControl {
     public final String name;
     public boolean enabled = true;
     
-    public boolean hasPreferredDimensions;
-    public int preferredWidth;
-    public int preferredHeight;
+    public GuiSizeRule preferred;
     public boolean expandableX = false;
     public boolean expandableY = false;
     
@@ -45,14 +45,6 @@ public abstract class GuiControl {
     
     public GuiControl(String name) {
         this.name = name;
-        this.hasPreferredDimensions = false;
-    }
-    
-    public GuiControl(String name, int width, int height) {
-        this.name = name;
-        this.hasPreferredDimensions = true;
-        this.preferredWidth = width;
-        this.preferredHeight = height;
     }
     
     // BASICS
@@ -101,6 +93,16 @@ public abstract class GuiControl {
     
     public GuiControl setExpandableY() {
         this.expandableY = true;
+        return this;
+    }
+    
+    public GuiControl setDim(int width, int height) {
+        this.preferred = new GuiFixedDimension(width, height);
+        return this;
+    }
+    
+    public GuiControl setDim(GuiSizeRule dim) {
+        this.preferred = dim;
         return this;
     }
     
@@ -193,36 +195,78 @@ public abstract class GuiControl {
         parent.reflow();
     }
     
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return -1;
     }
     
-    protected abstract int preferredWidth();
-    
-    public int getPreferredWidth() {
-        if (hasPreferredDimensions)
-            return preferredWidth;
-        return preferredWidth();
+    public final int getMinWidth(int availableWidth) {
+        if (preferred != null) {
+            int minWidth = preferred.minWidth(this, availableWidth);
+            if (minWidth != -1)
+                return minWidth;
+        }
+        return minWidth(availableWidth);
     }
     
-    public int getMaxWidth() {
+    protected abstract int preferredWidth(int availableWidth);
+    
+    public final int getPreferredWidth(int availableWidth) {
+        if (preferred != null) {
+            int prefWidth = preferred.preferredWidth(this, availableWidth);
+            if (prefWidth != -1)
+                return prefWidth;
+        }
+        return preferredWidth(availableWidth);
+    }
+    
+    protected int maxWidth(int availableWidth) {
         return -1;
     }
     
-    public int getMinHeight(int width) {
+    public final int getMaxWidth(int availableWidth) {
+        if (preferred != null) {
+            int maxWidth = preferred.maxWidth(this, availableWidth);
+            if (maxWidth != -1)
+                return maxWidth;
+        }
+        return maxWidth(availableWidth);
+    }
+    
+    protected int minHeight(int width, int availableHeight) {
         return -1;
     }
     
-    protected abstract int preferredHeight(int width);
-    
-    public int getPreferredHeight(int width) {
-        if (hasPreferredDimensions)
-            return preferredHeight;
-        return preferredHeight(width);
+    public final int getMinHeight(int width, int availableHeight) {
+        if (preferred != null) {
+            int minHeight = preferred.minHeight(this, width, availableHeight);
+            if (minHeight != -1)
+                return minHeight;
+        }
+        return minHeight(width, availableHeight);
     }
     
-    public int getMaxHeight(int width) {
+    protected abstract int preferredHeight(int width, int availableHeight);
+    
+    public final int getPreferredHeight(int width, int availableHeight) {
+        if (preferred != null) {
+            int prefHeight = preferred.preferredHeight(this, width, availableHeight);
+            if (prefHeight != -1)
+                return prefHeight;
+        }
+        return preferredHeight(width, availableHeight);
+    }
+    
+    protected int maxHeight(int width, int availableHeight) {
         return -1;
+    }
+    
+    public final int getMaxHeight(int width, int availableHeight) {
+        if (preferred != null) {
+            int maxHeight = preferred.maxHeight(this, width, availableHeight);
+            if (maxHeight != -1)
+                return maxHeight;
+        }
+        return maxHeight(width, availableHeight);
     }
     
     public Rect toLayerRect(Rect rect) {

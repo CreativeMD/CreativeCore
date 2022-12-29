@@ -25,10 +25,6 @@ public class GuiLabel extends GuiControl {
         super(name);
     }
     
-    public GuiLabel(String name, int width, int height) {
-        super(name, width, height);
-    }
-    
     public GuiLabel setDefaultColor(int color) {
         text.defaultColor = color;
         return this;
@@ -89,22 +85,22 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return 10;
     }
     
     @Override
-    public int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return text.getTotalWidth();
     }
     
     @Override
-    public int getMinHeight(int width) {
+    protected int minHeight(int width, int availableHeight) {
         return Minecraft.getInstance().font.lineHeight;
     }
     
     @Override
-    public int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return text.getTotalHeight();
     }
     

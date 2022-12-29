@@ -40,25 +40,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         this.flow = flow;
     }
     
-    public GuiParent(String name, GuiFlow flow, int width, int height) {
-        super(name, width, height);
-        this.flow = flow;
+    public GuiParent(String name, GuiFlow flow, VAlign valign) {
+        this(name, flow, Align.LEFT, valign);
     }
     
     public GuiParent(String name, GuiFlow flow, Align align, VAlign valign) {
         this(name, flow);
         this.align = align;
         this.valign = valign;
-    }
-    
-    public GuiParent(String name, GuiFlow flow, int width, int height, Align align, VAlign valign) {
-        this(name, flow, width, height);
-        this.align = align;
-        this.valign = valign;
-    }
-    
-    public GuiParent(String name, GuiFlow flow, int width, int height, VAlign valign) {
-        this(name, flow, width, height, Align.LEFT, valign);
     }
     
     public GuiParent(String name) {
@@ -552,23 +541,23 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
-    public int getMinWidth() {
-        return flow.minWidth(controls, spacing);
+    protected int minWidth(int availableWidth) {
+        return flow.minWidth(controls, spacing, availableWidth);
     }
     
     @Override
-    protected int preferredWidth() {
-        return flow.preferredWidth(controls, spacing);
+    protected int preferredWidth(int availableWidth) {
+        return flow.preferredWidth(controls, spacing, availableWidth);
     }
     
     @Override
-    public int getMinHeight(int width) {
-        return flow.minHeight(controls, spacing, width);
+    protected int minHeight(int width, int availableHeight) {
+        return flow.minHeight(controls, spacing, width, availableHeight);
     }
     
     @Override
-    protected int preferredHeight(int width) {
-        return flow.preferredHeight(controls, spacing, width);
+    protected int preferredHeight(int width, int availableHeight) {
+        return flow.preferredHeight(controls, spacing, width, availableHeight);
     }
     
     @Override

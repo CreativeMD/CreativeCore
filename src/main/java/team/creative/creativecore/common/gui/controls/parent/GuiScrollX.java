@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -34,9 +35,19 @@ public class GuiScrollX extends GuiParent {
         this.scaleFactor = 1;
     }
     
-    public GuiScrollX(String name, int width, int height, float scaleFactor) {
-        super(name, GuiFlow.STACK_X, width, height);
-        this.scaleFactor = scaleFactor;
+    @Override
+    public GuiScrollX setDim(int width, int height) {
+        return (GuiScrollX) super.setDim(width, height);
+    }
+    
+    @Override
+    public GuiScrollX setDim(GuiSizeRule dim) {
+        return (GuiScrollX) super.setDim(dim);
+    }
+    
+    @Override
+    public GuiScrollX setExpandable() {
+        return (GuiScrollX) super.setExpandable();
     }
     
     @Override
@@ -133,12 +144,12 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return 10;
     }
     
     @Override
-    public int getMinHeight(int width) {
+    protected int minHeight(int width, int availableHeight) {
         return 10;
     }
     
@@ -146,7 +157,7 @@ public class GuiScrollX extends GuiParent {
     public void flowX(int width, int preferred) {
         int x = 0;
         for (GuiChildControl child : controls) {
-            child.setWidth(child.getPreferredWidth());
+            child.setWidth(child.getPreferredWidth(width), width);
             child.setX(x);
             child.flowX();
             x += child.getWidth() + spacing;

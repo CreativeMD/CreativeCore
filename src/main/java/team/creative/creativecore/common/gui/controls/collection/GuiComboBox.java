@@ -65,7 +65,7 @@ public class GuiComboBox extends GuiLabel {
     }
     
     @Override
-    public int preferredWidth() {
+    public int preferredWidth(int availableWidth) {
         int contentOffset = getContentOffset() * 2;
         int width = 0;
         for (CompiledText text : lines)
@@ -74,7 +74,7 @@ public class GuiComboBox extends GuiLabel {
     }
     
     @Override
-    public int preferredHeight(int width) {
+    public int preferredHeight(int width, int availableHeight) {
         int contentOffset = getContentOffset() * 2;
         int height = 0;
         for (CompiledText text : lines)
@@ -116,14 +116,14 @@ public class GuiComboBox extends GuiLabel {
         GuiChildControl child = getLayer().addHover(extension);
         
         rect = toLayerRect(rect.copy());
-        
         extension.init();
         child.setX((int) rect.minX);
         child.setY((int) rect.maxY);
         
-        child.setWidth((int) rect.getWidth());
+        child.setWidth((int) rect.getWidth(), (int) getLayer().rect.getWidth() - getContentOffset() * 2);
         child.flowX();
-        child.setHeight(child.getPreferredHeight());
+        int height = (int) getLayer().rect.getHeight() - getContentOffset() * 2;
+        child.setHeight(child.getPreferredHeight(height), height);
         child.flowY();
         
         Rect absolute = toScreenRect(child.rect.copy());

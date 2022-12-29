@@ -48,93 +48,95 @@ public class GuiChildControl {
         return (int) rect.getHeight() - control.getContentOffset() * 2;
     }
     
-    public void setWidth(int width) {
-        int min = getMinWidth();
+    public void setWidth(int width, int availableWidth) {
+        int min = getMinWidth(availableWidth);
         if (min != -1)
             width = Math.max(width, min);
-        int max = getMaxWidth();
+        int max = getMaxWidth(availableWidth);
         if (max != -1)
             width = Math.min(width, max);
         rect.maxX = rect.minX + width;
     }
     
-    public void setHeight(int height) {
-        int min = getMinHeight();
+    public void setHeight(int height, int availableHeight) {
+        int min = getMinHeight(availableHeight);
         if (min != -1)
             height = Math.max(height, min);
-        int max = getMaxHeight();
+        int max = getMaxHeight(availableHeight);
         if (max != -1)
             height = Math.min(height, max);
         rect.maxY = rect.minY + height;
     }
     
-    public int addWidth(int additional) {
+    public int addWidth(int additional, int availableWidth) {
         int before = getWidth();
-        setWidth(getWidth() + additional);
+        setWidth(getWidth() + additional, availableWidth);
         return getWidth() - before;
     }
     
-    public int addHeight(int additional) {
+    public int addHeight(int additional, int availableHeight) {
         int before = getHeight();
-        setHeight(getHeight() + additional);
+        setHeight(getHeight() + additional, availableHeight);
         return getHeight() - before;
     }
     
-    public boolean isMaxWidth() {
-        if (getMaxWidth() != -1)
-            return getWidth() >= getMaxWidth();
+    public boolean isMaxWidth(int availableWidth) {
+        if (getMaxWidth(availableWidth) != -1)
+            return getWidth() >= getMaxWidth(availableWidth);
         return false;
     }
     
-    public boolean isMaxHeight() {
-        if (getMaxHeight() != -1)
-            return getHeight() >= getMaxHeight();
+    public boolean isMaxHeight(int availableHeight) {
+        if (getMaxHeight(availableHeight) != -1)
+            return getHeight() >= getMaxHeight(availableHeight);
         return false;
     }
     
-    public int getMinWidth() {
-        int min = control.getMinWidth();
+    public int getMinWidth(int availableWidth) {
+        int min = control.getMinWidth(availableWidth);
         if (min != -1)
             return min + control.getContentOffset() * 2;
         return -1;
     }
     
-    public int getMaxWidth() {
-        int max = control.getMaxWidth();
+    public int getMaxWidth(int availableWidth) {
+        int max = control.getMaxWidth(availableWidth);
         if (max != -1)
             return max + control.getContentOffset() * 2;
         return -1;
     }
     
-    public int getPreferredWidth() {
-        return control.getPreferredWidth() + control.getContentOffset() * 2;
+    public int getPreferredWidth(int availableWidth) {
+        return control.getPreferredWidth(availableWidth) + control.getContentOffset() * 2;
     }
     
-    public int getMinHeight() {
-        int min = control.getMinHeight(getContentWidth());
+    public int getMinHeight(int availableHeight) {
+        int min = control.getMinHeight(getContentWidth(), availableHeight);
         if (min != -1)
             return min + control.getContentOffset() * 2;
         return -1;
     }
     
-    public int getMaxHeight() {
-        int max = control.getMaxHeight(getContentWidth());
+    public int getMaxHeight(int availableHeight) {
+        int max = control.getMaxHeight(getContentWidth(), availableHeight);
         if (max != -1)
             return max + control.getContentOffset() * 2;
         return -1;
     }
     
-    public int getPreferredHeight() {
-        return control.getPreferredHeight(getContentWidth()) + control.getContentOffset() * 2;
+    public int getPreferredHeight(int availableHeight) {
+        return control.getPreferredHeight(getContentWidth(), availableHeight) + control.getContentOffset() * 2;
     }
     
     public void flowX() {
-        control.flowX(getContentWidth(), control.preferredWidth());
+        int width = getContentWidth();
+        control.flowX(width, control.preferredWidth(width));
     }
     
     public void flowY() {
         int width = getContentWidth();
-        control.flowY(width, getContentHeight(), control.preferredHeight(width));
+        int height = getContentHeight();
+        control.flowY(width, height, control.preferredHeight(width, height));
     }
     
     public int getBottom() {

@@ -15,11 +15,6 @@ public class GuiButton extends GuiLabel {
         this.pressed = pressed;
     }
     
-    public GuiButton(String name, int width, int height, Consumer<Integer> pressed) {
-        super(name, width, height);
-        this.pressed = pressed;
-    }
-    
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         playSound(SoundEvents.UI_BUTTON_CLICK);

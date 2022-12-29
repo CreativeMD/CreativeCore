@@ -46,13 +46,13 @@ public class GuiCheckBox extends GuiLabel {
     }
     
     @Override
-    public int getPreferredWidth() {
-        return super.getPreferredWidth() + checkBoxWidth + 3;
+    protected int preferredWidth(int availableWidth) {
+        return super.preferredWidth(availableWidth) + checkBoxWidth + 3;
     }
     
     @Override
-    public int getPreferredHeight(int width) {
-        return Math.max(checkBoxWidth + 3, super.getPreferredHeight(width));
+    protected int preferredHeight(int width, int availableHeight) {
+        return Math.max(checkBoxWidth + 3, super.preferredHeight(width, availableHeight));
     }
     
     @Override

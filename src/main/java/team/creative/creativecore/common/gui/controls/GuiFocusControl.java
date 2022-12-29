@@ -9,10 +9,6 @@ public abstract class GuiFocusControl extends GuiControl {
         super(name);
     }
     
-    public GuiFocusControl(String name, int width, int height) {
-        super(name, width, height);
-    }
-    
     private boolean focused = false;
     
     public boolean isFocused() {

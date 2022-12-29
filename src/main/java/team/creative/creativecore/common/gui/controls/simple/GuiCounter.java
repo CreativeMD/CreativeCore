@@ -21,7 +21,7 @@ public class GuiCounter extends GuiParent {
         flow = GuiFlow.STACK_X;
         valign = VAlign.STRETCH;
         spacing = 0;
-        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max), 20, 8).setNumbersOnly();
+        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(20, 8).setNumbersOnly();
         add(textfield.setExpandableX());
         GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
         add(buttons);

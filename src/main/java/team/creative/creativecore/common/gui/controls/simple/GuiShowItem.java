@@ -22,15 +22,6 @@ public class GuiShowItem extends GuiControl {
         this.stack = stack;
     }
     
-    public GuiShowItem(String name, int width, int height) {
-        super(name, width, height);
-    }
-    
-    public GuiShowItem(String name, int width, int height, ItemStack stack) {
-        super(name, width, height);
-        this.stack = stack;
-    }
-    
     @Override
     public void init() {}
     
@@ -47,12 +38,12 @@ public class GuiShowItem extends GuiControl {
     public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 16;
     }
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return 16;
     }
     

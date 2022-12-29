@@ -22,13 +22,6 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public final boolean modifiable;
     
-    public GuiListBoxBase(String name, int width, int height, boolean modifiable, List<T> entries) {
-        super(name, width, height);
-        this.content = entries;
-        this.modifiable = modifiable;
-        createItems();
-    }
-    
     public GuiListBoxBase(String name, boolean modifiable, List<T> entries) {
         super(name);
         this.content = entries;
@@ -89,8 +82,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public void reflowInternal() {
         if (hasGui()) {
-            super.flowX(cachedWidth, preferredWidth());
-            super.flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth));
+            super.flowX(cachedWidth, preferredWidth(cachedWidth));
+            super.flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth, cachedHeight));
         }
     }
     
@@ -146,7 +139,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         public int index;
         
         public GuiButtonRemove(int index) {
-            super("x", 6, 8, null);
+            super("x", null);
+            setDim(6, 8);
             setAlign(Align.CENTER);
             setTitle(Component.literal("x"));
             pressed = (x) -> GuiListBoxBase.this.removeItem(this.index);

@@ -19,11 +19,6 @@ public class GuiColorPlate extends GuiControl {
         setColor(color);
     }
     
-    public GuiColorPlate(String name, int width, int height, Color color) {
-        super(name, width, height);
-        setColor(color);
-    }
-    
     public void setColor(Color color) {
         this.color = color;
         this.colorPlate = new DisplayColor(color);
@@ -61,12 +56,12 @@ public class GuiColorPlate extends GuiControl {
     public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 20;
     }
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return 20;
     }
     

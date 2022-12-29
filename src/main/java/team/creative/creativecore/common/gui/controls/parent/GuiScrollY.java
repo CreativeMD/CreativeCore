@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -35,13 +36,14 @@ public class GuiScrollY extends GuiParent {
         this.scaleFactor = 1;
     }
     
-    public GuiScrollY(String name, int width, int height) {
-        this(name, width, height, 1);
+    @Override
+    public GuiScrollY setDim(int width, int height) {
+        return (GuiScrollY) super.setDim(width, height);
     }
     
-    public GuiScrollY(String name, int width, int height, float scaleFactor) {
-        super(name, GuiFlow.STACK_Y, width, height);
-        this.scaleFactor = scaleFactor;
+    @Override
+    public GuiScrollY setDim(GuiSizeRule dim) {
+        return (GuiScrollY) super.setDim(dim);
     }
     
     @Override
@@ -143,12 +145,12 @@ public class GuiScrollY extends GuiParent {
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return 10;
     }
     
     @Override
-    public int getMinHeight(int width) {
+    protected int minHeight(int width, int availableHeight) {
         return 10;
     }
     
@@ -161,7 +163,7 @@ public class GuiScrollY extends GuiParent {
     public void flowY(int width, int height, int preferred) {
         int y = 0;
         for (GuiChildControl child : controls) {
-            child.setHeight(child.getPreferredHeight());
+            child.setHeight(child.getPreferredHeight(height), height);
             child.setY(y);
             child.flowY();
             y += child.getHeight() + spacing;

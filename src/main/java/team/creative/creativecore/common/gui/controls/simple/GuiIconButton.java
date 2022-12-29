@@ -24,13 +24,15 @@ public class GuiIconButton extends GuiControl {
     protected Color color = Color.WHITE;
     
     public GuiIconButton(String name, GuiIcon icon, Consumer<Integer> pressed) {
-        super(name, 12, 12);
+        super(name);
+        setDim(12, 12);
         this.icon = icon;
         this.pressed = pressed;
     }
     
     public GuiIconButton(String name, int width, int height, GuiIcon icon, Consumer<Integer> pressed) {
-        super(name, width, height);
+        super(name);
+        setDim(width, height);
         this.icon = icon;
         this.pressed = pressed;
     }
@@ -55,12 +57,12 @@ public class GuiIconButton extends GuiControl {
     public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 12;
     }
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return 12;
     }
     

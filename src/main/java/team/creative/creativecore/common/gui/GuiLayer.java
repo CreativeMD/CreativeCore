@@ -42,7 +42,8 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     public GuiLayer(String name, int width, int height) {
-        super(name, GuiFlow.STACK_X, width, height);
+        super(name, GuiFlow.STACK_X);
+        setDim(width, height);
         this.rect = new Rect(0, 0, width, height);
         if (CreativeCore.loader().getOverallSide().isClient())
             this.style = GuiStyle.getStyle(name);
@@ -125,16 +126,20 @@ public abstract class GuiLayer extends GuiParent {
         if (CreativeCore.loader().getOverallSide().isServer())
             return;
         
-        if (!hasPreferredDimensions) {
-            int preferredWidth = preferredWidth();
+        if (preferred == null) {
+            Rect screen = Rect.getScreenRect();
+            int preferredWidth = preferredWidth((int) (screen.getWidth() - getContentOffset() * 2));
             rect.maxX = preferredWidth + getContentOffset() * 2;
             int width = (int) rect.getWidth() - getContentOffset() * 2;
             flowX(width, preferredWidth);
-            rect.maxY = preferredHeight((int) rect.getWidth()) + getContentOffset() * 2;
-            flowY(width, (int) rect.getHeight() - getContentOffset() * 2, preferredHeight(width));
+            int height = (int) screen.getHeight() - getContentOffset() * 2;
+            rect.maxY = preferredHeight((int) rect.getWidth() + getContentOffset() * 2, height);
+            flowY(width, (int) rect.getHeight() - getContentOffset() * 2, preferredHeight(width, height));
         } else {
-            flowX((int) rect.getWidth() - getContentOffset() * 2, preferredWidth());
-            flowY((int) rect.getWidth() - getContentOffset() * 2, (int) rect.getHeight() - getContentOffset() * 2, preferredHeight((int) rect.getWidth()));
+            int width = (int) rect.getWidth() - getContentOffset() * 2;
+            flowX(width, preferredWidth(width));
+            int height = (int) rect.getHeight() - getContentOffset() * 2;
+            flowY(width, height, preferredHeight((int) rect.getWidth(), height));
         }
     }
     

@@ -18,10 +18,6 @@ public class GuiButtonHoldSlim extends GuiButtonHold {
         super(name, pressed);
     }
     
-    public GuiButtonHoldSlim(String name, int width, int height, Consumer<Integer> pressed) {
-        super(name, width, height, pressed);
-    }
-    
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
@@ -39,7 +35,7 @@ public class GuiButtonHoldSlim extends GuiButtonHold {
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return -1;
     }
 }

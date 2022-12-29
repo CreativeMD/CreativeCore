@@ -60,7 +60,7 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public int preferredWidth() {
+    public int preferredWidth(int availableWidth) {
         int width = 0;
         for (CompiledText text : states)
             width = Math.max(width, text.getTotalWidth());
@@ -68,7 +68,7 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public int preferredHeight(int width) {
+    public int preferredHeight(int width, int availableHeight) {
         int height = 0;
         for (CompiledText text : states)
             height = Math.max(height, text.getTotalHeight());

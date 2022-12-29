@@ -10,34 +10,34 @@ import team.creative.creativecore.common.gui.VAlign;
 public class GuiFlowFitX extends GuiStackX {
     
     @Override
-    public int minHeight(List<GuiChildControl> controls, int spacing, int width) {
+    public int minHeight(List<GuiChildControl> controls, int spacing, int width, int availableHeight) {
         int line = 0;
         int lineHeight = 0;
         int total = 0;
         for (GuiChildControl child : controls) {
             if (child.getY() == line)
-                lineHeight = Math.max(lineHeight, child.getMaxHeight());
+                lineHeight = Math.max(lineHeight, child.getMaxHeight(availableHeight));
             else {
                 line = child.getY();
                 total += lineHeight;
-                lineHeight = child.getMaxHeight();
+                lineHeight = child.getMaxHeight(availableHeight);
             }
         }
         return total;
     }
     
     @Override
-    public int preferredHeight(List<GuiChildControl> controls, int spacing, int width) {
+    public int preferredHeight(List<GuiChildControl> controls, int spacing, int width, int availableHeight) {
         int line = 0;
         int lineHeight = 0;
         int total = 0;
         for (GuiChildControl child : controls) {
             if (child.getY() == line)
-                lineHeight = Math.max(lineHeight, child.getPreferredHeight());
+                lineHeight = Math.max(lineHeight, child.getPreferredHeight(availableHeight));
             else {
                 line = child.getY();
                 total += lineHeight;
-                lineHeight = child.getPreferredHeight();
+                lineHeight = child.getPreferredHeight(availableHeight);
             }
         }
         return total;
@@ -50,7 +50,7 @@ public class GuiFlowFitX extends GuiStackX {
         List<GuiChildControl> row = new ArrayList<>();
         for (int i = 0; i < controls.size(); i++) {
             GuiChildControl child = controls.get(i);
-            int pref = child.getPreferredWidth();
+            int pref = child.getPreferredWidth(width);
             if (width - x >= pref) {
                 child.setY(rowIndex);
                 row.add(child);
@@ -107,18 +107,18 @@ public class GuiFlowFitX extends GuiStackX {
         }
         
         @Override
-        public int getMinWidth() {
-            return GuiFlow.STACK_X.minWidth(controls, spacing);
+        public int getMinWidth(int availableWidth) {
+            return GuiFlow.STACK_X.minWidth(controls, spacing, availableWidth);
         }
         
         @Override
-        public int getMaxWidth() {
+        public int getMaxWidth(int availableWidth) {
             return -1;
         }
         
         @Override
-        public int getPreferredWidth() {
-            return GuiFlow.STACK_X.preferredWidth(controls, spacing);
+        public int getPreferredWidth(int availableWidth) {
+            return GuiFlow.STACK_X.preferredWidth(controls, spacing, availableWidth);
         }
         
         @Override
@@ -127,18 +127,18 @@ public class GuiFlowFitX extends GuiStackX {
         }
         
         @Override
-        public int getMinHeight() {
-            return GuiFlow.STACK_X.minHeight(controls, spacing, width);
+        public int getMinHeight(int availableHeight) {
+            return GuiFlow.STACK_X.minHeight(controls, spacing, width, availableHeight);
         }
         
         @Override
-        public int getMaxHeight() {
+        public int getMaxHeight(int availableHeight) {
             return -1;
         }
         
         @Override
-        public int getPreferredHeight() {
-            return GuiFlow.STACK_X.preferredHeight(controls, spacing, width);
+        public int getPreferredHeight(int availableHeight) {
+            return GuiFlow.STACK_X.preferredHeight(controls, spacing, width, availableHeight);
         }
         
         @Override
@@ -146,7 +146,7 @@ public class GuiFlowFitX extends GuiStackX {
         
         @Override
         public void flowY() {
-            GuiFlow.STACK_X.flowY(controls, spacing, valign, width, getHeight(), getPreferredHeight());
+            GuiFlow.STACK_X.flowY(controls, spacing, valign, width, getHeight(), getPreferredHeight(getHeight()));
         }
         
     }

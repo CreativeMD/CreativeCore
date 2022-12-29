@@ -51,12 +51,12 @@ public class GuiStackSelectorExtension extends GuiScrollY {
     }
     
     @Override
-    public int preferredWidth() {
+    public int preferredWidth(int availableWidth) {
         return 100;
     }
     
     @Override
-    public int preferredHeight(int width) {
+    public int preferredHeight(int width, int availableHeight) {
         return 100;
     }
     
@@ -67,8 +67,8 @@ public class GuiStackSelectorExtension extends GuiScrollY {
     }
     
     public void reflowInternal() {
-        flowX(cachedWidth, getPreferredWidth());
-        flowY(cachedWidth, cachedHeight, getPreferredHeight(cachedWidth));
+        flowX(cachedWidth, preferredWidth(cachedWidth));
+        flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth, cachedHeight));
     }
     
     public void reloadControls() {

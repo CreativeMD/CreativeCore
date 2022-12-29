@@ -58,7 +58,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         topBottom.addTop(box);
         
         handler.createControls(topBottom.top, info);
-        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest", 100, 80).setExpandableX();
+        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest").setDim(100, 80).setExpandableX();
         for (int i = 0; i < latest.size(); i++) {
             final int id = i;
             scroll.add(new GuiButton("" + i, x -> {

@@ -22,12 +22,6 @@ public class GuiProgressbar extends GuiControl {
     public double max;
     public boolean showToolTip = true;
     
-    public GuiProgressbar(String name, int width, int height, double pos, double max) {
-        super(name, width, height);
-        this.pos = pos;
-        this.max = max;
-    }
-    
     public GuiProgressbar(String name, double pos, double max) {
         super(name);
         this.pos = pos;
@@ -77,12 +71,12 @@ public class GuiProgressbar extends GuiControl {
     public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 40;
     }
     
     @Override
-    protected int preferredHeight(int width) {
+    protected int preferredHeight(int width, int availableHeight) {
         return 10;
     }
     
