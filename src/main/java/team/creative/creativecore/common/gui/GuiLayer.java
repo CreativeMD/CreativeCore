@@ -128,13 +128,23 @@ public abstract class GuiLayer extends GuiParent {
         
         if (preferred == null) {
             Rect screen = Rect.getScreenRect();
-            int preferredWidth = preferredWidth((int) (screen.getWidth() - getContentOffset() * 2));
+            int screenWidth = (int) screen.getWidth() - getContentOffset() * 2;
+            int preferredWidth;
+            if (isExpandableX())
+                preferredWidth = screenWidth;
+            else
+                preferredWidth = preferredWidth(screenWidth);
             rect.maxX = preferredWidth + getContentOffset() * 2;
-            int width = (int) rect.getWidth() - getContentOffset() * 2;
-            flowX(width, preferredWidth);
-            int height = (int) screen.getHeight() - getContentOffset() * 2;
-            rect.maxY = preferredHeight((int) rect.getWidth() + getContentOffset() * 2, height);
-            flowY(width, (int) rect.getHeight() - getContentOffset() * 2, preferredHeight(width, height));
+            flowX(preferredWidth, preferredWidth);
+            
+            int screenHeight = (int) screen.getHeight() - getContentOffset() * 2;
+            int preferredHeight;
+            if (isExpandableY())
+                preferredHeight = screenHeight;
+            else
+                preferredHeight = preferredHeight((int) rect.getWidth() + getContentOffset() * 2, screenHeight);
+            rect.maxY = preferredHeight + getContentOffset() * 2;
+            flowY(preferredWidth, preferredHeight, preferredHeight(preferredWidth, screenHeight));
         } else {
             int width = (int) rect.getWidth() - getContentOffset() * 2;
             flowX(width, preferredWidth(width));
