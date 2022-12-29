@@ -57,6 +57,47 @@ public abstract class GuiSizeRule {
         }
     }
     
+    public static class GuiRatioDimension extends GuiSizeRule {
+        
+        public final float width;
+        public final float height;
+        
+        public GuiRatioDimension(float width, float height) {
+            this.width = width;
+            this.height = height;
+        }
+        
+        @Override
+        public int minWidth(GuiControl control, int availableWidth) {
+            return -1;
+        }
+        
+        @Override
+        public int preferredWidth(GuiControl control, int availableWidth) {
+            return (int) (width * availableWidth);
+        }
+        
+        @Override
+        public int maxWidth(GuiControl control, int availableWidth) {
+            return -1;
+        }
+        
+        @Override
+        public int minHeight(GuiControl control, int width, int availableHeight) {
+            return -1;
+        }
+        
+        @Override
+        public int preferredHeight(GuiControl control, int width, int availableHeight) {
+            return (int) (height * availableHeight);
+        }
+        
+        @Override
+        public int maxHeight(GuiControl control, int width, int availableHeight) {
+            return -1;
+        }
+    }
+    
     public static class GuiSizeRuleCustom extends GuiSizeRule {
         
         public int minWidth = -1;
@@ -122,6 +163,73 @@ public abstract class GuiSizeRule {
         @Override
         public int preferredHeight(GuiControl control, int width, int availableHeight) {
             return prefHeight;
+        }
+        
+        @Override
+        public int maxHeight(GuiControl control, int width, int availableHeight) {
+            return maxHeight;
+        }
+        
+    }
+    
+    public static class GuiSizeRuleCustomRatio extends GuiSizeRule {
+        
+        public int minWidth = -1;
+        public final float width;
+        public int maxWidth = -1;
+        
+        public int minHeight = -1;
+        public final float height;
+        public int maxHeight = -1;
+        
+        public GuiSizeRuleCustomRatio(float width, float height) {
+            this.width = width;
+            this.height = height;
+        }
+        
+        public GuiSizeRuleCustomRatio minWidth(int value) {
+            this.minWidth = value;
+            return this;
+        }
+        
+        public GuiSizeRuleCustomRatio maxWidth(int value) {
+            this.maxWidth = value;
+            return this;
+        }
+        
+        public GuiSizeRuleCustomRatio minHeight(int value) {
+            this.minHeight = value;
+            return this;
+        }
+        
+        public GuiSizeRuleCustomRatio maxHeight(int value) {
+            this.maxHeight = value;
+            return this;
+        }
+        
+        @Override
+        public int minWidth(GuiControl control, int availableWidth) {
+            return minWidth;
+        }
+        
+        @Override
+        public int preferredWidth(GuiControl control, int availableWidth) {
+            return (int) (width * availableWidth);
+        }
+        
+        @Override
+        public int maxWidth(GuiControl control, int availableWidth) {
+            return maxWidth;
+        }
+        
+        @Override
+        public int minHeight(GuiControl control, int width, int availableHeight) {
+            return minHeight;
+        }
+        
+        @Override
+        public int preferredHeight(GuiControl control, int width, int availableHeight) {
+            return (int) (height * availableHeight);
         }
         
         @Override
