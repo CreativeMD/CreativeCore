@@ -98,7 +98,7 @@ public abstract class GuiSizeRule {
         }
     }
     
-    public static class GuiSizeRuleCustom extends GuiSizeRule {
+    public static class GuiSizeRules extends GuiSizeRule {
         
         public int minWidth = -1;
         public int prefWidth = -1;
@@ -108,34 +108,34 @@ public abstract class GuiSizeRule {
         public int prefHeight = -1;
         public int maxHeight = -1;
         
-        public GuiSizeRuleCustom() {}
+        public GuiSizeRules() {}
         
-        public GuiSizeRuleCustom minWidth(int value) {
+        public GuiSizeRules minWidth(int value) {
             this.minWidth = value;
             return this;
         }
         
-        public GuiSizeRuleCustom prefWidth(int value) {
+        public GuiSizeRules prefWidth(int value) {
             this.prefWidth = value;
             return this;
         }
         
-        public GuiSizeRuleCustom maxWidth(int value) {
+        public GuiSizeRules maxWidth(int value) {
             this.maxWidth = value;
             return this;
         }
         
-        public GuiSizeRuleCustom minHeight(int value) {
+        public GuiSizeRules minHeight(int value) {
             this.minHeight = value;
             return this;
         }
         
-        public GuiSizeRuleCustom prefHeight(int value) {
+        public GuiSizeRules prefHeight(int value) {
             this.prefHeight = value;
             return this;
         }
         
-        public GuiSizeRuleCustom maxHeight(int value) {
+        public GuiSizeRules maxHeight(int value) {
             this.maxHeight = value;
             return this;
         }
@@ -172,37 +172,49 @@ public abstract class GuiSizeRule {
         
     }
     
-    public static class GuiSizeRuleCustomRatio extends GuiSizeRule {
+    public static class GuiSizeRatioRules extends GuiSizeRule {
         
         public int minWidth = -1;
-        public final float width;
+        public float width = -1;
         public int maxWidth = -1;
         
         public int minHeight = -1;
-        public final float height;
+        public float height = -1;
         public int maxHeight = -1;
         
-        public GuiSizeRuleCustomRatio(float width, float height) {
+        public GuiSizeRatioRules() {}
+        
+        public GuiSizeRatioRules(float width, float height) {
             this.width = width;
             this.height = height;
         }
         
-        public GuiSizeRuleCustomRatio minWidth(int value) {
+        public GuiSizeRatioRules minWidth(int value) {
             this.minWidth = value;
             return this;
         }
         
-        public GuiSizeRuleCustomRatio maxWidth(int value) {
+        public GuiSizeRatioRules widthRatio(float value) {
+            this.width = value;
+            return this;
+        }
+        
+        public GuiSizeRatioRules maxWidth(int value) {
             this.maxWidth = value;
             return this;
         }
         
-        public GuiSizeRuleCustomRatio minHeight(int value) {
+        public GuiSizeRatioRules minHeight(int value) {
             this.minHeight = value;
             return this;
         }
         
-        public GuiSizeRuleCustomRatio maxHeight(int value) {
+        public GuiSizeRatioRules heightRatio(float value) {
+            this.height = value;
+            return this;
+        }
+        
+        public GuiSizeRatioRules maxHeight(int value) {
             this.maxHeight = value;
             return this;
         }
@@ -214,6 +226,8 @@ public abstract class GuiSizeRule {
         
         @Override
         public int preferredWidth(GuiControl control, int availableWidth) {
+            if (width == -1)
+                return -1;
             return (int) (width * availableWidth);
         }
         
@@ -229,6 +243,8 @@ public abstract class GuiSizeRule {
         
         @Override
         public int preferredHeight(GuiControl control, int width, int availableHeight) {
+            if (height == -1)
+                return -1;
             return (int) (height * availableHeight);
         }
         
