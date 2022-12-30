@@ -27,6 +27,8 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiLayer extends GuiParent {
     
+    public static final int MINIMUM_LAYER_SPACING = 10;
+    
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public GuiStyle style;
@@ -128,7 +130,7 @@ public abstract class GuiLayer extends GuiParent {
         
         if (preferred == null) {
             Rect screen = Rect.getScreenRect();
-            int screenWidth = (int) screen.getWidth() - getContentOffset() * 2;
+            int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
             int preferredWidth;
             if (isExpandableX())
                 preferredWidth = screenWidth;
@@ -137,7 +139,7 @@ public abstract class GuiLayer extends GuiParent {
             rect.maxX = preferredWidth + getContentOffset() * 2;
             flowX(preferredWidth, preferredWidth);
             
-            int screenHeight = (int) screen.getHeight() - getContentOffset() * 2;
+            int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
             int preferredHeight;
             if (isExpandableY())
                 preferredHeight = screenHeight;

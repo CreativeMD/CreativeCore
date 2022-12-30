@@ -8,7 +8,9 @@ public interface IScaleableGuiScreen {
     
     public default int getMaxScale(int displayWidth, int displayHeight) {
         int scaleFactor = 1;
-        while (scaleFactor < 100 && getWidth() * (scaleFactor + 1) <= displayWidth && getHeight() * (scaleFactor + 1) <= displayHeight)
+        int width = getWidth();
+        int height = getHeight();
+        while (scaleFactor < 100 && width * (scaleFactor + 1) <= displayWidth && height * (scaleFactor + 1) <= displayHeight)
             ++scaleFactor;
         return scaleFactor;
     }
