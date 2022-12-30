@@ -23,6 +23,13 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
+    protected void rebuildWidgets() {
+        super.rebuildWidgets();
+        for (GuiLayer layer : getMenu().getLayers())
+            layer.reflow();
+    }
+    
+    @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         getMenu().render(stack, this, listener, mouseX, mouseY);
     }

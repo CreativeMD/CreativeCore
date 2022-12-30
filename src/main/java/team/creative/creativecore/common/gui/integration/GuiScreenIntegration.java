@@ -34,6 +34,13 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     }
     
     @Override
+    protected void rebuildWidgets() {
+        super.rebuildWidgets();
+        for (GuiLayer layer : layers)
+            layer.reflow();
+    }
+    
+    @Override
     public int getWidth() {
         int width = 0;
         for (GuiLayer layer : layers)
