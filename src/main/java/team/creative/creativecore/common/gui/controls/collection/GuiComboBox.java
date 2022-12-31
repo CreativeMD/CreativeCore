@@ -66,19 +66,17 @@ public class GuiComboBox extends GuiLabel {
     
     @Override
     public int preferredWidth(int availableWidth) {
-        int contentOffset = getContentOffset() * 2;
         int width = 0;
         for (CompiledText text : lines)
-            width = Math.max(width, text.getTotalWidth() + contentOffset);
+            width = Math.max(width, text.getTotalWidth());
         return width;
     }
     
     @Override
     public int preferredHeight(int width, int availableHeight) {
-        int contentOffset = getContentOffset() * 2;
         int height = 0;
         for (CompiledText text : lines)
-            height = Math.max(height, text.getTotalHeight() + contentOffset);
+            height = Math.max(height, text.getTotalHeight());
         return height;
     }
     
