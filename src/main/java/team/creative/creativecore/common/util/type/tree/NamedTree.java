@@ -1,14 +1,18 @@
 package team.creative.creativecore.common.util.type.tree;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
-public class NamedTree<T> {
+import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
+import team.creative.creativecore.common.util.type.itr.NestedIterator;
+
+public class NamedTree<T> implements Iterable<T> {
     
     private final NamedTree<T> parent;
     private final String name;
-    private HashMap<String, NamedTree<T>> children = new HashMap<>();
-    private HashMap<String, T> values = new HashMap<>();
+    private LinkedHashMap<String, NamedTree<T>> children = new LinkedHashMap<>();
+    private LinkedHashMap<String, T> values = new LinkedHashMap<>();
     
     public NamedTree() {
         parent = null;
@@ -20,29 +24,23 @@ public class NamedTree<T> {
         this.name = name;
     }
     
-    public void add(String path, T value) {
-        String[] parts = path.split(":");
-        
-        NamedTree<T> folder;
-        if (parts.length == 1)
-            folder = this;
-        if (parts.length != 2)
-            return;
-        else
-            folder = folder(parts[0]);
-        folder.values.put(parts[1], value);
+    public T add(String path, T value) {
+        String[] parts = path.split("\\.");
+        folderForce(parts, 0, parts.length - 1).values.put(parts[parts.length - 1], value);
+        return value;
     }
     
-    public void add(String path, String id, T value) {
+    public T add(String path, String id, T value) {
         folderForce(path).values.put(id, value);
+        return value;
     }
     
     public Collection<String> folders() {
         return children.keySet();
     }
     
-    public Collection<String> values() {
-        return values.keySet();
+    public Collection<T> values() {
+        return values.values();
     }
     
     public T get(String path, String id) {
@@ -53,7 +51,7 @@ public class NamedTree<T> {
     }
     
     public T get(String path) {
-        String[] parts = path.split(":");
+        String[] parts = path.split("\\.");
         
         if (parts.length == 1)
             return values.get(path);
@@ -83,16 +81,19 @@ public class NamedTree<T> {
     }
     
     private NamedTree<T> folderForce(String[] path, int index) {
+        return folderForce(path, index, path.length);
+    }
+    
+    private NamedTree<T> folderForce(String[] path, int index, int end) {
         NamedTree<T> folder = children.get(path[index]);
-        if (folder != null) {
+        if (folder == null) {
             folder = new NamedTree<>(this, path[index]);
             children.put(path[index], folder);
         }
         index++;
-        if (path.length <= index)
+        if (end <= index)
             return folder;
         return folder.folder(path, index);
-        
     }
     
     public String path() {
@@ -102,5 +103,10 @@ public class NamedTree<T> {
     @Override
     public String toString() {
         return "[" + children + "|" + values + "]";
+    }
+    
+    @Override
+    public Iterator<T> iterator() {
+        return new ConsecutiveIterator<>(values.values().iterator(), new NestedIterator<>(children.values()));
     }
 }
