@@ -128,31 +128,47 @@ public abstract class GuiLayer extends GuiParent {
         if (CreativeCore.loader().getOverallSide().isServer())
             return;
         
-        if (preferred == null) {
-            Rect screen = Rect.getScreenRect();
-            int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
-            int preferredWidth;
+        Rect screen = Rect.getScreenRect();
+        int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
+        int preferredWidth = -1;
+        
+        if (preferred != null)
+            preferredWidth = preferred.preferredWidth(this, screenWidth);
+        if (preferredWidth == -1)
             if (isExpandableX())
                 preferredWidth = screenWidth;
             else
                 preferredWidth = preferredWidth(screenWidth);
-            rect.maxX = preferredWidth + getContentOffset() * 2;
-            flowX(preferredWidth, preferredWidth);
-            
-            int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
-            int preferredHeight;
+        if (preferred != null) {
+            int minWidth = preferred.minWidth(this, screenWidth);
+            if (minWidth != -1)
+                preferredWidth = Math.max(preferredWidth, minWidth);
+            int maxWidth = preferred.maxWidth(this, screenWidth);
+            if (maxWidth != -1)
+                preferredWidth = Math.min(preferredWidth, maxWidth);
+        }
+        rect.maxX = preferredWidth + getContentOffset() * 2;
+        flowX(preferredWidth, preferredWidth);
+        
+        int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
+        int preferredHeight = -1;
+        if (preferred != null)
+            preferredHeight = preferred.preferredHeight(this, preferredWidth, screenHeight);
+        if (preferredHeight == -1)
             if (isExpandableY())
                 preferredHeight = screenHeight;
             else
                 preferredHeight = preferredHeight((int) rect.getWidth() + getContentOffset() * 2, screenHeight);
-            rect.maxY = preferredHeight + getContentOffset() * 2;
-            flowY(preferredWidth, preferredHeight, preferredHeight(preferredWidth, screenHeight));
-        } else {
-            int width = (int) rect.getWidth() - getContentOffset() * 2;
-            flowX(width, preferredWidth(width));
-            int height = (int) rect.getHeight() - getContentOffset() * 2;
-            flowY(width, height, preferredHeight((int) rect.getWidth(), height));
+        if (preferred != null) {
+            int minHeight = preferred.minHeight(this, preferredWidth, screenHeight);
+            if (minHeight != -1)
+                preferredHeight = Math.max(preferredHeight, minHeight);
+            int maxHeight = preferred.maxHeight(this, preferredWidth, screenHeight);
+            if (maxHeight != -1)
+                preferredHeight = Math.min(preferredHeight, maxHeight);
         }
+        rect.maxY = preferredHeight + getContentOffset() * 2;
+        flowY(preferredWidth, preferredHeight, preferredHeight(preferredWidth, screenHeight));
     }
     
     public abstract void create();
