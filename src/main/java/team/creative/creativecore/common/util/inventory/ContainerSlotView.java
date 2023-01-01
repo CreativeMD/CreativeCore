@@ -1,13 +1,18 @@
 package team.creative.creativecore.common.util.inventory;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.common.gui.packet.ImmediateItemStackPacket;
 
 public class ContainerSlotView {
     
-    public static final ContainerSlotView EMPTY = new ContainerSlotView(null, 0) {
+    public static final ContainerSlotView EMPTY = new ContainerSlotView(null, null, 0) {
         @Override
         public ItemStack get() {
             return ItemStack.EMPTY;
@@ -21,17 +26,19 @@ public class ContainerSlotView {
     };
     
     public static ContainerSlotView mainHand(Player player) {
-        return new ContainerSlotView(player.getInventory(), player.getInventory().selected);
+        return new ContainerSlotView(player, player.getInventory(), player.getInventory().selected);
     }
     
     public static ContainerSlotView offHand(Player player) {
-        return new ContainerSlotView(player.getInventory(), Inventory.SLOT_OFFHAND);
+        return new ContainerSlotView(player, player.getInventory(), Inventory.SLOT_OFFHAND);
     }
     
+    public final Player player;
     public final Container container;
     public final int index;
     
-    public ContainerSlotView(Container container, int index) {
+    public ContainerSlotView(@Nullable Player player, Container container, int index) {
+        this.player = player;
         this.container = container;
         this.index = index;
     }
@@ -47,6 +54,8 @@ public class ContainerSlotView {
     
     public void changed() {
         container.setChanged();
+        if (player != null)
+            CreativeCore.NETWORK.sendToClient(new ImmediateItemStackPacket(this), (ServerPlayer) player);
     }
     
 }
