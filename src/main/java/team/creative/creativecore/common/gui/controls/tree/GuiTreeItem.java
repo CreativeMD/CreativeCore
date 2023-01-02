@@ -16,7 +16,7 @@ import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiTreeItem extends GuiParent {
     
-    private final GuiTree tree;
+    public final GuiTree tree;
     private GuiTreeItem parentItem;
     private List<GuiTreeItem> items = new ArrayList<>();
     private int level = 0;
