@@ -82,11 +82,14 @@ public class GuiTreeItem extends GuiParent {
     public boolean removeItem(GuiTreeItem item) {
         if (items.remove(item)) {
             item.parentItem = null;
+            item.removed();
             updateControls();
             return true;
         }
         return false;
     }
+    
+    public void removed() {}
     
     public void insertItem(int index, GuiTreeItem item) {
         item.parentItem = this;
