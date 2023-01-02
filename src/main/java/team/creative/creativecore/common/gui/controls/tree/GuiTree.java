@@ -79,9 +79,9 @@ public class GuiTree extends GuiScrollXY {
     public void select(GuiTreeItem item) {
         if (selected != null)
             selected.deselect();
+        selected = item;
         if (item != null)
             item.select();
-        selected = item;
     }
     
     public void setLineThickness(int thickness) {
