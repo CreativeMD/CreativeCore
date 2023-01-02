@@ -27,6 +27,7 @@ public class GuiTree extends GuiScrollXY {
     private int lastHeight;
     
     private boolean searchbar = false;
+    protected boolean canDeselect = true;
     private final GuiTextfield search;
     private boolean visibleRoot = false;
     private final GuiTreeItem root;
@@ -54,6 +55,25 @@ public class GuiTree extends GuiScrollXY {
         this.root = new GuiTreeItem("root", this);
         spacing = 3;
         setLineThickness(1);
+    }
+    
+    public GuiTree keepSelected() {
+        canDeselect = false;
+        return this;
+    }
+    
+    public GuiTreeItem selected() {
+        return selected;
+    }
+    
+    public boolean selectFirst() {
+        if (visibleRoot)
+            select(root);
+        else if (root.itemsCount() > 0)
+            select(root.getItem(0));
+        else
+            return false;
+        return true;
     }
     
     public void select(GuiTreeItem item) {
@@ -233,7 +253,8 @@ public class GuiTree extends GuiScrollXY {
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         if (super.mouseClicked(rect, x, y, button))
             return true;
-        select(null);
+        if (canDeselect)
+            select(null);
         return true;
     }
     
