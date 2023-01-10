@@ -25,7 +25,7 @@ public class GuiSyncGlobalLayer<C extends GuiControl, T extends GuiLayer> extend
     
     public T open(C control, CompoundTag tag) {
         T layer = creator.apply(control, tag);
-        layer.getIntegratedParent().openLayer(layer);
+        control.getIntegratedParent().openLayer(layer);
         if (control.isClient())
             CreativeCore.NETWORK.sendToServer(new ControlSyncPacket(control, this, tag));
         else
