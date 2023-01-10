@@ -13,15 +13,14 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiInfoStackButton extends GuiButton {
     
-    public static final GuiSyncGlobalLayer<GuiInfoStackButton, FullItemDialogGuiLayer> ITEM_DIALOG = GuiSyncHolder.GLOBAL
-            .layer("item_dialog", (c, t) -> new FullItemDialogGuiLayer());
+    public static final GuiSyncGlobalLayer<FullItemDialogGuiLayer> ITEM_DIALOG = GuiSyncHolder.GLOBAL.layer("item_dialog", (t) -> new FullItemDialogGuiLayer());
     
     private CreativeIngredient info;
     
     public GuiInfoStackButton(String name, CreativeIngredient info) {
         super(name, null);
         pressed = button -> {
-            FullItemDialogGuiLayer layer = ITEM_DIALOG.open(this, new CompoundTag());
+            FullItemDialogGuiLayer layer = ITEM_DIALOG.open(getIntegratedParent(), new CompoundTag());
             layer.button = this;
             layer.init();
         };

@@ -8,7 +8,7 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
 
-public class GuiSyncGlobal<C extends GuiControl, T extends Tag> extends GuiSync<C, T> {
+public class GuiSyncGlobal<C extends GuiControl, T extends Tag> extends GuiSyncControl<C, T> {
     
     private final BiConsumer<C, T> consumer;
     

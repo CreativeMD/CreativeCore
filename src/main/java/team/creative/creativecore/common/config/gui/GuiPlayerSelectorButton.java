@@ -10,15 +10,14 @@ import team.creative.creativecore.common.util.player.PlayerSelector;
 
 public class GuiPlayerSelectorButton extends GuiButton {
     
-    public static final GuiSyncGlobalLayer<GuiPlayerSelectorButton, PlayerSelectorDialog> PLAYER_SELECTOR = GuiSyncHolder.GLOBAL
-            .layer("player_selector", (control, nbt) -> new PlayerSelectorDialog());
+    public static final GuiSyncGlobalLayer<PlayerSelectorDialog> PLAYER_SELECTOR = GuiSyncHolder.GLOBAL.layer("player_selector", (nbt) -> new PlayerSelectorDialog());
     
     private PlayerSelector info;
     
     public GuiPlayerSelectorButton(String name, PlayerSelector info) {
         super(name, null);
         pressed = x -> {
-            PlayerSelectorDialog layer = PLAYER_SELECTOR.open(this, new CompoundTag());
+            PlayerSelectorDialog layer = PLAYER_SELECTOR.open(getIntegratedParent(), new CompoundTag());
             layer.button = this;
             layer.init();
         };

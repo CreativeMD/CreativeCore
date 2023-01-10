@@ -10,7 +10,7 @@ import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder.GuiSyncHolderLayer;
 
-public class GuiSyncLocalLayer<T extends GuiLayer> extends GuiSync<GuiLayer, CompoundTag> {
+public class GuiSyncLocalLayer<T extends GuiLayer> extends GuiSyncControl<GuiLayer, CompoundTag> {
     
     private final Function<CompoundTag, T> creator;
     

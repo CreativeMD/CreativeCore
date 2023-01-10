@@ -10,7 +10,7 @@ import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder.GuiSyncHolderLayer;
 
-public class GuiSyncLocal<T extends Tag> extends GuiSync<GuiLayer, T> {
+public class GuiSyncLocal<T extends Tag> extends GuiSyncControl<GuiLayer, T> {
     
     private final Consumer<T> consumer;
     
