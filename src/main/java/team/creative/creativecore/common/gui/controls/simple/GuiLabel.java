@@ -53,6 +53,13 @@ public class GuiLabel extends GuiControl {
         return this;
     }
     
+    public GuiLabel setText(CompiledText text) {
+        this.text = text;
+        if (hasGui())
+            reflow();
+        return this;
+    }
+    
     @Override
     public void init() {}
     
