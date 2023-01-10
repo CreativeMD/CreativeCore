@@ -13,6 +13,18 @@ public class GuiStateButtonMapped<K> extends GuiStateButton {
         this.keys = lines.keys();
     }
     
+    public GuiStateButtonMapped(String name, int index, TextMapBuilder<K> lines) {
+        super(name, lines);
+        this.keys = lines.keys();
+        setState(index);
+    }
+    
+    public GuiStateButtonMapped(String name, K selected, TextMapBuilder<K> lines) {
+        super(name, lines);
+        this.keys = lines.keys();
+        select(selected);
+    }
+    
     public K getSelected() {
         int index = getState();
         if (index < keys.size())
