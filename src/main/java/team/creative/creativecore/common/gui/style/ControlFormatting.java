@@ -46,7 +46,8 @@ public class ControlFormatting {
         NESTED_BACKGROUND,
         BACKGROUND,
         SLOT,
-        NONE;
+        NONE,
+        DISABLED;
         
     }
     

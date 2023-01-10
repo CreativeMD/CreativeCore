@@ -108,6 +108,8 @@ public class GuiStyle {
     @SerializedName("clickable-highlight")
     public StyleDisplay clickableHighlight = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
     
+    public StyleDisplay disabledBackground = new DisplayColor(0.1F, 0.1F, 0.1F, 1);
+    
     public StyleDisplay slot = new DisplayTexture(GuiStyleUtils.GUI_ASSETS, 0, 0);
     @SerializedName("transparency-background")
     public StyleDisplay transparencyBackground = new DisplayTextureRepeat(GuiStyleUtils.GUI_ASSETS, 224, 240, 16, 16);
@@ -137,6 +139,8 @@ public class GuiStyle {
                 return secondaryBackground;
             case SLOT:
                 return slot;
+            case DISABLED:
+                return disabledBackground;
             default:
                 return StyleDisplay.NONE;
         }
