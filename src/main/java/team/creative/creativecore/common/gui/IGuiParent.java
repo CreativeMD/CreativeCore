@@ -4,6 +4,7 @@ import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 
 public interface IGuiParent {
     
@@ -30,5 +31,7 @@ public interface IGuiParent {
     public Rect toScreenRect(GuiControl control, Rect rect);
     
     public Rect toLayerRect(GuiControl control, Rect rect);
+    
+    public IGuiIntegratedParent getIntegratedParent();
     
 }

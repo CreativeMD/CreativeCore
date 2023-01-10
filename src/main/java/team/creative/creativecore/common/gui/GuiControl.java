@@ -22,6 +22,7 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiFixedDimension;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
@@ -129,6 +130,10 @@ public abstract class GuiControl {
     
     public IGuiParent getParent() {
         return parent;
+    }
+    
+    public IGuiIntegratedParent getIntegratedParent() {
+        return parent.getIntegratedParent();
     }
     
     public boolean isExpandableX() {

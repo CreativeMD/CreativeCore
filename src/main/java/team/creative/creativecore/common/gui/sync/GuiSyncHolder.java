@@ -1,8 +1,11 @@
 package team.creative.creativecore.common.gui.sync;
 
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -55,6 +58,12 @@ public abstract class GuiSyncHolder {
             return sync;
         }
         
+        public <C extends GuiControl, T extends GuiLayer> GuiSyncGlobalLayer<C, T> layer(String id, BiFunction<C, CompoundTag, T> creator) {
+            GuiSyncGlobalLayer<C, T> sync = new GuiSyncGlobalLayer<C, T>(this, id, creator);
+            REGISTRY.register(id, sync);
+            return sync;
+        }
+        
         @Override
         public String path() {
             return "global:";
@@ -72,6 +81,12 @@ public abstract class GuiSyncHolder {
         
         public <T extends Tag> GuiSyncLocal<T> register(String id, Consumer<T> consumer) {
             GuiSyncLocal<T> sync = new GuiSyncLocal<T>(this, id, consumer);
+            REGISTRY.register(id, sync);
+            return sync;
+        }
+        
+        public <T extends GuiLayer> GuiSyncLocalLayer<T> layer(String id, Function<CompoundTag, T> creator) {
+            GuiSyncLocalLayer<T> sync = new GuiSyncLocalLayer<T>(this, id, creator);
             REGISTRY.register(id, sync);
             return sync;
         }
