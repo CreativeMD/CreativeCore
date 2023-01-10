@@ -18,7 +18,6 @@ public class GuiStateButton extends GuiButton {
     
     private int index = 0;
     public CompiledText[] states;
-    public boolean autosize;
     
     public GuiStateButton(String name, ITextCollection states) {
         this(name, 0, states);
@@ -33,7 +32,6 @@ public class GuiStateButton extends GuiButton {
                 nextState();
         };
         this.index = index;
-        this.autosize = true;
         buildStates(states);
     }
     
