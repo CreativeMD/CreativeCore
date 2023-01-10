@@ -21,7 +21,6 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiEventManager;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
-import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
@@ -311,11 +310,6 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     @Override
     public void closeLayer(GuiLayer layer) {
         getParent().closeLayer(layer);
-    }
-    
-    @Override
-    public GuiLayer openLayer(LayerOpenPacket packet) {
-        return getParent().openLayer(packet);
     }
     
     @Override

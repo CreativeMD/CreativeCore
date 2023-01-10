@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
-import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 
 public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {
     
@@ -126,12 +125,6 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     @Override
     public void closeTopLayer() {
         closeLayer(layers.size() - 1);
-    }
-    
-    @Override
-    public GuiLayer openLayer(LayerOpenPacket packet) {
-        packet.executeClient(getPlayer());
-        return layers.get(layers.size() - 1);
     }
     
     @Override

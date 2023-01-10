@@ -145,7 +145,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
             else if (nextAction == 1)
                 CreativeCore.CONFIG_OPEN.open(getPlayer());
         } else
-            GuiDialogHandler.openDialog(getParent(), "savechanges", (x, y) -> {
+            GuiDialogHandler.openDialog(this, "savechanges", (x, y) -> {
                 if (y == DialogButton.YES) {
                     save();
                 }

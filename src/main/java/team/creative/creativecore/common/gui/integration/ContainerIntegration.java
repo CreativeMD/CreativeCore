@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.LayerClosePacket;
-import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.network.CreativePacket;
 
 public class ContainerIntegration extends AbstractContainerMenu implements IGuiIntegratedParent {
@@ -89,17 +88,6 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
         layer.setParent(this);
         layers.add(layer);
         layer.init();
-    }
-    
-    @Override
-    public GuiLayer openLayer(LayerOpenPacket packet) {
-        packet.execute(player);
-        if (isClient())
-            CreativeCore.NETWORK.sendToServer(packet);
-        else
-            CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
-        
-        return layers.get(layers.size() - 1);
     }
     
     @Override

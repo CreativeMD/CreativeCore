@@ -11,7 +11,6 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -145,11 +144,6 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     @Override
     public boolean isContainer() {
         return getParent().isContainer();
-    }
-    
-    @Override
-    public GuiLayer openLayer(LayerOpenPacket packet) {
-        return getParent().openLayer(packet);
     }
     
     @Override

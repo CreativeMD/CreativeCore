@@ -12,8 +12,13 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.Event;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
+import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 
 public interface ICreativeLoader {
+    
+    public default void loadCommon() {
+        GuiDialogHandler.init();
+    }
     
     public Side getOverallSide();
     
