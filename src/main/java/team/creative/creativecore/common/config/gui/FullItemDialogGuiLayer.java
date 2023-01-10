@@ -23,6 +23,8 @@ public class FullItemDialogGuiLayer extends GuiLayer {
     
     public GuiInfoStackButton button;
     
+    public GuiCreativeIngredientHandler handler;
+    
     public FullItemDialogGuiLayer() {
         super("info", 250, 230);
         this.flow = GuiFlow.STACK_Y;
@@ -33,8 +35,6 @@ public class FullItemDialogGuiLayer extends GuiLayer {
                 handler.onChanged(this, x);
         });
     }
-    
-    public GuiCreativeIngredientHandler handler;
     
     @Override
     public void create() {
