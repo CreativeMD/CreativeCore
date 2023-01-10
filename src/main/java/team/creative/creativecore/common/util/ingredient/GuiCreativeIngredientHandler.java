@@ -1,8 +1,6 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.util.Iterator;
 import java.util.Optional;
-import java.util.Set;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,56 +23,27 @@ import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
-import team.creative.creativecore.common.util.type.list.PairList;
 
 @Environment(EnvType.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public abstract class GuiCreativeIngredientHandler {
     
-    private static PairList<String, GuiCreativeIngredientHandler> handlers = new PairList<>();
+    public static final NamedHandlerRegistry<GuiCreativeIngredientHandler> REGISTRY = new NamedHandlerRegistry<>(null);
     
-    public static void registerGuiInfoHandler(String name, GuiCreativeIngredientHandler handler) {
-        handler.name = name;
-        handlers.add(name, handler);
-    }
-    
-    public static int indexOf(String name) {
-        return handlers.indexOfKey(name);
-    }
-    
-    public static GuiCreativeIngredientHandler get(int index) {
-        return handlers.get(index).value;
-    }
-    
-    public static Set<String> getNames() {
-        return handlers.keys();
-    }
-    
-    public static GuiCreativeIngredientHandler getHandler(CreativeIngredient info) {
-        if (info != null) {
-            for (Iterator<GuiCreativeIngredientHandler> iterator = handlers.values().iterator(); iterator.hasNext();) {
-                GuiCreativeIngredientHandler handler = iterator.next();
+    public static GuiCreativeIngredientHandler find(CreativeIngredient info) {
+        if (info != null)
+            for (GuiCreativeIngredientHandler handler : REGISTRY.values())
                 if (handler.canHandle(info))
                     return handler;
-            }
-        }
-        return GuiCreativeIngredientHandler.defaultHandler;
+        return REGISTRY.getDefault();
     }
-    
-    public static GuiCreativeIngredientHandler getHandler(String name) {
-        GuiCreativeIngredientHandler handler = handlers.getValue(name);
-        if (handler == null)
-            return defaultHandler;
-        return handler;
-    }
-    
-    public static GuiCreativeIngredientHandler defaultHandler;
     
     static {
-        defaultHandler = new GuiCreativeIngredientHandler() {
+        REGISTRY.registerDefault("Default", new GuiCreativeIngredientHandler() {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
@@ -141,10 +110,9 @@ public abstract class GuiCreativeIngredientHandler {
                     }
                 }
             }
-        };
-        registerGuiInfoHandler("Default", defaultHandler);
+        });
         
-        registerGuiInfoHandler("Material", new GuiCreativeIngredientHandler() {
+        REGISTRY.register("Material", new GuiCreativeIngredientHandler() {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
@@ -172,7 +140,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
         });
         
-        registerGuiInfoHandler("Blocktag", new GuiCreativeIngredientHandler() {
+        REGISTRY.register("Blocktag", new GuiCreativeIngredientHandler() {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
@@ -222,7 +190,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
         });
         
-        registerGuiInfoHandler("Itemtag", new GuiCreativeIngredientHandler() {
+        REGISTRY.register("Itemtag", new GuiCreativeIngredientHandler() {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
@@ -272,7 +240,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
         });
         
-        registerGuiInfoHandler("Fuel", new GuiCreativeIngredientHandler() {
+        REGISTRY.register("Fuel", new GuiCreativeIngredientHandler() {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
@@ -289,12 +257,6 @@ public abstract class GuiCreativeIngredientHandler {
                 return info instanceof CreativeIngredientFuel;
             }
         });
-    }
-    
-    private String name;
-    
-    public String getName() {
-        return name;
     }
     
     public abstract boolean canHandle(CreativeIngredient info);
