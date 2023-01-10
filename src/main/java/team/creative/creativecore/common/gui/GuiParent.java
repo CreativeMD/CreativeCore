@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
@@ -23,6 +24,7 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
 
 public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
     
@@ -218,34 +220,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public Iterator<GuiChildControl> iterator() {
-        return new Iterator<GuiChildControl>() {
-            
-            Iterator<GuiChildControl> itr = hoverControls.iterator();
-            boolean first = true;
-            
-            @Override
-            public boolean hasNext() {
-                if (itr.hasNext())
-                    return true;
-                if (first) {
-                    itr = controls.iterator();
-                    first = false;
-                }
-                return itr.hasNext();
-            }
-            
-            @Override
-            public GuiChildControl next() {
-                return itr.next();
-            }
-        };
+        return new ConsecutiveIterator<>(hoverControls, controls);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, List<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
-        for (int i = collection.size() - 1; i >= 0; i--) {
-            GuiChildControl child = collection.get(i);
+    protected void renderContent(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
+        while (collection.hasPrevious()) {
+            GuiChildControl child = collection.previous();
             GuiControl control = child.control;
             
             if (!control.visible)
@@ -261,10 +243,16 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
                 
                 matrix.pushPose();
                 matrix.translate((child.getX() + xOffset) * scale, (child.getY() + yOffset) * scale, 10);
-                control.render(matrix, child, controlRect, hover ? controlRect : realRect, mouseX, mouseY);
+                renderControl(matrix, child, control, controlRect, realRect, mouseX, mouseY, hover);
                 matrix.popPose();
             }
         }
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderControl(PoseStack matrix, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY, boolean hover) {
+        control.render(matrix, child, controlRect, hover ? controlRect : realRect, mouseX, mouseY);
     }
     
     @Override
@@ -277,8 +265,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         double xOffset = getOffsetX();
         double yOffset = getOffsetY();
         
-        renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, controls, scale, xOffset, yOffset, false);
-        renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, hoverControls, scale, xOffset, yOffset, true);
+        renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
+        renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
         
         super.renderContent(matrix, control, contentRect, realContentRect, mouseX, mouseY);
     }
