@@ -55,7 +55,9 @@ public abstract class GuiControl {
     }
     
     public GuiControl setTooltip(List<Component> tooltip) {
-        if (!tooltip.isEmpty())
+        if (tooltip != null && tooltip.isEmpty())
+            this.customTooltip = null;
+        else
             this.customTooltip = tooltip;
         return this;
     }
