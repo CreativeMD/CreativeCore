@@ -21,7 +21,6 @@ import team.creative.creativecore.common.gui.manager.GuiManager.GuiManagerType;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder.GuiSyncHolderLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
@@ -112,7 +111,6 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public void init() {
-        createSync(sync);
         create();
         super.init();
         reflow();
@@ -172,8 +170,6 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     public abstract void create();
-    
-    public void createSync(GuiSyncHolder holder) {}
     
     @Override
     public ControlFormatting getControlFormatting() {
