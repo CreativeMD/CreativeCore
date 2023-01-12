@@ -27,7 +27,10 @@ public class ConsecutiveListIterator<T> implements ListIterator<T> {
     @Override
     public boolean hasNext() {
         while (index < itrs.length && !itrs[index].hasNext())
-            index++;
+            if (index == itrs.length - 1)
+                return itrs[index].hasNext();
+            else
+                index++;
         return index < itrs.length;
     }
     
