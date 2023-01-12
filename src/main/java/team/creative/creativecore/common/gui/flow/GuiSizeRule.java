@@ -26,6 +26,10 @@ public abstract class GuiSizeRule {
             this.height = height;
         }
         
+        public GuiFixedDimension(int width) {
+            this(width, -1);
+        }
+        
         @Override
         public int minWidth(GuiControl control, int availableWidth) {
             return -1;
