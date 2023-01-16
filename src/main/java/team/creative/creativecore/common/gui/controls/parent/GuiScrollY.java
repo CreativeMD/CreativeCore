@@ -21,7 +21,6 @@ public class GuiScrollY extends GuiParent {
     
     public int maxScroll = 0;
     public SmoothValue scrolled = new SmoothValue(200);
-    public double scaleFactor;
     public boolean dragged;
     public int scrollbarWidth = 3;
     
@@ -33,7 +32,6 @@ public class GuiScrollY extends GuiParent {
     
     public GuiScrollY(String name) {
         super(name, GuiFlow.STACK_Y);
-        this.scaleFactor = 1;
     }
     
     @Override
@@ -49,11 +47,6 @@ public class GuiScrollY extends GuiParent {
     @Override
     public GuiScrollY setExpandable() {
         return (GuiScrollY) super.setExpandable();
-    }
-    
-    @Override
-    public double getScaleFactor() {
-        return scaleFactor;
     }
     
     @Override
@@ -123,8 +116,12 @@ public class GuiScrollY extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
+    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        
+        float controlInvScale = (float) scaleFactorInv();
+        matrix.scale(controlInvScale, controlInvScale, controlInvScale);
+        
         realRect.scissor();
         GuiStyle style = getStyle();
         
@@ -137,10 +134,13 @@ public class GuiScrollY extends GuiParent {
             scrollThingHeight = completeHeight;
         double percent = scrolled.current() / maxScroll;
         
-        style.get(ControlStyleFace.CLICKABLE, false).render(matrix, controlRect
-                .getWidth() + formatting.padding * 2 - scrollbarWidth + borderWidth, (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarWidth, scrollThingHeight);
+        style.get(ControlStyleFace.CLICKABLE, false).render(matrix, control
+                .getWidth() - scrollbarWidth - borderWidth, (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarWidth, scrollThingHeight);
         
         maxScroll = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
+        
+        float controlScale = (float) scaleFactor();
+        matrix.scale(controlScale, controlScale, controlScale);
         
     }
     

@@ -112,4 +112,11 @@ public class Rect {
         return "[" + minX + "," + minY + "," + maxX + "," + maxY + "]";
     }
     
+    public void scale(double scale) {
+        minX *= scale;
+        minY *= scale;
+        maxX *= scale;
+        maxX *= scale;
+    }
+    
 }

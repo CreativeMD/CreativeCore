@@ -36,6 +36,9 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     public VAlign valign = VAlign.TOP;
     public int spacing = 2;
     
+    private double scale = 1;
+    private double scaleInv = 1;
+    
     public GuiParent(String name, GuiFlow flow) {
         super(name);
         this.flow = flow;
@@ -68,8 +71,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return getParent().isClient();
     }
     
-    public double getScaleFactor() {
-        return 1;
+    public void setScale(double scale) {
+        this.scale = scale;
+        this.scaleInv = 1 / scale;
+    }
+    
+    public final double scaleFactor() {
+        return scale;
+    }
+    
+    public final double scaleFactorInv() {
+        return scaleInv;
     }
     
     public double getOffsetY() {
@@ -241,8 +253,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
                     realRect.scissor();
                 
                 matrix.pushPose();
-                matrix.translate((child.getX() + xOffset) * scale, (child.getY() + yOffset) * scale, 10);
-                renderControl(matrix, child, control, controlRect, realRect, mouseX, mouseY, hover);
+                matrix.translate(child.getX() + xOffset, child.getY() + yOffset, 10);
+                renderControl(matrix, child, control, controlRect, realRect, scale, mouseX, mouseY, hover);
                 matrix.popPose();
             }
         }
@@ -250,24 +262,28 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControl(PoseStack matrix, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY, boolean hover) {
-        control.render(matrix, child, controlRect, hover ? controlRect : realRect, mouseX, mouseY);
+    protected void renderControl(PoseStack matrix, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
+        control.render(matrix, child, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect contentRect, Rect realContentRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
         if (realContentRect == null)
             return;
-        double scale = getScaleFactor();
+        
+        float controlScale = (float) scaleFactor();
+        scale *= scaleFactor();
         double xOffset = getOffsetX();
         double yOffset = getOffsetY();
+        
+        matrix.scale(controlScale, controlScale, 1);
         
         renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
         renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
         
-        super.renderContent(matrix, control, contentRect, realContentRect, mouseX, mouseY);
+        super.renderContent(matrix, control, contentRect, realContentRect, scale, mouseX, mouseY);
     }
     
     @Override
@@ -318,6 +334,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         if (child == null)
             return rect;
         rect.move(child.rect.minX + getOffsetX() + getContentOffset(), child.rect.minY + getOffsetY() + getContentOffset());
+        rect.scale(scaleFactor());
         return getParent().toLayerRect(this, rect);
     }
     
@@ -327,6 +344,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         if (child == null)
             return rect;
         rect.move(child.rect.minX + getOffsetX() + getContentOffset(), child.rect.minY + getOffsetY() + getContentOffset());
+        rect.scale(scaleFactor());
         return getParent().toScreenRect(this, rect);
     }
     
@@ -336,8 +354,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         if (event != null)
             return event;
         
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
@@ -352,8 +370,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public boolean testForDoubleClick(Rect rect, double x, double y) {
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
@@ -366,8 +384,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public void mouseMoved(Rect rect, double x, double y) {
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
@@ -378,8 +396,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
@@ -395,8 +413,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public boolean mouseDoubleClicked(Rect rect, double x, double y, int button) {
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
@@ -413,8 +431,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public void mouseReleased(Rect rect, double x, double y, int button) {
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
@@ -425,8 +443,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public void mouseDragged(Rect rect, double x, double y, int button, double dragX, double dragY, double time) {
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
@@ -437,8 +455,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
-        x *= getScaleFactor();
-        y *= getScaleFactor();
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;

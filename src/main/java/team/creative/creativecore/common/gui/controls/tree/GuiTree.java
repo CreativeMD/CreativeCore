@@ -157,7 +157,7 @@ public class GuiTree extends GuiScrollXY {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         if (isDragged()) {
             matrix.pushPose();
             matrix.translate(getContentOffset() + getOffsetX(), getContentOffset() + getOffsetY(), 0);
@@ -195,7 +195,7 @@ public class GuiTree extends GuiScrollXY {
         } else
             lastDragPosition = null;
         
-        super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
+        super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         
         matrix.pushPose();
         matrix.translate(getOffsetX(), getContentOffset() + getOffsetY(), 0);

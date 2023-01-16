@@ -381,24 +381,38 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
         if (!enabled)
             rectCopy = controlRect.copy();
         
+        int width;
+        int height;
+        if (control == null) {
+            width = (int) controlRect.getWidth();
+            height = (int) controlRect.getHeight();
+        } else {
+            width = control.getWidth();
+            height = control.getHeight();
+        }
+        
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
         
-        getBorder(style, style.get(formatting.border)).render(pose, 0, 0, controlRect.getWidth(), controlRect.getHeight());
+        getBorder(style, style.get(formatting.border)).render(pose, 0, 0, width, height);
         
         int borderWidth = style.getBorder(formatting.border);
-        controlRect.shrink(borderWidth);
-        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)))
-                .render(pose, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
         
-        renderContent(pose, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
+        width -= borderWidth * 2;
+        height -= borderWidth * 2;
+        
+        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(pose, borderWidth, borderWidth, width, height);
+        
+        controlRect.shrink(borderWidth * scale);
+        
+        renderContent(pose, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
@@ -408,17 +422,19 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        controlRect.shrink(formatting.padding);
-        pose.pushPose();
+    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        controlRect.shrink(formatting.padding * scale);
+        if (!enabled)
+            pose.pushPose();
         pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(pose, control, controlRect, controlRect.intersection(realRect), mouseX, mouseY);
-        pose.popPose();
+        renderContent(pose, control, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
+        if (!enabled)
+            pose.popPose();
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         renderContent(pose, control, controlRect, mouseX, mouseY);
     }
     

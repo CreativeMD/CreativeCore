@@ -182,12 +182,12 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         int posX = (int) ((control.getContentWidth() - sliderWidth) * percent);
         
         GuiStyle style = getStyle();
-        style.get(ControlStyleFace.CLICKABLE, false).render(pose, posX, 0, sliderWidth, rect.getHeight());
+        style.get(ControlStyleFace.CLICKABLE, false).render(pose, posX, 0, sliderWidth, control.getContentHeight());
         
         if (textfield != null)
-            textfield.render(pose, control, rect, rect, mouseX, mouseY);
+            textfield.render(pose, control, rect, rect, 1, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE, true);
+            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), control.getContentWidth(), control.getContentHeight(), ColorUtils.WHITE, true);
     }
     
     @Override
