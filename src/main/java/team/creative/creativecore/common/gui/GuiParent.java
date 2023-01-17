@@ -369,14 +369,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
-    public boolean testForDoubleClick(Rect rect, double x, double y) {
+    public boolean testForDoubleClick(Rect rect, double x, double y, int button) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
         for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.rect.inside(x, y) && child.control.testForDoubleClick(child.rect, x - child.getX(), y - child.getY()))
+            if (child.control.isInteractable() && child.rect.inside(x, y) && child.control.testForDoubleClick(child.rect, x - child.getX(), y - child.getY(), button))
                 return true;
         return false;
         

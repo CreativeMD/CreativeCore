@@ -60,7 +60,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (gui.getTopLayer().testForDoubleClick(null, x - getOffsetX(), y - getOffsetY())) {
+        if (gui.getTopLayer().testForDoubleClick(null, x - getOffsetX(), y - getOffsetY(), button)) {
             
             if (doubleClickButton == button) {
                 released = false;

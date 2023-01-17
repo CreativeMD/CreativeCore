@@ -286,7 +286,7 @@ public abstract class GuiControl {
     
     // INTERACTION
     
-    public boolean testForDoubleClick(Rect rect, double x, double y) {
+    public boolean testForDoubleClick(Rect rect, double x, double y, int button) {
         return false;
     }
     

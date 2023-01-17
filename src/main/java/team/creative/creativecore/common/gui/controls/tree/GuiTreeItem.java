@@ -178,8 +178,8 @@ public class GuiTreeItem extends GuiParent {
     }
     
     @Override
-    public boolean testForDoubleClick(Rect rect, double x, double y) {
-        return true;
+    public boolean testForDoubleClick(Rect rect, double x, double y, int button) {
+        return button == 0;
     }
     
     protected void updateColor() {
