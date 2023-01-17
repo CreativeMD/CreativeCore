@@ -30,6 +30,11 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
+    public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
+        return this.getFocused() != null && this.isDragging() && button == 0 ? this.getFocused().mouseDragged(x, y, button, dragX, dragY) : false;
+    }
+    
+    @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         getMenu().render(stack, this, listener, mouseX, mouseY);
     }
