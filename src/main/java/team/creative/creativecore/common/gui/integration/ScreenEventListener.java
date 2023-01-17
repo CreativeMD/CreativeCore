@@ -92,7 +92,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     @Override
     public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
         if (doubleClickButton == -1)
-            gui.getTopLayer().mouseDragged(null, x - getOffsetX(), y - getOffsetY(), button, dragX, dragY, getEventTime());
+            gui.getTopLayer().mouseDragged(null, x - getOffsetX(), y - getOffsetY(), button, dragX, dragY, Blaze3D.getTime() - time);
         return true;
     }
     
