@@ -5,6 +5,10 @@ import java.util.function.Predicate;
 
 public class FilterIterator<T> implements Iterator<T> {
     
+    public static <T> FilterIterator<T> skipNull(Iterator<T> itr) {
+        return new FilterIterator<>(itr, x -> x != null);
+    }
+    
     private final Predicate predicate;
     private final Iterator itr;
     private T next;
