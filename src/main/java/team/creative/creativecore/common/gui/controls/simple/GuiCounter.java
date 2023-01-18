@@ -25,11 +25,11 @@ public class GuiCounter extends GuiParent {
         add(textfield.setExpandableX());
         GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
         add(buttons);
-        buttons.add(new GuiButton("+", x -> {
+        buttons.add(new GuiButtonHoldSlim("+", x -> {
             textfield.setText("" + stepUp(textfield.parseInteger()));
             raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
         }).setTranslate("gui.plus"));
-        buttons.add(new GuiButton("-", x -> {
+        buttons.add(new GuiButtonHoldSlim("-", x -> {
             textfield.setText("" + stepDown(textfield.parseInteger()));
             raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
         }).setTranslate("gui.minus"));
