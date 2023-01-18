@@ -159,7 +159,9 @@ public class GuiScrollXY extends GuiParent {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        matrix.pushPose();
         super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        matrix.popPose();
         
         float controlInvScale = (float) scaleFactorInv();
         matrix.scale(controlInvScale, controlInvScale, controlInvScale);
@@ -170,7 +172,7 @@ public class GuiScrollXY extends GuiParent {
         scrolledX.tick();
         
         if (needsScrollbarX(control.rect)) {
-            int completeWidth = control.getWidth() - style.getBorder(formatting.border) * 2;
+            int completeWidth = control.getWidth() - borderWidth * 2;
             
             int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
             if (cachedWidth < completeWidth)
@@ -186,7 +188,7 @@ public class GuiScrollXY extends GuiParent {
         scrolledY.tick();
         
         if (needsScrollbarY(control.rect)) {
-            int completeHeight = control.getHeight() - style.getBorder(formatting.border) * 2;
+            int completeHeight = control.getHeight() - borderWidth * 2;
             
             int scrollThingHeight = Math.max(10, Math.min(completeHeight, (int) ((float) completeHeight / cachedHeight * completeHeight)));
             if (cachedHeight < completeHeight)
@@ -201,7 +203,6 @@ public class GuiScrollXY extends GuiParent {
         
         float controlScale = (float) scaleFactor();
         matrix.scale(controlScale, controlScale, controlScale);
-        
     }
     
     @Override

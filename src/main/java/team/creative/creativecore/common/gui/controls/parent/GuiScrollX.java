@@ -116,7 +116,9 @@ public class GuiScrollX extends GuiParent {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        matrix.pushPose();
         super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        matrix.popPose();
         
         float controlInvScale = (float) scaleFactorInv();
         matrix.scale(controlInvScale, controlInvScale, controlInvScale);
@@ -126,7 +128,7 @@ public class GuiScrollX extends GuiParent {
         
         scrolled.tick();
         
-        int completeWidth = control.getWidth() - style.getBorder(formatting.border) * 2;
+        int completeWidth = control.getWidth() - borderWidth * 2;
         
         int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
         if (scrollThingWidth < completeWidth)
@@ -140,7 +142,6 @@ public class GuiScrollX extends GuiParent {
         
         float controlScale = (float) scaleFactor();
         matrix.scale(controlScale, controlScale, controlScale);
-        
     }
     
     @Override
