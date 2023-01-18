@@ -256,7 +256,9 @@ public class CompiledText {
                     updateDimension(width + width(split.tail), lineHeight(split.tail));
                     components.add(split.tail);
                     return null;
-                } else
+                } else if (width == 0)
+                    return null;
+                else
                     return component;
             }
         }
@@ -339,7 +341,13 @@ public class CompiledText {
                 }
             }, style).orElse(null);
         }
-        return new FormattedTextSplit(head, tail);
+        
+        FormattedText headText = head.getResult();
+        FormattedText tailText = tail.getResult();
+        
+        if (headText == null && tailText == null)
+            return null;
+        return new FormattedTextSplit(headText, tailText);
     }
     
     static class FormattedTextSplit {
@@ -350,11 +358,6 @@ public class CompiledText {
         public FormattedTextSplit(FormattedText head, FormattedText tail) {
             this.head = head;
             this.tail = tail;
-        }
-        
-        public FormattedTextSplit(ComponentCollector head, ComponentCollector tail) {
-            this.head = head.getResult();
-            this.tail = tail.getResult();
         }
     }
     

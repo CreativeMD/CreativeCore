@@ -43,7 +43,6 @@ public class AdvancedStringSplitter extends StringSplitter {
             return mutablefloat.floatValue();
         }
         return super.stringWidth(text);
-        
     }
     
 }
