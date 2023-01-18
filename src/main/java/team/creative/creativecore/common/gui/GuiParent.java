@@ -328,6 +328,18 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         getParent().closeLayer(layer);
     }
     
+    public boolean isMouseOverHovered(double x, double y) {
+        x *= scaleFactorInv();
+        y *= scaleFactorInv();
+        int offset = getContentOffset();
+        x += -getOffsetX() - offset;
+        y += -getOffsetY() - offset;
+        for (GuiChildControl child : hoverControls)
+            if (child.isMouseOver(x, y))
+                return true;
+        return false;
+    }
+    
     @Override
     public Rect toLayerRect(GuiControl control, Rect rect) {
         GuiChildControl child = find(control);

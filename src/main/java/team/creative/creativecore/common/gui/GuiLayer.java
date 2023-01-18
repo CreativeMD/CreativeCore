@@ -219,7 +219,7 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (!this.rect.inside(x, y)) {
+        if (!this.rect.inside(x, y) && !isMouseOverHovered(x, y)) {
             looseFocus();
             for (GuiManager manager : managers())
                 manager.mouseClickedOutside(x, y);
