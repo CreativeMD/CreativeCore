@@ -277,6 +277,7 @@ public abstract class GuiLayer extends GuiParent {
         if (child == null)
             return rect;
         rect.move(child.rect.minX + getOffsetX(), child.rect.minY + getOffsetY());
+        rect.scale(scaleFactor());
         return rect;
     }
 }
