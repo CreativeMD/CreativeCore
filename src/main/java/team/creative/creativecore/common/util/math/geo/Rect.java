@@ -116,7 +116,7 @@ public class Rect {
         minX *= scale;
         minY *= scale;
         maxX *= scale;
-        maxX *= scale;
+        maxY *= scale;
     }
     
 }
