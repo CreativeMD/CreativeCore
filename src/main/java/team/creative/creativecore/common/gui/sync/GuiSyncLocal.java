@@ -3,8 +3,6 @@ package team.creative.creativecore.common.gui.sync;
 import java.util.function.Consumer;
 
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerPlayer;
-import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
@@ -26,10 +24,7 @@ public class GuiSyncLocal<T extends Tag> extends GuiSyncControl<GuiLayer, T> {
     
     public void send(T tag) {
         GuiControl control = ((GuiSyncHolderLayer) holder).parent;
-        if (control.isClient())
-            CreativeCore.NETWORK.sendToServer(new ControlSyncPacket(control, this, tag));
-        else
-            CreativeCore.NETWORK.sendToClient(new ControlSyncPacket(control, this, tag), (ServerPlayer) control.getPlayer());
+        control.getIntegratedParent().send(new ControlSyncPacket(control, this, tag));
     }
     
 }

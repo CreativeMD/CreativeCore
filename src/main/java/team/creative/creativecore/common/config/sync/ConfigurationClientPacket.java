@@ -49,9 +49,7 @@ public class ConfigurationClientPacket extends CreativePacket {
         return list;
     }
     
-    public ConfigurationClientPacket() {
-        
-    }
+    public ConfigurationClientPacket() {}
     
     public ICreativeConfigHolder run() {
         ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(path);

@@ -108,7 +108,7 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     public void closeLayer(int layer) {
         for (int i = 0; i <= layer; i++)
             layers.get(i).closed();
-        sendPacket(new LayerClosePacket(layer));
+        send(new LayerClosePacket(layer));
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
             if (isClient())
@@ -117,19 +117,12 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
                 ((ServerPlayer) player).closeContainer();
     }
     
-    public void sendPacket(CreativePacket packet) {
+    @Override
+    public void send(CreativePacket packet) {
         if (isClient())
-            sendPacketToServer(packet);
+            CreativeCore.NETWORK.sendToServer(packet);
         else
-            sendPacketToClient(packet);
-    }
-    
-    public void sendPacketToServer(CreativePacket packet) {
-        CreativeCore.NETWORK.sendToServer(packet);
-    }
-    
-    public void sendPacketToClient(CreativePacket packet) {
-        CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
+            CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
     }
     
     @Override

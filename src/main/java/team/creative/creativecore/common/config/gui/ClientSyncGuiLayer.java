@@ -85,7 +85,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
     }
     
     public void save() {
-        CreativeCore.NETWORK.sendToServer(new ConfigurationClientPacket(root, tree));
+        getIntegratedParent().send(new ConfigurationClientPacket(root, tree));
     }
     
     public void load(CheckTree<ConfigKey>.CheckTreeEntry entry) {

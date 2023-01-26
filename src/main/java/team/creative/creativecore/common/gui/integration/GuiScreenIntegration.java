@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
+import team.creative.creativecore.common.network.CreativePacket;
 
 public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {
     
@@ -152,5 +153,8 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
             return true;
         return super.charTyped(codePoint, modifiers);
     }
+    
+    @Override
+    public void send(CreativePacket message) {}
     
 }

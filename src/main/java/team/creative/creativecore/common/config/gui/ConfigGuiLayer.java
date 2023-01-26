@@ -142,7 +142,7 @@ public class ConfigGuiLayer extends GuiLayer {
     
     public void sendUpdate() {
         if (side.isServer())
-            CreativeCore.NETWORK.sendToServer(new ConfigurationChangePacket(rootHolder, ROOT));
+            getIntegratedParent().send(new ConfigurationChangePacket(rootHolder, ROOT));
         else {
             rootHolder.load(false, true, JsonUtils.get(ROOT, rootHolder.path()), Side.CLIENT);
             CreativeCore.CONFIG_HANDLER.save(Side.CLIENT);
