@@ -17,5 +17,6 @@ public record GuiIcon(ResourceLocation location, int minX, int minY, int width, 
     public static final GuiIcon PAUSE = new GuiIcon(GuiStyleUtils.GUI_ASSETS, 240, 144, 16, 16);
     public static final GuiIcon PLAY = new GuiIcon(GuiStyleUtils.GUI_ASSETS, 240, 160, 16, 16);
     public static final GuiIcon STOP = new GuiIcon(GuiStyleUtils.GUI_ASSETS, 240, 176, 16, 16);
+    public static final GuiIcon DUPLICATE = new GuiIcon(GuiStyleUtils.GUI_ASSETS, 240, 192, 16, 16);
     
 }
