@@ -24,6 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
 import team.creative.creativecore.common.util.text.content.AdvancedContent;
@@ -55,6 +56,7 @@ public class CompiledText {
     public boolean shadow = true;
     public int defaultColor = ColorUtils.WHITE;
     public Align alignment = Align.LEFT;
+    public VAlign valignment = VAlign.TOP;
     private List<CompiledLine> lines;
     private List<Component> original;
     
@@ -157,32 +159,39 @@ public class CompiledText {
         usedWidth = 0;
         usedHeight = -lineSpacing;
         
+        int totalHeight = getTotalHeight();
+        
         stack.pushPose();
+        float y = Math.max(0, switch (valignment) {
+            case CENTER -> maxHeight / 2 - totalHeight / 2;
+            case BOTTOM -> maxHeight - totalHeight;
+            default -> 0;
+        });
+        stack.translate(0, y, 0);
+        usedHeight += y;
+        
         for (CompiledLine line : lines) {
             switch (alignment) {
-                case LEFT:
+                case CENTER -> {
+                    int x = maxWidth / 2 - line.width / 2;
+                    stack.translate(x, 0, 0);
+                    line.render(stack);
+                    stack.translate(-x, 0, 0);
+                    usedWidth = Math.max(usedWidth, maxWidth);
+                }
+                case RIGHT -> {
+                    int x = maxWidth - line.width;
+                    stack.translate(x, 0, 0);
+                    line.render(stack);
+                    stack.translate(-x, 0, 0);
+                    usedWidth = Math.max(usedWidth, maxWidth);
+                }
+                default -> {
                     line.render(stack);
                     usedWidth = Math.max(usedWidth, line.width);
-                    break;
-                case CENTER:
-                    stack.pushPose();
-                    stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
-                    line.render(stack);
-                    usedWidth = Math.max(usedWidth, maxWidth);
-                    stack.popPose();
-                    break;
-                case RIGHT:
-                    stack.pushPose();
-                    stack.translate(maxWidth - line.width, 0, 0);
-                    line.render(stack);
-                    usedWidth = Math.max(usedWidth, maxWidth);
-                    stack.popPose();
-                    break;
-                case STRETCH:
-                    break;
-                default:
-                    break;
-            }
+                }
+            };
+            
             int height = line.height + lineSpacing;
             stack.translate(0, height, 0);
             usedHeight += height;

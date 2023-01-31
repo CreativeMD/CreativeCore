@@ -14,6 +14,7 @@ import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
@@ -32,6 +33,11 @@ public class GuiLabel extends GuiControl {
     
     public GuiLabel setAlign(Align align) {
         text.alignment = align;
+        return this;
+    }
+    
+    public GuiLabel setVAlign(VAlign valgin) {
+        text.valignment = valgin;
         return this;
     }
     
