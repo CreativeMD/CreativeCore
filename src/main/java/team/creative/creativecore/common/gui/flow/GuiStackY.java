@@ -197,8 +197,7 @@ public class GuiStackY extends GuiFlow {
                 y -= spacing;
             }
         } else if (valign == VAlign.CENTER || valign == VAlign.STRETCH) {
-            int contentHeight = height - (available + spacing * (controls.size() - 1));
-            int y = height / 2 - contentHeight / 2;
+            int y = available / 2;
             for (GuiChildControl child : controls) {
                 child.setY(y);
                 y += child.getHeight() + spacing;

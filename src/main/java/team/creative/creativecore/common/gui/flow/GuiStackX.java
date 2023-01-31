@@ -162,8 +162,7 @@ public class GuiStackX extends GuiFlow {
                 x -= spacing;
             }
         } else if (align == Align.CENTER || align == Align.STRETCH) {
-            int contentWidth = width - (available + spacing * (controls.size() - 1));
-            int x = width / 2 - contentWidth / 2;
+            int x = available / 2;
             for (GuiChildControl child : controls) {
                 child.setX(x);
                 x += child.getWidth() + spacing;
