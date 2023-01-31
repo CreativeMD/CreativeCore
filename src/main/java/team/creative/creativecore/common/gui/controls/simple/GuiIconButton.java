@@ -22,6 +22,7 @@ public class GuiIconButton extends GuiControl {
     protected Consumer<Integer> pressed;
     protected GuiIcon icon;
     protected Color color = Color.WHITE;
+    protected Color shadow = Color.BLACK;
     
     public GuiIconButton(String name, GuiIcon icon, Consumer<Integer> pressed) {
         super(name);
@@ -87,10 +88,15 @@ public class GuiIconButton extends GuiControl {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, icon.location());
-        color.glColor();
         RenderSystem.enableTexture();
         
+        shadow.glColor();
+        GuiRenderHelper.textureRect(pose, 1, 1, (int) rect.getWidth(), (int) rect.getHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
+        
+        color.glColor();
         GuiRenderHelper.textureRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
+        
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
     }
