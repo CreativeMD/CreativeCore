@@ -91,6 +91,21 @@ public class GuiTreeItem extends GuiParent {
     
     public void removed() {}
     
+    public void insertItemAfter(GuiTreeItem before, GuiTreeItem item) {
+        insertItemAfter(indexOf(before), item);
+    }
+    
+    public void insertItemAfter(int index, GuiTreeItem item) {
+        item.parentItem = this;
+        item.updateLevel();
+        items.add(index + 1, item);
+        updateControls();
+    }
+    
+    public void insertItem(GuiTreeItem before, GuiTreeItem item) {
+        insertItem(indexOf(before), item);
+    }
+    
     public void insertItem(int index, GuiTreeItem item) {
         item.parentItem = this;
         item.updateLevel();
