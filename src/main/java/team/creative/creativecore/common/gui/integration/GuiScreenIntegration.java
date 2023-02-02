@@ -121,6 +121,8 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
             onClose();
+        else
+            getTopLayer().becameTopLayer();
     }
     
     @Override

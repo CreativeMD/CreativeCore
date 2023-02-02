@@ -171,6 +171,9 @@ public abstract class GuiLayer extends GuiParent {
     
     public abstract void create();
     
+    /** called when a layer is removed and this layer is the new top layer */
+    public void becameTopLayer() {}
+    
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.GUI;
