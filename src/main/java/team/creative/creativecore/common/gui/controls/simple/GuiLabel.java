@@ -45,6 +45,10 @@ public class GuiLabel extends GuiControl {
         return setTitle(translatable(translate));
     }
     
+    public GuiLabel setTranslate(String translate, Object... params) {
+        return setTitle(translatable(translate, params));
+    }
+    
     public GuiLabel setTitle(Component component) {
         text.setText(component);
         if (hasGui())
