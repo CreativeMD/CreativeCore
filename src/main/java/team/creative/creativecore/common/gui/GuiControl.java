@@ -450,6 +450,18 @@ public abstract class GuiControl {
     
     // UTILS
     
+    public static Component translatable(String text) {
+        return Component.literal(translate(text));
+    }
+    
+    public static Component translatable(String text, Object... parameters) {
+        return Component.literal(translate(text, parameters));
+    }
+    
+    public static String translate(String text) {
+        return LanguageUtils.translate(text);
+    }
+    
     public static String translate(String text, Object... parameters) {
         return LanguageUtils.translate(text, parameters);
     }

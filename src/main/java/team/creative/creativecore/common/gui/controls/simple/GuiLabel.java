@@ -42,7 +42,7 @@ public class GuiLabel extends GuiControl {
     }
     
     public GuiLabel setTranslate(String translate) {
-        return setTitle(Component.translatable(translate));
+        return setTitle(translatable(translate));
     }
     
     public GuiLabel setTitle(Component component) {
