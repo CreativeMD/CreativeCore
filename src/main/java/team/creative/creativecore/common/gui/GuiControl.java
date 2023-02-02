@@ -14,6 +14,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -450,11 +451,11 @@ public abstract class GuiControl {
     
     // UTILS
     
-    public static Component translatable(String text) {
+    public static MutableComponent translatable(String text) {
         return Component.literal(translate(text));
     }
     
-    public static Component translatable(String text, Object... parameters) {
+    public static MutableComponent translatable(String text, Object... parameters) {
         return Component.literal(translate(text, parameters));
     }
     
