@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui.controls.tree;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -19,6 +20,7 @@ import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
+import team.creative.creativecore.common.util.type.itr.TreeIterator;
 
 public class GuiTree extends GuiScrollXY {
     
@@ -55,6 +57,10 @@ public class GuiTree extends GuiScrollXY {
         this.root = new GuiTreeItem("root", this);
         spacing = 3;
         setLineThickness(1);
+    }
+    
+    public Iterator<GuiTreeItem> allItems() {
+        return new TreeIterator<>(root, x -> x.items());
     }
     
     public GuiTree keepSelected() {
