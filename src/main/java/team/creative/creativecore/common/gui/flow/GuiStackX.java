@@ -95,7 +95,7 @@ public class GuiStackX extends GuiFlow {
                 for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
                     child.setWidth(child.getPreferredWidth(width), width);
-                    if (!child.control.isExpandableX())
+                    if (!child.isExpandableX())
                         itr.mark();
                     available -= child.getWidth();
                 }
@@ -182,7 +182,7 @@ public class GuiStackX extends GuiFlow {
         } else {
             if (valign == VAlign.STRETCH || expandable) {
                 for (GuiChildControl child : controls) {
-                    if (child.control.isExpandableY() || valign == VAlign.STRETCH)
+                    if (child.isExpandableY() || valign == VAlign.STRETCH)
                         child.setHeight(height, height);
                     else
                         child.setHeight(Math.min(height, child.getPreferredHeight(height)), height);

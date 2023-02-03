@@ -147,4 +147,12 @@ public class GuiChildControl {
         return rect.inside(x, y);
     }
     
+    public boolean isExpandableX() {
+        return control.isExpandableX();
+    }
+    
+    public boolean isExpandableY() {
+        return control.isExpandableY();
+    }
+    
 }

@@ -19,10 +19,11 @@ public class GuiFlowFitX extends GuiStackX {
                 lineHeight = Math.max(lineHeight, child.getMaxHeight(availableHeight));
             else {
                 line = child.getY();
-                total += lineHeight;
+                total += lineHeight + spacing;
                 lineHeight = child.getMaxHeight(availableHeight);
             }
         }
+        total += lineHeight;
         return total;
     }
     
@@ -36,10 +37,11 @@ public class GuiFlowFitX extends GuiStackX {
                 lineHeight = Math.max(lineHeight, child.getPreferredHeight(availableHeight));
             else {
                 line = child.getY();
-                total += lineHeight;
+                total += lineHeight + spacing;
                 lineHeight = child.getPreferredHeight(availableHeight);
             }
         }
+        total += lineHeight;
         return total;
     }
     
@@ -54,9 +56,9 @@ public class GuiFlowFitX extends GuiStackX {
             if (width - x >= pref) {
                 child.setY(rowIndex);
                 row.add(child);
-                x += pref;
+                x += pref + spacing;
             } else {
-                super.flowX(row, spacing, align, width, preferred);
+                super.flowX(row, spacing, align, width, Math.min(width, x));
                 row.clear();
                 rowIndex++;
                 child.setY(rowIndex);
@@ -65,7 +67,7 @@ public class GuiFlowFitX extends GuiStackX {
             }
         }
         if (!row.isEmpty())
-            super.flowX(row, spacing, align, width, preferred);
+            super.flowX(row, spacing, align, width, Math.min(width, x));
     }
     
     @Override
@@ -74,16 +76,22 @@ public class GuiFlowFitX extends GuiStackX {
         List<GuiChildControl> row = new ArrayList<>();
         int line = 0;
         for (GuiChildControl child : controls) {
-            if (child.getY() == line)
-                row.add(child);
-            else {
+            if (child.getY() != line) {
                 rows.add(new GuiRowControl(new ArrayList<>(row), spacing, valign, width));
                 line = child.getY();
                 row.clear();
             }
+            
+            row.add(child);
         }
+        if (!row.isEmpty())
+            rows.add(new GuiRowControl(new ArrayList<>(row), spacing, valign, width));
         
         GuiFlow.STACK_Y.flowY(rows, spacing, valign, width, height, preferred);
+        
+        for (GuiChildControl rowTemp : rows)
+            for (GuiChildControl child : ((GuiRowControl) rowTemp).controls)
+                child.setY(rowTemp.getY() + child.getY());
     }
     
     public static class GuiRowControl extends GuiChildControl {
@@ -147,6 +155,16 @@ public class GuiFlowFitX extends GuiStackX {
         @Override
         public void flowY() {
             GuiFlow.STACK_X.flowY(controls, spacing, valign, width, getHeight(), getPreferredHeight(getHeight()));
+        }
+        
+        @Override
+        public boolean isExpandableX() {
+            return false;
+        }
+        
+        @Override
+        public boolean isExpandableY() {
+            return false;
         }
         
     }

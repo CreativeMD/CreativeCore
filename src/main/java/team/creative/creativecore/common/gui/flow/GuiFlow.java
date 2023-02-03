@@ -26,14 +26,14 @@ public abstract class GuiFlow {
     
     public static boolean areChildrenExpandableX(List<GuiChildControl> controls) {
         for (GuiChildControl child : controls)
-            if (child.control.isExpandableX())
+            if (child.isExpandableX())
                 return true;
         return false;
     }
     
     public static boolean areChildrenExpandableY(List<GuiChildControl> controls) {
         for (GuiChildControl child : controls)
-            if (child.control.isExpandableY())
+            if (child.isExpandableY())
                 return true;
         return false;
     }
