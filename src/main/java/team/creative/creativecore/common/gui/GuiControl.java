@@ -90,13 +90,29 @@ public abstract class GuiControl {
         return this;
     }
     
+    public GuiControl setUnexpandable() {
+        this.expandableX = false;
+        this.expandableY = false;
+        return this;
+    }
+    
     public GuiControl setExpandableX() {
         this.expandableX = true;
         return this;
     }
     
+    public GuiControl setUnexpandableX() {
+        this.expandableX = false;
+        return this;
+    }
+    
     public GuiControl setExpandableY() {
         this.expandableY = true;
+        return this;
+    }
+    
+    public GuiControl setUnexpandableY() {
+        this.expandableY = false;
         return this;
     }
     
