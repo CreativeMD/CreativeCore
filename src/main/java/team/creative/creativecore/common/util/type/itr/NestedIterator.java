@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.type.itr;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class NestedIterator<T> implements Iterator<T> {
     
@@ -8,10 +9,12 @@ public class NestedIterator<T> implements Iterator<T> {
     protected Iterator<T> current;
     
     public NestedIterator(Iterator<? extends Iterable<T>> itrs) {
+        Objects.requireNonNull(itrs);
         this.itr = itrs;
     }
     
     public NestedIterator(Iterable<? extends Iterable<T>> itrs) {
+        Objects.requireNonNull(itrs);
         this.itr = itrs.iterator();
     }
     

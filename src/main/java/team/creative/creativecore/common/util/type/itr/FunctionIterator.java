@@ -6,8 +6,8 @@ import java.util.function.Function;
 
 public class FunctionIterator<T> implements Iterator<T> {
     
-    protected Iterator itr;
-    protected Function convert;
+    protected final Iterator itr;
+    protected final Function convert;
     
     public <V> FunctionIterator(Iterator<V> itr, Function<V, T> func) {
         Objects.requireNonNull(itr);
