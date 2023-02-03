@@ -91,10 +91,12 @@ public class GuiIconButton extends GuiControl {
         RenderSystem.enableTexture();
         
         shadow.glColor();
-        GuiRenderHelper.textureRect(pose, 1, 1, (int) rect.getWidth(), (int) rect.getHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
+        GuiRenderHelper
+                .textureRect(pose, 1, 1, control.getContentWidth(), control.getContentHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
         
         color.glColor();
-        GuiRenderHelper.textureRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
+        GuiRenderHelper
+                .textureRect(pose, 0, 0, control.getContentWidth(), control.getContentHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
         
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.disableBlend();
