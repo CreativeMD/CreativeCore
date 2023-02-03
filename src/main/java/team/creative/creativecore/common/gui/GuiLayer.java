@@ -180,11 +180,6 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     @Override
-    public String getNestedName() {
-        return "gui." + super.getNestedName();
-    }
-    
-    @Override
     public GuiLayer getLayer() {
         return this;
     }
