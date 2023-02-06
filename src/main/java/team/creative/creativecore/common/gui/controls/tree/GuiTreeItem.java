@@ -8,11 +8,13 @@ import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiButtonHoldSlim;
+import team.creative.creativecore.common.gui.controls.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
+import team.creative.creativecore.common.util.type.itr.FilterIterator;
 
 public class GuiTreeItem extends GuiParent {
     
@@ -22,6 +24,7 @@ public class GuiTreeItem extends GuiParent {
     private int level = 0;
     private boolean open = true;
     private boolean selected = false;
+    private GuiCheckBox checkbox;
     private GuiLabel label;
     private GuiButton button;
     private ItemClickState state = null;
@@ -29,6 +32,8 @@ public class GuiTreeItem extends GuiParent {
     public GuiTreeItem(String name, GuiTree tree) {
         super(name);
         this.tree = tree;
+        if (tree.hasCheckboxes())
+            add(getOrCreateCheckbox());
         add(label = new GuiLabel("title"));
         flow = GuiFlow.STACK_X;
         spacing = 5;
@@ -49,6 +54,16 @@ public class GuiTreeItem extends GuiParent {
         return this;
     }
     
+    protected GuiCheckBox getOrCreateCheckbox() {
+        if (checkbox != null)
+            return checkbox;
+        return checkbox = new GuiCheckBox("box", true).consumeChanged(x -> {
+            if (parentItem != null)
+                parentItem.childCheckedChanged(x);
+            setChecked(x);
+        });
+    }
+    
     public boolean opened() {
         return open;
     }
@@ -61,22 +76,80 @@ public class GuiTreeItem extends GuiParent {
         }
     }
     
+    public boolean isAtLeastPartiallyChecked() {
+        return checkbox != null && (checkbox.value || checkbox.partial);
+    }
+    
+    public boolean isChecked() {
+        return checkbox != null && checkbox.value;
+    }
+    
+    protected void setChecked(boolean value) {
+        if (checkbox != null)
+            checkbox.value = value;
+        for (GuiTreeItem item : items)
+            item.setChecked(value);
+    }
+    
+    protected void childCheckedChanged(boolean value) {
+        if (checkbox == null)
+            return;
+        if (checkbox.value)
+            return;
+        if (value) {
+            if (checkbox.partial)
+                return;
+            checkbox.partial = true;
+            if (parentItem != null)
+                parentItem.childCheckedChanged(true);
+        } else {
+            if (!checkbox.partial)
+                return;
+            
+            for (GuiTreeItem item : items)
+                if (item.isAtLeastPartiallyChecked())
+                    return;
+                
+            checkbox.partial = false;
+            if (parentItem != null)
+                parentItem.childCheckedChanged(false);
+        }
+        
+    }
+    
     protected void updateControls() {
         if (items.isEmpty() && button != null) {
             clear();
             button = null;
+            if (tree.hasCheckboxes())
+                add(getOrCreateCheckbox());
+            else if (checkbox != null)
+                checkbox = null;
             add(label);
         } else if (!items.isEmpty() && button == null) {
             clear();
             add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> {
                 toggle();
             }).setTitle(Component.literal("-")));
+            if (tree.hasCheckboxes())
+                add(getOrCreateCheckbox());
+            else if (checkbox != null)
+                checkbox = null;
             add(label);
         }
     }
     
     public GuiTreeItem getParentItem() {
         return parentItem;
+    }
+    
+    public void clearItems() {
+        for (GuiTreeItem item : items) {
+            item.parentItem = null;
+            item.removed();
+            updateControls();
+        }
+        items.clear();
     }
     
     public boolean removeItem(GuiTreeItem item) {
@@ -132,6 +205,10 @@ public class GuiTreeItem extends GuiParent {
     
     public Iterable<GuiTreeItem> items() {
         return items;
+    }
+    
+    public Iterable<GuiTreeItem> itemsChecked() {
+        return () -> new FilterIterator<>(items, x -> x.isAtLeastPartiallyChecked());
     }
     
     public GuiTreeItem getItem(int index) {

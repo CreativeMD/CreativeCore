@@ -161,7 +161,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         public final CheckTree<ConfigKey>.CheckTreeEntry entry;
         
         public GuiTreeCheckBox(CheckTree<ConfigKey>.CheckTreeEntry entry) {
-            super(entry.content.name, "", entry.isEnabled());
+            super(entry.content.name, entry.isEnabled());
             this.entry = entry;
             if (!value)
                 partial = entry.isChildEnabled();

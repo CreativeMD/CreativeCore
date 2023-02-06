@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.function.Consumer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
@@ -23,21 +25,22 @@ public class GuiCheckBox extends GuiLabel {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    private static StyleDisplay partialStyle;
-    public static final int checkBoxWidth = 7;
+    private static StyleDisplay PARTIAL_STYLE;
+    public static final int CHECKBOX_WIDTH = 7;
     
     public boolean value = false;
     public String title;
     public boolean partial = false;
+    public Consumer<Boolean> changed;
     
-    public GuiCheckBox(String name, String title, boolean value) {
+    public GuiCheckBox(String name, boolean value) {
         super(name);
         this.value = value;
-        this.title = title;
     }
     
-    public GuiCheckBox(String title, boolean value) {
-        this(title, title, value);
+    public GuiCheckBox consumeChanged(Consumer<Boolean> changed) {
+        this.changed = changed;
+        return this;
     }
     
     @Override
@@ -47,12 +50,12 @@ public class GuiCheckBox extends GuiLabel {
     
     @Override
     protected int preferredWidth(int availableWidth) {
-        return super.preferredWidth(availableWidth) + checkBoxWidth + 3;
+        return super.preferredWidth(availableWidth) + CHECKBOX_WIDTH + 3;
     }
     
     @Override
     protected int preferredHeight(int width, int availableHeight) {
-        return Math.max(checkBoxWidth + 3, super.preferredHeight(width, availableHeight));
+        return Math.max(CHECKBOX_WIDTH + 3, super.preferredHeight(width, availableHeight));
     }
     
     @Override
@@ -69,30 +72,38 @@ public class GuiCheckBox extends GuiLabel {
         GuiStyle style = getStyle();
         
         if (!enabled)
-            style.disabled.render(matrix, 0, yoffset, checkBoxWidth, checkBoxWidth);
+            style.disabled.render(matrix, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
         
-        style.get(ControlStyleBorder.SMALL).render(matrix, 0, yoffset, checkBoxWidth, checkBoxWidth);
-        style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(matrix, 1, yoffset + 1, checkBoxWidth - 2, checkBoxWidth - 2);
+        style.get(ControlStyleBorder.SMALL).render(matrix, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
+        style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(matrix, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
         
         if (value)
             Minecraft.getInstance().font.draw(matrix, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt());
         else if (partial) {
-            if (partialStyle == null)
-                partialStyle = new DisplayColor();
-            partialStyle.render(matrix, 2, yoffset + 2, checkBoxWidth - 4, checkBoxWidth - 4);
+            if (PARTIAL_STYLE == null)
+                PARTIAL_STYLE = new DisplayColor();
+            PARTIAL_STYLE.render(matrix, 2, yoffset + 2, CHECKBOX_WIDTH - 4, CHECKBOX_WIDTH - 4);
         }
         
         matrix.pushPose();
-        matrix.translate(checkBoxWidth + 3, 0, 0);
+        matrix.translate(CHECKBOX_WIDTH + 3, 0, 0);
         text.render(matrix);
         matrix.popPose();
+    }
+    
+    public void set(boolean value) {
+        if (this.value == value)
+            return;
+        this.value = value;
+        raiseEvent(new GuiControlChangedEvent(this));
+        if (changed != null)
+            changed.accept(value);
     }
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         playSound(SoundEvents.UI_BUTTON_CLICK);
-        this.value = !value;
-        raiseEvent(new GuiControlChangedEvent(this));
+        set(!value);
         return true;
     }
     

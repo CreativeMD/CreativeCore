@@ -29,6 +29,7 @@ public class GuiTree extends GuiScrollXY {
     private int lastHeight;
     
     private boolean searchbar = false;
+    private boolean checkboxes = false;
     protected boolean canDeselect = true;
     private final GuiTextfield search;
     private boolean visibleRoot = false;
@@ -59,13 +60,22 @@ public class GuiTree extends GuiScrollXY {
         setLineThickness(1);
     }
     
-    public Iterator<GuiTreeItem> allItems() {
-        return new TreeIterator<>(root, x -> x.items());
+    public GuiTree setCheckboxes(boolean checkboxes) {
+        this.checkboxes = checkboxes;
+        return this;
     }
     
     public GuiTree keepSelected() {
         canDeselect = false;
         return this;
+    }
+    
+    public boolean hasCheckboxes() {
+        return checkboxes;
+    }
+    
+    public Iterator<GuiTreeItem> allItems() {
+        return new TreeIterator<>(root, x -> x.items());
     }
     
     public GuiTreeItem selected() {
