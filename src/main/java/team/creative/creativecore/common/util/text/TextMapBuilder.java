@@ -69,6 +69,10 @@ public class TextMapBuilder<K> implements ITextCollection {
         return this;
     }
     
+    public int size() {
+        return lines.size();
+    }
+    
     @Override
     public CompiledText[] build() {
         CompiledText[] lines = new CompiledText[this.lines.size()];
