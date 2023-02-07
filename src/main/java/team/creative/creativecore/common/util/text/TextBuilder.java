@@ -41,17 +41,17 @@ public class TextBuilder {
     public TextBuilder translateIfCan(String text) {
         String translated = GuiControl.translate(text);
         if (!translated.equals(text))
-            add(Component.translatable(text));
+            text(translated);
         return this;
     }
     
     public TextBuilder translate(String text) {
-        add(Component.translatable(text));
+        text(GuiControl.translate(text));
         return this;
     }
     
     public TextBuilder translate(String text, Object... param) {
-        add(Component.translatable(text, param));
+        text(GuiControl.translate(text, param));
         return this;
     }
     
