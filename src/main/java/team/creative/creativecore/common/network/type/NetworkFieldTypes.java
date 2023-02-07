@@ -7,7 +7,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,6 +57,7 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
+import team.creative.creativecore.common.util.type.Bunch;
 
 public class NetworkFieldTypes {
     
@@ -113,8 +116,51 @@ public class NetworkFieldTypes {
         get(clazz).write(object, clazz, null, buffer);
     }
     
+    public static <T> void writeMany(Class<T> clazz, Bunch<T> bunch, FriendlyByteBuf buffer) {
+        buffer.writeInt(bunch.size());
+        NetworkFieldType<T> type = get(clazz);
+        for (T t : bunch)
+            type.write(t, clazz, null, buffer);
+    }
+    
+    public static <T> void writeMany(Class<T> clazz, Collection<T> collection, FriendlyByteBuf buffer) {
+        buffer.writeInt(collection.size());
+        NetworkFieldType<T> type = get(clazz);
+        for (T t : collection)
+            type.write(t, clazz, null, buffer);
+    }
+    
+    public static <T> void writeMany(Class<T> clazz, T[] collection, FriendlyByteBuf buffer) {
+        buffer.writeInt(collection.length);
+        NetworkFieldType<T> type = get(clazz);
+        for (T t : collection)
+            type.write(t, clazz, null, buffer);
+    }
+    
     public static <T> T read(Class<T> clazz, FriendlyByteBuf buffer) {
         return get(clazz).read(clazz, null, buffer);
+    }
+    
+    public static <T> Iterable<T> readMany(Class<T> clazz, FriendlyByteBuf buffer) {
+        int length = buffer.readInt();
+        NetworkFieldType<T> type = get(clazz);
+        
+        return () -> new Iterator<T>() {
+            
+            int index = 0;
+            
+            @Override
+            public boolean hasNext() {
+                return index < length;
+            }
+            
+            @Override
+            public T next() {
+                index++;
+                return type.read(clazz, null, buffer);
+            }
+            
+        };
     }
     
     static {
