@@ -14,6 +14,7 @@ import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollXY;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.controls.tree.GuiTreeDragPosition.ItemPosition;
+import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
@@ -87,17 +88,21 @@ public class GuiTree extends GuiScrollXY {
             select(root);
         else if (root.itemsCount() > 0)
             select(root.getItem(0));
-        else
+        else {
+            select(null);
             return false;
+        }
         return true;
     }
     
     public void select(GuiTreeItem item) {
         if (selected != null)
             selected.deselect();
+        GuiTreeItem old = selected;
         selected = item;
         if (item != null)
             item.select();
+        raiseEvent(new GuiTreeSelectionChanged(this, old, item));
     }
     
     public void setLineThickness(int thickness) {
@@ -347,6 +352,19 @@ public class GuiTree extends GuiScrollXY {
         lastDragPosition = null;
         dragged = null;
         return true;
+    }
+    
+    public static class GuiTreeSelectionChanged extends GuiControlChangedEvent {
+        
+        public final GuiTreeItem previousSelected;
+        public final GuiTreeItem selected;
+        
+        public GuiTreeSelectionChanged(GuiTree tree, GuiTreeItem previousSelected, GuiTreeItem selected) {
+            super(tree);
+            this.previousSelected = previousSelected;
+            this.selected = selected;
+        }
+        
     }
     
     private class GuiTreeLine {
