@@ -54,11 +54,16 @@ public class GuiTreeItem extends GuiParent {
         return this;
     }
     
+    public void resetCheckboxPartial() {
+        if (checkbox != null)
+            checkbox.partial = false;
+    }
+    
     protected GuiCheckBox getOrCreateCheckbox() {
         if (checkbox != null)
             return checkbox;
         return checkbox = new GuiCheckBox("box", true).consumeChanged(x -> {
-            if (parentItem != null)
+            if (parentItem != null && tree.hasCheckboxesPartial())
                 parentItem.childCheckedChanged(x);
             setChecked(x);
         });
@@ -85,10 +90,13 @@ public class GuiTreeItem extends GuiParent {
     }
     
     protected void setChecked(boolean value) {
-        if (checkbox != null)
+        if (checkbox != null) {
             checkbox.value = value;
-        for (GuiTreeItem item : items)
-            item.setChecked(value);
+            checkbox.partial = false;
+        }
+        if (tree.hasCheckboxesPartial())
+            for (GuiTreeItem item : items)
+                item.setChecked(value);
     }
     
     protected void childCheckedChanged(boolean value) {
@@ -118,7 +126,10 @@ public class GuiTreeItem extends GuiParent {
     }
     
     protected void updateControls() {
-        if (items.isEmpty() && button != null) {
+        if (tree.hasCheckboxes() == (checkbox != null) && items.isEmpty() == (button == null))
+            return;
+        
+        if (items.isEmpty()) {
             clear();
             button = null;
             if (tree.hasCheckboxes())
@@ -126,7 +137,7 @@ public class GuiTreeItem extends GuiParent {
             else if (checkbox != null)
                 checkbox = null;
             add(label);
-        } else if (!items.isEmpty() && button == null) {
+        } else {
             clear();
             add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> {
                 toggle();

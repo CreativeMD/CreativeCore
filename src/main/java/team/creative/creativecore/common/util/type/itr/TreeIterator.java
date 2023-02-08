@@ -5,15 +5,15 @@ import java.util.function.Function;
 
 public class TreeIterator<T> implements Iterator<T> {
     
-    private Function<T, Iterable<T>> function;
+    private Function<T, Iterator<T>> function;
     private T start;
     private Iterator<T> itr;
     private TreeIterator<T> current;
     
-    public TreeIterator(T start, Function<T, Iterable<T>> function) {
+    public TreeIterator(T start, Function<T, Iterator<T>> function) {
         this.start = start;
         this.function = function;
-        this.itr = function.apply(start).iterator();
+        this.itr = function.apply(start);
     }
     
     @Override

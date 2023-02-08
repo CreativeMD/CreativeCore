@@ -31,6 +31,7 @@ public class GuiTree extends GuiScrollXY {
     
     private boolean searchbar = false;
     private boolean checkboxes = false;
+    private boolean checkboxesPartial = false;
     protected boolean canDeselect = true;
     private final GuiTextfield search;
     private boolean visibleRoot = false;
@@ -61,8 +62,16 @@ public class GuiTree extends GuiScrollXY {
         setLineThickness(1);
     }
     
-    public GuiTree setCheckboxes(boolean checkboxes) {
+    public GuiTree setCheckboxes(boolean checkboxes, boolean partial) {
+        boolean changed = checkboxes != this.checkboxes || partial != this.checkboxesPartial;
         this.checkboxes = checkboxes;
+        this.checkboxesPartial = partial;
+        if (changed)
+            for (GuiTreeItem item : (Iterable<GuiTreeItem>) () -> allItems()) {
+                if (!partial)
+                    item.resetCheckboxPartial();
+                item.updateControls();
+            }
         return this;
     }
     
@@ -75,12 +84,24 @@ public class GuiTree extends GuiScrollXY {
         return checkboxes;
     }
     
+    public boolean hasCheckboxesPartial() {
+        return checkboxesPartial;
+    }
+    
     public Iterator<GuiTreeItem> allItems() {
-        return new TreeIterator<>(root, x -> x.items());
+        return new TreeIterator<>(root, x -> x.items().iterator());
     }
     
     public GuiTreeItem selected() {
         return selected;
+    }
+    
+    public GuiTreeItem getFirst() {
+        if (visibleRoot)
+            return root;
+        else if (root.itemsCount() > 0)
+            return root.getItem(0);
+        return null;
     }
     
     public boolean selectFirst() {
