@@ -25,5 +25,11 @@
     "minecraft.item_tag": "Itemtag",
     "minecraft.fuel": "Fuel",
     "minecraft.stack": "Stack",
-    "minecraft.material": "Material"
+    "minecraft.material": "Material",
+    "facing.east": "East",
+    "facing.west": "West",
+    "facing.up": "Up",
+    "facing.down": "Down",
+    "facing.south": "South",
+    "facing.north": "North"
 }

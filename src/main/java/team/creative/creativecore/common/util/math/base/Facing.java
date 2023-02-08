@@ -2,6 +2,7 @@ package team.creative.creativecore.common.util.math.base;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.geo.NormalPlane;
 
@@ -243,6 +244,10 @@ public enum Facing {
         if (this.axis == axis)
             return offset();
         return 0;
+    }
+    
+    public Component translate() {
+        return Component.translatable("facing." + name);
     }
     
     public abstract Facing opposite();
