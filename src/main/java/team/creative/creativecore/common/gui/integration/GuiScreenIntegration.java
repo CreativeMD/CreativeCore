@@ -116,7 +116,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     
     @Override
     public void closeLayer(int layer) {
-        for (int i = 0; i <= layer; i++)
+        for (int i = layer; i < layers.size(); i++)
             layers.get(i).closed();
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
