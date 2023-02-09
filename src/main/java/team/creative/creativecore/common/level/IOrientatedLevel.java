@@ -15,4 +15,6 @@ public interface IOrientatedLevel extends LevelAccessor, IForgeLevel {
     public Entity getHolder();
     
     public void setHolder(Entity entity);
+    
+    public void unload();
 }
