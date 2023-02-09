@@ -28,6 +28,7 @@ public class GuiTreeItem extends GuiParent {
     private GuiLabel label;
     private GuiButton button;
     private ItemClickState state = null;
+    protected boolean moving = false;
     
     public GuiTreeItem(String name, GuiTree tree) {
         super(name);
@@ -67,6 +68,14 @@ public class GuiTreeItem extends GuiParent {
                 parentItem.childCheckedChanged(x);
             setChecked(x);
         });
+    }
+    
+    public boolean isMoving() {
+        return moving;
+    }
+    
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
     
     public boolean opened() {
@@ -262,11 +271,14 @@ public class GuiTreeItem extends GuiParent {
         if (state == ItemClickState.CLICKED) {
             tree.select(this);
             playSound(SoundEvents.UI_BUTTON_CLICK);
+            state = null;
         } else if (state == ItemClickState.DRAGGED) {
+            state = null;
             if (tree.endDrag())
                 playSound(SoundEvents.UI_BUTTON_CLICK, 0.1F, 2F);
+            
         }
-        state = null;
+        
     }
     
     @Override

@@ -333,9 +333,15 @@ public class GuiTree extends GuiScrollXY {
     public boolean performModication(GuiTreeItem item, GuiTreeDragPosition position) {
         if (item.isChild(position.item))
             return false;
-        if (!item.getParentItem().removeItem(item))
-            return false;
-        position.insert(item);
+        
+        try {
+            item.setMoving(true);
+            if (!item.getParentItem().removeItem(item))
+                return false;
+            position.insert(item);
+        } finally {
+            item.setMoving(false);
+        }
         updateTree();
         return true;
     }
