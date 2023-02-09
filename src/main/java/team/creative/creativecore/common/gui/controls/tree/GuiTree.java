@@ -149,6 +149,10 @@ public class GuiTree extends GuiScrollXY {
         if (!visibleRoot || root.opened())
             addItem(root);
         
+        reflowTree();
+    }
+    
+    public void reflowTree() {
         if (lastWidth != 0) {
             flowX(lastWidth, preferredWidth(lastWidth));
             flowY(lastWidth, lastHeight, preferredHeight(lastWidth, lastHeight));
