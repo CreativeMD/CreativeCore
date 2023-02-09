@@ -231,7 +231,8 @@ public class VectorFan {
                 Vec3f vec = coords[i];
                 builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            Vec3f vec = coords[index];
+            builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             BufferUploader.drawWithShader(builder.end());
             index += 2;
         }
@@ -242,7 +243,8 @@ public class VectorFan {
                 Vec3f vec = coords[i];
                 builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            Vec3f vec = coords[index];
+            builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
             BufferUploader.drawWithShader(builder.end());
         }
         
@@ -256,7 +258,8 @@ public class VectorFan {
                 Vec3f vec = coords[i];
                 builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            Vec3f vec = coords[index];
+            builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             BufferUploader.drawWithShader(builder.end());
             index += 2;
         }
@@ -267,7 +270,8 @@ public class VectorFan {
                 Vec3f vec = coords[i];
                 builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
+            Vec3f vec = coords[index];
+            builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
             BufferUploader.drawWithShader(builder.end());
         }
     }
