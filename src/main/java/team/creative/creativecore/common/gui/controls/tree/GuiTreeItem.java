@@ -183,6 +183,7 @@ public class GuiTreeItem extends GuiParent {
         item.parentItem = this;
         item.updateLevel();
         items.add(index + 1, item);
+        item.added();
         updateControls();
     }
     
@@ -194,6 +195,7 @@ public class GuiTreeItem extends GuiParent {
         item.parentItem = this;
         item.updateLevel();
         items.add(index, item);
+        item.added();
         updateControls();
     }
     
@@ -201,8 +203,11 @@ public class GuiTreeItem extends GuiParent {
         item.parentItem = this;
         item.updateLevel();
         items.add(item);
+        item.added();
         updateControls();
     }
+    
+    public void added() {}
     
     protected void updateLevel() {
         level = parentItem.level + 1;
