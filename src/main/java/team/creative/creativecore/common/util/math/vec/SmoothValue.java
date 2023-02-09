@@ -25,6 +25,10 @@ public class SmoothValue {
         this.timestamp = 0;
     }
     
+    public void add(double value) {
+        set(aimed + value);
+    }
+    
     public void set(double value) {
         timestamp = System.currentTimeMillis();
         this.aimed = value;
