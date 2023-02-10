@@ -103,7 +103,7 @@ public class GuiLabel extends GuiControl {
     
     @Override
     protected int minWidth(int availableWidth) {
-        return 1;
+        return 0;
     }
     
     @Override
