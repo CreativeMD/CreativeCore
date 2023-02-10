@@ -26,22 +26,22 @@ import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 
-public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
+public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConveration<T> {
     
-    protected void addToList(NamedList list, String name, Object object) {
+    protected void addToList(T list, String name, Object object) {
         list.put(name, object);
     }
     
-    protected NamedList create(Class clazz) {
-        return new NamedList<>();
+    protected T create(Class clazz) {
+        return (T) new NamedList<>();
     }
     
     @Override
-    public NamedList readElement(NamedList defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+    public T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         if (element.isJsonObject()) {
             JsonObject object = (JsonObject) element;
             Class clazz = getListType(key);
-            NamedList list = create(clazz);
+            T list = create(clazz);
             ConfigTypeConveration conversation = getUnsafe(clazz);
             
             for (Entry<String, JsonElement> entry : object.entrySet()) {
@@ -60,7 +60,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
-    public JsonElement writeElement(NamedList value, NamedList defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         JsonObject array = new JsonObject();
         Class clazz = getListType(key);
         ConfigTypeConveration conversation = getUnsafe(clazz);
@@ -102,14 +102,14 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void restoreDefault(NamedList value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
+    public void restoreDefault(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
         loadValue(readElement(value, true, false, writeElement(value, value, true, false, Side.SERVER, key), Side.SERVER, key), parent, configParent, key);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(NamedList value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
+    public void loadValue(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
         if (!box.isEmpty())
             box.clear();
@@ -141,12 +141,12 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected NamedList saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
+    protected T saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);
         
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
-        NamedList value = create(subClass);
+        T value = create(subClass);
         for (int i = 0; i < box.size(); i++)
             if (converation != null)
                 addToList(value, box.get(i).getName(), converation.save(box.get(i), null, subClass, null));
@@ -158,7 +158,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
-    public NamedList set(ConfigKeyField key, NamedList value) {
+    public T set(ConfigKeyField key, T value) {
         return value;
     }
     
@@ -168,7 +168,7 @@ public class ConfigTypeNamedList extends ConfigTypeConveration<NamedList> {
     }
     
     @Override
-    public boolean areEqual(NamedList one, NamedList two, @Nullable ConfigKeyField key) {
+    public boolean areEqual(T one, T two, @Nullable ConfigKeyField key) {
         Class clazz = getListType(key);
         ConfigTypeConveration conversation = getUnsafe(clazz);
         

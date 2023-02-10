@@ -31,6 +31,11 @@ public class Permission<T> extends NamedList<T> {
         return value;
     }
     
+    @Deprecated
+    public T getDirect(Object key) {
+        return super.get(key);
+    }
+    
     @Override
     @Deprecated
     public T get(Object key) {
