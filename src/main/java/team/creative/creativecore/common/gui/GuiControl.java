@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.util.thread.EffectiveSide;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
@@ -52,7 +53,9 @@ public abstract class GuiControl {
     // BASICS
     
     public boolean isClient() {
-        return parent.isClient();
+        if (parent != null)
+            return parent.isClient();
+        return EffectiveSide.get().isClient();
     }
     
     public GuiControl setTooltip(List<Component> tooltip) {

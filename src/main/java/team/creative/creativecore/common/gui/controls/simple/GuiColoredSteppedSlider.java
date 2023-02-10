@@ -2,6 +2,10 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -29,6 +33,8 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         if (part == ColorPart.ALPHA) {
             Color startColor = new Color(picker.color);

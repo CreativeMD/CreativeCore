@@ -2,7 +2,11 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -53,6 +57,8 @@ public class GuiShowItem extends GuiControl {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         float scale = (float) Math.min(rect.getWidth() / 16, rect.getHeight() / 16);
         pose.scale(scale, scale, 1);
