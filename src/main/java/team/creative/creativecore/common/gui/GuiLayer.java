@@ -128,45 +128,47 @@ public abstract class GuiLayer extends GuiParent {
         
         Rect screen = Rect.getScreenRect();
         int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
-        int preferredWidth = -1;
+        int fixedWidth = -1;
+        int width = 0;
         
         if (preferred != null)
-            preferredWidth = preferred.preferredWidth(this, screenWidth);
-        if (preferredWidth == -1)
+            width = fixedWidth = preferred.preferredWidth(this, screenWidth);
+        if (fixedWidth == -1)
             if (isExpandableX())
-                preferredWidth = screenWidth;
+                width = screenWidth;
             else
-                preferredWidth = preferredWidth(screenWidth);
+                width = Math.min(screenWidth, preferredWidth(screenWidth));
         if (preferred != null) {
             int minWidth = preferred.minWidth(this, screenWidth);
             if (minWidth != -1)
-                preferredWidth = Math.max(preferredWidth, minWidth);
+                width = Math.max(width, minWidth);
             int maxWidth = preferred.maxWidth(this, screenWidth);
             if (maxWidth != -1)
-                preferredWidth = Math.min(preferredWidth, maxWidth);
+                width = Math.min(width, maxWidth);
         }
-        rect.maxX = preferredWidth + getContentOffset() * 2;
-        flowX(preferredWidth, preferredWidth);
+        rect.maxX = width + getContentOffset() * 2;
+        flowX(width, preferredWidth(fixedWidth != -1 ? fixedWidth : screenWidth));
         
         int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
-        int preferredHeight = -1;
+        int fixedHeight = -1;
+        int height = 0;
         if (preferred != null)
-            preferredHeight = preferred.preferredHeight(this, preferredWidth, screenHeight);
-        if (preferredHeight == -1)
+            height = fixedHeight = preferred.preferredHeight(this, width, screenHeight);
+        if (fixedHeight == -1)
             if (isExpandableY())
-                preferredHeight = screenHeight;
+                height = screenHeight;
             else
-                preferredHeight = preferredHeight((int) rect.getWidth() + getContentOffset() * 2, screenHeight);
+                height = Math.min(screenHeight, preferredHeight(width, screenHeight));
         if (preferred != null) {
-            int minHeight = preferred.minHeight(this, preferredWidth, screenHeight);
+            int minHeight = preferred.minHeight(this, width, screenHeight);
             if (minHeight != -1)
-                preferredHeight = Math.max(preferredHeight, minHeight);
-            int maxHeight = preferred.maxHeight(this, preferredWidth, screenHeight);
+                height = Math.max(height, minHeight);
+            int maxHeight = preferred.maxHeight(this, width, screenHeight);
             if (maxHeight != -1)
-                preferredHeight = Math.min(preferredHeight, maxHeight);
+                height = Math.min(height, maxHeight);
         }
-        rect.maxY = preferredHeight + getContentOffset() * 2;
-        flowY(preferredWidth, preferredHeight, preferredHeight(preferredWidth, screenHeight));
+        rect.maxY = height + getContentOffset() * 2;
+        flowY(width, height, preferredHeight(width, fixedHeight != -1 ? fixedHeight : screenHeight));
     }
     
     public abstract void create();
