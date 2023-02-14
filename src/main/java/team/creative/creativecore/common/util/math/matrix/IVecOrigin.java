@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.util.math.matrix;
 
 import org.joml.Vector3d;
-import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -15,7 +14,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.box.BoxCorner;
-import team.creative.creativecore.common.util.math.box.OBB;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public interface IVecOrigin {
@@ -136,7 +134,7 @@ public interface IVecOrigin {
         return new Vec3(real.x, real.y, real.z);
     }
     
-    public default AABB getAxisAlignedBox(AABB box) {
+    public default AABB getAABB(AABB box) {
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         double minZ = Double.MAX_VALUE;
@@ -160,7 +158,7 @@ public interface IVecOrigin {
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
-    public default OBB getOrientatedBox(AABB box) {
+    public default AABB getOBB(AABB box) {
         double minX = Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
         double minZ = Double.MAX_VALUE;
@@ -181,7 +179,7 @@ public interface IVecOrigin {
             maxZ = Math.max(maxZ, vec.z);
         }
         
-        return new OBB(this, minX, minY, minZ, maxX, maxY, maxZ);
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
     @Environment(EnvType.CLIENT)
@@ -201,10 +199,9 @@ public interface IVecOrigin {
         
         matrixStack.translate(rotationCenter.x, rotationCenter.y, rotationCenter.z);
         
-        // TODO USE PROPER MATRIX ROTATIOn
-        GL11.glRotated(rotX, 1, 0, 0);
-        GL11.glRotated(rotY, 0, 1, 0);
-        GL11.glRotated(rotZ, 0, 0, 1);
+        matrixStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees((float) rotX));
+        matrixStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees((float) rotY));
+        matrixStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees((float) rotZ));
         
         matrixStack.translate(-rotationCenter.x, -rotationCenter.y, -rotationCenter.z);
     }

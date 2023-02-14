@@ -30,6 +30,11 @@ public enum Facing {
             return com.mojang.math.Axis.YN;
         }
         
+        @Override
+        public AABB set(AABB bb, double value) {
+            return bb.setMinY(value);
+        }
+        
     },
     UP(Axis.Y, true, new Vec3i(0, 1, 0), -1) {
         
@@ -51,6 +56,11 @@ public enum Facing {
         @Override
         public com.mojang.math.Axis rotation() {
             return com.mojang.math.Axis.YP;
+        }
+        
+        @Override
+        public AABB set(AABB bb, double value) {
+            return bb.setMaxY(value);
         }
         
     },
@@ -76,6 +86,11 @@ public enum Facing {
             return com.mojang.math.Axis.ZN;
         }
         
+        @Override
+        public AABB set(AABB bb, double value) {
+            return bb.setMinZ(value);
+        }
+        
     },
     SOUTH(Axis.Z, true, new Vec3i(0, 0, 1), 0) {
         
@@ -97,6 +112,11 @@ public enum Facing {
         @Override
         public com.mojang.math.Axis rotation() {
             return com.mojang.math.Axis.ZP;
+        }
+        
+        @Override
+        public AABB set(AABB bb, double value) {
+            return bb.setMaxZ(value);
         }
         
     },
@@ -122,6 +142,11 @@ public enum Facing {
             return com.mojang.math.Axis.XN;
         }
         
+        @Override
+        public AABB set(AABB bb, double value) {
+            return bb.setMinX(value);
+        }
+        
     },
     EAST(Axis.X, true, new Vec3i(1, 0, 0), 3) {
         
@@ -143,6 +168,11 @@ public enum Facing {
         @Override
         public com.mojang.math.Axis rotation() {
             return com.mojang.math.Axis.XP;
+        }
+        
+        @Override
+        public AABB set(AABB bb, double value) {
+            return bb.setMaxX(value);
         }
     };
     
@@ -311,6 +341,8 @@ public enum Facing {
     }
     
     public abstract double get(AABB bb);
+    
+    public abstract AABB set(AABB bb, double value);
     
     public abstract com.mojang.math.Axis rotation();
     

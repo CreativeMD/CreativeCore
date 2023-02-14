@@ -7,21 +7,19 @@ import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.BoxCorner;
 import team.creative.creativecore.common.util.math.box.BoxFace;
 import team.creative.creativecore.common.util.math.box.BoxUtils;
-import team.creative.creativecore.common.util.math.box.CreativeAABB;
-import team.creative.creativecore.common.util.math.box.OBB;
 import team.creative.creativecore.common.util.math.matrix.Matrix4;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public class CollidingPlane {
     
-    public final CreativeAABB bb;
+    public final AABB bb;
     public final Facing facing;
     public final PlaneCache cache;
     protected final Vec3d origin;
     protected final Vec3d normal;
     
-    public CollidingPlane(CreativeAABB bb, Facing facing, PlaneCache cache, Vec3d[] corners, BoxCorner[] planeCorners) {
+    public CollidingPlane(AABB bb, Facing facing, PlaneCache cache, Vec3d[] corners, BoxCorner[] planeCorners) {
         this.bb = bb;
         this.facing = facing;
         this.cache = cache;
@@ -155,7 +153,7 @@ public class CollidingPlane {
             coordinator.transform(matrix, corner);
             coordinator.origin.transformPointToFakeWorld(corner);
             
-            if (bb.contains(corner))
+            if (bb.contains(corner.x, corner.y, corner.z))
                 return true;
             
             minX = Math.min(minX, corner.x);
@@ -169,7 +167,7 @@ public class CollidingPlane {
         return bb.minX < maxX && bb.maxX > minX && bb.minY < maxY && bb.maxY > minY && bb.minZ < maxZ && bb.maxZ > minZ;
     }
     
-    public static CollidingPlane[] getPlanes(CreativeAABB box, PlaneCache cache, CollisionCoordinator coordinator) {
+    public static CollidingPlane[] getPlanes(AABB box, PlaneCache cache, CollisionCoordinator coordinator) {
         Vec3d[] corners = BoxUtils.getRotatedCorners(box, coordinator.origin);
         
         boolean east = coordinator.offX > 0;
@@ -218,8 +216,9 @@ public class CollidingPlane {
         return planes;
     }
     
-    public static Facing getDirection(CollisionCoordinator coordinator, OBB box, Vec3d center) {
-        double x = (center.x - box.cache.center.x) / (box.maxX - box.minX);
+    public static Facing getDirection(CollisionCoordinator coordinator, AABB box, Vec3d center) {
+        throw new UnsupportedOperationException();
+        /*double x = (center.x - box.cache.center.x) / (box.maxX - box.minX);
         double y = (center.y - box.cache.center.y) / (box.maxY - box.minY);
         double z = (center.z - box.cache.center.z) / (box.maxZ - box.minZ);
         
@@ -230,7 +229,7 @@ public class CollidingPlane {
             return x > 0 ? Facing.EAST : Facing.WEST;
         else if (!xz && !yz)
             return z > 0 ? Facing.SOUTH : Facing.NORTH;
-        return y > 0 ? Facing.UP : Facing.DOWN;
+        return y > 0 ? Facing.UP : Facing.DOWN;*/
     }
     
     public static class PlaneCache {
@@ -256,9 +255,9 @@ public class CollidingPlane {
     
     public static class PushCache {
         public Facing facing;
-        public OBB pushBox;
+        public AABB pushBox;
         
         public AABB entityBox;
-        public OBB entityBoxOrientated;
+        public AABB entityBoxOrientated;
     }
 }
