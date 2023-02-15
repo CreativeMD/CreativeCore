@@ -1,8 +1,14 @@
 package team.creative.creativecore.common.util.type.set;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
-public class QuadBitSet {
+import org.joml.Vector2i;
+
+import net.minecraft.nbt.CompoundTag;
+import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
+
+public class QuadBitSet implements Iterable<Vector2i> {
     
     private static final int CHUNK_SIZE = 8;
     
@@ -19,21 +25,62 @@ public class QuadBitSet {
     private long[][] chunks;
     private int minChunkX;
     private int minChunkY;
-    private boolean empty = true;
+    private int count = 0;
     
     public QuadBitSet() {}
+    
+    public void load(CompoundTag nbt) {
+        if (!nbt.contains("info")) {
+            clearIncludingSize();
+            return;
+        }
+        
+        int[] info = nbt.getIntArray("info");
+        if (info.length != 4)
+            throw new IllegalArgumentException("Data is not valid " + nbt);
+        this.count = info[0];
+        this.minChunkX = info[1];
+        this.minChunkY = info[2];
+        int xlength = info[3];
+        long[] data = nbt.getLongArray("data");
+        int yLength = data.length / xlength;
+        this.chunks = new long[xlength][yLength];
+        int index = 0;
+        for (int i = 0; i < data.length; i++)
+            for (int j = 0; j < chunks[i].length; j++) {
+                chunks[i][j] = data[index];
+                index++;
+            }
+    }
+    
+    public CompoundTag save() {
+        CompoundTag nbt = new CompoundTag();
+        if (count == 0)
+            return nbt;
+        nbt.putIntArray("info", new int[] { count, minChunkX, minChunkY, chunks.length });
+        long[] array = new long[chunks.length * chunks[0].length];
+        int index = 0;
+        for (int i = 0; i < chunks.length; i++)
+            for (int j = 0; j < chunks[i].length; j++) {
+                array[index] = chunks[i][j];
+                index++;
+            }
+        nbt.putLongArray("data", array);
+        return nbt;
+    }
     
     private void init(int x, int y) {
         int chunkX = chunkIndex(x);
         int chunkY = chunkIndex(y);
         this.minChunkX = chunkX;
         this.minChunkY = chunkY;
-        this.chunks = new long[1][1];
-        this.empty = true;
+        if (chunks == null || chunks.length == 0 || chunks[0].length == 0)
+            this.chunks = new long[1][1];
+        this.count = 0;
     }
     
     private void ensureCapacity(int x, int y) {
-        if (empty)
+        if (count == 0)
             init(x, y);
         else {
             int chunkX = chunkIndex(x);
@@ -75,6 +122,10 @@ public class QuadBitSet {
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
+        if (((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) == 0))
+            count++;
+        else
+            count--;
         chunks[xOffset][yOffset] ^= (1L << index(inChunkX, inChunkY));
     }
     
@@ -88,6 +139,8 @@ public class QuadBitSet {
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
+        if (((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) == 0))
+            count++;
         chunks[xOffset][yOffset] |= (1L << index(inChunkX, inChunkY));
     }
     
@@ -108,12 +161,24 @@ public class QuadBitSet {
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
+        if (((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) != 0))
+            count--;
         chunks[xOffset][yOffset] &= ~(1L << index(inChunkX, inChunkY));
     }
     
-    public void clear() {
-        empty = true;
+    public void clearIncludingSize() {
+        count = 0;
         chunks = null;
+        minChunkX = 0;
+        minChunkY = 0;
+    }
+    
+    public void clear() {
+        count = 0;
+        if (chunks != null)
+            for (int i = 0; i < chunks.length; i++)
+                for (int j = 0; j < chunks[i].length; j++)
+                    chunks[i][j] = 0;
         minChunkX = 0;
         minChunkY = 0;
     }
@@ -138,6 +203,53 @@ public class QuadBitSet {
         return ((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) != 0);
     }
     
+    public boolean isEmpty() {
+        return count == 0;
+    }
+    
+    public int count() {
+        return count;
+    }
+    
+    @Override
+    public Iterator<Vector2i> iterator() {
+        return new ComputeNextIterator<Vector2i>() {
+            
+            private Vector2i vec = new Vector2i();
+            private int found = 0;
+            private int i = 0;
+            private int j = 0;
+            private int k = 0;
+            
+            @Override
+            protected Vector2i computeNext() {
+                if (found >= count)
+                    return end();
+                while (i < chunks.length) {
+                    while (j < chunks[i].length) {
+                        long word = chunks[i][j];
+                        if (word != 0) {
+                            while (k < 64) {
+                                long data = word & (1L << k);
+                                if (data != 0) {
+                                    vec.set((minChunkX + i) * CHUNK_SIZE + k / CHUNK_SIZE, (minChunkY + j) * CHUNK_SIZE + k % CHUNK_SIZE);
+                                    found++;
+                                    k++;
+                                    return vec;
+                                }
+                                k++;
+                            }
+                            k = 0;
+                        }
+                        j++;
+                    }
+                    i++;
+                }
+                return end();
+            }
+        };
+    }
+    
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder("{");
@@ -153,11 +265,10 @@ public class QuadBitSet {
                     else
                         result.append(", ");
                     for (int k = 0; k < 64; k++) {
-                        long data = word & (-1 << k);
+                        long data = word & (1L << k);
                         if (data != 0) {
-                            int index = k;
-                            int x = (minChunkX + i) * CHUNK_SIZE + index / CHUNK_SIZE;
-                            int y = (minChunkY + j) * CHUNK_SIZE + index % CHUNK_SIZE;
+                            int x = (minChunkX + i) * CHUNK_SIZE + k / CHUNK_SIZE;
+                            int y = (minChunkY + j) * CHUNK_SIZE + k % CHUNK_SIZE;
                             result.append("(" + x + ", " + y + ")");
                         }
                         
