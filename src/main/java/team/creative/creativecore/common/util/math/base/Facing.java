@@ -183,21 +183,7 @@ public enum Facing {
     public static final String[] HORIZONTAL_FACING_NAMES = new String[] { "north", "south", "west", "east" };
     
     public static Facing get(int index) {
-        switch (index) {
-            case 0:
-                return Facing.DOWN;
-            case 1:
-                return Facing.UP;
-            case 2:
-                return Facing.NORTH;
-            case 3:
-                return Facing.SOUTH;
-            case 4:
-                return Facing.WEST;
-            case 5:
-                return Facing.EAST;
-        }
-        throw new IllegalArgumentException();
+        return VALUES[index];
     }
     
     public static Facing get(Direction direction) {
@@ -214,15 +200,12 @@ public enum Facing {
     }
     
     public static Facing get(Axis axis, boolean positive) {
-        switch (axis) {
-            case X:
-                return positive ? Facing.EAST : Facing.WEST;
-            case Y:
-                return positive ? Facing.UP : Facing.DOWN;
-            case Z:
-                return positive ? Facing.SOUTH : Facing.NORTH;
-        }
-        throw new IllegalArgumentException();
+        return switch (axis) {
+            case X -> positive ? Facing.EAST : Facing.WEST;
+            case Y -> positive ? Facing.UP : Facing.DOWN;
+            case Z -> positive ? Facing.SOUTH : Facing.NORTH;
+            default -> throw new IllegalArgumentException();
+        };
     }
     
     public static Facing getHorizontal(int index) {
@@ -293,51 +276,39 @@ public enum Facing {
     }
     
     public Axis getUAxis() {
-        switch (axis) {
-            case X:
-                return Axis.Z;
-            case Y:
-                return Axis.X;
-            case Z:
-                return Axis.X;
-        }
-        return null;
+        return switch (axis) {
+            case X -> Axis.Z;
+            case Y -> Axis.X;
+            case Z -> Axis.X;
+            default -> null;
+        };
     }
     
     public Axis getVAxis() {
-        switch (axis) {
-            case X:
-                return Axis.Y;
-            case Y:
-                return Axis.Z;
-            case Z:
-                return Axis.Y;
-        }
-        return null;
+        return switch (axis) {
+            case X -> Axis.Y;
+            case Y -> Axis.Z;
+            case Z -> Axis.Y;
+            default -> null;
+        };
     }
     
     public float getU(float x, float y, float z) {
-        switch (axis) {
-            case X:
-                return z;
-            case Y:
-                return x;
-            case Z:
-                return x;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> z;
+            case Y -> x;
+            case Z -> x;
+            default -> 0;
+        };
     }
     
     public float getV(float x, float y, float z) {
-        switch (axis) {
-            case X:
-                return y;
-            case Y:
-                return z;
-            case Z:
-                return y;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> y;
+            case Y -> z;
+            case Z -> y;
+            default -> 0;
+        };
     }
     
     public abstract double get(AABB bb);
