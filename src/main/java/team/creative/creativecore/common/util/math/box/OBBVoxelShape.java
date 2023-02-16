@@ -143,9 +143,21 @@ public class OBBVoxelShape extends AABBVoxelShape {
         return positive ? valueAxis - closestValue : closestValue - valueAxis;
     }
     
+    public static boolean intersectsWithAxis(Axis axis, AABB bb, AABB bb2) {
+        return switch (axis) {
+            case X -> bb.minY < bb2.maxY && bb.maxY > bb2.minY && bb.minZ < bb2.maxZ && bb.maxZ > bb2.minZ;
+            case Y -> bb.minX < bb2.maxX && bb.maxX > bb2.minX && bb.minZ < bb2.maxZ && bb.maxZ > bb2.minZ;
+            case Z -> bb.minX < bb2.maxX && bb.maxX > bb2.minX && bb.minY < bb2.maxY && bb.maxY > bb2.minY;
+        };
+    }
+    
     @Override
     public double collide(Axis axis, AABB other, double offset) {
         if (offset == 0)
+            return offset;
+        if (Math.abs(offset) < 1.0E-7D)
+            return 0.0D;
+        if (!intersectsWithAxis(axis, bb, other))
             return offset;
         
         double distance = calculateDistanceRotated(other, team.creative.creativecore.common.util.math.base.Axis.get(axis), offset);
