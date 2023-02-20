@@ -87,6 +87,14 @@ public class AlignedBox {
         this.maxZ *= scale;
     }
     
+    public float getSize(Axis axis) {
+        return switch (axis) {
+            case X -> maxX - minX;
+            case Y -> maxY - minY;
+            case Z -> maxZ - minZ;
+        };
+    }
+    
     public Vec3d getSize() {
         return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
     }
