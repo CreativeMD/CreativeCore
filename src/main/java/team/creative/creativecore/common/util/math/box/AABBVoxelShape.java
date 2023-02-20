@@ -284,7 +284,7 @@ public class AABBVoxelShape extends SliceShape {
     
     @Override
     public boolean isEmpty() {
-        return this.shape.isEmpty();
+        return false;
     }
     
     @Override
