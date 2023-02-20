@@ -6,6 +6,9 @@ import java.util.Iterator;
 import org.joml.Vector2i;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongArrayTag;
+import net.minecraft.nbt.Tag;
 import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 
 public class QuadBitSet implements Iterable<Vector2i> {
@@ -36,36 +39,26 @@ public class QuadBitSet implements Iterable<Vector2i> {
         }
         
         int[] info = nbt.getIntArray("info");
-        if (info.length != 4)
+        if (info.length != 3)
             throw new IllegalArgumentException("Data is not valid " + nbt);
         this.count = info[0];
         this.minChunkX = info[1];
         this.minChunkY = info[2];
-        int xlength = info[3];
-        long[] data = nbt.getLongArray("data");
-        int yLength = data.length / xlength;
-        this.chunks = new long[xlength][yLength];
-        int index = 0;
-        for (int i = 0; i < data.length; i++)
-            for (int j = 0; j < chunks[i].length; j++) {
-                chunks[i][j] = data[index];
-                index++;
-            }
+        ListTag list = nbt.getList("data", Tag.TAG_LONG_ARRAY);
+        this.chunks = new long[list.size()][];
+        for (int i = 0; i < list.size(); i++)
+            this.chunks[i] = list.getLongArray(i);
     }
     
     public CompoundTag save() {
         CompoundTag nbt = new CompoundTag();
         if (count == 0)
             return nbt;
-        nbt.putIntArray("info", new int[] { count, minChunkX, minChunkY, chunks.length });
-        long[] array = new long[chunks.length * chunks[0].length];
-        int index = 0;
+        nbt.putIntArray("info", new int[] { count, minChunkX, minChunkY });
+        ListTag list = new ListTag();
         for (int i = 0; i < chunks.length; i++)
-            for (int j = 0; j < chunks[i].length; j++) {
-                array[index] = chunks[i][j];
-                index++;
-            }
-        nbt.putLongArray("data", array);
+            list.add(new LongArrayTag(Arrays.copyOf(chunks[i], chunks[i].length)));
+        nbt.put("data", list);
         return nbt;
     }
     
@@ -88,11 +81,19 @@ public class QuadBitSet implements Iterable<Vector2i> {
             if (chunkX < minChunkX) {
                 int additional = minChunkX - chunkX;
                 long[][] newChunks = new long[additional + chunks.length][];
+                for (int i = 0; i < additional; i++)
+                    newChunks[i] = new long[1];
                 for (int i = 0; i < chunks.length; i++)
                     newChunks[additional + i] = chunks[i];
                 chunks = newChunks;
-            } else if (chunkX >= minChunkX + chunks.length)
-                chunks = Arrays.copyOf(chunks, chunks.length + chunkX - (minChunkX + chunks.length) + 1);
+                minChunkX = chunkX;
+            } else if (chunkX - minChunkX >= chunks.length) {
+                int additional = chunkX - (minChunkX + chunks.length) + 1;
+                int length = chunks.length;
+                chunks = Arrays.copyOf(chunks, length + additional);
+                for (int i = 0; i < additional; i++)
+                    chunks[length + i] = new long[1];
+            }
             
             if (chunkY < minChunkY) {
                 int additional = minChunkY - chunkY;
@@ -103,10 +104,10 @@ public class QuadBitSet implements Iterable<Vector2i> {
                         newChunks[additional + i] = yChunks[i];
                     chunks[xIndex] = newChunks;
                 }
-                
+                minChunkY = chunkY;
             } else {
                 int xIndex = chunkX - minChunkX;
-                if (chunks[xIndex] == null || chunkY >= chunks[xIndex].length)
+                if (chunkY - minChunkY >= chunks[xIndex].length)
                     chunks[xIndex] = Arrays.copyOf(chunks[xIndex], chunks[xIndex].length + chunkY - (minChunkY + chunks[xIndex].length) + 1);
             }
         }
