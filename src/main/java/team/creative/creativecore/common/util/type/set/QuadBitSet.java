@@ -14,6 +14,7 @@ import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 public class QuadBitSet implements Iterable<Vector2i> {
     
     private static final int CHUNK_SIZE = 8;
+    public static final int CHUNK_BITS = 3;
     
     private static int chunkIndex(int coord) {
         if (coord < 0)
@@ -47,7 +48,7 @@ public class QuadBitSet implements Iterable<Vector2i> {
         ListTag list = nbt.getList("data", Tag.TAG_LONG_ARRAY);
         this.chunks = new long[list.size()][];
         for (int i = 0; i < list.size(); i++)
-            this.chunks[i] = list.getLongArray(i);
+            this.chunks[i] = ((LongArrayTag) list.get(i)).getAsLongArray();
     }
     
     public CompoundTag save() {
@@ -118,8 +119,8 @@ public class QuadBitSet implements Iterable<Vector2i> {
         
         int chunkX = chunkIndex(x);
         int chunkY = chunkIndex(y);
-        int inChunkX = x % CHUNK_SIZE;
-        int inChunkY = y % CHUNK_SIZE;
+        int inChunkX = x - (chunkX << CHUNK_BITS);
+        int inChunkY = y - (chunkY << CHUNK_BITS);
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
@@ -135,8 +136,8 @@ public class QuadBitSet implements Iterable<Vector2i> {
         
         int chunkX = chunkIndex(x);
         int chunkY = chunkIndex(y);
-        int inChunkX = x % CHUNK_SIZE;
-        int inChunkY = y % CHUNK_SIZE;
+        int inChunkX = x - (chunkX << CHUNK_BITS);
+        int inChunkY = y - (chunkY << CHUNK_BITS);
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
@@ -157,8 +158,8 @@ public class QuadBitSet implements Iterable<Vector2i> {
         
         int chunkX = chunkIndex(x);
         int chunkY = chunkIndex(y);
-        int inChunkX = x % CHUNK_SIZE;
-        int inChunkY = y % CHUNK_SIZE;
+        int inChunkX = x - (chunkX << CHUNK_BITS);
+        int inChunkY = y - (chunkY << CHUNK_BITS);
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
@@ -198,8 +199,8 @@ public class QuadBitSet implements Iterable<Vector2i> {
         if (chunkY < minChunkY || chunkY >= minChunkY + chunks[xOffset].length)
             return false;
         
-        int inChunkX = x % CHUNK_SIZE;
-        int inChunkY = y % CHUNK_SIZE;
+        int inChunkX = x - (chunkX << CHUNK_BITS);
+        int inChunkY = y - (chunkY << CHUNK_BITS);
         int yOffset = chunkY - minChunkY;
         return ((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) != 0);
     }
@@ -244,6 +245,7 @@ public class QuadBitSet implements Iterable<Vector2i> {
                         }
                         j++;
                     }
+                    j = 0;
                     i++;
                 }
                 return end();
