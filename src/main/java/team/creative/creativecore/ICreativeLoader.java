@@ -22,6 +22,8 @@ public interface ICreativeLoader {
     
     public Side getOverallSide();
     
+    public Side getEffectiveSide();
+    
     public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest);
     
     public String ignoreServerNetworkConstant();
