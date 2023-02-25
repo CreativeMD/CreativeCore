@@ -48,7 +48,7 @@ public class QuadBitSet implements Iterable<Vector2i> {
         ListTag list = nbt.getList("data", Tag.TAG_LONG_ARRAY);
         this.chunks = new long[list.size()][];
         for (int i = 0; i < list.size(); i++)
-            this.chunks[i] = ((LongArrayTag) list.get(i)).getAsLongArray();
+            this.chunks[i] = list.getLongArray(i);
     }
     
     public CompoundTag save() {
