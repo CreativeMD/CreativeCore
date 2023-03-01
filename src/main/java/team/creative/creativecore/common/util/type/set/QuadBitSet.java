@@ -64,10 +64,8 @@ public class QuadBitSet implements Iterable<Vector2i> {
     }
     
     private void init(int x, int y) {
-        int chunkX = chunkIndex(x);
-        int chunkY = chunkIndex(y);
-        this.minChunkX = chunkX;
-        this.minChunkY = chunkY;
+        this.minChunkX = chunkIndex(x);
+        this.minChunkY = chunkIndex(y);
         if (chunks == null || chunks.length == 0 || chunks[0].length == 0)
             this.chunks = new long[1][1];
         this.count = 0;
@@ -141,9 +139,10 @@ public class QuadBitSet implements Iterable<Vector2i> {
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
-        if (((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) == 0))
+        if (((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) == 0)) {
             count++;
-        chunks[xOffset][yOffset] |= (1L << index(inChunkX, inChunkY));
+            chunks[xOffset][yOffset] |= (1L << index(inChunkX, inChunkY));
+        }
     }
     
     public void set(int x, int y, boolean value) {
@@ -163,9 +162,10 @@ public class QuadBitSet implements Iterable<Vector2i> {
         int xOffset = chunkX - minChunkX;
         int yOffset = chunkY - minChunkY;
         
-        if (((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) != 0))
+        if (((chunks[xOffset][yOffset] & (1L << index(inChunkX, inChunkY))) != 0)) {
             count--;
-        chunks[xOffset][yOffset] &= ~(1L << index(inChunkX, inChunkY));
+            chunks[xOffset][yOffset] &= ~(1L << index(inChunkX, inChunkY));
+        }
     }
     
     public void clearIncludingSize() {
@@ -186,10 +186,10 @@ public class QuadBitSet implements Iterable<Vector2i> {
     }
     
     public boolean get(int x, int y) {
-        int chunkX = chunkIndex(x);
-        
         if (chunks == null)
             return false;
+        
+        int chunkX = chunkIndex(x);
         
         if (chunkX < minChunkX || chunkX >= minChunkX + chunks.length)
             return false;
