@@ -77,7 +77,7 @@ public class HashMapList<K, V> implements Iterable<V> {
         add(key, new ArrayList<V>(Arrays.asList(values)));
     }
     
-    public void add(K key, List<V> values) {
+    public void add(K key, Collection<V> values) {
         ArrayList<V> list = get(key);
         if (list == null)
             keys.put(key, new ArrayList<>(values));
