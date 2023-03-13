@@ -1,42 +1,40 @@
 package team.creative.creativecore.common.level;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map.Entry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import team.creative.creativecore.common.util.type.map.HashMapList;
 
 public class NeighborUpdateCollector {
     
-    protected final Level level;
-    private final HashSet<BlockPos> blocksToUpdate;
+    private final HashMapList<Level, BlockPos> blocksToUpdate = new HashMapList<>();
     
     public NeighborUpdateCollector(Level level, Collection<BlockPos> positions) {
-        this.level = level;
-        blocksToUpdate = new HashSet<>(positions);
+        blocksToUpdate.add(level, positions);
     }
     
-    public NeighborUpdateCollector(Level level) {
-        this.level = level;
-        blocksToUpdate = new HashSet<>();
-    }
+    public NeighborUpdateCollector() {}
     
-    public void add(BlockPos pos) {
-        blocksToUpdate.add(pos);
+    public void add(Level level, BlockPos pos) {
+        blocksToUpdate.add(level, pos);
     }
     
     public void add(BlockEntity be) {
-        blocksToUpdate.add(be.getBlockPos());
+        blocksToUpdate.add(be.getLevel(), be.getBlockPos());
     }
     
-    public void add(Collection<BlockPos> positions) {
-        blocksToUpdate.addAll(positions);
+    public void add(Level level, Collection<BlockPos> positions) {
+        blocksToUpdate.add(level, positions);
     }
     
-    protected void processPosition(BlockPos pos, HashSet<BlockPos> notifiedBlocks) {
+    protected void processPosition(Level level, BlockPos pos, HashSet<BlockPos> notifiedBlocks) {
         BlockState origin = level.getBlockState(pos);
         
         for (int i = 0; i < 6; i++) {
@@ -50,8 +48,11 @@ public class NeighborUpdateCollector {
     
     public void process() {
         HashSet<BlockPos> notifiedBlocks = new HashSet<>();
-        for (BlockPos pos : blocksToUpdate)
-            processPosition(pos, notifiedBlocks);
+        for (Entry<Level, ArrayList<BlockPos>> entry : blocksToUpdate.entrySet()) {
+            for (BlockPos pos : entry.getValue())
+                processPosition(entry.getKey(), pos, notifiedBlocks);
+            notifiedBlocks.clear();
+        }
         blocksToUpdate.clear();
     }
     
