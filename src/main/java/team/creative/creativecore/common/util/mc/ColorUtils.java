@@ -2,7 +2,6 @@ package team.creative.creativecore.common.util.mc;
 
 import org.joml.Vector3d;
 
-import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.type.Color;
 
 public class ColorUtils {
@@ -125,17 +124,6 @@ public class ColorUtils {
     
     public static int rgb(float red, float green, float blue) {
         return (255 & 255) << 24 | (((int) (red * 255)) & 255) << 16 | (((int) (green * 255)) & 255) << 8 | ((int) (blue * 255)) & 255;
-    }
-    
-    public static int rgb(Vec3i color) {
-        return (255 & 255) << 24 | (color.getX() & 255) << 16 | (color.getY() & 255) << 8 | color.getZ() & 255;
-    }
-    
-    public static Vec3i toIntVec(int color) {
-        float r = color >> 16 & 255;
-        float g = color >> 8 & 255;
-        float b = color & 255;
-        return new Vec3i(r, g, b);
     }
     
     public static Vector3d toVec(int color) {

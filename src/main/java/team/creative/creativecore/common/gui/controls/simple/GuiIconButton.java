@@ -91,7 +91,6 @@ public class GuiIconButton extends GuiControl {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, icon.location());
-        RenderSystem.enableTexture();
         
         shadow.glColor();
         GuiRenderHelper
@@ -103,6 +102,5 @@ public class GuiIconButton extends GuiControl {
         
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 }

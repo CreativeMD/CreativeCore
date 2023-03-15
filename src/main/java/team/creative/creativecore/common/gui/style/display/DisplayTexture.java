@@ -29,10 +29,8 @@ public class DisplayTexture extends StyleDisplay {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.enableTexture();
         GuiRenderHelper.textureRect(pose, (int) x, (int) y, (int) width, (int) height, u, v);
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
 }

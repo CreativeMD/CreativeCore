@@ -60,7 +60,6 @@ public class DisplayColor extends StyleDisplay {
     @Override
     public void render(PoseStack pose, double x, double y, double width, double height) {
         RenderSystem.enableDepthTest();
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -76,7 +75,6 @@ public class DisplayColor extends StyleDisplay {
         tessellator.end();
         
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
 }

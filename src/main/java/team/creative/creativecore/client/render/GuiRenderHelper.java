@@ -16,16 +16,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,10 +53,10 @@ public class GuiRenderHelper {
         PoseStack matrix = RenderSystem.getModelViewStack();
         matrix.pushPose();
         matrix.mulPoseMatrix(mat.last().pose());
-        matrix.translate(0, 0, 100.0F + renderer.blitOffset);
-        matrix.translate(8.0D, 8.0D, 0.0D);
-        matrix.scale(1.0F, -1.0F, 1.0F);
-        matrix.scale(16.0F, 16.0F, 16.0F);
+        matrix.translate(0, 0, 100);
+        matrix.translate(8, 8, 8);
+        matrix.mulPoseMatrix((new Matrix4f()).scaling(1, -1, 1));
+        matrix.scale(16, 16, 16);
         
         RenderSystem.applyModelViewMatrix();
         MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -63,7 +64,7 @@ public class GuiRenderHelper {
         boolean flag = !bakedmodel.usesBlockLight();
         if (flag)
             Lighting.setupForFlatItems();
-        renderer.render(stack, ItemTransforms.TransformType.GUI, false, new PoseStack(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        renderer.render(stack, ItemDisplayContext.GUI, false, new PoseStack(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
         multibuffersource$buffersource.endBatch();
         RenderSystem.enableDepthTest();
         if (flag)
@@ -85,12 +86,12 @@ public class GuiRenderHelper {
                 String s = String.valueOf(count);
                 posestack.translate(0.0D, 0.0D, 0 + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last().pose(), multibuffersource$buffersource, false, 0, 15728880);
+                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last()
+                        .pose(), multibuffersource$buffersource, DisplayMode.NORMAL, 0, 15728880);
                 multibuffersource$buffersource.endBatch();
             }
             if (stack.isBarVisible()) {
                 RenderSystem.disableDepthTest();
-                RenderSystem.disableTexture();
                 RenderSystem.disableBlend();
                 Tesselator tesselator = Tesselator.getInstance();
                 BufferBuilder bufferbuilder = tesselator.getBuilder();
@@ -99,7 +100,6 @@ public class GuiRenderHelper {
                 colorRect(posestack, bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
                 colorRect(posestack, bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
                 RenderSystem.enableBlend();
-                RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
             
@@ -107,13 +107,11 @@ public class GuiRenderHelper {
             float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack.getItem(), Minecraft.getInstance().getFrameTime());
             if (f > 0.0F) {
                 RenderSystem.disableDepthTest();
-                RenderSystem.disableTexture();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 Tesselator tesselator1 = Tesselator.getInstance();
                 BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
                 colorRect(posestack, bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-                RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
             
@@ -142,7 +140,6 @@ public class GuiRenderHelper {
     }
     
     public static void horizontalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -152,7 +149,6 @@ public class GuiRenderHelper {
         horizontalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
     public static void horizontalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
@@ -176,7 +172,6 @@ public class GuiRenderHelper {
     }
     
     public static void verticalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -186,7 +181,6 @@ public class GuiRenderHelper {
         verticalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
     public static void verticalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
@@ -209,13 +203,11 @@ public class GuiRenderHelper {
     }
     
     public static void colorRect(PoseStack pose, int x, int y, int width, int height, int color) {
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         colorRect(pose, Tesselator.getInstance().getBuilder(), x, y, x + width, y + height, ColorUtils.red(color), ColorUtils.green(color), ColorUtils.blue(color), ColorUtils
                 .alpha(color));
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
     public static void colorRect(PoseStack pose, BufferBuilder builder, int x, int y, int width, int height, int red, int green, int blue, int alpha) {

@@ -20,6 +20,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     private double x;
     private double y;
     private boolean released = false;
+    private boolean focused;
     
     public ScreenEventListener(IGuiIntegratedParent gui, Screen screen) {
         this.gui = gui;
@@ -117,8 +118,13 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     }
     
     @Override
-    public boolean changeFocus(boolean focus) {
-        return false;
+    public void setFocused(boolean focused) {
+        this.focused = focused;
+    }
+    
+    @Override
+    public boolean isFocused() {
+        return focused;
     }
     
     @Override

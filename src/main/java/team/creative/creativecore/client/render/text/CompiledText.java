@@ -13,6 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -229,7 +230,7 @@ public class CompiledText {
                 if (text instanceof AdvancedFormattedText adv)
                     adv.render(pose, defaultColor);
                 else {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), renderType, false, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), renderType, DisplayMode.NORMAL, 0, 15728880);
                     renderType.endBatch();
                 }
                 pose.popPose();

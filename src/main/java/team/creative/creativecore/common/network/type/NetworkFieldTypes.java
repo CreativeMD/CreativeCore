@@ -724,7 +724,7 @@ public class NetworkFieldTypes {
                 if (protocol != ConnectionProtocol.PLAY)
                     throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
                 Integer id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
-                if (id != null) {
+                if (id != -1) {
                     buffer.writeVarInt(id);
                     packet.write(buffer);
                 } else {

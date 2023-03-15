@@ -28,10 +28,8 @@ public class DisplayTextureStretch extends DisplayTexture {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.enableTexture();
         GuiRenderHelper.textureRect(pose, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
 }

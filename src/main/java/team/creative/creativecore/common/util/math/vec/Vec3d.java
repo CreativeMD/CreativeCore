@@ -50,7 +50,7 @@ public class Vec3d extends VecNd<Vec3d> {
     }
     
     public BlockPos toBlockPos() {
-        return new BlockPos(x, y, z);
+        return BlockPos.containing(x, y, z);
     }
     
     @Override

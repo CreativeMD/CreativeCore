@@ -28,7 +28,6 @@ public class DisplayTextureRepeat extends DisplayTexture {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.enableTexture();
         
         int renderedX = 0;
         while (renderedX < width) {
@@ -43,7 +42,6 @@ public class DisplayTextureRepeat extends DisplayTexture {
         }
         
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
 }
