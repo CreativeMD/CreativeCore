@@ -3,14 +3,16 @@ package team.creative.creativecore.common.util.math.geo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -32,6 +34,29 @@ import team.creative.creativecore.common.util.math.vec.VectorUtils;
 public class VectorFan {
     
     public static final float EPSILON = 0.0001F;
+    
+    protected static void setLineNormal(Vec3f normal, Vec3f first, Vec3f second) {
+        setLineNormal(normal, first.x, first.y, first.z, second.x, second.y, second.z);
+    }
+    
+    protected static void setLineNormal(Vec3f normal, float x1, float y1, float z1, float x2, float y2, float z2) {
+        float f = x2 - x1;
+        float f1 = y2 - y1;
+        float f2 = z2 - z1;
+        float f3 = Mth.sqrt(f * f + f1 * f1 + f2 * f2);
+        f /= f3;
+        f1 /= f3;
+        f2 /= f3;
+        normal.set(f, f1, f2);
+    }
+    
+    private static boolean isPointBetween(Vec3f start, Vec3f end, Vec3f between) {
+        float x = (end.y - start.y) * (between.z - start.z) - (end.z - start.z) * (between.y - start.y);
+        float y = (between.x - start.x) * (end.z - start.z) - (between.z - start.z) * (end.x - start.x);
+        float z = (end.x - start.x) * (between.y - start.y) - (end.y - start.y) * (between.x - start.x);
+        float test = Math.abs(x) + Math.abs(y) + Math.abs(z);
+        return Math.abs(test) < EPSILON;
+    }
     
     protected Vec3f[] coords;
     
@@ -223,151 +248,124 @@ public class VectorFan {
         BufferUploader.drawWithShader(builder.end());
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha) {
+    public void forAllEdges(BiConsumer<Vec3f, Vec3f> consumer) {
         int index = 0;
         while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
-            }
-            Vec3f vec = coords[index];
-            builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
-            BufferUploader.drawWithShader(builder.end());
+            consumer.accept(coords[coords.length - 1], coords[0]);
+            for (int i = index + 1; i < index + 4; i++)
+                consumer.accept(coords[i - 1], coords[i]);
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
-            }
-            Vec3f vec = coords[index];
-            builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
-            BufferUploader.drawWithShader(builder.end());
-        }
-        
-    }
-    
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
-        int index = 0;
-        while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
-            }
-            Vec3f vec = coords[index];
-            builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
-            BufferUploader.drawWithShader(builder.end());
-            index += 2;
-        }
-        
-        if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
-            }
-            Vec3f vec = coords[index];
-            builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
-            BufferUploader.drawWithShader(builder.end());
+            consumer.accept(coords[coords.length - 1], coords[0]);
+            for (int i = index + 1; i < index + 3; i++)
+                consumer.accept(coords[i - 1], coords[i]);
         }
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double grow) {
-        int index = 0;
-        while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++)
-                renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            BufferUploader.drawWithShader(builder.end());
-            index += 2;
-        }
-        
-        if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++)
-                renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            BufferUploader.drawWithShader(builder.end());
-        }
-        
+    protected void renderLinePoint() {}
+    
+    public void renderLines(Pose pose, VertexConsumer consumer, int red, int green, int blue, int alpha) {
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            setLineNormal(normal, x, y);
+            consumer.vertex(pose.pose(), x.x, x.y, x.z).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), y.x, y.y, y.z).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
-    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double grow) {
-        float x = vec.x * scaleX + offX;
-        if (x > center.x)
-            x += grow;
-        else
-            x -= grow;
-        float y = vec.y * scaleY + offY;
-        
-        if (y > center.y)
-            y += grow;
-        else
-            y -= grow;
-        
-        float z = vec.z * scaleZ + offZ;
-        if (z > center.z)
-            z += grow;
-        else
-            z -= grow;
-        
-        builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
+    public void renderLines(Pose pose, VertexConsumer consumer, int red, int green, int blue, int alpha, Vec3d center, double grow) {
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            float x1 = x.x;
+            if (x1 > center.x)
+                x1 += grow;
+            else
+                x1 -= grow;
+            float y1 = x.y;
+            if (y1 > center.y)
+                y1 += grow;
+            else
+                y1 -= grow;
+            float z1 = x.z;
+            if (z1 > center.z)
+                z1 += grow;
+            else
+                z1 -= grow;
+            float x2 = y.x;
+            if (x2 > center.x)
+                x2 += grow;
+            else
+                x2 -= grow;
+            float y2 = y.y;
+            if (y2 > center.y)
+                y2 += grow;
+            else
+                y2 -= grow;
+            float z2 = y.z;
+            if (z2 > center.z)
+                z2 += grow;
+            else
+                z2 -= grow;
+            setLineNormal(normal, x1, y1, z1, x2, y2, z2);
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
-    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, int red, int green, int blue, int alpha, Vec3d center, double grow) {
-        float x = vec.x;
-        if (x > center.x)
-            x += grow;
-        else
-            x -= grow;
-        float y = vec.y;
-        
-        if (y > center.y)
-            y += grow;
-        else
-            y -= grow;
-        
-        float z = vec.z;
-        if (z > center.z)
-            z += grow;
-        else
-            z -= grow;
-        
-        builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
+    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            float x1 = x.x * scaleX + offX;
+            float y1 = x.y * scaleY + offY;
+            float z1 = x.z * scaleZ + offZ;
+            float x2 = y.x * scaleX + offX;
+            float y2 = y.y * scaleY + offY;
+            float z2 = y.z * scaleZ + offZ;
+            setLineNormal(normal, x1, y1, z1, x2, y2, z2);
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha, Vec3d center, double grow) {
-        int index = 0;
-        while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++)
-                renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
-            BufferUploader.drawWithShader(builder.end());
-            index += 2;
-        }
-        
-        if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++)
-                renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
-            BufferUploader.drawWithShader(builder.end());
-        }
-        
-    }
-    
-    private static boolean isPointBetween(Vec3f start, Vec3f end, Vec3f between) {
-        float x = (end.y - start.y) * (between.z - start.z) - (end.z - start.z) * (between.y - start.y);
-        float y = (between.x - start.x) * (end.z - start.z) - (between.z - start.z) * (end.x - start.x);
-        float z = (end.x - start.x) * (between.y - start.y) - (end.y - start.y) * (between.x - start.x);
-        float test = Math.abs(x) + Math.abs(y) + Math.abs(z);
-        return Math.abs(test) < EPSILON;
+    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double grow) {
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            float x1 = x.x * scaleX + offX;
+            if (x1 > center.x)
+                x1 += grow;
+            else
+                x1 -= grow;
+            float y1 = x.y * scaleY + offY;
+            if (y1 > center.y)
+                y1 += grow;
+            else
+                y1 -= grow;
+            float z1 = x.z * scaleZ + offZ;
+            if (z1 > center.z)
+                z1 += grow;
+            else
+                z1 -= grow;
+            float x2 = y.x * scaleX + offX;
+            if (x2 > center.x)
+                x2 += grow;
+            else
+                x2 -= grow;
+            float y2 = y.y * scaleY + offY;
+            if (y2 > center.y)
+                y2 += grow;
+            else
+                y2 -= grow;
+            float z2 = y.z * scaleZ + offZ;
+            if (z2 > center.z)
+                z2 += grow;
+            else
+                z2 -= grow;
+            setLineNormal(normal, x1, y1, z1, x2, y2, z2);
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
     public void add(List<Vec3f> list, Vec3f toAdd) {
@@ -649,7 +647,7 @@ public class VectorFan {
         return null;
     }
     
-    public NormalPlane createPlane() {
+    public Vec3f createNormal() {
         Vec3f a = new Vec3f(coords[1]);
         a.sub(coords[0]);
         
@@ -658,7 +656,11 @@ public class VectorFan {
         
         Vec3f normal = new Vec3f();
         normal.cross(a, b);
-        return new NormalPlane(coords[0], normal);
+        return normal;
+    }
+    
+    public NormalPlane createPlane() {
+        return new NormalPlane(coords[0], createNormal());
     }
     
     public NormalPlane createPlane(RenderInformationHolder holder) {
@@ -978,8 +980,6 @@ public class VectorFan {
         return Arrays.toString(coords);
     }
     
-    public static class ParallelException extends Exception {
-        
-    }
+    public static class ParallelException extends Exception {}
     
 }

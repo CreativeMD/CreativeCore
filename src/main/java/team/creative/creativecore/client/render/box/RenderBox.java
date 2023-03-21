@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 
@@ -357,7 +358,7 @@ public class RenderBox extends AlignedBox {
         }
     }
     
-    public void renderLines(PoseStack pose, BufferBuilder builder, int alpha) {
+    public void renderLines(PoseStack pose, VertexConsumer consumer, int alpha) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
@@ -370,25 +371,25 @@ public class RenderBox extends AlignedBox {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last()
-                                .pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose
+                                .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last()
-                            .pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+                    ((VectorFan) renderQuads).renderLines(pose
+                            .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last().pose(), builder, red, green, blue, alpha);
+                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last().pose(), builder, red, green, blue, alpha);
+                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, red, green, blue, alpha);
             }
         }
     }
     
-    public void renderLines(PoseStack pose, BufferBuilder builder, int alpha, Vec3d center, double grow) {
+    public void renderLines(PoseStack pose, VertexConsumer consumer, int alpha, Vec3d center, double grow) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
@@ -401,20 +402,20 @@ public class RenderBox extends AlignedBox {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last()
-                                .pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
+                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose
+                                .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
                 else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last()
-                            .pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
+                    ((VectorFan) renderQuads).renderLines(pose
+                            .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last().pose(), builder, red, green, blue, alpha, center, grow);
+                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
                 else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last().pose(), builder, red, green, blue, alpha, center, grow);
+                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
             }
         }
     }
