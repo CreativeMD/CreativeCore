@@ -56,6 +56,15 @@ public class TextBuilder {
     }
     
     public TextBuilder text(String text) {
+        if (text.contains("\n")) {
+            String[] lines = text.split("\\n");
+            add(Component.literal(lines[0]));
+            for (int i = 1; i < lines.length; i++) {
+                newLine();
+                add(Component.literal(lines[i]));
+            }
+            return this;
+        }
         add(Component.literal(text));
         return this;
     }
