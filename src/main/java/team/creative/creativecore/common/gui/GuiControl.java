@@ -66,6 +66,11 @@ public abstract class GuiControl {
         return this;
     }
     
+    public GuiControl setTooltip(String translate) {
+        setTooltip(new TextBuilder().translate(translate).build());
+        return this;
+    }
+    
     public GuiControl setVisible(boolean visible) {
         this.visible = visible;
         return this;
