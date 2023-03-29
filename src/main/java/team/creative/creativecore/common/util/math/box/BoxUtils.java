@@ -31,24 +31,35 @@ public class BoxUtils {
     }
     
     private static double lengthIgnoreAxis(Vec3d vec, Axis axis) {
-        switch (axis) {
-        case X:
-            return Math.sqrt(vec.y * vec.y + vec.z * vec.z);
-        case Y:
-            return Math.sqrt(vec.x * vec.x + vec.z * vec.z);
-        case Z:
-            return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
-        default:
-            return 0;
-        }
+        return switch (axis) {
+            case X -> Math.sqrt(vec.y * vec.y + vec.z * vec.z);
+            case Y -> Math.sqrt(vec.x * vec.x + vec.z * vec.z);
+            case Z -> Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+            default -> 0;
+        };
     }
     
     private static void includeMaxRotationInBox(IncludeBox box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
         double rotation = coordinator.getRotationDegree(axis);
         if (rotation == 0)
             return;
-        
-        Matrix3 matrix = coordinator.getRotationMatrix(axis);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrix(axis), coordinator.translation);
+    }
+    
+    private static void includeMaxRotationInBoxInverse(IncludeBox box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
+        double rotation = -coordinator.getRotationDegree(axis);
+        if (rotation == 0)
+            return;
+        Vec3d translation;
+        if (coordinator.translation != null) {
+            translation = new Vec3d(coordinator.translation);
+            translation.invert();
+        } else
+            translation = null;
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrixInv(axis), translation);
+    }
+    
+    private static void includeMaxRotationInBox(IncludeBox box, Vec3d vec, Axis axis, double rotation, Matrix3 matrix, Vec3d translation) {
         Double length = null;
         BooleanRotation state = BooleanRotation.get(axis, vec);
         
@@ -63,8 +74,8 @@ public class BoxUtils {
                     length = lengthIgnoreAxis(vec, axis);
                 
                 box.include(facing, length);
-                if (coordinator.translation != null)
-                    box.include(facing, length + coordinator.translation.get(facing.axis));
+                if (translation != null)
+                    box.include(facing, length + translation.get(facing.axis));
                 
                 state = state.clockwise();
                 quarterRotation += 90;
@@ -81,8 +92,8 @@ public class BoxUtils {
                 length = lengthIgnoreAxis(vec, axis);
             
             box.include(facing, length);
-            if (coordinator.translation != null)
-                box.include(facing, length + coordinator.translation.get(facing.axis));
+            if (translation != null)
+                box.include(facing, length + translation.get(facing.axis));
         }
     }
     
@@ -105,6 +116,32 @@ public class BoxUtils {
                 includeMaxRotationInBox(bb, new Vec3d(vec), Axis.Z, coordinator);
                 
                 coordinator.transform(vec, 1D);
+                bb.include(vec);
+            }
+        }
+        
+        return bb.getAxisBB();
+    }
+    
+    public static AABB getRotatedSurroundingInverse(AABB boundingBox, CollisionCoordinator coordinator) {
+        Vec3d[] corners = getRotatedCorners(boundingBox, coordinator.origin);
+        
+        IncludeBox bb = new IncludeBox();
+        
+        for (int i = 0; i < corners.length; i++) {
+            Vec3d vec = corners[i];
+            
+            bb.include(vec);
+            
+            if (coordinator.hasOnlyTranslation()) {
+                vec.sub(coordinator.translation);
+                bb.include(vec);
+            } else {
+                includeMaxRotationInBoxInverse(bb, new Vec3d(vec), Axis.X, coordinator);
+                includeMaxRotationInBoxInverse(bb, new Vec3d(vec), Axis.Y, coordinator);
+                includeMaxRotationInBoxInverse(bb, new Vec3d(vec), Axis.Z, coordinator);
+                
+                coordinator.transformInverted(vec, 1D);
                 bb.include(vec);
             }
         }
@@ -172,24 +209,24 @@ public class BoxUtils {
         
         public void include(Facing facing, double value) {
             switch (facing) {
-            case EAST:
-                maxX = Math.max(maxX, value);
-                break;
-            case WEST:
-                minX = Math.min(minX, value);
-                break;
-            case UP:
-                maxY = Math.max(maxY, value);
-                break;
-            case DOWN:
-                minY = Math.min(minY, value);
-                break;
-            case SOUTH:
-                maxZ = Math.max(maxZ, value);
-                break;
-            case NORTH:
-                minZ = Math.min(minZ, value);
-                break;
+                case EAST:
+                    maxX = Math.max(maxX, value);
+                    break;
+                case WEST:
+                    minX = Math.min(minX, value);
+                    break;
+                case UP:
+                    maxY = Math.max(maxY, value);
+                    break;
+                case DOWN:
+                    minY = Math.min(minY, value);
+                    break;
+                case SOUTH:
+                    maxZ = Math.max(maxZ, value);
+                    break;
+                case NORTH:
+                    minZ = Math.min(minZ, value);
+                    break;
             }
         }
         

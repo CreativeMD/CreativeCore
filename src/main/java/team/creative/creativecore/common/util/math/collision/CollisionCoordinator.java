@@ -30,6 +30,9 @@ public class CollisionCoordinator {
     public Matrix3 rotationX;
     public Matrix3 rotationY;
     public Matrix3 rotationZ;
+    public Matrix3 rotationXInv;
+    public Matrix3 rotationYInv;
+    public Matrix3 rotationZInv;
     public Vec3d translation;
     
     public final boolean hasRotX;
@@ -82,9 +85,9 @@ public class CollisionCoordinator {
             moving.getParent().transformPointToWorld(rotationCenter);
         this.origin = origin;
         
-        this.rotationX = hasRotX ? MatrixUtils.createRotationMatrixX(rotX) : null;
-        this.rotationY = hasRotY ? MatrixUtils.createRotationMatrixY(rotY) : null;
-        this.rotationZ = hasRotZ ? MatrixUtils.createRotationMatrixZ(rotZ) : null;
+        this.rotationXInv = hasRotX ? MatrixUtils.createRotationMatrixX(-rotX) : null;
+        this.rotationYInv = hasRotY ? MatrixUtils.createRotationMatrixY(-rotY) : null;
+        this.rotationZInv = hasRotZ ? MatrixUtils.createRotationMatrixZ(-rotZ) : null;
         this.translation = hasTranslation ? new Vec3d(offX, offY, offZ) : null;
         
         this.originalOffX = moving.offX();
@@ -111,33 +114,47 @@ public class CollisionCoordinator {
     }
     
     public double getRotationDegree(Axis axis) {
-        switch (axis) {
-        case X:
-            return rotX;
-        case Y:
-            return rotY;
-        case Z:
-            return rotZ;
-        default:
-            return 0;
-        }
+        return switch (axis) {
+            case X -> rotX;
+            case Y -> rotY;
+            case Z -> rotZ;
+            default -> 0;
+        };
     }
     
     public Matrix3 getRotationMatrix(Axis axis) {
         switch (axis) {
-        case X:
-            return rotationX;
-        case Y:
-            return rotationY;
-        case Z:
-            return rotationZ;
-        default:
-            return null;
+            case X:
+                if (rotationX == null && hasRotX)
+                    rotationX = MatrixUtils.createRotationMatrixX(rotX);
+                return rotationX;
+            case Y:
+                if (rotationY == null && hasRotY)
+                    rotationY = MatrixUtils.createRotationMatrixX(rotY);
+                return rotationY;
+            case Z:
+                if (rotationZ == null && hasRotZ)
+                    rotationZ = MatrixUtils.createRotationMatrixX(rotZ);
+                return rotationZ;
+            default:
+                return null;
         }
+    }
+    
+    public Matrix3 getRotationMatrixInv(Axis axis) {
+        return switch (axis) {
+            case X -> rotationXInv;
+            case Y -> rotationYInv;
+            case Z -> rotationZInv;
+        };
     }
     
     public AABB computeSurroundingBox(AABB box) {
         return BoxUtils.getRotatedSurrounding(box, this);
+    }
+    
+    public AABB computeInverseSurroundingBox(AABB box) {
+        return BoxUtils.getRotatedSurroundingInverse(box, this);
     }
     
     private boolean isSimple() {

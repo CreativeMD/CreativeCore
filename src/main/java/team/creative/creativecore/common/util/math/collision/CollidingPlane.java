@@ -254,10 +254,12 @@ public class CollidingPlane {
     }
     
     public static class PushCache {
+        
         public Facing facing;
         public AABB pushBox;
         
         public AABB entityBox;
         public AABB entityBoxOrientated;
+        
     }
 }
