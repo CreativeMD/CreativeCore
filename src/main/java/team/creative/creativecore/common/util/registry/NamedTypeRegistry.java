@@ -116,7 +116,7 @@ public class NamedTypeRegistry<T> {
         try {
             return clazz.getConstructor(classes).newInstance(objects);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            throw new ConstructorForbiddenException(classes);
+            throw new ConstructorForbiddenException(classes, clazz);
         }
     }
     
@@ -162,8 +162,8 @@ public class NamedTypeRegistry<T> {
     
     public static class ConstructorForbiddenException extends RegistryException {
         
-        public ConstructorForbiddenException(Class[] classes) {
-            super("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable");
+        public ConstructorForbiddenException(Class[] classes, Class clazz) {
+            super("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable in " + clazz.getSimpleName());
         }
         
     }
