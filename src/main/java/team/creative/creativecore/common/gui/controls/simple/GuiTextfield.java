@@ -123,6 +123,14 @@ public class GuiTextfield extends GuiFocusControl {
         }
     }
     
+    public double parseDouble() {
+        try {
+            return Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+    
     public int parseInteger() {
         try {
             return Integer.parseInt(text);
