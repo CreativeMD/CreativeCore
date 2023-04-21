@@ -14,9 +14,8 @@ import team.creative.creativecore.common.util.text.TextListBuilder;
 
 public class GuiTabButton extends GuiParent {
     
-    public static final ControlFormatting TAB_BUTTON = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.NESTED_BACKGROUND);
-    public static final ControlFormatting BUTTON_ACTIVE = new ControlFormatting(ControlStyleBorder.NONE, 2, ControlStyleFace.CLICKABLE);
-    public static final ControlFormatting BUTTON_INACTIVE = new ControlFormatting(ControlStyleBorder.NONE, 2, ControlStyleFace.DISABLED);
+    public static final ControlFormatting BUTTON_ACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
+    public static final ControlFormatting BUTTON_INACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.DISABLED);
     
     private int index = 0;
     public GuiBorderlessButton selected;
@@ -55,10 +54,10 @@ public class GuiTabButton extends GuiParent {
     
     @Override
     public ControlFormatting getControlFormatting() {
-        return TAB_BUTTON;
+        return ControlFormatting.TRANSPARENT;
     }
     
-    protected static class GuiBorderlessButton extends GuiButton {
+    public static class GuiBorderlessButton extends GuiButton {
         
         public boolean active = false;
         
