@@ -35,9 +35,9 @@ public class ChildVecOrigin extends VecOrigin {
     }
     
     @Override
-    public void setupRenderingInternal(PoseStack matrixStack, Entity entity, float partialTicks) {
-        parent.setupRenderingInternal(matrixStack, entity, partialTicks);
-        super.setupRenderingInternal(matrixStack, entity, partialTicks);
+    public void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, Entity entity, float partialTicks) {
+        parent.setupRenderingInternal(matrixStack, camX, camY, camZ, entity, partialTicks);
+        super.setupRenderingInternal(matrixStack, camX, camY, camZ, entity, partialTicks);
     }
     
     @Override

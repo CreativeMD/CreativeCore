@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.math.matrix;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -184,7 +185,7 @@ public interface IVecOrigin {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRenderingInternal(PoseStack matrixStack, Entity entity, float partialTicks) {
+    public default void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, Entity entity, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
         double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
@@ -197,19 +198,16 @@ public interface IVecOrigin {
         
         matrixStack.translate(offX, offY, offZ);
         
-        matrixStack.translate(rotationCenter.x, rotationCenter.y, rotationCenter.z);
+        matrixStack.translate(rotationCenter.x - camX, rotationCenter.y - camY, rotationCenter.z - camZ);
+        matrixStack.mulPose(new Quaternionf().rotationZYX((float) Math.toRadians(rotZ), (float) Math.toRadians(rotY), (float) Math.toRadians(rotX)));
+        matrixStack.translate(-rotationCenter.x + camX, -rotationCenter.y + camY, -rotationCenter.z + camZ);
         
-        matrixStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees((float) rotX));
-        matrixStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees((float) rotY));
-        matrixStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees((float) rotZ));
-        
-        matrixStack.translate(-rotationCenter.x, -rotationCenter.y, -rotationCenter.z);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRendering(PoseStack matrixStack, Entity entity, float partialTicks) {
-        setupRenderingInternal(matrixStack, entity, partialTicks);
+    public default void setupRendering(PoseStack matrixStack, double camX, double camY, double camZ, Entity entity, float partialTicks) {
+        setupRenderingInternal(matrixStack, camX, camY, camZ, entity, partialTicks);
     }
     
     public default boolean hasChanged() {
