@@ -15,7 +15,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiShowItem extends GuiControl {
     
-    public ItemStack stack;
+    public ItemStack stack = ItemStack.EMPTY;
     
     public GuiShowItem(String name) {
         super(name);
