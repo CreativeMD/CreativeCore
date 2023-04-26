@@ -31,6 +31,11 @@ public class GuiLabel extends GuiControl {
         return this;
     }
     
+    public GuiLabel setDropShadow(boolean shadow) {
+        text.shadow = shadow;
+        return this;
+    }
+    
     public GuiLabel setAlign(Align align) {
         text.alignment = align;
         return this;
