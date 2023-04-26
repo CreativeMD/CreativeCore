@@ -4,6 +4,7 @@ public class ControlFormatting {
     
     public static final ControlFormatting PROGRESSBAR = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.BAR);
     public static final ControlFormatting CLICKABLE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
+    public static final ControlFormatting HEADER = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.HEADER_BACKGROUND);
     public static final ControlFormatting NESTED = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.NESTED_BACKGROUND);
     public static final ControlFormatting NESTED_NO_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.NESTED_BACKGROUND);
     public static final ControlFormatting GUI = new ControlFormatting(ControlStyleBorder.BIG, 5, ControlStyleFace.BACKGROUND);
@@ -43,6 +44,7 @@ public class ControlFormatting {
         
         BAR,
         CLICKABLE,
+        HEADER_BACKGROUND,
         NESTED_BACKGROUND,
         BACKGROUND,
         SLOT,

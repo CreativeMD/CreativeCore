@@ -99,6 +99,8 @@ public class GuiStyle {
     public StyleDisplay background = new DisplayColor(0.6F, 0.6F, 0.6F, 1);
     @SerializedName("secondary-background")
     public StyleDisplay secondaryBackground = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
+    @SerializedName("header-background")
+    public StyleDisplay headerBackground = new DisplayColor(1F, 1F, 1F, 1);
     
     public StyleDisplay bar = new DisplayColor(0.1F, 0.1F, 0.1F, 1);
     
@@ -128,6 +130,7 @@ public class GuiStyle {
             case NESTED_BACKGROUND -> secondaryBackground;
             case SLOT -> slot;
             case DISABLED -> disabledBackground;
+            case HEADER_BACKGROUND -> headerBackground;
             default -> StyleDisplay.NONE;
         };
     }
