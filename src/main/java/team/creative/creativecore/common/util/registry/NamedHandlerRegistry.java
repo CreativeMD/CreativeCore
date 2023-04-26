@@ -8,6 +8,12 @@ import java.util.Set;
 
 public class NamedHandlerRegistry<T> {
     
+    public static void clearRegistry(NamedHandlerRegistry registry) {
+        registry.handlers.clear();
+        registry.handlersInv.clear();
+        registry.defaultHandler = null;
+    }
+    
     private HashMap<String, T> handlers = new LinkedHashMap<>();
     private HashMap<T, String> handlersInv = new LinkedHashMap<>();
     private T defaultHandler;
