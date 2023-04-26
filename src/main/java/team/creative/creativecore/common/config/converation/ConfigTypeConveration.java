@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -58,7 +59,7 @@ public abstract class ConfigTypeConveration<T> {
     private static final NumberFormat numberFormat = createFormat();
     
     private static NumberFormat createFormat() {
-        NumberFormat format = NumberFormat.getInstance();
+        NumberFormat format = NumberFormat.getInstance(Locale.ENGLISH);
         format.setMaximumFractionDigits(Integer.MAX_VALUE);
         format.setGroupingUsed(false);
         return format;
