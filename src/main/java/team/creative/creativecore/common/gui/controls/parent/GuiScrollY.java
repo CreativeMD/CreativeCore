@@ -14,6 +14,7 @@ import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.math.vec.SmoothValue;
 
@@ -23,7 +24,7 @@ public class GuiScrollY extends GuiParent {
     public SmoothValue scrolled = new SmoothValue(200);
     public boolean dragged;
     public int scrollbarWidth = 3;
-    
+    public boolean hoveredScroll;
     protected int cachedHeight;
     
     public GuiScrollY() {
@@ -32,6 +33,16 @@ public class GuiScrollY extends GuiParent {
     
     public GuiScrollY(String name) {
         super(name, GuiFlow.STACK_Y);
+    }
+    
+    public GuiScrollY setHovered() {
+        this.hoveredScroll = true;
+        return this;
+    }
+    
+    public GuiScrollY setHover(boolean hover) {
+        this.hoveredScroll = hover;
+        return this;
     }
     
     @Override
@@ -121,6 +132,9 @@ public class GuiScrollY extends GuiParent {
         super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         matrix.popPose();
         
+        if (!needsScrollbar(controlRect) && hoveredScroll)
+            return;
+        
         float controlInvScale = (float) scaleFactorInv();
         matrix.scale(controlInvScale, controlInvScale, controlInvScale);
         
@@ -136,7 +150,8 @@ public class GuiScrollY extends GuiParent {
             scrollThingHeight = completeHeight;
         double percent = scrolled.current() / maxScroll;
         
-        style.get(ControlStyleFace.CLICKABLE, false).render(matrix, control
+        StyleDisplay display = hoveredScroll ? style.disabled : style.get(ControlStyleFace.CLICKABLE, false);
+        display.render(matrix, control
                 .getWidth() - scrollbarWidth - borderWidth, (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarWidth, scrollThingHeight);
         
         maxScroll = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
@@ -157,7 +172,9 @@ public class GuiScrollY extends GuiParent {
     
     @Override
     public void flowX(int width, int preferred) {
-        super.flowX(width - scrollbarWidth, preferred);
+        if (!hoveredScroll)
+            width -= scrollbarWidth;
+        super.flowX(width, preferred);
     }
     
     @Override
