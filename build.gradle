@@ -1,32 +1,114 @@
 plugins {
-    id 'java-library'
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.+'
+    id 'org.spongepowered.mixin'
 }
 
 group= "team.creative" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+java.sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java", "src/forge/java"]
+        }
+        resources {
+            srcDirs = ["src/main/resources", "src/forge/resources"]
+        }
+    }
+}
+
 minecraft {
     mappings channel: 'official', version: "${project.property 'minecraft_version'}"
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
-    runs {}
+    runs {
+        client {
+            taskName "creativecore_client"
+            workingDirectory project.file('run')
+            
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                creativecore {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            taskName "creativecore_server"
+            workingDirectory project.file('run')
+            
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                creativecore {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.property 'minecraft_version'}-${project.property 'forge_version'}"
     
-    api project(':CreativeLoaderForge')
+    // Apply Mixin AP
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 jar {
   duplicatesStrategy = DuplicatesStrategy.INCLUDE
+  archiveFileName.set(project.modname + "_FORGE_v" + project(':CreativeCore').version + "_mc" + project(':CreativeCore').minecraft_version + ".jar")
+}
+
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, 'creativecore.mixins.refmap.json'
+     
+    config 'creativecore.mixins.json'
+    config 'creativecore.forge.mixins.json'
+}
+
+// Example configuration to allow publishing using the maven-publish plugin
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+// publish.dependsOn('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": project.modname,
+            "Specification-Vendor": "CreativeMD",
+            "Specification-Version": project(':CreativeCore').version,
+            "Implementation-Title": project.name,
+            "Implementation-Version"  : project(':CreativeCore').version,
+            "Implementation-Vendor": "CreativeMD",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
 
