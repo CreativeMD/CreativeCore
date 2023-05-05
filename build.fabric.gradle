@@ -15,6 +15,18 @@ repositories {
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+java.sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java", "src/fabric/java"]
+        }
+        resources {
+            srcDirs = ["src/main/resources", "src/fabric/resources"]
+        }
+    }
+}
+
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -24,9 +36,15 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-    api project(':CreativeLoaderFabric')
     api "net.minecraftforge:eventbus:6.0.3"
 }
+
+
+loom.runConfigs.configureEach {
+    ideConfigGenerated = true
+    vmArgs "-Dfabric.debug.replaceVersion=creativecore:${project.version}"
+}
+
 
 processResources {
     inputs.property "version", project.version
@@ -51,3 +69,42 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += ["-Xmaxerrs", "1000"];
 }
 
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+    archivesBaseName = project.modname
+}
+
+remapJar {
+    archiveFileName = project.modname + "_FABRIC_v" + project.version + "_mc" + project.minecraft_version + ".jar"
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}" }
+    }
+}
+
+loom.mixin {
+    defaultRefmapName = "creativecore.mixins.refmap.json"
+}
+
+// configure the maven publication
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        mavenLocal()
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
+    }
+}

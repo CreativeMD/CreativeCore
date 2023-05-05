@@ -1,0 +1,46 @@
+{
+    "schemaVersion": 1,
+    "id": "creativecore",
+    "version": "${version}",
+    "name": "CreativeCore (Fabric)",
+    "description": "",
+    "authors": [
+        "CreativeMD",
+        "AriaFreeze"
+    ],
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.gg/W9QM3fS"
+            },
+            "badges": [
+                "library"
+            ]
+        }
+    },
+    "contact": {
+    },
+    "license": "GNU LGPL v2.1",
+    "icon": "creativecore.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "team.creative.creativecore.CreativeCore"
+        ],
+        "client": [
+            "team.creative.creativecore.client.CreativeCoreClient"
+        ],
+        "modmenu": [
+            "team.creative.creativecore.client.ModMenuImpl"
+        ]
+    },
+    "mixins": [
+        "creativecore.mixins.json",
+        "creativecore.fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.14.0",
+        "fabric": "*",
+        "minecraft": ">=1.19"
+    }
+}
