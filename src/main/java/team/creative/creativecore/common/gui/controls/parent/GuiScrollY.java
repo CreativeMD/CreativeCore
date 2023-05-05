@@ -162,14 +162,13 @@ public class GuiScrollY extends GuiParent {
     
     @Override
     public void flowY(int width, int height, int preferred) {
-        int y = 0;
-        for (GuiChildControl child : controls) {
-            child.setHeight(child.getPreferredHeight(height), height);
-            child.setY(y);
-            child.flowY();
-            y += child.getHeight() + spacing;
-        }
-        cachedHeight = y;
+        super.flowY(width, height, preferred);
+        cachedHeight = preferred;
+    }
+    
+    @Override
+    protected boolean endlessY() {
+        return true;
     }
     
 }

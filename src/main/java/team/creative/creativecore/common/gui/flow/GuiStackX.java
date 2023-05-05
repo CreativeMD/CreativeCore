@@ -51,7 +51,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred) {
+    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
         int available = width - spacing * (controls.size() - 1);
         MarkList<GuiChildControl> list = new MarkList<>(controls);
         if (width >= preferred) { // If there is enough space available
@@ -111,6 +111,10 @@ public class GuiStackX extends GuiFlow {
                         }
                     }
             }
+        } else if (endless) { // Used for scroll boxes
+            for (GuiChildControl child : controls)
+                child.setWidth(child.getPreferredWidth(width), width);
+            align = Align.LEFT;
         } else { // If there is not enough space
             for (GuiChildControl child : list) { // Make sure min dimensions are used
                 int min = child.getMinWidth(width);
@@ -171,34 +175,37 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred) {
+    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
+        int maxHeight = height;
+        if (endless && preferred < height)
+            maxHeight = preferred;
         boolean expandable = areChildrenExpandableY(controls);
         if (valign == VAlign.TOP && !expandable) {
             for (GuiChildControl child : controls) {
                 child.setY(0);
-                child.setHeight(Math.min(height, child.getPreferredHeight(height)), height);
+                child.setHeight(Math.min(maxHeight, child.getPreferredHeight(height)), height);
                 child.flowY();
             }
         } else {
             if (valign == VAlign.STRETCH || expandable) {
                 for (GuiChildControl child : controls) {
                     if (child.isExpandableY() || valign == VAlign.STRETCH)
-                        child.setHeight(height, height);
+                        child.setHeight(maxHeight, height);
                     else
-                        child.setHeight(Math.min(height, child.getPreferredHeight(height)), height);
+                        child.setHeight(Math.min(maxHeight, child.getPreferredHeight(height)), height);
                     child.setY(0);
                     child.flowY();
                 }
             } else if (valign == VAlign.BOTTOM) {
                 for (GuiChildControl child : controls) {
-                    child.setHeight(Math.min(height, child.getPreferredHeight(height)), height);
-                    child.setY(height - child.getHeight());
+                    child.setHeight(Math.min(maxHeight, child.getPreferredHeight(height)), height);
+                    child.setY(maxHeight - child.getHeight());
                     child.flowY();
                 }
             } else {
                 for (GuiChildControl child : controls) {
-                    child.setHeight(Math.min(height, child.getPreferredHeight(height)), height);
-                    child.setY((int) Math.ceil(height / 2D - child.getHeight() / 2D));
+                    child.setHeight(Math.min(maxHeight, child.getPreferredHeight(height)), height);
+                    child.setY((int) Math.ceil(maxHeight / 2D - child.getHeight() / 2D));
                     child.flowY();
                 }
             }

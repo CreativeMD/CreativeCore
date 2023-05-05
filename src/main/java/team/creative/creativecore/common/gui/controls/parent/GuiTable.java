@@ -40,7 +40,7 @@ public class GuiTable extends GuiParent {
                 i++;
             }
         }
-        GuiFlow.STACK_X.flowX(cols, spacing, Align.STRETCH, width, preferred);
+        GuiFlow.STACK_X.flowX(cols, spacing, Align.STRETCH, width, preferred, endlessX());
     }
     
     @Override

@@ -20,9 +20,9 @@ public abstract class GuiFlow {
     
     public abstract int preferredHeight(List<GuiChildControl> controls, int spacing, int width, int availableWidth);
     
-    public abstract void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred);
+    public abstract void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless);
     
-    public abstract void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred);
+    public abstract void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless);
     
     public static boolean areChildrenExpandableX(List<GuiChildControl> controls) {
         for (GuiChildControl child : controls)

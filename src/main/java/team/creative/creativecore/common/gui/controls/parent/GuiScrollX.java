@@ -155,15 +155,14 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
+    protected boolean endlessX() {
+        return true;
+    }
+    
+    @Override
     public void flowX(int width, int preferred) {
-        int x = 0;
-        for (GuiChildControl child : controls) {
-            child.setWidth(child.getPreferredWidth(width), width);
-            child.setX(x);
-            child.flowX();
-            x += child.getWidth() + spacing;
-        }
-        cachedWidth = x;
+        super.flowX(width, preferred);
+        cachedWidth = preferred;
     }
     
     @Override

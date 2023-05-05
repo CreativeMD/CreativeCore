@@ -544,12 +544,20 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public void flowX(int width, int preferred) {
-        flow.flowX(controls, spacing, align, width, preferred);
+        flow.flowX(controls, spacing, align, width, preferred, endlessX());
     }
     
     @Override
     public void flowY(int width, int height, int preferred) {
-        flow.flowY(controls, spacing, valign, width, height, preferred);
+        flow.flowY(controls, spacing, valign, width, height, preferred, endlessY());
+    }
+    
+    protected boolean endlessX() {
+        return false;
+    }
+    
+    protected boolean endlessY() {
+        return false;
     }
     
     @Override

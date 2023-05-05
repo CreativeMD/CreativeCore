@@ -51,34 +51,37 @@ public class GuiStackY extends GuiFlow {
     }
     
     @Override
-    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred) {
+    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
+        int maxWidth = width;
+        if (endless && preferred < width)
+            maxWidth = preferred;
         boolean expandable = areChildrenExpandableX(controls);
         if (align == Align.LEFT && !expandable) {
             for (GuiChildControl child : controls) {
                 child.setX(0);
-                child.setWidth(Math.min(width, child.getPreferredWidth(width)), width);
+                child.setWidth(Math.min(maxWidth, child.getPreferredWidth(width)), width);
                 child.flowX();
             }
         } else {
             if (align == Align.STRETCH || expandable) {
                 for (GuiChildControl child : controls) {
                     if (child.isExpandableX() || align == Align.STRETCH)
-                        child.setWidth(width, width);
+                        child.setWidth(maxWidth, width);
                     else
-                        child.setWidth(Math.min(width, child.getPreferredWidth(width)), width);
+                        child.setWidth(Math.min(maxWidth, child.getPreferredWidth(width)), width);
                     child.setX(0);
                     child.flowX();
                 }
             } else if (align == Align.RIGHT) {
                 for (GuiChildControl child : controls) {
-                    child.setWidth(Math.min(width, child.getPreferredWidth(width)), width);
-                    child.setX(width - child.getWidth());
+                    child.setWidth(Math.min(maxWidth, child.getPreferredWidth(width)), width);
+                    child.setX(maxWidth - child.getWidth());
                     child.flowX();
                 }
             } else {
                 for (GuiChildControl child : controls) {
-                    child.setWidth(Math.min(width, child.getPreferredWidth(width)), width);
-                    child.setX((int) Math.ceil(width / 2D - child.getWidth() / 2D));
+                    child.setWidth(Math.min(maxWidth, child.getPreferredWidth(width)), width);
+                    child.setX((int) Math.ceil(maxWidth / 2D - child.getWidth() / 2D));
                     child.flowX();
                 }
             }
@@ -86,7 +89,7 @@ public class GuiStackY extends GuiFlow {
     }
     
     @Override
-    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred) {
+    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
         int available = height - spacing * (controls.size() - 1);
         MarkList<GuiChildControl> list = new MarkList<>(controls);
         if (height >= preferred) { // If there is enough space available
@@ -146,6 +149,10 @@ public class GuiStackY extends GuiFlow {
                         }
                     }
             }
+        } else if (endless) { // Used for scroll boxes
+            for (GuiChildControl child : controls)
+                child.setHeight(child.getPreferredHeight(height), height);
+            valign = VAlign.TOP;
         } else { // If there is not enough space
             for (GuiChildControl child : list) { // Make sure min dimensions are used
                 int min = child.getMinHeight(height);

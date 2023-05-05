@@ -46,7 +46,11 @@ public class GuiFlowFitX extends GuiStackX {
     }
     
     @Override
-    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred) {
+    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
+        if (endless) {
+            super.flowX(controls, spacing, align, width, preferred, endless);
+            return;
+        }
         int rowIndex = 0;
         int x = 0;
         List<GuiChildControl> row = new ArrayList<>();
@@ -58,7 +62,7 @@ public class GuiFlowFitX extends GuiStackX {
                 row.add(child);
                 x += pref + spacing;
             } else {
-                super.flowX(row, spacing, align, width, Math.min(width, x));
+                super.flowX(row, spacing, align, width, Math.min(width, x), false);
                 row.clear();
                 rowIndex++;
                 child.setY(rowIndex);
@@ -67,11 +71,16 @@ public class GuiFlowFitX extends GuiStackX {
             }
         }
         if (!row.isEmpty())
-            super.flowX(row, spacing, align, width, Math.min(width, x));
+            super.flowX(row, spacing, align, width, Math.min(width, x), false);
     }
     
     @Override
-    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred) {
+    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
+        if (endless) {
+            super.flowY(controls, spacing, valign, width, height, preferred, endless);
+            return;
+        }
+        
         List<GuiChildControl> rows = new ArrayList<>();
         List<GuiChildControl> row = new ArrayList<>();
         int line = 0;
@@ -87,7 +96,7 @@ public class GuiFlowFitX extends GuiStackX {
         if (!row.isEmpty())
             rows.add(new GuiRowControl(new ArrayList<>(row), spacing, valign, width));
         
-        GuiFlow.STACK_Y.flowY(rows, spacing, valign, width, height, preferred);
+        GuiFlow.STACK_Y.flowY(rows, spacing, valign, width, height, preferred, false);
         
         for (GuiChildControl rowTemp : rows)
             for (GuiChildControl child : ((GuiRowControl) rowTemp).controls)
@@ -154,7 +163,7 @@ public class GuiFlowFitX extends GuiStackX {
         
         @Override
         public void flowY() {
-            GuiFlow.STACK_X.flowY(controls, spacing, valign, width, getHeight(), getPreferredHeight(getHeight()));
+            GuiFlow.STACK_X.flowY(controls, spacing, valign, width, getHeight(), getPreferredHeight(getHeight()), false);
         }
         
         @Override
