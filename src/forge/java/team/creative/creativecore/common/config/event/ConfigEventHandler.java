@@ -65,7 +65,7 @@ public class ConfigEventHandler {
     
     @SubscribeEvent
     public void playerLoggedIn(OnDatapackSyncEvent event) {
-        if (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer().getServer())) {
+        if (event.getPlayer() != null && (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer().getServer()))) {
             CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), event.getPlayer());
             CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), event.getPlayer());
         }
