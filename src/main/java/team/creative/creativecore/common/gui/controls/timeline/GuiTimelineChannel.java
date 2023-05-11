@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
@@ -17,6 +20,7 @@ public class GuiTimelineChannel extends GuiParent {
     public final GuiTimeline timeline;
     private int cachedHeight;
     public List<GuiTimelineKey> keys = new ArrayList<>();
+    private GuiTimelineKey dragged;
     
     public GuiTimelineChannel(GuiTimeline timeline, MutableComponent title) {
         super();
@@ -55,6 +59,9 @@ public class GuiTimelineChannel extends GuiParent {
     }
     
     @Override
+    public void flowX(int width, int preferred) {}
+    
+    @Override
     public void flowY(int width, int height, int preferred) {
         super.flowY(width, height, preferred);
         this.cachedHeight = height;
@@ -67,7 +74,7 @@ public class GuiTimelineChannel extends GuiParent {
     
     @Override
     public double getOffsetX() {
-        return timeline.scrolledX();
+        return -timeline.scrolledX();
     }
     
     public void select(GuiTimelineKey key) {
@@ -83,7 +90,42 @@ public class GuiTimelineChannel extends GuiParent {
         Collections.sort(keys);
     }
     
-    public boolean isSpaceFor(GuiTimelineKey key, int tick) {
+    public void dragKey(GuiTimelineKey key) {
+        if (key.modifiable)
+            this.dragged = key;
+    }
+    
+    @Override
+    public void mouseMoved(Rect rect, double x, double y) {
+        if (dragged != null) {
+            int tick = Math.max(0, timeline.getTimeAt(x));
+            if (dragged.channel.isSpaceFor(dragged, tick)) {
+                dragged.tick = tick;
+                timeline.adjustKeyPositionX(dragged);
+            }
+        }
+        super.mouseMoved(rect, x, y);
+    }
+    
+    @Override
+    public void mouseReleased(Rect rect, double x, double y, int button) {
+        if (dragged != null) {
+            this.dragged.channel.movedKey(dragged);
+            this.dragged = null;
+        }
+        
+        super.mouseReleased(rect, x, y, button);
+    }
+    
+    @Override
+    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
+        timeline.scrolled((int) rect.getWidth(), x, delta);
+        return true;
+    }
+    
+    public boolean isSpaceFor(@Nullable GuiTimelineKey key, int tick) {
+        if (tick > timeline.duration)
+            return false;
         for (int i = 0; i < keys.size(); i++) {
             int otherTick = keys.get(i).tick;
             if (otherTick == tick)
@@ -96,11 +138,16 @@ public class GuiTimelineChannel extends GuiParent {
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (!super.mouseClicked(rect, x, y, button) && button == 1) {
-            addKey(timeline.getTimeAt(x), 0);
+        boolean result = super.mouseClicked(rect, x, y, button);
+        if (!result && button == 1) {
+            int time = timeline.getTimeAt(x);
+            if (isSpaceFor(null, time)) {
+                addKey(time, 0);
+                playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.1F, 0.6F);
+            }
             return true;
         }
-        return false;
+        return result;
     }
     
     /*public T getValueAt(int tick) {
