@@ -177,7 +177,7 @@ public class GuiStackX extends GuiFlow {
     @Override
     public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
         int maxHeight = height;
-        if (endless && preferred < height)
+        if (endless && preferred > height)
             maxHeight = preferred;
         boolean expandable = areChildrenExpandableY(controls);
         if (valign == VAlign.TOP && !expandable) {

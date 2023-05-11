@@ -53,7 +53,7 @@ public class GuiStackY extends GuiFlow {
     @Override
     public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
         int maxWidth = width;
-        if (endless && preferred < width)
+        if (endless && preferred > width)
             maxWidth = preferred;
         boolean expandable = areChildrenExpandableX(controls);
         if (align == Align.LEFT && !expandable) {
