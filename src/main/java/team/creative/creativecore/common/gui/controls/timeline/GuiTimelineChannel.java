@@ -40,7 +40,7 @@ public class GuiTimelineChannel extends GuiParent {
         child.flowX();
         child.setHeight(child.getPreferredHeight(0), 0);
         child.flowY();
-        child.setY(cachedHeight / 2 - child.getHeight() / 2);
+        child.setY((int) Math.ceil(cachedHeight / 2D - child.getHeight() / 2D));
         timeline.adjustKeyPositionX(key);
         for (int i = 0; i < keys.size(); i++) {
             GuiTimelineKey other = keys.get(i);
