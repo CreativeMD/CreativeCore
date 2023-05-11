@@ -67,7 +67,7 @@ public class GuiFlowFitX extends GuiStackX {
                 rowIndex++;
                 child.setY(rowIndex);
                 row.add(child);
-                x = 0;
+                x = pref + spacing;
             }
         }
         if (!row.isEmpty())
