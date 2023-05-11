@@ -39,6 +39,10 @@ public class GuiTabs extends GuiParent {
         return tab;
     }
     
+    public GuiBorderlessButton getTabButton(int index) {
+        return bar.getTab(index);
+    }
+    
     public GuiParent getTab(int index) {
         return tabs.get(index);
     }
@@ -110,6 +114,10 @@ public class GuiTabs extends GuiParent {
         public void addTab(Component component, int index) {
             add(new GuiBorderlessButton("b" + count, x -> select(index)).setTitle(component));
             count++;
+        }
+        
+        public GuiBorderlessButton getTab(int index) {
+            return (GuiBorderlessButton) controls.get(index).control;
         }
         
         public void removeTab(int index) {
