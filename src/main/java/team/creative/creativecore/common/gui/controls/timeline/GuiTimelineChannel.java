@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -22,7 +21,7 @@ public class GuiTimelineChannel extends GuiParent {
     public List<GuiTimelineKey> keys = new ArrayList<>();
     private GuiTimelineKey dragged;
     
-    public GuiTimelineChannel(GuiTimeline timeline, MutableComponent title) {
+    public GuiTimelineChannel(GuiTimeline timeline) {
         super();
         this.timeline = timeline;
         valign = VAlign.CENTER;

@@ -167,10 +167,13 @@ public class GuiTimeline extends GuiParent {
     }
     
     public GuiTimelineChannel addGuiTimelineChannel(MutableComponent title) {
+        return addGuiTimelineChannel(title, new GuiTimelineChannel(this));
+    }
+    
+    public GuiTimelineChannel addGuiTimelineChannel(MutableComponent title, GuiTimelineChannel channel) {
         GuiColumn left = new GuiColumnHeader();
         left.add(new GuiLabel("title").setDropShadow(false).setDefaultColor(ColorUtils.BLACK).setTitle(title.withStyle(ChatFormatting.BOLD)));
         sidebar.add(left.setVAlign(VAlign.CENTER).setDim(sidebarWidth, channelHeight));
-        GuiTimelineChannel channel = new GuiTimelineChannel(this, title);
         channels.add(channel);
         channelbar.add(channel.setDim(-1, channelHeight));
         return channel;
