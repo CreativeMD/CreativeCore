@@ -236,7 +236,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
+    protected void renderControls(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
         while (collection.hasPrevious()) {
             GuiChildControl child = collection.previous();
             GuiControl control = child.control;
@@ -280,8 +280,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         
         matrix.scale(controlScale, controlScale, 1);
         
-        renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
-        renderContent(matrix, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
+        renderControls(matrix, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
+        renderControls(matrix, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
         
         super.renderContent(matrix, control, contentRect, realContentRect, scale, mouseX, mouseY);
     }
