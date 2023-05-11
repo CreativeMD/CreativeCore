@@ -60,6 +60,13 @@ public class Rect {
         maxY -= shrink;
     }
     
+    public void grow(double grow) {
+        minX -= grow;
+        minY -= grow;
+        maxX += grow;
+        maxY += grow;
+    }
+    
     public double getWidth() {
         return maxX - minX;
     }
