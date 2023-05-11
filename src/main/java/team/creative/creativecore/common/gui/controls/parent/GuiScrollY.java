@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
@@ -139,6 +140,9 @@ public class GuiScrollY extends GuiParent {
         if (!needsScrollbar(controlRect) && hoveredScroll)
             return;
         
+        if (hoveredScroll)
+            RenderSystem.disableDepthTest();
+        
         float controlInvScale = (float) scaleFactorInv();
         matrix.scale(controlInvScale, controlInvScale, controlInvScale);
         
@@ -162,6 +166,9 @@ public class GuiScrollY extends GuiParent {
         
         float controlScale = (float) scaleFactor();
         matrix.scale(controlScale, controlScale, controlScale);
+        
+        if (hoveredScroll)
+            RenderSystem.enableDepthTest();
     }
     
     @Override
