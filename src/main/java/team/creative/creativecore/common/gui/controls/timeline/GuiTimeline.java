@@ -344,7 +344,7 @@ public class GuiTimeline extends GuiParent {
         
     }
     
-    public static class KeySelectedEvent extends GuiControlEvent {
+    public static class KeySelectedEvent extends GuiControlEvent<GuiTimelineKey> {
         
         public KeySelectedEvent(GuiTimelineKey source) {
             super(source);
@@ -357,7 +357,7 @@ public class GuiTimeline extends GuiParent {
         
     }
     
-    public static class NoKeySelectedEvent extends GuiControlEvent {
+    public static class NoKeySelectedEvent extends GuiControlEvent<GuiTimeline> {
         
         public NoKeySelectedEvent(GuiTimeline timeline) {
             super(timeline);
