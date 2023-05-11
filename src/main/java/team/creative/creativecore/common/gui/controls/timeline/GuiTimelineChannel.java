@@ -81,6 +81,10 @@ public class GuiTimelineChannel extends GuiParent {
         timeline.selectKey(key);
     }
     
+    public void deslect() {
+        timeline.deselect();
+    }
+    
     public void removeKey(GuiTimelineKey key) {
         keys.remove(key);
         remove(key);

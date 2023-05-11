@@ -44,6 +44,8 @@ public class GuiTimelineKey extends GuiControl implements Comparable<GuiTimeline
             playSound(SoundEvents.UI_BUTTON_CLICK);
             clicked = true;
         } else if (button == 1) {
+            if (selected)
+                channel.timeline.deselect();
             channel.removeKey(this);
             playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 0.1F, 0.6F);
         }

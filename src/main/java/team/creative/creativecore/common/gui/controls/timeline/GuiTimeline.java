@@ -127,15 +127,19 @@ public class GuiTimeline extends GuiParent {
         raiseEvent(new KeySelectedEvent(key));
     }
     
+    public void deselect() {
+        if (selected != null) {
+            selected.setSelected(false);
+            selected = null;
+            raiseEvent(new NoKeySelectedEvent(this));
+        }
+    }
+    
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         boolean result = super.mouseClicked(rect, x, y, button);
         if (!result && button == 0) {
-            if (selected != null) {
-                selected.setSelected(false);
-                selected = null;
-                raiseEvent(new NoKeySelectedEvent(this));
-            }
+            deselect();
             return false;
         }
         return result;
