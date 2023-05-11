@@ -77,6 +77,11 @@ public class GuiScrollXY extends GuiParent {
         if (super.mouseScrolled(rect, x, y, scrolled))
             return true;
         
+        scroll(rect, scrolled);
+        return true;
+    }
+    
+    public void scroll(Rect rect, double scrolled) {
         boolean shouldScrollY = needsScrollbarY(rect);
         if (shouldScrollY)
             if (scrolled > 0 && this.scrolledY.aimed() == 0)
@@ -87,12 +92,11 @@ public class GuiScrollXY extends GuiParent {
         if (shouldScrollY) {
             this.scrolledY.set(this.scrolledY.aimed() - scrolled * 10);
             onScrolledY();
-            return true;
+            return;
         }
         
         this.scrolledX.set(this.scrolledX.aimed() - scrolled * 10);
         onScrolledX();
-        return true;
     }
     
     @Override

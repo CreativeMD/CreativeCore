@@ -81,9 +81,13 @@ public class GuiScrollX extends GuiParent {
     public boolean mouseScrolled(Rect rect, double x, double y, double scrolled) {
         if (super.mouseScrolled(rect, x, y, scrolled))
             return true;
+        scroll(scrolled);
+        return true;
+    }
+    
+    public void scroll(double scrolled) {
         this.scrolled.set(this.scrolled.aimed() - scrolled * 10);
         onScrolled();
-        return true;
     }
     
     @Override
