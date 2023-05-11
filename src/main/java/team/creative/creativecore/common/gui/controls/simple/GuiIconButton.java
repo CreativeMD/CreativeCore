@@ -86,9 +86,6 @@ public class GuiIconButton extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, icon.location());
         
@@ -101,6 +98,5 @@ public class GuiIconButton extends GuiControl {
                 .textureRect(pose, 0, 0, control.getContentWidth(), control.getContentHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
         
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.disableBlend();
     }
 }

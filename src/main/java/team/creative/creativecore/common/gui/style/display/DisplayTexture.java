@@ -24,13 +24,9 @@ public class DisplayTexture extends StyleDisplay {
     
     @Override
     public void render(PoseStack pose, double x, double y, double width, double height) {
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         GuiRenderHelper.textureRect(pose, (int) x, (int) y, (int) width, (int) height, u, v);
-        RenderSystem.disableBlend();
     }
     
 }

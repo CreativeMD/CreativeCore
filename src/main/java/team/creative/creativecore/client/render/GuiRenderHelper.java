@@ -140,15 +140,12 @@ public class GuiRenderHelper {
     }
     
     public static void horizontalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         horizontalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
         tesselator.end();
-        RenderSystem.disableBlend();
     }
     
     public static void horizontalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
@@ -172,15 +169,12 @@ public class GuiRenderHelper {
     }
     
     public static void verticalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         verticalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
         tesselator.end();
-        RenderSystem.disableBlend();
     }
     
     public static void verticalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
@@ -203,11 +197,8 @@ public class GuiRenderHelper {
     }
     
     public static void colorRect(PoseStack pose, int x, int y, int width, int height, int color) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         colorRect(pose, Tesselator.getInstance().getBuilder(), x, y, x + width, y + height, ColorUtils.red(color), ColorUtils.green(color), ColorUtils.blue(color), ColorUtils
                 .alpha(color));
-        RenderSystem.disableBlend();
     }
     
     public static void colorRect(PoseStack pose, BufferBuilder builder, int x, int y, int width, int height, int red, int green, int blue, int alpha) {

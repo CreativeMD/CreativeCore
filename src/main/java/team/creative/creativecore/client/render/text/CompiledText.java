@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
@@ -202,6 +203,7 @@ public class CompiledText {
         }
         
         stack.popPose();
+        RenderSystem.enableBlend();
     }
     
     public class CompiledLine {

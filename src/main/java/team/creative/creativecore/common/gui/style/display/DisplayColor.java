@@ -59,9 +59,6 @@ public class DisplayColor extends StyleDisplay {
     
     @Override
     public void render(PoseStack pose, double x, double y, double width, double height) {
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         
         Matrix4f mat = pose.last().pose();
@@ -73,8 +70,6 @@ public class DisplayColor extends StyleDisplay {
         buffer.vertex(mat, (float) x, (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
         buffer.vertex(mat, (float) (x + width), (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
         tessellator.end();
-        
-        RenderSystem.disableBlend();
     }
     
 }

@@ -49,6 +49,10 @@ public interface IGuiIntegratedParent extends IGuiParent {
         listener.tick();
         Rect screenRect = Rect.getScreenRect();
         
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        
         List<GuiLayer> layers = getLayers();
         for (int i = 0; i < layers.size(); i++) {
             GuiLayer layer = layers.get(i);

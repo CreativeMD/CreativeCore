@@ -23,9 +23,6 @@ public class DisplayTextureRepeat extends DisplayTexture {
     
     @Override
     public void render(PoseStack pose, double x, double y, double width, double height) {
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         
@@ -40,8 +37,6 @@ public class DisplayTextureRepeat extends DisplayTexture {
             }
             renderedX += renderedWidth;
         }
-        
-        RenderSystem.disableBlend();
     }
     
 }
