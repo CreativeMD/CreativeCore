@@ -57,7 +57,7 @@ public class GuiTimeline extends GuiParent {
     protected double basePixelWidth;
     
     protected int headerHeight = 12;
-    protected int channelHeight = 10;
+    protected int channelHeight = 9;
     protected int sidebarWidth = 50;
     protected int timelineOffset = 8;
     
