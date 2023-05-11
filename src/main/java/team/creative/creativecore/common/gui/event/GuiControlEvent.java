@@ -2,11 +2,11 @@ package team.creative.creativecore.common.gui.event;
 
 import team.creative.creativecore.common.gui.GuiControl;
 
-public abstract class GuiControlEvent extends GuiEvent {
+public abstract class GuiControlEvent<T extends GuiControl> extends GuiEvent {
     
-    public final GuiControl control;
+    public final T control;
     
-    public GuiControlEvent(GuiControl control) {
+    public GuiControlEvent(T control) {
         this.control = control;
     }
     
