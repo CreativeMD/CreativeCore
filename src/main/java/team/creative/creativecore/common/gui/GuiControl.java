@@ -219,6 +219,10 @@ public abstract class GuiControl {
     
     // SIZE
     
+    public Rect createChildRect(GuiChildControl child, Rect contentRect, double scale, double xOffset, double yOffset) {
+        return contentRect.child(child.rect, scale, xOffset, yOffset);
+    }
+    
     public abstract void flowX(int width, int preferred);
     
     public abstract void flowY(int width, int height, int preferred);

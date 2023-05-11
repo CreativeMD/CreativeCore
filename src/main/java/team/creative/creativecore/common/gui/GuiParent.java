@@ -244,7 +244,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
             if (!control.visible)
                 continue;
             
-            Rect controlRect = contentRect.child(child.rect, scale, xOffset, yOffset);
+            Rect controlRect = control.createChildRect(child, contentRect, scale, xOffset, yOffset);
             Rect realRect = realContentRect.intersection(controlRect);
             if (realRect != null || hover) {
                 if (hover)
