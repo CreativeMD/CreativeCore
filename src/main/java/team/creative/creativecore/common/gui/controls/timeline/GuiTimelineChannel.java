@@ -139,14 +139,21 @@ public class GuiTimelineChannel extends GuiParent {
         return true;
     }
     
+    protected double getValueAt(int time) {
+        return 0;
+    }
+    
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         boolean result = super.mouseClicked(rect, x, y, button);
         if (!result && button == 1) {
             int time = timeline.getTimeAt(x);
             if (isSpaceFor(null, time)) {
-                addKey(time, 0);
-                playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.1F, 0.6F);
+                GuiTimelineKey key = addKey(time, getValueAt(time));
+                if (key != null) {
+                    select(key);
+                    playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.1F, 0.6F);
+                }
             }
             return true;
         }
