@@ -12,7 +12,6 @@ import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
-import team.creative.creativecore.common.util.type.list.PairList;
 
 public class GuiTimelineChannel extends GuiParent {
     
@@ -36,11 +35,13 @@ public class GuiTimelineChannel extends GuiParent {
     public GuiTimelineKey addKey(int tick, double value) {
         GuiTimelineKey key = new GuiTimelineKey(this, tick, value);
         GuiChildControl child = add(key);
-        child.setWidth(child.getPreferredWidth(0), 0);
-        child.flowX();
-        child.setHeight(child.getPreferredHeight(0), 0);
-        child.flowY();
-        child.setY((int) Math.ceil(cachedHeight / 2D - child.getHeight() / 2D));
+        if (hasLayer()) {
+            child.setWidth(child.getPreferredWidth(0), 0);
+            child.flowX();
+            child.setHeight(child.getPreferredHeight(0), 0);
+            child.flowY();
+            child.setY((int) Math.ceil(cachedHeight / 2D - child.getHeight() / 2D));
+        }
         timeline.adjustKeyPositionX(key);
         for (int i = 0; i < keys.size(); i++) {
             GuiTimelineKey other = keys.get(i);
@@ -58,7 +59,13 @@ public class GuiTimelineChannel extends GuiParent {
     }
     
     @Override
-    public void flowX(int width, int preferred) {}
+    public void flowX(int width, int preferred) {
+        for (GuiChildControl child : controls) {
+            child.setWidth(child.getPreferredWidth(0), 0);
+            child.flowX();
+        }
+        timeline.adjustKeysPositionX();
+    }
     
     @Override
     public void flowY(int width, int height, int preferred) {
@@ -160,44 +167,24 @@ public class GuiTimelineChannel extends GuiParent {
         return result;
     }
     
-    /*public T getValueAt(int tick) {
+    public boolean isChannelEmpty() {
+        return keys.isEmpty();
+    }
+    
+    public Iterable<GuiTimelineKey> keys() {
+        return keys;
+    }
+    
+    public GuiTimelineKey getFirst() {
         if (keys.isEmpty())
-            return getDefault();
-        
-        int higher = keys.size();
-        for (int i = 0; i < keys.size(); i++) {
-            int otherTick = keys.get(i).tick;
-            if (otherTick == tick)
-                return keys.get(i).value;
-            if (otherTick > tick) {
-                higher = i;
-                break;
-            }
-        }
-        
-        if (higher == 0 || higher == keys.size())
-            return keys.get(higher == 0 ? 0 : keys.size() - 1).value;
-        
-        GuiTimelineKey<T> before = keys.get(higher - 1);
-        GuiTimelineKey<T> after = keys.get(higher);
-        double percentage = (double) (tick - before.tick) / (after.tick - before.tick);
-        return getValueAt(before, after, percentage);
+            return null;
+        return keys.get(0);
     }
     
-    protected abstract T getValueAt(GuiTimelineKey<T> before, GuiTimelineKey<T> after, double percentage);*/
-    
-    public PairList<Integer, Double> getPairs() {
-        if (controls.isEmpty())
+    public GuiTimelineKey getLast() {
+        if (keys.isEmpty())
             return null;
-        boolean fixed = true;
-        PairList<Integer, Double> list = new PairList<>();
-        for (GuiTimelineKey control : keys) {
-            if (control.modifiable)
-                fixed = false;
-            list.add(control.tick, control.value);
-        }
-        if (fixed)
-            return null;
-        return list;
+        return keys.get(keys.size() - 1);
     }
+    
 }
