@@ -2,7 +2,6 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
@@ -14,31 +13,39 @@ public class GuiCounterDecimal extends GuiParent {
     public float max;
     public GuiTextfield textfield;
     
+    public GuiCounterDecimal(String name, float value) {
+        this(name, value, Float.MIN_VALUE, Float.MAX_VALUE);
+    }
+    
     public GuiCounterDecimal(String name, float value, float min, float max) {
         super(name);
         this.min = min;
         this.max = max;
         flow = GuiFlow.STACK_X;
-        valign = VAlign.STRETCH;
-        spacing = 0;
-        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(20, 8).setFloatOnly();
+        spacing = 1;
+        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(20, 10).setFloatOnly();
         add(textfield.setExpandableX());
         GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
+        buttons.spacing = 0;
         add(buttons);
         buttons.add(new GuiButtonHoldSlim("+", x -> {
             textfield.setText("" + stepUp(textfield.parseFloat()));
             raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
-        }).setTranslate("gui.plus"));
+        }).setTranslate("gui.plus").setDim(6, 3));
         buttons.add(new GuiButtonHoldSlim("-", x -> {
             textfield.setText("" + stepDown(textfield.parseFloat()));
             raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
-        }).setTranslate("gui.minus"));
+        }).setTranslate("gui.minus").setDim(6, 3));
         
     }
     
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.TRANSPARENT;
+    }
+    
+    public void resetTextfield() {
+        textfield.setCursorPositionZero();
     }
     
     @Override
