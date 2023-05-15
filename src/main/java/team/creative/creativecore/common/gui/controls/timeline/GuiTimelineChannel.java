@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
+import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
@@ -55,6 +56,7 @@ public class GuiTimelineChannel extends GuiParent {
             }
         }
         keys.add(key);
+        timeline.raiseEvent(new GuiControlChangedEvent(timeline));
         return key;
     }
     
@@ -94,10 +96,12 @@ public class GuiTimelineChannel extends GuiParent {
     public void removeKey(GuiTimelineKey key) {
         keys.remove(key);
         remove(key);
+        timeline.raiseEvent(new GuiControlChangedEvent(timeline));
     }
     
     public void movedKey(GuiTimelineKey key) {
         Collections.sort(keys);
+        timeline.raiseEvent(new GuiControlChangedEvent(timeline));
     }
     
     public void dragKey(GuiTimelineKey key) {

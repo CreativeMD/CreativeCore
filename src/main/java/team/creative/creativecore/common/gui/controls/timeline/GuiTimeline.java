@@ -112,6 +112,7 @@ public class GuiTimeline extends GuiParent {
         adjustKeysPositionX();
         scrollX.setStart(0);
         zoom.setStart(0);
+        raiseEvent(new GuiControlChangedEvent(this));
         return this;
     }
     
