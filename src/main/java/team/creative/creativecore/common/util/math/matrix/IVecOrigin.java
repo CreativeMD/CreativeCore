@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -185,7 +184,7 @@ public interface IVecOrigin {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, Entity entity, float partialTicks) {
+    public default void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
         double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
@@ -206,8 +205,8 @@ public interface IVecOrigin {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRendering(PoseStack matrixStack, double camX, double camY, double camZ, Entity entity, float partialTicks) {
-        setupRenderingInternal(matrixStack, camX, camY, camZ, entity, partialTicks);
+    public default void setupRendering(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
+        setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
     }
     
     public default boolean hasChanged() {
