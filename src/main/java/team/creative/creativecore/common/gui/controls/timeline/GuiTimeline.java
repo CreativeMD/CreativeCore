@@ -25,6 +25,7 @@ import team.creative.creativecore.common.gui.controls.parent.GuiColumn.GuiColumn
 import team.creative.creativecore.common.gui.controls.parent.GuiRow;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiControlEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
@@ -46,13 +47,14 @@ public class GuiTimeline extends GuiParent {
     @Environment(EnvType.CLIENT)
     public StyleDisplay cursorHighlight;
     
+    public final GuiAnimationHandler handler;
+    
     private final GuiRow header;
     private final List<GuiTimelineChannel> channels = new ArrayList<>();
     private final GuiParent sidebar;
     private final GuiParent channelbar;
     private final GuiScrollY channelParent;
     
-    private int tick;
     protected int duration = 100;
     protected double basePixelWidth;
     
@@ -70,7 +72,8 @@ public class GuiTimeline extends GuiParent {
     private double lastZoom = 0;
     protected double maxScrollX;
     
-    public GuiTimeline() {
+    public GuiTimeline(GuiAnimationHandler handler) {
+        this.handler = handler;
         align = Align.STRETCH;
         valign = VAlign.STRETCH;
         flow = GuiFlow.STACK_Y;
@@ -203,14 +206,6 @@ public class GuiTimeline extends GuiParent {
         return Mth.clamp((int) ((x - timelineOffset + tickWidth / 2 + scrollX.aimed()) / tickWidth), 0, duration);
     }
     
-    public int getTime() {
-        return tick;
-    }
-    
-    public void setTime(int tick) {
-        this.tick = tick;
-    }
-    
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
@@ -256,7 +251,7 @@ public class GuiTimeline extends GuiParent {
         @Override
         public boolean mouseClicked(Rect rect, double x, double y, int button) {
             dragged = true;
-            setTime(getTimeAt(x));
+            handler.set(getTimeAt(x));
             playSound(SoundEvents.GLOW_ITEM_FRAME_ROTATE_ITEM);
             return true;
         }
@@ -265,8 +260,8 @@ public class GuiTimeline extends GuiParent {
         public void mouseMoved(Rect rect, double x, double y) {
             if (dragged) {
                 int tick = getTimeAt(x);
-                if (tick != getTime()) {
-                    setTime(tick);
+                if (tick != handler.get()) {
+                    handler.set(tick);
                     playSound(SoundEvents.GLOW_ITEM_FRAME_ROTATE_ITEM, 0.02F, 1);
                 }
             }
@@ -318,7 +313,7 @@ public class GuiTimeline extends GuiParent {
             int end = stepOffset + stamps + 1;
             
             int pointerWidth = Math.max((int) tickWidth, 1);
-            cursorHighlight.render(pose, tickWidth * getTime() - pointerWidth / 2D - scrollX.current(), 0, pointerWidth, height);
+            cursorHighlight.render(pose, tickWidth * handler.get() - pointerWidth / 2D - scrollX.current(), 0, pointerWidth, height);
             
             GuiStyle style = getStyle();
             StyleDisplay border = style.get(ControlStyleBorder.SMALL);
