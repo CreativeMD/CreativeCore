@@ -24,7 +24,7 @@ public class GuiLabeledControl extends GuiParent {
     }
     
     public GuiLabeledControl(String translate, GuiControl control) {
-        this(Component.translatable(translate), control);
+        this(GuiControl.translatable(translate), control);
     }
     
     public GuiLabeledControl(GuiControl control) {
