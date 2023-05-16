@@ -58,7 +58,7 @@ public class GuiTimeline extends GuiParent {
     protected int duration = 100;
     protected double basePixelWidth;
     
-    protected int headerHeight = 12;
+    protected int headerHeight = 15;
     protected int channelHeight = 9;
     protected int sidebarWidth = 50;
     protected int timelineOffset = 8;
@@ -79,7 +79,7 @@ public class GuiTimeline extends GuiParent {
         flow = GuiFlow.STACK_Y;
         spacing = -1;
         header = new GuiRow((GuiColumnHeader) new GuiColumnHeader().setDim(new GuiFixedDimension(sidebarWidth)), new GuiTimelineHeader());
-        header.setDim(new GuiSizeRule.GuiSizeRules().prefHeight(14));
+        header.setDim(new GuiSizeRule.GuiSizeRules().prefHeight(headerHeight).minHeight(headerHeight));
         header.spacing = -1;
         add(header);
         channelParent = new GuiScrollY() {
