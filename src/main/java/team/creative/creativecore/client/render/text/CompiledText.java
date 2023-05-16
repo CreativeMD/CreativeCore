@@ -214,6 +214,13 @@ public class CompiledText {
         
         public CompiledLine() {}
         
+        public boolean contains(String search) {
+            for (FormattedText text : components)
+                if (text.getString().contains(search))
+                    return true;
+            return false;
+        }
+        
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void render(PoseStack pose) {
@@ -406,6 +413,13 @@ public class CompiledText {
     
     public static CompiledText createAnySize() {
         return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+    
+    public boolean contains(String search) {
+        for (CompiledLine line : lines)
+            if (line.contains(search))
+                return true;
+        return false;
     }
     
 }
