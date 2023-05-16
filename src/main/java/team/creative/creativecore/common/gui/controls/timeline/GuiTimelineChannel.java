@@ -8,18 +8,20 @@ import javax.annotation.Nullable;
 
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public class GuiTimelineChannel extends GuiParent {
+public abstract class GuiTimelineChannel<T> extends GuiParent {
     
     public final GuiTimeline timeline;
+    public GuiControl sidebarTitle;
     private int cachedHeight;
-    public List<GuiTimelineKey> keys = new ArrayList<>();
-    private GuiTimelineKey dragged;
+    private List<GuiTimelineKey<T>> keys = new ArrayList<>();
+    private GuiTimelineKey<T> dragged;
     
     public GuiTimelineChannel(GuiTimeline timeline) {
         super();
@@ -27,14 +29,14 @@ public class GuiTimelineChannel extends GuiParent {
         valign = VAlign.CENTER;
     }
     
-    public GuiTimelineChannel addKeyFixed(int tick, double value) {
+    public GuiTimelineChannel<T> addKeyFixed(int tick, T value) {
         GuiTimelineKey key = this.addKey(tick, value);
         key.modifiable = false;
         return this;
     }
     
-    public GuiTimelineKey addKey(int tick, double value) {
-        GuiTimelineKey key = new GuiTimelineKey(this, tick, value);
+    public GuiTimelineKey<T> addKey(int tick, T value) {
+        GuiTimelineKey<T> key = new GuiTimelineKey<T>(this, tick, value);
         GuiChildControl child = add(key);
         if (hasLayer()) {
             child.setWidth(child.getPreferredWidth(0), 0);
@@ -45,7 +47,7 @@ public class GuiTimelineChannel extends GuiParent {
         }
         timeline.adjustKeyPositionX(key);
         for (int i = 0; i < keys.size(); i++) {
-            GuiTimelineKey other = keys.get(i);
+            GuiTimelineKey<T> other = keys.get(i);
             
             if (other.tick == tick)
                 return null;
@@ -85,7 +87,7 @@ public class GuiTimelineChannel extends GuiParent {
         return -timeline.scrolledX();
     }
     
-    public void select(GuiTimelineKey key) {
+    public void select(GuiTimelineKey<T> key) {
         timeline.selectKey(key);
     }
     
@@ -103,12 +105,12 @@ public class GuiTimelineChannel extends GuiParent {
         timeline.raiseEvent(new GuiControlChangedEvent(timeline));
     }
     
-    public void movedKey(GuiTimelineKey key) {
+    public void movedKey(GuiTimelineKey<T> key) {
         Collections.sort(keys);
         timeline.raiseEvent(new GuiControlChangedEvent(timeline));
     }
     
-    public void dragKey(GuiTimelineKey key) {
+    public void dragKey(GuiTimelineKey<T> key) {
         if (key.modifiable)
             this.dragged = key;
     }
@@ -141,7 +143,7 @@ public class GuiTimelineChannel extends GuiParent {
         return true;
     }
     
-    public boolean isSpaceFor(@Nullable GuiTimelineKey key, int tick) {
+    public boolean isSpaceFor(@Nullable GuiTimelineKey<T> key, int tick) {
         if (tick > timeline.duration)
             return false;
         for (int i = 0; i < keys.size(); i++) {
@@ -154,9 +156,7 @@ public class GuiTimelineChannel extends GuiParent {
         return true;
     }
     
-    protected double getValueAt(int time) {
-        return 0;
-    }
+    protected abstract T getValueAt(int time);
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
@@ -164,7 +164,7 @@ public class GuiTimelineChannel extends GuiParent {
         if (!result && button == 1) {
             int time = timeline.getTimeAt(x);
             if (isSpaceFor(null, time)) {
-                GuiTimelineKey key = addKey(time, getValueAt(time));
+                GuiTimelineKey<T> key = addKey(time, getValueAt(time));
                 if (key != null) {
                     select(key);
                     playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.1F, 0.6F);
@@ -179,17 +179,17 @@ public class GuiTimelineChannel extends GuiParent {
         return keys.isEmpty();
     }
     
-    public Iterable<GuiTimelineKey> keys() {
+    public Iterable<GuiTimelineKey<T>> keys() {
         return keys;
     }
     
-    public GuiTimelineKey getFirst() {
+    public GuiTimelineKey<T> getFirst() {
         if (keys.isEmpty())
             return null;
         return keys.get(0);
     }
     
-    public GuiTimelineKey getLast() {
+    public GuiTimelineKey<T> getLast() {
         if (keys.isEmpty())
             return null;
         return keys.get(keys.size() - 1);

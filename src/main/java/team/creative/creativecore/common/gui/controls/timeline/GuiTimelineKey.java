@@ -20,17 +20,17 @@ import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public class GuiTimelineKey extends GuiControl implements Comparable<GuiTimelineKey> {
+public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimelineKey> {
     
     public static final double DRAG_TIME = 2;
     public GuiTimelineChannel channel;
     public boolean modifiable = true;
     public int tick;
-    public double value;
+    public T value;
     private boolean selected;
     private boolean clicked;
     
-    public GuiTimelineKey(GuiTimelineChannel channel, int tick, double value) {
+    public GuiTimelineKey(GuiTimelineChannel channel, int tick, T value) {
         super("");
         this.channel = channel;
         this.tick = tick;
