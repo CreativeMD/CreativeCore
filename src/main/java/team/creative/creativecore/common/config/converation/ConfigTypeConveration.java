@@ -567,12 +567,11 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 parent.flow = GuiFlow.STACK_Y;
-                parent.add(new GuiTextfield("search").setDim(30, 14).setExpandableX());
                 parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
                     if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
-                })));
+                })).setSearchbar(true));
                 GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
                 hBox.add(new GuiLabel("volumeLabel").setTranslate("gui.volume"));
                 hBox.add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10));
