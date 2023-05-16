@@ -14,25 +14,60 @@ import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxExtension.GuiComboBoxEntry;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiComboBoxExtension extends GuiListBoxBase<GuiComboBoxEntry> {
     
     public GuiComboBox comboBox;
+    public String search = "";
     
     public GuiComboBoxExtension(String name, GuiComboBox comboBox) {
         super(name, false, new ArrayList<>());
         this.comboBox = comboBox;
-        List<GuiComboBoxEntry> entries = new ArrayList<>();
-        for (int i = 0; i < comboBox.lines.length; i++)
-            entries.add(new GuiComboBoxEntry("" + i, i, i == comboBox.getIndex()).set(comboBox.lines[i].copy()));
-        addAllItems(entries);
+        
+        registerEventChanged((event) -> {
+            if (event.control.is("searchBar")) {
+                search = ((GuiTextfield) event.control).getText();
+                reloadControls();
+            }
+        });
+        reloadControls();
     }
     
     @Override
     public void looseFocus() {
         comboBox.extensionLostFocus = true;
+    }
+    
+    public void reloadControls() {
+        if (comboBox == null)
+            return;
+        
+        GuiTextfield textfield = get("searchBar");
+        
+        clearItems();
+        
+        if (search != null && search.isBlank())
+            search = null;
+        
+        if (comboBox.hasSearchbar()) {
+            if (textfield == null) {
+                textfield = new GuiTextfield("searchBar", search == null ? "" : search);
+                addCustomControl(textfield.setExpandableX());
+            }
+            textfield.focus();
+        }
+        
+        List<GuiComboBoxEntry> entries = new ArrayList<>();
+        for (int i = 0; i < comboBox.lines.length; i++)
+            if (search == null || comboBox.lines[i].contains(search))
+                entries.add(new GuiComboBoxEntry("" + i, i, i == comboBox.getIndex()).set(comboBox.lines[i].copy()));
+        addAllItems(entries);
+        
+        if (hasGui())
+            reflowInternal();
     }
     
     @Override

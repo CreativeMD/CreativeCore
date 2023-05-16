@@ -56,6 +56,10 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         content.remove(index);
     }
     
+    protected GuiChildControl addCustomControl(GuiControl control) {
+        return super.add(control);
+    }
+    
     @Override
     @Deprecated
     public GuiChildControl add(GuiControl control) {

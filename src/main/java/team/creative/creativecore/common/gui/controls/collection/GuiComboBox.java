@@ -17,6 +17,7 @@ public class GuiComboBox extends GuiLabel {
     public CompiledText[] lines;
     private int index;
     public boolean extensionLostFocus;
+    private boolean searchbar;
     
     public GuiComboBox(String name, ITextCollection builder) {
         super(name);
@@ -26,6 +27,15 @@ public class GuiComboBox extends GuiLabel {
         for (int i = 0; i < lines.length; i++)
             lines[i].alignment = Align.CENTER;
         updateDisplay();
+    }
+    
+    public boolean hasSearchbar() {
+        return searchbar;
+    }
+    
+    public GuiComboBox setSearchbar(boolean searchbar) {
+        this.searchbar = searchbar;
+        return this;
     }
     
     public void next() {

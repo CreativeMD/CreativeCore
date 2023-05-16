@@ -14,6 +14,11 @@ public class GuiComboBoxMapped<K> extends GuiComboBox {
         this.keys = lines.keys();
     }
     
+    @Override
+    public GuiComboBoxMapped<K> setSearchbar(boolean searchbar) {
+        return (GuiComboBoxMapped<K>) super.setSearchbar(searchbar);
+    }
+    
     public void setLines(TextMapBuilder<K> builder) {
         K key = getSelected();
         lines = builder.build();
