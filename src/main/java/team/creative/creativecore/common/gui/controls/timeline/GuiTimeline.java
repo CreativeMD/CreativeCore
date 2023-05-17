@@ -160,7 +160,7 @@ public class GuiTimeline extends GuiParent {
     
     public void adjustKeysPositionX() {
         double tickWidth = getTickWidth();
-        for (GuiTimelineChannel channel : channels)
+        for (GuiTimelineChannel<?> channel : channels)
             for (GuiChildControl key : channel)
                 key.setX(timelineOffset + (int) (((GuiTimelineKey) key.control).tick * tickWidth) - (key.getWidth() / 2));
     }
