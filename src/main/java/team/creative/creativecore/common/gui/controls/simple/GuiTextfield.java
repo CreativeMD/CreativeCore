@@ -532,7 +532,7 @@ public class GuiTextfield extends GuiFocusControl {
     public void setSelectionPos(int position) {
         int textLength = this.text.length();
         this.selectionEnd = Mth.clamp(position, 0, textLength);
-        if (getParent() == null || !hasLayer())
+        if (getParent() == null || !hasLayer() || !isClient())
             return;
         Font fontRenderer = GuiRenderHelper.getFont();
         if (fontRenderer != null) {

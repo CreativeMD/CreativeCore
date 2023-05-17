@@ -17,7 +17,9 @@ import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 public interface ICreativeLoader {
     
     public default void loadCommon() {
+        CreativeCoreGuiRegistry.init();
         GuiDialogHandler.init();
+        
     }
     
     public Side getOverallSide();

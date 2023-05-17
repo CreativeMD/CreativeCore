@@ -9,6 +9,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import team.creative.creativecore.CreativeCoreGuiRegistry;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
@@ -69,7 +70,7 @@ public class GuiSlot extends GuiSlotBase {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (Minecraft.getInstance().options.keyDrop.matches(keyCode, scanCode)) {
-            GuiManagerItem.DROP.sendAndExecute(this, ByteTag.valueOf(Screen.hasControlDown()));
+            CreativeCoreGuiRegistry.DROP.sendAndExecute(this, ByteTag.valueOf(Screen.hasControlDown()));
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -81,9 +82,9 @@ public class GuiSlot extends GuiSlotBase {
             return false;
         
         if (delta > 0)
-            GuiManagerItem.INSERT.sendAndExecute(this, IntTag.valueOf((int) delta));
+            CreativeCoreGuiRegistry.INSERT.sendAndExecute(this, IntTag.valueOf((int) delta));
         else
-            GuiManagerItem.EXTRACT.sendAndExecute(this, IntTag.valueOf((int) delta));
+            CreativeCoreGuiRegistry.EXTRACT.sendAndExecute(this, IntTag.valueOf((int) delta));
         return true;
     }
     
@@ -94,7 +95,7 @@ public class GuiSlot extends GuiSlotBase {
         
         if (Screen.hasShiftDown()) {
             if (slot.mayPickup(getPlayer()))
-                GuiManagerItem.INSERT.sendAndExecute(this, IntTag.valueOf(slot.getMaxStackSize()));
+                CreativeCoreGuiRegistry.INSERT.sendAndExecute(this, IntTag.valueOf(slot.getMaxStackSize()));
             return true;
         }
         
@@ -108,9 +109,9 @@ public class GuiSlot extends GuiSlotBase {
         }
         
         if (button == 2)
-            GuiManagerItem.DUPLICATE.sendAndExecute(this, EndTag.INSTANCE);
+            CreativeCoreGuiRegistry.DUPLICATE.sendAndExecute(this, EndTag.INSTANCE);
         else if (slot.mayPickup(getPlayer()) && (hand.isEmpty() || slot.mayPlace(hand)))
-            GuiManagerItem.SWAP.sendAndExecute(this, ByteTag.valueOf(button == 1));
+            CreativeCoreGuiRegistry.SWAP.sendAndExecute(this, ByteTag.valueOf(button == 1));
         return true;
     }
     
