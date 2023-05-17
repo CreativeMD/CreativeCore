@@ -32,6 +32,11 @@ public class EntitySound extends AbstractTickableSoundInstance {
         Entity view = mc.cameraEntity;
         float partialTicks = mc.getPartialTick();
         
+        if (view == null) {
+            stop();
+            return;
+        }
+        
         Vec3 viewVec = view.getEyePosition(partialTicks);
         AABB bb = entity.getBoundingBox();
         
