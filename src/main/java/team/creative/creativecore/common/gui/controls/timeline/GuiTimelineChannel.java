@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -27,6 +28,13 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
         super();
         this.timeline = timeline;
         valign = VAlign.CENTER;
+    }
+    
+    @Override
+    public GuiTimelineChannel<T> setTooltip(List<Component> tooltip) {
+        super.setTooltip(tooltip);
+        sidebarTitle.setTooltip(tooltip);
+        return this;
     }
     
     public GuiTimelineChannel<T> addKeyFixed(int tick, T value) {
