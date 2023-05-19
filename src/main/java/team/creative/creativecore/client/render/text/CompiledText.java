@@ -50,17 +50,44 @@ public class CompiledText {
         return AdvancedComponentHelper.SPLITTER.lineHeight;
     }
     
+    public static final CompiledText EMPTY = new CompiledText(0, 0) {
+        
+        {
+            original = Collections.EMPTY_LIST;
+            lines = Collections.EMPTY_LIST;
+        }
+        
+        @Override
+        public void setText(Component component) {}
+        
+        @Override
+        public void setText(List<Component> components) {}
+        
+        @Override
+        protected void compile() {}
+        
+        @Override
+        public int getTotalHeight() {
+            return 0;
+        }
+        
+        @Override
+        @Environment(EnvType.CLIENT)
+        @OnlyIn(Dist.CLIENT)
+        public void render(PoseStack stack) {}
+    };
+    
     private int maxWidth;
     private int maxHeight;
-    public int usedWidth;
-    public int usedHeight;
-    public int lineSpacing = 2;
-    public boolean shadow = true;
-    public int defaultColor = ColorUtils.WHITE;
-    public Align alignment = Align.LEFT;
-    public VAlign valignment = VAlign.TOP;
-    private List<CompiledLine> lines;
-    private List<Component> original;
+    private int usedWidth;
+    private int usedHeight;
+    private int lineSpacing = 2;
+    private boolean shadow = true;
+    private int defaultColor = ColorUtils.WHITE;
+    private Align align = Align.LEFT;
+    private VAlign valign = VAlign.TOP;
+    protected List<CompiledLine> lines;
+    protected List<Component> original;
     
     public CompiledText(int width, int height) {
         this.maxWidth = width;
@@ -111,7 +138,7 @@ public class CompiledText {
         compile();
     }
     
-    private void compile() {
+    protected void compile() {
         if (CreativeCore.loader().getOverallSide().isServer())
             return;
         
@@ -180,7 +207,7 @@ public class CompiledText {
         int totalHeight = getTotalHeight();
         
         stack.pushPose();
-        float y = Math.max(0, switch (valignment) {
+        float y = Math.max(0, switch (valign) {
             case CENTER -> maxHeight / 2 - totalHeight / 2;
             case BOTTOM -> maxHeight - totalHeight;
             default -> 0;
@@ -189,7 +216,7 @@ public class CompiledText {
         usedHeight += y;
         
         for (CompiledLine line : lines) {
-            switch (alignment) {
+            switch (align) {
                 case CENTER -> {
                     int x = maxWidth / 2 - line.width / 2;
                     stack.translate(x, 0, 0);
@@ -348,6 +375,7 @@ public class CompiledText {
             }, style);
         } else {
             text.visit(new FormattedText.StyledContentConsumer<FormattedText>() {
+                
                 @Override
                 public Optional<FormattedText> accept(Style style, String text) {
                     charSink.resetPosition();
@@ -394,6 +422,7 @@ public class CompiledText {
             this.head = head;
             this.tail = tail;
         }
+        
     }
     
     @Environment(EnvType.CLIENT)
@@ -417,7 +446,9 @@ public class CompiledText {
     
     public CompiledText copy() {
         CompiledText copy = new CompiledText(maxWidth, maxHeight);
-        copy.alignment = alignment;
+        copy.align = align;
+        copy.valign = valign;
+        copy.defaultColor = defaultColor;
         copy.lineSpacing = lineSpacing;
         copy.shadow = shadow;
         List<Component> components = new ArrayList<>();
@@ -436,6 +467,14 @@ public class CompiledText {
             if (line.contains(search))
                 return true;
         return false;
+    }
+    
+    public int getUsedWidth() {
+        return usedWidth;
+    }
+    
+    public int getUsedHeight() {
+        return usedHeight;
     }
     
 }
