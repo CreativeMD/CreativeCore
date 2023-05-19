@@ -25,7 +25,7 @@ public class GuiComboBox extends GuiLabel {
         if (index >= lines.length)
             index = 0;
         for (int i = 0; i < lines.length; i++)
-            lines[i].alignment = Align.CENTER;
+            lines[i].setAlign(Align.CENTER);
         updateDisplay();
     }
     
@@ -59,7 +59,10 @@ public class GuiComboBox extends GuiLabel {
     public void closed() {}
     
     protected void updateDisplay() {
-        text = lines[index];
+        if (index >= 0 && index < lines.length)
+            text = lines[index];
+        else
+            text = CompiledText.EMPTY;
     }
     
     @Override

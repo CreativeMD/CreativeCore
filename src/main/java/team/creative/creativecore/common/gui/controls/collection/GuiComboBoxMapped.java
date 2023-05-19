@@ -27,6 +27,7 @@ public class GuiComboBoxMapped<K> extends GuiComboBox {
         if (index < 0)
             index = 0;
         select(index);
+        updateDisplay();
     }
     
     public K getSelected() {
