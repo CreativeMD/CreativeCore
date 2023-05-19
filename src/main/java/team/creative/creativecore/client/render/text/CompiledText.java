@@ -86,6 +86,22 @@ public class CompiledText {
         return maxHeight;
     }
     
+    public void setDefaultColor(int color) {
+        this.defaultColor = color;
+    }
+    
+    public void setShadow(boolean shadow) {
+        this.shadow = shadow;
+    }
+    
+    public void setAlign(Align align) {
+        this.align = align;
+    }
+    
+    public void setVAlign(VAlign valign) {
+        this.valign = valign;
+    }
+    
     public void setText(Component component) {
         setText(new SingletonList<>(component));
     }

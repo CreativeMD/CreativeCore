@@ -27,22 +27,22 @@ public class GuiLabel extends GuiControl {
     }
     
     public GuiLabel setDefaultColor(int color) {
-        text.defaultColor = color;
+        text.setDefaultColor(color);
         return this;
     }
     
     public GuiLabel setDropShadow(boolean shadow) {
-        text.shadow = shadow;
+        text.setShadow(shadow);
         return this;
     }
     
     public GuiLabel setAlign(Align align) {
-        text.alignment = align;
+        text.setAlign(align);
         return this;
     }
     
     public GuiLabel setVAlign(VAlign valgin) {
-        text.valignment = valgin;
+        text.setVAlign(valgin);
         return this;
     }
     
