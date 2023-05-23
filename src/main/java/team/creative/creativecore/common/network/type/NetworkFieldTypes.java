@@ -37,8 +37,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
@@ -717,26 +720,48 @@ public class NetworkFieldTypes {
         
         NetworkFieldTypes.register(new NetworkFieldTypeSpecial((x, y) -> Packet.class.isAssignableFrom(x)) {
             
+            public static final int BUNDLE_WILDCARD = 234920940;
+            
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
                 Packet packet = (Packet) content;
                 ConnectionProtocol protocol = ConnectionProtocol.getProtocolForPacket(packet);
                 if (protocol != ConnectionProtocol.PLAY)
                     throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
+                
+                if (content instanceof BundlePacket<?> bundle) {
+                    buffer.writeInt(BUNDLE_WILDCARD);
+                    int size = 0;
+                    for (@SuppressWarnings("unused")
+                    Packet<?> subPacket : bundle.subPackets())
+                        size++;
+                    buffer.writeInt(size);
+                    for (Packet<?> subPacket : bundle.subPackets())
+                        write(subPacket, subPacket.getClass(), null, buffer);
+                    return;
+                }
+                
                 Integer id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
                 if (id != -1) {
-                    buffer.writeVarInt(id);
+                    buffer.writeInt(id);
                     packet.write(buffer);
                 } else {
-                    buffer.writeVarInt(-protocol.getPacketId(PacketFlow.SERVERBOUND, packet));
+                    buffer.writeInt(-protocol.getPacketId(PacketFlow.SERVERBOUND, packet));
                     packet.write(buffer);
                 }
                 
             }
             
             @Override
-            public Object read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-                int id = buffer.readVarInt();
+            public Packet read(Class classType, Type genericType, FriendlyByteBuf buffer) {
+                int id = buffer.readInt();
+                if (id == BUNDLE_WILDCARD) {
+                    int size = buffer.readInt();
+                    List<Packet<ClientGamePacketListener>> packets = new ArrayList<>();
+                    for (int i = 0; i < size; i++)
+                        packets.add(read(null, null, buffer));
+                    return new ClientboundBundlePacket(packets);
+                }
                 if (id < 0)
                     return ConnectionProtocol.PLAY.createPacket(PacketFlow.SERVERBOUND, -id, buffer);
                 return ConnectionProtocol.PLAY.createPacket(PacketFlow.CLIENTBOUND, id, buffer);
