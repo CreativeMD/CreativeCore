@@ -74,6 +74,16 @@ public interface IVecOrigin {
     
     public IVecOrigin getParent();
     
+    public default void set(IVecOrigin origin) {
+        off(origin.offXLast(), origin.offYLast(), origin.offZLast());
+        rot(origin.rotXLast(), origin.rotYLast(), origin.rotZLast());
+        
+        tick();
+        
+        off(origin.offX(), origin.offY(), origin.offZ());
+        rot(origin.rotX(), origin.rotY(), origin.rotZ());
+    }
+    
     public default double translationCombined(Axis axis) {
         return translation().get(axis);
     }
