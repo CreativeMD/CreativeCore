@@ -46,6 +46,13 @@ public class NeighborUpdateCollector {
         }
     }
     
+    public void process(Level level) {
+        HashSet<BlockPos> notifiedBlocks = new HashSet<>();
+        ArrayList<BlockPos> positions = blocksToUpdate.removeKey(level);
+        for (BlockPos pos : positions)
+            processPosition(level, pos, notifiedBlocks);
+    }
+    
     public void process() {
         HashSet<BlockPos> notifiedBlocks = new HashSet<>();
         for (Entry<Level, ArrayList<BlockPos>> entry : blocksToUpdate.entrySet()) {
