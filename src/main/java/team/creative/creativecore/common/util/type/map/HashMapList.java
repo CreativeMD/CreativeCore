@@ -57,6 +57,10 @@ public class HashMapList<K, V> implements Iterable<V> {
         return keys.entrySet();
     }
     
+    public boolean containsKey(K key) {
+        return keys.containsKey(key);
+    }
+    
     public boolean contains(V value) {
         for (Iterator<ArrayList<V>> iterator = values().iterator(); iterator.hasNext();) {
             ArrayList<V> type = iterator.next();
