@@ -108,6 +108,11 @@ public class GuiStyle {
     @SerializedName("clickable-highlight")
     public StyleDisplay clickableHighlight = new DisplayColor(0.5F, 0.5F, 0.5F, 1);
     
+    @SerializedName("clickable-inactive")
+    public StyleDisplay clickableInactive = new DisplayColor(0.25F, 0.25F, 0.25F, 1);
+    @SerializedName("clickable-inactive-highlight")
+    public StyleDisplay clickableInactiveHighlight = new DisplayColor(0.3F, 0.3F, 0.3F, 1);
+    
     public StyleDisplay disabledBackground = new DisplayColor(0.1F, 0.1F, 0.1F, 1);
     
     public StyleDisplay slot = new DisplayTexture(GuiStyleUtils.GUI_ASSETS, 0, 0);
@@ -127,6 +132,7 @@ public class GuiStyle {
             case BACKGROUND -> background;
             case BAR -> bar;
             case CLICKABLE -> mouseOver ? clickableHighlight : clickable;
+            case CLICKABLE_INACTIVE -> mouseOver ? clickableInactiveHighlight : clickableInactive;
             case NESTED_BACKGROUND -> secondaryBackground;
             case SLOT -> slot;
             case DISABLED -> disabledBackground;
