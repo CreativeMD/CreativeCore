@@ -228,7 +228,8 @@ public abstract class GuiControl {
     public abstract void flowY(int width, int height, int preferred);
     
     public void reflow() {
-        parent.reflow();
+        if (parent != null)
+            parent.reflow();
     }
     
     protected int minWidth(int availableWidth) {
