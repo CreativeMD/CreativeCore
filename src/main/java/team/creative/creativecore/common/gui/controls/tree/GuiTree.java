@@ -21,6 +21,7 @@ import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
+import team.creative.creativecore.common.util.type.itr.NestedFunctionIterator;
 import team.creative.creativecore.common.util.type.itr.TreeIterator;
 
 public class GuiTree extends GuiScrollXY {
@@ -90,6 +91,12 @@ public class GuiTree extends GuiScrollXY {
     
     public Iterator<GuiTreeItem> allItems() {
         return new TreeIterator<>(root, x -> x.items().iterator());
+    }
+    
+    public Iterable<GuiTreeItem> itemsChecked() {
+        if (visibleRoot)
+            return root.itemsChecked();
+        return () -> new NestedFunctionIterator<>(root.items(), x -> x.itemsChecked());
     }
     
     public GuiTreeItem selected() {
@@ -420,4 +427,5 @@ public class GuiTree extends GuiScrollXY {
             line.render(pose, x, y, lineThickness, y2 - y);
         }
     }
+    
 }
