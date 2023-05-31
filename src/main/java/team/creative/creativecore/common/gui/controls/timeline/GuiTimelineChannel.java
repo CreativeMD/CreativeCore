@@ -152,7 +152,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     }
     
     public boolean isSpaceFor(@Nullable GuiTimelineKey<T> key, int tick) {
-        if (tick > timeline.duration)
+        if (tick < 0 || tick > timeline.duration)
             return false;
         for (int i = 0; i < keys.size(); i++) {
             int otherTick = keys.get(i).tick;
