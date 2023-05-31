@@ -108,6 +108,10 @@ public class GuiTimeline extends GuiParent {
         channelParent.add(channelbar.setExpandableX());
     }
     
+    public int getDuration() {
+        return duration;
+    }
+    
     public GuiTimeline setDuration(int duration) {
         this.duration = duration;
         if (cachedTimelineWidth != 0)
