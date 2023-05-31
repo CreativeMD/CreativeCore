@@ -15,7 +15,7 @@ import team.creative.creativecore.common.util.text.TextListBuilder;
 public class GuiTabButton extends GuiParent {
     
     public static final ControlFormatting BUTTON_ACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
-    public static final ControlFormatting BUTTON_INACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.DISABLED);
+    public static final ControlFormatting BUTTON_INACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE_INACTIVE);
     
     private int index = 0;
     public GuiBorderlessButton selected;
