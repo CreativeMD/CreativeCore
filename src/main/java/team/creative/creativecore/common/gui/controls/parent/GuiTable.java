@@ -11,6 +11,10 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiTable extends GuiParent {
     
+    public GuiTable(String name) {
+        super(name, GuiFlow.STACK_Y);
+    }
+    
     public GuiTable() {
         super(GuiFlow.STACK_Y);
     }
