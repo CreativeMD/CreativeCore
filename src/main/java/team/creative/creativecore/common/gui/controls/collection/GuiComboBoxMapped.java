@@ -50,4 +50,8 @@ public class GuiComboBoxMapped<K> extends GuiComboBox {
             select(index);
     }
     
+    public int indexOf(K key) {
+        return keys.indexOf(key);
+    }
+    
 }
