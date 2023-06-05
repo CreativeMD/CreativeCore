@@ -47,8 +47,8 @@ import team.creative.creativecore.common.util.registry.LocatedHandlerRegistry;
 public class CreativeCoreClient {
     
     private static Minecraft mc = Minecraft.getInstance();
-    public static final LocatedHandlerRegistry<CreativeBlockModel> BLOCK_MODEL_TYPES = new LocatedHandlerRegistry<>(null);
-    public static final LocatedHandlerRegistry<CreativeItemModel> ITEM_MODEL_TYPES = new LocatedHandlerRegistry<>(null);
+    public static final LocatedHandlerRegistry<CreativeBlockModel> BLOCK_MODEL_TYPES = new LocatedHandlerRegistry<CreativeBlockModel>(null).allowOverwrite();
+    public static final LocatedHandlerRegistry<CreativeItemModel> ITEM_MODEL_TYPES = new LocatedHandlerRegistry<CreativeItemModel>(null).allowOverwrite();
     
     private static final ItemColor ITEM_COLOR = (stack, tint) -> tint;
     
