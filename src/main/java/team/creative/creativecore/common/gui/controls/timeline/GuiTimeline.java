@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Font.DisplayMode;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -217,10 +221,10 @@ public class GuiTimeline extends GuiParent {
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
-    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         zoom.tick();
         scrollX.tick();
-        super.render(pose, control, controlRect, realRect, scale, mouseX, mouseY);
+        super.render(graphics, control, controlRect, realRect, scale, mouseX, mouseY);
     }
     
     @Override
@@ -289,12 +293,14 @@ public class GuiTimeline extends GuiParent {
         @Override
         @OnlyIn(Dist.CLIENT)
         @Environment(EnvType.CLIENT)
-        protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
             
             if (lastZoom != zoom.current()) {
                 lastZoom = zoom.current();
                 adjustKeysPositionX();
             }
+            
+            PoseStack pose = graphics.pose();
             
             double tickWidth = getTickWidth();
             
@@ -333,7 +339,8 @@ public class GuiTimeline extends GuiParent {
                 if (i % halfArea == 0) {
                     border.render(pose, 1, 4);
                     String text = "" + (i * smallestStep);
-                    font.draw(pose, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK);
+                    font.drawInBatch(text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false, pose.last().pose(), MultiBufferSource
+                            .immediate(Tesselator.getInstance().getBuilder()), DisplayMode.NORMAL, 0, 15728880);
                 } else
                     border.render(pose, 1, 2);
                 

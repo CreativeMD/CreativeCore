@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -66,29 +67,30 @@ public class GuiCheckBox extends GuiLabel {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         int yoffset = 0;
         
+        PoseStack pose = graphics.pose();
         GuiStyle style = getStyle();
         
         if (!enabled)
-            style.disabled.render(matrix, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
+            style.disabled.render(pose, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
         
-        style.get(ControlStyleBorder.SMALL).render(matrix, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
-        style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(matrix, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
+        style.get(ControlStyleBorder.SMALL).render(pose, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
+        style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(pose, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
         
         if (value)
-            Minecraft.getInstance().font.draw(matrix, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt());
+            graphics.drawString(Minecraft.getInstance().font, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), false);
         else if (partial) {
             if (PARTIAL_STYLE == null)
                 PARTIAL_STYLE = new DisplayColor();
-            PARTIAL_STYLE.render(matrix, 2, yoffset + 2, CHECKBOX_WIDTH - 4, CHECKBOX_WIDTH - 4);
+            PARTIAL_STYLE.render(pose, 2, yoffset + 2, CHECKBOX_WIDTH - 4, CHECKBOX_WIDTH - 4);
         }
         
-        matrix.pushPose();
-        matrix.translate(CHECKBOX_WIDTH + 3, 0, 0);
-        text.render(matrix);
-        matrix.popPose();
+        pose.pushPose();
+        pose.translate(CHECKBOX_WIDTH + 3, 0, 0);
+        text.render(pose);
+        pose.popPose();
     }
     
     public void set(boolean value) {

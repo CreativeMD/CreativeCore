@@ -19,7 +19,7 @@ public class InvalidSideException extends RuntimeException {
     }
     
     public InvalidSideException(Player player) {
-        this(player.level.isClientSide);
+        this(player.level().isClientSide);
     }
     
 }

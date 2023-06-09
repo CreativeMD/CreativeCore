@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,7 +43,8 @@ public interface IGuiIntegratedParent extends IGuiParent {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public default void render(PoseStack matrixStack, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
+    public default void render(GuiGraphics graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
+        PoseStack pose = graphics.pose();
         int width = screen.width;
         int height = screen.height;
         
@@ -60,20 +62,20 @@ public interface IGuiIntegratedParent extends IGuiParent {
             if (i == layers.size() - 1) {
                 RenderSystem.disableDepthTest();
                 if (layer.hasGrayBackground())
-                    GuiRenderHelper.verticalGradientRect(matrixStack, 0, 0, width, height, -1072689136, -804253680);
+                    GuiRenderHelper.verticalGradientRect(pose, 0, 0, width, height, -1072689136, -804253680);
                 if (screen instanceof AbstractContainerScreen)
-                    MinecraftForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, matrixStack, mouseX, mouseY));
+                    MinecraftForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, graphics, mouseX, mouseY));
             }
             
-            matrixStack.pushPose();
+            pose.pushPose();
             int offX = (width - layer.getWidth()) / 2;
             int offY = (height - layer.getHeight()) / 2;
-            matrixStack.translate(offX, offY, 0);
+            pose.translate(offX, offY, 0);
             
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
-            layer.render(matrixStack, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
-            matrixStack.popPose();
+            layer.render(graphics, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
+            pose.popPose();
             
             RenderSystem.disableScissor();
         }
@@ -86,7 +88,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
-                screen.renderTooltip(matrixStack, event.tooltip, Optional.empty(), mouseX, mouseY, Minecraft.getInstance().font);
+                graphics.renderTooltip(Minecraft.getInstance().font, event.tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
     

@@ -22,7 +22,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Style;
@@ -158,13 +158,14 @@ public class GuiTextfield extends GuiFocusControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        Font fontRenderer = GuiRenderHelper.getFont();
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        PoseStack pose = graphics.pose();
+        Font font = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();
         int color = enabled ? style.fontColor.toInt() : style.fontColorDisabled.toInt();
-        String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
+        String s = font.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
         boolean flag = j >= 0 && j <= s.length();
         boolean flag1 = this.isFocused() && this.frame / 6 % 2 == 0 && flag;
         int yOffset = 0;
@@ -174,7 +175,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            xOffset = fontRenderer.draw(matrix, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
+            xOffset = graphics.drawString(font, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color, false) + 1;
         }
         
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -187,20 +188,20 @@ public class GuiTextfield extends GuiFocusControl {
         }
         
         if (!s.isEmpty() && flag && j < s.length())
-            fontRenderer.draw(matrix, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
+            graphics.drawString(font, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color, false);
         
         if (!flag2 && this.suggestion != null)
-            fontRenderer.drawShadow(matrix, this.suggestion, k1 - 1, yOffset, -8355712);
+            graphics.drawString(font, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
             if (flag2)
-                GuiComponent.fill(matrix, k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
+                graphics.fill(k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
             else
-                fontRenderer.drawShadow(matrix, "_", k1, yOffset, color);
+                graphics.drawString(font, "_", k1, yOffset, color);
             
         if (k != j) {
-            int l1 = fontRenderer.width(s.substring(0, k));
-            this.drawSelectionBox(control, matrix.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
+            int l1 = font.width(s.substring(0, k));
+            this.drawSelectionBox(control, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
     }
     

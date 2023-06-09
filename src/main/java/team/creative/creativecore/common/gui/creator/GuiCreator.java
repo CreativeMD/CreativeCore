@@ -46,7 +46,7 @@ public abstract class GuiCreator {
     }
     
     protected void openGui(CompoundTag nbt, Player player) {
-        if (player.level.isClientSide)
+        if (player.level().isClientSide)
             CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
         else
             OpenGuiPacket.openGuiOnServer(this, nbt, (ServerPlayer) player);
@@ -101,7 +101,7 @@ public abstract class GuiCreator {
         public GuiCreatorBlock() {
             super((nbt, player) -> {
                 BlockPos pos = new BlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
-                Level level = player.level;
+                Level level = player.level();
                 BlockState state = level.getBlockState(pos);
                 if (state.getBlock() instanceof BlockGuiCreator block)
                     return block.create(nbt, level, pos, state, player);

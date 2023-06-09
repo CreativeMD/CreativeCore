@@ -6,16 +6,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Material;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlock;
+import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlockTag;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientItem;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientItemStack;
-import team.creative.creativecore.common.util.ingredient.CreativeIngredientMaterial;
+import team.creative.creativecore.common.util.ingredient.CreativeIngredientItemTag;
 
 @CreativeConfig
 public class SortingList implements List<CreativeIngredient> {
@@ -112,10 +113,18 @@ public class SortingList implements List<CreativeIngredient> {
     
     /** The given parameter will be added to the list.
      * 
-     * @param material
-     *            relates to all blocks which have the equal Material. */
-    public void addSortingByMaterial(Material material) {
-        add(new CreativeIngredientMaterial(material));
+     * @param tag
+     *            relates to all blocks which have the tag. */
+    public void addSortingByBlockTag(TagKey<Block> tag) {
+        add(new CreativeIngredientBlockTag(tag));
+    }
+    
+    /** The given parameter will be added to the list.
+     * 
+     * @param tag
+     *            relates to all items which have the tag. */
+    public void addSortingByItemTag(TagKey<Item> tag) {
+        add(new CreativeIngredientItemTag(tag));
     }
     
     protected boolean canBeFoundInList(Object object) {
@@ -138,8 +147,7 @@ public class SortingList implements List<CreativeIngredient> {
     /** If the given object can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
      * 
-     * @param object
-     */
+     * @param object */
     public boolean canPass(Object object) {
         return canBeFoundInList(object) == isWhitelist;
     }
@@ -147,8 +155,7 @@ public class SortingList implements List<CreativeIngredient> {
     /** If the given itemstack can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
      * 
-     * @param object
-     */
+     * @param object */
     public boolean canPass(ItemStack stack) {
         return canBeFoundInList(stack) == isWhitelist;
     }

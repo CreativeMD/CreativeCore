@@ -40,7 +40,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
             if (((CreativeIngredientItemStack) info).stack.getDamageValue() != stack.getDamageValue())
                 return false;
             
-            if (!ItemStack.isSame(((CreativeIngredientItemStack) info).stack, stack))
+            if (!ItemStack.isSameItem(((CreativeIngredientItemStack) info).stack, stack))
                 return false;
             
             return true;
@@ -56,7 +56,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
         if (stack.getDamageValue() != this.stack.getDamageValue())
             return false;
         
-        if (!ItemStack.isSame(this.stack, stack))
+        if (!ItemStack.isSameItem(this.stack, stack))
             return false;
         
         return true;

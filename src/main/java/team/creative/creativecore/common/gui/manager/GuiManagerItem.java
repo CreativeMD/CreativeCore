@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.ListTag;
@@ -65,7 +66,7 @@ public class GuiManagerItem extends GuiManager {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    public void renderOverlay(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         ItemStack stack = hand;
         int count = stack.getCount();
         if (drag) {
@@ -80,14 +81,15 @@ public class GuiManagerItem extends GuiManager {
         }
         
         if (!stack.isEmpty() && (!drag || rightClick || dragged.size() > 1)) {
-            matrix.pushPose();
+            PoseStack pose = graphics.pose();
+            pose.pushPose();
             RenderSystem.disableScissor();
             
-            matrix.translate(mouseX - 8, mouseY - 8, 200);
-            GuiRenderHelper.drawItemStack(matrix, stack, 1);
-            GuiRenderHelper.drawItemStackDecorations(matrix, stack, count);
+            pose.translate(mouseX - 8, mouseY - 8, 200);
+            GuiRenderHelper.drawItemStack(pose, stack, 1);
+            GuiRenderHelper.drawItemStackDecorations(pose, stack, count);
             
-            matrix.popPose();
+            pose.popPose();
         }
     }
     

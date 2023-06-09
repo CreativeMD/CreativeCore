@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.Holder;
@@ -411,7 +412,7 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
@@ -431,6 +432,8 @@ public abstract class GuiControl {
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
         
+        PoseStack pose = graphics.pose();
+        
         getBorder(style, style.get(formatting.border)).render(pose, 0, 0, width, height);
         
         int borderWidth = style.getBorder(formatting.border);
@@ -442,7 +445,7 @@ public abstract class GuiControl {
         
         controlRect.shrink(borderWidth * scale);
         
-        renderContent(pose, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
@@ -452,25 +455,26 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        PoseStack pose = graphics.pose();
         controlRect.shrink(formatting.padding * scale);
         if (!enabled)
             pose.pushPose();
         pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(pose, control, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
+        renderContent(graphics, control, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
         if (!enabled)
             pose.popPose();
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        renderContent(pose, control, controlRect, mouseX, mouseY);
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        renderContent(graphics, control, controlRect, mouseX, mouseY);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected abstract void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY);
+    protected abstract void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY);
     
     // MINECRAFT
     

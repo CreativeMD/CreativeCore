@@ -5,12 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
@@ -196,9 +195,9 @@ public abstract class GuiLayer extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         for (GuiManager manager : managers())
-            manager.renderOverlay(matrix, control, rect, mouseX - (int) rect.minX, mouseY - (int) rect.minY);
+            manager.renderOverlay(graphics, control, rect, mouseX - (int) rect.minX, mouseY - (int) rect.minY);
     }
     
     public boolean closeLayerUsingEscape() {

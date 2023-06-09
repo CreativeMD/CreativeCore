@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
@@ -106,10 +107,11 @@ public class GuiStateButton extends GuiButton {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         CompiledText text = states[index];
-        matrix.translate(rect.getWidth() / 2 - text.getUsedWidth() / 2, rect.getHeight() / 2 - text.getUsedHeight() / 2, 0);
-        text.render(matrix);
+        PoseStack pose = graphics.pose();
+        pose.translate(rect.getWidth() / 2 - text.getUsedWidth() / 2, rect.getHeight() / 2 - text.getUsedHeight() / 2, 0);
+        text.render(pose);
     }
     
     @Override

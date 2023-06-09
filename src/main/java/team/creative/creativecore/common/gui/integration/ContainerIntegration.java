@@ -80,7 +80,7 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     
     @Override
     public boolean isClient() {
-        return player.level.isClientSide;
+        return player.level().isClientSide;
     }
     
     @Override

@@ -2,6 +2,7 @@ package team.creative.creativecore.common.util.filter.premade;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -10,7 +11,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Material;
 import team.creative.creativecore.common.util.CompoundSerializer;
 import team.creative.creativecore.common.util.filter.Filter;
 
@@ -28,6 +28,10 @@ public class BlockFilters {
         return new BlockClassFilter(clazz);
     }
     
+    public static Filter<Block> instance(Named<Block> tag) {
+        return new BlockTagFilter(tag);
+    }
+    
     public static Filter<Block> and(Filter<Block>... filters) {
         return Filter.and(filters);
     }
@@ -42,10 +46,6 @@ public class BlockFilters {
     
     public static Filter<Block> property(Property<?> property) {
         return new BlockPropertyFilter(property);
-    }
-    
-    public static Filter<Block> material(Material material) {
-        return new BlockMaterialFilter(material);
     }
     
     static {
@@ -159,17 +159,17 @@ public class BlockFilters {
         }
     }
     
-    private static class BlockMaterialFilter implements Filter<Block> {
+    private static class BlockTagFilter implements Filter<Block> {
         
-        public final Material material;
+        public final Named<Block> tag;
         
-        public BlockMaterialFilter(Material material) {
-            this.material = material;
+        public BlockTagFilter(Named<Block> tag) {
+            this.tag = tag;
         }
         
         @Override
         public boolean is(Block t) {
-            return t.defaultBlockState().getMaterial() == material;
+            return tag.contains(t.builtInRegistryHolder());
         }
         
     }

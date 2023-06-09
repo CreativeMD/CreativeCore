@@ -28,7 +28,7 @@ public class LevelUtils {
     
     public static void dropItem(Player player, ItemStack stack) {
         if (stack != null)
-            dropItem(player.level, stack, player.blockPosition());
+            dropItem(player.level(), stack, player.blockPosition());
     }
     
     public static void dropItem(Player player, List<ItemStack> stacks) {

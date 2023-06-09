@@ -23,7 +23,7 @@ public class SoundConfig {
     }
     
     public void play(Entity entity, SoundSource category) {
-        entity.level.playSound(null, entity, BuiltInRegistries.SOUND_EVENT.get(event), category, volume, pitch);
+        entity.level().playSound(null, entity, BuiltInRegistries.SOUND_EVENT.get(event), category, volume, pitch);
     }
     
     public void play(Level level, double x, double y, double z, SoundSource category) {

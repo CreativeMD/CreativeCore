@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -162,13 +163,14 @@ public class GuiScrollXY extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        matrix.pushPose();
-        super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
-        matrix.popPose();
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        PoseStack pose = graphics.pose();
+        pose.pushPose();
+        super.renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        pose.popPose();
         
         float controlInvScale = (float) scaleFactorInv();
-        matrix.scale(controlInvScale, controlInvScale, controlInvScale);
+        pose.scale(controlInvScale, controlInvScale, controlInvScale);
         
         realRect.scissor();
         GuiStyle style = getStyle();
@@ -183,7 +185,7 @@ public class GuiScrollXY extends GuiParent {
                 scrollThingWidth = completeWidth;
             double percent = scrolledX.current() / maxScrollX;
             
-            style.get(ControlStyleFace.CLICKABLE, false).render(matrix, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, control
+            style.get(ControlStyleFace.CLICKABLE, false).render(pose, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, control
                     .getHeight() - scrollbarThickness - borderWidth, scrollThingWidth, scrollbarThickness);
             
             maxScrollX = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
@@ -199,14 +201,14 @@ public class GuiScrollXY extends GuiParent {
                 scrollThingHeight = completeHeight;
             double percent = scrolledY.current() / maxScrollY;
             
-            style.get(ControlStyleFace.CLICKABLE, false).render(matrix, control
+            style.get(ControlStyleFace.CLICKABLE, false).render(pose, control
                     .getWidth() - scrollbarThickness - borderWidth, (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarThickness, scrollThingHeight);
             
             maxScrollY = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
         }
         
         float controlScale = (float) scaleFactor();
-        matrix.scale(controlScale, controlScale, controlScale);
+        pose.scale(controlScale, controlScale, controlScale);
     }
     
     @Override

@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -236,7 +237,9 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControls(PoseStack matrix, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
+    protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
+        PoseStack pose = graphics.pose();
+        
         while (collection.hasPrevious()) {
             GuiChildControl child = collection.previous();
             GuiControl control = child.control;
@@ -252,44 +255,45 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
                 else
                     realRect.scissor();
                 
-                matrix.pushPose();
-                matrix.translate(child.getX() + xOffset, child.getY() + yOffset, 10);
-                renderControl(matrix, child, control, controlRect, realRect, scale, mouseX, mouseY, hover);
-                matrix.popPose();
+                pose.pushPose();
+                pose.translate(child.getX() + xOffset, child.getY() + yOffset, 10);
+                renderControl(graphics, child, control, controlRect, realRect, scale, mouseX, mouseY, hover);
+                pose.popPose();
             }
         }
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControl(PoseStack matrix, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
-        control.render(matrix, child, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
+    protected void renderControl(GuiGraphics graphics, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
+        control.render(graphics, child, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
         if (realContentRect == null)
             return;
         
+        PoseStack pose = graphics.pose();
         float controlScale = (float) scaleFactor();
         scale *= scaleFactor();
         double xOffset = getOffsetX();
         double yOffset = getOffsetY();
         
-        matrix.scale(controlScale, controlScale, 1);
+        pose.scale(controlScale, controlScale, 1);
         
-        renderControls(matrix, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
-        renderControls(matrix, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
+        renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
+        renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
         
-        super.renderContent(matrix, control, contentRect, realContentRect, scale, mouseX, mouseY);
+        super.renderContent(graphics, control, contentRect, realContentRect, scale, mouseX, mouseY);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
     
     @Override
     public boolean isContainer() {

@@ -136,7 +136,9 @@ public class GuiRenderHelper {
                 text = builder.toString() + "...";
             }
         }
-        mc.font.drawShadow(stack, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, color);
+        
+        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, ColorUtils.WHITE, shadow, stack.last().pose(), MultiBufferSource
+                .immediate(Tesselator.getInstance().getBuilder()), DisplayMode.NORMAL, 0, 15728880);
     }
     
     public static void horizontalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {

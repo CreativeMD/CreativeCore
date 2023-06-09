@@ -423,7 +423,7 @@ public class RenderBox extends AlignedBox {
     public boolean isTranslucent() {
         if (ColorUtils.isTransparent(color))
             return true;
-        return !state.getMaterial().isSolidBlocking() || !state.getMaterial().isSolid();
+        return !state.isSolid();
     }
     
     protected List<BakedQuad> getBakedQuad(LevelAccessor level, BakedModel blockModel, BlockState state, Facing facing, BlockPos pos, RenderType layer, RandomSource rand) {

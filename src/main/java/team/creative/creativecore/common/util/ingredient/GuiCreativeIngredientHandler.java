@@ -112,34 +112,6 @@ public abstract class GuiCreativeIngredientHandler {
             }
         });
         
-        REGISTRY.register("Material", new GuiCreativeIngredientHandler() {
-            
-            @Override
-            public CreativeIngredient parseControls(GuiParent gui) {
-                ItemStack blockStack = ((GuiStackSelector) gui.get("inv")).getSelected();
-                if (blockStack != null) {
-                    Block block = Block.byItem(blockStack.getItem());
-                    if (!(block instanceof AirBlock))
-                        return new CreativeIngredientMaterial(block.defaultBlockState().getMaterial());
-                }
-                return null;
-            }
-            
-            @Override
-            public void createControls(GuiParent gui, CreativeIngredient info) {
-                GuiStackSelector selector = new GuiStackSelector("inv", null, new GuiStackSelector.CreativeCollector(new GuiStackSelector.GuiBlockSelector()));
-                selector.setExpandableX();
-                gui.add(selector);
-                if (info instanceof CreativeIngredientMaterial)
-                    selector.setSelectedForce(info.getExample());
-            }
-            
-            @Override
-            public boolean canHandle(CreativeIngredient info) {
-                return info instanceof CreativeIngredientMaterial;
-            }
-        });
-        
         REGISTRY.register("Blocktag", new GuiCreativeIngredientHandler() {
             
             @Override

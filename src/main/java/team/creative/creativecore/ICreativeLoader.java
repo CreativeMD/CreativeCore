@@ -38,7 +38,7 @@ public interface ICreativeLoader {
     
     public void registerClientRenderStart(Runnable run);
     
-    public void registerClientRenderGui(Runnable run);
+    public void registerClientRenderGui(Consumer run);
     
     public void registerClientStarted(Runnable run);
     

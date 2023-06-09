@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiChildControl;
@@ -210,14 +211,15 @@ public class GuiTree extends GuiScrollXY {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        PoseStack pose = graphics.pose();
         if (isDragged()) {
-            matrix.pushPose();
-            matrix.translate(getContentOffset() + getOffsetX(), getContentOffset() + getOffsetY(), 0);
+            pose.pushPose();
+            pose.translate(getContentOffset() + getOffsetX(), getContentOffset() + getOffsetY(), 0);
             lastDragPosition = calculatePosition((int) (mouseX - realRect.minX - getContentOffset()), (int) (mouseY - realRect.minY - getContentOffset()));
             if (lastDragPosition != null) {
                 if (lastDragPosition.position == ItemPosition.IN)
-                    dragHover.render(matrix, lastDragPosition.child.rect.minX, lastDragPosition.child.rect.minY, lastDragPosition.child.rect.getWidth(), lastDragPosition.child.rect
+                    dragHover.render(pose, lastDragPosition.child.rect.minX, lastDragPosition.child.rect.minY, lastDragPosition.child.rect.getWidth(), lastDragPosition.child.rect
                             .getHeight());
                 else {
                     int thickness = 1;
@@ -231,27 +233,27 @@ public class GuiTree extends GuiScrollXY {
                         minY = (int) lastDragPosition.child.rect.maxY + 1;
                     
                     if (lastDragPosition.above != null) {
-                        dragLine.render(matrix, lastDragPosition.child.rect.minX - thickness, minY - thickness, thickness, thickness * 3);
-                        dragLine.render(matrix, lastDragPosition.child.rect.minX + width, minY - thickness, thickness, thickness * 3);
+                        dragLine.render(pose, lastDragPosition.child.rect.minX - thickness, minY - thickness, thickness, thickness * 3);
+                        dragLine.render(pose, lastDragPosition.child.rect.minX + width, minY - thickness, thickness, thickness * 3);
                     } else if (lastDragPosition.position == ItemPosition.ABOVE) {
-                        dragLine.render(matrix, lastDragPosition.child.rect.minX - thickness, minY, thickness, thickness * 2);
-                        dragLine.render(matrix, lastDragPosition.child.rect.minX + width, minY, thickness, thickness * 2);
+                        dragLine.render(pose, lastDragPosition.child.rect.minX - thickness, minY, thickness, thickness * 2);
+                        dragLine.render(pose, lastDragPosition.child.rect.minX + width, minY, thickness, thickness * 2);
                     } else {
-                        dragLine.render(matrix, lastDragPosition.child.rect.minX - thickness, minY - thickness, thickness, thickness * 2);
-                        dragLine.render(matrix, lastDragPosition.child.rect.minX + width, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(pose, lastDragPosition.child.rect.minX - thickness, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(pose, lastDragPosition.child.rect.minX + width, minY - thickness, thickness, thickness * 2);
                     }
                     
-                    dragLine.render(matrix, lastDragPosition.child.rect.minX, minY, width, thickness);
+                    dragLine.render(pose, lastDragPosition.child.rect.minX, minY, width, thickness);
                 }
             }
-            matrix.popPose();
+            pose.popPose();
         } else
             lastDragPosition = null;
         
-        super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        super.renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         
-        matrix.pushPose();
-        matrix.translate(getOffsetX(), getContentOffset() + getOffsetY(), 0);
+        pose.pushPose();
+        pose.translate(getOffsetX(), getContentOffset() + getOffsetY(), 0);
         List<GuiTreeLine> lines = new ArrayList<>();
         int size = -1;
         for (GuiChildControl child : controls) {
@@ -268,7 +270,7 @@ public class GuiTree extends GuiScrollXY {
                     if (lines.get(i).invalid)
                         continue;
                     
-                    lines.get(i).render(matrix);
+                    lines.get(i).render(pose);
                     lines.get(i).invalid = false;
                 }
                 size = level;
@@ -286,7 +288,7 @@ public class GuiTree extends GuiScrollXY {
             }
             
             if (level >= 0)
-                line.render(matrix, lines.get(level).x + lineThickness, lineY - lineThickness, levelSpacing / 2, lineThickness);
+                line.render(pose, lines.get(level).x + lineThickness, lineY - lineThickness, levelSpacing / 2, lineThickness);
         }
         
         if (size >= 0) {
@@ -294,12 +296,12 @@ public class GuiTree extends GuiScrollXY {
                 if (lines.get(i).invalid)
                     continue;
                 
-                lines.get(i).render(matrix);
+                lines.get(i).render(pose);
                 lines.get(i).invalid = false;
             }
         }
         
-        matrix.popPose();
+        pose.popPose();
     }
     
     @Override
