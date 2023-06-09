@@ -21,6 +21,16 @@ java.sourceSets {
     }
 }
 
+gradle.afterProject { project ->
+    if (project.name != 'CreativeCore') {
+        project.tasks.whenTaskAdded { task ->
+            if(task.name == "copyEclipseResources") {
+                task.dependsOn += tasks.copyEclipseResources;
+            }
+        }
+    }
+}
+
 minecraft {
     mappings channel: 'official', version: "${project.property 'minecraft_version'}"
     
