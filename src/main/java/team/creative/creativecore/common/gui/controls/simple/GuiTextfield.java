@@ -4,8 +4,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
-
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.platform.GlStateManager;

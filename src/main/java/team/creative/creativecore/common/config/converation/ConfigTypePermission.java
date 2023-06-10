@@ -3,7 +3,7 @@ package team.creative.creativecore.common.config.converation;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.premade.Permission;

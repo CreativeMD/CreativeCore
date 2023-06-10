@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.inventory;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;

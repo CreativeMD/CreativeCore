@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.collision;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Facing;

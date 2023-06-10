@@ -1,6 +1,5 @@
 package team.creative.creativecore.common.network.type;
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -702,8 +701,9 @@ public class NetworkFieldTypes {
             
             @Override
             protected Tag readContent(FriendlyByteBuf buffer) {
-                DataInput in = new ByteBufInputStream(buffer);
+                ByteBufInputStream in = null;
                 try {
+                    in = new ByteBufInputStream(buffer);
                     byte b0 = in.readByte();
                     if (b0 == 0)
                         return EndTag.INSTANCE;
@@ -713,6 +713,10 @@ public class NetworkFieldTypes {
                     CrashReport crashreport = CrashReport.forThrowable(e, "Loading NBT data");
                     crashreport.addCategory("NBT Tag");
                     throw new ReportedException(crashreport);
+                } finally {
+                    try {
+                        in.close();
+                    } catch (IOException e) {}
                 }
                 
             }
