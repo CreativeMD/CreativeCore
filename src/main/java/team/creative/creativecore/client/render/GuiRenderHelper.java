@@ -20,6 +20,7 @@ import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -136,9 +137,10 @@ public class GuiRenderHelper {
                 text = builder.toString() + "...";
             }
         }
-        
-        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, ColorUtils.WHITE, shadow, stack.last().pose(), MultiBufferSource
-                .immediate(Tesselator.getInstance().getBuilder()), DisplayMode.NORMAL, 0, 15728880);
+        BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, ColorUtils.WHITE, shadow, stack.last()
+                .pose(), buffer, DisplayMode.NORMAL, 0, 15728880);
+        buffer.endBatch();
     }
     
     public static void horizontalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
