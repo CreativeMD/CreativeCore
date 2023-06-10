@@ -36,7 +36,8 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-    api "net.minecraftforge:eventbus:6.0.3"
+	api "net.minecraftforge:eventbus:6.0.3"
+    include "net.minecraftforge:eventbus:6.0.3"
 }
 
 
@@ -47,11 +48,11 @@ loom.runConfigs.configureEach {
 
 
 processResources {
-    inputs.property "version", project.version
+    inputs.property "version", project.mod_version
     filteringCharset "UTF-8"
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand "version": project.mod_version
     }
 }
 
