@@ -20,7 +20,7 @@
     },
     "contact": {
     },
-    "license": "GNU LGPL v2.1",
+    "license": "GNU LGPL v3",
     "icon": "creativecore.png",
     "environment": "*",
     "entrypoints": {
@@ -41,6 +41,6 @@
     "depends": {
         "fabricloader": ">=0.14.0",
         "fabric": "*",
-        "minecraft": ">=1.19"
+        "minecraft": ">=1.20"
     }
 }

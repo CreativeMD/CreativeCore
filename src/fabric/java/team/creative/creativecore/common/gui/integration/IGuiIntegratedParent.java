@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -39,9 +40,11 @@ public interface IGuiIntegratedParent extends IGuiParent {
     }
     
     @Environment(EnvType.CLIENT)
-    default void render(PoseStack matrixStack, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
+    default void render(GuiGraphics graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
         int width = screen.width;
         int height = screen.height;
+        
+        PoseStack pose = graphics.pose();
         
         listener.tick();
         Rect screenRect = Rect.getScreenRect();
@@ -56,18 +59,18 @@ public interface IGuiIntegratedParent extends IGuiParent {
             
             if (i == layers.size() - 1 && layer.hasGrayBackground()) {
                 RenderSystem.disableDepthTest();
-                GuiRenderHelper.verticalGradientRect(matrixStack, 0, 0, width, height, -1072689136, -804253680);
+                GuiRenderHelper.verticalGradientRect(pose, 0, 0, width, height, -1072689136, -804253680);
             }
             
-            matrixStack.pushPose();
+            pose.pushPose();
             int offX = (width - layer.getWidth()) / 2;
             int offY = (height - layer.getHeight()) / 2;
-            matrixStack.translate(offX, offY, 0);
+            pose.translate(offX, offY, 0);
             
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
-            layer.render(matrixStack, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
-            matrixStack.popPose();
+            layer.render(graphics, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
+            pose.popPose();
             
             RenderSystem.disableScissor();
         }
@@ -80,7 +83,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
-                screen.renderTooltip(matrixStack, event.tooltip, Optional.empty(), mouseX, mouseY);
+                graphics.renderTooltip(Minecraft.getInstance().font, event.tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
     

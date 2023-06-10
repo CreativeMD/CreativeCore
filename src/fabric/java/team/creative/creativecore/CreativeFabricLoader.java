@@ -48,8 +48,8 @@ public class CreativeFabricLoader implements ICreativeLoader {
     }
     
     @Override
-    public void registerClientRenderGui(Runnable run) {
-        HudRenderCallback.EVENT.register((matrix, partialTicks) -> run.run());
+    public void registerClientRenderGui(Consumer run) {
+        HudRenderCallback.EVENT.register((graphics, partialTicks) -> run.accept(graphics));
     }
     
     @Override
