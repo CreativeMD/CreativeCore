@@ -10,6 +10,16 @@ group= "team.creative" + project.mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+gradle.afterProject { project ->
+    if (project.name != 'CreativeCore') {
+        project.tasks.whenTaskAdded { task ->
+            if(task.name == "copyEclipseResources") {
+                task.dependsOn += tasks.copyEclipseResources;
+            }
+        }
+    }
+}
+
 java.sourceSets {
     main {
         java {
