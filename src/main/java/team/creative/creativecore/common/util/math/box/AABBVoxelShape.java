@@ -299,7 +299,16 @@ public class AABBVoxelShape extends SliceShape {
     
     @Override
     public void forAllEdges(Shapes.DoubleLineConsumer consumer) {
-        throw new UnsupportedOperationException();
+        for (BoxFace face : BoxFace.values()) {
+            forAllEdgesCorner(face.corners[0], face.corners[1], consumer);
+            forAllEdgesCorner(face.corners[1], face.corners[2], consumer);
+            forAllEdgesCorner(face.corners[2], face.corners[3], consumer);
+            forAllEdgesCorner(face.corners[3], face.corners[0], consumer);
+        }
+    }
+    
+    private void forAllEdgesCorner(BoxCorner corner1, BoxCorner corner2, Shapes.DoubleLineConsumer consumer) {
+        consumer.consume(getCornerX(corner1), getCornerY(corner1), getCornerZ(corner1), getCornerX(corner2), getCornerY(corner2), getCornerZ(corner2));
     }
     
     @Override
