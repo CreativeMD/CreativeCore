@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -339,8 +337,7 @@ public class GuiTimeline extends GuiParent {
                 if (i % halfArea == 0) {
                     border.render(pose, 1, 4);
                     String text = "" + (i * smallestStep);
-                    font.drawInBatch(text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false, pose.last().pose(), MultiBufferSource
-                            .immediate(Tesselator.getInstance().getBuilder()), DisplayMode.NORMAL, 0, 15728880);
+                    graphics.drawString(Minecraft.getInstance().font, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false);
                 } else
                     border.render(pose, 1, 2);
                 
