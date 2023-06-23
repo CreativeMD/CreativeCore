@@ -1,46 +1,44 @@
 {
-    "schemaVersion": 1,
-    "id": "creativecore",
-    "version": "${version}",
-    "name": "CreativeCore (Fabric)",
-    "description": "",
-    "authors": [
-        "CreativeMD",
-        "AriaFreeze"
-    ],
-    "custom": {
-        "modmenu": {
-            "links": {
-                "modmenu.discord": "https://discord.gg/W9QM3fS"
-            },
-            "badges": [
-                "library"
-            ]
-        }
-    },
-    "contact": {
-    },
-    "license": "GNU LGPL v3",
-    "icon": "creativecore.png",
-    "environment": "*",
-    "entrypoints": {
-        "main": [
-            "team.creative.creativecore.CreativeCore"
-        ],
-        "client": [
-            "team.creative.creativecore.client.CreativeCoreClient"
-        ],
-        "modmenu": [
-            "team.creative.creativecore.client.ModMenuImpl"
-        ]
-    },
-    "mixins": [
-        "creativecore.mixins.json",
-        "creativecore.fabric.mixins.json"
-    ],
-    "depends": {
-        "fabricloader": ">=0.14.0",
-        "fabric": "*",
-        "minecraft": ">=1.20"
-    }
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${mod_version}",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
+	"authors": [
+		"CreativeMD",
+		"AriaFreeze"
+	],
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/W9QM3fS"
+			},
+			"badges": [
+				"library"
+			]
+		}
+	},
+	"license": "${mod_license}",
+	"icon": "${mod_id}.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"team.creative.creativecore.CreativeCore"
+		],
+		"client": [
+			"team.creative.creativecore.client.CreativeCoreClient"
+		],
+		"modmenu": [
+			"team.creative.creativecore.client.ModMenuImpl"
+		]
+	},
+	"mixins": [
+		"creativecore.mixins.json",
+		"creativecore.fabric.mixins.json"
+	],
+	"depends": {
+		"fabricloader": "${loader_version_range}",
+		"fabric": "*",
+		"minecraft": "${minecraft_version_range}"
+	}
 }
