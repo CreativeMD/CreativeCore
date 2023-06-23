@@ -118,6 +118,21 @@ public class ChunkLayerMap<T> implements Iterable<T> {
         };
     }
     
+    public int size() {
+        int size = 0;
+        for (int i = 0; i < content.length; i++)
+            if (content != null)
+                size++;
+        return size;
+    }
+    
+    public boolean isEmpty() {
+        for (int i = 0; i < content.length; i++)
+            if (content != null)
+                return false;
+        return true;
+    }
+    
     @Override
     public String toString() {
         return "[" + String.join(",", () -> new FunctionIterator<>(this, x -> x.toString())) + "]";

@@ -2,13 +2,13 @@ package team.creative.creativecore.common.util.filter.premade;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 import team.creative.creativecore.common.util.CompoundSerializer;
@@ -28,10 +28,6 @@ public class BlockFilters {
         return new BlockClassFilter(clazz);
     }
     
-    public static Filter<Block> instance(Named<Block> tag) {
-        return new BlockTagFilter(tag);
-    }
-    
     public static Filter<Block> and(Filter<Block>... filters) {
         return Filter.and(filters);
     }
@@ -46,6 +42,10 @@ public class BlockFilters {
     
     public static Filter<Block> property(Property<?> property) {
         return new BlockPropertyFilter(property);
+    }
+    
+    public static Filter<Block> tag(TagKey<Block> tag) {
+        return new BlockTagFilter(tag);
     }
     
     static {
@@ -161,15 +161,15 @@ public class BlockFilters {
     
     private static class BlockTagFilter implements Filter<Block> {
         
-        public final Named<Block> tag;
+        public final TagKey<Block> tag;
         
-        public BlockTagFilter(Named<Block> tag) {
+        public BlockTagFilter(TagKey<Block> tag) {
             this.tag = tag;
         }
         
         @Override
         public boolean is(Block t) {
-            return tag.contains(t.builtInRegistryHolder());
+            return t.builtInRegistryHolder().is(tag);
         }
         
     }
