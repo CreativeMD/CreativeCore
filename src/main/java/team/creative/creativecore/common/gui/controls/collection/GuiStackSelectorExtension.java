@@ -14,6 +14,7 @@ import team.creative.creativecore.common.gui.controls.inventory.GuiSlotViewer;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.map.HashMapList;
 
@@ -41,6 +42,7 @@ public class GuiStackSelectorExtension extends GuiScrollY {
         });
         this.align = Align.STRETCH;
         reloadControls();
+        setDim(new GuiSizeRule.GuiSizeRatioRules().maxHeight(100));
     }
     
     @Override
@@ -48,16 +50,6 @@ public class GuiStackSelectorExtension extends GuiScrollY {
         if (super.mouseClicked(rect, x, y, button))
             comboBox.extensionLostFocus = false;
         return true;
-    }
-    
-    @Override
-    public int preferredWidth(int availableWidth) {
-        return 100;
-    }
-    
-    @Override
-    public int preferredHeight(int width, int availableHeight) {
-        return 100;
     }
     
     @Override
