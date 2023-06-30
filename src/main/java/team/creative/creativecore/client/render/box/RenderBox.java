@@ -25,9 +25,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.ModelData;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
-import team.creative.creativecore.common.mod.OptifineHelper;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
@@ -426,15 +426,11 @@ public class RenderBox extends AlignedBox {
         return !state.isSolid();
     }
     
-    protected List<BakedQuad> getBakedQuad(LevelAccessor level, BakedModel blockModel, BlockState state, Facing facing, BlockPos pos, RenderType layer, RandomSource rand) {
-        return OptifineHelper.getBakedQuad(blockModel.getQuads(state, facing.toVanilla(), rand), level, state, facing, pos, layer, rand);
-    }
-    
     public List<BakedQuad> getBakedQuad(LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
         if (pos != null)
             rand.setSeed(state.getSeed(pos));
         
-        List<BakedQuad> blockQuads = getBakedQuad(level, blockModel, state, facing, pos, layer, rand);
+        List<BakedQuad> blockQuads = blockModel.getQuads(state, facing.toVanilla(), rand, ModelData.EMPTY, layer);
         
         if (blockQuads.isEmpty())
             return Collections.emptyList();
@@ -445,7 +441,7 @@ public class RenderBox extends AlignedBox {
         for (int i = 0; i < blockQuads.size(); i++) {
             
             holder.setQuad(blockQuads.get(i), overrideTint, defaultColor);
-            if (!needsResorting && OptifineHelper.isEmissive(holder.quad.getSprite()))
+            if (!needsResorting)
                 needsResorting = true;
             
             int[] data = holder.quad.getVertices();
