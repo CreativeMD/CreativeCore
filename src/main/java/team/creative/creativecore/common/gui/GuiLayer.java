@@ -119,7 +119,7 @@ public abstract class GuiLayer extends GuiParent {
         }
         if (super.keyPressed(keyCode, scanCode, modifiers))
             return true;
-        if (keyCode == getSettings().keyInventory.getKey().getValue()) {
+        if (getSettings().keyInventory.matches(keyCode, scanCode)) {
             closeTopLayer();
             return true;
         }
