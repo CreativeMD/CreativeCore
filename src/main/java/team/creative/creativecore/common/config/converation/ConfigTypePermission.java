@@ -5,8 +5,10 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.premade.Permission;
+import team.creative.creativecore.common.gui.GuiParent;
 
 public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     
@@ -18,6 +20,11 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     @Override
     protected void addToList(Permission list, String name, Object object) {
         list.add(name, object);
+    }
+    
+    @Override
+    public boolean shouldSave(Permission value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
+        return areEqual(value, (Permission) key.get(), key);
     }
     
     @Override
