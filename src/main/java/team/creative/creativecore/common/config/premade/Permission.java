@@ -19,8 +19,7 @@ public class Permission<T> extends NamedList<T> {
     public Permission<T> add(String usergroup, T value) {
         if (usergroup.equals("default"))
             this.value = value;
-        else
-            super.put(usergroup, value);
+        super.put(usergroup, value);
         return this;
     }
     
