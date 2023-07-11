@@ -24,7 +24,7 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     
     @Override
     public boolean shouldSave(Permission value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
-        return areEqual(value, (Permission) key.get(), key);
+        return !areEqual(value, (Permission) key.get(), key);
     }
     
     @Override
