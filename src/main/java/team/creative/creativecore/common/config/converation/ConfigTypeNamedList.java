@@ -123,13 +123,15 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
             GuiConfigSubControl control;
             if (converation != null) {
                 control = new GuiConfigSubControl("" + i);
+                control.addNameTextfield(entry.getKey());
                 converation.createControls(control, null, null, clazz);
                 converation.loadValue(entry.getValue(), control, null, null);
-                control.addNameTextfield(entry.getKey());
+                
             } else {
                 control = new GuiConfigSubControlHolder("" + 0, ConfigTypeList.constructHolder(Side.SERVER, entry.getValue()), entry.getValue(), configParent::changed);
-                ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield(entry.getKey());
+                ((GuiConfigSubControlHolder) control).createControls();
+                
             }
             controls.add(control);
             i++;
