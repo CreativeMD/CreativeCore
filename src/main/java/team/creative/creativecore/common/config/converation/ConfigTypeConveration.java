@@ -821,7 +821,13 @@ public abstract class ConfigTypeConveration<T> {
             return false;
         }, new ConfigTypeArray());
         
-        registerSpecialType((x) -> x.isEnum(), new SimpleConfigTypeConveration<Enum>() {
+        registerSpecialType((x) -> Enum.class.isAssignableFrom(x), new SimpleConfigTypeConveration<Enum>() {
+            
+            private static Class getEnumClass(Class clazz) {
+                if (clazz.isEnum())
+                    return clazz;
+                return clazz.getSuperclass();
+            }
             
             @Override
             public Enum readElement(Enum defaultValue, boolean loadDefault, JsonElement element) {
@@ -839,7 +845,7 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
-                parent.add(new GuiComboBox("data", new TextListBuilder().add(clazz.getEnumConstants(), (x) -> ((Enum) x).name())));
+                parent.add(new GuiComboBox("data", new TextListBuilder().add(getEnumClass(clazz).getEnumConstants(), (x) -> ((Enum) x).name())));
             }
             
             @Override
@@ -855,7 +861,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             protected Enum saveValue(GuiParent parent, Class clazz) {
                 GuiComboBox box = (GuiComboBox) parent.get("data");
-                return (Enum) clazz.getEnumConstants()[box.getIndex()];
+                return (Enum) getEnumClass(clazz).getEnumConstants()[box.getIndex()];
             }
             
             @Override
