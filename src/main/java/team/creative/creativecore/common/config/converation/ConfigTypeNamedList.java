@@ -96,7 +96,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
                 control.addNameTextfield("");
             }
             listBox.addItem(control);
-        }));
+        }).setTranslate("gui.add"));
     }
     
     @Override
