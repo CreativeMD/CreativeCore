@@ -3,6 +3,7 @@ package team.creative.creativecore.common.config.converation;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -41,7 +42,7 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
             if (conversation != null && !conversation.areEqual(entry.getValue(), other, null))
                 return false;
             
-            if (conversation == null && !entry.getValue().equals(other))
+            if (conversation == null && !entry.getValue().equals(other) && !EqualsBuilder.reflectionEquals(entry.getValue(), other, false))
                 return false;
         }
         
