@@ -8,7 +8,8 @@
     "client": [
         "MouseHandlerAccessor",
         "StringSplitterAccessor",
-        "BufferBuilderAccessor"
+        "BufferBuilderAccessor",
+        "VoxelShapeAccessor"
     ],
     "minVersion": "0.8"
 }

@@ -1,11 +1,15 @@
 package team.creative.creativecore.common.util.math.box;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import it.unimi.dsi.fastutil.doubles.DoubleCollection;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
+import it.unimi.dsi.fastutil.doubles.DoubleListIterator;
 import net.minecraft.core.AxisCycle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,6 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.SliceShape;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -21,12 +26,41 @@ import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 import team.creative.creativecore.common.util.unsafe.CreativeHackery;
+import team.creative.creativecore.mixin.VoxelShapeAccessor;
 
 public class AABBVoxelShape extends SliceShape {
+    
+    private static final DiscreteVoxelShape DISCRETE_SHAPE = new DiscreteVoxelShape(0, 0, 0) {
+        
+        @Override
+        public boolean isFull(int p_82829_, int p_82830_, int p_82831_) {
+            return false;
+        }
+        
+        @Override
+        public void fill(int p_165998_, int p_165999_, int p_166000_) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+        @Override
+        public int firstFull(Axis p_82827_) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+        
+        @Override
+        public int lastFull(Axis p_82840_) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+        
+    };
     
     public static AABBVoxelShape create(AABB bb) {
         AABBVoxelShape shape = CreativeHackery.allocateInstance(AABBVoxelShape.class);
         shape.bb = bb;
+        ((VoxelShapeAccessor) shape).setShape(DISCRETE_SHAPE);
         return shape;
     }
     
@@ -259,7 +293,7 @@ public class AABBVoxelShape extends SliceShape {
     
     @Override
     protected DoubleList getCoords(Axis axis) {
-        throw new UnsupportedOperationException();
+        return new AABBDoubleList(axis);
     }
     
     @Override
@@ -278,8 +312,8 @@ public class AABBVoxelShape extends SliceShape {
     }
     
     @Override
-    protected double get(Direction.Axis axis, int p_83258_) {
-        return this.getCoords(axis).getDouble(p_83258_);
+    protected double get(Direction.Axis axis, int index) {
+        return this.getCoords(axis).getDouble(index);
     }
     
     @Override
@@ -384,5 +418,237 @@ public class AABBVoxelShape extends SliceShape {
     @Override
     public String toString() {
         return "AABBVoxelShape[" + bb + "]";
+    }
+    
+    public class AABBDoubleList implements DoubleList {
+        
+        public final Axis axis;
+        
+        public AABBDoubleList(Axis axis) {
+            this.axis = axis;
+        }
+        
+        @Override
+        public int size() {
+            return 2;
+        }
+        
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+        
+        @Override
+        public Object[] toArray() {
+            return new Object[] { bb.min(axis), bb.max(axis) };
+        }
+        
+        @Override
+        public <T> T[] toArray(T[] a) {
+            if (a.length < 2)
+                a = (T[]) Array.newInstance(a.getClass().getComponentType(), 2);
+            a[0] = (T) Double.valueOf(bb.min(axis));
+            a[1] = (T) Double.valueOf(bb.max(axis));
+            while (a.length > 2)
+                a[2] = null;
+            return a;
+        }
+        
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean addAll(Collection<? extends Double> c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean addAll(int index, Collection<? extends Double> c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public int compareTo(List<? extends Double> o) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean contains(double key) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean rem(double key) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public double[] toDoubleArray() {
+            return new double[] { bb.min(axis), bb.max(axis) };
+        }
+        
+        @Override
+        public double[] toArray(double[] a) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean addAll(DoubleCollection c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean containsAll(DoubleCollection c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean removeAll(DoubleCollection c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean retainAll(DoubleCollection c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public DoubleListIterator iterator() {
+            return new DoubleListIterator() {
+                
+                private int previousIndex = 2;
+                private int nextIndex;
+                
+                @Override
+                public int previousIndex() {
+                    return previousIndex;
+                }
+                
+                @Override
+                public int nextIndex() {
+                    return nextIndex;
+                }
+                
+                @Override
+                public boolean hasPrevious() {
+                    return previousIndex > 0;
+                }
+                
+                @Override
+                public boolean hasNext() {
+                    return nextIndex < 2;
+                }
+                
+                @Override
+                public double nextDouble() {
+                    nextIndex++;
+                    return nextIndex == 1 ? bb.min(axis) : bb.max(axis);
+                }
+                
+                @Override
+                public double previousDouble() {
+                    previousIndex--;
+                    return previousIndex == 1 ? bb.min(axis) : bb.max(axis);
+                }
+            };
+        }
+        
+        @Override
+        public DoubleListIterator listIterator() {
+            return iterator();
+        }
+        
+        @Override
+        public DoubleListIterator listIterator(int index) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public DoubleList subList(int from, int to) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void size(int size) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void getElements(int from, double[] a, int offset, int length) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void removeElements(int from, int to) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void addElements(int index, double[] a) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void addElements(int index, double[] a, int offset, int length) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean add(double key) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public void add(int index, double key) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public boolean addAll(int index, DoubleCollection c) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public double set(int index, double k) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public double getDouble(int index) {
+            return index == 0 ? bb.min(axis) : bb.max(axis);
+        }
+        
+        @Override
+        public int indexOf(double k) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public int lastIndexOf(double k) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public double removeDouble(int index) {
+            throw new UnsupportedOperationException();
+        }
+        
     }
 }
