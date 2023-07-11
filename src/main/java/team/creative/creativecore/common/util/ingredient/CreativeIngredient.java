@@ -34,6 +34,49 @@ public abstract class CreativeIngredient {
     
     public static final NamedTypeRegistry<CreativeIngredient> REGISTRY = new NamedTypeRegistry<CreativeIngredient>().addConstructorPattern();
     private static List<Function<Object, ? extends CreativeIngredient>> objectParsers = new ArrayList<>();
+    private static final CreativeIngredient EMPTY = new CreativeIngredient() {
+        
+        @Override
+        protected void saveExtra(CompoundTag nbt) {}
+        
+        @Override
+        protected void loadExtra(CompoundTag nbt) {}
+        
+        @Override
+        public boolean is(CreativeIngredient info) {
+            return false;
+        }
+        
+        @Override
+        public boolean is(ItemStack stack) {
+            return false;
+        }
+        
+        @Override
+        public ItemStack getExample() {
+            return ItemStack.EMPTY;
+        }
+        
+        @Override
+        public boolean equals(CreativeIngredient object) {
+            return false;
+        }
+        
+        @Override
+        public Component descriptionDetail() {
+            return Component.literal("empty");
+        }
+        
+        @Override
+        public Component description() {
+            return Component.literal("invalid");
+        }
+        
+        @Override
+        public CreativeIngredient copy() {
+            return EMPTY;
+        }
+    };
     
     public static <T extends CreativeIngredient> void registerType(String id, Class<T> classType, Function<Object, T> parser) {
         REGISTRY.register(id, classType);
@@ -59,8 +102,10 @@ public abstract class CreativeIngredient {
     
     public static CreativeIngredient load(CompoundTag nbt) {
         Class<? extends CreativeIngredient> classType = REGISTRY.get(nbt.getString("id"));
-        if (classType == null)
-            throw new IllegalArgumentException("'" + nbt.getString("id") + "' is an invalid type");
+        if (classType == null) {
+            new IllegalArgumentException("'" + nbt.getString("id") + "' is an invalid type").printStackTrace();
+            return EMPTY;
+        }
         
         try {
             CreativeIngredient ingredient = classType.getConstructor().newInstance();
@@ -160,7 +205,7 @@ public abstract class CreativeIngredient {
     
     public CompoundTag save() {
         CompoundTag nbt = new CompoundTag();
-        nbt.putString("id", REGISTRY.getId(this));
+        nbt.putString("id", REGISTRY.getIdOrDefault(this, "empty"));
         saveExtra(nbt);
         return nbt;
     }
