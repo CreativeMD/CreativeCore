@@ -112,7 +112,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     public void loadValue(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
         GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
         if (!box.isEmpty())
-            box.clear();
+            box.clearItems();
         
         Class clazz = getListType(key);
         ConfigTypeConveration converation = getUnsafe(clazz);
