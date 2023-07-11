@@ -94,6 +94,10 @@ public class NamedTypeRegistry<T> {
         return typesInv.get(type.getClass());
     }
     
+    public String getIdOrDefault(T type, String defaultValue) {
+        return typesInv.getOrDefault(type.getClass(), defaultValue);
+    }
+    
     public String getId(Class<? extends T> type) {
         return typesInv.get(type);
     }
