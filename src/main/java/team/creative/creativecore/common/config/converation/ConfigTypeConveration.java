@@ -631,7 +631,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 RegistryObjectConfig value = (RegistryObjectConfig) key.getDefault();
-                parent.add(new GuiComboBoxMapped<ResourceLocation>("sound", new TextMapBuilder<ResourceLocation>().addComponent(value.registry.keySet(), x -> {
+                parent.add(new GuiComboBoxMapped<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>().addComponent(value.registry.keySet(), x -> {
                     if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
@@ -642,7 +642,7 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(RegistryObjectConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
-                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
+                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("elements");
                 box.select(value.location);
             }
             
@@ -651,7 +651,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             protected RegistryObjectConfig saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, ConfigKeyField key) {
                 RegistryObjectConfig object = (RegistryObjectConfig) key.getDefault();
-                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("sound");
+                GuiComboBoxMapped<ResourceLocation> box = (GuiComboBoxMapped<ResourceLocation>) parent.get("elements");
                 
                 return new RegistryObjectConfig(object.registry, box.getSelected());
             }
