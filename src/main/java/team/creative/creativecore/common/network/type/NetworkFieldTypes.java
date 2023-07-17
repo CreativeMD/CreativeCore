@@ -531,7 +531,7 @@ public class NetworkFieldTypes {
             
         }, JsonObject.class);
         
-        register(new NetworkFieldTypeSpecial((x, y) -> x.isArray()) {
+        register(new NetworkFieldTypeSpecial<>((x, y) -> x.isArray()) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
@@ -606,7 +606,7 @@ public class NetworkFieldTypes {
             }
         });
         
-        register(new NetworkFieldTypeSpecial((x, y) -> x.isEnum()) {
+        register(new NetworkFieldTypeSpecial<>((x, y) -> x.isEnum()) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
@@ -688,10 +688,10 @@ public class NetworkFieldTypes {
             
         }, Component.class);
         
-        NetworkFieldTypes.register(new NetworkFieldTypeClass<Tag>() {
+        NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Tag>((x, y) -> Tag.class.isAssignableFrom(x)) {
             
             @Override
-            protected void writeContent(Tag content, FriendlyByteBuf buffer) {
+            public void write(Tag content, Class classType, Type genericType, FriendlyByteBuf buffer) {
                 buffer.writeByte(content.getId());
                 if (content.getId() != 0)
                     try {
@@ -700,7 +700,7 @@ public class NetworkFieldTypes {
             }
             
             @Override
-            protected Tag readContent(FriendlyByteBuf buffer) {
+            public Tag read(Class classType, Type genericType, FriendlyByteBuf buffer) {
                 ByteBufInputStream in = null;
                 try {
                     in = new ByteBufInputStream(buffer);
@@ -720,15 +720,15 @@ public class NetworkFieldTypes {
                 }
                 
             }
-        }, Tag.class);
+        });
         
-        NetworkFieldTypes.register(new NetworkFieldTypeSpecial((x, y) -> Packet.class.isAssignableFrom(x)) {
+        NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Packet>((x, y) -> Packet.class.isAssignableFrom(x)) {
             
             public static final int BUNDLE_WILDCARD = 234920940;
             
             @Override
-            public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
-                Packet packet = (Packet) content;
+            public void write(Packet content, Class classType, Type genericType, FriendlyByteBuf buffer) {
+                Packet packet = content;
                 ConnectionProtocol protocol = ConnectionProtocol.getProtocolForPacket(packet);
                 if (protocol != ConnectionProtocol.PLAY)
                     throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
