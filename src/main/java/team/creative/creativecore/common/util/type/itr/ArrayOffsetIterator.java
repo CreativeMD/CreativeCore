@@ -11,7 +11,7 @@ public class ArrayOffsetIterator<T> implements Iterator<T> {
     public ArrayOffsetIterator(int offset, T... content) {
         this.content = content;
         this.count = 0;
-        this.offset = 0;
+        this.offset = offset;
     }
     
     @Override
