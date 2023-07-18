@@ -72,6 +72,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", true, new ArrayList<>()).setDim(50, 130).setExpandable();
         parent.add(listBox);
+        listBox.spacing = -1;
         
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);

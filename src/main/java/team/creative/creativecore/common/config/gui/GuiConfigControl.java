@@ -11,6 +11,7 @@ import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
 import team.creative.creativecore.common.gui.controls.parent.GuiRow;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiSizeRatioRules;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
@@ -27,7 +28,7 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
         this.field = field;
         this.side = side;
         this.setExpandableX();
-        GuiColumn text = new GuiColumn(100);
+        GuiColumn text = (GuiColumn) new GuiColumn().setDim(new GuiSizeRatioRules().widthRatio(0.25F));
         text.valign = VAlign.CENTER;
         addColumn(text);
         text.add(new GuiLabel(caption + ":").setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
@@ -55,8 +56,8 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     
     public void init(JsonElement initalValue) {
         field.converation.createControls(main, this, field, field.getType());
-        field.converation
-                .loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, false, initalValue, side, field) : field.get(), main, this, field);
+        field.converation.loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, false, initalValue, side, field) : field.get(), main, this,
+            field);
         
         updateButton();
     }

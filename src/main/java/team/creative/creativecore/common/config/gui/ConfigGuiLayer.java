@@ -172,8 +172,8 @@ public class ConfigGuiLayer extends GuiLayer {
     private static GuiConfigControl getConfigControl(GuiControl control) {
         if (control instanceof GuiConfigControl)
             return (GuiConfigControl) control;
-        if (control.getParent() != null)
-            return getConfigControl((GuiControl) control.getParent());
+        if (control.getParent() instanceof GuiControl parent)
+            return getConfigControl(parent);
         return null;
     }
     

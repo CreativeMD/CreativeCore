@@ -42,7 +42,7 @@ public class GuiStackSelectorExtension extends GuiScrollY {
         });
         this.align = Align.STRETCH;
         reloadControls();
-        setDim(new GuiSizeRule.GuiSizeRatioRules().maxHeight(100));
+        setDim(new GuiSizeRule.GuiSizeRules().maxHeight(100));
     }
     
     @Override

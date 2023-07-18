@@ -36,6 +36,6 @@ public class GuiConfigSubControl extends GuiParent {
     
     @Override
     public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
+        return ControlFormatting.NESTED;
     }
 }
