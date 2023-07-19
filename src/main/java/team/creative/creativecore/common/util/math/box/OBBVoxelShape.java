@@ -13,6 +13,7 @@ import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.unsafe.CreativeHackery;
+import team.creative.creativecore.mixin.VoxelShapeAccessor;
 
 public class OBBVoxelShape extends AABBVoxelShape {
     
@@ -22,6 +23,7 @@ public class OBBVoxelShape extends AABBVoxelShape {
         OBBVoxelShape shape = CreativeHackery.allocateInstance(OBBVoxelShape.class);
         shape.bb = bb;
         shape.origin = origin;
+        ((VoxelShapeAccessor) shape).setShape(DISCRETE_SHAPE);
         return shape;
     }
     

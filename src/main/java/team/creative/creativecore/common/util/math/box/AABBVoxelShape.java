@@ -30,7 +30,7 @@ import team.creative.creativecore.mixin.VoxelShapeAccessor;
 
 public class AABBVoxelShape extends SliceShape {
     
-    private static final DiscreteVoxelShape DISCRETE_SHAPE = new DiscreteVoxelShape(0, 0, 0) {
+    public static final DiscreteVoxelShape DISCRETE_SHAPE = new DiscreteVoxelShape(0, 0, 0) {
         
         @Override
         public boolean isFull(int p_82829_, int p_82830_, int p_82831_) {
