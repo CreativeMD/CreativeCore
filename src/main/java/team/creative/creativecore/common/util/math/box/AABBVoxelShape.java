@@ -30,29 +30,26 @@ import team.creative.creativecore.mixin.VoxelShapeAccessor;
 
 public class AABBVoxelShape extends SliceShape {
     
-    public static final DiscreteVoxelShape DISCRETE_SHAPE = new DiscreteVoxelShape(0, 0, 0) {
+    public static final DiscreteVoxelShape DISCRETE_SHAPE = new DiscreteVoxelShape(1, 1, 1) {
         
         @Override
-        public boolean isFull(int p_82829_, int p_82830_, int p_82831_) {
-            return false;
+        public boolean isFull(int x, int y, int z) {
+            return true;
         }
         
         @Override
-        public void fill(int p_165998_, int p_165999_, int p_166000_) {
-            // TODO Auto-generated method stub
-            
+        public void fill(int x, int y, int z) {
+            throw new UnsupportedOperationException();
         }
         
         @Override
         public int firstFull(Axis p_82827_) {
-            // TODO Auto-generated method stub
-            return 0;
+            throw new UnsupportedOperationException();
         }
         
         @Override
         public int lastFull(Axis p_82840_) {
-            // TODO Auto-generated method stub
-            return 0;
+            throw new UnsupportedOperationException();
         }
         
     };
