@@ -150,7 +150,7 @@ public class VectorFan {
         int index = 0;
         while (index < coords.length - 3) {
             generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
-            index += 2;
+            index += 3;
         }
         if (index < coords.length - 2)
             generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
