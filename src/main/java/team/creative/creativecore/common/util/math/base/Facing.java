@@ -5,6 +5,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.geo.NormalPlane;
+import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public enum Facing {
     
@@ -231,6 +232,29 @@ public enum Facing {
         else if (pos.getX() == second.getX() + 1)
             return Facing.EAST;
         return Facing.WEST;
+    }
+    
+    public static Facing nearest(Vec3f vec) {
+        return nearest(vec.x, vec.y, vec.z);
+    }
+    
+    public static Facing nearest(float x, float y, float z) {
+        if (x == 0 && y == 0 && z == 0)
+            return null;
+        
+        Facing facing = null;
+        float distance = Float.MIN_VALUE;
+        
+        for (int i = 0; i < VALUES.length; i++) {
+            Facing f = VALUES[i];
+            float newDistance = x * f.normal.getX() + y * f.normal.getY() + z * f.normal.getZ();
+            if (newDistance > distance) {
+                distance = newDistance;
+                facing = f;
+            }
+        }
+        
+        return facing;
     }
     
     public final String name;
