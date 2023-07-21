@@ -19,11 +19,15 @@ public class VertexFormatUtils {
     public static void update() {
         VertexFormat format = DefaultVertexFormat.BLOCK;
         vertexFormatSize = format.getVertexSize();
+        UV_OFFSET = -1;
         List<VertexFormatElement> elements = format.getElements();
         for (int i = 0; i < elements.size(); i++)
             switch (elements.get(i).getUsage()) {
                 case POSITION -> POSITION_OFFSET = format.getOffset(i);
-                case UV -> UV_OFFSET = format.getOffset(i);
+                case UV -> {
+                    if (UV_OFFSET == -1)
+                        UV_OFFSET = format.getOffset(i);
+                }
             }
     }
     
