@@ -25,6 +25,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
+import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.mc.ColorUtils;
@@ -32,6 +33,7 @@ import team.creative.creativecore.common.util.mc.ColorUtils;
 public class CreativeBakedBoxModel extends CreativeBakedModel {
     
     public static Minecraft mc = Minecraft.getInstance();
+    private static final ThreadLocal<QuadGeneratorContext> QUAD_CONTEXT = ThreadLocal.withInitial(QuadGeneratorContext::new);
     
     public static List<BakedQuad> compileBoxes(List<? extends RenderBox> boxes, Facing side, RenderType layer, RandomSource rand, boolean item, List<BakedQuad> baked) {
         if (side == null)
@@ -53,7 +55,9 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
             if (item)
                 defaultColor = mc.getItemColors().getColor(new ItemStack(state.getBlock()), defaultColor);
             
-            baked.addAll(box.getBakedQuad(null, null, box.getOffset(), state, blockModel, side, layer, rand, true, defaultColor));
+            QuadGeneratorContext context = QUAD_CONTEXT.get();
+            baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, side, layer, rand, true, defaultColor));
+            context.clear();
         }
         for (BakedQuad quad : baked)
             if (quad instanceof CreativeBakedQuad c)

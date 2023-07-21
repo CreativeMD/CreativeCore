@@ -20,8 +20,8 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
-import team.creative.creativecore.client.render.box.RenderBox.RenderInformationHolder;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
@@ -115,10 +115,9 @@ public class VectorFan {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
-        holder.normal = null;
+    public void generate(QuadGeneratorContext holder, List<BakedQuad> quads) {
         Vec3f[] coords = this.coords;
-        if (!holder.getBox().allowOverlap && holder.hasBounds()) {
+        if (!holder.box.allowOverlap && holder.hasBounds()) {
             Axis one = holder.facing.one();
             Axis two = holder.facing.two();
             
@@ -158,9 +157,9 @@ public class VectorFan {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void generate(RenderInformationHolder holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
-        BakedQuad quad = new CreativeBakedQuad(holder.quad, holder.getBox(), holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
-        RenderBox box = holder.getBox();
+    protected void generate(QuadGeneratorContext holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
+        BakedQuad quad = new CreativeBakedQuad(holder.quad, holder.box, holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
+        RenderBox box = holder.box;
         
         for (int k = 0; k < 4; k++) {
             Vec3f vec;
@@ -663,7 +662,7 @@ public class VectorFan {
         return new NormalPlane(coords[0], createNormal());
     }
     
-    public NormalPlane createPlane(RenderInformationHolder holder) {
+    public NormalPlane createPlane(QuadGeneratorContext holder) {
         Vec3f a = new Vec3f(coords[1]);
         a.sub(coords[0]);
         if (holder.scaleAndOffset) {

@@ -9,7 +9,6 @@ import team.creative.creativecore.common.util.mc.ColorUtils;
 public class CreativeBakedQuad extends BakedQuad {
     
     public final RenderBox cube;
-    public boolean shouldOverrideColor;
     
     public CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, Direction facing) {
         this(quad, cube, tintedColor, shouldOverrideColor, facing, false);
@@ -18,7 +17,6 @@ public class CreativeBakedQuad extends BakedQuad {
     private CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, Direction facing, boolean something) {
         super(copyArray(quad.getVertices()), shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.isShade());
         this.cube = cube;
-        this.shouldOverrideColor = shouldOverrideColor;
     }
     
     private static int[] copyArray(int[] array) {
