@@ -334,22 +334,22 @@ public class RenderBox extends AlignedBox {
         if (previewScalingAndOffset()) {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
                             getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
-                        getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(),
+                        red, green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
             }
         }
     }
@@ -365,22 +365,22 @@ public class RenderBox extends AlignedBox {
         if (previewScalingAndOffset()) {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
                             getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(),
-                        getPreviewScaleZ(), red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red,
+                        green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
+                if (renderQuads instanceof List list)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
                         ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose.last(), consumer, red, green, blue, alpha);
             }
         }
     }
@@ -396,22 +396,22 @@ public class RenderBox extends AlignedBox {
         if (previewScalingAndOffset()) {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
                             getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(),
-                        getPreviewScaleZ(), red, green, blue, alpha, center, grow);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red,
+                        green, blue, alpha, center, grow);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
             }
         }
     }
@@ -443,7 +443,7 @@ public class RenderBox extends AlignedBox {
             int[] data = holder.quad.getVertices();
             
             int index = 0;
-            int uvIndex = index + holder.uvOffset / 4;
+            int uvIndex = index + holder.uvOffset;
             float tempMinX = Float.intBitsToFloat(data[index]);
             float tempMinY = Float.intBitsToFloat(data[index + 1]);
             float tempMinZ = Float.intBitsToFloat(data[index + 2]);
@@ -453,7 +453,7 @@ public class RenderBox extends AlignedBox {
             holder.uvInverted = false;
             
             index = 1 * holder.format.getIntegerSize();
-            uvIndex = index + holder.uvOffset / 4;
+            uvIndex = index + holder.uvOffset;
             if (tempMinX != Float.intBitsToFloat(data[index])) {
                 if (tempU != Float.intBitsToFloat(data[uvIndex]))
                     holder.uvInverted = Axis.X != facing.getUAxis();
@@ -482,10 +482,10 @@ public class RenderBox extends AlignedBox {
             if (!intersectsWithFace(facing, holder, offset))
                 continue;
             
-            uvIndex = holder.uvOffset / 4;
+            uvIndex = holder.uvOffset;
             float u1 = Float.intBitsToFloat(data[uvIndex]);
             float v1 = Float.intBitsToFloat(data[uvIndex + 1]);
-            uvIndex = 2 * holder.format.getIntegerSize() + holder.uvOffset / 4;
+            uvIndex = 2 * holder.format.getIntegerSize() + holder.uvOffset;
             float u2 = Float.intBitsToFloat(data[uvIndex]);
             float v2 = Float.intBitsToFloat(data[uvIndex + 1]);
             
@@ -516,7 +516,6 @@ public class RenderBox extends AlignedBox {
         
         public VectorFanSimple(Vec3f[] coords) {
             super(coords);
-            
         }
         
         @Override
