@@ -49,7 +49,7 @@ public class QuadGeneratorContext {
         this.color = color;
         this.format = format;
         this.facing = facing;
-        this.uvOffset = VertexFormatUtils.blockUvOffset();
+        this.uvOffset = VertexFormatUtils.blockUvOffset() / 4;
         
         this.box = box;
         scaleAndOffset = box.scaleAndOffsetQuads(facing);

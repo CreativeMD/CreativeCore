@@ -208,7 +208,7 @@ public class VectorFan {
             if (box.keepVU)
                 continue;
             
-            int uvIndex = index + holder.uvOffset / 4;
+            int uvIndex = index + holder.uvOffset;
             
             float uOffset;
             float vOffset;
