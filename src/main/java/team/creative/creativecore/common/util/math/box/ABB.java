@@ -176,6 +176,14 @@ public class ABB {
         };
     }
     
+    public boolean intersectsWithAxis(Axis axis, ABB bb2) {
+        return switch (axis) {
+            case X -> minY < bb2.maxY && maxY > bb2.minY && minZ < bb2.maxZ && maxZ > bb2.minZ;
+            case Y -> minX < bb2.maxX && maxX > bb2.minX && minZ < bb2.maxZ && maxZ > bb2.minZ;
+            case Z -> minX < bb2.maxX && maxX > bb2.minX && minY < bb2.maxY && maxY > bb2.minY;
+        };
+    }
+    
     public boolean intersectsWithAxis(Axis one, Axis two, double valueOne, double valueTwo) {
         return min(one) < valueOne && max(one) > valueOne && min(two) < valueTwo && max(two) > valueTwo;
     }
