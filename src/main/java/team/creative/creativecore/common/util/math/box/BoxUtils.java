@@ -4,7 +4,6 @@ import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollisionCoordinator;
-import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
 import team.creative.creativecore.common.util.math.transformation.BooleanRotation;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -23,13 +22,6 @@ public class BoxUtils {
         return one > minOne && one < maxOne && two > minTwo && two < maxTwo;
     }
     
-    public static Vec3d[] getCorners(AABB box) {
-        Vec3d[] corners = new Vec3d[BoxCorner.values().length];
-        for (int i = 0; i < corners.length; i++)
-            corners[i] = BoxCorner.values()[i].get(box);
-        return corners;
-    }
-    
     private static double lengthIgnoreAxis(Vec3d vec, Axis axis) {
         return switch (axis) {
             case X -> Math.sqrt(vec.y * vec.y + vec.z * vec.z);
@@ -39,14 +31,14 @@ public class BoxUtils {
         };
     }
     
-    private static void includeMaxRotationInBox(IncludeBox box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
+    public static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
         double rotation = coordinator.getRotationDegree(axis);
         if (rotation == 0)
             return;
         includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrix(axis), coordinator.translation);
     }
     
-    private static void includeMaxRotationInBoxInverse(IncludeBox box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
+    public static void includeMaxRotationInBoxInverse(ABB box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
         double rotation = -coordinator.getRotationDegree(axis);
         if (rotation == 0)
             return;
@@ -59,7 +51,7 @@ public class BoxUtils {
         includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrixInv(axis), translation);
     }
     
-    private static void includeMaxRotationInBox(IncludeBox box, Vec3d vec, Axis axis, double rotation, Matrix3 matrix, Vec3d translation) {
+    private static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, double rotation, Matrix3 matrix, Vec3d translation) {
         Double length = null;
         BooleanRotation state = BooleanRotation.get(axis, vec);
         
@@ -97,143 +89,89 @@ public class BoxUtils {
         }
     }
     
-    public static AABB getRotatedSurrounding(AABB boundingBox, CollisionCoordinator coordinator) {
-        Vec3d[] corners = getRotatedCorners(boundingBox, coordinator.origin);
-        
-        IncludeBox bb = new IncludeBox();
-        
-        for (int i = 0; i < corners.length; i++) {
-            Vec3d vec = corners[i];
-            
-            bb.include(vec);
-            
-            if (coordinator.hasOnlyTranslation()) {
-                vec.add(coordinator.translation);
-                bb.include(vec);
-            } else {
-                includeMaxRotationInBox(bb, new Vec3d(vec), Axis.X, coordinator);
-                includeMaxRotationInBox(bb, new Vec3d(vec), Axis.Y, coordinator);
-                includeMaxRotationInBox(bb, new Vec3d(vec), Axis.Z, coordinator);
-                
-                coordinator.transform(vec, 1D);
-                bb.include(vec);
+    public static double get(AABB bb, Facing facing) {
+        return switch (facing) {
+            case EAST -> bb.maxX;
+            case WEST -> bb.minX;
+            case UP -> bb.maxY;
+            case DOWN -> bb.minY;
+            case SOUTH -> bb.maxZ;
+            case NORTH -> bb.minZ;
+        };
+    }
+    
+    public static double min(AABB bb, net.minecraft.core.Direction.Axis axis) {
+        return switch (axis) {
+            case X -> bb.minX;
+            case Y -> bb.minY;
+            case Z -> bb.minZ;
+        };
+    }
+    
+    public static double max(AABB bb, net.minecraft.core.Direction.Axis axis) {
+        return switch (axis) {
+            case X -> bb.maxX;
+            case Y -> bb.maxY;
+            case Z -> bb.maxZ;
+        };
+    }
+    
+    public static double min(AABB bb, Axis axis) {
+        return switch (axis) {
+            case X -> bb.minX;
+            case Y -> bb.minY;
+            case Z -> bb.minZ;
+        };
+    }
+    
+    public static double max(AABB bb, Axis axis) {
+        return switch (axis) {
+            case X -> bb.maxX;
+            case Y -> bb.maxY;
+            case Z -> bb.maxZ;
+        };
+    }
+    
+    public static Vec3d corner(AABB bb, BoxCorner corner) {
+        return new Vec3d(cornerX(bb, corner), cornerY(bb, corner), cornerZ(bb, corner));
+    }
+    
+    public static double cornerValue(AABB bb, BoxCorner corner, Axis axis) {
+        return get(bb, corner.getFacing(axis));
+    }
+    
+    public static double cornerX(AABB bb, BoxCorner corner) {
+        return get(bb, corner.x);
+    }
+    
+    public static double cornerY(AABB bb, BoxCorner corner) {
+        return get(bb, corner.y);
+    }
+    
+    public static double cornerZ(AABB bb, BoxCorner corner) {
+        return get(bb, corner.z);
+    }
+    
+    public static boolean intersectsWithAxis(AABB bb, AABB other, Axis one, Axis two) {
+        return bb.min(one.toVanilla()) < other.max(one.toVanilla()) && bb.max(one.toVanilla()) > bb.min(one.toVanilla()) && bb.min(two.toVanilla()) < bb.max(two.toVanilla()) && bb
+                .max(two.toVanilla()) > bb.min(two.toVanilla());
+    }
+    
+    public static boolean intersectsWithAxis(AABB bb, Axis one, Axis two, double valueOne, double valueTwo) {
+        return bb.min(one.toVanilla()) < valueOne && bb.max(one.toVanilla()) > valueOne && bb.min(two.toVanilla()) < valueTwo && bb.max(two.toVanilla()) > valueTwo;
+    }
+    
+    public static double calculateAxisOffset(Axis axis, Axis one, Axis two, AABB bb, AABB other, double offset) {
+        if (intersectsWithAxis(bb, other, one, two))
+            if (offset > 0.0D && other.max(axis.toVanilla()) <= bb.min(axis.toVanilla())) {
+                double newDistance = bb.min(axis.toVanilla()) - other.maxX;
+                if (newDistance < offset)
+                    return newDistance;
+            } else if (offset < 0.0D && other.min(axis.toVanilla()) >= bb.max(axis.toVanilla())) {
+                double newDistance = bb.max(axis.toVanilla()) - other.min(axis.toVanilla());
+                if (newDistance > offset)
+                    return newDistance;
             }
-        }
-        
-        return bb.getAxisBB();
+        return offset;
     }
-    
-    public static AABB getRotatedSurroundingInverse(AABB boundingBox, CollisionCoordinator coordinator) {
-        Vec3d[] corners = getRotatedCorners(boundingBox, coordinator.origin);
-        
-        IncludeBox bb = new IncludeBox();
-        
-        for (int i = 0; i < corners.length; i++) {
-            Vec3d vec = corners[i];
-            
-            bb.include(vec);
-            
-            if (coordinator.hasOnlyTranslation()) {
-                vec.sub(coordinator.translation);
-                bb.include(vec);
-            } else {
-                includeMaxRotationInBoxInverse(bb, new Vec3d(vec), Axis.X, coordinator);
-                includeMaxRotationInBoxInverse(bb, new Vec3d(vec), Axis.Y, coordinator);
-                includeMaxRotationInBoxInverse(bb, new Vec3d(vec), Axis.Z, coordinator);
-                
-                coordinator.transformInverted(vec, 1D);
-                bb.include(vec);
-            }
-        }
-        
-        return bb.getAxisBB();
-    }
-    
-    public static Vec3d[] getRotatedCorners(AABB box, IVecOrigin origin) {
-        Vec3d[] corners = getCorners(box);
-        for (int i = 0; i < corners.length; i++) {
-            Vec3d vec = corners[i];
-            origin.transformPointToWorld(vec);
-        }
-        return corners;
-    }
-    
-    public static Vec3d[] getOuterCorner(Facing facing, IVecOrigin origin, AABB box, double minOne, double minTwo, double maxOne, double maxTwo) {
-        Vec3d[] corners = getCorners(box);
-        
-        double value = 0;
-        BoxCorner selected = null;
-        Axis axis = facing.axis;
-        
-        for (int i = 0; i < corners.length; i++) {
-            Vec3d vec = corners[i];
-            origin.transformPointToWorld(vec);
-            
-            double vectorValue = vec.get(axis);
-            if (selected == null || (facing.positive ? vectorValue > value : vectorValue < value)) {
-                selected = BoxCorner.values()[i];
-                value = vectorValue;
-            }
-        }
-        
-        return new Vec3d[] { corners[selected.ordinal()], corners[selected.neighborOne.ordinal()], corners[selected.neighborTwo.ordinal()], corners[selected.neighborThree
-                .ordinal()] };
-    }
-    
-    private static class IncludeBox {
-        
-        public double minX;
-        public double minY;
-        public double minZ;
-        public double maxX;
-        public double maxY;
-        public double maxZ;
-        
-        public IncludeBox() {
-            minX = Double.MAX_VALUE;
-            minY = Double.MAX_VALUE;
-            minZ = Double.MAX_VALUE;
-            maxX = -Double.MAX_VALUE;
-            maxY = -Double.MAX_VALUE;
-            maxZ = -Double.MAX_VALUE;
-        }
-        
-        public void include(Vec3d vec) {
-            minX = Math.min(minX, vec.x);
-            minY = Math.min(minY, vec.y);
-            minZ = Math.min(minZ, vec.z);
-            maxX = Math.max(maxX, vec.x);
-            maxY = Math.max(maxY, vec.y);
-            maxZ = Math.max(maxZ, vec.z);
-        }
-        
-        public void include(Facing facing, double value) {
-            switch (facing) {
-                case EAST:
-                    maxX = Math.max(maxX, value);
-                    break;
-                case WEST:
-                    minX = Math.min(minX, value);
-                    break;
-                case UP:
-                    maxY = Math.max(maxY, value);
-                    break;
-                case DOWN:
-                    minY = Math.min(minY, value);
-                    break;
-                case SOUTH:
-                    maxZ = Math.max(maxZ, value);
-                    break;
-                case NORTH:
-                    minZ = Math.min(minZ, value);
-                    break;
-            }
-        }
-        
-        public AABB getAxisBB() {
-            return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
-        }
-        
-    }
-    
 }

@@ -30,6 +30,91 @@ import team.creative.creativecore.mixin.VoxelShapeAccessor;
 
 public class AABBVoxelShape extends SliceShape {
     
+    public static double get(AABB bb, Facing facing) {
+        return switch (facing) {
+            case EAST -> bb.maxX;
+            case WEST -> bb.minX;
+            case UP -> bb.maxY;
+            case DOWN -> bb.minY;
+            case SOUTH -> bb.maxZ;
+            case NORTH -> bb.minZ;
+        };
+    }
+    
+    public static double getMin(AABB bb, team.creative.creativecore.common.util.math.base.Axis axis) {
+        return switch (axis) {
+            case X -> bb.minX;
+            case Y -> bb.minY;
+            case Z -> bb.minZ;
+        };
+    }
+    
+    public static double getMax(AABB bb, team.creative.creativecore.common.util.math.base.Axis axis) {
+        return switch (axis) {
+            case X -> bb.maxX;
+            case Y -> bb.maxY;
+            case Z -> bb.maxZ;
+        };
+    }
+    
+    public static double getMin(AABB bb, Axis axis) {
+        return switch (axis) {
+            case X -> bb.minX;
+            case Y -> bb.minY;
+            case Z -> bb.minZ;
+        };
+    }
+    
+    public static double getMax(AABB bb, Axis axis) {
+        return switch (axis) {
+            case X -> bb.maxX;
+            case Y -> bb.maxY;
+            case Z -> bb.maxZ;
+        };
+    }
+    
+    public static Vec3d getCorner(AABB bb, BoxCorner corner) {
+        return new Vec3d(getCornerX(bb, corner), getCornerY(bb, corner), getCornerZ(bb, corner));
+    }
+    
+    public static double getCornerValue(AABB bb, BoxCorner corner, team.creative.creativecore.common.util.math.base.Axis axis) {
+        return get(bb, corner.getFacing(axis));
+    }
+    
+    public static double getCornerX(AABB bb, BoxCorner corner) {
+        return get(bb, corner.x);
+    }
+    
+    public static double getCornerY(AABB bb, BoxCorner corner) {
+        return get(bb, corner.y);
+    }
+    
+    public static double getCornerZ(AABB bb, BoxCorner corner) {
+        return get(bb, corner.z);
+    }
+    
+    public static boolean intersectsWithAxis(AABB bb, AABB other, Axis one, Axis two) {
+        return bb.min(one) < other.max(one) && bb.max(one) > bb.min(one) && bb.min(two) < bb.max(two) && bb.max(two) > bb.min(two);
+    }
+    
+    public static boolean intersectsWithAxis(AABB bb, Axis one, Axis two, double valueOne, double valueTwo) {
+        return bb.min(one) < valueOne && bb.max(one) > valueOne && bb.min(two) < valueTwo && bb.max(two) > valueTwo;
+    }
+    
+    public static double calculateAxisOffset(Axis axis, Axis one, Axis two, AABB bb, AABB other, double offset) {
+        if (intersectsWithAxis(bb, other, one, two))
+            if (offset > 0.0D && other.max(axis) <= bb.min(axis)) {
+                double newDistance = bb.min(axis) - other.maxX;
+                if (newDistance < offset)
+                    return newDistance;
+            } else if (offset < 0.0D && other.min(axis) >= bb.max(axis)) {
+                double newDistance = bb.max(axis) - other.min(axis);
+                if (newDistance > offset)
+                    return newDistance;
+            }
+        return offset;
+    }
+    
     public static final DiscreteVoxelShape DISCRETE_SHAPE = new DiscreteVoxelShape(1, 1, 1) {
         
         @Override
@@ -68,34 +153,23 @@ public class AABBVoxelShape extends SliceShape {
     }
     
     public boolean contains(Vec3d vec) {
-        if (vec.x > bb.minX && vec.x < bb.maxX) {
-            if (vec.y > bb.minY && vec.y < bb.maxY) {
+        if (vec.x > bb.minX && vec.x < bb.maxX)
+            if (vec.y > bb.minY && vec.y < bb.maxY)
                 return vec.z > bb.minZ && vec.z < bb.maxZ;
-            } else {
+            else
                 return false;
-            }
-        } else {
-            return false;
-        }
+        return false;
     }
     
     protected double get(Facing facing) {
-        switch (facing) {
-            case EAST:
-                return bb.maxX;
-            case WEST:
-                return bb.minX;
-            case UP:
-                return bb.maxY;
-            case DOWN:
-                return bb.minY;
-            case SOUTH:
-                return bb.maxZ;
-            case NORTH:
-                return bb.minZ;
-            
-        }
-        return 0;
+        return switch (facing) {
+            case EAST -> bb.maxX;
+            case WEST -> bb.minX;
+            case UP -> bb.maxY;
+            case DOWN -> bb.minY;
+            case SOUTH -> bb.maxZ;
+            case NORTH -> bb.minZ;
+        };
     }
     
     public Vec3d getCorner(BoxCorner corner) {
@@ -139,153 +213,43 @@ public class AABBVoxelShape extends SliceShape {
     }
     
     public double getSize(Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.maxX - bb.minX;
-            case Y:
-                return bb.maxY - bb.minY;
-            case Z:
-                return bb.maxZ - bb.minZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> bb.maxX - bb.minX;
+            case Y -> bb.maxY - bb.minY;
+            case Z -> bb.maxZ - bb.minZ;
+        };
     }
     
     public double getMin(Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.minX;
-            case Y:
-                return bb.minY;
-            case Z:
-                return bb.minZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> bb.minX;
+            case Y -> bb.minY;
+            case Z -> bb.minZ;
+        };
     }
     
     public double getMax(Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.maxX;
-            case Y:
-                return bb.maxY;
-            case Z:
-                return bb.maxZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> bb.maxX;
+            case Y -> bb.maxY;
+            case Z -> bb.maxZ;
+        };
     }
     
     public double getMin(team.creative.creativecore.common.util.math.base.Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.minX;
-            case Y:
-                return bb.minY;
-            case Z:
-                return bb.minZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> bb.minX;
+            case Y -> bb.minY;
+            case Z -> bb.minZ;
+        };
     }
     
     public double getMax(team.creative.creativecore.common.util.math.base.Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.maxX;
-            case Y:
-                return bb.maxY;
-            case Z:
-                return bb.maxZ;
-        }
-        return 0;
-    }
-    
-    public static double get(AABB bb, Facing facing) {
-        switch (facing) {
-            case EAST:
-                return bb.maxX;
-            case WEST:
-                return bb.minX;
-            case UP:
-                return bb.maxY;
-            case DOWN:
-                return bb.minY;
-            case SOUTH:
-                return bb.maxZ;
-            case NORTH:
-                return bb.minZ;
-        }
-        return 0;
-    }
-    
-    public static double getMin(AABB bb, team.creative.creativecore.common.util.math.base.Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.minX;
-            case Y:
-                return bb.minY;
-            case Z:
-                return bb.minZ;
-            default:
-                return 0;
-        }
-    }
-    
-    public static double getMax(AABB bb, team.creative.creativecore.common.util.math.base.Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.maxX;
-            case Y:
-                return bb.maxY;
-            case Z:
-                return bb.maxZ;
-            default:
-                return 0;
-        }
-    }
-    
-    public static double getMin(AABB bb, Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.minX;
-            case Y:
-                return bb.minY;
-            case Z:
-                return bb.minZ;
-            default:
-                return 0;
-        }
-    }
-    
-    public static double getMax(AABB bb, Axis axis) {
-        switch (axis) {
-            case X:
-                return bb.maxX;
-            case Y:
-                return bb.maxY;
-            case Z:
-                return bb.maxZ;
-            default:
-                return 0;
-        }
-    }
-    
-    public static Vec3d getCorner(AABB bb, BoxCorner corner) {
-        return new Vec3d(getCornerX(bb, corner), getCornerY(bb, corner), getCornerZ(bb, corner));
-    }
-    
-    public static double getCornerValue(AABB bb, BoxCorner corner, team.creative.creativecore.common.util.math.base.Axis axis) {
-        return get(bb, corner.getFacing(axis));
-    }
-    
-    public static double getCornerX(AABB bb, BoxCorner corner) {
-        return get(bb, corner.x);
-    }
-    
-    public static double getCornerY(AABB bb, BoxCorner corner) {
-        return get(bb, corner.y);
-    }
-    
-    public static double getCornerZ(AABB bb, BoxCorner corner) {
-        return get(bb, corner.z);
+        return switch (axis) {
+            case X -> bb.maxX;
+            case Y -> bb.maxY;
+            case Z -> bb.maxZ;
+        };
     }
     
     @Override
@@ -354,12 +318,24 @@ public class AABBVoxelShape extends SliceShape {
     
     @Override
     public double min(Direction.Axis axis, double one, double two) {
-        return min(axis);
+        // Only used with Axis.Y, one as X, two as Z
+        Axis axisOne = Axis.X;
+        Axis axisTwo = Axis.Z;
+        double min = Double.POSITIVE_INFINITY;
+        if (AABBVoxelShape.intersectsWithAxis(bb, axisOne, axisTwo, one, two))
+            min = Math.min(min, bb.min(axis));
+        return min;
     }
     
     @Override
     public double max(Direction.Axis axis, double one, double two) {
-        return max(axis);
+        // Only used with Axis.Y, one as X, two as Z
+        Axis axisOne = Axis.X;
+        Axis axisTwo = Axis.Z;
+        double max = Double.NEGATIVE_INFINITY;
+        if (AABBVoxelShape.intersectsWithAxis(bb, axisOne, axisTwo, one, two))
+            max = Math.max(max, bb.max(axis));
+        return max;
     }
     
     @Override
@@ -385,7 +361,7 @@ public class AABBVoxelShape extends SliceShape {
     }
     
     @Override
-    public VoxelShape getFaceShape(Direction p_83264_) {
+    public VoxelShape getFaceShape(Direction direction) {
         return this;
     }
     

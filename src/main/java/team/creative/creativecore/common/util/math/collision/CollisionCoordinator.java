@@ -2,9 +2,8 @@ package team.creative.creativecore.common.util.math.collision;
 
 import java.util.HashMap;
 
-import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
-import team.creative.creativecore.common.util.math.box.BoxUtils;
+import team.creative.creativecore.common.util.math.box.ABB;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
 import team.creative.creativecore.common.util.math.matrix.Matrix4;
@@ -149,12 +148,12 @@ public class CollisionCoordinator {
         };
     }
     
-    public AABB computeSurroundingBox(AABB box) {
-        return BoxUtils.getRotatedSurrounding(box, this);
+    public ABB computeSurroundingBox(ABB box) {
+        return box.createRotatedSurrounding(this);
     }
     
-    public AABB computeInverseSurroundingBox(AABB box) {
-        return BoxUtils.getRotatedSurroundingInverse(box, this);
+    public ABB computeInverseSurroundingBox(ABB box) {
+        return box.createRotatedSurroundingInverse(this);
     }
     
     private boolean isSimple() {
@@ -191,8 +190,8 @@ public class CollisionCoordinator {
             matrix = new Matrix4(matrix);
             matrix.invert();
         } else
-            matrix = MatrixUtils
-                    .createRotationMatrixAndTranslationRadians(-offX * delta, -offY * delta, -offZ * delta, -rotXRadians * delta, -rotYRadians * delta, -rotZRadians * delta);
+            matrix = MatrixUtils.createRotationMatrixAndTranslationRadians(-offX * delta, -offY * delta, -offZ * delta, -rotXRadians * delta, -rotYRadians * delta,
+                -rotZRadians * delta);
         
         invertedTable.put(delta, matrix);
         return matrix;

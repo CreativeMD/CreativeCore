@@ -26,10 +26,9 @@ public class BoxPlane {
         // get d value
         Double d = normal.dot(origin);
         
-        if (normal.dot(ray) == 0) {
+        if (normal.dot(ray) == 0)
             return null; // No intersection, the line is parallel to the plane
-        }
-        
+            
         // Compute the X value for the directed line ray intersecting the plane
         return (d - normal.dot(rayOrigin)) / normal.dot(ray);
     }

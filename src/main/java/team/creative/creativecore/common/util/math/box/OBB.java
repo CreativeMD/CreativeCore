@@ -4,32 +4,16 @@ import java.util.List;
 
 import org.joml.Vector2d;
 
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.Maths;
+import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
-import team.creative.creativecore.common.util.unsafe.CreativeHackery;
-import team.creative.creativecore.mixin.VoxelShapeAccessor;
 
-public class OBBVoxelShape extends AABBVoxelShape {
-    
-    public IVecOrigin origin;
-    
-    public static OBBVoxelShape create(AABB bb, IVecOrigin origin) {
-        OBBVoxelShape shape = CreativeHackery.allocateInstance(OBBVoxelShape.class);
-        shape.bb = bb;
-        shape.origin = origin;
-        ((VoxelShapeAccessor) shape).setShape(DISCRETE_SHAPE);
-        return shape;
-    }
-    
-    private OBBVoxelShape() {
-        super();
-    }
+public class OBB extends ABB {
     
     /** @return -1 -> value is too small; 0 -> value is inside min and max; 1 ->
      *         value is too large */
@@ -41,20 +25,40 @@ public class OBBVoxelShape extends AABBVoxelShape {
         return 0;
     }
     
-    public double calculateDistanceRotated(AABB other, team.creative.creativecore.common.util.math.base.Axis axis, double offset) {
+    public static double calculateDistanceFromPlane(boolean positive, double closestValue, Vec2d vec, double firstAxisValue, double secondAxisValue, double outerCornerAxis) {
+        double valueAxis = outerCornerAxis + (firstAxisValue - outerCornerAxis) * vec.x + (secondAxisValue - outerCornerAxis) * vec.y;
+        return positive ? valueAxis - closestValue : closestValue - valueAxis;
+    }
+    
+    public IVecOrigin origin;
+    
+    public OBB(ABB bb, IVecOrigin origin) {
+        super(bb);
+    }
+    
+    public OBB(AABB bb, IVecOrigin origin) {
+        super(bb);
+    }
+    
+    @Override
+    public OBB copy() {
+        return new OBB(this, origin);
+    }
+    
+    public double calculateDistanceRotated(AABB other, Axis axis, double offset) {
         boolean positive = offset > 0;
         Facing facing = Facing.get(axis, !positive);
         double closestValue = get(other, facing.opposite());
         
-        team.creative.creativecore.common.util.math.base.Axis one = axis.one();
-        team.creative.creativecore.common.util.math.base.Axis two = axis.two();
+        Axis one = axis.one();
+        Axis two = axis.two();
         
-        double minOne = getMin(other, one);
-        double minTwo = getMin(other, two);
-        double maxOne = getMax(other, one);
-        double maxTwo = getMax(other, two);
+        double minOne = min(other, one);
+        double minTwo = min(other, two);
+        double maxOne = max(other, one);
+        double maxTwo = max(other, two);
         
-        Vec3d[] corners = BoxUtils.getOuterCorner(facing, origin, bb, minOne, minTwo, maxOne, maxTwo);
+        Vec3d[] corners = getOuterCorner(facing, origin, minOne, minTwo, maxOne, maxTwo);
         
         Vec3d outerCorner = corners[0];
         double outerCornerOne = outerCorner.get(one);
@@ -140,29 +144,16 @@ public class OBBVoxelShape extends AABBVoxelShape {
         return minDistance;
     }
     
-    public static double calculateDistanceFromPlane(boolean positive, double closestValue, Vec2d vec, double firstAxisValue, double secondAxisValue, double outerCornerAxis) {
-        double valueAxis = outerCornerAxis + (firstAxisValue - outerCornerAxis) * vec.x + (secondAxisValue - outerCornerAxis) * vec.y;
-        return positive ? valueAxis - closestValue : closestValue - valueAxis;
-    }
-    
-    public static boolean intersectsWithAxis(Axis axis, AABB bb, AABB bb2) {
-        return switch (axis) {
-            case X -> bb.minY < bb2.maxY && bb.maxY > bb2.minY && bb.minZ < bb2.maxZ && bb.maxZ > bb2.minZ;
-            case Y -> bb.minX < bb2.maxX && bb.maxX > bb2.minX && bb.minZ < bb2.maxZ && bb.maxZ > bb2.minZ;
-            case Z -> bb.minX < bb2.maxX && bb.maxX > bb2.minX && bb.minY < bb2.maxY && bb.maxY > bb2.minY;
-        };
-    }
-    
     @Override
-    public double collide(Axis axis, AABB other, double offset) {
+    public double calculateAxisOffset(Axis axis, Axis one, Axis two, AABB other, double offset) {
         if (offset == 0)
             return offset;
         if (Math.abs(offset) < 1.0E-7D)
             return 0.0D;
-        if (!intersectsWithAxis(axis, bb, other))
+        if (!intersectsWithAxis(axis, other))
             return offset;
         
-        double distance = calculateDistanceRotated(other, team.creative.creativecore.common.util.math.base.Axis.get(axis), offset);
+        double distance = calculateDistanceRotated(other, axis, offset);
         
         if (distance < 0 && !Maths.equals(distance, 0))
             return offset;

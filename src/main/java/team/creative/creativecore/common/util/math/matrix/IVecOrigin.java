@@ -13,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
+import team.creative.creativecore.common.util.math.box.ABB;
 import team.creative.creativecore.common.util.math.box.BoxCorner;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
@@ -144,52 +145,80 @@ public interface IVecOrigin {
         return new Vec3(real.x, real.y, real.z);
     }
     
-    public default AABB getAABB(AABB box) {
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE;
-        double maxX = -Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
-        double maxZ = -Double.MAX_VALUE;
-        
+    public default ABB getAABB(AABB box) {
+        ABB bb = ABB.createEmptyBox();
+        Vec3d vec = new Vec3d();
         for (int i = 0; i < BoxCorner.values().length; i++) {
-            Vec3d vec = BoxCorner.values()[i].get(box);
+            BoxCorner.values()[i].set(box, vec);
             
             transformPointToWorld(vec);
             
-            minX = Math.min(minX, vec.x);
-            minY = Math.min(minY, vec.y);
-            minZ = Math.min(minZ, vec.z);
-            maxX = Math.max(maxX, vec.x);
-            maxY = Math.max(maxY, vec.y);
-            maxZ = Math.max(maxZ, vec.z);
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
         }
         
-        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+        return bb;
     }
     
-    public default AABB getOBB(AABB box) {
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE;
-        double maxX = -Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
-        double maxZ = -Double.MAX_VALUE;
-        
+    public default ABB getOBB(AABB box) {
+        ABB bb = ABB.createEmptyBox();
+        Vec3d vec = new Vec3d();
         for (int i = 0; i < BoxCorner.values().length; i++) {
-            Vec3d vec = BoxCorner.values()[i].get(box);
+            BoxCorner.values()[i].set(box, vec);
             
             transformPointToFakeWorld(vec);
             
-            minX = Math.min(minX, vec.x);
-            minY = Math.min(minY, vec.y);
-            minZ = Math.min(minZ, vec.z);
-            maxX = Math.max(maxX, vec.x);
-            maxY = Math.max(maxY, vec.y);
-            maxZ = Math.max(maxZ, vec.z);
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
         }
         
-        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+        return bb;
+    }
+    
+    public default ABB getAABB(ABB box) {
+        ABB bb = new ABB(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        Vec3d vec = new Vec3d();
+        for (int i = 0; i < BoxCorner.values().length; i++) {
+            BoxCorner.values()[i].set(box, vec);
+            
+            transformPointToWorld(vec);
+            
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
+        }
+        
+        return bb;
+    }
+    
+    public default ABB getOBB(ABB box) {
+        ABB bb = new ABB(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        Vec3d vec = new Vec3d();
+        for (int i = 0; i < BoxCorner.values().length; i++) {
+            BoxCorner.values()[i].set(box, vec);
+            
+            transformPointToFakeWorld(vec);
+            
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
+        }
+        
+        return bb;
     }
     
     @Environment(EnvType.CLIENT)

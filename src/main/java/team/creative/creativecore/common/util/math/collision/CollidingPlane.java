@@ -4,22 +4,22 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Facing;
+import team.creative.creativecore.common.util.math.box.ABB;
 import team.creative.creativecore.common.util.math.box.BoxCorner;
 import team.creative.creativecore.common.util.math.box.BoxFace;
-import team.creative.creativecore.common.util.math.box.BoxUtils;
 import team.creative.creativecore.common.util.math.matrix.Matrix4;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public class CollidingPlane {
     
-    public final AABB bb;
+    public final ABB bb;
     public final Facing facing;
     public final PlaneCache cache;
     protected final Vec3d origin;
     protected final Vec3d normal;
     
-    public CollidingPlane(AABB bb, Facing facing, PlaneCache cache, Vec3d[] corners, BoxCorner[] planeCorners) {
+    public CollidingPlane(ABB bb, Facing facing, PlaneCache cache, Vec3d[] corners, BoxCorner[] planeCorners) {
         this.bb = bb;
         this.facing = facing;
         this.cache = cache;
@@ -41,7 +41,7 @@ public class CollidingPlane {
     
     public static final int accuracySteps = 10;
     
-    public Double binarySearch(@Nullable Double value, AABB toCheck, double checkRadiusSquared, Vec3d center, CollisionCoordinator coordinator) {
+    public Double binarySearch(@Nullable Double value, ABB toCheck, double checkRadiusSquared, Vec3d center, CollisionCoordinator coordinator) {
         if (coordinator.isSimple) {
             Double t = searchBetweenSimple(value, center, new Vec3d(center), new Vec3d(), 0, 1, coordinator, 0);
             if (t != null && intersects(toCheck, checkRadiusSquared, center, t, coordinator))
@@ -130,7 +130,7 @@ public class CollidingPlane {
         return null;
     }
     
-    public boolean intersects(AABB toCheck, double checkRadiusSquared, Vec3d center, double t, CollisionCoordinator coordinator) {
+    public boolean intersects(ABB toCheck, double checkRadiusSquared, Vec3d center, double t, CollisionCoordinator coordinator) {
         Vec3d cachedCenter = new Vec3d(cache.center);
         coordinator.origin.transformPointToWorld(cachedCenter);
         coordinator.transform(cachedCenter, t);
@@ -167,8 +167,8 @@ public class CollidingPlane {
         return bb.minX < maxX && bb.maxX > minX && bb.minY < maxY && bb.maxY > minY && bb.minZ < maxZ && bb.maxZ > minZ;
     }
     
-    public static CollidingPlane[] getPlanes(AABB box, PlaneCache cache, CollisionCoordinator coordinator) {
-        Vec3d[] corners = BoxUtils.getRotatedCorners(box, coordinator.origin);
+    public static CollidingPlane[] getPlanes(ABB box, PlaneCache cache, CollisionCoordinator coordinator) {
+        Vec3d[] corners = box.getRotatedCorners(coordinator.origin);
         
         boolean east = coordinator.offX > 0;
         boolean west = coordinator.offY < 0;
@@ -216,7 +216,7 @@ public class CollidingPlane {
         return planes;
     }
     
-    public static Facing getDirection(CollisionCoordinator coordinator, AABB box, Vec3d center) {
+    public static Facing getDirection(CollisionCoordinator coordinator, ABB box, Vec3d center) {
         throw new UnsupportedOperationException();
         /*double x = (center.x - box.cache.center.x) / (box.maxX - box.minX);
         double y = (center.y - box.cache.center.y) / (box.maxY - box.minY);
