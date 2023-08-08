@@ -237,7 +237,7 @@ public interface IVecOrigin {
         matrixStack.translate(offX, offY, offZ);
         
         matrixStack.translate(rotationCenter.x - camX, rotationCenter.y - camY, rotationCenter.z - camZ);
-        matrixStack.mulPose(new Quaternionf().rotationZYX((float) Math.toRadians(rotZ), (float) Math.toRadians(rotY), (float) Math.toRadians(rotX)));
+        matrixStack.mulPose(new Quaternionf().rotationXYZ((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ)));
         matrixStack.translate(-rotationCenter.x + camX, -rotationCenter.y + camY, -rotationCenter.z + camZ);
         
     }
