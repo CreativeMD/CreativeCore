@@ -17,9 +17,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.SliceShape;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import team.creative.creativecore.common.util.type.list.SingletonList;
 import team.creative.creativecore.common.util.unsafe.CreativeHackery;
 import team.creative.creativecore.mixin.VoxelShapeAccessor;
 
@@ -28,9 +30,37 @@ public class BoxesVoxelShape extends SliceShape {
     public static BoxesVoxelShape create(List<ABB> boxes) {
         BoxesVoxelShape shape = CreativeHackery.allocateInstance(BoxesVoxelShape.class);
         shape.boxes = boxes;
-        ((VoxelShapeAccessor) shape).setShape(AABBVoxelShape.DISCRETE_SHAPE);
+        ((VoxelShapeAccessor) shape).setShape(DISCRETE_SHAPE);
         return shape;
     }
+    
+    public static BoxesVoxelShape create(ABB box) {
+        return create(new SingletonList<ABB>(box));
+    }
+    
+    public static final DiscreteVoxelShape DISCRETE_SHAPE = new DiscreteVoxelShape(1, 1, 1) {
+        
+        @Override
+        public boolean isFull(int x, int y, int z) {
+            return true;
+        }
+        
+        @Override
+        public void fill(int x, int y, int z) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public int firstFull(Axis p_82827_) {
+            throw new UnsupportedOperationException();
+        }
+        
+        @Override
+        public int lastFull(Axis p_82840_) {
+            throw new UnsupportedOperationException();
+        }
+        
+    };
     
     public List<ABB> boxes;
     
@@ -170,6 +200,27 @@ public class BoxesVoxelShape extends SliceShape {
     @Override
     public VoxelShape optimize() {
         return this;
+    }
+    
+    @Override
+    public double collide(Direction.Axis axis, AABB other, double distance) {
+        if (this.isEmpty())
+            return distance;
+        
+        if (Math.abs(distance) < 1.0E-7D)
+            return 0.0D;
+        
+        team.creative.creativecore.common.util.math.base.Axis ltAxis = team.creative.creativecore.common.util.math.base.Axis.get(axis);
+        team.creative.creativecore.common.util.math.base.Axis one = ltAxis.one();
+        team.creative.creativecore.common.util.math.base.Axis two = ltAxis.two();
+        
+        for (ABB bb : boxes)
+            if (distance > 0)
+                distance = Math.min(distance, bb.calculateAxisOffset(ltAxis, one, two, other, distance));
+            else
+                distance = Math.max(distance, bb.calculateAxisOffset(ltAxis, one, two, other, distance));
+            
+        return distance;
     }
     
     @Override

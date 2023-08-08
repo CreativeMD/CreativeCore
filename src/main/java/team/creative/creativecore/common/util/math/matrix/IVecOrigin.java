@@ -184,7 +184,7 @@ public interface IVecOrigin {
     }
     
     public default ABB getAABB(ABB box) {
-        ABB bb = new ABB(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        ABB bb = ABB.createEmptyBox();
         Vec3d vec = new Vec3d();
         for (int i = 0; i < BoxCorner.values().length; i++) {
             BoxCorner.values()[i].set(box, vec);
@@ -203,7 +203,7 @@ public interface IVecOrigin {
     }
     
     public default ABB getOBB(ABB box) {
-        ABB bb = new ABB(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY);
+        ABB bb = ABB.createEmptyBox();
         Vec3d vec = new Vec3d();
         for (int i = 0; i < BoxCorner.values().length; i++) {
             BoxCorner.values()[i].set(box, vec);

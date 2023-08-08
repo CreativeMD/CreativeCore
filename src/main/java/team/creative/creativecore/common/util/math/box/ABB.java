@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.util.math.box;
 
-import java.util.Optional;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -66,19 +64,21 @@ public class ABB {
     
     @Nullable
     public static BlockHitResult clip(Iterable<ABB> boxes, Vec3 pos, Vec3 look, BlockPos blockPos) {
-        double[] time = new double[] { 1.0D };
-        Facing facing = null;
-        double x = look.x - pos.x;
-        double y = look.y - pos.y;
-        double z = look.z - pos.z;
+        BlockHitResult hit = null;
+        double distance = Double.POSITIVE_INFINITY;
         
-        for (ABB bb : boxes)
-            facing = bb.clipFacing(pos, time, facing, x, y, z, blockPos);
-        
-        if (facing == null)
-            return null;
-        
-        return new BlockHitResult(pos.add(x * time[0], y * time[0], z * time[0]), facing.toVanilla(), blockPos, false);
+        for (ABB box : boxes) {
+            BlockHitResult temp = box.rayTrace(pos, look, blockPos);
+            
+            if (temp != null) {
+                double tempDistance = pos.distanceToSqr(temp.getLocation());
+                if (tempDistance < distance) {
+                    hit = temp;
+                    distance = tempDistance;
+                }
+            }
+        }
+        return hit;
     }
     
     public double minX;
@@ -183,7 +183,7 @@ public class ABB {
     public double calculateAxisOffset(Axis axis, Axis one, Axis two, AABB other, double offset) {
         if (intersectsWithAxis(axis, other))
             if (offset > 0.0D && max(other, axis) <= min(axis)) {
-                double newDistance = min(axis) - other.maxX;
+                double newDistance = min(axis) - max(other, axis);
                 if (newDistance < offset)
                     return newDistance;
             } else if (offset < 0.0D && min(other, axis) >= max(axis)) {
@@ -273,18 +273,17 @@ public class ABB {
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
     
-    public Optional<Vec3> clip(Vec3 pos, Vec3 look) {
+    public BlockHitResult rayTrace(Vec3 pos, Vec3 look, BlockPos blockPos) {
         double[] time = new double[] { 1.0D };
         double x = look.x - pos.x;
         double y = look.y - pos.y;
         double z = look.z - pos.z;
         
-        Facing facing = clipFacing(pos, time, null, x, y, z, BlockPos.ZERO);
+        Facing facing = clipFacing(pos, time, null, x, y, z, blockPos);
         
         if (facing == null)
-            return Optional.empty();
-        
-        return Optional.of(pos.add(x * time[0], y * time[0], z * time[0]));
+            return null;
+        return new BlockHitResult(pos.add(x * time[0], y * time[0], z * time[0]), facing.toVanilla(), blockPos, false);
     }
     
     @Nullable
@@ -298,17 +297,17 @@ public class ABB {
     }
     
     @Nullable
-    private Facing clipPoint(double[] time, @Nullable Facing facing, Facing toClip, double x, double y, double z, Vec3 pos, BlockPos blockPos) {
-        double d0 = (get(facing) + blockPos.get(facing.axis.toVanilla()) - pos.get(facing.axis.toVanilla())) / toClip.axis.get(x, y, z);
-        double d1 = pos.get(facing.one().toVanilla()) + d0 * toClip.one().get(x, y, z);
-        double d2 = pos.get(facing.two().toVanilla()) + d0 * toClip.two().get(x, y, z);
-        if (0.0D < d0 && d0 < time[0] && min(facing.one()) + blockPos.get(facing.one().toVanilla()) - 1.0E-7D < d1 && d1 < max(facing.one()) + blockPos.get(facing.one()
-                .toVanilla()) + 1.0E-7D && min(facing.two()) + blockPos.get(facing.two().toVanilla()) - 1.0E-7D < d2 && d2 < max(facing.two()) + blockPos.get(facing.two()
+    private Facing clipPoint(double[] time, @Nullable Facing original, Facing toClip, double x, double y, double z, Vec3 pos, BlockPos blockPos) {
+        double d0 = (get(toClip) + blockPos.get(toClip.axis.toVanilla()) - pos.get(toClip.axis.toVanilla())) / toClip.axis.get(x, y, z);
+        double d1 = pos.get(toClip.one().toVanilla()) + d0 * toClip.one().get(x, y, z);
+        double d2 = pos.get(toClip.two().toVanilla()) + d0 * toClip.two().get(x, y, z);
+        if (0.0D < d0 && d0 < time[0] && min(toClip.one()) + blockPos.get(toClip.one().toVanilla()) - 1.0E-7D < d1 && d1 < max(toClip.one()) + blockPos.get(toClip.one()
+                .toVanilla()) + 1.0E-7D && min(toClip.two()) + blockPos.get(toClip.two().toVanilla()) - 1.0E-7D < d2 && d2 < max(toClip.two()) + blockPos.get(toClip.two()
                         .toVanilla()) + 1.0E-7D) {
             time[0] = d0;
             return toClip;
         }
-        return facing;
+        return original;
     }
     
     public ABB createRotatedSurrounding(CollisionCoordinator coordinator) {

@@ -34,10 +34,12 @@ public class OBB extends ABB {
     
     public OBB(ABB bb, IVecOrigin origin) {
         super(bb);
+        this.origin = origin;
     }
     
     public OBB(AABB bb, IVecOrigin origin) {
         super(bb);
+        this.origin = origin;
     }
     
     @Override
@@ -71,8 +73,8 @@ public class OBB extends ABB {
         if (outerCornerOffsetOne == 0 && outerCornerOffsetTwo == 0) {
             // Hits the outer corner
             if (positive)
-                return outerCorner.get(axis) - closestValue;
-            return closestValue - outerCorner.get(axis);
+                return outerCornerAxis - closestValue;
+            return closestValue - outerCornerAxis;
         }
         
         Vector2d[] directions = new Vector2d[3];
@@ -170,4 +172,8 @@ public class OBB extends ABB {
         return offset;
     }
     
+    @Override
+    public String toString() {
+        return "OBB[" + this.minX + ", " + this.minY + ", " + this.minZ + "] -> [" + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
+    }
 }
