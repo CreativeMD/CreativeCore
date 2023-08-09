@@ -4,7 +4,6 @@ import java.util.function.BiConsumer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
@@ -27,7 +26,7 @@ public class GuiDialogHandler {
         return openDialog(parent, name, Component.translatable("dialog." + name), onClicked, buttons);
     }
     
-    public static GuiLayer openDialog(IGuiIntegratedParent parent, String name, MutableComponent title, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
+    public static GuiLayer openDialog(IGuiIntegratedParent parent, String name, Component title, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("name", name);
         nbt.putString("title", Component.Serializer.toJson(title));
