@@ -100,7 +100,7 @@ public class VectorFan {
         if (shape == null)
             return null;
         
-        NormalPlane plane = createPlane();
+        NormalPlaneF plane = createPlane();
         Vec3f[] result = new Vec3f[shape.size()];
         for (int i = 0; i < result.length; i++) {
             Vec3f vec = new Vec3f();
@@ -388,7 +388,7 @@ public class VectorFan {
     
     /** @param planes
      * @return whether the fan is empty */
-    public boolean cutWithoutCopy(NormalPlane[] planes) {
+    public boolean cutWithoutCopy(NormalPlaneF[] planes) {
         for (int i = 0; i < planes.length; i++) {
             cutWithoutCopy(planes[i]);
             
@@ -398,15 +398,29 @@ public class VectorFan {
         return true;
     }
     
-    public void cutWithoutCopy(NormalPlane plane) {
+    public boolean cutWithoutCopy(NormalPlaneD[] planes) {
+        for (int i = 0; i < planes.length; i++) {
+            cutWithoutCopy(planes[i]);
+            
+            if (isEmpty())
+                return false;
+        }
+        return true;
+    }
+    
+    public void cutWithoutCopy(NormalPlaneF plane) {
         cutInternal(plane, false);
+    }
+    
+    public void cutWithoutCopy(NormalPlaneD plane) {
+        cutInternal(plane.toFloat(), false);
     }
     
     public boolean isEmpty() {
         return coords == null;
     }
     
-    protected VectorFan cutInternal(NormalPlane plane, boolean copy) {
+    protected VectorFan cutInternal(NormalPlaneF plane, boolean copy) {
         boolean allTheSame = true;
         Boolean allValue = null;
         Boolean[] cutted = new Boolean[coords.length];
@@ -489,7 +503,7 @@ public class VectorFan {
         return null;
     }
     
-    public VectorFan cut(NormalPlane plane) {
+    public VectorFan cut(NormalPlaneF plane) {
         return cutInternal(plane, true);
     }
     
@@ -510,7 +524,7 @@ public class VectorFan {
         scale(1F / ratio);
     }
     
-    public boolean intersects(NormalPlane plane1, NormalPlane plane2) {
+    public boolean intersects(NormalPlaneF plane1, NormalPlaneF plane2) {
         Boolean beforeOne = null;
         Boolean beforeTwo = null;
         Vec3f before = null;
@@ -658,11 +672,11 @@ public class VectorFan {
         return normal;
     }
     
-    public NormalPlane createPlane() {
-        return new NormalPlane(coords[0], createNormal());
+    public NormalPlaneF createPlane() {
+        return new NormalPlaneF(coords[0], createNormal());
     }
     
-    public NormalPlane createPlane(QuadGeneratorContext holder) {
+    public NormalPlaneF createPlane(QuadGeneratorContext holder) {
         Vec3f a = new Vec3f(coords[1]);
         a.sub(coords[0]);
         if (holder.scaleAndOffset) {
@@ -691,12 +705,12 @@ public class VectorFan {
             origin.z *= holder.scaleZ;
             origin.z += holder.offsetZ;
         }
-        return new NormalPlane(origin, normal);
+        return new NormalPlaneF(origin, normal);
     }
     
-    public boolean isInside(List<List<NormalPlane>> shapes) {
+    public boolean isInside(List<List<NormalPlaneF>> shapes) {
         for (int j = 0; j < shapes.size(); j++) {
-            List<NormalPlane> shape = shapes.get(j);
+            List<NormalPlaneF> shape = shapes.get(j);
             
             Boolean[] firstOutside = null;
             Boolean[] beforeOutside = null;
@@ -943,7 +957,7 @@ public class VectorFan {
         return new VectorFan(right.toArray(new Vec3f[right.size()]));
     }
     
-    public static boolean isInside(List<NormalPlane> shape, Vec3f before, Vec3f vec, Boolean beforeOutside, Boolean outside, int currentPlane) {
+    public static boolean isInside(List<NormalPlaneF> shape, Vec3f before, Vec3f vec, Boolean beforeOutside, Boolean outside, int currentPlane) {
         if (BooleanUtils.isFalse(beforeOutside)) {
             if (outside == null) {
                 if (isInside(shape, vec, currentPlane))
@@ -967,7 +981,7 @@ public class VectorFan {
         return false;
     }
     
-    public static boolean isInside(List<NormalPlane> shape, Vec3f vec, int toSkip) {
+    public static boolean isInside(List<NormalPlaneF> shape, Vec3f vec, int toSkip) {
         for (int i = 0; i < shape.size(); i++)
             if (i != toSkip && !BooleanUtils.isFalse(shape.get(i).isInFront(vec)))
                 return false;

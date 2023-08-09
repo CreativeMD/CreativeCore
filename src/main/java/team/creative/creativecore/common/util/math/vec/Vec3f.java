@@ -30,6 +30,10 @@ public class Vec3f extends VecNf<Vec3f> {
         this(vec.x(), vec.y(), vec.z());
     }
     
+    public Vec3f(Vec3d vec) {
+        this((float) vec.x, (float) vec.y, (float) vec.z);
+    }
+    
     public Vector3d toVanilla() {
         return new Vector3d(x, y, z);
     }

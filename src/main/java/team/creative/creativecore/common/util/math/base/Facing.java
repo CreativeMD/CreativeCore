@@ -4,7 +4,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.AABB;
-import team.creative.creativecore.common.util.math.geo.NormalPlane;
+import team.creative.creativecore.common.util.math.geo.NormalPlaneF;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public enum Facing {
@@ -261,7 +261,7 @@ public enum Facing {
     public final Axis axis;
     public final boolean positive;
     public final Vec3i normal;
-    public final NormalPlane plane;
+    public final NormalPlaneF plane;
     public final int horizontalIndex;
     
     private Facing(Axis axis, boolean positive, Vec3i normal, int horizontalIndex) {
@@ -269,7 +269,7 @@ public enum Facing {
         this.axis = axis;
         this.positive = positive;
         this.normal = normal;
-        this.plane = new NormalPlane(this);
+        this.plane = new NormalPlaneF(this);
         this.horizontalIndex = horizontalIndex;
     }
     

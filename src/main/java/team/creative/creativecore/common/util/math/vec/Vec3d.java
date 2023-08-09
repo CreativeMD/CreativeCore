@@ -33,6 +33,10 @@ public class Vec3d extends VecNd<Vec3d> {
         super(vec);
     }
     
+    public Vec3d(Vec3f vec) {
+        this(vec.x, vec.y, vec.z);
+    }
+    
     public Vec3d(Vector3d vec) {
         this(vec.x, vec.y, vec.z);
     }

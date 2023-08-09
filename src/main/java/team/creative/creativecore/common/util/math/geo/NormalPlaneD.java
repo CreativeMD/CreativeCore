@@ -2,36 +2,46 @@ package team.creative.creativecore.common.util.math.geo;
 
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
-public class NormalPlane {
+public class NormalPlaneD {
     
-    public final Vec3f normal;
-    public final Vec3f origin;
+    public final Vec3d normal;
+    public final Vec3d origin;
     
-    public NormalPlane(Vec3f origin, Vec3f normal) {
+    public NormalPlaneD(Vec3d origin, Vec3d normal) {
         this.origin = origin;
-        this.normal = new Vec3f(normal);
+        this.normal = new Vec3d(normal);
         this.normal.normalize();
     }
     
-    public NormalPlane(Facing facing) {
-        this.origin = new Vec3f();
-        this.normal = new Vec3f();
+    public NormalPlaneD(Facing facing) {
+        this.origin = new Vec3d();
+        this.normal = new Vec3d();
         normal.set(facing.axis, facing.offset());
     }
     
-    public NormalPlane(Axis axis, float value, Facing facing) {
-        this.origin = new Vec3f();
+    public NormalPlaneD(Axis axis, double value, Facing facing) {
+        this.origin = new Vec3d();
         origin.set(axis, value);
-        this.normal = new Vec3f();
+        this.normal = new Vec3d();
         normal.set(facing.axis, facing.offset());
+    }
+    
+    public Boolean isInFront(Vec3d vec) {
+        Vec3d temp = new Vec3d(vec);
+        temp.sub(origin);
+        double result = normal.dot(temp);
+        if (result < 0 ? (result > -VectorFan.EPSILON) : (result < VectorFan.EPSILON))
+            return null;
+        return result > 0;
     }
     
     public Boolean isInFront(Vec3f vec) {
-        Vec3f temp = new Vec3f(vec);
+        Vec3d temp = new Vec3d(vec);
         temp.sub(origin);
-        float result = normal.dot(temp);
+        double result = normal.dot(temp);
         if (result < 0 ? (result > -VectorFan.EPSILON) : (result < VectorFan.EPSILON))
             return null;
         return result > 0;
@@ -57,51 +67,55 @@ public class NormalPlane {
         return false;
     }
     
-    public Vec3f intersect(Vec3f start, Vec3f end) {
-        Vec3f lineOrigin = start;
-        Vec3f lineDirection = new Vec3f(end);
+    public Vec3d intersect(Vec3d start, Vec3d end) {
+        Vec3d lineOrigin = start;
+        Vec3d lineDirection = new Vec3d(end);
         lineDirection.sub(lineOrigin);
         lineDirection.normalize();
         
         if (normal.dot(lineDirection) == 0)
             return null;
         
-        float t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
-        Vec3f point = new Vec3f(lineDirection);
+        double t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
+        Vec3d point = new Vec3d(lineDirection);
         point.scale(t);
         point.add(lineOrigin);
         return point;
     }
     
-    public Vec3f intersect(Ray3f ray) {
+    public Vec3d intersect(Ray3d ray) {
         if (normal.dot(ray.direction) == 0)
             return null;
         
-        float t = (normal.dot(origin) - normal.dot(ray.origin)) / normal.dot(ray.direction);
-        Vec3f point = new Vec3f(ray.direction);
+        double t = (normal.dot(origin) - normal.dot(ray.origin)) / normal.dot(ray.direction);
+        Vec3d point = new Vec3d(ray.direction);
         point.scale(t);
         point.add(ray.origin);
         return point;
     }
     
-    public Float project(Axis one, Axis two, Axis axis, float valueOne, float valueTwo) {
-        Vec3f lineOrigin = new Vec3f();
+    public Double project(Axis one, Axis two, Axis axis, double valueOne, double valueTwo) {
+        Vec3d lineOrigin = new Vec3d();
         lineOrigin.set(one, valueOne);
         lineOrigin.set(two, valueTwo);
         
-        Vec3f lineDirection = new Vec3f();
+        Vec3d lineDirection = new Vec3d();
         lineDirection.set(axis, 1);
         
         if (normal.dot(lineDirection) == 0)
             return null;
         
-        float t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
+        double t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
         return lineOrigin.get(axis) + lineDirection.get(axis) * t;
     }
     
     @Override
     public String toString() {
         return "[o:" + origin + ",n:" + normal + "]";
+    }
+    
+    public NormalPlaneF toFloat() {
+        return new NormalPlaneF(new Vec3f(origin), new Vec3f(normal));
     }
     
 }
