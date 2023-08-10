@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.box;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -294,8 +294,7 @@ public class ABB {
         return new BlockHitResult(pos.add(x * time[0], y * time[0], z * time[0]), facing.toVanilla(), blockPos, false);
     }
     
-    @Nullable
-    private Facing clipFacing(Vec3 pos, double[] time, @Nullable Facing facing, double x, double y, double z, BlockPos blockPos) {
+    private Facing clipFacing(Vec3 pos, double[] time, Facing facing, double x, double y, double z, BlockPos blockPos) {
         for (int i = 0; i < Facing.VALUES.length; i++) {
             Facing toClip = Facing.VALUES[i];
             if (toClip.positive ? toClip.axis.get(x, y, z) < 1.0E-7D : toClip.axis.get(x, y, z) > 1.0E-7D)
@@ -304,14 +303,13 @@ public class ABB {
         return facing;
     }
     
-    @Nullable
-    private Facing clipPoint(double[] time, @Nullable Facing original, Facing toClip, double x, double y, double z, Vec3 pos, BlockPos blockPos) {
+    private Facing clipPoint(double[] time, Facing original, Facing toClip, double x, double y, double z, Vec3 pos, BlockPos blockPos) {
         double d0 = (get(toClip) + blockPos.get(toClip.axis.toVanilla()) - pos.get(toClip.axis.toVanilla())) / toClip.axis.get(x, y, z);
         double d1 = pos.get(toClip.one().toVanilla()) + d0 * toClip.one().get(x, y, z);
         double d2 = pos.get(toClip.two().toVanilla()) + d0 * toClip.two().get(x, y, z);
-        if (0.0D < d0 && d0 < time[0] && min(toClip.one()) + blockPos.get(toClip.one().toVanilla()) - 1.0E-7D < d1 && d1 < max(toClip.one()) + blockPos.get(toClip.one()
-                .toVanilla()) + 1.0E-7D && min(toClip.two()) + blockPos.get(toClip.two().toVanilla()) - 1.0E-7D < d2 && d2 < max(toClip.two()) + blockPos.get(toClip.two()
-                        .toVanilla()) + 1.0E-7D) {
+        if (0.0D < d0 && d0 < time[0] && min(toClip.one()) + blockPos.get(toClip.one().toVanilla()) - 1.0E-7D < d1 && d1 < max(toClip.one()) + blockPos
+                .get(toClip.one().toVanilla()) + 1.0E-7D && min(toClip.two()) + blockPos.get(toClip.two().toVanilla()) - 1.0E-7D < d2 && d2 < max(toClip.two()) + blockPos
+                        .get(toClip.two().toVanilla()) + 1.0E-7D) {
             time[0] = d0;
             return toClip;
         }
@@ -391,8 +389,8 @@ public class ABB {
     }
     
     public boolean intersects(Vec3 vec1, Vec3 vec2) {
-        return this.intersects(Math.min(vec1.x, vec2.x), Math.min(vec1.y, vec2.y), Math.min(vec1.z, vec2.z), Math.max(vec1.x, vec2.x), Math.max(vec1.y, vec2.y), Math.max(vec1.z,
-            vec2.z));
+        return this.intersects(Math.min(vec1.x, vec2.x), Math.min(vec1.y, vec2.y), Math.min(vec1.z, vec2.z), Math.max(vec1.x, vec2.x), Math.max(vec1.y, vec2.y), Math
+                .max(vec1.z, vec2.z));
     }
     
     public boolean contains(double x, double y, double z) {

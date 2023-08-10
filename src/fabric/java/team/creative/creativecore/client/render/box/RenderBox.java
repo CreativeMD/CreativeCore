@@ -10,8 +10,6 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,13 +28,12 @@ import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
-import team.creative.creativecore.common.util.math.geo.NormalPlane;
-import team.creative.creativecore.common.util.math.geo.Ray2d;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
+@Environment(EnvType.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public class RenderBox extends AlignedBox {
     
@@ -220,7 +217,7 @@ public class RenderBox extends AlignedBox {
         };
     }
     
-    public boolean intersectsWithFace(Facing facing, RenderInformationHolder holder, BlockPos offset) {
+    public boolean intersectsWithFace(Facing facing, QuadGeneratorContext holder, BlockPos offset) {
         switch (facing.axis) {
             case X:
                 return holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset
@@ -337,22 +334,22 @@ public class RenderBox extends AlignedBox {
         if (previewScalingAndOffset()) {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderPreview(pose.last()
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last()
                                 .pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderPreview(pose.last()
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderPreview(pose.last()
                             .pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
             }
         }
     }
@@ -368,22 +365,22 @@ public class RenderBox extends AlignedBox {
         if (previewScalingAndOffset()) {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderLines(pose
                                 .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose
                             .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
+                if (renderQuads instanceof List list)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
                         ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, red, green, blue, alpha);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose.last(), consumer, red, green, blue, alpha);
             }
         }
     }
@@ -399,22 +396,22 @@ public class RenderBox extends AlignedBox {
         if (previewScalingAndOffset()) {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderLines(pose
                                 .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose
                             .last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List)
-                    for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
-                else if (renderQuads instanceof VectorFan)
-                    ((VectorFan) renderQuads).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
+                if (renderQuads instanceof List list)
+                    for (int j = 0; j < list.size(); j++)
+                        ((List<VectorFan>) list).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
+                else if (renderQuads instanceof VectorFan fan)
+                    fan.renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
             }
         }
     }
@@ -425,7 +422,7 @@ public class RenderBox extends AlignedBox {
         return !state.isSolid();
     }
     
-    public List<BakedQuad> getBakedQuad(LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
+    public List<BakedQuad> getBakedQuad(QuadGeneratorContext holder, LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
         if (pos != null)
             rand.setSeed(state.getSeed(pos));
         
@@ -433,7 +430,7 @@ public class RenderBox extends AlignedBox {
         
         if (blockQuads.isEmpty())
             return Collections.emptyList();
-        RenderInformationHolder holder = new RenderInformationHolder(DefaultVertexFormat.BLOCK, facing, this.color != -1 ? this.color : defaultColor);
+        holder.set(DefaultVertexFormat.BLOCK, this, facing, this.color != -1 ? this.color : defaultColor);
         holder.offset = offset;
         
         List<BakedQuad> quads = new ArrayList<>();
@@ -446,7 +443,7 @@ public class RenderBox extends AlignedBox {
             int[] data = holder.quad.getVertices();
             
             int index = 0;
-            int uvIndex = index + holder.uvOffset / 4;
+            int uvIndex = index + holder.uvOffset;
             float tempMinX = Float.intBitsToFloat(data[index]);
             float tempMinY = Float.intBitsToFloat(data[index + 1]);
             float tempMinZ = Float.intBitsToFloat(data[index + 2]);
@@ -456,7 +453,7 @@ public class RenderBox extends AlignedBox {
             holder.uvInverted = false;
             
             index = 1 * holder.format.getIntegerSize();
-            uvIndex = index + holder.uvOffset / 4;
+            uvIndex = index + holder.uvOffset;
             if (tempMinX != Float.intBitsToFloat(data[index])) {
                 if (tempU != Float.intBitsToFloat(data[uvIndex]))
                     holder.uvInverted = Axis.X != facing.getUAxis();
@@ -485,10 +482,10 @@ public class RenderBox extends AlignedBox {
             if (!intersectsWithFace(facing, holder, offset))
                 continue;
             
-            uvIndex = holder.uvOffset / 4;
+            uvIndex = holder.uvOffset;
             float u1 = Float.intBitsToFloat(data[uvIndex]);
             float v1 = Float.intBitsToFloat(data[uvIndex + 1]);
-            uvIndex = 2 * holder.format.getIntegerSize() + holder.uvOffset / 4;
+            uvIndex = 2 * holder.format.getIntegerSize() + holder.uvOffset;
             float u2 = Float.intBitsToFloat(data[uvIndex]);
             float v2 = Float.intBitsToFloat(data[uvIndex + 1]);
             
@@ -501,11 +498,11 @@ public class RenderBox extends AlignedBox {
             }
             
             Object renderQuads = getRenderQuads(holder.facing);
-            if (renderQuads instanceof List)
-                for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                    ((List<VectorFan>) renderQuads).get(j).generate(holder, quads);
-            else if (renderQuads instanceof VectorFan)
-                ((VectorFan) renderQuads).generate(holder, quads);
+            if (renderQuads instanceof List list)
+                for (int j = 0; j < list.size(); j++)
+                    ((List<VectorFan>) list).get(j).generate(holder, quads);
+            else if (renderQuads instanceof VectorFan fan)
+                fan.generate(holder, quads);
         }
         
         for (BakedQuad quad : quads)
@@ -515,128 +512,16 @@ public class RenderBox extends AlignedBox {
         
     }
     
-    private static int uvOffset(VertexFormat format) {
-        int offset = 0;
-        for (int i = 0; i < format.getElements().size(); i++) {
-            if (format.getElements().get(i).getUsage() == Usage.UV)
-                return offset;
-            offset += format.getElements().get(i).getByteSize();
-        }
-        return -1;
-    }
-    
-    public class RenderInformationHolder {
-        
-        public final Facing facing;
-        public final int color;
-        public final VertexFormat format;
-        public final int uvOffset;
-        public BlockPos offset;
-        public boolean shouldOverrideColor;
-        
-        public BakedQuad quad;
-        
-        public NormalPlane normal;
-        public Ray2d ray = new Ray2d(Axis.X, Axis.Y, 0, 0, 0, 0);
-        
-        public final boolean scaleAndOffset;
-        
-        public final float offsetX;
-        public final float offsetY;
-        public final float offsetZ;
-        
-        public final float scaleX;
-        public final float scaleY;
-        public final float scaleZ;
-        
-        public float minX;
-        public float minY;
-        public float minZ;
-        public float maxX;
-        public float maxY;
-        public float maxZ;
-        
-        public float sizeX;
-        public float sizeY;
-        public float sizeZ;
-        
-        public boolean uvInverted;
-        public float sizeU;
-        public float sizeV;
-        
-        public RenderInformationHolder(VertexFormat format, Facing facing, int color) {
-            this.color = color;
-            this.format = format;
-            this.facing = facing;
-            this.uvOffset = uvOffset(format);
-            
-            RenderBox box = getBox();
-            scaleAndOffset = box.scaleAndOffsetQuads(facing);
-            if (scaleAndOffset) {
-                if (box.onlyScaleOnceNoOffset(facing)) {
-                    this.offsetX = this.offsetY = this.offsetZ = 0;
-                    this.scaleX = this.scaleY = this.scaleZ = box.getOverallScale(facing);
-                } else {
-                    this.offsetX = box.getOffsetX();
-                    this.offsetY = box.getOffsetY();
-                    this.offsetZ = box.getOffsetZ();
-                    this.scaleX = box.getScaleX();
-                    this.scaleY = box.getScaleY();
-                    this.scaleZ = box.getScaleZ();
-                }
-                
-            } else {
-                this.offsetX = this.offsetY = this.offsetZ = 0;
-                this.scaleX = this.scaleY = this.scaleZ = 0;
-            }
-        }
-        
-        public void setQuad(BakedQuad quad, boolean overrideTint, int defaultColor) {
-            this.quad = quad;
-            this.shouldOverrideColor = overrideTint && (defaultColor == -1 || quad.isTinted()) && color != -1;
-        }
-        
-        public void setBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
-            this.minX = Math.min(minX, maxX);
-            this.minY = Math.min(minY, maxY);
-            this.minZ = Math.min(minZ, maxZ);
-            this.maxX = Math.max(minX, maxX);
-            this.maxY = Math.max(minY, maxY);
-            this.maxZ = Math.max(minZ, maxZ);
-            
-            this.sizeX = this.maxX - this.minX;
-            this.sizeY = this.maxY - this.minY;
-            this.sizeZ = this.maxZ - this.minZ;
-        }
-        
-        public RenderBox getBox() {
-            return RenderBox.this;
-        }
-        
-        public boolean hasBounds() {
-            switch (facing.axis) {
-                case X:
-                    return minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
-                case Y:
-                    return minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
-                case Z:
-                    return minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
-            }
-            return false;
-        }
-    }
-    
     private static class VectorFanSimple extends VectorFan {
         
         public VectorFanSimple(Vec3f[] coords) {
             super(coords);
-            
         }
         
         @Override
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
-        public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
+        public void generate(QuadGeneratorContext holder, List<BakedQuad> quads) {
             int index = 0;
             while (index < coords.length - 3) {
                 generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
