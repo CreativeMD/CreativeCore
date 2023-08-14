@@ -30,7 +30,7 @@ public class NormalPlane {
         Vector3f temp = new Vector3f(vec);
         temp.sub(origin);
         float result = normal.dot(temp);
-        if (result < 0 ? (result > -VectorFan.EPSILON) : (result < VectorFan.EPSILON))
+        if (result < 0 ? (result > -1.0E-7) : (result < 1.0E-7))
             return null;
         return result > 0;
     }
