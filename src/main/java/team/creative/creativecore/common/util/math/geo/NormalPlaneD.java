@@ -40,19 +40,27 @@ public class NormalPlaneD {
     }
     
     public Boolean isInFront(Vec3d vec) {
+        return isInFront(vec, 1.0E-7D);
+    }
+    
+    public Boolean isInFront(Vec3d vec, double epsilon) {
         Vec3d temp = new Vec3d(vec);
         temp.sub(origin);
         double result = normal.dot(temp);
-        if (result < 0 ? (result > -VectorFan.EPSILON) : (result < VectorFan.EPSILON))
+        if (result < 0 ? (result > -epsilon) : (result < epsilon))
             return null;
         return result > 0;
     }
     
     public Boolean isInFront(Vec3f vec) {
+        return isInFront(vec, VectorFan.EPSILON);
+    }
+    
+    public Boolean isInFront(Vec3f vec, float epsilon) {
         Vec3d temp = new Vec3d(vec);
         temp.sub(origin);
         double result = normal.dot(temp);
-        if (result < 0 ? (result > -VectorFan.EPSILON) : (result < VectorFan.EPSILON))
+        if (result < 0 ? (result > -epsilon) : (result < epsilon))
             return null;
         return result > 0;
     }
