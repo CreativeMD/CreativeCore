@@ -16,6 +16,12 @@ public class NormalPlaneD {
         this.normal.normalize();
     }
     
+    public NormalPlaneD(Vec3f origin, Vec3f normal) {
+        this.origin = new Vec3d(origin);
+        this.normal = new Vec3d(normal);
+        this.normal.normalize();
+    }
+    
     public NormalPlaneD(Facing facing) {
         this.origin = new Vec3d();
         this.normal = new Vec3d();
@@ -27,6 +33,10 @@ public class NormalPlaneD {
         origin.set(axis, value);
         this.normal = new Vec3d();
         normal.set(facing.axis, facing.offset());
+    }
+    
+    public boolean isInvalid() {
+        return Double.isNaN(normal.x) || Double.isNaN(normal.y) || Double.isNaN(normal.z);
     }
     
     public Boolean isInFront(Vec3d vec) {

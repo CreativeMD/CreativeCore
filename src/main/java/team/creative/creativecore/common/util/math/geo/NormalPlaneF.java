@@ -28,6 +28,10 @@ public class NormalPlaneF {
         normal.set(facing.axis, facing.offset());
     }
     
+    public boolean isInvalid() {
+        return Float.isNaN(normal.x) || Float.isNaN(normal.y) || Float.isNaN(normal.z);
+    }
+    
     public Boolean isInFront(Vec3f vec) {
         Vec3f temp = new Vec3f(vec);
         temp.sub(origin);
