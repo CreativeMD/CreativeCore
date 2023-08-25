@@ -27,10 +27,14 @@ public class NormalPlane {
     }
     
     public Boolean isInFront(Vector3f vec) {
+        return isInFront(vec, 1.0E-7F);
+    }
+    
+    public Boolean isInFront(Vector3f vec, float epsilon) {
         Vector3f temp = new Vector3f(vec);
         temp.sub(origin);
         float result = normal.dot(temp);
-        if (result < 0 ? (result > -1.0E-7) : (result < 1.0E-7))
+        if (result < 0 ? (result > -epsilon) : (result < epsilon))
             return null;
         return result > 0;
     }
