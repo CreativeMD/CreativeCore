@@ -51,13 +51,18 @@ public class BoxesVoxelShape extends SliceShape {
         }
         
         @Override
-        public int firstFull(Axis p_82827_) {
-            throw new UnsupportedOperationException();
+        public int firstFull(Axis axis) {
+            return 0;
         }
         
         @Override
-        public int lastFull(Axis p_82840_) {
-            throw new UnsupportedOperationException();
+        public int lastFull(Axis axis) {
+            return 1;
+        }
+        
+        @Override
+        public boolean isEmpty() {
+            return false;
         }
         
     };
