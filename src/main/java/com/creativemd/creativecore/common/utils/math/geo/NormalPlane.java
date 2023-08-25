@@ -35,6 +35,10 @@ public class NormalPlane {
         return result > 0;
     }
     
+    public boolean isInvalid() {
+        return Float.isNaN(normal.x) || Float.isNaN(normal.y) || Float.isNaN(normal.z);
+    }
+    
     public boolean cuts(VectorFan strip) {
         boolean front = false;
         boolean back = false;
