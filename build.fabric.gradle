@@ -43,7 +43,7 @@ dependencies {
 
 loom.runConfigs.configureEach {
     ideConfigGenerated = true
-    vmArgs "-Dfabric.debug.replaceVersion=creativecore:${project.mod_version}"
+    vmArgs "-Dfabric.debug.replaceVersion=${project.mod_id}:${project.mod_version}"
 }
 
 
