@@ -48,24 +48,36 @@ public class GuiChildControl {
         return (int) rect.getHeight() - control.getContentOffset() * 2;
     }
     
-    public void setWidth(int width, int availableWidth) {
+    protected int clampWidth(int width, int availableWidth) {
         int min = getMinWidth(availableWidth);
         if (min != -1)
             width = Math.max(width, min);
         int max = getMaxWidth(availableWidth);
         if (max != -1)
             width = Math.min(width, max);
-        rect.maxX = rect.minX + width;
+        return width;
     }
     
-    public void setHeight(int height, int availableHeight) {
+    public int setWidth(int width, int availableWidth) {
+        width = clampWidth(width, availableWidth);
+        rect.maxX = rect.minX + width;
+        return width;
+    }
+    
+    protected int clampHeight(int height, int availableHeight) {
         int min = getMinHeight(availableHeight);
         if (min != -1)
             height = Math.max(height, min);
         int max = getMaxHeight(availableHeight);
         if (max != -1)
             height = Math.min(height, max);
+        return height;
+    }
+    
+    public int setHeight(int height, int availableHeight) {
+        height = clampHeight(height, availableHeight);
         rect.maxY = rect.minY + height;
+        return height;
     }
     
     public int addWidth(int additional, int availableWidth) {
@@ -107,7 +119,7 @@ public class GuiChildControl {
     }
     
     public int getPreferredWidth(int availableWidth) {
-        return control.getPreferredWidth(availableWidth) + control.getContentOffset() * 2;
+        return clampWidth(control.getPreferredWidth(availableWidth) + control.getContentOffset() * 2, availableWidth);
     }
     
     public int getMinHeight(int availableHeight) {
@@ -125,7 +137,7 @@ public class GuiChildControl {
     }
     
     public int getPreferredHeight(int availableHeight) {
-        return control.getPreferredHeight(getContentWidth(), availableHeight) + control.getContentOffset() * 2;
+        return clampHeight(control.getPreferredHeight(getContentWidth(), availableHeight) + control.getContentOffset() * 2, availableHeight);
     }
     
     public void flowX() {

@@ -10,4 +10,9 @@ public class NamedList<T> extends LinkedHashMap<String, T> {
         return super.entrySet();
     }
     
+    @Override
+    public Set<String> keySet() {
+        return super.keySet();
+    }
+    
 }

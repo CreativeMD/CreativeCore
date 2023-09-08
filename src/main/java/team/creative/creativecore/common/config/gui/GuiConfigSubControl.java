@@ -11,6 +11,7 @@ public class GuiConfigSubControl extends GuiParent {
     
     public GuiTextfield nameField;
     public GuiLabel nameLabel;
+    public boolean defaultHolder;
     
     public GuiConfigSubControl(String name) {
         super(name, GuiFlow.STACK_X);

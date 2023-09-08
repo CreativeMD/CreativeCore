@@ -17,6 +17,11 @@ import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
     
+    public static ConfigHolderObject createUnrelated(Side side, Object value, Object defaultReference) {
+        return new ConfigHolderObject(ConfigTypeConveration.FAKE_PARENT, side
+                .isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value, defaultReference);
+    }
+    
     private static List<Field> collectFields(Class clazz, List<Field> fields) {
         if (clazz.getSuperclass() != Object.class)
             collectFields(clazz.getSuperclass(), fields);
@@ -31,6 +36,10 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
     public final Object object;
     
     public ConfigHolderObject(ICreativeConfigHolder parent, ConfigSynchronization synchronization, String key, Object object) {
+        this(parent, synchronization, key, object, object);
+    }
+    
+    public ConfigHolderObject(ICreativeConfigHolder parent, ConfigSynchronization synchronization, String key, Object object, Object defaultReference) {
         super(parent, key, synchronization);
         this.object = object;
         List<Field> fields = collectFields(object.getClass(), new ArrayList<>());
@@ -45,8 +54,8 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
                     else
                         name = config.name();
                     ConfigSynchronization fieldSync = synchronization != ConfigSynchronization.UNIVERSAL ? synchronization : config.type();
-                    ConfigKeyFieldObject fieldKey = new ConfigKeyFieldObject(field, name, ConfigTypeConveration
-                            .parseObject(this, fieldSync, name, field.get(object)), fieldSync, config.requiresRestart());
+                    ConfigKeyFieldObject fieldKey = new ConfigKeyFieldObject(field, name, ConfigTypeConveration.parseObject(this, fieldSync, name, field.get(
+                        defaultReference)), fieldSync, config.requiresRestart());
                     this.fields.add(name, fieldKey);
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     

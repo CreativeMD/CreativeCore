@@ -23,26 +23,35 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     private final GuiColumn main;
     private Object extra;
     
+    public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, int width, boolean showReset) {
+        this(layer, field, side, null, null, width, showReset);
+    }
+    
     public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, String caption, String comment) {
+        this(layer, field, side, caption, comment, 200, true);
+    }
+    
+    public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, String caption, String comment, int width, boolean showReset) {
         super();
         this.field = field;
         this.side = side;
-        this.setExpandableX();
-        GuiColumn text = (GuiColumn) new GuiColumn().setDim(new GuiSizeRatioRules().widthRatio(0.25F));
-        text.valign = VAlign.CENTER;
-        addColumn(text);
-        text.add(new GuiLabel(caption + ":").setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
-        addColumn(main = (GuiColumn) new GuiColumn(200).setExpandableX());
-        GuiColumn end = new GuiColumn(20);
-        end.align = Align.CENTER;
-        addColumn(end);
+        if (caption != null) {
+            this.setExpandableX();
+            GuiColumn text = (GuiColumn) new GuiColumn().setDim(new GuiSizeRatioRules().maxWidth(200));
+            text.valign = VAlign.CENTER;
+            addColumn(text);
+            text.add(new GuiLabel(caption + ":").setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+        }
         
-        this.resetButton = (GuiButton) new GuiButton("r", x -> {
-            GuiConfigControl.this.reset();
-            if (layer != null)
-                layer.changed = true;
-        }).setTitle(Component.literal("r")).setAlign(Align.CENTER);
-        end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
+        addColumn(main = (GuiColumn) new GuiColumn(width).setExpandableX());
+        
+        if (showReset) {
+            GuiColumn end = new GuiColumn(20);
+            end.align = Align.CENTER;
+            addColumn(end);
+            this.resetButton = (GuiButton) new GuiButton("r", x -> GuiConfigControl.this.reset()).setTitle(Component.literal("r")).setAlign(Align.CENTER);
+            end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
+        }
     }
     
     @Override
@@ -51,7 +60,8 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     }
     
     public void updateButton() {
-        this.resetButton.enabled = !field.isDefault(field.converation.save(main, this, field.getType(), field), side);
+        if (resetButton != null)
+            this.resetButton.enabled = !field.isDefault(field.converation.save(main, this, field.getType(), field), side);
     }
     
     public void init(JsonElement initalValue) {

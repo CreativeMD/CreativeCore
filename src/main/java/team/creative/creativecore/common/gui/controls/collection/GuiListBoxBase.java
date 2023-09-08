@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.controls.collection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
@@ -22,6 +23,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public final boolean modifiable;
     
+    public Predicate<T> canBeModified;
+    
     public GuiListBoxBase(String name, boolean modifiable, List<T> entries) {
         super(name);
         this.content = entries;
@@ -41,7 +44,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         content.align = Align.CENTER;
         content.add(this.content.get(index));
         row.addColumn(content);
-        if (modifiable) {
+        if (modifiable && canBeModified.test(this.content.get(index))) {
             GuiColumn remove = new GuiColumn(20);
             remove.align = Align.CENTER;
             remove.add(new GuiButtonRemove(index));
@@ -96,7 +99,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         
         if (modifiable)
             for (int i = 0; i < rows.size(); i++)
-                ((GuiButtonRemove) rows.get(i).getCol(1).get("x")).index = i;
+                if (canBeModified.test(this.content.get(i)))
+                    ((GuiButtonRemove) rows.get(i).getCol(1).get("x")).index = i;
         reflowInternal();
         raiseEvent(new GuiControlChangedEvent(this));
     }

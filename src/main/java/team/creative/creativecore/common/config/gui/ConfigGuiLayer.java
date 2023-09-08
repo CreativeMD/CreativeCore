@@ -13,8 +13,11 @@ import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
+import team.creative.creativecore.common.gui.controls.parent.GuiRow;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
+import team.creative.creativecore.common.gui.controls.parent.GuiTable;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
@@ -32,8 +35,6 @@ public class ConfigGuiLayer extends GuiLayer {
     public final ICreativeConfigHolder rootHolder;
     public ICreativeConfigHolder holder;
     
-    public boolean changed = false;
-    
     public int nextAction;
     public boolean force;
     
@@ -45,10 +46,8 @@ public class ConfigGuiLayer extends GuiLayer {
         this.side = side;
         registerEvent(GuiControlChangedEvent.class, x -> {
             GuiConfigControl config = getConfigControl(x.control);
-            if (config != null) {
-                changed = true;
+            if (config != null)
                 config.changed();
-            }
         });
     }
     
@@ -58,9 +57,9 @@ public class ConfigGuiLayer extends GuiLayer {
     }
     
     public void savePage() {
-        GuiScrollY box = (GuiScrollY) get("box");
+        GuiTable table = (GuiTable) get("box.table");
         JsonObject parent = null;
-        for (GuiChildControl child : box)
+        for (GuiChildControl child : table)
             if (child.control instanceof GuiConfigControl) {
                 JsonElement element = ((GuiConfigControl) child.control).save();
                 if (element != null) {
@@ -88,6 +87,8 @@ public class ConfigGuiLayer extends GuiLayer {
         GuiScrollY box = new GuiScrollY("box").setDim(100, 100).setExpandable();
         add(box);
         
+        GuiTable table = new GuiTable("table").setExpandable();
+        box.add(table);
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
         for (ConfigKey key : holder.fields()) {
@@ -102,7 +103,11 @@ public class ConfigGuiLayer extends GuiLayer {
             String comment = path + key.name + ".comment";
             if (value instanceof ICreativeConfigHolder) {
                 if (!((ICreativeConfigHolder) value).isEmpty(side)) {
-                    box.add(new GuiButton(caption, x -> {
+                    GuiRow row = new GuiRow();
+                    table.addRow(row);
+                    GuiColumn col = new GuiColumn();
+                    row.addColumn(col);
+                    col.add(new GuiButton(caption, x -> {
                         loadHolder((ICreativeConfigHolder) value);
                     }).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
                 }
@@ -111,7 +116,7 @@ public class ConfigGuiLayer extends GuiLayer {
                     continue;
                 
                 GuiConfigControl control = new GuiConfigControl(this, (ConfigKeyField) key, side, caption, comment);
-                box.add(control);
+                table.addRow(control);
                 control.init(json != null ? json.get(key.name) : null);
             }
             
@@ -151,7 +156,8 @@ public class ConfigGuiLayer extends GuiLayer {
     
     @Override
     public void closeTopLayer() {
-        if (force || !changed) {
+        savePage();
+        if (force || ROOT.size() == 0) {
             if (nextAction == 0)
                 super.closeTopLayer();
             else if (nextAction == 1)

@@ -70,7 +70,7 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     public GuiTextfield setDim(int width) {
-        return (GuiTextfield) super.setDim(width, 20);
+        return (GuiTextfield) super.setDim(width, 10);
     }
     
     public GuiTextfield setFloatOnly() {

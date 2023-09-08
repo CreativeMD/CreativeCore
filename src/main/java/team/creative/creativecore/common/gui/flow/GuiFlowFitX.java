@@ -10,7 +10,7 @@ import team.creative.creativecore.common.gui.VAlign;
 public class GuiFlowFitX extends GuiStackX {
     
     @Override
-    public int minHeight(List<GuiChildControl> controls, int spacing, int width, int availableHeight) {
+    public int minHeight(List<? extends GuiChildControl> controls, int spacing, int width, int availableHeight) {
         int line = 0;
         int lineHeight = 0;
         int total = 0;
@@ -28,7 +28,7 @@ public class GuiFlowFitX extends GuiStackX {
     }
     
     @Override
-    public int preferredHeight(List<GuiChildControl> controls, int spacing, int width, int availableHeight) {
+    public int preferredHeight(List<? extends GuiChildControl> controls, int spacing, int width, int availableHeight) {
         int line = 0;
         int lineHeight = 0;
         int total = 0;
@@ -46,7 +46,7 @@ public class GuiFlowFitX extends GuiStackX {
     }
     
     @Override
-    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
+    public void flowX(List<? extends GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
         if (endless) {
             super.flowX(controls, spacing, align, width, preferred, endless);
             return;
@@ -75,7 +75,7 @@ public class GuiFlowFitX extends GuiStackX {
     }
     
     @Override
-    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
+    public void flowY(List<? extends GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
         if (endless) {
             super.flowY(controls, spacing, valign, width, height, preferred, endless);
             return;

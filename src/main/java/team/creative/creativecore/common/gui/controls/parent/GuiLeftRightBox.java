@@ -18,6 +18,11 @@ public class GuiLeftRightBox extends GuiRow {
         setExpandableX();
     }
     
+    @Override
+    public boolean isExpandableX() {
+        return expandableX;
+    }
+    
     public GuiLeftRightBox addLeft(GuiControl control) {
         left.add(control);
         return this;

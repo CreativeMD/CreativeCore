@@ -49,7 +49,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
                     addToList(list, entry.getKey(), conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, entry.getValue(), side, null));
                 else {
                     Object value = ConfigTypeConveration.createObject(clazz);
-                    holderConveration.readElement(ConfigTypeList.constructHolder(side, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
+                    holderConveration.readElement(ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
                     addToList(list, entry.getKey(), value);
                 }
             }
@@ -68,7 +68,8 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
             if (conversation != null)
                 array.add(entry.getKey(), conversation.writeElement(entry.getValue(), null, true, ignoreRestart, side, key));
             else
-                array.add(entry.getKey(), holderConveration.writeElement(ConfigTypeList.constructHolder(side, entry.getValue()), null, true, ignoreRestart, side, key));
+                array.add(entry.getKey(), holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, entry.getValue(), entry.getValue()), null, true, ignoreRestart,
+                    side, key));
         return array;
     }
     
@@ -77,6 +78,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", true, new ArrayList<>()).setDim(50, 130).setExpandable();
+        listBox.canBeModified = x -> !x.defaultHolder;
         parent.add(listBox);
         
         Class subClass = getListType(key);
@@ -90,7 +92,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
                 control.addNameTextfield("");
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
-                ConfigHolderObject holder = ConfigTypeList.constructHolder(Side.SERVER, value);
+                ConfigHolderObject holder = ConfigHolderObject.createUnrelated(Side.SERVER, value, value);
                 control = new GuiConfigSubControlHolder("" + 0, holder, value, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
                 control.addNameTextfield("");
@@ -123,16 +125,24 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
             GuiConfigSubControl control;
             if (converation != null) {
                 control = new GuiConfigSubControl("" + i);
-                control.addNameTextfield(entry.getKey());
+                if (entry.getKey().equals("default"))
+                    control.addNameUnmodifieable(entry.getKey());
+                else
+                    control.addNameTextfield(entry.getKey());
                 converation.createControls(control, null, null, clazz);
                 converation.loadValue(entry.getValue(), control, null, null);
-                
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, ConfigTypeList.constructHolder(Side.SERVER, entry.getValue()), entry.getValue(), configParent::changed);
-                control.addNameTextfield(entry.getKey());
+                Object copiedEntry = copy(Side.SERVER, entry.getValue(), clazz);
+                control = new GuiConfigSubControlHolder("" + 0, ConfigHolderObject.createUnrelated(Side.SERVER, copiedEntry, copiedEntry), copiedEntry, configParent::changed);
+                if (entry.getKey().equals("default"))
+                    control.addNameUnmodifieable(entry.getKey());
+                else
+                    control.addNameTextfield(entry.getKey());
                 ((GuiConfigSubControlHolder) control).createControls();
                 
             }
+            
+            control.defaultHolder = entry.getKey().equals("default");
             controls.add(control);
             i++;
         }

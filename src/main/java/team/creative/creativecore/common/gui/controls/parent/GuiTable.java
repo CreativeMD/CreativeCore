@@ -31,20 +31,32 @@ public class GuiTable extends GuiParent {
     }
     
     @Override
+    public GuiTable setExpandable() {
+        return (GuiTable) super.setExpandable();
+    }
+    
+    @Override
     public void flowX(int width, int preferred) {
-        super.flowX(width, preferred);
-        List<GuiChildControl> cols = new ArrayList<>();
+        List<GuiTableGroup> cols = new ArrayList<>();
         for (GuiChildControl child : controls) {
             GuiRow row = (GuiRow) child.control;
             int i = 0;
             for (GuiChildControl cell : row) {
                 if (cols.size() <= i)
-                    cols.add(new GuiTableCol());
-                ((GuiTableCol) cols.get(i)).controls.add(cell);
+                    cols.add(new GuiTableGroup());
+                cols.get(i).controls.add(cell);
                 i++;
             }
         }
         GuiFlow.STACK_X.flowX(cols, spacing, Align.STRETCH, width, preferred, endlessX());
+        
+        int startX = cols.get(0).getX();
+        GuiChildControl lastCol = cols.get(cols.size() - 1);
+        int combinedWidth = lastCol.getWidth() + lastCol.getX() - startX;
+        for (GuiChildControl row : controls) {
+            row.setX(startX);
+            row.setWidth(combinedWidth, width);
+        }
     }
     
     @Override
@@ -53,25 +65,34 @@ public class GuiTable extends GuiParent {
         throw new UnsupportedOperationException();
     }
     
-    private static class GuiTableCol extends GuiChildControl {
+    public static class GuiTableGroup extends GuiChildControl {
         
         public final List<GuiChildControl> controls = new ArrayList<>();
         
-        public GuiTableCol() {
+        public GuiTableGroup() {
             super(null);
         }
         
         @Override
         public int getMinWidth(int availableWidth) {
             int min = -1;
-            for (GuiChildControl child : controls)
-                min = Math.max(min, child.getMinWidth(availableWidth));
+            for (GuiChildControl child : controls) {
+                int minWidth = child.getMinWidth(availableWidth);
+                if (minWidth != -1)
+                    min = Math.max(min, minWidth);
+            }
             return min;
         }
         
         @Override
         public int getMaxWidth(int availableWidth) {
-            return -1;
+            int max = -1;
+            for (GuiChildControl child : controls) {
+                int maxWidth = child.getMaxWidth(availableWidth);
+                if (maxWidth != -1)
+                    max = max == -1 ? maxWidth : Math.min(max, maxWidth);
+            }
+            return max;
         }
         
         @Override
@@ -84,29 +105,48 @@ public class GuiTable extends GuiParent {
         
         @Override
         public int getMinHeight(int availableHeight) {
-            throw new UnsupportedOperationException();
+            int min = -1;
+            for (GuiChildControl child : controls) {
+                int minHeight = child.getMinHeight(availableHeight);
+                if (minHeight != -1)
+                    min = Math.max(min, minHeight);
+            }
+            return min;
         }
         
         @Override
         public int getMaxHeight(int availableHeight) {
-            throw new UnsupportedOperationException();
+            int max = -1;
+            for (GuiChildControl child : controls) {
+                int maxHeight = child.getMaxHeight(availableHeight);
+                if (maxHeight != -1)
+                    max = max == -1 ? maxHeight : Math.min(max, maxHeight);
+            }
+            return max;
         }
         
         @Override
         public int getPreferredHeight(int availableHeight) {
-            throw new UnsupportedOperationException();
+            int pref = -1;
+            for (GuiChildControl child : controls)
+                pref = Math.max(pref, child.getPreferredHeight(availableHeight));
+            return pref;
         }
         
         @Override
-        public void setWidth(int width, int availableWidth) {
-            super.setWidth(width, availableWidth);
+        public int setWidth(int width, int availableWidth) {
+            width = super.setWidth(width, availableWidth);
             for (GuiChildControl child : controls)
                 child.setWidth(width, availableWidth);
+            return width;
         }
         
         @Override
-        public void setHeight(int height, int availableHeight) {
-            throw new UnsupportedOperationException();
+        public int setHeight(int height, int availableHeight) {
+            height = super.setHeight(height, height);
+            for (GuiChildControl child : controls)
+                child.setHeight(height, height);
+            return height;
         }
         
         @Override
@@ -118,7 +158,9 @@ public class GuiTable extends GuiParent {
         
         @Override
         public void setY(int y) {
-            throw new UnsupportedOperationException();
+            super.setY(y);
+            for (GuiChildControl child : controls)
+                child.setY(y);
         }
         
         @Override
@@ -129,7 +171,8 @@ public class GuiTable extends GuiParent {
         
         @Override
         public void flowY() {
-            throw new UnsupportedOperationException();
+            for (GuiChildControl child : controls)
+                child.flowY();
         }
         
         @Override

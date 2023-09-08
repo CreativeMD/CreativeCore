@@ -1,10 +1,12 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,6 +30,9 @@ public class GuiScrollXY extends GuiParent {
     public boolean draggedY;
     
     public int scrollbarThickness = 3;
+    public ControlStyleFace scrollbarFace = ControlStyleFace.CLICKABLE;
+    
+    public boolean alternativeScrolling = false;
     
     protected int cachedWidth;
     protected int cachedHeight;
@@ -83,6 +88,20 @@ public class GuiScrollXY extends GuiParent {
     }
     
     public void scroll(Rect rect, double scrolled) {
+        if (alternativeScrolling) {
+            if (Screen.hasShiftDown()) {
+                if (needsScrollbarX(rect)) {
+                    this.scrolledX.set(this.scrolledX.aimed() - scrolled * 10);
+                    onScrolledX();
+                }
+                return;
+            }
+            
+            this.scrolledY.set(this.scrolledY.aimed() - scrolled * 10);
+            onScrolledY();
+            return;
+        }
+        
         boolean shouldScrollY = needsScrollbarY(rect);
         if (shouldScrollY)
             if (scrolled > 0 && this.scrolledY.aimed() == 0)
@@ -175,6 +194,8 @@ public class GuiScrollXY extends GuiParent {
         realRect.scissor();
         GuiStyle style = getStyle();
         
+        RenderSystem.disableDepthTest();
+        
         scrolledX.tick();
         
         if (needsScrollbarX(control.rect)) {
@@ -185,8 +206,8 @@ public class GuiScrollXY extends GuiParent {
                 scrollThingWidth = completeWidth;
             double percent = scrolledX.current() / maxScrollX;
             
-            style.get(ControlStyleFace.CLICKABLE, false).render(pose, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, control
-                    .getHeight() - scrollbarThickness - borderWidth, scrollThingWidth, scrollbarThickness);
+            style.get(scrollbarFace, false).render(pose, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, control.getHeight() - scrollbarThickness - borderWidth,
+                scrollThingWidth, scrollbarThickness);
             
             maxScrollX = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
         }
@@ -201,14 +222,16 @@ public class GuiScrollXY extends GuiParent {
                 scrollThingHeight = completeHeight;
             double percent = scrolledY.current() / maxScrollY;
             
-            style.get(ControlStyleFace.CLICKABLE, false).render(pose, control
-                    .getWidth() - scrollbarThickness - borderWidth, (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarThickness, scrollThingHeight);
+            style.get(scrollbarFace, false).render(pose, control.getWidth() - scrollbarThickness - borderWidth,
+                (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarThickness, scrollThingHeight);
             
             maxScrollY = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
         }
         
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale, controlScale);
+        
+        RenderSystem.enableDepthTest();
     }
     
     @Override

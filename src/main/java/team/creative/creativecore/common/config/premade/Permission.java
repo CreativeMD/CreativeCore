@@ -17,10 +17,15 @@ public class Permission<T> extends NamedList<T> {
     }
     
     public Permission<T> add(String usergroup, T value) {
-        if (usergroup.equals("default"))
-            this.value = value;
-        super.put(usergroup, value);
+        put(usergroup, value);
         return this;
+    }
+    
+    @Override
+    public T put(String key, T value) {
+        if (key.equals("default"))
+            this.value = value;
+        return super.put(key, value);
     }
     
     public T get(Player player) {

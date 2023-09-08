@@ -20,17 +20,12 @@ import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
-import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class ConfigTypeList extends ConfigTypeConveration<List> {
-    
-    public static ConfigHolderObject constructHolder(Side side, Object value) {
-        return new ConfigHolderObject(fakeParent, side.isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, "", value);
-    }
     
     @Override
     public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
@@ -44,7 +39,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                     list.add(conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
                 else {
                     Object value = ConfigTypeConveration.createObject(clazz);
-                    holderConveration.readElement(constructHolder(side, value), loadDefault, ignoreRestart, array.get(i), side, null);
+                    holderConveration.readElement(ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, array.get(i), side, null);
                     list.add(value);
                 }
             return list;
@@ -59,9 +54,9 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         ConfigTypeConveration conversation = getUnsafe(clazz);
         for (int i = 0; i < value.size(); i++)
             if (conversation != null)
-                array.add(conversation.writeElement(value.get(i), null, true, ignoreRestart, side, key));
+                array.add(conversation.writeElement(value.get(i), null, true, ignoreRestart, side, null));
             else
-                array.add(holderConveration.writeElement(constructHolder(side, value.get(i)), null, true, ignoreRestart, side, key));
+                array.add(holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, value.get(i), value.get(i)), null, true, ignoreRestart, side, null));
         return array;
     }
     
@@ -84,7 +79,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 converation.createControls(control, null, null, subClass);
             } else {
                 Object value = ConfigTypeConveration.createObject(subClass);
-                ConfigHolderObject holder = constructHolder(Side.SERVER, value);
+                ConfigHolderObject holder = ConfigHolderObject.createUnrelated(Side.SERVER, value, value);
                 control = new GuiConfigSubControlHolder("" + 0, holder, value, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
@@ -119,7 +114,8 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 converation.createControls(control, null, null, clazz);
                 converation.loadValue(entry, control, null, null);
             } else {
-                control = new GuiConfigSubControlHolder("" + 0, constructHolder(Side.SERVER, entry), entry, configParent::changed);
+                entry = copy(Side.SERVER, entry, clazz);
+                control = new GuiConfigSubControlHolder("" + 0, ConfigHolderObject.createUnrelated(Side.SERVER, entry, entry), entry, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             controls.add(control);

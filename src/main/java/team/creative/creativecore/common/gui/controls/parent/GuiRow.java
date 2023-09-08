@@ -28,8 +28,16 @@ public class GuiRow extends GuiParent {
         return this;
     }
     
+    public GuiColumn removeCol(int index) {
+        return (GuiColumn) controls.remove(index).control;
+    }
+    
     public GuiColumn getCol(int index) {
         return (GuiColumn) controls.get(index).control;
+    }
+    
+    public int colCount() {
+        return controls.size();
     }
     
     @Override

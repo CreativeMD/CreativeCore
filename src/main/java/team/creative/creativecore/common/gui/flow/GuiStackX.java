@@ -12,7 +12,7 @@ import team.creative.creativecore.common.util.type.list.MarkList;
 public class GuiStackX extends GuiFlow {
     
     @Override
-    public int minWidth(List<GuiChildControl> controls, int spacing, int availableWidth) {
+    public int minWidth(List<? extends GuiChildControl> controls, int spacing, int availableWidth) {
         boolean has = false;
         int width = -spacing;
         for (GuiChildControl child : controls) {
@@ -27,7 +27,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public int preferredWidth(List<GuiChildControl> controls, int spacing, int availableWidth) {
+    public int preferredWidth(List<? extends GuiChildControl> controls, int spacing, int availableWidth) {
         int width = -spacing;
         for (GuiChildControl child : controls)
             width += child.getPreferredWidth(availableWidth) + spacing;
@@ -35,7 +35,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public int minHeight(List<GuiChildControl> controls, int spacing, int width, int availableHeight) {
+    public int minHeight(List<? extends GuiChildControl> controls, int spacing, int width, int availableHeight) {
         int height = -1;
         for (GuiChildControl child : controls)
             height = Math.max(height, child.getMinHeight(availableHeight));
@@ -43,7 +43,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public int preferredHeight(List<GuiChildControl> controls, int spacing, int width, int availableHeight) {
+    public int preferredHeight(List<? extends GuiChildControl> controls, int spacing, int width, int availableHeight) {
         int height = 0;
         for (GuiChildControl child : controls)
             height = Math.max(height, child.getPreferredHeight(availableHeight));
@@ -51,9 +51,9 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public void flowX(List<GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
+    public void flowX(List<? extends GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
         int available = width - spacing * (controls.size() - 1);
-        MarkList<GuiChildControl> list = new MarkList<>(controls);
+        MarkList<? extends GuiChildControl> list = new MarkList<>(controls);
         if (width >= preferred) { // If there is enough space available
             if (align == Align.STRETCH && !areChildrenExpandableX(controls)) { // force expansion
                 
@@ -68,7 +68,7 @@ public class GuiStackX extends GuiFlow {
                 
                 while (available > 0 && !list.isEmpty()) { // add width to remaining controls which are smaller than their preferred width
                     int average = (int) Math.ceil((double) available / list.remaing());
-                    for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                    for (MarkIterator<? extends GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                         GuiChildControl child = itr.next();
                         int toAdd = Maths.min(average, available, child.getPreferredWidth(width) - child.getWidth());
                         if (toAdd <= 0) {
@@ -84,7 +84,7 @@ public class GuiStackX extends GuiFlow {
                 list.clear();
                 while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                     int average = (int) Math.ceil((double) available / list.remaing());
-                    for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                    for (MarkIterator<? extends GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                         GuiChildControl child = itr.next();
                         available -= child.addWidth(Math.min(average, available), width);
                         if (child.isMaxWidth(width))
@@ -92,7 +92,7 @@ public class GuiStackX extends GuiFlow {
                     }
                 }
             } else { // let expandable controls take over the empty area
-                for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                for (MarkIterator<? extends GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
                     child.setWidth(child.getPreferredWidth(width), width);
                     if (!child.isExpandableX())
@@ -103,7 +103,7 @@ public class GuiStackX extends GuiFlow {
                 if (align == Align.STRETCH || areChildrenExpandableX(controls))
                     while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                         int average = (int) Math.ceil((double) available / list.remaing());
-                        for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                        for (MarkIterator<? extends GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                             GuiChildControl child = itr.next();
                             available -= child.addWidth(Math.min(average, available), width);
                             if (child.isMaxWidth(width))
@@ -127,7 +127,7 @@ public class GuiStackX extends GuiFlow {
             
             while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                 int average = (int) Math.ceil((double) available / list.remaing());
-                for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                for (MarkIterator<? extends GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
                     int prefer = child.getPreferredWidth(width);
                     available -= child.addWidth(Math.min(average, Math.min(prefer - child.getWidth(), available)), width);
@@ -140,7 +140,7 @@ public class GuiStackX extends GuiFlow {
             
             while (available > 0 && !list.isEmpty()) { // add width to remaining controls until there is no space available or everything is at max
                 int average = (int) Math.ceil((double) available / list.remaing());
-                for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
+                for (MarkIterator<? extends GuiChildControl> itr = list.iterator(); itr.hasNext();) {
                     GuiChildControl child = itr.next();
                     available -= child.addWidth(Math.min(average, available), width);
                     if (child.isMaxWidth(width))
@@ -175,7 +175,7 @@ public class GuiStackX extends GuiFlow {
     }
     
     @Override
-    public void flowY(List<GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
+    public void flowY(List<? extends GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
         int maxHeight = height;
         if (endless && preferred > height)
             maxHeight = preferred;

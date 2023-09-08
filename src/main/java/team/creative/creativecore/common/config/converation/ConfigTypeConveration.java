@@ -69,7 +69,7 @@ public abstract class ConfigTypeConveration<T> {
     private static HashMap<Class, ConfigTypeConveration> types = new HashMap<>();
     private static PairList<Predicate<Class>, ConfigTypeConveration> specialTypes = new PairList<>();
     
-    public static final ICreativeConfigHolder fakeParent = new ICreativeConfigHolder() {
+    public static final ICreativeConfigHolder FAKE_PARENT = new ICreativeConfigHolder() {
         
         @Override
         public ConfigSynchronization synchronization() {
@@ -200,6 +200,19 @@ public abstract class ConfigTypeConveration<T> {
             return clazz.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {}
         return null;
+    }
+    
+    public static Object copy(Side side, Object object, Class clazz) {
+        ConfigTypeConveration conversation = getUnsafe(clazz);
+        if (conversation != null) {
+            JsonElement element = conversation.writeElement(object, null, false, true, side, null);
+            Object value = createObject(clazz);
+            conversation.readElement(value, true, true, element, side, null);
+        }
+        Object value = createObject(clazz);
+        JsonElement element = holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, object, value), null, false, true, side, null);
+        holderConveration.readElement(ConfigHolderObject.createUnrelated(side, value, value), true, true, element, side, null);
+        return value;
     }
     
     static {
