@@ -36,6 +36,12 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
         if (one.size() != two.size())
             return false;
         
+        if (conversation != null && !conversation.areEqual(one.getDefault(), two.getDefault(), null))
+            return false;
+        
+        if (conversation == null && !one.getDefault().equals(two.getDefault()) && !EqualsBuilder.reflectionEquals(one.getDefault(), two.getDefault(), false))
+            return false;
+        
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) one.entrySet()) {
             Object other = two.getDirect(entry.getKey());
             
