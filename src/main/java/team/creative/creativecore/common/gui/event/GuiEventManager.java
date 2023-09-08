@@ -20,6 +20,10 @@ public class GuiEventManager {
         handlers.add(new GuiEventHandler<>(clazz, action));
     }
     
+    public void clear() {
+        handlers.clear();
+    }
+    
     public static class GuiEventHandler<T extends GuiEvent> {
         
         private final Class<T> clazz;

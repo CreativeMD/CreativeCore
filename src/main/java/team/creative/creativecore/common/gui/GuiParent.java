@@ -189,6 +189,24 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return null;
     }
     
+    public GuiChildControl replace(GuiControl oldControl, GuiControl newControl) {
+        GuiChildControl child;
+        
+        for (int i = 0; i < controls.size(); i++) {
+            if (controls.get(i).control == oldControl) {
+                controls.set(i, child = new GuiChildControl(newControl));
+                return child;
+            }
+        }
+        for (int i = 0; i < hoverControls.size(); i++) {
+            if (hoverControls.get(i).control == oldControl) {
+                hoverControls.set(i, child = new GuiChildControl(newControl));
+                return child;
+            }
+        }
+        return null;
+    }
+    
     public GuiChildControl remove(GuiControl control) {
         for (int i = 0; i < controls.size(); i++) {
             GuiChildControl child = controls.get(i);
@@ -232,6 +250,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public Iterator<GuiChildControl> iterator() {
+        if (hoverControls.isEmpty()) // Performance optimisation
+            return controls.iterator();
         return new ConsecutiveIterator<>(hoverControls, controls);
     }
     
@@ -534,6 +554,11 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         if (eventManager == null)
             eventManager = new GuiEventManager();
         eventManager.registerEvent(clazz, action);
+    }
+    
+    public void clearEvents() {
+        if (eventManager != null)
+            eventManager.clear();
     }
     
     @Override
