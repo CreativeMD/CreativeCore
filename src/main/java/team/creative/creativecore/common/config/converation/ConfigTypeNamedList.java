@@ -38,10 +38,12 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     
     @Override
     public T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+        Class clazz = getListType(key);
+        T list = create(clazz);
+        
         if (element.isJsonObject()) {
             JsonObject object = (JsonObject) element;
-            Class clazz = getListType(key);
-            T list = create(clazz);
+            
             ConfigTypeConveration conversation = getUnsafe(clazz);
             
             for (Entry<String, JsonElement> entry : object.entrySet()) {
@@ -56,7 +58,10 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
             
             return list;
         }
-        return defaultValue;
+        
+        for (Entry<String, T> entry : (Iterable<Entry<String, T>>) defaultValue.entrySet())
+            addToList(list, entry.getKey(), copy(side, entry.getValue(), clazz));
+        return list;
     }
     
     @Override

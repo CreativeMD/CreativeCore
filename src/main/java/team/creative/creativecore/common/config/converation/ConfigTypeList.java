@@ -29,9 +29,9 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
     public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+        Class clazz = getListType(key);
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
-            Class clazz = getListType(key);
             List list = new ArrayList<>(array.size());
             ConfigTypeConveration conversation = getUnsafe(clazz);
             for (int i = 0; i < array.size(); i++)
@@ -44,7 +44,10 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 }
             return list;
         }
-        return defaultValue;
+        List list = new ArrayList<>(defaultValue.size());
+        for (int i = 0; i < defaultValue.size(); i++)
+            list.add(copy(side, defaultValue.get(i), clazz));
+        return list;
     }
     
     @Override

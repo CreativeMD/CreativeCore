@@ -24,15 +24,23 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     
     @Override
     public Object readElement(Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+        Class clazz = defaultValue.getClass().getComponentType();
+        
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
             int size = Math.min(array.size(), Array.getLength(defaultValue));
-            Object object = Array.newInstance(defaultValue.getClass().getComponentType(), size);
+            Object object = Array.newInstance(clazz, size);
             for (int i = 0; i < size; i++)
                 Array.set(object, i, read(defaultValue.getClass().getComponentType(), Array.get(defaultValue, i), loadDefault, ignoreRestart, array.get(i), side, null));
             return object;
         }
-        return defaultValue;
+        
+        int size = Array.getLength(defaultValue);
+        
+        Object object = Array.newInstance(clazz, size);
+        for (int i = 0; i < size; i++)
+            Array.set(object, i, copy(side, Array.get(object, i), clazz));
+        return object;
     }
     
     @Override
