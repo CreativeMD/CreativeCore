@@ -23,15 +23,15 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     private final GuiColumn main;
     private Object extra;
     
-    public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, int width, boolean showReset) {
-        this(layer, field, side, null, null, width, showReset);
+    public GuiConfigControl(ConfigKeyField field, Side side, int width, boolean showReset) {
+        this(field, side, null, null, width, showReset);
     }
     
-    public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, String caption, String comment) {
-        this(layer, field, side, caption, comment, 200, true);
+    public GuiConfigControl(ConfigKeyField field, Side side, String caption, String comment) {
+        this(field, side, caption, comment, 200, true);
     }
     
-    public GuiConfigControl(ConfigGuiLayer layer, ConfigKeyField field, Side side, String caption, String comment, int width, boolean showReset) {
+    public GuiConfigControl(ConfigKeyField field, Side side, String caption, String comment, int width, boolean showReset) {
         super();
         this.field = field;
         this.side = side;
@@ -49,9 +49,11 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
             GuiColumn end = new GuiColumn(20);
             end.align = Align.CENTER;
             addColumn(end);
-            this.resetButton = (GuiButton) new GuiButton("r", x -> GuiConfigControl.this.reset()).setTitle(Component.literal("r")).setAlign(Align.CENTER);
+            this.resetButton = (GuiButton) new GuiButton("r", x -> GuiConfigControl.this.reset()).setTranslate("gui.reset").setAlign(Align.CENTER);
             end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
         }
+        
+        registerEventChanged(x -> changed());
     }
     
     @Override
@@ -59,9 +61,13 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
         return ControlFormatting.TRANSPARENT;
     }
     
+    public boolean isDefault() {
+        return !field.isDefault(field.converation.save(main, this, field.getType(), field), side);
+    }
+    
     public void updateButton() {
         if (resetButton != null)
-            this.resetButton.enabled = !field.isDefault(field.converation.save(main, this, field.getType(), field), side);
+            this.resetButton.enabled = isDefault();
     }
     
     public void init(JsonElement initalValue) {

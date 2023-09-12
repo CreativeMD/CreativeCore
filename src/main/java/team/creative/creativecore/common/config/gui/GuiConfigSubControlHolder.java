@@ -39,7 +39,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                 path += ".";
             String caption = translateOrDefault(path + key.name + ".name", key.name);
             String comment = path + key.name + ".comment";
-            GuiConfigControl config = new GuiConfigControl(null, (ConfigKeyField) key, Side.SERVER, caption, comment) {
+            GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, Side.SERVER, caption, comment) {
                 
                 @Override
                 public void updateButton() {

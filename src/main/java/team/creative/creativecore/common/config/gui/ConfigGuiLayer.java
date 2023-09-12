@@ -11,7 +11,6 @@ import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
@@ -22,7 +21,6 @@ import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.mc.JsonUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -44,11 +42,6 @@ public class ConfigGuiLayer extends GuiLayer {
         this.rootHolder = holder;
         this.holder = holder;
         this.side = side;
-        registerEvent(GuiControlChangedEvent.class, x -> {
-            GuiConfigControl config = getConfigControl(x.control);
-            if (config != null)
-                config.changed();
-        });
     }
     
     @Override
@@ -115,7 +108,7 @@ public class ConfigGuiLayer extends GuiLayer {
                 if (!key.is(side))
                     continue;
                 
-                GuiConfigControl control = new GuiConfigControl(this, (ConfigKeyField) key, side, caption, comment);
+                GuiConfigControl control = new GuiConfigControl((ConfigKeyField) key, side, caption, comment);
                 table.addRow(control);
                 control.init(json != null ? json.get(key.name) : null);
             }
@@ -167,20 +160,11 @@ public class ConfigGuiLayer extends GuiLayer {
                 if (y == DialogButton.YES) {
                     savePage();
                     sendUpdate();
-                }
-                if (y != DialogButton.CANCEL) {
+                } else if (y != DialogButton.CANCEL) {
                     force = true;
                     closeTopLayer();
                 }
             }, DialogButton.YES, DialogButton.NO, DialogButton.CANCEL);
-    }
-    
-    private static GuiConfigControl getConfigControl(GuiControl control) {
-        if (control instanceof GuiConfigControl)
-            return (GuiConfigControl) control;
-        if (control.getParent() instanceof GuiControl parent)
-            return getConfigControl(parent);
-        return null;
     }
     
 }
