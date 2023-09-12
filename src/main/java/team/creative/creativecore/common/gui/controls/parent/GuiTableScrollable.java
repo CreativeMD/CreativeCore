@@ -12,6 +12,7 @@ import team.creative.creativecore.common.gui.controls.parent.GuiTable.GuiTableGr
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
+import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
 public class GuiTableScrollable extends GuiParent {
     
@@ -238,6 +239,16 @@ public class GuiTableScrollable extends GuiParent {
     @Override
     protected boolean endlessY() {
         return true;
+    }
+    
+    public void removeContentCol(int index) {
+        topRow.removeCol(index + 1);
+        for (GuiChildControl child : scrollableTable)
+            ((GuiRow) child.control).removeCol(index);
+    }
+    
+    public Iterable<GuiRow> contentRows() {
+        return () -> new FunctionIterator<>(scrollableTable, x -> (GuiRow) x.control);
     }
     
 }
