@@ -60,7 +60,7 @@ public class GuiProgressbar extends GuiControl {
         GuiStyle style = getStyle();
         double percent = pos / max;
         style.clickable.render(matrix, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
-        GuiRenderHelper.drawStringCentered(matrix, ((int) Math.round(percent * 100)) + "%", (float) rect.getWidth(), (float) rect.getHeight(), style.fontColor.toInt(), true);
+        GuiRenderHelper.drawStringCentered(matrix, ((int) Math.round(percent * 100)) + "%", (float) rect.getWidth(), (float) rect.getHeight(), style.fontColor.toInt());
     }
     
     @Override

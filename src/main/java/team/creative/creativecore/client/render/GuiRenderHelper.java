@@ -111,26 +111,30 @@ public class GuiRenderHelper {
             
         }
     }
+
+    public static void drawStringCentered(PoseStack stack, String text, float width, float height, int color) {
+        drawStringCentered(stack, text, 1.0f, width, height, color);
+    }
     
-    public static void drawStringCentered(PoseStack stack, String text, float width, float height, int color, boolean shadow) {
-        int textWidth = mc.font.width(text);
+    public static void drawStringCentered(PoseStack stack, String text, float scale, float width, float height, int color) {
+        int textWidth = (int) (mc.font.width(text) * scale);
         if (textWidth > width) {
-            int dotWith = mc.font.width("...");
+            int dotWith = (int) (mc.font.width("...") * scale);
             if (textWidth > dotWith) {
                 StringBuilder builder = new StringBuilder();
                 textWidth = 0;
                 for (int i = 0; i < text.length(); i++) {
-                    int charWidth = mc.font.width("" + text.charAt(i));
+                    int charWidth = (int) (mc.font.width("" + text.charAt(i)) * scale);
                     if (charWidth + textWidth + dotWith < width) {
                         builder.append(text.charAt(i));
                         textWidth += charWidth;
                     } else
                         break;
                 }
-                text = builder.toString() + "...";
+                text = builder.append("...").toString();
             }
         }
-        mc.font.drawShadow(stack, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, color);
+        mc.font.drawShadow(stack, text, width / 2 - (float) mc.font.width(text) / 2, height / 2 - (float) mc.font.lineHeight / 2, color);
     }
     
     public static void gradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {

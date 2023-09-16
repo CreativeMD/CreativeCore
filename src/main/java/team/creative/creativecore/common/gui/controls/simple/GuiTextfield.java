@@ -44,7 +44,8 @@ public class GuiTextfield extends GuiFocusControl {
     private int lineScrollOffset;
     private int cursorPosition;
     private int selectionEnd;
-    private String suggestion;
+    protected float textScale = 1.0f;
+    protected String suggestion;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
     private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
@@ -73,6 +74,15 @@ public class GuiTextfield extends GuiFocusControl {
     public GuiTextfield(String name, String text, int width, int height) {
         super(name, width, height);
         setText(text);
+    }
+
+    public float getTextScale() {
+        return textScale;
+    }
+
+    public GuiTextfield setTextScale(float textScale) {
+        this.textScale = textScale;
+        return this;
     }
     
     public GuiTextfield setFloatOnly() {
@@ -150,8 +160,10 @@ public class GuiTextfield extends GuiFocusControl {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         Font fontRenderer = GuiRenderHelper.getFont();
+        pose.pushPose();
+        pose.scale(textScale, textScale, textScale);
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();
@@ -166,7 +178,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            xOffset = fontRenderer.draw(matrix, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
+            xOffset = fontRenderer.draw(pose, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
         }
         
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -179,21 +191,22 @@ public class GuiTextfield extends GuiFocusControl {
         }
         
         if (!s.isEmpty() && flag && j < s.length())
-            fontRenderer.draw(matrix, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
+            fontRenderer.draw(pose, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
         
         if (!flag2 && this.suggestion != null)
-            fontRenderer.drawShadow(matrix, this.suggestion, k1 - 1, yOffset, -8355712);
+            fontRenderer.drawShadow(pose, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
             if (flag2)
-                GuiComponent.fill(matrix, k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
+                GuiComponent.fill(pose, k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
             else
-                fontRenderer.drawShadow(matrix, "_", k1, yOffset, color);
+                fontRenderer.drawShadow(pose, "_", k1, yOffset, color);
             
         if (k != j) {
             int l1 = fontRenderer.width(s.substring(0, k));
-            this.drawSelectionBox(control, matrix.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
+            this.drawSelectionBox(control, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
+        pose.popPose();
     }
     
     public void setText(String textIn) {
@@ -550,7 +563,12 @@ public class GuiTextfield extends GuiFocusControl {
         
     }
     
-    public void setSuggestion(@Nullable String p_195612_1_) {
-        this.suggestion = p_195612_1_;
+    public GuiTextfield setSuggestion(@Nullable String suggestion) {
+        this.suggestion = suggestion;
+        return this;
+    }
+
+    public String getSuggestion() {
+        return this.suggestion;
     }
 }

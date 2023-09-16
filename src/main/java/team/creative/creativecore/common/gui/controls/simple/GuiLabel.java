@@ -19,7 +19,7 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiLabel extends GuiControl {
-    
+    protected float scale = 1.0f;
     protected CompiledText text = CompiledText.createAnySize();
     
     public GuiLabel(String name) {
@@ -37,6 +37,15 @@ public class GuiLabel extends GuiControl {
     
     public GuiLabel setAlign(Align align) {
         text.alignment = align;
+        return this;
+    }
+
+    public float getScale() {
+        return this.scale;
+    }
+
+    public GuiLabel setScale(float scale) {
+        this.scale = scale;
         return this;
     }
     
@@ -76,6 +85,7 @@ public class GuiLabel extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        text.setScale(this.scale);
         text.render(matrix);
     }
     
@@ -91,22 +101,22 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public int getMinWidth() {
-        return 10;
+        return (int) (10 * scale + 1); // +3 to be aware
     }
     
     @Override
     public int preferredWidth() {
-        return text.getTotalWidth();
+        return (int) (text.getTotalWidth() * scale + 3); // +3 to be aware
     }
     
     @Override
     public int getMinHeight() {
-        return Minecraft.getInstance().font.lineHeight;
+        return (int) (Minecraft.getInstance().font.lineHeight * scale + 1); // +1 to be aware
     }
     
     @Override
     public int preferredHeight() {
-        return text.getTotalHeight();
+        return (int) (text.getTotalHeight() * scale) + 1; // +1 to be aware
     }
     
 }

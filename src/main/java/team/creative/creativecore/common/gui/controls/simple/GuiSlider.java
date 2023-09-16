@@ -23,6 +23,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public double maxValue;
     public double minValue;
     public double value;
+    public float textScale = 1.0f;
     protected boolean grabbedSlider;
     public int sliderWidth = 4;
     
@@ -41,7 +42,16 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         this.maxValue = max;
         setValue(value);
     }
-    
+
+    public GuiSlider setTextScale(float textScale) {
+        this.textScale = textScale;
+        return this;
+    }
+
+    public float getTextScale() {
+        return textScale;
+    }
+
     public String getTextByValue() {
         return Math.round(value * 100F) / 100F + "";
     }
@@ -126,7 +136,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             
             if (x < getContentOffset())
                 this.value = this.minValue;
-            else if (x > getContentOffset() + width + sliderWidth / 2)
+            else if (x > getContentOffset() + width + (double) sliderWidth / 2)
                 this.value = this.maxValue;
             else {
                 int mouseOffsetX = (int) (x - getContentOffset() - sliderWidth / 2);
@@ -190,7 +200,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         if (textfield != null)
             textfield.render(pose, control, rect, rect, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE, true);
+            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), textScale, (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE);
     }
     
     @Override

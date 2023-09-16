@@ -14,7 +14,7 @@ import team.creative.creativecore.common.util.text.TextListBuilder;
 
 public class GuiStateButton extends GuiButton {
     
-    private int index = 0;
+    private int index;
     public CompiledText[] states;
     public boolean autosize;
     

@@ -32,6 +32,7 @@ public class CompiledText {
     public int usedWidth;
     public int usedHeight;
     public int lineSpacing = 2;
+    public float scale = 1.0f;
     public boolean shadow = true;
     public int defaultColor = ColorUtils.WHITE;
     public Align alignment = Align.LEFT;
@@ -41,7 +42,7 @@ public class CompiledText {
     public CompiledText(int width, int height) {
         this.maxWidth = width;
         this.maxHeight = height;
-        setText(Collections.EMPTY_LIST);
+        setText(Collections.emptyList());
     }
     
     public void setMaxHeight(int height) {
@@ -60,6 +61,14 @@ public class CompiledText {
     
     public int getMaxHeight() {
         return maxHeight;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+    }
+
+    public float getScale() {
+        return this.scale;
     }
     
     public void setText(Component component) {
@@ -134,6 +143,7 @@ public class CompiledText {
         usedHeight = -lineSpacing;
         
         stack.pushPose();
+        stack.scale(scale, scale, scale);
         for (CompiledLine line : lines) {
             switch (alignment) {
             case LEFT:
@@ -142,7 +152,7 @@ public class CompiledText {
                 break;
             case CENTER:
                 stack.pushPose();
-                stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
+                stack.translate((double) maxWidth / 2 - (double) line.width / 2, 0, 0);
                 line.render(stack);
                 usedWidth = Math.max(usedWidth, maxWidth);
                 stack.popPose();
