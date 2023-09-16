@@ -118,7 +118,7 @@ public class GuiLabel extends GuiControl {
     
     @Override
     protected int preferredWidth(int availableWidth) {
-        return (int) (text.getTotalWidth() * scale);
+        return (int) (text.getTotalWidth() * scale) + 3;  // +3 due some various font symbol/spacing width
     }
     
     @Override

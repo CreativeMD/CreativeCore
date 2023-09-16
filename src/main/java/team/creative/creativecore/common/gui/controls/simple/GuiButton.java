@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import java.util.function.Consumer;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -31,5 +32,24 @@ public class GuiButton extends GuiLabel {
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.CLICKABLE;
     }
-    
+
+    @Override
+    protected int minWidth(int availableWidth) {
+        return 0;
+    }
+
+    @Override
+    protected int preferredWidth(int availableWidth) {
+        return text.getTotalWidth();
+    }
+
+    @Override
+    protected int minHeight(int width, int availableHeight) {
+        return Minecraft.getInstance().font.lineHeight;
+    }
+
+    @Override
+    protected int preferredHeight(int width, int availableHeight) {
+        return text.getTotalHeight();
+    }
 }

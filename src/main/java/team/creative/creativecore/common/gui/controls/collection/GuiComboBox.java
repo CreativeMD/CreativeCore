@@ -86,7 +86,7 @@ public class GuiComboBox extends GuiLabel {
         int width = 0;
         for (CompiledText text : lines)
             width = Math.max(width, text.getTotalWidth() + 3); // +3 due to scroll bar width
-        return (int) (width * scale);
+        return (int) (width * scale) + 3; // +3 due some various font symbol/spacing width
     }
     
     @Override
