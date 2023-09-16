@@ -51,10 +51,9 @@ public class CompiledText {
     }
     
     public static final CompiledText EMPTY = new CompiledText(0, 0) {
-        
         {
-            original = Collections.EMPTY_LIST;
-            lines = Collections.EMPTY_LIST;
+            original = Collections.emptyList();
+            lines = Collections.emptyList();
         }
         
         @Override
@@ -76,12 +75,13 @@ public class CompiledText {
         @OnlyIn(Dist.CLIENT)
         public void render(PoseStack stack) {}
     };
-    
+
     private int maxWidth;
     private int maxHeight;
     private int usedWidth;
     private int usedHeight;
     private int lineSpacing = 2;
+    protected float scale;
     private boolean shadow = true;
     private int defaultColor = ColorUtils.WHITE;
     private Align align = Align.LEFT;
@@ -90,9 +90,14 @@ public class CompiledText {
     protected List<Component> original;
     
     public CompiledText(int width, int height) {
+        this(width, height, 1.0f);
+    }
+
+    public CompiledText(int width, int height, float initialScale) {
         this.maxWidth = width;
         this.maxHeight = height;
-        setText(Collections.EMPTY_LIST);
+        setText(Collections.emptyList());
+        this.scale = initialScale;
     }
     
     public void setMaxHeight(int height) {
@@ -103,6 +108,14 @@ public class CompiledText {
         this.maxWidth = width;
         this.maxHeight = height;
         compile();
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
     }
     
     public int getMaxWidht() {
@@ -207,13 +220,14 @@ public class CompiledText {
         int totalHeight = getTotalHeight();
         
         stack.pushPose();
+        stack.scale(scale, scale, scale);
         float y = Math.max(0, switch (valign) {
             case CENTER -> maxHeight / 2 - totalHeight / 2;
             case BOTTOM -> maxHeight - totalHeight;
             default -> 0;
         });
         stack.translate(0, y, 0);
-        usedHeight += y;
+        usedHeight += (int) y;
         
         for (CompiledLine line : lines) {
             switch (align) {

@@ -27,13 +27,19 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public double maxValue;
     public double minValue;
     public double value;
+    protected float textScale;
     protected boolean grabbedSlider;
     public int sliderWidth = 4;
     
     protected GuiTextfield textfield;
     
     public GuiSlider(String name, double value, double min, double max) {
+        this(name, 1.0f, value, min, max);
+    }
+
+    public GuiSlider(String name, float textScale, double value, double min, double max) {
         super(name);
+        this.textScale = textScale;
         this.minValue = min;
         this.maxValue = max;
         setValue(value);
@@ -194,7 +200,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         if (textfield != null)
             textfield.render(graphics, control, rect, rect, 1, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), control.getContentWidth(), control.getContentHeight(), ColorUtils.WHITE, true);
+            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), textScale, control.getContentWidth(), control.getContentHeight(), ColorUtils.WHITE, true);
     }
     
     @Override

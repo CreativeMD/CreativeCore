@@ -12,7 +12,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.ITextCollection;
 
 public class GuiComboBox extends GuiLabel {
-    
+
     protected GuiComboBoxExtension extension;
     public CompiledText[] lines;
     private int index;
@@ -20,7 +20,11 @@ public class GuiComboBox extends GuiLabel {
     private boolean searchbar;
     
     public GuiComboBox(String name, ITextCollection builder) {
-        super(name);
+        this(name, builder, 1.0f);
+    }
+
+    public GuiComboBox(String name, ITextCollection builder, float scale) {
+        super(name, scale);
         lines = builder.build();
         if (index >= lines.length)
             index = 0;
@@ -82,7 +86,7 @@ public class GuiComboBox extends GuiLabel {
         int width = 0;
         for (CompiledText text : lines)
             width = Math.max(width, text.getTotalWidth() + 3); // +3 due to scroll bar width
-        return width;
+        return (int) (width * scale);
     }
     
     @Override
@@ -90,7 +94,7 @@ public class GuiComboBox extends GuiLabel {
         int height = 0;
         for (CompiledText text : lines)
             height = Math.max(height, text.getTotalHeight());
-        return height;
+        return (int) (height * scale);
     }
     
     public int getIndex() {

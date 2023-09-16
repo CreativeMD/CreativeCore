@@ -46,7 +46,8 @@ public class GuiTextfield extends GuiFocusControl {
     private int lineScrollOffset;
     private int cursorPosition;
     private int selectionEnd;
-    private String suggestion;
+    protected String suggestion;
+    protected float textScale;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
     private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
@@ -55,13 +56,23 @@ public class GuiTextfield extends GuiFocusControl {
     private int cachedWidth;
     
     public GuiTextfield(String name) {
+        this(name, 1.0f);
+    }
+
+    public GuiTextfield(String name, float textScale) {
         super(name);
         setText("");
+        setTextScale(textScale);
     }
     
     public GuiTextfield(String name, String text) {
+        this(name, text, 1.0f);
+    }
+
+    public GuiTextfield(String name, String text, float textScale) {
         super(name);
         setText(text);
+        setTextScale(textScale);
     }
     
     @Override
@@ -137,6 +148,14 @@ public class GuiTextfield extends GuiFocusControl {
             return 0;
         }
     }
+
+    public float getTextScale() {
+        return textScale;
+    }
+
+    public void setTextScale(float textScale) {
+        this.textScale = textScale;
+    }
     
     @Override
     public void init() {}
@@ -159,6 +178,8 @@ public class GuiTextfield extends GuiFocusControl {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
+        pose.pushPose();
+        pose.scale(textScale, textScale, textScale);
         Font font = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
@@ -202,6 +223,7 @@ public class GuiTextfield extends GuiFocusControl {
             int l1 = font.width(s.substring(0, k));
             this.drawSelectionBox(control, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
+        pose.popPose();
     }
     
     public void setText(String textIn) {

@@ -18,11 +18,16 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiLabel extends GuiControl {
-    
+    protected final float scale;
     protected CompiledText text = CompiledText.createAnySize();
     
     public GuiLabel(String name) {
+        this(name, 1.0f);
+    }
+
+    public GuiLabel(String name, float scale) {
         super(name);
+        this.scale = scale;
     }
     
     public GuiLabel setDefaultColor(int color) {
@@ -92,6 +97,7 @@ public class GuiLabel extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        text.setScale(scale);
         text.render(graphics.pose());
     }
     
@@ -112,17 +118,17 @@ public class GuiLabel extends GuiControl {
     
     @Override
     protected int preferredWidth(int availableWidth) {
-        return text.getTotalWidth();
+        return (int) (text.getTotalWidth() * scale);
     }
     
     @Override
     protected int minHeight(int width, int availableHeight) {
-        return Minecraft.getInstance().font.lineHeight;
+        return (int) (Minecraft.getInstance().font.lineHeight * scale);
     }
     
     @Override
     protected int preferredHeight(int width, int availableHeight) {
-        return text.getTotalHeight();
+        return (int) (text.getTotalHeight() * scale);
     }
     
 }

@@ -11,7 +11,11 @@ public class GuiButton extends GuiLabel {
     protected Consumer<Integer> pressed;
     
     public GuiButton(String name, Consumer<Integer> pressed) {
-        super(name);
+        this(name, 1.0f, pressed);
+    }
+
+    public GuiButton(String name, float scale, Consumer<Integer> pressed) {
+        super(name, scale);
         this.pressed = pressed;
     }
     

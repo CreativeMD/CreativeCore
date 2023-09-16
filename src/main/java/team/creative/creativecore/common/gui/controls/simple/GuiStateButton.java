@@ -17,15 +17,23 @@ import team.creative.creativecore.common.util.text.TextListBuilder;
 
 public class GuiStateButton extends GuiButton {
     
-    private int index = 0;
+    private int index;
     public CompiledText[] states;
     
     public GuiStateButton(String name, ITextCollection states) {
         this(name, 0, states);
     }
+
+    public GuiStateButton(String name, float scale, ITextCollection states) {
+        this(name, scale, 0, states);
+    }
     
     public GuiStateButton(String name, int index, ITextCollection states) {
-        super(name, null);
+        this(name, 1.0f, index, states);
+    }
+
+    public GuiStateButton(String name, float scale, int index, ITextCollection states) {
+        super(name, scale, null);
         this.pressed = button -> {
             if (button == 1)
                 previousState();
