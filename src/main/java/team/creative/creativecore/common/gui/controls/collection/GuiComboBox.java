@@ -81,7 +81,7 @@ public class GuiComboBox extends GuiLabel {
         }
         return false;
     }
-    
+
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         if (extension == null)

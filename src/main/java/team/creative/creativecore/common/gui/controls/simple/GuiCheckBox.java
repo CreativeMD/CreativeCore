@@ -80,6 +80,7 @@ public class GuiCheckBox extends GuiLabel {
         
         matrix.pushPose();
         matrix.translate(checkBoxWidth + 3, 0, 0);
+        matrix.scale(scale, scale, scale);
         text.render(matrix);
         matrix.popPose();
     }

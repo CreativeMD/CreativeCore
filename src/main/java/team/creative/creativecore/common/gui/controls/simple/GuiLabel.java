@@ -45,6 +45,8 @@ public class GuiLabel extends GuiControl {
     }
 
     public GuiLabel setScale(float scale) {
+        this.preferredWidth = (int) (this.preferredWidth * scale + 3);
+        this.preferredHeight = (int) (this.preferredHeight * scale + 1);
         this.scale = scale;
         return this;
     }
