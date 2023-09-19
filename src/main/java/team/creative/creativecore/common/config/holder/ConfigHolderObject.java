@@ -57,9 +57,7 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
                     ConfigKeyFieldObject fieldKey = new ConfigKeyFieldObject(field, name, ConfigTypeConveration.parseObject(this, fieldSync, name, field.get(
                         defaultReference)), fieldSync, config.requiresRestart());
                     this.fields.add(name, fieldKey);
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    
-                }
+                } catch (IllegalArgumentException | IllegalAccessException e) {}
         }
     }
     

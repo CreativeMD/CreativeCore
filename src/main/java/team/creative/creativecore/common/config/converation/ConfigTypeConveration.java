@@ -39,6 +39,7 @@ import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.config.premade.RegistryObjectConfig;
 import team.creative.creativecore.common.config.premade.SelectableConfig;
 import team.creative.creativecore.common.config.premade.SoundConfig;
+import team.creative.creativecore.common.config.premade.ToggleableConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -745,6 +746,8 @@ public abstract class ConfigTypeConveration<T> {
         registerType(Permission.class, new ConfigTypePermission());
         
         registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1));
+        
+        registerType(ToggleableConfig.class, new ConfigTypeToggleable());
         
         holderConveration = registerType(ConfigHolderObject.class, new ConfigTypeConveration<ConfigHolderObject>() {
             

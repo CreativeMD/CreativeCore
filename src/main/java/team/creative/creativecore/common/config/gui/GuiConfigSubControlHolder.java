@@ -12,8 +12,8 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     
-    public final ICreativeConfigHolder holder;
-    public final Object value;
+    public ICreativeConfigHolder holder;
+    public Object value;
     private final Runnable updateListener;
     
     public GuiConfigSubControlHolder(String name, ICreativeConfigHolder holder, Object value, Runnable updateListener) {
@@ -23,6 +23,11 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
         this.value = value;
         this.updateListener = updateListener;
         flow = GuiFlow.STACK_Y;
+    }
+    
+    public void load(ICreativeConfigHolder holder, Object value) {
+        this.holder = holder;
+        this.value = value;
     }
     
     public void createControls() {
