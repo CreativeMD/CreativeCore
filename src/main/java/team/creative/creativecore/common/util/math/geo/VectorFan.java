@@ -106,7 +106,7 @@ public class VectorFan {
             Vec3f vec = new Vec3f();
             Vec2f vec2d = shape.get(i);
             vec.set(one, vec2d.x);
-            vec.set(two, vec2d.x);
+            vec.set(two, vec2d.y);
             vec.set(axis, plane.project(one, two, axis, vec2d.x, vec2d.y));
             result[i] = vec;
         }
