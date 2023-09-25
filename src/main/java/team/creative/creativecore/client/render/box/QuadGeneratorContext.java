@@ -78,12 +78,12 @@ public class QuadGeneratorContext {
     }
     
     public void setBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
-        this.minX = Math.min(minX, maxX);
-        this.minY = Math.min(minY, maxY);
-        this.minZ = Math.min(minZ, maxZ);
-        this.maxX = Math.max(minX, maxX);
-        this.maxY = Math.max(minY, maxY);
-        this.maxZ = Math.max(minZ, maxZ);
+        this.minX = minX;
+        this.minY = minY;
+        this.minZ = minZ;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        this.maxZ = maxZ;
         
         this.sizeX = this.maxX - this.minX;
         this.sizeY = this.maxY - this.minY;

@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
+import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
@@ -452,7 +453,7 @@ public class RenderBox extends AlignedBox {
             
             holder.uvInverted = false;
             
-            index = 1 * holder.format.getIntegerSize();
+            index += VertexFormatUtils.blockFormatIntSize();
             uvIndex = index + holder.uvOffset;
             if (tempMinX != Float.intBitsToFloat(data[index])) {
                 if (tempU != Float.intBitsToFloat(data[uvIndex]))
@@ -471,12 +472,34 @@ public class RenderBox extends AlignedBox {
                     holder.uvInverted = Axis.Z != facing.getVAxis();
             }
             
-            index = 2 * holder.format.getIntegerSize();
+            float x = Float.intBitsToFloat(data[index]);
+            float y = Float.intBitsToFloat(data[index + 1]);
+            float z = Float.intBitsToFloat(data[index + 2]);
+            
+            float minX = Math.min(x, tempMinX);
+            float minY = Math.min(y, tempMinY);
+            float minZ = Math.min(z, tempMinZ);
+            float maxX = Math.max(x, tempMinX);
+            float maxY = Math.max(y, tempMinY);
+            float maxZ = Math.max(z, tempMinZ);
+            
+            index += VertexFormatUtils.blockFormatIntSize();
+            
             float tempMaxX = Float.intBitsToFloat(data[index]);
             float tempMaxY = Float.intBitsToFloat(data[index + 1]);
             float tempMaxZ = Float.intBitsToFloat(data[index + 2]);
             
-            holder.setBounds(tempMinX, tempMinY, tempMinZ, tempMaxX, tempMaxY, tempMaxZ);
+            minX = Math.min(minX, tempMaxX);
+            minY = Math.min(minY, tempMaxY);
+            minZ = Math.min(minZ, tempMaxZ);
+            maxX = Math.max(maxX, tempMaxX);
+            maxY = Math.max(maxY, tempMaxY);
+            maxZ = Math.max(maxZ, tempMaxZ);
+            
+            // It is not necessary to iterate the last coordinate, because min max should already be reached.
+            // This means only the first 3 are considered for the min max check
+            
+            holder.setBounds(minX, minY, minZ, maxX, maxY, maxZ);
             
             // Check if it is intersecting, otherwise there is no need to render it
             if (!intersectsWithFace(facing, holder, offset))
@@ -485,7 +508,7 @@ public class RenderBox extends AlignedBox {
             uvIndex = holder.uvOffset;
             float u1 = Float.intBitsToFloat(data[uvIndex]);
             float v1 = Float.intBitsToFloat(data[uvIndex + 1]);
-            uvIndex = 2 * holder.format.getIntegerSize() + holder.uvOffset;
+            uvIndex = 2 * VertexFormatUtils.blockFormatIntSize() + holder.uvOffset;
             float u2 = Float.intBitsToFloat(data[uvIndex]);
             float v2 = Float.intBitsToFloat(data[uvIndex + 1]);
             

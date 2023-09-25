@@ -168,4 +168,20 @@ public class VectorUtils {
         return number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON;
     }
     
+    public static boolean greaterEquals(float number, float number2) {
+        return number > number2 || (number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON);
+    }
+    
+    public static boolean smallerEquals(float number, float number2) {
+        return number < number2 || (number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON);
+    }
+    
+    public static boolean greaterEquals(double number, double number2) {
+        return number > number2 || (number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON);
+    }
+    
+    public static boolean smallerEquals(double number, double number2) {
+        return number < number2 || (number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON);
+    }
+    
 }

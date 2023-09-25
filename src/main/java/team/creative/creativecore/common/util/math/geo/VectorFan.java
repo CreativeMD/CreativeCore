@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
@@ -85,7 +86,9 @@ public class VectorFan {
             float valueOne = coords[i].get(one);
             float valueTwo = coords[i].get(two);
             
-            inside[i] = valueOne >= minOne && valueOne <= maxOne && valueTwo >= minTwo && valueTwo <= maxTwo;
+            inside[i] = VectorUtils.greaterEquals(valueOne, minOne) && VectorUtils.smallerEquals(valueOne, maxOne) && VectorUtils.greaterEquals(valueTwo, minTwo) && VectorUtils
+                    .smallerEquals(valueTwo, maxTwo);
+            
             if (allTheSame) {
                 if (i == 0)
                     allValue = inside[i];
@@ -172,7 +175,7 @@ public class VectorFan {
             else
                 vec = vec4;
             
-            int index = k * holder.format.getIntegerSize();
+            int index = k * VertexFormatUtils.blockFormatIntSize();
             
             float x;
             float y;
