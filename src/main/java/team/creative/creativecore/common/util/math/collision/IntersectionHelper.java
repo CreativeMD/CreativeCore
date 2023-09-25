@@ -554,7 +554,8 @@ public class IntersectionHelper {
     }
     
     private static void add(Vec2f vec, List<Vec2f> result) {
-        if (result.isEmpty() || !result.get(result.size() - 1).epsilonEquals(vec, VectorFan.EPSILON))
+        if (result.isEmpty() || (!result.get(result.size() - 1).epsilonEquals(vec, VectorFan.EPSILON) && (result.size() == 1 || !result.get(0).epsilonEquals(vec,
+            VectorFan.EPSILON))))
             result.add(vec);
     }
     
