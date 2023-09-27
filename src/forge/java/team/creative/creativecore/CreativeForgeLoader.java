@@ -31,7 +31,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
-import net.minecraftforge.network.NetworkConstants;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
@@ -49,7 +48,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public String ignoreServerNetworkConstant() {
-        return NetworkConstants.IGNORESERVERONLY;
+        return IExtensionPoint.DisplayTest.IGNORESERVERONLY;
     }
     
     @Override

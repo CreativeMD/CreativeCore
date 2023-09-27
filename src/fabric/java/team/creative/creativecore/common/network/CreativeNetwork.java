@@ -29,7 +29,7 @@ public class CreativeNetwork {
     
     private int id = 0;
     
-    public CreativeNetwork(String version, Logger logger, ResourceLocation location) {
+    public CreativeNetwork(int version, Logger logger, ResourceLocation location) {
         this.logger = logger;
         this.CHANNEL = location;
         this.logger.debug("Created network " + location + "");

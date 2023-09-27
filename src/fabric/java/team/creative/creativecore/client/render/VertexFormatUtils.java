@@ -8,7 +8,8 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 
 public class VertexFormatUtils {
     
-    private static int vertexFormatSize;
+    private static int VERTEX_FORMAT_SIZE;
+    private static int VERTEX_FORMAT_INT_SIZE;
     private static int POSITION_OFFSET;
     private static int UV_OFFSET;
     
@@ -18,7 +19,8 @@ public class VertexFormatUtils {
     
     public static void update() {
         VertexFormat format = DefaultVertexFormat.BLOCK;
-        vertexFormatSize = format.getVertexSize();
+        VERTEX_FORMAT_SIZE = format.getVertexSize();
+        VERTEX_FORMAT_INT_SIZE = format.getIntegerSize();
         UV_OFFSET = -1;
         List<VertexFormatElement> elements = format.getElements();
         int offset = 0;
@@ -37,7 +39,11 @@ public class VertexFormatUtils {
     }
     
     public static int blockFormatSize() {
-        return vertexFormatSize;
+        return VERTEX_FORMAT_SIZE;
+    }
+    
+    public static int blockFormatIntSize() {
+        return VERTEX_FORMAT_INT_SIZE;
     }
     
     public static int blockPositionOffset() {

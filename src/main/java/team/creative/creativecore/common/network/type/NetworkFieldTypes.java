@@ -1,6 +1,5 @@
 package team.creative.creativecore.common.network.type;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -19,18 +18,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import net.minecraft.CrashReport;
-import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagTypes;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -62,109 +55,109 @@ import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
 import team.creative.creativecore.common.util.type.Bunch;
 
 public class NetworkFieldTypes {
-    
+
     private static final Gson GSON = new Gson();
     private static final List<NetworkFieldTypeSpecial> specialParsers = new ArrayList<>();
     private static final HashMap<Class, NetworkFieldTypeClass> parsers = new HashMap<>();
-    
+
     public static <T> void register(NetworkFieldTypeClass<T> parser, Class<T> classType) {
         parsers.put(classType, parser);
     }
-    
+
     public static <T> void register(NetworkFieldTypeClass<T> parser, Class<? extends T>... classType) {
         for (Class<? extends T> clazz : classType)
             parsers.put(clazz, parser);
     }
-    
+
     public static <T> void register(NetworkFieldTypeSpecial parser) {
         specialParsers.add(parser);
     }
-    
+
     public static NetworkFieldType get(Field field) {
         return get(field.getType(), field.getGenericType());
     }
-    
+
     public static <T> NetworkFieldType<T> get(Class<T> classType) {
         try {
             NetworkFieldType parser = parsers.get(classType);
             if (parser != null)
                 return parser;
-            
+
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        
+
         throw new RuntimeException("No field type found for " + classType.getSimpleName());
     }
-    
+
     public static NetworkFieldType get(Class classType, Type genericType) {
         try {
             NetworkFieldType parser = parsers.get(classType);
             if (parser != null)
                 return parser;
-            
+
             for (int i = 0; i < specialParsers.size(); i++)
                 if (specialParsers.get(i).predicate.test(classType, genericType))
                     return specialParsers.get(i);
-                
+
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-        
+
         throw new RuntimeException("No field type found for " + classType.getSimpleName());
     }
-    
+
     public static <T> void write(Class<T> clazz, T object, FriendlyByteBuf buffer) {
         get(clazz).write(object, clazz, null, buffer);
     }
-    
+
     public static <T> void writeMany(Class<T> clazz, Bunch<T> bunch, FriendlyByteBuf buffer) {
         buffer.writeInt(bunch.size());
         NetworkFieldType<T> type = get(clazz);
         for (T t : bunch)
             type.write(t, clazz, null, buffer);
     }
-    
+
     public static <T> void writeMany(Class<T> clazz, Collection<T> collection, FriendlyByteBuf buffer) {
         buffer.writeInt(collection.size());
         NetworkFieldType<T> type = get(clazz);
         for (T t : collection)
             type.write(t, clazz, null, buffer);
     }
-    
+
     public static <T> void writeMany(Class<T> clazz, T[] collection, FriendlyByteBuf buffer) {
         buffer.writeInt(collection.length);
         NetworkFieldType<T> type = get(clazz);
         for (T t : collection)
             type.write(t, clazz, null, buffer);
     }
-    
+
     public static <T> T read(Class<T> clazz, FriendlyByteBuf buffer) {
         return get(clazz).read(clazz, null, buffer);
     }
-    
+
     public static <T> Iterable<T> readMany(Class<T> clazz, FriendlyByteBuf buffer) {
         int length = buffer.readInt();
         NetworkFieldType<T> type = get(clazz);
-        
+
         return () -> new Iterator<T>() {
-            
+
             int index = 0;
-            
+
             @Override
             public boolean hasNext() {
                 return index < length;
             }
-            
+
             @Override
             public T next() {
                 index++;
                 return type.read(clazz, null, buffer);
             }
-            
+
         };
     }
-    
+
     static {
         register(new NetworkFieldTypeClass<Boolean>() {
             
@@ -212,7 +205,7 @@ public class NetworkFieldTypes {
             protected void writeContent(Integer content, FriendlyByteBuf buffer) {
                 buffer.writeInt(content);
             }
-            
+
             @Override
             protected Integer readContent(FriendlyByteBuf buffer) {
                 return buffer.readInt();
@@ -296,19 +289,6 @@ public class NetworkFieldTypes {
                 return buffer.readComponent();
             }
         }, Component.class);
-        
-        register(new NetworkFieldTypeClass<CompoundTag>() {
-            
-            @Override
-            protected void writeContent(CompoundTag content, FriendlyByteBuf buffer) {
-                buffer.writeNbt(content);
-            }
-            
-            @Override
-            protected CompoundTag readContent(FriendlyByteBuf buffer) {
-                return buffer.readNbt();
-            }
-        }, CompoundTag.class);
         
         register(new NetworkFieldTypeClass<ItemStack>() {
             
@@ -633,7 +613,7 @@ public class NetworkFieldTypes {
             @Override
             protected Filter readContent(FriendlyByteBuf buffer) {
                 try {
-                    return Filter.SERIALIZER.read(buffer.readAnySizeNbt());
+                    return Filter.SERIALIZER.read((CompoundTag) buffer.readNbt(NbtAccounter.unlimitedHeap()));
                 } catch (RegistryException e) {
                     e.printStackTrace();
                     return Filter.or();
@@ -656,7 +636,7 @@ public class NetworkFieldTypes {
             @Override
             protected BiFilter readContent(FriendlyByteBuf buffer) {
                 try {
-                    return BiFilter.SERIALIZER.read(buffer.readAnySizeNbt());
+                    return BiFilter.SERIALIZER.read((CompoundTag) buffer.readNbt(NbtAccounter.unlimitedHeap()));
                 } catch (RegistryException e) {
                     e.printStackTrace();
                     return BiFilter.or();
@@ -692,32 +672,12 @@ public class NetworkFieldTypes {
             
             @Override
             public void write(Tag content, Class classType, Type genericType, FriendlyByteBuf buffer) {
-                buffer.writeByte(content.getId());
-                if (content.getId() != 0)
-                    try {
-                        content.write(new ByteBufOutputStream(buffer));
-                    } catch (IOException e) {}
+                buffer.writeNbt(content);
             }
             
             @Override
             public Tag read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-                ByteBufInputStream in = null;
-                try {
-                    in = new ByteBufInputStream(buffer);
-                    byte b0 = in.readByte();
-                    if (b0 == 0)
-                        return EndTag.INSTANCE;
-                    
-                    return TagTypes.getType(b0).load(in, 0, NbtAccounter.UNLIMITED);
-                } catch (IOException e) {
-                    CrashReport crashreport = CrashReport.forThrowable(e, "Loading NBT data");
-                    crashreport.addCategory("NBT Tag");
-                    throw new ReportedException(crashreport);
-                } finally {
-                    try {
-                        in.close();
-                    } catch (IOException e) {}
-                }
+                return buffer.readNbt(NbtAccounter.unlimitedHeap());
                 
             }
         });
@@ -729,9 +689,7 @@ public class NetworkFieldTypes {
             @Override
             public void write(Packet content, Class classType, Type genericType, FriendlyByteBuf buffer) {
                 Packet packet = content;
-                ConnectionProtocol protocol = ConnectionProtocol.getProtocolForPacket(packet);
-                if (protocol != ConnectionProtocol.PLAY)
-                    throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
+                ConnectionProtocol protocol = ConnectionProtocol.PLAY;
                 
                 if (content instanceof BundlePacket<?> bundle) {
                     buffer.writeInt(BUNDLE_WILDCARD);
@@ -745,12 +703,12 @@ public class NetworkFieldTypes {
                     return;
                 }
                 
-                Integer id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
+                Integer id = protocol.codec(PacketFlow.CLIENTBOUND).packetId(packet);
                 if (id != -1) {
                     buffer.writeInt(id);
                     packet.write(buffer);
                 } else {
-                    buffer.writeInt(-protocol.getPacketId(PacketFlow.SERVERBOUND, packet));
+                    buffer.writeInt(-protocol.codec(PacketFlow.SERVERBOUND).packetId(packet));
                     packet.write(buffer);
                 }
                 
@@ -767,10 +725,10 @@ public class NetworkFieldTypes {
                     return new ClientboundBundlePacket(packets);
                 }
                 if (id < 0)
-                    return ConnectionProtocol.PLAY.createPacket(PacketFlow.SERVERBOUND, -id, buffer);
-                return ConnectionProtocol.PLAY.createPacket(PacketFlow.CLIENTBOUND, id, buffer);
+                    return ConnectionProtocol.PLAY.codec(PacketFlow.SERVERBOUND).createPacket(-id, buffer);
+                return ConnectionProtocol.PLAY.codec(PacketFlow.CLIENTBOUND).createPacket(id, buffer);
             }
         });
     }
-    
+
 }

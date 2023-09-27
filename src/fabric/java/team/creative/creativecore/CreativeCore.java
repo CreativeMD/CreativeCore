@@ -44,7 +44,7 @@ public class CreativeCore implements ModInitializer {
     private static final ILoaderUtils UTILS = new FabricLoaderUtils();
     public static final String MODID = "creativecore";
     public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
-    public static final CreativeNetwork NETWORK = new CreativeNetwork("1.0", LOGGER, new ResourceLocation(CreativeCore.MODID, "main"));
+    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, new ResourceLocation(CreativeCore.MODID, "main"));
     public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
     
     public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator
