@@ -116,13 +116,14 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
-            if (field.is(side) && (!ignoreRestart || !field.requiresRestart))
-                if (json.has(field.name)) {
-                    field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json
-                            .get(field.name), side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null), side);
-                    field.triggerConfigured(side);
-                } else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
+            if (field.is(side) && (!ignoreRestart || !field.requiresRestart)) {
+                if (json.has(field.name))
+                    field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side,
+                        field instanceof ConfigKeyField ? (ConfigKeyField) field : null), side);
+                else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
                     field.restoreDefault(side, ignoreRestart);
+                field.triggerConfigured(side);
+            }
         }
     }
     
@@ -132,8 +133,8 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.is(side) && (!ignoreRestart || !field.requiresRestart) && (saveDefault || !field.isDefault(side)))
-                object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field
-                        .getDefault(), saveDefault, ignoreRestart, side, field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+                object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, ignoreRestart, side,
+                    field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
         }
         return object;
     }
