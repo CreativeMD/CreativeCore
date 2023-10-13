@@ -40,6 +40,7 @@ import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.config.sync.ConfigurationPacket;
+import team.creative.creativecore.common.level.IOrientatedLevel;
 import team.creative.creativecore.common.util.mc.JsonUtils;
 
 public class ConfigEventHandler {
@@ -78,7 +79,7 @@ public class ConfigEventHandler {
     
     @SubscribeEvent
     public void loadLevel(LevelEvent.Load event) {
-        if (event.getLevel().isClientSide())
+        if (event.getLevel().isClientSide() && !(event.getLevel() instanceof IOrientatedLevel))
             load(Side.CLIENT);
     }
     
