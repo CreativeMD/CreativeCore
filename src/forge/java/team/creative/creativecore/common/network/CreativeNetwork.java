@@ -16,10 +16,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.Channel.VersionTest.Status;
-import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
@@ -31,6 +30,7 @@ public class CreativeNetwork {
     
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     private final Logger logger;
+    private String version;
     
     private int id = 0;
     
@@ -38,21 +38,28 @@ public class CreativeNetwork {
     
     public CreativeNetwork(int version, Logger logger, ResourceLocation location) {
         this.logger = logger;
-        this.instance = ChannelBuilder.named(location).networkProtocolVersion(version).acceptedVersions((x, y) -> x == Status.PRESENT && y == version).simpleChannel();
+        this.version = "" + version;
+        this.instance = NetworkRegistry.newSimpleChannel(location, () -> this.version, x -> true, this.version::equals);
         this.logger.debug("Created network " + location + "");
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
         CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(classType, supplier);
-        this.instance.messageBuilder(classType, id).encoder((message, buffer) -> handler.write(message, buffer)).decoder(buffer -> handler.read(buffer)).consumerMainThread(
-            (message, ctx) -> {
+        this.instance.registerMessage(id, classType, (message, buffer) -> {
+            handler.write(message, buffer);
+        }, (buffer) -> {
+            return handler.read(buffer);
+        }, (message, ctx) -> {
+            ctx.get().enqueueWork(() -> {
                 try {
-                    message.execute(ctx.getSender() == null ? getClientPlayer() : ctx.getSender());
+                    message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender());
                 } catch (Throwable e) {
                     e.printStackTrace();
                     throw e;
                 }
-            }).add();
+            });
+            ctx.get().setPacketHandled(true);
+        });
         packetTypes.put(classType, handler);
         id++;
     }
@@ -62,11 +69,11 @@ public class CreativeNetwork {
     }
     
     public void sendToServer(CreativePacket message) {
-        this.instance.send(message, PacketDistributor.SERVER.noArg());
+        this.instance.sendToServer(message);
     }
     
     public void sendToClient(CreativePacket message, ServerPlayer player) {
-        this.instance.send(message, PacketDistributor.PLAYER.with(player));
+        this.instance.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
     
     public void sendToClient(CreativePacket message, Level level, BlockPos pos) {
@@ -78,24 +85,24 @@ public class CreativeNetwork {
     }
     
     public void sendToClient(CreativePacket message, LevelChunk chunk) {
-        this.instance.send(message, PacketDistributor.TRACKING_CHUNK.with(chunk));
+        this.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), message);
     }
     
     public void sendToClientTracking(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTracking(message, sub.getHolder());
         else
-            this.instance.send(message, PacketDistributor.TRACKING_ENTITY.with(entity));
+            this.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
     }
     
     public void sendToClientTrackingAndSelf(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTrackingAndSelf(message, sub.getHolder());
         else
-            this.instance.send(message, PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity));
+            this.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
     
     public void sendToClientAll(MinecraftServer server, CreativePacket message) {
-        this.instance.send(message, PacketDistributor.ALL.noArg());
+        this.instance.send(PacketDistributor.ALL.noArg(), message);
     }
 }
