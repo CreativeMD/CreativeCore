@@ -5,6 +5,8 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'com.diffplug.eclipse.apt'
     id 'org.spongepowered.mixin'
+    id 'com.modrinth.minotaur' version '2.+'
+    id 'com.matthewprenger.cursegradle' version '1.4+'
 }
 
 group= "team.creative" + project.mod_id
@@ -123,15 +125,71 @@ publishing {
             artifact jar
         }
     }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-    }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+String getChangelogText() {
+    String result = ''
+    boolean first = true
+    file('changelog.txt').readLines().find {
+        if (first) {
+            if (it.equals(project.mod_version)) {
+                first = false
+            }
+            return false
+        } else if (!it?.trim()) {
+            return true
+        } else {
+            result += "* " + it + "\n"
+            return false
+        }
+    }
+    
+    return result
+}
+
+task uploadRelease(type: GradleBuild) {
+    description 'Uploads new version to modrinth and curseforge.'
+    group = 'build'
+    tasks = ['modrinth', 'curseforge']
+}
+
+gradle.taskGraph.whenReady {
+    if (it.hasTask(tasks.modrinth) || it.hasTask(tasks.curseforge)) {
+        if (!getChangelogText()?.trim()) {
+            throw new GradleException('No changelog provided')
+        }
+    }
+}
+
+tasks.modrinth.enabled = System.getenv("MODRINTH_TOKEN") != null
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = project.mod_id
+    versionNumber = project.mod_version
+    versionType = project.release_type
+    uploadFile = jar
+    gameVersions = [ project.minecraft_version ]
+    changelog = getChangelogText()
+    loaders = [ "forge", "neoforge" ]
+}
+
+tasks.modrinth.enabled = System.getenv("CURSEFORGE_TOKEN") != null
+curseforge {
+    apiKey = System.getenv("CURSEFORGE_TOKEN")
+    project {
+        id = project.curse_id
+        changelog = getChangelogText()
+        changelogType = "markdown"
+        addGameVersion project.minecraft_version
+        addGameVersion "Forge"
+        addGameVersion "NeoForge"
+        releaseType = project.release_type
+        mainArtifact(jar) {
+        }
+    }
+}
 
