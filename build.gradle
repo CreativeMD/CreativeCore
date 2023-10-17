@@ -1,7 +1,6 @@
 plugins {
     id 'eclipse'
     id 'idea'
-    id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'com.diffplug.eclipse.apt'
     id 'org.spongepowered.mixin'
@@ -119,16 +118,8 @@ mixin {
     config 'creativecore.forge.mixins.json'
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-}
-
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }
 
 String getChangelogText() {
@@ -151,9 +142,9 @@ String getChangelogText() {
     return result
 }
 
-task uploadRelease(type: GradleBuild) {
+task upload(type: GradleBuild) {
     description 'Uploads new version to modrinth and curseforge.'
-    group = 'build'
+    group = 'publishing'
     tasks = ['modrinth', 'curseforge']
 }
 
@@ -166,6 +157,7 @@ gradle.taskGraph.whenReady {
 }
 
 tasks.modrinth.enabled = System.getenv("MODRINTH_TOKEN") != null
+tasks.modrinth.group = 'publishing'
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = project.mod_id
@@ -178,6 +170,7 @@ modrinth {
 }
 
 tasks.modrinth.enabled = System.getenv("CURSEFORGE_TOKEN") != null
+tasks.curseforge.group = 'publishing'
 curseforge {
     apiKey = System.getenv("CURSEFORGE_TOKEN")
     project {

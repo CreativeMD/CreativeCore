@@ -29,12 +29,10 @@ java.sourceSets {
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "maven.modrinth:modmenu:${project.modmenu_version}"
-    // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
 	api "net.minecraftforge:eventbus:6.0.3"
@@ -81,10 +79,6 @@ processResources {
 
 def targetJavaVersion = 17
 tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         it.options.release = targetJavaVersion
@@ -135,9 +129,9 @@ String getChangelogText() {
     return result
 }
 
-task uploadRelease(type: GradleBuild) {
+task upload(type: GradleBuild) {
     description 'Uploads new version to modrinth and curseforge.'
-    group = 'build'
+    group = 'publishing'
     tasks = ['modrinth', 'curseforge']
 }
 
@@ -150,7 +144,7 @@ gradle.taskGraph.whenReady {
 }
 
 tasks.modrinth.enabled = System.getenv("MODRINTH_TOKEN") != null
-tasks.modrinth.group = 'build'
+tasks.modrinth.group = 'publishing'
 
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
@@ -167,7 +161,7 @@ modrinth {
 }
 
 tasks.curseforge.enabled = System.getenv("CURSEFORGE_TOKEN") != null
-tasks.curseforge.group = 'build'
+tasks.curseforge.group = 'publishing'
 
 curseforge {
     apiKey = System.getenv("CURSEFORGE_TOKEN")
@@ -181,7 +175,7 @@ curseforge {
         mainArtifact(remapJar) {
         }
         relations {
-            requiredLibrary 'fabric-api'
+            requiredLibrary "fabric-api"
         }
     }
 }
