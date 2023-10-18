@@ -4,6 +4,7 @@ import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
+import team.creative.creativecore.common.util.math.vec.VectorUtils;
 
 public class NormalPlaneD {
     
@@ -91,7 +92,7 @@ public class NormalPlaneD {
         lineDirection.sub(lineOrigin);
         lineDirection.normalize();
         
-        if (normal.dot(lineDirection) == 0)
+        if (VectorUtils.isZero(normal.dot(lineDirection)))
             return null;
         
         double t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
@@ -102,7 +103,7 @@ public class NormalPlaneD {
     }
     
     public Vec3d intersect(Ray3d ray) {
-        if (normal.dot(ray.direction) == 0)
+        if (VectorUtils.isZero(normal.dot(ray.direction)))
             return null;
         
         double t = (normal.dot(origin) - normal.dot(ray.origin)) / normal.dot(ray.direction);
@@ -120,7 +121,7 @@ public class NormalPlaneD {
         Vec3d lineDirection = new Vec3d();
         lineDirection.set(axis, 1);
         
-        if (normal.dot(lineDirection) == 0)
+        if (VectorUtils.isZero(normal.dot(lineDirection)))
             return null;
         
         double t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);

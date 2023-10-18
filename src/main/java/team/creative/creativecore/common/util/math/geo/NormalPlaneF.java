@@ -3,6 +3,7 @@ package team.creative.creativecore.common.util.math.geo;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
+import team.creative.creativecore.common.util.math.vec.VectorUtils;
 
 public class NormalPlaneF {
     
@@ -71,7 +72,7 @@ public class NormalPlaneF {
         lineDirection.sub(lineOrigin);
         lineDirection.normalize();
         
-        if (normal.dot(lineDirection) == 0)
+        if (VectorUtils.isZero(normal.dot(lineDirection)))
             return null;
         
         float t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
@@ -82,7 +83,7 @@ public class NormalPlaneF {
     }
     
     public Vec3f intersect(Ray3f ray) {
-        if (normal.dot(ray.direction) == 0)
+        if (VectorUtils.isZero(normal.dot(ray.direction)))
             return null;
         
         float t = (normal.dot(origin) - normal.dot(ray.origin)) / normal.dot(ray.direction);
@@ -100,7 +101,7 @@ public class NormalPlaneF {
         Vec3f lineDirection = new Vec3f();
         lineDirection.set(axis, 1);
         
-        if (normal.dot(lineDirection) == 0)
+        if (VectorUtils.isZero(normal.dot(lineDirection)))
             return null;
         
         float t = (normal.dot(origin) - normal.dot(lineOrigin)) / normal.dot(lineDirection);
