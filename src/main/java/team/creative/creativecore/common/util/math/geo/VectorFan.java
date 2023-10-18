@@ -753,7 +753,7 @@ public class VectorFan {
         return false;
     }
     
-    public boolean intersect2d(VectorFan other, Axis one, Axis two, boolean inverse) {
+    public boolean intersect2d(VectorFan other, Axis one, Axis two, boolean inverse, float episilon) {
         if (this.equals(other))
             return true;
         
@@ -780,12 +780,12 @@ public class VectorFan {
                 try {
                     double t = ray1.intersectWhen(ray2);
                     double otherT = ray2.intersectWhen(ray1);
-                    if (t > EPSILON && t < 1 - EPSILON && otherT > EPSILON && otherT < 1 - EPSILON)
+                    if (t > episilon && t < 1 - episilon && otherT > episilon && otherT < 1 - episilon)
                         return true;
                 } catch (ParallelException e) {
                     double startT = ray1.getT(one, ray2.originOne);
                     double endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
-                    if ((startT > EPSILON && startT < 1 - EPSILON) || endT > EPSILON && endT < 1 - EPSILON) {
+                    if ((startT > episilon && startT < 1 - episilon) || endT > episilon && endT < 1 - episilon) {
                         parrallel++;
                         if (parrallel > 1)
                             return true;
@@ -986,7 +986,7 @@ public class VectorFan {
     
     public static boolean isInside(List<NormalPlaneF> shape, Vec3f vec, int toSkip) {
         for (int i = 0; i < shape.size(); i++)
-            if (i != toSkip && !BooleanUtils.isFalse(shape.get(i).isInFront(vec)))
+            if (i != toSkip && !BooleanUtils.isFalse(shape.get(i).isInFront(vec, VectorFan.EPSILON)))
                 return false;
         return true;
     }
