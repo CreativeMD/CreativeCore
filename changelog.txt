@@ -1,4 +1,6 @@
+2.11.7
+Fixed crash with ListBox due to newly added canBeModified being null in some cases
+
 2.11.6
 Added epsilon for intersect2d method in VectorFan
 Fixed NormalPlaneD and NormalPlaneF not considering float point precision when checking if the intersection is valid
-
