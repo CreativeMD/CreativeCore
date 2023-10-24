@@ -23,7 +23,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public final boolean modifiable;
     
-    public Predicate<T> canBeModified;
+    public Predicate<T> canBeModified = x -> true;
     
     public GuiListBoxBase(String name, boolean modifiable, List<T> entries) {
         super(name);
