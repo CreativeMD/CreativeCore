@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.config.premade;
 
+import java.util.Objects;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import team.creative.creativecore.Side;
@@ -25,7 +27,7 @@ public class RegistryObjectConfig<T> implements ICreativeConfig {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof RegistryObjectConfig re)
-            return re.registry == registry && re.location.equals(location);
+            return re.registry == registry && Objects.equals(re.location, location);
         return super.equals(obj);
     }
     
