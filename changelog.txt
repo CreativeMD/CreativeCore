@@ -1,3 +1,6 @@
+2.11.8
+Fixed crash when checking two registryobjects (used by solonion config)
+
 2.11.7
 Fixed crash with ListBox due to newly added canBeModified being null in some cases
 
