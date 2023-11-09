@@ -1,3 +1,7 @@
+2.11.9
+Added SpecialSoundInstance (ported getStream to fabric)
+Added ResourceUtils
+
 2.11.8
 Fixed crash when checking two registryobjects (used by solonion config)
 
