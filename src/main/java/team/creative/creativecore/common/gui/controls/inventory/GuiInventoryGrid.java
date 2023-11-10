@@ -17,7 +17,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     public final Container container;
     protected boolean hasFixedSize = false;
-    private int fixedSize;
+    protected int fixedSize;
     protected boolean reverse = false;
     private int cols;
     private int rows;
@@ -27,6 +27,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     private boolean allChanged = false;
     private HashSet<Integer> changed = new HashSet<>();
     private List<Consumer<GuiSlot>> listeners;
+    private List<GuiSlot> slots = new ArrayList<>();
     
     public GuiInventoryGrid(String name, Container container) {
         this(name, container, (int) Math.ceil(Math.sqrt(container.getContainerSize())));
@@ -48,11 +49,12 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
         this.rows = rows;
         this.container = container;
         this.fixedSize = Math.min(container.getContainerSize(), cols * rows);
-        for (int i = 0; i < fixedSize; i++) {
-            GuiChildControl child = super.add(new GuiSlot(slotFactory.apply(container, i)));
-            child.rect.maxX = GuiSlotBase.SLOT_SIZE;
-            child.rect.maxY = GuiSlotBase.SLOT_SIZE;
-        }
+        createInventoryGrid(slotFactory);
+    }
+    
+    protected void createInventoryGrid(BiFunction<Container, Integer, Slot> slotFactory) {
+        for (int i = 0; i < fixedSize; i++)
+            addSlot(new GuiSlot(slotFactory.apply(container, i)));
     }
     
     public GuiInventoryGrid disableSlot(int index) {
@@ -65,6 +67,13 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
             listeners = new ArrayList<>();
         listeners.add(slot);
         return this;
+    }
+    
+    protected GuiChildControl addSlot(GuiSlot slot) {
+        while (slot.slot.getSlotIndex() >= slots.size())
+            slots.add(null);
+        slots.set(slot.slot.getSlotIndex(), slot);
+        return super.add(slot);
     }
     
     @Override
@@ -92,6 +101,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
         int i = 0;
         for (GuiChildControl control : controls) {
             control.setX(offset + (i % cachedCols) * GuiSlotBase.SLOT_SIZE);
+            control.setWidth(GuiSlotBase.SLOT_SIZE, width);
             control.flowX();
             i++;
         }
@@ -107,6 +117,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
         for (GuiChildControl control : controls) {
             int row = i / cachedCols;
             control.setY(offset + row * GuiSlotBase.SLOT_SIZE);
+            control.setHeight(GuiSlotBase.SLOT_SIZE, height);
             control.flowY();
             if (row > cachedRows)
                 control.control.visible = false;
@@ -136,7 +147,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     @Override
     public GuiSlot getSlot(int index) {
-        return (GuiSlot) controls.get(index).control;
+        return slots.get(index);
     }
     
     @Override
