@@ -25,6 +25,12 @@ public class GuiPlayerInventoryGrid extends GuiInventoryGrid {
     }
     
     @Override
+    public void syncAll() {
+        super.syncAll();
+        timesChanged = getPlayer().getInventory().getTimesChanged();
+    }
+    
+    @Override
     public void tick() {
         if (timesChanged != getPlayer().getInventory().getTimesChanged()) {
             setChanged();
