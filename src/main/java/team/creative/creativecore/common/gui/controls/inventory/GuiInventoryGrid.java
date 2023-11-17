@@ -70,9 +70,9 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     }
     
     protected GuiChildControl addSlot(GuiSlot slot) {
-        while (slot.slot.getSlotIndex() >= slots.size())
+        while (slot.slot.getContainerSlot() >= slots.size())
             slots.add(null);
-        slots.set(slot.slot.getSlotIndex(), slot);
+        slots.set(slot.slot.getContainerSlot(), slot);
         return super.add(slot);
     }
     
