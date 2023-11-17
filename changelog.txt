@@ -1,3 +1,11 @@
+2.11.10
+Added log when exception occurs during the execution of a GuiSync
+Fixed not using slot.remove which caused some issues
+Fixed extracting slots with negative numbers which caused items to get lost
+Fixed continuously setting player inventory to changed, causing loss in performance and errors when closing gui
+Fixed several slot rendering issues
+Fixed player inventory wrong slot order
+
 2.11.9
 Added SpecialSoundInstance (ported getStream to fabric)
 Added ResourceUtils
