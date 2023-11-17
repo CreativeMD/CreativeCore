@@ -84,7 +84,7 @@ public class GuiSlot extends GuiSlotBase {
         if (delta > 0)
             CreativeCoreGuiRegistry.INSERT.sendAndExecute(this, IntTag.valueOf((int) delta));
         else
-            CreativeCoreGuiRegistry.EXTRACT.sendAndExecute(this, IntTag.valueOf((int) delta));
+            CreativeCoreGuiRegistry.EXTRACT.sendAndExecute(this, IntTag.valueOf((int) -delta));
         return true;
     }
     
