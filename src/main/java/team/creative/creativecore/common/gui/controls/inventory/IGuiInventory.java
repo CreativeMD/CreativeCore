@@ -55,10 +55,8 @@ public interface IGuiInventory {
                 int transfer = Math.min(toDrain.getCount(), slot.getStack().getCount());
                 if (transfer <= 0)
                     continue;
-                slot.getStack().shrink(transfer);
                 
-                ItemStack drained = toDrain.copy();
-                drained.setCount(transfer);
+                ItemStack drained = slot.slot.remove(transfer);
                 slot.slot.onTake(player, drained);
                 
                 toDrain.shrink(transfer);

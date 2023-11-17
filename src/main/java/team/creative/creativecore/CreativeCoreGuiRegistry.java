@@ -58,9 +58,7 @@ public class CreativeCoreGuiRegistry {
         
         ItemStack stack = slot.getItem();
         int amount = Math.min(t.getAsInt(), stack.getCount());
-        ItemStack insert = stack.copy();
-        insert.setCount(amount);
-        stack.shrink(amount);
+        ItemStack insert = slot.remove(amount);
         
         for (IGuiInventory inv : layer.inventoriesToInsert()) {
             if (inv == c.inventory())
@@ -84,7 +82,7 @@ public class CreativeCoreGuiRegistry {
         
         ItemStack stack = slot.getItem();
         
-        if (stack.isEmpty())
+        if (stack.isEmpty() || !slot.mayPlace(stack))
             return;
         
         int amount = Math.min(t.getAsInt(), slot.getMaxStackSize(stack) - stack.getCount());
@@ -123,11 +121,9 @@ public class CreativeCoreGuiRegistry {
         if (slot.mayPickup(player) && (hand.isEmpty() || slot.mayPlace(hand))) {
             ItemStack pickup;
             if (hand.isEmpty() && rightClick)
-                pickup = slot.getItem().split(Math.max(1, slot.getItem().getCount() / 2));
-            else {
-                pickup = slot.getItem().copy();
-                slot.set(hand.copy());
-            }
+                pickup = slot.remove(Math.max(1, slot.getItem().getCount() / 2));
+            else
+                pickup = slot.remove(slot.getItem().getCount());
             slot.onTake(player, pickup);
             c.itemManager().setHand(pickup);
             
@@ -168,8 +164,8 @@ public class CreativeCoreGuiRegistry {
             if (transfer <= 0)
                 continue;
             
-            if (!toTransfer.overrideStackedOnOther(slot.slot, rightClick ? ClickAction.SECONDARY : ClickAction.PRIMARY, player) && !stack
-                    .overrideOtherStackedOnMe(toTransfer, slot.slot, rightClick ? ClickAction.SECONDARY : ClickAction.PRIMARY, player, c.itemManager().handAccess)) {
+            if (!toTransfer.overrideStackedOnOther(slot.slot, rightClick ? ClickAction.SECONDARY : ClickAction.PRIMARY, player) && !stack.overrideOtherStackedOnMe(toTransfer,
+                slot.slot, rightClick ? ClickAction.SECONDARY : ClickAction.PRIMARY, player, c.itemManager().handAccess)) {
                 if (!slot.slot.hasItem())
                     slot.slot.set(toTransfer);
                 else if (ItemStack.isSameItemSameTags(toTransfer, stack))
