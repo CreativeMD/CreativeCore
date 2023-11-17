@@ -20,10 +20,14 @@ public class SyncPacket extends LayerPacket {
     
     @Override
     public void execute(Player player, IGuiIntegratedParent container) {
-        GuiSync sync = GuiSyncHolder.followPath(path, container);
-        if (sync == null)
-            throw new RuntimeException("Could not find sync " + path);
-        sync.receive(container, tag);
+        try {
+            GuiSync sync = GuiSyncHolder.followPath(path, container);
+            if (sync == null)
+                throw new RuntimeException("Could not find sync " + path);
+            sync.receive(container, tag);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }
