@@ -27,4 +27,8 @@ public class GuiSyncLocal<T extends Tag> extends GuiSyncControl<GuiLayer, T> {
         control.getIntegratedParent().send(new ControlSyncPacket(control, this, tag));
     }
     
+    public void sendAndExecute(GuiLayer layer, T tag) {
+        send(tag);
+        receive(layer, tag);
+    }
 }
