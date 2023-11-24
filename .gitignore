@@ -13,6 +13,8 @@ hs_err_pid*
 
 # Gradlew #
 build/
+.idea
+**/.idea
 *.launch
 *.classpath
 *.project
