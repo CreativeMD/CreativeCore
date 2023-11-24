@@ -1,16 +1,21 @@
 modLoader="javafml"
-loaderVersion="[24,)"
-issueTrackerURL="https://github.com/CreativeMD/CreativeCore/issues"
+loaderVersion="${fgloaderrange}"
+issueTrackerURL="https://github.com/${github_project}/issues"
 logoFile="creativecore.png"
-license="GNU General Public License v3.0"
+license="${license}"
 
 [[mods]]
-	modId="creativecore"
-	version="${file.jarVersion}"
-	displayName="CreativeCore"
-	side="CLIENT"
-	displayURL="https://minecraft.curseforge.com/projects/creativecore"
-	authors="CreativeMD"
-	acceptableRemoteVersions="*"
-	description='''A simple but powerful coremod.'''
-	
+	modId="${modid}"
+	version="${modversion}"
+	displayName="${modname}"
+	displayTest="MATCH_VERSION" # AVAILABLE ON 1.18.2
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/creativecore"
+	side="BOTH"
+	authors="${modauthor}"
+	description='''${moddescription}'''
+[[dependencies.${modid}]]
+	modId="forge"
+	mandatory=true
+	versionRange="${fgrange}"
+	ordering="AFTER"
+	side="BOTH"

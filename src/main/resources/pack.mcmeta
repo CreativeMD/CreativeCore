@@ -1,6 +1,6 @@
 {
     "pack": {
-        "description": "creativecore resources",
-        "pack_format": 8
+        "description": "${modname} resources",
+        "pack_format": ${data_pack_format}
     }
 }
