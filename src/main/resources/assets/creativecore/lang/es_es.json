@@ -2,7 +2,7 @@
     "gui.client-config": "Configuración del cliente",
     "gui.config": "Configuración",
     "gui.save": "Guardar",
-    "gui.add": "Añadir"
+    "gui.add": "Añadir",
     "dialog.button.YES": "Sí",
     "dialog.button.NO": "No",
     "dialog.button.MAYBE": "Quizás",
@@ -10,5 +10,7 @@
     "dialog.button.ABORT": "Abortar",
     "dialog.button.CONFIRM": "Confirmar",
     "collector.inventory": "Inventario",
-    "collector.all": "Creativo"
+    "collector.all": "Creativo",
+    "minecraft.block": "Bloque",
+    "minecraft.blocks": "Bloques"
 }
