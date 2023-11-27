@@ -45,7 +45,8 @@ public abstract class BlockEntityCreative extends BlockEntity {
     }
     
     public void markDirty() {
-        level.blockEntityChanged(worldPosition);
+//        level.blockEntityChanged(worldPosition);
+        level.blockEntityChangedWithoutNeighborUpdates(worldPosition); // Fixes performance issues. Except on 1.19 method goes bak to old name
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
     }
     
