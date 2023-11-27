@@ -49,13 +49,12 @@ public class GuiButtonIcon extends GuiControl {
     public void tick() {}
     
     @Override
-    public GuiButtonIcon flowX(int width, int preferred) {
-        return this;
+    public void flowX(int width, int preferred) {
+
     }
     
     @Override
-    public GuiButtonIcon flowY(int height, int preferred) {
-        return this;
+    public void flowY(int height, int preferred) {
     }
     
     @Override
