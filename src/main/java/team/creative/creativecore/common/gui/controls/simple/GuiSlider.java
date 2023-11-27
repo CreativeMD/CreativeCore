@@ -1,15 +1,10 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.sounds.SoundEvents;
+import org.lwjgl.glfw.GLFW;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.IGuiParent;
+import team.creative.creativecore.common.gui.*;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -17,6 +12,8 @@ import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyl
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
+
+import javax.annotation.Nullable;
 
 public class GuiSlider extends GuiControl implements IGuiParent {
     
@@ -27,7 +24,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public int sliderWidth = 4;
     
     protected GuiTextfield textfield;
-    
+    private ValueDisplay valueDisplay;
+
+    @Deprecated(forRemoval = true)
     public GuiSlider(String name, int width, int height, double value, double min, double max) {
         super(name, width, height);
         this.minValue = min;
@@ -35,8 +34,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         setValue(value);
     }
     
-    public GuiSlider(String name, double value, double min, double max) {
+    public GuiSlider(String name, double value, double min, double max, @Nullable ValueDisplay display) {
         super(name);
+        this.valueDisplay = display;
         this.minValue = min;
         this.maxValue = max;
         setValue(value);
@@ -45,9 +45,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public String getTextByValue() {
         return Math.round(value * 100F) / 100F + "";
     }
-    
-    public String getTextfieldValue() {
-        return getTextByValue();
+
+    public String getDisplayedValue() {
+        return valueDisplay != null ? valueDisplay.get(value, maxValue) : getTextByValue();
     }
     
     public double getPercentage() {
@@ -65,9 +65,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             return true;
         } else if (button == 1) {
             grabbedSlider = false;
-            textfield = createTextfield(rect);
+            textfield = this.createTextfield(rect);
             textfield.focus();
-            textfield.setText(getTextfieldValue());
+            textfield.setText(this.getDisplayedValue());
             textfield.setCursorPositionEnd();
             textfield.setParent(this);
             int width = (int) rect.getWidth();
@@ -126,10 +126,10 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             
             if (x < getContentOffset())
                 this.value = this.minValue;
-            else if (x > getContentOffset() + width + sliderWidth / 2)
+            else if (x > getContentOffset() + width + sliderWidth / 2d)
                 this.value = this.maxValue;
             else {
-                int mouseOffsetX = (int) (x - getContentOffset() - sliderWidth / 2);
+                int mouseOffsetX = (int) (x - getContentOffset() - sliderWidth / 2d);
                 this.value = (float) (this.minValue + (float) ((this.maxValue - this.minValue) * ((float) mouseOffsetX / (float) width)));
             }
             setValue(value);
@@ -190,7 +190,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         if (textfield != null)
             textfield.render(pose, control, rect, rect, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE, true);
+            GuiRenderHelper.drawStringCentered(pose, getDisplayedValue(), (float) rect.getWidth(), (float) rect.getHeight(), ColorUtils.WHITE, true);
     }
     
     @Override
