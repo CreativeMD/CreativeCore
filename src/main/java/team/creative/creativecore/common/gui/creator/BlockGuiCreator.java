@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.handler;
+package team.creative.creativecore.common.gui.creator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

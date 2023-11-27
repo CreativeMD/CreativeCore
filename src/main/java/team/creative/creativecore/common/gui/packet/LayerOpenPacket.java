@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui.packet;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
+import team.creative.creativecore.common.gui.creator.GuiLayerHandler;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 
 public class LayerOpenPacket extends LayerPacket {

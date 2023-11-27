@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
+import team.creative.creativecore.common.gui.creator.GuiLayerHandler;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.util.player.PlayerSelector;
 

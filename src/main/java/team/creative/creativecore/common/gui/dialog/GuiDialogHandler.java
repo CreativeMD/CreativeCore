@@ -8,7 +8,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
-import team.creative.creativecore.common.gui.handler.GuiLayerHandler;
+import team.creative.creativecore.common.gui.creator.GuiLayerHandler;
 import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 
 public class GuiDialogHandler {
