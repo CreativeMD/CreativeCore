@@ -366,17 +366,17 @@ public abstract class GuiControl {
         return LanguageUtils.translateOr(text, defaultText);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundInstance sound) {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundEvent event) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F));
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundEvent event, float volume, float pitch) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
     }
