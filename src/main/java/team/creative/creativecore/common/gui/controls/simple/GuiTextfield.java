@@ -44,7 +44,7 @@ public class GuiTextfield extends GuiFocusControl {
     private int lineScrollOffset;
     private int cursorPosition;
     private int selectionEnd;
-    private String suggestion;
+    private String suggestion = "";
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
     private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
@@ -181,7 +181,7 @@ public class GuiTextfield extends GuiFocusControl {
         if (!s.isEmpty() && flag && j < s.length())
             fontRenderer.draw(matrix, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
         
-        if (!flag2 && this.suggestion != null)
+        if (text.isEmpty() && !this.suggestion.isEmpty())
             fontRenderer.drawShadow(matrix, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
