@@ -24,7 +24,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public int sliderWidth = 4;
     
     protected GuiTextfield textfield;
-    private ValueDisplay valueDisplay;
+    protected ValueDisplay valueDisplay;
 
     @Deprecated(forRemoval = true)
     public GuiSlider(String name, int width, int height, double value, double min, double max) {
