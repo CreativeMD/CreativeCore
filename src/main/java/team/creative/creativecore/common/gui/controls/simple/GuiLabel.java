@@ -21,6 +21,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 public class GuiLabel extends GuiControl {
     
     protected CompiledText text = CompiledText.createAnySize();
+    protected float scale = 1.0f;
     
     public GuiLabel(String name) {
         super(name);
@@ -37,6 +38,11 @@ public class GuiLabel extends GuiControl {
     
     public GuiLabel setAlign(Align align) {
         text.alignment = align;
+        return this;
+    }
+
+    public GuiLabel setScale(float scale) {
+        this.scale = scale;
         return this;
     }
     
@@ -76,7 +82,7 @@ public class GuiLabel extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        text.render(matrix);
+        text.render(matrix, scale);
     }
     
     @Override

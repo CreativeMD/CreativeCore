@@ -23,7 +23,7 @@ public class GuiCheckBox extends GuiLabel {
     private static StyleDisplay partialStyle;
     public static final int checkBoxWidth = 7;
     
-    public boolean value = false;
+    public boolean value;
     public String title;
     public boolean partial = false;
     
@@ -41,7 +41,12 @@ public class GuiCheckBox extends GuiLabel {
     public GuiCheckBox setTranslate(String translate) {
         return (GuiCheckBox) super.setTranslate(translate);
     }
-    
+
+    @Override
+    public GuiLabel setScale(float scale) {
+        return super.setScale(scale);
+    }
+
     @Override
     public int getPreferredWidth() {
         return super.getPreferredWidth() + checkBoxWidth + 3;
@@ -80,7 +85,7 @@ public class GuiCheckBox extends GuiLabel {
         
         matrix.pushPose();
         matrix.translate(checkBoxWidth + 3, 0, 0);
-        text.render(matrix);
+        text.render(matrix, scale);
         matrix.popPose();
     }
     
@@ -91,5 +96,4 @@ public class GuiCheckBox extends GuiLabel {
         raiseEvent(new GuiControlChangedEvent(this));
         return true;
     }
-    
 }

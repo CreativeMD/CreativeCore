@@ -126,7 +126,7 @@ public class CompiledText {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public void render(PoseStack stack) {
+    public void render(PoseStack stack, float scale) {
         if (lines == null)
             return;
         
@@ -134,6 +134,7 @@ public class CompiledText {
         usedHeight = -lineSpacing;
         
         stack.pushPose();
+        stack.scale(scale, scale, scale);
         for (CompiledLine line : lines) {
             switch (alignment) {
             case LEFT:
@@ -142,7 +143,7 @@ public class CompiledText {
                 break;
             case CENTER:
                 stack.pushPose();
-                stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
+                stack.translate(maxWidth / 2d - line.width / 2d, 0, 0);
                 line.render(stack);
                 usedWidth = Math.max(usedWidth, maxWidth);
                 stack.popPose();
