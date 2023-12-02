@@ -7,7 +7,7 @@ import team.creative.creativecore.common.util.time.TimeMath;
 
 public interface ValueDisplay {
     Component BLOCK_TEXT = new TranslatableComponent("minecraft.block");
-    Component BLOCKS_TEXT = new TranslatableComponent("minecraft.block");
+    Component BLOCKS_TEXT = new TranslatableComponent("minecraft.blocks");
     ValueDisplay NONE = (v, max) -> (float) Math.round(v * 100.0) / 100 + "";
     ValueDisplay PERCENT = (v, max) -> (int) ((v / max) * 100.0d) + "%";
     ValueDisplay ANGLE = (v, max) -> Math.round(v) + "°";
