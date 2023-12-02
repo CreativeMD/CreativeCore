@@ -61,7 +61,7 @@ public class GuiStateButton extends GuiButton {
     public int preferredWidth() {
         int width = 0;
         for (CompiledText text : states)
-            width = Math.max(width, text.getTotalWidth());
+            width = Math.max(width, ((int) (text.getTotalWidth() * scale) + 3));
         return width;
     }
     

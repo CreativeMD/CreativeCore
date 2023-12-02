@@ -97,12 +97,12 @@ public class GuiLabel extends GuiControl {
     
     @Override
     public int getMinWidth() {
-        return 10;
+        return (int) (10 * scale);
     }
     
     @Override
     public int preferredWidth() {
-        return text.getTotalWidth();
+        return (int) ((text.getTotalWidth() * scale) + 3);
     }
     
     @Override
