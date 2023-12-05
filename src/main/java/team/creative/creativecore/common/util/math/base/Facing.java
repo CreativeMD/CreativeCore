@@ -36,6 +36,21 @@ public enum Facing {
             return bb.setMinY(value);
         }
         
+        @Override
+        public float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return minY;
+        }
+        
+        @Override
+        public double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+            return minY;
+        }
+        
+        @Override
+        public int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+            return minY;
+        }
+        
     },
     UP(Axis.Y, true, new Vec3i(0, 1, 0), -1) {
         
@@ -62,6 +77,21 @@ public enum Facing {
         @Override
         public AABB set(AABB bb, double value) {
             return bb.setMaxY(value);
+        }
+        
+        @Override
+        public float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return maxY;
+        }
+        
+        @Override
+        public double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+            return maxY;
+        }
+        
+        @Override
+        public int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+            return maxY;
         }
         
     },
@@ -92,6 +122,21 @@ public enum Facing {
             return bb.setMinZ(value);
         }
         
+        @Override
+        public float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return minZ;
+        }
+        
+        @Override
+        public double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+            return minZ;
+        }
+        
+        @Override
+        public int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+            return minZ;
+        }
+        
     },
     SOUTH(Axis.Z, true, new Vec3i(0, 0, 1), 0) {
         
@@ -118,6 +163,21 @@ public enum Facing {
         @Override
         public AABB set(AABB bb, double value) {
             return bb.setMaxZ(value);
+        }
+        
+        @Override
+        public float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return maxZ;
+        }
+        
+        @Override
+        public double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+            return maxZ;
+        }
+        
+        @Override
+        public int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+            return maxZ;
         }
         
     },
@@ -148,6 +208,21 @@ public enum Facing {
             return bb.setMinX(value);
         }
         
+        @Override
+        public float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return minX;
+        }
+        
+        @Override
+        public double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+            return minX;
+        }
+        
+        @Override
+        public int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+            return minX;
+        }
+        
     },
     EAST(Axis.X, true, new Vec3i(1, 0, 0), 3) {
         
@@ -174,6 +249,21 @@ public enum Facing {
         @Override
         public AABB set(AABB bb, double value) {
             return bb.setMaxX(value);
+        }
+        
+        @Override
+        public float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return maxX;
+        }
+        
+        @Override
+        public double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+            return maxX;
+        }
+        
+        @Override
+        public int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+            return maxX;
         }
     };
     
@@ -340,5 +430,11 @@ public enum Facing {
     public abstract AABB set(AABB bb, double value);
     
     public abstract com.mojang.math.Axis rotation();
+    
+    public abstract float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+    
+    public abstract double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
+    
+    public abstract int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ);
     
 }
