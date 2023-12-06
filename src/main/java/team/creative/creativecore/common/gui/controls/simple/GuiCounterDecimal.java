@@ -1,5 +1,8 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -9,34 +12,43 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiCounterDecimal extends GuiParent {
     
-    public float min;
-    public float max;
-    public GuiTextfield textfield;
+    public static final DecimalFormat FORMAT = new DecimalFormat("0.##");
     
-    public GuiCounterDecimal(String name, float value) {
-        this(name, value, Float.MIN_VALUE, Float.MAX_VALUE);
+    static {
+        FORMAT.setRoundingMode(RoundingMode.HALF_UP);
     }
     
-    public GuiCounterDecimal(String name, float value, float min, float max) {
+    public double min;
+    public double max;
+    public GuiTextfield textfield;
+    public double stepAmount = 1;
+    
+    public GuiCounterDecimal(String name, double value) {
+        this(name, value, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+    }
+    
+    public GuiCounterDecimal(String name, double value, double min, double max) {
         super(name);
         this.min = min;
         this.max = max;
         flow = GuiFlow.STACK_X;
         spacing = 1;
-        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(20, 10).setFloatOnly();
+        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
         add(textfield.setExpandableX());
         GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
         buttons.spacing = 0;
         add(buttons);
-        buttons.add(new GuiButtonHoldSlim("+", x -> {
-            textfield.setText("" + stepUp(textfield.parseFloat()));
-            raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
-        }).setTranslate("gui.plus").setDim(6, 3));
-        buttons.add(new GuiButtonHoldSlim("-", x -> {
-            textfield.setText("" + stepDown(textfield.parseFloat()));
-            raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
-        }).setTranslate("gui.minus").setDim(6, 3));
-        
+        buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()).setTranslate("gui.plus").setDim(6, 3));
+        buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
+    }
+    
+    public GuiCounterDecimal setStep(double amount) {
+        this.stepAmount = amount;
+        return this;
+    }
+    
+    public DecimalFormat getFormat() {
+        return FORMAT;
     }
     
     @Override
@@ -61,20 +73,21 @@ public class GuiCounterDecimal extends GuiParent {
         return expandableX;
     }
     
-    public float stepUp(float value) {
-        return Math.min(max, value + 1);
+    public void stepUp() {
+        setValue(getValue() + stepAmount);
     }
     
-    public float stepDown(float value) {
-        return Math.max(min, value - 1);
+    public void stepDown() {
+        setValue(getValue() - stepAmount);
     }
     
-    public float getValue() {
-        return Mth.clamp(textfield.parseFloat(), min, max);
+    public double getValue() {
+        return Mth.clamp(textfield.parseDouble(), min, max);
     }
     
-    public void setValue(float value) {
-        textfield.setText("" + Mth.clamp(value, min, max));
+    public void setValue(double value) {
+        textfield.setText(getFormat().format(Mth.clamp(value, min, max)));
+        raiseEvent(new GuiControlChangedEvent(GuiCounterDecimal.this));
     }
     
 }
