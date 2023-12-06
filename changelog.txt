@@ -1,3 +1,12 @@
+2.11.11
+Added NamedClassBoundHandlerRegistry
+Added more helper methods to Facing
+Added GuiSyncLocal.sendAndExecute
+Added chinese translate (Thanks to ToryRegulus)
+Reworked GuiCounterDecimal
+Fixed GuiTabButton not being clickable
+Fixed rotation transform not working
+
 2.11.10
 Added log when exception occurs during the execution of a GuiSync
 Fixed not using slot.remove which caused some issues
