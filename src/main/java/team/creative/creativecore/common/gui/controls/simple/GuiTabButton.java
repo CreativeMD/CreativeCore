@@ -29,7 +29,8 @@ public class GuiTabButton extends GuiParent {
         flow = GuiFlow.STACK_X;
         int i = 0;
         for (CompiledText text : states.build()) {
-            add(new GuiBorderlessButton("b" + i, null).setText(text));
+            final int bIndex = i;
+            add(new GuiBorderlessButton("b" + i, x -> select(bIndex)).setText(text));
             i++;
         }
         select(index);
