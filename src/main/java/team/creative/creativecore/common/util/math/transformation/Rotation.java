@@ -267,11 +267,11 @@ public enum Rotation {
         return rotationMatrix.transform(vec);
     }
     
-    public void transform(Vec3d triple) {
+    public void transform(Vec3d vec) {
         rotationMatrix.transform(vec);
     }
     
-    public void transform(Vec3f triple) {
+    public void transform(Vec3f vec) {
         rotationMatrix.transform(vec);
     }
     
