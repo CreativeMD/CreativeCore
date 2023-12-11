@@ -25,7 +25,6 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
         this.player = player;
         layer.setParent(this);
         this.layers.add(layer);
-        layer.init();
     }
     
     public ContainerIntegration(MenuType<ContainerIntegration> type, int id, Player player) {

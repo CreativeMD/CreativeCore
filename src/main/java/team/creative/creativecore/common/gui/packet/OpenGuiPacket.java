@@ -35,9 +35,10 @@ public class OpenGuiPacket extends CreativePacket {
     }
     
     public static void openGuiOnServer(GuiCreator creator, CompoundTag nbt, ServerPlayer player) {
-        player.openMenu(new SimpleMenuProvider((id, inventory, x) -> new ContainerIntegration(CreativeCore.GUI_CONTAINER, id, x, creator.function.apply(nbt, player)), Component
-                .literal(creator.getName())));
+        var layer = creator.function.apply(nbt, player);
+        player.openMenu(new SimpleMenuProvider((id, inventory, x) -> new ContainerIntegration(CreativeCore.GUI_CONTAINER, id, x, layer), Component.literal(creator.getName())));
         CreativeCore.NETWORK.sendToClient(new OpenGuiPacket(creator.getName(), nbt), player);
+        layer.init();
     }
     
 }
