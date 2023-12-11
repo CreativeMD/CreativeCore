@@ -10,6 +10,21 @@ import team.creative.creativecore.common.gui.VAlign;
 public class GuiFlowFitX extends GuiStackX {
     
     @Override
+    public int minWidth(List<? extends GuiChildControl> controls, int spacing, int availableWidth) {
+        boolean has = false;
+        int width = -spacing;
+        for (GuiChildControl child : controls) {
+            int min = child.getMinWidth(availableWidth);
+            if (min != -1) {
+                width = Math.max(min, width);
+                has = true;
+            }
+            width += spacing;
+        }
+        return has ? width : -1;
+    }
+    
+    @Override
     public int minHeight(List<? extends GuiChildControl> controls, int spacing, int width, int availableHeight) {
         int line = 0;
         int lineHeight = 0;
