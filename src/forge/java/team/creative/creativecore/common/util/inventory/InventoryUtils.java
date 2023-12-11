@@ -20,7 +20,7 @@ public class InventoryUtils {
         for (int i = 0; i < basic.getContainerSize(); i++) {
             if (basic.getItem(i).isEmpty())
                 continue;
-            nbt.put("s" + i, basic.getItem(i).save(nbt));
+            nbt.put("s" + i, basic.getItem(i).save(new CompoundTag()));
         }
         nbt.putInt("size", basic.getContainerSize());
         return nbt;
