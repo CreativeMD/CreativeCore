@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
+import java.util.BitSet;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
@@ -67,13 +69,16 @@ public interface IGuiInventory {
         }
     }
     
-    public default void sync(Iterable<Integer> ids) {
+    public default void sync(BitSet set) {
         GuiControl control = (GuiControl) this;
         if (control.isClient())
             return;
         CompoundTag nbt = new CompoundTag();
-        for (Integer id : ids)
-            nbt.put("" + id, getSlot(id).slot.getItem().save(new CompoundTag()));
+        for (int i = set.nextSetBit(0); i >= 0; i = set.nextSetBit(i + 1)) {
+            GuiSlot slot = getSlot(i);
+            slot.onSendUpdate();
+            nbt.put("" + i, slot.slot.getItem().save(new CompoundTag()));
+        }
         SYNC.send(control, nbt);
     }
     

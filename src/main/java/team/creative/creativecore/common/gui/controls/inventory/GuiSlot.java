@@ -19,6 +19,8 @@ public class GuiSlot extends GuiSlotBase {
     
     public final Slot slot;
     public int draggedIndex = -1;
+    private ItemStack lastSend = null;
+    private boolean changed = false;
     
     public GuiSlot(Container container, int index) {
         this("", container, index);
@@ -121,7 +123,20 @@ public class GuiSlot extends GuiSlotBase {
             itemManager().addToDrag(this);
     }
     
+    @Override
+    public void tick() {
+        super.tick();
+        if (!changed && (lastSend == null || !ItemStack.matches(slot.getItem(), lastSend)))
+            changed();
+    }
+    
+    public void onSendUpdate() {
+        changed = false;
+        lastSend = slot.getItem().copy();
+    }
+    
     public void changed() {
+        changed = true;
         inventory().setChanged(slot.getContainerSlot());
         if (draggedIndex != -1)
             itemManager().modifyDrag(this);

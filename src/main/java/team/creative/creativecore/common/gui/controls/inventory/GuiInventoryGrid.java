@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.BitSet;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -25,7 +25,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     private int cachedCols;
     private int cachedRows;
     private boolean allChanged = false;
-    private HashSet<Integer> changed = new HashSet<>();
+    private BitSet changed = new BitSet();
     private List<Consumer<GuiSlot>> listeners;
     private List<GuiSlot> slots = new ArrayList<>();
     
@@ -187,7 +187,9 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     @Override
     public void setChanged(int slotIndex) {
-        changed.add(slotIndex);
+        if (allChanged)
+            return;
+        changed.set(slotIndex);
         GuiSlot slot = getSlot(slotIndex);
         if (listeners != null)
             for (Consumer<GuiSlot> listener : listeners)
