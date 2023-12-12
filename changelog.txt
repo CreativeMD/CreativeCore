@@ -1,3 +1,6 @@
+2.11.13
+Fixed inventory not sending slot update
+
 2.11.12
 Fixed calling init for layer before menu is created
 Fixed minWidth calculation of flow fit x
