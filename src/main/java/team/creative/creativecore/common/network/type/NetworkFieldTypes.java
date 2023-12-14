@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,6 +59,7 @@ import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
 import team.creative.creativecore.common.util.type.Bunch;
+import team.creative.creativecore.common.util.type.itr.IterableIterator;
 
 public class NetworkFieldTypes {
     
@@ -147,7 +147,7 @@ public class NetworkFieldTypes {
         int length = buffer.readInt();
         NetworkFieldType<T> type = get(clazz);
         
-        return () -> new Iterator<T>() {
+        return new IterableIterator<T>() {
             
             int index = 0;
             

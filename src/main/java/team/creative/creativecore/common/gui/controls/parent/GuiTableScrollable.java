@@ -248,7 +248,7 @@ public class GuiTableScrollable extends GuiParent {
     }
     
     public Iterable<GuiRow> contentRows() {
-        return () -> new FunctionIterator<>(scrollableTable, x -> (GuiRow) x.control);
+        return new FunctionIterator<>(scrollableTable, x -> (GuiRow) x.control);
     }
     
 }

@@ -148,9 +148,7 @@ public class GuiTreeItem extends GuiParent {
             add(label);
         } else {
             clear();
-            add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> {
-                toggle();
-            }).setTitle(Component.literal("-")));
+            add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> toggle()).setTitle(Component.literal("-")));
             if (tree.hasCheckboxes())
                 add(getOrCreateCheckbox());
             else if (checkbox != null)
@@ -233,7 +231,7 @@ public class GuiTreeItem extends GuiParent {
     }
     
     public Iterable<GuiTreeItem> itemsChecked() {
-        return () -> new FilterIterator<>(items, x -> x.isAtLeastPartiallyChecked());
+        return new FilterIterator<>(items, x -> x.isAtLeastPartiallyChecked());
     }
     
     public GuiTreeItem getItem(int index) {

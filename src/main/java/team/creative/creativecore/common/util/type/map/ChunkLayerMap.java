@@ -26,29 +26,6 @@ public class ChunkLayerMap<T> implements Iterable<T> {
     }
     
     private final T[] content;
-    private Iterable<Tuple<RenderType, T>> tuples = new Iterable<>() {
-        
-        @Override
-        public Iterator<Tuple<RenderType, T>> iterator() {
-            return new ComputeNextIterator<Tuple<RenderType, T>>() {
-                
-                private int index;
-                private Tuple<RenderType, T> pair = new Tuple<>(null, null);
-                
-                @Override
-                protected Tuple<RenderType, T> computeNext() {
-                    while (index < content.length && content[index] == null)
-                        index++;
-                    if (index >= content.length)
-                        return end();
-                    pair.key = RenderType.chunkBufferLayers().get(index);
-                    pair.value = content[index];
-                    index++;
-                    return pair;
-                }
-            };
-        }
-    };
     
     public ChunkLayerMap(ChunkLayerMap<T> map) {
         content = Arrays.copyOf(map.content, LAYERS_COUNT);
@@ -92,7 +69,23 @@ public class ChunkLayerMap<T> implements Iterable<T> {
     }
     
     public Iterable<Tuple<RenderType, T>> tuples() {
-        return tuples;
+        return new ComputeNextIterator<Tuple<RenderType, T>>() {
+            
+            private int index;
+            private Tuple<RenderType, T> pair = new Tuple<>(null, null);
+            
+            @Override
+            protected Tuple<RenderType, T> computeNext() {
+                while (index < content.length && content[index] == null)
+                    index++;
+                if (index >= content.length)
+                    return end();
+                pair.key = RenderType.chunkBufferLayers().get(index);
+                pair.value = content[index];
+                index++;
+                return pair;
+            }
+        };
     }
     
     public boolean containsKey(RenderType layer) {

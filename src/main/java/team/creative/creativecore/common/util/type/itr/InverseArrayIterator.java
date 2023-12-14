@@ -1,8 +1,6 @@
 package team.creative.creativecore.common.util.type.itr;
 
-import java.util.Iterator;
-
-public class InverseArrayIterator<T> implements Iterator<T> {
+public class InverseArrayIterator<T> implements IterableIterator<T> {
     
     public final T[] content;
     private int index;

@@ -1,9 +1,8 @@
 package team.creative.creativecore.common.util.type.itr;
 
-import java.util.Iterator;
 import java.util.List;
 
-public class InverseListIterator<T> implements Iterator<T> {
+public class InverseListIterator<T> implements IterableIterator<T> {
     
     public final List<T> content;
     private int index;

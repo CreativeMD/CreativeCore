@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class NestedFunctionIterator<T> implements Iterator<T> {
+public class NestedFunctionIterator<T> implements IterableIterator<T> {
     
     public final Iterator itr;
     public final Function function;

@@ -1,8 +1,6 @@
 package team.creative.creativecore.common.util.type.itr;
 
-import java.util.Iterator;
-
-public abstract class ComputeNextIterator<T> implements Iterator<T> {
+public abstract class ComputeNextIterator<T> implements IterableIterator<T> {
     
     private T next;
     private boolean searched;

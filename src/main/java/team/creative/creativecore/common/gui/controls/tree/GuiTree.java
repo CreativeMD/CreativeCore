@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.gui.controls.tree;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -69,7 +68,7 @@ public class GuiTree extends GuiScrollXY {
         this.checkboxes = checkboxes;
         this.checkboxesPartial = partial;
         if (changed)
-            for (GuiTreeItem item : (Iterable<GuiTreeItem>) () -> allItems()) {
+            for (GuiTreeItem item : allItems()) {
                 if (!partial)
                     item.resetCheckboxPartial();
                 item.updateControls();
@@ -90,14 +89,14 @@ public class GuiTree extends GuiScrollXY {
         return checkboxesPartial;
     }
     
-    public Iterator<GuiTreeItem> allItems() {
+    public Iterable<GuiTreeItem> allItems() {
         return new TreeIterator<>(root, x -> x.items().iterator());
     }
     
     public Iterable<GuiTreeItem> itemsChecked() {
         if (visibleRoot)
             return root.itemsChecked();
-        return () -> new NestedFunctionIterator<>(root.items(), x -> x.itemsChecked());
+        return new NestedFunctionIterator<>(root.items(), x -> x.itemsChecked());
     }
     
     public GuiTreeItem selected() {

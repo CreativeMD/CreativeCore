@@ -2,7 +2,7 @@ package team.creative.creativecore.common.util.type.itr;
 
 import java.util.Iterator;
 
-public class InverseConsecutiveIterator<T> implements Iterator<T> {
+public class InverseConsecutiveIterator<T> implements IterableIterator<T> {
     
     public final Iterator<T>[] itrs;
     protected int index;

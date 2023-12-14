@@ -1,8 +1,6 @@
 package team.creative.creativecore.common.util.type.itr;
 
-import java.util.Iterator;
-
-public class ArrayOffsetIterator<T> implements Iterator<T> {
+public class ArrayOffsetIterator<T> implements IterableIterator<T> {
     
     public final T[] content;
     private int offset;

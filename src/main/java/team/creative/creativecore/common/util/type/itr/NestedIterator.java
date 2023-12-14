@@ -3,7 +3,7 @@ package team.creative.creativecore.common.util.type.itr;
 import java.util.Iterator;
 import java.util.Objects;
 
-public class NestedIterator<T> implements Iterator<T> {
+public class NestedIterator<T> implements IterableIterator<T> {
     
     public final Iterator<? extends Iterable<T>> itr;
     protected Iterator<T> current;

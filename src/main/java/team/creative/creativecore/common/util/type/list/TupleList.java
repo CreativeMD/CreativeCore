@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.util.type.list;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
@@ -10,22 +9,8 @@ import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
 public class TupleList<K, V> extends ArrayList<Tuple<K, V>> {
     
-    protected Iterable<K> keys = new Iterable<>() {
-        
-        @Override
-        public Iterator<K> iterator() {
-            return new FunctionIterator<K>(TupleList.this, x -> x.key);
-        }
-        
-    };
-    protected Iterable<V> values = new Iterable<>() {
-        
-        @Override
-        public Iterator<V> iterator() {
-            return new FunctionIterator<V>(TupleList.this, x -> x.value);
-        }
-        
-    };
+    protected Iterable<K> keys = new FunctionIterator<K>(TupleList.this, x -> x.key);
+    protected Iterable<V> values = new FunctionIterator<V>(TupleList.this, x -> x.value);
     
     public TupleList() {
         super();

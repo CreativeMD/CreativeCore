@@ -3,7 +3,7 @@ package team.creative.creativecore.common.util.type.itr;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class TreeIterator<T> implements Iterator<T> {
+public class TreeIterator<T> implements IterableIterator<T> {
     
     private Function<T, Iterator<T>> function;
     private T start;
