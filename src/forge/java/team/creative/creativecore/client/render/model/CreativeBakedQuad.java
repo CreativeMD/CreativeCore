@@ -10,8 +10,12 @@ public class CreativeBakedQuad extends BakedQuad {
     
     public final RenderBox cube;
     
-    public CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, Direction facing) {
-        this(quad, cube, tintedColor, shouldOverrideColor, facing, false);
+    public CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor) {
+        this(quad, cube, tintedColor, shouldOverrideColor, quad.getDirection(), false);
+    }
+    
+    public CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, Direction direction) {
+        this(quad, cube, tintedColor, shouldOverrideColor, direction, false);
     }
     
     private CreativeBakedQuad(BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, Direction facing, boolean something) {
