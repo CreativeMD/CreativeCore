@@ -165,6 +165,19 @@ public class NetworkFieldTypes {
         };
     }
     
+    public static void writeIntArray(int[] array, FriendlyByteBuf buffer) {
+        buffer.writeInt(array.length);
+        for (int i = 0; i < array.length; i++)
+            buffer.writeInt(array[i]);
+    }
+    
+    public static int[] readIntArray(FriendlyByteBuf buffer) {
+        int[] array = new int[buffer.readInt()];
+        for (int i = 0; i < array.length; i++)
+            array[i] = buffer.readInt();
+        return array;
+    }
+    
     static {
         register(new NetworkFieldTypeClass<Boolean>() {
             
