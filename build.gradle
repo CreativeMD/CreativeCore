@@ -12,16 +12,6 @@ group= "team.creative" + project.mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-gradle.afterProject { project ->
-    if (project.name != 'CreativeCore') {
-        project.tasks.whenTaskAdded { task ->
-            if(task.name == "copyEclipseResources") {
-                task.dependsOn += tasks.copyEclipseResources;
-            }
-        }
-    }
-}
-
 java.sourceSets {
     main {
         java {
@@ -35,8 +25,6 @@ java.sourceSets {
 
 minecraft {
     mappings channel: 'official', version: "${project.property 'minecraft_version'}"
-    
-    copyIdeResources = true
     
     runs {
         client {
@@ -73,24 +61,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta']
-def replaceProperties = [
-        minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-        forge_version: forge_version, forge_version_range: forge_version_range,
-        loader_version_range: loader_version_range,
-        mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-        mod_authors: mod_authors, mod_description: mod_description, mod_display_url: mod_display_url,
-        github_project: github_project,
-        resource_pack_format: resource_pack_format, data_pack_format: data_pack_format
-]
-processResources {
-    inputs.properties replaceProperties
-    replaceProperties.put 'project', project
-
-    filesMatching(resourceTargets) {
-        expand replaceProperties
-    }
-}
+modDependencies = []
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -109,7 +80,6 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
-
 
 mixin {
     add sourceSets.main, 'creativecore.mixins.refmap.json'
