@@ -1,3 +1,6 @@
+2.11.16
+Added write and read int array to NetworkFieldTypes
+
 2.11.15
 Added GuiDuration control
 Fixed exception when gui creator does not return a gui layer to open
