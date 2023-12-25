@@ -50,6 +50,9 @@ public class GuiTable extends GuiParent {
         }
         GuiFlow.STACK_X.flowX(cols, spacing, Align.STRETCH, width, preferred, endlessX());
         
+        if (cols.isEmpty())
+            return;
+        
         int startX = cols.get(0).getX();
         GuiChildControl lastCol = cols.get(cols.size() - 1);
         int combinedWidth = lastCol.getWidth() + lastCol.getX() - startX;
