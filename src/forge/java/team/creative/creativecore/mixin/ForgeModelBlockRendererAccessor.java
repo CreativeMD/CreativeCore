@@ -3,10 +3,10 @@ package team.creative.creativecore.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraftforge.client.model.lighting.ForgeModelBlockRenderer;
-import net.minecraftforge.client.model.lighting.QuadLighter;
+import net.neoforged.neoforge.client.model.lighting.LightPipelineAwareModelBlockRenderer;
+import net.neoforged.neoforge.client.model.lighting.QuadLighter;
 
-@Mixin(value = ForgeModelBlockRenderer.class, remap = false)
+@Mixin(value = LightPipelineAwareModelBlockRenderer.class, remap = false)
 public interface ForgeModelBlockRendererAccessor {
     
     @Accessor

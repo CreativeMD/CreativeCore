@@ -67,4 +67,10 @@ public class ContentItemStack implements AdvancedContent {
         
     }
     
+    @Override
+    public Type<?> type() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
 }

@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.lighting.QuadLighter;
+import net.neoforged.neoforge.client.model.lighting.QuadLighter;
 import team.creative.creativecore.client.render.model.CreativeQuadLighter;
 
 @Mixin(value = QuadLighter.class, remap = false)

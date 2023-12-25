@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class CreativeNetworkPacket<T extends CreativePacket> {
     

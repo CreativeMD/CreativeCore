@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraftforge.resource.DelegatingPackResources;
+import net.neoforged.neoforge.resource.DelegatingPackResources;
 
 @Mixin(DelegatingPackResources.class)
 public interface DelegatingPackResourcesAccessor {

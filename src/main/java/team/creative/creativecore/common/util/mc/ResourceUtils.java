@@ -13,6 +13,7 @@ import net.minecraft.server.packs.resources.Resource;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.mixin.FilePackResourcesAccessor;
 import team.creative.creativecore.mixin.PathPackResourcesAccessor;
+import team.creative.creativecore.mixin.SharedZipFileAccessAccessor;
 import team.creative.creativecore.mixin.VanillaPackResourcesAccessor;
 
 public class ResourceUtils {
@@ -23,7 +24,7 @@ public class ResourceUtils {
     
     public static long length(PackType type, PackResources source, ResourceLocation location) {
         if (source instanceof FilePackResourcesAccessor zip) {
-            var entry = zip.getZipFile().getEntry(FilePackResourcesAccessor.callGetPathFromLocation(type, location));
+            var entry = ((SharedZipFileAccessAccessor) zip.getZipFileAccess()).callGetOrCreateZipFile().getEntry(FilePackResourcesAccessor.callGetPathFromLocation(type, location));
             if (entry != null)
                 return entry.getSize();
             return 0;

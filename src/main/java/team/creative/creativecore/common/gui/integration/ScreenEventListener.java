@@ -98,8 +98,8 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     }
     
     @Override
-    public boolean mouseScrolled(double x, double y, double delta) {
-        return gui.getTopLayer().mouseScrolled(null, x - getOffsetX(), y - getOffsetY(), delta);
+    public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
+        return gui.getTopLayer().mouseScrolled(null, x - getOffsetX(), y - getOffsetY(), deltaY);
     }
     
     @Override

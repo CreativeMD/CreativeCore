@@ -12,8 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -188,9 +187,9 @@ public class GuiStackSelector extends GuiLabel {
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
                     else {
-                        LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
-                        if (result.isPresent())
-                            collect((IItemHandler) result.cast(), tempStacks);
+                        IItemHandler result = StackUtils.getStackInventory(stack);
+                        if (result != null)
+                            collect(result, tempStacks);
                     }
                 
                 stacks.add("collector.inventory", tempStacks);
@@ -205,9 +204,9 @@ public class GuiStackSelector extends GuiLabel {
                 if (!stack.isEmpty() && selector.allow(stack))
                     stacks.add(stack.copy());
                 else {
-                    LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
-                    if (result.isPresent())
-                        collect((IItemHandler) result.cast(), stacks);
+                    IItemHandler result = StackUtils.getStackInventory(stack);
+                    if (result != null)
+                        collect(result, stacks);
                 }
                 
             }

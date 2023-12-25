@@ -14,11 +14,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.NetworkRegistry;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
@@ -45,21 +45,15 @@ public class CreativeNetwork {
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
         CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(classType, supplier);
-        this.instance.registerMessage(id, classType, (message, buffer) -> {
-            handler.write(message, buffer);
-        }, (buffer) -> {
-            return handler.read(buffer);
-        }, (message, ctx) -> {
-            ctx.get().enqueueWork(() -> {
+        this.instance.messageBuilder(classType, id, null).encoder((message, buffer) -> handler.write(message, buffer)).decoder(buffer -> handler.read(buffer)).consumerMainThread(
+            (message, ctx) -> {
                 try {
-                    message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender());
+                    message.execute(ctx.getSender() == null ? getClientPlayer() : ctx.getSender());
                 } catch (Throwable e) {
                     e.printStackTrace();
                     throw e;
                 }
-            });
-            ctx.get().setPacketHandled(true);
-        });
+            }).add();
         packetTypes.put(classType, handler);
         id++;
     }

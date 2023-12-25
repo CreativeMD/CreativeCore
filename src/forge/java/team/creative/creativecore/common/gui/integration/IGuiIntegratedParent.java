@@ -10,10 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ContainerScreenEvent.Render.Background;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ContainerScreenEvent.Render.Background;
+import net.neoforged.neoforge.common.NeoForge;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -64,7 +64,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
                 if (layer.hasGrayBackground())
                     GuiRenderHelper.verticalGradientRect(pose, 0, 0, width, height, -1072689136, -804253680);
                 if (screen instanceof AbstractContainerScreen)
-                    MinecraftForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, graphics, mouseX, mouseY));
+                    NeoForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, graphics, mouseX, mouseY));
             }
             
             pose.pushPose();

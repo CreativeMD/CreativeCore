@@ -2,7 +2,7 @@ package team.creative.creativecore.client.render.model;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.IQuadTransformer;
+import net.neoforged.neoforge.client.model.IQuadTransformer;
 import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 

@@ -1,6 +1,5 @@
 package team.creative.creativecore.common.network.type;
 
-import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -18,23 +17,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import net.minecraft.CrashReport;
-import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagTypes;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
@@ -42,7 +34,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -57,7 +48,6 @@ import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
-import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
 import team.creative.creativecore.common.util.type.Bunch;
 import team.creative.creativecore.common.util.type.itr.IterableIterator;
 
@@ -646,7 +636,7 @@ public class NetworkFieldTypes {
             @Override
             protected Filter readContent(FriendlyByteBuf buffer) {
                 try {
-                    return Filter.SERIALIZER.read(buffer.readAnySizeNbt());
+                    return Filter.SERIALIZER.read((CompoundTag) buffer.readNbt(NbtAccounter.unlimitedHeap()));
                 } catch (RegistryException e) {
                     e.printStackTrace();
                     return Filter.or();
@@ -669,7 +659,7 @@ public class NetworkFieldTypes {
             @Override
             protected BiFilter readContent(FriendlyByteBuf buffer) {
                 try {
-                    return BiFilter.SERIALIZER.read(buffer.readAnySizeNbt());
+                    return BiFilter.SERIALIZER.read((CompoundTag) buffer.readNbt(NbtAccounter.unlimitedHeap()));
                 } catch (RegistryException e) {
                     e.printStackTrace();
                     return BiFilter.or();
@@ -683,9 +673,9 @@ public class NetworkFieldTypes {
             private static final Gson GSON = Util.make(() -> {
                 GsonBuilder gsonbuilder = new GsonBuilder();
                 gsonbuilder.disableHtmlEscaping();
-                gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponentHelper.Serializer());
-                gsonbuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
-                gsonbuilder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
+                //gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponentHelper.Serializer());
+                //gsonbuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
+                //gsonbuilder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
                 return gsonbuilder.create();
             });
             
@@ -705,33 +695,12 @@ public class NetworkFieldTypes {
             
             @Override
             public void write(Tag content, Class classType, Type genericType, FriendlyByteBuf buffer) {
-                buffer.writeByte(content.getId());
-                if (content.getId() != 0)
-                    try {
-                        content.write(new ByteBufOutputStream(buffer));
-                    } catch (IOException e) {}
+                buffer.writeNbt(content);
             }
             
             @Override
             public Tag read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-                ByteBufInputStream in = null;
-                try {
-                    in = new ByteBufInputStream(buffer);
-                    byte b0 = in.readByte();
-                    if (b0 == 0)
-                        return EndTag.INSTANCE;
-                    
-                    return TagTypes.getType(b0).load(in, 0, NbtAccounter.UNLIMITED);
-                } catch (IOException e) {
-                    CrashReport crashreport = CrashReport.forThrowable(e, "Loading NBT data");
-                    crashreport.addCategory("NBT Tag");
-                    throw new ReportedException(crashreport);
-                } finally {
-                    try {
-                        in.close();
-                    } catch (IOException e) {}
-                }
-                
+                return buffer.readNbt(NbtAccounter.unlimitedHeap());
             }
         });
         
@@ -742,9 +711,7 @@ public class NetworkFieldTypes {
             @Override
             public void write(Packet content, Class classType, Type genericType, FriendlyByteBuf buffer) {
                 Packet packet = content;
-                ConnectionProtocol protocol = ConnectionProtocol.getProtocolForPacket(packet);
-                if (protocol != ConnectionProtocol.PLAY)
-                    throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
+                ConnectionProtocol protocol = ConnectionProtocol.PLAY;
                 
                 if (content instanceof BundlePacket<?> bundle) {
                     buffer.writeInt(BUNDLE_WILDCARD);
@@ -758,12 +725,12 @@ public class NetworkFieldTypes {
                     return;
                 }
                 
-                Integer id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
+                Integer id = protocol.codec(PacketFlow.CLIENTBOUND).packetId(packet);
                 if (id != -1) {
                     buffer.writeInt(id);
                     packet.write(buffer);
                 } else {
-                    buffer.writeInt(-protocol.getPacketId(PacketFlow.SERVERBOUND, packet));
+                    buffer.writeInt(-protocol.codec(PacketFlow.SERVERBOUND).packetId(packet));
                     packet.write(buffer);
                 }
                 
@@ -780,8 +747,8 @@ public class NetworkFieldTypes {
                     return new ClientboundBundlePacket(packets);
                 }
                 if (id < 0)
-                    return ConnectionProtocol.PLAY.createPacket(PacketFlow.SERVERBOUND, -id, buffer);
-                return ConnectionProtocol.PLAY.createPacket(PacketFlow.CLIENTBOUND, id, buffer);
+                    return ConnectionProtocol.PLAY.codec(PacketFlow.SERVERBOUND).createPacket(-id, buffer);
+                return ConnectionProtocol.PLAY.codec(PacketFlow.CLIENTBOUND).createPacket(id, buffer);
             }
         });
     }

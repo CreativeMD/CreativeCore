@@ -12,26 +12,26 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.client.event.RenderGuiEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.TickEvent.LevelTickEvent;
-import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.RenderTickEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.IExtensionPoint;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.util.thread.EffectiveSide;
-import net.minecraftforge.network.NetworkConstants;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.IExtensionPoint;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
+import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
+import net.neoforged.neoforge.event.TickEvent.Phase;
+import net.neoforged.neoforge.event.TickEvent.RenderTickEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.network.NetworkConstants;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
@@ -61,13 +61,13 @@ public class CreativeForgeLoader implements ICreativeLoader {
     public void registerClient(ClientLoader loader) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLClientSetupEvent x) -> loader.onInitializeClient());
-            MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent x) -> loader.registerClientCommands(x.getDispatcher()));
+            NeoForge.EVENT_BUS.addListener((RegisterClientCommandsEvent x) -> loader.registerClientCommands(x.getDispatcher()));
         });
     }
     
     @Override
     public void registerClientTick(Runnable run) {
-        MinecraftForge.EVENT_BUS.addListener((ClientTickEvent x) -> {
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent x) -> {
             if (x.phase == Phase.START)
                 run.run();
         });
@@ -75,12 +75,12 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerClientRenderGui(Consumer run) {
-        MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Post x) -> run.accept(x.getGuiGraphics()));
+        NeoForge.EVENT_BUS.addListener((RenderGuiEvent.Post x) -> run.accept(x.getGuiGraphics()));
     }
     
     @Override
     public void registerClientRenderStart(Runnable run) {
-        MinecraftForge.EVENT_BUS.addListener((RenderTickEvent x) -> {
+        NeoForge.EVENT_BUS.addListener((RenderTickEvent x) -> {
             if (x.phase == Phase.START)
                 run.run();
         });
@@ -88,7 +88,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerLevelTick(Consumer<ServerLevel> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
+        NeoForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
             if (x.phase == Phase.END && x.level instanceof ServerLevel level)
                 consumer.accept(level);
         });
@@ -96,7 +96,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerLevelTickStart(Consumer<ServerLevel> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
+        NeoForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
             if (x.phase == Phase.START && x.level instanceof ServerLevel level)
                 consumer.accept(level);
         });
@@ -105,17 +105,17 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerUnloadLevel(Consumer<LevelAccessor> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelEvent.Unload x) -> consumer.accept(x.getLevel()));
+        NeoForge.EVENT_BUS.addListener((LevelEvent.Unload x) -> consumer.accept(x.getLevel()));
     }
     
     @Override
     public void registerLoadLevel(Consumer<LevelAccessor> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelEvent.Load x) -> consumer.accept(x.getLevel()));
+        NeoForge.EVENT_BUS.addListener((LevelEvent.Load x) -> consumer.accept(x.getLevel()));
     }
     
     @Override
     public void registerListener(Consumer consumer) {
-        MinecraftForge.EVENT_BUS.addListener(consumer);
+        NeoForge.EVENT_BUS.addListener(consumer);
     }
     
     @Override
@@ -125,7 +125,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void postForge(Event event) {
-        MinecraftForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
     }
     
     @Override
