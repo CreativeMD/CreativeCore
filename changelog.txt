@@ -1,3 +1,6 @@
+2.11.17
+Fixed issue with newer neoforge version
+
 2.11.16
 Added write and read int array to NetworkFieldTypes
 
