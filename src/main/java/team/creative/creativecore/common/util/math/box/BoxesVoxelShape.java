@@ -34,6 +34,13 @@ public class BoxesVoxelShape extends SliceShape {
         return shape;
     }
     
+    public static BoxesVoxelShape createVanilla(List<AABB> boxes) {
+        List<ABB> converted = new ArrayList<>(boxes.size());
+        for (AABB bb : boxes)
+            converted.add(new ABB(bb));
+        return create(converted);
+    }
+    
     public static BoxesVoxelShape create(ABB box) {
         return create(new SingletonList<ABB>(box));
     }
