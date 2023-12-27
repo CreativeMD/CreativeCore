@@ -4,7 +4,6 @@
     "compatibilityLevel": "JAVA_17",
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
-        "DelegatingPackResourcesAccessor"
     ],
     "client": [
         "ForgeModelBlockRendererAccessor",

@@ -30,10 +30,6 @@ public class ResourceUtils {
             return 0;
         }
         
-        long length = PlatformResourceUtils.length(type, source, location);
-        if (length > 0)
-            return length;
-        
         Path path = FileUtil.decomposePath(location.getPath()).get().map(x -> {
             if (source instanceof VanillaPackResourcesAccessor vanilla)
                 return resolve(vanilla.getPathsForType().get(type), location, x);
