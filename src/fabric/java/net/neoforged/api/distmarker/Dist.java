@@ -1,4 +1,4 @@
-package net.minecraftforge.api.distmarker;
+package net.neoforged.api.distmarker;
 
 public enum Dist {
     CLIENT {

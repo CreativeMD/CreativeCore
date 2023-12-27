@@ -1,4 +1,4 @@
-package net.minecraftforge.items;
+package net.neoforged.neoforge.items;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package net.minecraftforge.api.distmarker;
+package net.neoforged.api.distmarker;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

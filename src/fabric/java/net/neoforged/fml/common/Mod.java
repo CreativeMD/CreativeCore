@@ -1,4 +1,4 @@
-package net.minecraftforge.fml.common;
+package net.neoforged.fml.common;
 
 public @interface Mod {
     
