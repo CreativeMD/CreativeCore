@@ -1,3 +1,8 @@
+2.11.17
+Fixed not displaying error when executing packet in log
+Fixed crash when scanning through inventories
+Significantly enhanced performance related to boxes-voxel-shapes when combining shapes
+
 2.11.16
 Added write and read int array to NetworkFieldTypes
 
