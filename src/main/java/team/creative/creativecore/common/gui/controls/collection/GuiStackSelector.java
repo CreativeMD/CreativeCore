@@ -190,7 +190,7 @@ public class GuiStackSelector extends GuiLabel {
                     else {
                         LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
                         if (result.isPresent())
-                            collect((IItemHandler) result.cast(), tempStacks);
+                            collect(result.orElseThrow(RuntimeException::new), tempStacks);
                     }
                 
                 stacks.add("collector.inventory", tempStacks);
@@ -207,7 +207,7 @@ public class GuiStackSelector extends GuiLabel {
                 else {
                     LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
                     if (result.isPresent())
-                        collect((IItemHandler) result.cast(), stacks);
+                        collect(result.orElseThrow(RuntimeException::new), stacks);
                 }
                 
             }
