@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
@@ -54,7 +55,7 @@ public class CreativeNetwork {
                 try {
                     message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender());
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    CreativeCore.LOGGER.error("Executing a packet ran into an exception", e);
                     throw e;
                 }
             });

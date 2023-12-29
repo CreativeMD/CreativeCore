@@ -20,6 +20,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
+import team.creative.creativecore.CreativeCore;
 
 public class CreativeNetwork {
     public final ResourceLocation CHANNEL;
@@ -62,8 +63,9 @@ public class CreativeNetwork {
                 client.execute(() -> {
                     try {
                         message.execute(client.player);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Throwable e) {
+                        CreativeCore.LOGGER.error("Executing a packet ran into an exception", e);
+                        throw e;
                     }
                 });
             }
