@@ -1,3 +1,6 @@
+2.11.18
+Fixed crash with slot view on client side
+
 2.11.17
 Fixed not displaying error when executing packet in log
 Fixed crash when scanning through inventories
