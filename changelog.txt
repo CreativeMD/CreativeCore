@@ -1,3 +1,7 @@
+2.11.18
+Added compatibility with neoforge 20.4.80-beta
+Fixed crash with slot view on client side
+
 2.11.17
 Fixed issue with newer neoforge version
 
