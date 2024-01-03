@@ -54,8 +54,8 @@ public class ContainerSlotView {
     
     public void changed() {
         container.setChanged();
-        if (player != null)
-            CreativeCore.NETWORK.sendToClient(new ImmediateItemStackPacket(this), (ServerPlayer) player);
+        if (player != null && player instanceof ServerPlayer s)
+            CreativeCore.NETWORK.sendToClient(new ImmediateItemStackPacket(this), s);
     }
     
 }
