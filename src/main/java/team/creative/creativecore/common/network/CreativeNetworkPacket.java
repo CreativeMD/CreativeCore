@@ -8,15 +8,18 @@ import java.util.function.Supplier;
 
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class CreativeNetworkPacket<T extends CreativePacket> {
     
+    public final ResourceLocation id;
     public final Class<T> classType;
     public final Supplier<T> supplier;
     public List<CreativeNetworkField> parsers = new ArrayList<>();
     
-    public CreativeNetworkPacket(Class<T> classType, Supplier<T> supplier) {
+    public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier) {
+        this.id = id;
         this.classType = classType;
         this.supplier = supplier;
         

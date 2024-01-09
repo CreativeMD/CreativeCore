@@ -31,7 +31,6 @@ import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.TickEvent.RenderTickEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.network.NetworkConstants;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
@@ -49,7 +48,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public String ignoreServerNetworkConstant() {
-        return NetworkConstants.IGNORESERVERONLY;
+        return IExtensionPoint.DisplayTest.IGNORESERVERONLY;
     }
     
     @Override

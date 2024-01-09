@@ -16,58 +16,73 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.NetworkRegistry;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
     
-    @OnlyIn(value = Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static Player getClientPlayer() {
         return Minecraft.getInstance().player;
     }
     
-    private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
+    private HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
+    
     private final Logger logger;
+    private final String modid;
     private String version;
     
-    private int id = 0;
+    private IPayloadRegistrar registrar;
     
-    public final SimpleChannel instance;
+    private int id = 0;
     
     public CreativeNetwork(int version, Logger logger, ResourceLocation location) {
         this.logger = logger;
         this.version = "" + version;
-        this.instance = NetworkRegistry.newSimpleChannel(location, () -> this.version, x -> true, this.version::equals);
+        this.modid = location.getNamespace();
         this.logger.debug("Created network " + location + "");
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::register);
+    }
+    
+    public void register(final RegisterPayloadHandlerEvent event) {
+        registrar = event.registrar(modid).versioned(version);
+        for (CreativeNetworkPacket packet : packetTypes.values())
+            registerType(packet);
+    }
+    
+    private <T extends CreativePacket> void registerType(CreativeNetworkPacket handler) {
+        registrar.play(handler.id, buffer -> new CreativePacketWrapper<>(handler, handler.read(buffer)), (message, ctx) -> {
+            try {
+                ctx.workHandler().execute(() -> message.packet().execute(ctx.player().isPresent() ? ctx.player().get() : getClientPlayer()));
+            } catch (Throwable e) {
+                CreativeCore.LOGGER.error(e);
+                throw e;
+            }
+        });
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
-        CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(classType, supplier);
-        this.instance.messageBuilder(classType, id, null).encoder((message, buffer) -> handler.write(message, buffer)).decoder(buffer -> handler.read(buffer)).consumerMainThread(
-            (message, ctx) -> {
-                try {
-                    message.execute(ctx.getSender() == null ? getClientPlayer() : ctx.getSender());
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                    throw e;
-                }
-            }).add();
+        CreativeNetworkPacket handler = new CreativeNetworkPacket(new ResourceLocation(modid, "" + id), classType, supplier);
         packetTypes.put(classType, handler);
+        if (registrar != null)
+            registerType(handler);
         id++;
     }
     
-    public CreativeNetworkPacket getPacketType(Class<? extends CreativePacket> clazz) {
-        return packetTypes.get(clazz);
+    protected <T extends CreativePacket> CreativePacketWrapper<T> wrap(T packet) {
+        return new CreativePacketWrapper<>(packetTypes.get(packet.getClass()), packet);
     }
     
     public void sendToServer(CreativePacket message) {
-        this.instance.sendToServer(message);
+        PacketDistributor.SERVER.noArg().send(wrap(message));
     }
     
     public void sendToClient(CreativePacket message, ServerPlayer player) {
-        this.instance.send(PacketDistributor.PLAYER.with(() -> player), message);
+        PacketDistributor.PLAYER.with(player).send(wrap(message));
     }
     
     public void sendToClient(CreativePacket message, Level level, BlockPos pos) {
@@ -79,24 +94,24 @@ public class CreativeNetwork {
     }
     
     public void sendToClient(CreativePacket message, LevelChunk chunk) {
-        this.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), message);
+        PacketDistributor.TRACKING_CHUNK.with(chunk).send(wrap(message));
     }
     
     public void sendToClientTracking(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTracking(message, sub.getHolder());
         else
-            this.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
+            PacketDistributor.TRACKING_ENTITY.with(entity).send(wrap(message));
     }
     
     public void sendToClientTrackingAndSelf(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTrackingAndSelf(message, sub.getHolder());
         else
-            this.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
+            PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity).send(wrap(message));
     }
     
     public void sendToClientAll(MinecraftServer server, CreativePacket message) {
-        this.instance.send(PacketDistributor.ALL.noArg(), message);
+        PacketDistributor.ALL.noArg().send(wrap(message));
     }
 }

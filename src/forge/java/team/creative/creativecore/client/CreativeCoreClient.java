@@ -27,7 +27,6 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.network.NetworkConstants;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.client.render.model.CreativeBlockModel;
@@ -100,7 +99,7 @@ public class CreativeCoreClient {
         NeoForge.EVENT_BUS.register(CreativeCoreClient.class);
         NeoForge.EVENT_BUS.register(GuiEventHandler.class);
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
-            () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+            () -> new IExtensionPoint.DisplayTest(() -> IExtensionPoint.DisplayTest.IGNORESERVERONLY, (a, b) -> true));
         GuiStyle.reload();
         Minecraft minecraft = Minecraft.getInstance();
         ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
