@@ -74,7 +74,7 @@ public class GuiButtonContext extends GuiButton {
         Rect screen = Rect.getScreenRect();
         
         if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
-            extension.setY((int) extension.rect.maxY - ((int) rect.getHeight() + extension.getHeight()));
+            extension.setY((int) extension.rect.minY + (int) rect.getHeight() - extension.getHeight());
     }
     
     public void closeExtension() {
