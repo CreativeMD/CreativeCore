@@ -27,10 +27,10 @@ public class DisplayTextureRepeat extends DisplayTexture {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         
         int renderedX = 0;
-        while (renderedX < width) {
+        while (renderedX < (int) width) {
             int renderedY = 0;
             int renderedWidth = Math.min(w, (int) width - renderedX);
-            while (renderedY < height) {
+            while (renderedY < (int) height) {
                 int renderedHeight = Math.min(h, (int) height - renderedY);
                 GuiRenderHelper.textureRect(pose, (int) x + renderedX, renderedY, (int) y + renderedWidth, renderedHeight, u, v, u + renderedWidth, v + renderedHeight);
                 renderedY += renderedHeight;
