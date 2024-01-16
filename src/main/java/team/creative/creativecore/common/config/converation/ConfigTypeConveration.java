@@ -745,7 +745,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(NamedList.class, new ConfigTypeNamedList());
         registerType(Permission.class, new ConfigTypePermission());
         
-        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1));
+        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1, false));
         
         registerType(ToggleableConfig.class, new ConfigTypeToggleable());
         
