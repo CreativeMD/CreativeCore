@@ -142,6 +142,10 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         return content.get(index);
     }
     
+    public Iterable<T> items() {
+        return content;
+    }
+    
     public class GuiButtonRemove extends GuiButton {
         
         public int index;
