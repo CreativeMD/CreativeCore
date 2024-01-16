@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.text;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -73,6 +74,10 @@ public class TextMapBuilder<K> implements ITextCollection {
         return lines.size();
     }
     
+    public K first() {
+        return lines.keySet().iterator().next();
+    }
+    
     @Override
     public CompiledText[] build() {
         CompiledText[] lines = new CompiledText[this.lines.size()];
@@ -83,6 +88,14 @@ public class TextMapBuilder<K> implements ITextCollection {
             i++;
         }
         return lines;
+    }
+    
+    public Set<Entry<K, List<Component>>> entrySet() {
+        return lines.entrySet();
+    }
+    
+    public Collection<List<Component>> values() {
+        return lines.values();
     }
     
     public List<K> keys() {
