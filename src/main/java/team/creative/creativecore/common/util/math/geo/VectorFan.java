@@ -161,7 +161,7 @@ public class VectorFan {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void generate(QuadGeneratorContext holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
-        BakedQuad quad = new CreativeBakedQuad(holder.quad, holder.box, holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
+        int[] vertices = holder.quad.getVertices().clone();
         RenderBox box = holder.box;
         
         for (int k = 0; k < 4; k++) {
@@ -200,13 +200,13 @@ public class VectorFan {
                     z = Mth.clamp(z, holder.minZ, holder.maxZ);
             }
             
-            float oldX = Float.intBitsToFloat(quad.getVertices()[index]);
-            float oldY = Float.intBitsToFloat(quad.getVertices()[index + 1]);
-            float oldZ = Float.intBitsToFloat(quad.getVertices()[index + 2]);
+            float oldX = Float.intBitsToFloat(vertices[index]);
+            float oldY = Float.intBitsToFloat(vertices[index + 1]);
+            float oldZ = Float.intBitsToFloat(vertices[index + 2]);
             
-            quad.getVertices()[index] = Float.floatToIntBits(x + holder.offset.getX());
-            quad.getVertices()[index + 1] = Float.floatToIntBits(y + holder.offset.getY());
-            quad.getVertices()[index + 2] = Float.floatToIntBits(z + holder.offset.getZ());
+            vertices[index] = Float.floatToIntBits(x + holder.offset.getX());
+            vertices[index + 1] = Float.floatToIntBits(y + holder.offset.getY());
+            vertices[index + 2] = Float.floatToIntBits(z + holder.offset.getZ());
             
             if (box.keepVU)
                 continue;
@@ -222,9 +222,11 @@ public class VectorFan {
                 uOffset = ((holder.facing.getU(oldX, oldY, oldZ) - holder.facing.getU(x, y, z)) / holder.facing.getU(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
                 vOffset = ((holder.facing.getV(oldX, oldY, oldZ) - holder.facing.getV(x, y, z)) / holder.facing.getV(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
             }
-            quad.getVertices()[uvIndex] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex]) - uOffset);
-            quad.getVertices()[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex + 1]) - vOffset);
+            vertices[uvIndex] = Float.floatToIntBits(Float.intBitsToFloat(vertices[uvIndex]) - uOffset);
+            vertices[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(vertices[uvIndex + 1]) - vOffset);
         }
+        
+        BakedQuad quad = new CreativeBakedQuad(vertices, holder.quad, holder.box, holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
         quads.add(quad);
     }
     
