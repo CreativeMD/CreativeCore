@@ -1,3 +1,6 @@
+2.11.21
+Fixed weird lighting issues with embeddium
+
 2.11.20
 Added option to mob effect configuration to hide particles
 
