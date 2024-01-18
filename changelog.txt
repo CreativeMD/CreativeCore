@@ -1,3 +1,6 @@
+2.11.22
+Fixed slot swap not working (removing item in slot)
+
 2.11.21
 Fixed weird lighting issues with embeddium
 
