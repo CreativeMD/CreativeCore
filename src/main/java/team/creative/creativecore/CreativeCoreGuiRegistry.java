@@ -125,6 +125,8 @@ public class CreativeCoreGuiRegistry {
             else
                 pickup = slot.remove(slot.getItem().getCount());
             slot.onTake(player, pickup);
+            if (!hand.isEmpty())
+                slot.set(hand);
             c.itemManager().setHand(pickup);
             
             c.changed();
