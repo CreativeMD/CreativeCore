@@ -36,4 +36,14 @@ public class PlayerUtils {
         
         return player.isCreative() ? attrib : attrib - 0.5;
     }
+
+    public static void addOrDrop(Player player, ItemStack stack) {
+        if (!stack.isEmpty() && !player.addItem(stack))
+            player.drop(stack, true, false);
+    }
+    
+    public static void addOrDrop(Player player, Container container) {
+        for (int i = 0; i < container.getContainerSize(); i++)
+            addOrDrop(player, container.getItem(i));
+    }
 }

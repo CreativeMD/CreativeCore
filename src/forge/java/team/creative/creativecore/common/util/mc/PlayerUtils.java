@@ -3,7 +3,9 @@ package team.creative.creativecore.common.util.mc;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -33,5 +35,15 @@ public class PlayerUtils {
     public static double getReach(Player player) {
         double attrib = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
         return player.isCreative() ? attrib : attrib - 0.5;
+    }
+    
+    public static void addOrDrop(Player player, ItemStack stack) {
+        if (!stack.isEmpty() && !player.addItem(stack))
+            player.drop(stack, true, false);
+    }
+    
+    public static void addOrDrop(Player player, Container container) {
+        for (int i = 0; i < container.getContainerSize(); i++)
+            addOrDrop(player, container.getItem(i));
     }
 }
