@@ -5,7 +5,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 
 public class PlayerUtils {
@@ -36,7 +38,7 @@ public class PlayerUtils {
         
         return player.isCreative() ? attrib : attrib - 0.5;
     }
-
+    
     public static void addOrDrop(Player player, ItemStack stack) {
         if (!stack.isEmpty() && !player.addItem(stack))
             player.drop(stack, true, false);
