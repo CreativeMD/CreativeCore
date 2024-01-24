@@ -6,7 +6,7 @@ license="LGPL-3.0-only"
 [[mods]]
     modId="creativecore"
     logoFile="creativecore.png"
-    version="2.11.22"
+    version="2.11.23"
     displayName="CreativeCore"
     displayURL="https://modrinth.com/mod/creativecore"
     authors="CreativeMD"
