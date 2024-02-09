@@ -473,7 +473,7 @@ public class VectorFan {
                     if (intersection != null)
                         right.add(intersection);
                 }
-                right.add(vec);
+                right.add(vec.copy());
             } else if (BooleanUtils.isFalse(cutted[i])) {
                 if (BooleanUtils.isTrue(beforeCutted)) {
                     //Intersection
@@ -482,7 +482,7 @@ public class VectorFan {
                         right.add(intersection);
                 }
             } else
-                right.add(vec);
+                right.add(vec.copy());
             
             beforeCutted = cutted[i];
             beforeVec = vec;
