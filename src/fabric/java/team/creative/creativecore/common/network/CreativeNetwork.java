@@ -27,11 +27,13 @@ public class CreativeNetwork {
     private final HashMap<Class<? extends CreativePacket>, ResourceLocation> packetTypeChannels = new HashMap<>();
     private final Logger logger;
     
+    private final String modid;
     private int id = 0;
     
     public CreativeNetwork(int version, Logger logger, ResourceLocation location) {
         this.logger = logger;
         this.CHANNEL = location;
+        this.modid = location.getNamespace();
         this.logger.debug("Created network " + location + "");
     }
     
@@ -74,20 +76,20 @@ public class CreativeNetwork {
         public static ServerHandler INSTANCE = new ClientHandler();
         
         public <T extends CreativePacket> void register(ResourceLocation CURR_CHANNEL, CreativeNetworkPacket<T> packet_handler) {
-            ServerPlayNetworking
-                    .registerGlobalReceiver(CURR_CHANNEL, (MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) -> {
-                        var message = packet_handler.read(buf);
-                        server.execute(() -> {
-                            message.execute(handler.getPlayer());
-                        });
+            ServerPlayNetworking.registerGlobalReceiver(CURR_CHANNEL,
+                (MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) -> {
+                    var message = packet_handler.read(buf);
+                    server.execute(() -> {
+                        message.execute(handler.getPlayer());
                     });
+                });
         }
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
         int CURR_ID = id++;
         ResourceLocation CURR_CHANNEL = new ResourceLocation(CHANNEL.getNamespace(), CHANNEL.getPath() + CURR_ID);
-        CreativeNetworkPacket<T> packet_handler = new CreativeNetworkPacket<>(classType, supplier);
+        CreativeNetworkPacket<T> packet_handler = new CreativeNetworkPacket<>(new ResourceLocation(modid, "" + id), classType, supplier);
         ServerHandler.INSTANCE.register(CURR_CHANNEL, packet_handler);
         packetTypes.put(classType, packet_handler);
         packetTypeChannels.put(classType, CURR_CHANNEL);
