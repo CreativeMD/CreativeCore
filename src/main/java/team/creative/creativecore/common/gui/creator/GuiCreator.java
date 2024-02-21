@@ -89,6 +89,7 @@ public abstract class GuiCreator {
         
         public void open(CompoundTag nbt, Player player, InteractionHand hand) {
             nbt.putBoolean("main_hand", hand == InteractionHand.MAIN_HAND);
+            this.openGui(nbt, player);
         }
     }
     
@@ -113,7 +114,7 @@ public abstract class GuiCreator {
             nbt.putInt("x", pos.getX());
             nbt.putInt("y", pos.getY());
             nbt.putInt("z", pos.getZ());
-            openGui(nbt, player);
+            this.openGui(nbt, player);
         }
     }
     
