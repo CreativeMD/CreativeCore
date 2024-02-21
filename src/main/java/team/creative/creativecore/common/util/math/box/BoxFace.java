@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.math.box;
 
+import org.spongepowered.asm.mixin.gen.Accessor;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -72,6 +73,14 @@ public enum BoxFace {
 
     public Axis getTwo() {
         return two;
+    }
+
+    public BoxCorner[] getCorners() {
+        return corners;
+    }
+
+    public Facing getFacing() {
+        return facing;
     }
     
     public Axis getTexUAxis() {
