@@ -65,6 +65,14 @@ public enum BoxFace {
             return triangleSecondInv;
         return triangleSecond;
     }
+
+    public Axis getOne() {
+        return one;
+    }
+
+    public Axis getTwo() {
+        return two;
+    }
     
     public Axis getTexUAxis() {
         return texU.axis;
@@ -113,7 +121,7 @@ public enum BoxFace {
             return outwardOne;
         if (outwardOne != null && outwardTwo == null)
             return outwardOne;
-        if (outwardOne == null && outwardTwo != null)
+        if (outwardOne == null)
             return outwardTwo;
         
         if (valueOne == valueTwo)
@@ -143,33 +151,22 @@ public enum BoxFace {
     }
     
     public static BoxFace get(Facing facing) {
-        switch (facing) {
-        case EAST:
-            return EAST;
-        case WEST:
-            return WEST;
-        case UP:
-            return UP;
-        case DOWN:
-            return DOWN;
-        case SOUTH:
-            return SOUTH;
-        case NORTH:
-            return NORTH;
-        }
-        throw new IllegalArgumentException();
+        return switch (facing) {
+            case EAST -> EAST;
+            case WEST -> WEST;
+            case UP -> UP;
+            case DOWN -> DOWN;
+            case SOUTH -> SOUTH;
+            case NORTH -> NORTH;
+        };
     }
     
     public static BoxFace get(Axis axis, boolean direction) {
-        switch (axis) {
-        case X:
-            return direction ? EAST : WEST;
-        case Y:
-            return direction ? UP : DOWN;
-        case Z:
-            return direction ? SOUTH : NORTH;
-        }
-        throw new IllegalArgumentException();
+        return switch (axis) {
+            case X -> direction ? EAST : WEST;
+            case Y -> direction ? UP : DOWN;
+            case Z -> direction ? SOUTH : NORTH;
+        };
     }
     
     public static Vec3f[] getVecArray(BoxCorner[] corners, Vec3f[] vecs) {
