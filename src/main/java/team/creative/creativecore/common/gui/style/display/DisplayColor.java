@@ -30,6 +30,10 @@ public class DisplayColor extends StyleDisplay {
     public DisplayColor(float r, float g, float b, float a) {
         set(r, g, b, a);
     }
+
+    public DisplayColor(int r, int g, int b, int a) {
+        set(color(r), color(g), color(b), color(a));
+    }
     
     public DisplayColor(Color color) {
         set(color.getRedDecimal(), color.getGreenDecimal(), color.getBlueDecimal(), color.getAlphaDecimal());
@@ -48,6 +52,10 @@ public class DisplayColor extends StyleDisplay {
     
     public void set(Color color) {
         set(color.getRedDecimal(), color.getGreenDecimal(), color.getBlueDecimal(), color.getAlphaDecimal());
+    }
+
+    private float color(int color) {
+        return (float) (1d / 255d) * color;
     }
     
     @Override

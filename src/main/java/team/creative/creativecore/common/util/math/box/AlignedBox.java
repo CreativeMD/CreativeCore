@@ -165,86 +165,54 @@ public class AlignedBox {
     }
     
     public float get(Facing facing) {
-        switch (facing) {
-            case EAST:
-                return maxX;
-            case WEST:
-                return minX;
-            case UP:
-                return maxY;
-            case DOWN:
-                return minY;
-            case SOUTH:
-                return maxZ;
-            case NORTH:
-                return minZ;
-            
-        }
-        return 0;
+        return switch (facing) {
+            case EAST -> maxX;
+            case WEST -> minX;
+            case UP -> maxY;
+            case DOWN -> minY;
+            case SOUTH -> maxZ;
+            case NORTH -> minZ;
+        };
     }
     
     public float getSize(Axis axis) {
-        switch (axis) {
-            case X:
-                return maxX - minX;
-            case Y:
-                return maxY - minY;
-            case Z:
-                return maxZ - minZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> maxX - minX;
+            case Y -> maxY - minY;
+            case Z -> maxZ - minZ;
+        };
     }
     
     public void setMin(Axis axis, float value) {
         switch (axis) {
-            case X:
-                minX = value;
-                break;
-            case Y:
-                minY = value;
-                break;
-            case Z:
-                minZ = value;
-                break;
+            case X -> minX = value;
+            case Y -> minY = value;
+            case Z -> minZ = value;
         }
     }
     
     public float getMin(Axis axis) {
-        switch (axis) {
-            case X:
-                return minX;
-            case Y:
-                return minY;
-            case Z:
-                return minZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> minX;
+            case Y -> minY;
+            case Z -> minZ;
+        };
     }
     
     public void setMax(Axis axis, float value) {
         switch (axis) {
-            case X:
-                maxX = value;
-                break;
-            case Y:
-                maxY = value;
-                break;
-            case Z:
-                maxZ = value;
-                break;
+            case X -> maxX = value;
+            case Y -> maxY = value;
+            case Z -> maxZ = value;
         }
     }
     
     public float getMax(Axis axis) {
-        switch (axis) {
-            case X:
-                return maxX;
-            case Y:
-                return maxY;
-            case Z:
-                return maxZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> maxX;
+            case Y -> maxY;
+            case Z -> maxZ;
+        };
     }
     
     public void grow(Axis axis, float value) {
