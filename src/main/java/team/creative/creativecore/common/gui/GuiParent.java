@@ -81,11 +81,23 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     public double getOffsetY() {
-        return 0;
+        int offset = spacing;
+        GuiParent control = (GuiParent) this.getParent();
+        while (control != null) {
+            offset += control.spacing;
+            control = (GuiParent) control.getParent();
+        }
+        return offset;
     }
     
     public double getOffsetX() {
-        return 0;
+        int offset = spacing;
+        GuiParent control = (GuiParent) this.getParent();
+        while (control != null) {
+            offset += control.spacing;
+            control = (GuiParent) control.getParent();
+        }
+        return offset;
     }
     
     @Override
