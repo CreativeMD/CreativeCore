@@ -69,6 +69,9 @@ public class CreativeCore {
         () -> ArgumentTypeInfos.registerByClass(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray())));
     
     public CreativeCore() {
+        ICreativeLoader loader = CreativeCore.loader();
+        loader.registerDisplayTest(() -> loader.ignoreServerNetworkConstant(), (a, b) -> true);
+        
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerMenus);
         COMMAND_ARGUMENT_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
