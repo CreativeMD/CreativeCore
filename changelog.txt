@@ -1,3 +1,7 @@
+2.11.19
+Fixed CreativeCore networks not being optional
+Fixed issue with bundle packet
+
 2.11.18
 Added compatibility with neoforge 20.4.80-beta
 Fixed crash with slot view on client side
