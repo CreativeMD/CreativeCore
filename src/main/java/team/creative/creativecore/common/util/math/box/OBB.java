@@ -152,8 +152,6 @@ public class OBB extends ABB {
             return offset;
         if (Math.abs(offset) < 1.0E-7D)
             return 0.0D;
-        if (!intersectsWithAxis(axis, origin.getOBB(other)))
-            return offset;
         
         double distance = calculateDistanceRotated(other, axis, offset);
         
