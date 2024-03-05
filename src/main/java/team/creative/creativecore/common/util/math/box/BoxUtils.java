@@ -23,20 +23,23 @@ public class BoxUtils {
         return one > minOne && one < maxOne && two > minTwo && two < maxTwo;
     }
     
-    private static double lengthIgnoreAxis(Vec3d vec, Axis axis) {
-        return switch (axis) {
+    private static double lengthIgnoreAxis(Vec3d vec, Axis axis, Vec3d center) {
+        vec.sub(center);
+        double result = switch (axis) {
             case X -> Math.sqrt(vec.y * vec.y + vec.z * vec.z);
             case Y -> Math.sqrt(vec.x * vec.x + vec.z * vec.z);
             case Z -> Math.sqrt(vec.x * vec.x + vec.y * vec.y);
             default -> 0;
         };
+        vec.add(center);
+        return result;
     }
     
     public static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
         double rotation = coordinator.getRotationDegree(axis);
         if (rotation == 0)
             return;
-        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrix(axis), coordinator.translation);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.original().center(), coordinator.getRotationMatrix(axis), coordinator.translation);
     }
     
     public static void includeMaxRotationInBoxInverse(ABB box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
@@ -49,10 +52,10 @@ public class BoxUtils {
             translation.invert();
         } else
             translation = null;
-        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrixInv(axis), translation);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.original().center(), coordinator.getRotationMatrixInv(axis), translation);
     }
     
-    private static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, double rotation, Matrix3 matrix, Vec3d translation) {
+    private static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, double rotation, Vec3d rotationCenter, Matrix3 matrix, Vec3d translation) {
         Double length = null;
         BooleanRotation state = BooleanRotation.get(axis, vec);
         
@@ -64,7 +67,7 @@ public class BoxUtils {
                 Facing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
                 
                 if (length == null)
-                    length = lengthIgnoreAxis(vec, axis);
+                    length = lengthIgnoreAxis(vec, axis, rotationCenter);
                 
                 box.include(facing, length);
                 if (translation != null)
@@ -75,14 +78,17 @@ public class BoxUtils {
             }
         }
         
+        vec.sub(rotationCenter);
         matrix.transform(vec);
+        vec.add(rotationCenter);
+        
         box.include(vec);
         
         if (quarterRotation <= 360 && !state.is(vec)) {
             Facing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
             
             if (length == null)
-                length = lengthIgnoreAxis(vec, axis);
+                length = lengthIgnoreAxis(vec, axis, rotationCenter);
             
             box.include(facing, length);
             if (translation != null)
