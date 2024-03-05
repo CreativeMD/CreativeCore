@@ -252,4 +252,6 @@ public interface IVecOrigin {
         return offXLast() != offX() || offYLast() != offY() || offZLast() != offZ() || rotXLast() != rotX() || rotYLast() != rotY() || rotZLast() != rotZ();
     }
     
+    public IVecOrigin copy();
+    
 }

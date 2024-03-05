@@ -317,7 +317,7 @@ public class ABB {
     }
     
     public ABB createRotatedSurrounding(CollisionCoordinator coordinator) {
-        Vec3d[] corners = getRotatedCorners(coordinator.origin);
+        Vec3d[] corners = getRotatedCorners(coordinator.original());
         
         ABB bb = createEmptyBox();
         
@@ -342,8 +342,9 @@ public class ABB {
         return bb;
     }
     
-    public ABB createRotatedSurroundingInverse(CollisionCoordinator coordinator) {
-        Vec3d[] corners = getRotatedCorners(coordinator.origin);
+    /** the resulting box is still an obb (orientated to origin of the coordinator */
+    public ABB createRotatedSurroundingInverseInternal(CollisionCoordinator coordinator) {
+        Vec3d[] corners = getCorners();
         
         ABB bb = createEmptyBox();
         
