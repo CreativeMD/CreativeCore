@@ -167,60 +167,10 @@ public class CollidingPlane {
         return bb.minX < maxX && bb.maxX > minX && bb.minY < maxY && bb.maxY > minY && bb.minZ < maxZ && bb.maxZ > minZ;
     }
     
-    public static CollidingPlane[] getPlanes(ABB box, PlaneCache cache, CollisionCoordinator coordinator) {
-        Vec3d[] corners = box.getRotatedCorners(coordinator.origin);
-        
-        boolean east = coordinator.offX > 0;
-        boolean west = coordinator.offY < 0;
-        boolean up = coordinator.offY > 0;
-        boolean down = coordinator.offY < 0;
-        boolean south = coordinator.offZ > 0;
-        boolean north = coordinator.offZ < 0;
-        
-        if (coordinator.hasRotY || coordinator.hasRotZ)
-            east = west = true;
-        
-        if (coordinator.hasRotX || coordinator.hasRotZ)
-            up = down = true;
-        
-        if (coordinator.hasRotX || coordinator.hasRotY)
-            south = north = true;
-        
-        CollidingPlane[] planes = new CollidingPlane[BooleanUtils.countTrue(east, west, up, down, south, north)];
-        int index = 0;
-        if (east) {
-            planes[index] = new CollidingPlane(box, Facing.EAST, cache, corners, BoxFace.get(Facing.EAST).corners);
-            index++;
-        }
-        if (west) {
-            planes[index] = new CollidingPlane(box, Facing.WEST, cache, corners, BoxFace.get(Facing.WEST).corners);
-            index++;
-        }
-        if (up) {
-            planes[index] = new CollidingPlane(box, Facing.UP, cache, corners, BoxFace.get(Facing.UP).corners);
-            index++;
-        }
-        if (down) {
-            planes[index] = new CollidingPlane(box, Facing.DOWN, cache, corners, BoxFace.get(Facing.DOWN).corners);
-            index++;
-        }
-        if (south) {
-            planes[index] = new CollidingPlane(box, Facing.SOUTH, cache, corners, BoxFace.get(Facing.SOUTH).corners);
-            index++;
-        }
-        if (north) {
-            planes[index] = new CollidingPlane(box, Facing.NORTH, cache, corners, BoxFace.get(Facing.NORTH).corners);
-            index++;
-        }
-        
-        return planes;
-    }
-    
-    public static Facing getDirection(CollisionCoordinator coordinator, ABB box, Vec3d center) {
-        throw new UnsupportedOperationException();
-        /*double x = (center.x - box.cache.center.x) / (box.maxX - box.minX);
-        double y = (center.y - box.cache.center.y) / (box.maxY - box.minY);
-        double z = (center.z - box.cache.center.z) / (box.maxZ - box.minZ);
+    public static Facing getDirection(CollisionCoordinator coordinator, PlaneCache cache, Vec3d center) {
+        double x = (center.x - cache.center.x) / (cache.bb.maxX - cache.bb.minX);
+        double y = (center.y - cache.center.y) / (cache.bb.maxY - cache.bb.minY);
+        double z = (center.z - cache.center.z) / (cache.bb.maxZ - cache.bb.minZ);
         
         boolean xy = Math.abs(x) > Math.abs(y);
         boolean xz = Math.abs(x) > Math.abs(z);
@@ -229,37 +179,6 @@ public class CollidingPlane {
             return x > 0 ? Facing.EAST : Facing.WEST;
         else if (!xz && !yz)
             return z > 0 ? Facing.SOUTH : Facing.NORTH;
-        return y > 0 ? Facing.UP : Facing.DOWN;*/
-    }
-    
-    public static class PlaneCache {
-        
-        public CollidingPlane[] planes;
-        public final Vec3d center;
-        public final double radiusSquared;
-        
-        public PlaneCache(AABB box) {
-            this.radiusSquared = (box.minX * box.maxX + box.minY * box.maxY + box.minZ * box.maxZ) * 0.5;
-            this.center = new Vec3d(box.minX + (box.maxX - box.minX) * 0.5D, box.minY + (box.maxY - box.minY) * 0.5D, box.minZ + (box.maxZ - box.minZ) * 0.5D);
-        }
-        
-        public boolean isCached() {
-            return planes != null;
-        }
-        
-        public void reset() {
-            planes = null;
-        }
-        
-    }
-    
-    public static class PushCache {
-        
-        public Facing facing;
-        public AABB pushBox;
-        
-        public AABB entityBox;
-        public AABB entityBoxOrientated;
-        
+        return y > 0 ? Facing.UP : Facing.DOWN;
     }
 }
