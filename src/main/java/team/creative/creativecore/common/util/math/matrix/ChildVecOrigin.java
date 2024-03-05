@@ -53,4 +53,9 @@ public class ChildVecOrigin extends VecOrigin {
     public IVecOrigin getParent() {
         return parent;
     }
+    
+    @Override
+    protected VecOrigin createInternalCopy() {
+        return new ChildVecOrigin(parent, new Vec3d(center()));
+    }
 }
