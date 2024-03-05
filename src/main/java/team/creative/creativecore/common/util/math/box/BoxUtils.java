@@ -4,6 +4,7 @@ import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollisionCoordinator;
+import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
 import team.creative.creativecore.common.util.math.transformation.BooleanRotation;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -152,6 +153,20 @@ public class BoxUtils {
         return get(bb, corner.z);
     }
     
+    public static Vec3d[] getCorners(AABB bb) {
+        Vec3d[] corners = new Vec3d[BoxCorner.values().length];
+        for (int i = 0; i < corners.length; i++)
+            corners[i] = corner(bb, BoxCorner.values()[i]);
+        return corners;
+    }
+    
+    public static Vec3d[] getRotatedCorners(AABB bb, IVecOrigin origin) {
+        Vec3d[] corners = getCorners(bb);
+        for (int i = 0; i < corners.length; i++)
+            origin.transformPointToWorld(corners[i]);
+        return corners;
+    }
+    
     public static boolean intersectsWithAxis(AABB bb, AABB other, Axis one, Axis two) {
         return bb.min(one.toVanilla()) < other.max(one.toVanilla()) && bb.max(one.toVanilla()) > bb.min(one.toVanilla()) && bb.min(two.toVanilla()) < bb.max(two.toVanilla()) && bb
                 .max(two.toVanilla()) > bb.min(two.toVanilla());
@@ -173,5 +188,17 @@ public class BoxUtils {
                     return newDistance;
             }
         return offset;
+    }
+    
+    public static double getIntersectionVolume(AABB bb, ABB other) {
+        double d0 = Math.max(bb.minX, other.minX);
+        double d1 = Math.max(bb.minY, other.minY);
+        double d2 = Math.max(bb.minZ, other.minZ);
+        double d3 = Math.min(bb.maxX, other.maxX);
+        double d4 = Math.min(bb.maxY, other.maxY);
+        double d5 = Math.min(bb.maxZ, other.maxZ);
+        if (d0 < d3 && d1 < d4 && d2 < d5)
+            return Math.abs((d3 - d0) * (d4 - d1) * (d5 - d2));
+        return 0;
     }
 }
