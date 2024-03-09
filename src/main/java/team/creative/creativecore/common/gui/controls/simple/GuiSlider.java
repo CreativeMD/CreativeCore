@@ -1,15 +1,12 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -183,16 +180,15 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         double percent = getPercentage();
         
         int posX = (int) ((control.getContentWidth() - sliderWidth) * percent);
-        PoseStack pose = graphics.pose();
         GuiStyle style = getStyle();
         style.get(ControlStyleFace.CLICKABLE, false).render(pose, posX, 0, sliderWidth, control.getContentHeight());
         
         if (textfield != null)
-            textfield.render(graphics, control, rect, rect, 1, mouseX, mouseY);
+            textfield.render(pose, control, rect, rect, 1, mouseX, mouseY);
         else
             GuiRenderHelper.drawStringCentered(pose, getTextByValue(), control.getContentWidth(), control.getContentHeight(), ColorUtils.WHITE, true);
     }

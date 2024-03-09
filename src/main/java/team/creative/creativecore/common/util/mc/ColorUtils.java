@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.util.mc;
 
-import org.joml.Vector3d;
-
+import com.mojang.math.Vector3d;
 import team.creative.creativecore.common.util.type.Color;
 
 public class ColorUtils {

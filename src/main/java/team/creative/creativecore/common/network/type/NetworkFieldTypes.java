@@ -1,45 +1,25 @@
 package team.creative.creativecore.common.network.type;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.EndTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagTypes;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.*;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
@@ -50,16 +30,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
-import team.creative.creativecore.common.util.math.vec.Vec1d;
-import team.creative.creativecore.common.util.math.vec.Vec1f;
-import team.creative.creativecore.common.util.math.vec.Vec2d;
-import team.creative.creativecore.common.util.math.vec.Vec2f;
-import team.creative.creativecore.common.util.math.vec.Vec3d;
-import team.creative.creativecore.common.util.math.vec.Vec3f;
+import team.creative.creativecore.common.util.math.vec.*;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
 import team.creative.creativecore.common.util.type.Bunch;
 import team.creative.creativecore.common.util.type.itr.IterableIterator;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class NetworkFieldTypes {
     
@@ -366,12 +348,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Block content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(content));
+                buffer.writeResourceLocation(Registry.BLOCK.getKey(content));
             }
             
             @Override
             protected Block readContent(FriendlyByteBuf buffer) {
-                return BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
+                return Registry.BLOCK.get(buffer.readResourceLocation());
             }
         }, Block.class);
         
@@ -379,12 +361,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Item content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(content));
+                buffer.writeResourceLocation(Registry.ITEM.getKey(content));
             }
             
             @Override
             protected Item readContent(FriendlyByteBuf buffer) {
-                return BuiltInRegistries.ITEM.get(buffer.readResourceLocation());
+                return Registry.ITEM.get(buffer.readResourceLocation());
             }
         }, Item.class);
         
@@ -746,18 +728,6 @@ public class NetworkFieldTypes {
                 if (protocol != ConnectionProtocol.PLAY)
                     throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
                 
-                if (content instanceof BundlePacket<?> bundle) {
-                    buffer.writeInt(BUNDLE_WILDCARD);
-                    int size = 0;
-                    for (@SuppressWarnings("unused")
-                    Packet<?> subPacket : bundle.subPackets())
-                        size++;
-                    buffer.writeInt(size);
-                    for (Packet<?> subPacket : bundle.subPackets())
-                        write(subPacket, subPacket.getClass(), null, buffer);
-                    return;
-                }
-                
                 Integer id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
                 if (id != -1) {
                     buffer.writeInt(id);
@@ -772,13 +742,6 @@ public class NetworkFieldTypes {
             @Override
             public Packet read(Class classType, Type genericType, FriendlyByteBuf buffer) {
                 int id = buffer.readInt();
-                if (id == BUNDLE_WILDCARD) {
-                    int size = buffer.readInt();
-                    List<Packet<ClientGamePacketListener>> packets = new ArrayList<>();
-                    for (int i = 0; i < size; i++)
-                        packets.add(read(null, null, buffer));
-                    return new ClientboundBundlePacket(packets);
-                }
                 if (id < 0)
                     return ConnectionProtocol.PLAY.createPacket(PacketFlow.SERVERBOUND, -id, buffer);
                 return ConnectionProtocol.PLAY.createPacket(PacketFlow.CLIENTBOUND, id, buffer);

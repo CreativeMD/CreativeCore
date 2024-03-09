@@ -13,7 +13,7 @@ import net.minecraft.server.packs.VanillaPackResources;
 @Mixin(VanillaPackResources.class)
 public interface VanillaPackResourcesAccessor {
     
-    @Accessor
+    @Accessor("ROOT_DIR_BY_TYPE")
     public Map<PackType, List<Path>> getPathsForType();
     
 }

@@ -1,16 +1,15 @@
 package team.creative.creativecore.mixin;
 
-import java.nio.file.Path;
-
+import net.minecraft.server.packs.AbstractPackResources;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.server.packs.PathPackResources;
+import java.io.File;
 
-@Mixin(PathPackResources.class)
+@Mixin(AbstractPackResources.class)
 public interface PathPackResourcesAccessor {
     
-    @Accessor
-    public Path getRoot();
+    @Accessor("file")
+    File getRoot();
     
 }

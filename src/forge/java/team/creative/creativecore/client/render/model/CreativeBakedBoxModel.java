@@ -1,9 +1,6 @@
 package team.creative.creativecore.client.render.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +15,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -35,7 +31,7 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
     public static Minecraft mc = Minecraft.getInstance();
     private static final ThreadLocal<QuadGeneratorContext> QUAD_CONTEXT = ThreadLocal.withInitial(QuadGeneratorContext::new);
     
-    public static List<BakedQuad> compileBoxes(List<? extends RenderBox> boxes, Facing side, RenderType layer, RandomSource rand, boolean item, List<BakedQuad> baked) {
+    public static List<BakedQuad> compileBoxes(List<? extends RenderBox> boxes, Facing side, RenderType layer, Random rand, boolean item, List<BakedQuad> baked) {
         if (side == null)
             return Collections.EMPTY_LIST;
         
@@ -115,7 +111,7 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
     }
     
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, @NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType layer) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, @NotNull Random rand, @NotNull ModelData extraData, @Nullable RenderType layer) {
         
         Facing facing = Facing.get(direction);
         if (state != null) {
@@ -152,7 +148,7 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
     
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(BlockState state, Direction direction, RandomSource rand) {
+    public List<BakedQuad> getQuads(BlockState state, Direction direction, Random rand) {
         return getQuads(state, direction, rand, ModelData.EMPTY, Sheets.cutoutBlockSheet());
     }
     

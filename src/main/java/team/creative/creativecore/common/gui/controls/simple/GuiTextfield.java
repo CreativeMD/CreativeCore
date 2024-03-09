@@ -1,27 +1,16 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Style;
@@ -29,6 +18,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.GuiFocusControl;
@@ -36,6 +26,10 @@ import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public class GuiTextfield extends GuiFocusControl {
     
@@ -157,8 +151,7 @@ public class GuiTextfield extends GuiFocusControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         Font font = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
@@ -174,7 +167,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            xOffset = graphics.drawString(font, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color, false) + 1;
+            xOffset = font.drawShadow(pose, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
         }
         
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -187,16 +180,16 @@ public class GuiTextfield extends GuiFocusControl {
         }
         
         if (!s.isEmpty() && flag && j < s.length())
-            graphics.drawString(font, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color, false);
+            font.drawShadow(pose, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
         
         if (!flag2 && this.suggestion != null)
-            graphics.drawString(font, this.suggestion, k1 - 1, yOffset, -8355712);
+            font.drawShadow(pose, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
             if (flag2)
-                graphics.fill(k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
+                GuiComponent.fill(pose, k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
             else
-                graphics.drawString(font, "_", k1, yOffset, color);
+                font.draw(pose, "_", k1, yOffset, color);
             
         if (k != j) {
             int l1 = font.width(s.substring(0, k));

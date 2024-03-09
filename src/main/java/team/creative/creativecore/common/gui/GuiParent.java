@@ -1,30 +1,23 @@
 package team.creative.creativecore.common.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.ArrayUtils;
+import team.creative.creativecore.common.gui.event.*;
+import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
-import team.creative.creativecore.common.gui.event.GuiEvent;
-import team.creative.creativecore.common.gui.event.GuiEventManager;
-import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
-import team.creative.creativecore.common.gui.flow.GuiFlow;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
-import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
 
 public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
     
@@ -257,9 +250,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
-        PoseStack pose = graphics.pose();
-        
+    protected void renderControls(PoseStack pose, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
         while (collection.hasPrevious()) {
             GuiChildControl child = collection.previous();
             GuiControl control = child.control;
@@ -277,7 +268,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
                 
                 pose.pushPose();
                 pose.translate(child.getX() + xOffset, child.getY() + yOffset, 10);
-                renderControl(graphics, child, control, controlRect, realRect, scale, mouseX, mouseY, hover);
+                renderControl(pose, child, control, controlRect, realRect, scale, mouseX, mouseY, hover);
                 pose.popPose();
             }
         }
@@ -285,18 +276,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControl(GuiGraphics graphics, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
-        control.render(graphics, child, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
+    protected void renderControl(PoseStack pose, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
+        control.render(pose, child, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
         if (realContentRect == null)
             return;
-        
-        PoseStack pose = graphics.pose();
+
         float controlScale = (float) scaleFactor();
         scale *= scaleFactor();
         double xOffset = getOffsetX();
@@ -304,16 +294,16 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         
         pose.scale(controlScale, controlScale, 1);
         
-        renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
-        renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
+        renderControls(pose, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
+        renderControls(pose, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
         
-        super.renderContent(graphics, control, contentRect, realContentRect, scale, mouseX, mouseY);
+        super.renderContent(pose, control, contentRect, realContentRect, scale, mouseX, mouseY);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(PoseStack graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
     
     @Override
     public boolean isContainer() {

@@ -1,17 +1,18 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.util.Optional;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Optional;
 
 public class CreativeIngredientItemTag extends CreativeIngredient {
     
@@ -32,7 +33,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        tag = TagKey.create(Registries.ITEM, new ResourceLocation(nbt.getString("tag")));
+        tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(nbt.getString("tag")));
     }
     
     @Override
@@ -47,7 +48,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        Optional<Named<Item>> optional = BuiltInRegistries.ITEM.getTag(tag);
+        Optional<Named<Item>> optional = Registry.ITEM.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;
         return new ItemStack(optional.get().get(0).value());
@@ -65,12 +66,12 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public Component description() {
-        return Component.literal(tag.location().toString());
+        return new TextComponent(tag.location().toString());
     }
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.item_tag").append(": " + ChatFormatting.YELLOW + tag.location().toString());
+        return new TranslatableComponent("minecraft.item_tag").append(": " + ChatFormatting.YELLOW + tag.location().toString());
     }
     
 }

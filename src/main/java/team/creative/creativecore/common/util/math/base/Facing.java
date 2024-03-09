@@ -1,8 +1,11 @@
 package team.creative.creativecore.common.util.math.base;
 
+import com.mojang.math.Vector3f;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.geo.NormalPlaneF;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
@@ -27,8 +30,8 @@ public enum Facing {
         }
         
         @Override
-        public com.mojang.math.Axis rotation() {
-            return com.mojang.math.Axis.YN;
+        public Vector3f rotation() {
+            return Vector3f.YN;
         }
         
         @Override
@@ -70,8 +73,8 @@ public enum Facing {
         }
         
         @Override
-        public com.mojang.math.Axis rotation() {
-            return com.mojang.math.Axis.YP;
+        public Vector3f rotation() {
+            return Vector3f.YP;
         }
         
         @Override
@@ -113,8 +116,8 @@ public enum Facing {
         }
         
         @Override
-        public com.mojang.math.Axis rotation() {
-            return com.mojang.math.Axis.ZN;
+        public Vector3f rotation() {
+            return Vector3f.ZN;
         }
         
         @Override
@@ -156,8 +159,8 @@ public enum Facing {
         }
         
         @Override
-        public com.mojang.math.Axis rotation() {
-            return com.mojang.math.Axis.ZP;
+        public Vector3f rotation() {
+            return Vector3f.ZP;
         }
         
         @Override
@@ -199,8 +202,8 @@ public enum Facing {
         }
         
         @Override
-        public com.mojang.math.Axis rotation() {
-            return com.mojang.math.Axis.XN;
+        public Vector3f rotation() {
+            return Vector3f.XN;
         }
         
         @Override
@@ -242,8 +245,8 @@ public enum Facing {
         }
         
         @Override
-        public com.mojang.math.Axis rotation() {
-            return com.mojang.math.Axis.XP;
+        public Vector3f rotation() {
+            return Vector3f.XP;
         }
         
         @Override
@@ -374,7 +377,7 @@ public enum Facing {
     }
     
     public Component translate() {
-        return Component.translatable("facing." + name);
+        return new TranslatableComponent("facing." + name);
     }
     
     public abstract Facing opposite();
@@ -429,7 +432,7 @@ public enum Facing {
     
     public abstract AABB set(AABB bb, double value);
     
-    public abstract com.mojang.math.Axis rotation();
+    public abstract Vector3f rotation();
     
     public abstract float get(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
     

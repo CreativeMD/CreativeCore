@@ -1,33 +1,25 @@
 package team.creative.creativecore.client.render;
 
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -56,7 +48,7 @@ public class GuiRenderHelper {
         matrix.mulPoseMatrix(mat.last().pose());
         matrix.translate(0, 0, 100);
         matrix.translate(8, 8, 8);
-        matrix.mulPoseMatrix((new Matrix4f()).scaling(1, -1, 1));
+        matrix.mulPoseMatrix(Matrix4f.createScaleMatrix(1, -1, 1));
         matrix.scale(16, 16, 16);
         
         RenderSystem.applyModelViewMatrix();
@@ -65,7 +57,7 @@ public class GuiRenderHelper {
         boolean flag = !bakedmodel.usesBlockLight();
         if (flag)
             Lighting.setupForFlatItems();
-        renderer.render(stack, ItemDisplayContext.GUI, false, new PoseStack(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
+        renderer.render(stack, ItemTransforms.TransformType.GUI, false, new PoseStack(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
         multibuffersource$buffersource.endBatch();
         RenderSystem.enableDepthTest();
         if (flag)
@@ -88,7 +80,7 @@ public class GuiRenderHelper {
                 posestack.translate(0.0D, 0.0D, 0 + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
                 mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last()
-                        .pose(), multibuffersource$buffersource, DisplayMode.NORMAL, 0, 15728880);
+                        .pose(), multibuffersource$buffersource, false, 0, 15728880);
                 multibuffersource$buffersource.endBatch();
             }
             if (stack.isBarVisible()) {
@@ -138,8 +130,8 @@ public class GuiRenderHelper {
             }
         }
         BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, ColorUtils.WHITE, shadow, stack.last()
-                .pose(), buffer, DisplayMode.NORMAL, 0, 15728880);
+        mc.font.drawInBatch(text, width / 2f - mc.font.width(text) / 2f, height / 2f - mc.font.lineHeight / 2f, ColorUtils.WHITE, shadow, stack.last()
+                .pose(), buffer, false, 0, 15728880);
         buffer.endBatch();
     }
     
@@ -213,7 +205,7 @@ public class GuiRenderHelper {
         builder.vertex(mat, x, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
         builder.vertex(mat, x + width, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
         builder.vertex(mat, x + width, y, 0.0F).color(red, green, blue, alpha).endVertex();
-        BufferUploader.drawWithShader(builder.end());
+        BufferUploader.end(builder);
     }
     
     private static void textureRect(PoseStack pose, int x, int y, int z, int width, int height, float u, float v, int textureWidth, int textureHeight) {
@@ -244,7 +236,7 @@ public class GuiRenderHelper {
         bufferbuilder.vertex(matrix, x2, y2, z).uv(u2, v2).endVertex();
         bufferbuilder.vertex(matrix, x2, y, z).uv(u2, v).endVertex();
         bufferbuilder.vertex(matrix, x, y, z).uv(u, v).endVertex();
-        BufferUploader.drawWithShader(bufferbuilder.end());
+        BufferUploader.end(bufferbuilder);
     }
     
 }

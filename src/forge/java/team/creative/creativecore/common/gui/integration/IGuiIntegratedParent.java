@@ -1,18 +1,13 @@
 package team.creative.creativecore.common.gui.integration;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ContainerScreenEvent.Render.Background;
+import net.minecraftforge.client.event.ContainerScreenEvent.DrawBackground;
 import net.minecraftforge.common.MinecraftForge;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -22,6 +17,9 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.network.CreativePacket;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface IGuiIntegratedParent extends IGuiParent {
     
@@ -43,8 +41,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
     }
     
     @OnlyIn(value = Dist.CLIENT)
-    public default void render(GuiGraphics graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+    public default void render(PoseStack pose, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
         int width = screen.width;
         int height = screen.height;
         
@@ -64,7 +61,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
                 if (layer.hasGrayBackground())
                     GuiRenderHelper.verticalGradientRect(pose, 0, 0, width, height, -1072689136, -804253680);
                 if (screen instanceof AbstractContainerScreen)
-                    MinecraftForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, graphics, mouseX, mouseY));
+                    MinecraftForge.EVENT_BUS.post(new DrawBackground((AbstractContainerScreen<?>) screen, pose, mouseX, mouseY));
             }
             
             pose.pushPose();
@@ -74,7 +71,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
-            layer.render(graphics, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
+            layer.render(pose, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
             pose.popPose();
             
             RenderSystem.disableScissor();
@@ -88,7 +85,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
-                graphics.renderTooltip(Minecraft.getInstance().font, event.tooltip, Optional.empty(), mouseX, mouseY);
+                pose.renderTooltip(Minecraft.getInstance().font, event.tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
     

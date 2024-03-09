@@ -1,29 +1,22 @@
 package team.creative.creativecore.client.render.box;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.EmptyModelData;
+import org.jetbrains.annotations.Nullable;
 import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
@@ -34,6 +27,11 @@ import team.creative.creativecore.common.util.math.geo.VectorFan;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.mc.ColorUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderBox extends AlignedBox {
@@ -420,14 +418,14 @@ public class RenderBox extends AlignedBox {
     public boolean isTranslucent() {
         if (ColorUtils.isTransparent(color))
             return true;
-        return !state.isSolid();
+        return !state.canOcclude();
     }
     
-    public List<BakedQuad> getBakedQuad(QuadGeneratorContext holder, LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
+    public List<BakedQuad> getBakedQuad(QuadGeneratorContext holder, LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, Random rand, boolean overrideTint, int defaultColor) {
         if (pos != null)
             rand.setSeed(state.getSeed(pos));
         
-        List<BakedQuad> blockQuads = blockModel.getQuads(state, facing.toVanilla(), rand, ModelData.EMPTY, layer);
+        List<BakedQuad> blockQuads = blockModel.getQuads(state, facing.toVanilla(), rand, EmptyModelData.INSTANCE);
         
         if (blockQuads.isEmpty())
             return Collections.emptyList();

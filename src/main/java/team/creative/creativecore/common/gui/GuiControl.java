@@ -1,25 +1,21 @@
 package team.creative.creativecore.common.gui;
 
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.opengl.GL11;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
@@ -32,6 +28,8 @@ import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
+
+import java.util.List;
 
 public abstract class GuiControl {
     
@@ -412,7 +410,7 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
@@ -431,8 +429,7 @@ public abstract class GuiControl {
         
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
-        
-        PoseStack pose = graphics.pose();
+
         getBorder(style, style.get(formatting.border)).render(pose, 0, 0, width, height);
         
         int borderWidth = style.getBorder(formatting.border);
@@ -444,7 +441,7 @@ public abstract class GuiControl {
         
         controlRect.shrink(borderWidth * scale);
         
-        renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        renderContent(pose, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
@@ -457,26 +454,25 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         controlRect.shrink(formatting.padding * scale);
         if (!enabled)
             pose.pushPose();
         pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(graphics, control, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
+        renderContent(pose, control, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
         if (!enabled)
             pose.popPose();
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         renderContent(graphics, control, controlRect, mouseX, mouseY);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected abstract void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY);
+    protected abstract void renderContent(PoseStack graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY);
     
     // MINECRAFT
     
@@ -487,11 +483,11 @@ public abstract class GuiControl {
     // UTILS
     
     public static MutableComponent translatable(String text) {
-        return Component.literal(translate(text));
+        return new TextComponent(translate(text));
     }
     
     public static MutableComponent translatable(String text, Object... parameters) {
-        return Component.literal(translate(text, parameters));
+        return new TextComponent(translate(text, parameters));
     }
     
     public static String translate(String text) {

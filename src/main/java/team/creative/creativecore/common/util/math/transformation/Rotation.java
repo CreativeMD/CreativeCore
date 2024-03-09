@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.util.math.transformation;
 
-import org.joml.Vector3d;
-
+import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.math.base.Axis;

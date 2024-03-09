@@ -1,8 +1,9 @@
 package team.creative.creativecore.common.gui.integration;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
@@ -12,7 +13,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     protected ScreenEventListener listener;
     
     public ContainerScreenIntegration(ContainerIntegration screenContainer, Inventory inv) {
-        super(screenContainer, inv, Component.literal("gui-api"));
+        super(screenContainer, inv, new TextComponent("gui-api"));
         listener = new ScreenEventListener(this.getMenu(), this);
     }
     
@@ -20,10 +21,14 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     protected void init() {
         this.addWidget(listener);
     }
-    
+
     @Override
+    public void resize(Minecraft p_96575_, int p_96576_, int p_96577_) {
+        super.resize(p_96575_, p_96576_, p_96577_);
+        rebuildWidgets();
+    }
+
     protected void rebuildWidgets() {
-        super.rebuildWidgets();
         for (GuiLayer layer : getMenu().getLayers())
             layer.reflow();
     }
@@ -34,10 +39,13 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        getMenu().render(graphics, this, listener, mouseX, mouseY);
+    public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
+        getMenu().render(pose, this, listener, mouseX, mouseY);
     }
-    
+
+    @Override
+    protected void renderBg(PoseStack poseStack, float v, int i, int i1) {}
+
     @Override
     public void clientTick() {
         for (GuiLayer layer : getMenu().getLayers())
@@ -59,9 +67,6 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
             height = Math.max(height, layer.getHeight());
         return height;
     }
-    
-    @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {}
     
     @Override
     public void mouseMoved(double x, double y) {
