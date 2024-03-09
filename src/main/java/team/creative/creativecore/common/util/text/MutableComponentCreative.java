@@ -1,40 +1,39 @@
 package team.creative.creativecore.common.util.text;
 
+import com.google.common.collect.Lists;
+import net.minecraft.ChatFormatting;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.FormattedCharSequence;
+
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
-import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
-import net.minecraft.network.chat.Style;
-import net.minecraft.util.FormattedCharSequence;
-
 public class MutableComponentCreative implements Component {
-    private final ComponentContents contents;
+    private final String contents;
     private final List<Component> siblings;
     private Style style;
     private FormattedCharSequence visualOrderText = FormattedCharSequence.EMPTY;
     @Nullable
     private Language decomposedWith;
     
-    public MutableComponentCreative(ComponentContents p_237200_, List<Component> p_237201_, Style p_237202_) {
+    public MutableComponentCreative(String p_237200_, List<Component> p_237201_, Style p_237202_) {
         this.contents = p_237200_;
         this.siblings = p_237201_;
         this.style = p_237202_;
     }
     
-    public static MutableComponentCreative create(ComponentContents p_237205_) {
+    public static MutableComponentCreative create(String p_237205_) {
         return new MutableComponentCreative(p_237205_, Lists.newArrayList(), Style.EMPTY);
     }
     
     @Override
-    public ComponentContents getContents() {
+    public String getContents() {
         return this.contents;
     }
     
@@ -42,7 +41,17 @@ public class MutableComponentCreative implements Component {
     public List<Component> getSiblings() {
         return this.siblings;
     }
-    
+
+    @Override
+    public MutableComponent plainCopy() {
+        return null;
+    }
+
+    @Override
+    public MutableComponent copy() {
+        return null;
+    }
+
     public MutableComponentCreative setStyle(Style p_130943_) {
         this.style = p_130943_;
         return this;
@@ -54,7 +63,7 @@ public class MutableComponentCreative implements Component {
     }
     
     public MutableComponentCreative append(String p_130947_) {
-        return this.append(Component.literal(p_130947_));
+        return this.append(new TextComponent(p_130947_));
     }
     
     public MutableComponentCreative append(Component p_130942_) {

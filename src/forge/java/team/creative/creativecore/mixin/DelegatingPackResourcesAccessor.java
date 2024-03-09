@@ -13,7 +13,7 @@ import net.minecraft.server.packs.PackType;
 @Mixin(DelegatingResourcePack.class)
 public interface DelegatingPackResourcesAccessor {
     
-    @Invoker
+    @Invoker(remap = false)
     public List<PackResources> callGetCandidatePacks(PackType type, ResourceLocation location);
     
 }

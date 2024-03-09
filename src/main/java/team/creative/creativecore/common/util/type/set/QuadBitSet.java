@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.nbt.Tag;
-import org.joml.Vector2i;
+import team.creative.creativecore.backport.Vector2i;
 import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 
 import java.util.Arrays;

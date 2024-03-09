@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -52,7 +54,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         GuiTopBottomBox topBottom = new GuiTopBottomBox();
         add(topBottom);
         box = new GuiComboBoxMapped<GuiCreativeIngredientHandler>("type", new TextMapBuilder<GuiCreativeIngredientHandler>()
-                .addEntrySet(GuiCreativeIngredientHandler.REGISTRY.entrySet(), x -> Component.literal(x.getKey())));
+                .addEntrySet(GuiCreativeIngredientHandler.REGISTRY.entrySet(), x -> new TextComponent(x.getKey())));
         box.setExpandableX();
         box.select(handler);
         topBottom.addTop(box);
@@ -69,7 +71,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         }
         topBottom.addBottom(scroll);
         
-        GuiLeftRightBox actionBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> closeTopLayer()).setTitle(Component.translatable("gui.cancel")))
+        GuiLeftRightBox actionBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> closeTopLayer()).setTitle(new TranslatableComponent("gui.cancel")))
                 .addRight(new GuiButton("save", x -> {
                     CreativeIngredient parsedInfo = handler.parseControls(topBottom.top);
                     if (parsedInfo != null) {
@@ -78,7 +80,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
                             latest.add(0, parsedInfo.copy());
                         closeTopLayer();
                     }
-                }).setTitle(Component.translatable("gui.save")));
+                }).setTitle(new TranslatableComponent("gui.save")));
         topBottom.addBottom(actionBox);
     }
     

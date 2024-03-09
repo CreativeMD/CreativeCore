@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.packet;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +39,7 @@ public class OpenGuiPacket extends CreativePacket {
         var layer = creator.function.apply(nbt, player);
         if (layer == null)
             return;
-        player.openMenu(new SimpleMenuProvider((id, inventory, x) -> new ContainerIntegration(CreativeCore.GUI_CONTAINER, id, x, layer), Component.literal(creator.getName())));
+        player.openMenu(new SimpleMenuProvider((id, inventory, x) -> new ContainerIntegration(CreativeCore.GUI_CONTAINER, id, x, layer), new TextComponent(creator.getName())));
         CreativeCore.NETWORK.sendToClient(new OpenGuiPacket(creator.getName(), nbt), player);
         layer.init();
     }

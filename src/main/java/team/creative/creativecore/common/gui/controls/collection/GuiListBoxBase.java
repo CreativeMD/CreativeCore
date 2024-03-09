@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -154,7 +155,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
             super("x", null);
             setDim(6, 8);
             setAlign(Align.CENTER);
-            setTitle(Component.literal("x"));
+            setTitle(new TextComponent("x"));
             pressed = (x) -> GuiListBoxBase.this.removeItem(this.index);
             this.index = index;
         }

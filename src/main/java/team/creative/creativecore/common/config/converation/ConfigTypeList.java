@@ -4,6 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonArray;
@@ -87,7 +88,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 ((GuiConfigSubControlHolder) control).createControls();
             }
             listBox.addItem(control);
-        }).setTitle(Component.translatable("gui.add")));
+        }).setTitle(new TranslatableComponent("gui.add")));
     }
     
     @Override

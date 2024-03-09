@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.converation.ConfigTypePermission.GuiPermissionConfigButton;
@@ -112,7 +113,7 @@ public class PermissionGuiLayer extends GuiLayer {
             
             String caption = translateOrDefault("gui.content", "content");
             GuiColumn labelCol = new GuiColumn();
-            labelCol.setVAlign(VAlign.CENTER).add(new GuiLabel("label").setTitle(Component.literal(caption + ":")));
+            labelCol.setVAlign(VAlign.CENTER).add(new GuiLabel("label").setTitle(new TextComponent(caption + ":")));
             row.addColumn(labelCol);
             
             table.addRow(row);
@@ -157,7 +158,7 @@ public class PermissionGuiLayer extends GuiLayer {
                         String caption = translateOrDefault(path + key.name + ".name", key.name);
                         String comment = path + key.name + ".comment";
                         GuiColumn col = new GuiColumn();
-                        col.setVAlign(VAlign.CENTER).add(new GuiLabel("label" + i).setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment)
+                        col.setVAlign(VAlign.CENTER).add(new GuiLabel("label" + i).setTitle(new TextComponent(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment)
                                 .build()));
                         row.addColumn(col);
                         table.addRow(row);
@@ -208,7 +209,7 @@ public class PermissionGuiLayer extends GuiLayer {
         GuiColumn col = new GuiColumn();
         col.setVAlign(VAlign.CENTER).setDim(new GuiSizeRules().maxWidth(100));
         if (defaultCol)
-            col.add(new GuiLabel("name").setTitle(Component.literal(name)));
+            col.add(new GuiLabel("name").setTitle(new TextComponent(name)));
         else
             col.add(group.textfield = new GuiTextfield("name", name).setDim(100));
         

@@ -85,7 +85,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
-                pose.renderTooltip(Minecraft.getInstance().font, event.tooltip, Optional.empty(), mouseX, mouseY);
+                screen.renderTooltip(pose, event.tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
     

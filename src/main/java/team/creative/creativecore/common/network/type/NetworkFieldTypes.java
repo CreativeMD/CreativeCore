@@ -479,7 +479,7 @@ public class NetworkFieldTypes {
             
         }, JsonObject.class);
         
-        register(new NetworkFieldTypeSpecial((x, y) -> x.isArray()) {
+        register(new NetworkFieldTypeSpecial<>((x, y) -> x.isArray()) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
@@ -503,7 +503,7 @@ public class NetworkFieldTypes {
             }
         });
         
-        register(new NetworkFieldTypeSpecial((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
+        register(new NetworkFieldTypeSpecial<>((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
@@ -554,7 +554,7 @@ public class NetworkFieldTypes {
             }
         });
         
-        register(new NetworkFieldTypeSpecial((x, y) -> x.isEnum()) {
+        register(new NetworkFieldTypeSpecial<>((x, y) -> x.isEnum()) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {

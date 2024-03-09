@@ -8,6 +8,7 @@ import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.util.mc.ColorUtils;
@@ -64,14 +65,14 @@ public class TextBuilder {
     public TextBuilder text(String text) {
         if (text.contains("\n")) {
             String[] lines = text.split("\\n");
-            add(Component.literal(lines[0]));
+            add(new TextComponent(lines[0]));
             for (int i = 1; i < lines.length; i++) {
                 newLine();
-                add(Component.literal(lines[i]));
+                add(new TextComponent(lines[i]));
             }
             return this;
         }
-        add(Component.literal(text));
+        add(new TextComponent(text));
         return this;
     }
     

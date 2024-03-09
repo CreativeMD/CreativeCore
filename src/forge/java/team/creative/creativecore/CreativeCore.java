@@ -1,30 +1,21 @@
 package team.creative.creativecore;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries.Keys;
-import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer;
@@ -36,15 +27,10 @@ import team.creative.creativecore.common.config.sync.ConfigurationPacket;
 import team.creative.creativecore.common.gui.creator.GuiCreator;
 import team.creative.creativecore.common.gui.creator.GuiCreator.GuiCreatorBasic;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
-import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
-import team.creative.creativecore.common.gui.packet.ImmediateItemStackPacket;
-import team.creative.creativecore.common.gui.packet.LayerClosePacket;
-import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
-import team.creative.creativecore.common.gui.packet.SyncPacket;
+import team.creative.creativecore.common.gui.packet.*;
 import team.creative.creativecore.common.loader.ForgeLoaderUtils;
 import team.creative.creativecore.common.loader.ILoaderUtils;
 import team.creative.creativecore.common.network.CreativeNetwork;
-import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
 
 @Mod(CreativeCore.MODID)
 public class CreativeCore {
@@ -63,20 +49,15 @@ public class CreativeCore {
         new GuiCreatorBasic((player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.SERVER)));
     public static final GuiCreatorBasic CONFIG_CLIENT_SYNC_OPEN = GuiCreator.register("clientconfig",
         new GuiCreatorBasic((player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT)));
-    
-    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, MODID);
-    public static final RegistryObject<SingletonArgumentInfo<StringArrayArgumentType>> STRING_ARRAY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES.register("string_array",
-        () -> ArgumentTypeInfos.registerByClass(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray())));
-    
+
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerMenus);
-        COMMAND_ARGUMENT_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         
         MinecraftForge.EVENT_BUS.addListener(this::server);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CreativeCoreClient.load(FMLJavaModLoadingContext.get().getModEventBus()));
         
-        GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {
+        GUI_CONTAINER = new MenuType<>(null) {
             @Override
             public ContainerIntegration create(int windowId, Inventory playerInv, net.minecraft.network.FriendlyByteBuf extraData) {
                 return new ContainerIntegration(this, windowId, playerInv.player);
@@ -89,8 +70,8 @@ public class CreativeCore {
         };
     }
     
-    public void registerMenus(RegisterEvent event) {
-        event.register(Keys.MENU_TYPES, (x) -> x.register("container", GUI_CONTAINER));
+    public void registerMenus(RegistryEvent.Register<MenuType<?>> event) {
+        event.getRegistry().registerAll(GUI_CONTAINER);
     }
     
     private void server(final ServerStartingEvent event) {

@@ -5,9 +5,9 @@ import java.util.function.BiPredicate;
 
 public abstract class NetworkFieldTypeSpecial<T> extends NetworkFieldType<T> {
     
-    public final BiPredicate<Class, Type> predicate;
+    public final BiPredicate<Class<?>, Type> predicate;
     
-    public NetworkFieldTypeSpecial(BiPredicate<Class, Type> predicate) {
+    public NetworkFieldTypeSpecial(BiPredicate<Class<?>, Type> predicate) {
         this.predicate = predicate;
     }
     

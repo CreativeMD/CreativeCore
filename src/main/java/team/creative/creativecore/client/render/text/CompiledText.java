@@ -23,12 +23,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.AdvancedComponent;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 
 public class CompiledText {
-    
+    public static final CompiledText EMPTY = new CompiledText(0, 0);
+
     private int maxWidth;
     private int maxHeight;
     public int usedWidth;
@@ -37,6 +39,7 @@ public class CompiledText {
     public boolean shadow = true;
     public int defaultColor = ColorUtils.WHITE;
     public Align alignment = Align.LEFT;
+    public VAlign vAlign = VAlign.TOP;
     private List<CompiledLine> lines;
     private List<Component> original;
     
@@ -72,6 +75,28 @@ public class CompiledText {
         this.original = components;
         compile();
     }
+
+    public CompiledText setDefaultColor(int defaultColor) {
+        this.defaultColor = defaultColor;
+        return this;
+    }
+
+    public CompiledText setShadow(boolean shadow) {
+        this.shadow = shadow;
+        return this;
+    }
+
+    public CompiledText setVAlign(VAlign vAlign) {
+        this.vAlign = vAlign;
+        return this;
+    }
+
+    public boolean contains(String value) {
+        for (Component c: original) {
+            if (c.getContents().contains(value)) return true;
+        }
+        return false;
+    }
     
     private void compile() {
         if (CreativeCore.loader().getOverallSide().isServer())
@@ -101,6 +126,11 @@ public class CompiledText {
         if (newLine)
             lines.add(currentLine = new CompiledLine());
         return compileNext(currentLine, component);
+    }
+
+    public CompiledText setAlign(Align alignment) {
+        this.alignment = alignment;
+        return this;
     }
     
     private CompiledLine compileNext(CompiledLine currentLine, FormattedText component) {

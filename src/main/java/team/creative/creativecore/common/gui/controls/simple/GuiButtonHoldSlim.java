@@ -22,9 +22,9 @@ public class GuiButtonHoldSlim extends GuiButtonHold {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         if (rect.inside(mouseX, mouseY))
-            text.setDefaultColor(getStyle().fontColorHighlight.toInt());
+            text.defaultColor = getStyle().fontColorHighlight.toInt();
         else
-            text.setDefaultColor(getStyle().fontColor.toInt());
+            text.defaultColor = getStyle().fontColor.toInt();
         super.renderContent(graphics, control, rect, mouseX, mouseY);
     }
     

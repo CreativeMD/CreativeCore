@@ -3,6 +3,7 @@ package team.creative.creativecore.common.config.gui;
 import com.google.gson.JsonElement;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.Align;
@@ -40,7 +41,7 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
             GuiColumn text = (GuiColumn) new GuiColumn().setDim(new GuiSizeRatioRules().maxWidth(200));
             text.valign = VAlign.CENTER;
             addColumn(text);
-            text.add(new GuiLabel(caption + ":").setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+            text.add(new GuiLabel(caption + ":").setTitle(new TextComponent(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         }
         
         addColumn(main = (GuiColumn) new GuiColumn(width).setExpandableX());

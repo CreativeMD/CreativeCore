@@ -1,14 +1,8 @@
 package team.creative.creativecore.client.render.model;
 
-import java.util.*;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
@@ -20,11 +14,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.IModelData;
+import org.jetbrains.annotations.NotNull;
 import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.mc.ColorUtils;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class CreativeBakedBoxModel extends CreativeBakedModel {
     
@@ -95,53 +95,12 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
     };
     
     @Override
-    public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
-        if (((CreativeItemBoxModel) item).hasTranslucentLayer(itemStack)) {
-            pairModel.renderedStack = renderedStack;
-            return both;
-        }
-        return super.getRenderPasses(itemStack, fabulous);
-    }
-    
-    @Override
-    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData modelData) {
+    public @NotNull IModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull IModelData modelData) {
         if (block != null)
             return block.getModelData(level, pos, state, modelData);
         return modelData;
     }
-    
-    @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, @NotNull Random rand, @NotNull ModelData extraData, @Nullable RenderType layer) {
-        
-        Facing facing = Facing.get(direction);
-        if (state != null) {
-            if (block != null)
-                return compileBoxes(block.getBoxes(state, extraData, rand), facing, layer, rand, false, new ArrayList<>());
-            return Collections.EMPTY_LIST;
-        }
-        
-        if (renderedStack == null || renderedStack.isEmpty() || direction != null)
-            return Collections.EMPTY_LIST;
-        
-        try {
-            List<BakedQuad> cached = ((CreativeItemBoxModel) item).getCachedModel(translucent(), renderedStack, false);
-            if (cached != null)
-                return cached;
-            List<? extends RenderBox> boxes = ((CreativeItemBoxModel) item).getBoxes(renderedStack, translucent());
-            if (boxes != null) {
-                cached = new ArrayList<>();
-                for (int i = 0; i < Facing.VALUES.length; i++)
-                    compileBoxes(boxes, Facing.VALUES[i], layer, rand, true, cached);
-                ((CreativeItemBoxModel) item).saveCachedModel(translucent(), cached, renderedStack, false);
-                return cached;
-            }
-            
-            return Collections.EMPTY_LIST;
-        } finally {
-            renderedStack = null;
-        }
-    }
-    
+
     public boolean translucent() {
         return false;
     }
@@ -149,7 +108,6 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
     @Override
     @Deprecated
     public List<BakedQuad> getQuads(BlockState state, Direction direction, Random rand) {
-        return getQuads(state, direction, rand, ModelData.EMPTY, Sheets.cutoutBlockSheet());
+        return this.get().getQuads(state, direction, rand);
     }
-    
 }

@@ -1,25 +1,19 @@
 package team.creative.creativecore.common.util.text;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
+import com.google.gson.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.client.gui.Font;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 public interface AdvancedComponent extends FormattedText {
     
@@ -71,12 +65,12 @@ public interface AdvancedComponent extends FormattedText {
             JsonObject jsonobject = json.getAsJsonObject();
             if (jsonobject.has("stack"))
                 try {
-                    return MutableComponent.create(ComponentContents.EMPTY).append(new ItemStackComponent(ItemStack.of(TagParser.parseTag(jsonobject.get("stack").getAsString()))));
+                    return new TextComponent("").append(new ItemStackComponent(ItemStack.of(TagParser.parseTag(jsonobject.get("stack").getAsString()))));
                 } catch (CommandSyntaxException e) {
                     throw new JsonParseException(e);
                 }
             else if (jsonobject.has("linebreak"))
-                return MutableComponent.create(ComponentContents.EMPTY).append(new LinebreakComponent());
+                return new TextComponent("").append(new LinebreakComponent());
             
             return super.deserialize(json, typeOfT, context);
         }

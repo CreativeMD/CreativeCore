@@ -37,13 +37,13 @@ public class GuiRowLabel extends GuiLabel {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         if (selected)
-            text.setDefaultColor(rect.inside(mouseX, mouseY) ? ColorUtils.rgba(230, 230, 0, 255) : ColorUtils.rgba(200, 200, 0, 255));
+            text.defaultColor = (rect.inside(mouseX, mouseY) ? ColorUtils.rgba(230, 230, 0, 255) : ColorUtils.rgba(200, 200, 0, 255));
         else if (rect.inside(mouseX, mouseY))
-            text.setDefaultColor(ColorUtils.YELLOW);
+            text.defaultColor = (ColorUtils.YELLOW);
         else
-            text.setDefaultColor(ColorUtils.WHITE);
+            text.defaultColor = (ColorUtils.WHITE);
         super.renderContent(pose, control, rect, mouseX, mouseY);
-        text.setDefaultColor(ColorUtils.WHITE);
+        text.defaultColor = (ColorUtils.WHITE);
     }
     
     @Override

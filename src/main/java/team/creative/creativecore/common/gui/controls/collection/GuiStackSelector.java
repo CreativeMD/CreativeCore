@@ -188,7 +188,7 @@ public class GuiStackSelector extends GuiLabel {
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
                     else {
-                        LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
+                        LazyOptional<IItemHandler> result = StackUtils. getStackInventory(stack);
                         if (result.isPresent())
                             collect(result.orElseThrow(RuntimeException::new), tempStacks);
                     }

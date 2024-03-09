@@ -30,12 +30,12 @@ public class GuiStyle {
     
     private static final Minecraft mc = Minecraft.getInstance();
     private static final Gson GSON = new GsonBuilder().create();
-    public static final NamedHandlerRegistry<GuiStyle> REGISTRY = new NamedHandlerRegistry<GuiStyle>(null);
+    public static final NamedHandlerRegistry<GuiStyle> REGISTRY = new NamedHandlerRegistry<>(null);
     
     public static void reload() {
         try {
-            Resource resource = mc.getResourceManager().getResource(GuiStyleUtils.DEFAULT_STYLE_LOCATION).orElseThrow();
-            InputStream input = resource.open();
+            Resource resource = mc.getResourceManager().getResource(GuiStyleUtils.DEFAULT_STYLE_LOCATION);
+            InputStream input = resource.getInputStream();
             try {
                 JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
                 
@@ -57,8 +57,8 @@ public class GuiStyle {
             return cached;
         
         try {
-            Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name)).orElseThrow();
-            InputStream input = resource.open();
+            Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name));
+            InputStream input = resource.getInputStream();
             try {
                 JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
                 

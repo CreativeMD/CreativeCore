@@ -118,11 +118,11 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     }
     
     @Override
-    public void setFocused(boolean focused) {
+    public boolean changeFocus(boolean focused) {
         this.focused = focused;
+        return true;
     }
-    
-    @Override
+
     public boolean isFocused() {
         return focused;
     }

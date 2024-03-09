@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.GuiControl;
 
@@ -18,7 +19,7 @@ public class TextListBuilder implements ITextCollection {
     }
     
     private void addNewLine(String line) {
-        addNewLine(Component.literal(line));
+        addNewLine(new TextComponent(line));
     }
     
     private void addNewLine(Component line) {

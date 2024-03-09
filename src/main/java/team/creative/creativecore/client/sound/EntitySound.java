@@ -13,6 +13,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Random;
+
 @OnlyIn(Dist.CLIENT)
 @Environment(EnvType.CLIENT)
 public class EntitySound extends AbstractTickableSoundInstance {
@@ -20,7 +22,7 @@ public class EntitySound extends AbstractTickableSoundInstance {
     private Entity entity;
     
     public EntitySound(SoundEvent event, Entity entity, float volume, float pitch, SoundSource category) {
-        super(event, category, SoundInstance.createUnseededRandom());
+        super(event, category);
         this.entity = entity;
         this.volume = volume;
         this.pitch = pitch;

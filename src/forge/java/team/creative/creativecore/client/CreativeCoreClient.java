@@ -16,7 +16,9 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -125,8 +127,8 @@ public class CreativeCoreClient {
         });
     }
     
-    public static void modelEvent(RegisterGeometryLoaders event) {
-        event.register("rendered", new CreativeModelLoader());
+    public static void modelEvent(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("creativecore", "rendered"), new CreativeModelLoader());
     }
     
     @SubscribeEvent
