@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.gui.controls.tree;
 
 import org.jetbrains.annotations.Nullable;
-
 import team.creative.creativecore.common.gui.GuiChildControl;
 
 public record GuiTreeDragPosition(

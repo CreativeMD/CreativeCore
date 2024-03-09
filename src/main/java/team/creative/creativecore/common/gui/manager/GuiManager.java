@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.gui.manager;
 
-import java.util.function.Function;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,6 +9,8 @@ import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
+
+import java.util.function.Function;
 
 public abstract class GuiManager {
     

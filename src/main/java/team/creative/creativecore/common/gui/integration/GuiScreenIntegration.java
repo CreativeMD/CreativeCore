@@ -1,8 +1,5 @@
 package team.creative.creativecore.common.gui.integration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -11,6 +8,9 @@ import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 import team.creative.creativecore.common.network.CreativePacket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {
     

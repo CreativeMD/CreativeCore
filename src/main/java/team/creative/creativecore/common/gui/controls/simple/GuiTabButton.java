@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.function.Consumer;
-
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -11,6 +9,8 @@ import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyl
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.util.text.ITextCollection;
 import team.creative.creativecore.common.util.text.TextListBuilder;
+
+import java.util.function.Consumer;
 
 public class GuiTabButton extends GuiParent {
     

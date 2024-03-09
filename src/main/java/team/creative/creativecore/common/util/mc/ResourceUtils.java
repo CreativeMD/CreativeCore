@@ -1,9 +1,5 @@
 package team.creative.creativecore.common.util.mc;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-
 import net.minecraft.FileUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
@@ -14,6 +10,10 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.mixin.FilePackResourcesAccessor;
 import team.creative.creativecore.mixin.PathPackResourcesAccessor;
 import team.creative.creativecore.mixin.VanillaPackResourcesAccessor;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 public class ResourceUtils {
     

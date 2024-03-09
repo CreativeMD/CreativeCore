@@ -1,10 +1,10 @@
 package team.creative.creativecore.common.util.mc;
 
-import java.util.IllegalFormatException;
-
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.locale.Language;
 import team.creative.creativecore.CreativeCore;
+
+import java.util.IllegalFormatException;
 
 public class LanguageUtils {
     

@@ -1,10 +1,10 @@
 package team.creative.creativecore.common.util.mc;
 
+import net.minecraft.ChatFormatting;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import net.minecraft.ChatFormatting;
 
 public class TooltipUtils {
     

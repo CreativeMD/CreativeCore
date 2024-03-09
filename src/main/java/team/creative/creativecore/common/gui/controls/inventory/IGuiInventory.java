@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
-import java.util.BitSet;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.sync.GuiSyncGlobal;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
+
+import java.util.BitSet;
 
 public interface IGuiInventory {
     

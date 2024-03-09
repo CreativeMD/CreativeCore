@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.List;
-
 import team.creative.creativecore.common.util.text.TextMapBuilder;
+
+import java.util.List;
 
 public class GuiTabButtonMapped<K> extends GuiTabButton {
     

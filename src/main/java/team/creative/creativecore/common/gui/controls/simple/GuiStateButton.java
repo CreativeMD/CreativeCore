@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -113,16 +112,16 @@ public class GuiStateButton extends GuiButton {
         pose.translate(rect.getWidth() / 2f - text.getUsedWidth() / 2f, rect.getHeight() / 2f - text.getUsedHeight() / 2f, 0);
         text.render(pose);
     }
-    
+
     @Override
     public void closed() {}
-    
+
     @Override
     public void tick() {}
-    
+
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.CLICKABLE;
     }
-    
+
 }

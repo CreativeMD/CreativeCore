@@ -1,8 +1,5 @@
 package team.creative.creativecore.common.gui.controls.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -15,6 +12,9 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.type.itr.FilterIterator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiTreeItem extends GuiParent {
     

@@ -1,10 +1,10 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.function.Consumer;
-
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.function.Consumer;
 
 public class GuiButton extends GuiLabel {
     

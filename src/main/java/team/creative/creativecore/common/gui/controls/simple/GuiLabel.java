@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.List;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -16,6 +14,8 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.List;
 
 public class GuiLabel extends GuiControl {
     

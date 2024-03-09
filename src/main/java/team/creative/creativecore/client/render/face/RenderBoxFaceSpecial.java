@@ -1,8 +1,8 @@
 package team.creative.creativecore.client.render.face;
 
-import java.util.List;
-
 import team.creative.creativecore.common.util.math.geo.VectorFan;
+
+import java.util.List;
 
 public class RenderBoxFaceSpecial extends RenderBoxFace {
     

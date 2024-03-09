@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.gui.dialog;
 
-import java.util.function.BiConsumer;
-
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -10,6 +8,8 @@ import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+
+import java.util.function.BiConsumer;
 
 public class DialogGuiLayer extends GuiLayer {
     

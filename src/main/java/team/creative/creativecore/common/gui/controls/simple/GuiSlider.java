@@ -1,15 +1,13 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.*;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;

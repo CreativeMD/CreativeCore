@@ -1,9 +1,5 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
@@ -13,6 +9,10 @@ import team.creative.creativecore.common.gui.controls.parent.GuiRow;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     

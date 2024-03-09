@@ -1,21 +1,20 @@
 package team.creative.creativecore.common.gui.style.display;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
 
 @Environment(EnvType.CLIENT)
 @OnlyIn(Dist.CLIENT)

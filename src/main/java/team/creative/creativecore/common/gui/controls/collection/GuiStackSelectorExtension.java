@@ -1,8 +1,5 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
@@ -17,6 +14,9 @@ import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.map.HashMapList;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 public class GuiStackSelectorExtension extends GuiScrollY {
     

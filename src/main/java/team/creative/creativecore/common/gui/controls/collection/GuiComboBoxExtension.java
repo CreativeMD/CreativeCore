@@ -1,11 +1,11 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import team.creative.creativecore.common.gui.controls.simple.GuiRowLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiComboBoxExtension extends GuiListBoxBase<GuiRowLabel> {
     

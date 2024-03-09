@@ -1,30 +1,24 @@
 package team.creative.creativecore.common.gui;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
-import team.creative.creativecore.common.gui.event.GuiEvent;
-import team.creative.creativecore.common.gui.event.GuiEventManager;
-import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
+import org.apache.commons.lang3.ArrayUtils;
+import team.creative.creativecore.common.gui.event.*;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
     

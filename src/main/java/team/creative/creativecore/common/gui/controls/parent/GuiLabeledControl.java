@@ -1,13 +1,13 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
-import java.util.List;
-
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+
+import java.util.List;
 
 public class GuiLabeledControl extends GuiParent {
     

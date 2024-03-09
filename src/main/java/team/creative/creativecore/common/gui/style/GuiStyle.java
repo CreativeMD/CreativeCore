@@ -1,21 +1,15 @@
 package team.creative.creativecore.common.gui.style;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.NoSuchElementException;
-
-import org.apache.commons.io.IOUtils;
-
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import org.apache.commons.io.IOUtils;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
@@ -25,6 +19,10 @@ import team.creative.creativecore.common.gui.style.display.DisplayTextureRepeat;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 import team.creative.creativecore.common.util.type.Color;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.NoSuchElementException;
 
 public class GuiStyle {
     

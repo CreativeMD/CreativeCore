@@ -1,13 +1,13 @@
 package team.creative.creativecore.common.gui.sync;
 
-import java.util.function.Function;
-
 import net.minecraft.nbt.CompoundTag;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder.GuiSyncHolderLayer;
+
+import java.util.function.Function;
 
 public class GuiSyncLocalLayer<T extends GuiLayer> extends GuiSyncControl<GuiLayer, CompoundTag> {
     

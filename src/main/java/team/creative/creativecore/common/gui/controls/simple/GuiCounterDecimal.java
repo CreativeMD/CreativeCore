@@ -1,14 +1,14 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 public class GuiCounterDecimal extends GuiParent {
     
@@ -50,12 +50,12 @@ public class GuiCounterDecimal extends GuiParent {
     public DecimalFormat getFormat() {
         return FORMAT;
     }
-    
+
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.TRANSPARENT;
     }
-    
+
     public void resetTextfield() {
         textfield.setCursorPositionZero();
     }

@@ -1,17 +1,14 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.gui.*;
+import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.ITextCollection;
-
-import java.util.List;
 
 public class GuiComboBox extends GuiLabel {
     
