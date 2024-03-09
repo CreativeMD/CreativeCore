@@ -205,9 +205,7 @@ public abstract class GuiControl {
     public abstract void tick();
     
     public boolean is(String name) {
-        if (this.name.equalsIgnoreCase(name))
-            return true;
-        return false;
+        return this.name.equalsIgnoreCase(name);
     }
     
     public boolean is(String... name) {

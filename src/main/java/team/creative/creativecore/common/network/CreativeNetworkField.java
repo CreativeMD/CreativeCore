@@ -6,6 +6,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import team.creative.creativecore.common.network.type.NetworkFieldType;
 import team.creative.creativecore.common.network.type.NetworkFieldTypes;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 public class CreativeNetworkField {
     
     public final Field field;
@@ -26,7 +28,7 @@ public class CreativeNetworkField {
             if (content != null)
                 type.write(content, field.getType(), field.getGenericType(), buffer);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
     
@@ -39,7 +41,7 @@ public class CreativeNetworkField {
                 content = type.read(field.getType(), field.getGenericType(), buffer);
             field.set(packet, content);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
     }
     

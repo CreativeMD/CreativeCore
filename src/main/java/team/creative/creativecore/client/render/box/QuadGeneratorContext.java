@@ -91,15 +91,11 @@ public class QuadGeneratorContext {
     }
     
     public boolean hasBounds() {
-        switch (facing.axis) {
-            case X:
-                return minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
-            case Y:
-                return minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
-            case Z:
-                return minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
-        }
-        return false;
+        return switch (facing.axis) {
+            case X -> minY != 0 || maxY != 1 || minZ != 0 || maxZ != 1;
+            case Y -> minX != 0 || maxX != 1 || minZ != 0 || maxZ != 1;
+            case Z -> minX != 0 || maxX != 1 || minY != 0 || maxY != 1;
+        };
     }
     
     public void clear() {

@@ -127,7 +127,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             
             if (x < getContentOffset())
                 this.value = this.minValue;
-            else if (x > getContentOffset() + width + sliderWidth / 2)
+            else if (x > getContentOffset() + width + sliderWidth / 2f)
                 this.value = this.maxValue;
             else {
                 int mouseOffsetX = (int) (x - getContentOffset() - sliderWidth / 2);

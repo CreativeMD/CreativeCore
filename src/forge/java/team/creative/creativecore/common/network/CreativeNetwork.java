@@ -31,7 +31,7 @@ public class CreativeNetwork {
     
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     private final Logger logger;
-    private String version;
+    private final String version;
     
     private int id = 0;
     
@@ -41,16 +41,12 @@ public class CreativeNetwork {
         this.logger = logger;
         this.version = "" + version;
         this.instance = NetworkRegistry.newSimpleChannel(location, () -> this.version, x -> true, this.version::equals);
-        this.logger.debug("Created network " + location + "");
+        this.logger.debug("Created network " + location);
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
         CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(classType, supplier);
-        this.instance.registerMessage(id, classType, (message, buffer) -> {
-            handler.write(message, buffer);
-        }, (buffer) -> {
-            return handler.read(buffer);
-        }, (message, ctx) -> {
+        this.instance.registerMessage(id, classType, handler::write, handler::read, (message, ctx) -> {
             ctx.get().enqueueWork(() -> {
                 try {
                     message.execute(ctx.get().getSender() == null ? getClientPlayer() : ctx.get().getSender());

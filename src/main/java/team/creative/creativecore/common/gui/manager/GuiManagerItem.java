@@ -206,7 +206,7 @@ public class GuiManagerItem extends GuiManager {
         if (rightClick)
             return 1;
         
-        return Math.max(1, Mth.floor(hand.getCount() / dragged.size()));
+        return Math.max(1, Mth.floor((float) hand.getCount() / dragged.size()));
     }
     
 }

@@ -279,7 +279,8 @@ public class VectorFan {
         });
     }
     
-    public void renderLines(Pose pose, VertexConsumer consumer, int red, int green, int blue, int alpha, Vec3d center, double grow) {
+    public void renderLines(Pose pose, VertexConsumer consumer, int red, int green, int blue, int alpha, Vec3d center, double dGrow) {
+        float grow = (float) dGrow;
         Vec3f normal = new Vec3f();
         forAllEdges((x, y) -> {
             float x1 = x.x;
@@ -333,7 +334,8 @@ public class VectorFan {
         });
     }
     
-    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double grow) {
+    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double dGrow) {
+        float grow = (float) dGrow;
         Vec3f normal = new Vec3f();
         forAllEdges((x, y) -> {
             float x1 = x.x * scaleX + offX;
@@ -387,8 +389,7 @@ public class VectorFan {
     
     public void set(Vec3f[] coords) {
         this.coords = new Vec3f[coords.length];
-        for (int i = 0; i < coords.length; i++)
-            this.coords[i] = coords[i];
+        System.arraycopy(coords, 0, this.coords, 0, coords.length);
     }
     
     /** @param planes
@@ -501,10 +502,9 @@ public class VectorFan {
         }
         
         if (copy)
-            return new VectorFan(right.toArray(new Vec3f[right.size()]));
-        
-        if (right != null)
-            coords = right.toArray(new Vec3f[right.size()]);
+            return new VectorFan(right.toArray(new Vec3f[0]));
+
+        coords = right.toArray(new Vec3f[0]);
         return null;
     }
     
@@ -567,9 +567,8 @@ public class VectorFan {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof VectorFan) {
-            VectorFan other = (VectorFan) obj;
-            
+        if (obj instanceof VectorFan other) {
+
             if (coords.length != other.coords.length)
                 return false;
             
@@ -598,9 +597,8 @@ public class VectorFan {
         diff = vec.get(two) - other.get(two);
         if (Float.isNaN(diff))
             return false;
-        if ((diff < 0 ? -diff : diff) > VectorFan.EPSILON)
-            return false;
-        return true;
+
+        return !((diff < 0 ? -diff : diff) > VectorFan.EPSILON);
     }
     
     public boolean equalsIgnoreOrder(VectorFan other, Axis toIgnore) {
@@ -799,9 +797,8 @@ public class VectorFan {
             
             before1 = vec1;
         }
-        if ((isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse)))
-            return true;
-        return false;
+
+        return isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse);
     }
     
     private boolean isInside2d(Axis one, Axis two, VectorFan other, boolean inverse) {
@@ -955,31 +952,27 @@ public class VectorFan {
         }
         
         if (left.size() >= 3 && done != null)
-            done.add(new VectorFan(left.toArray(new Vec3f[left.size()])));
+            done.add(new VectorFan(left.toArray(new Vec3f[0])));
         
         if (right.size() < 3)
             return null;
-        return new VectorFan(right.toArray(new Vec3f[right.size()]));
+        return new VectorFan(right.toArray(new Vec3f[0]));
     }
     
     public static boolean isInside(List<NormalPlaneF> shape, Vec3f before, Vec3f vec, Boolean beforeOutside, Boolean outside, int currentPlane) {
         if (BooleanUtils.isFalse(beforeOutside)) {
             if (outside == null) {
-                if (isInside(shape, vec, currentPlane))
-                    return true;
-            } else if (outside == true) {
+                return isInside(shape, vec, currentPlane);
+            } else if (outside) {
                 Vec3f intersection = shape.get(currentPlane).intersect(before, vec);
-                if (intersection != null && isInside(shape, intersection, currentPlane))
-                    return true;
+                return intersection != null && isInside(shape, intersection, currentPlane);
             }
         } else if (BooleanUtils.isFalse(outside)) {
             if (beforeOutside == null) {
-                if (isInside(shape, before, currentPlane))
-                    return true;
-            } else if (beforeOutside == true) {
+                return isInside(shape, before, currentPlane);
+            } else if (beforeOutside) {
                 Vec3f intersection = shape.get(currentPlane).intersect(before, vec);
-                if (intersection != null && isInside(shape, intersection, currentPlane))
-                    return true;
+                return intersection != null && isInside(shape, intersection, currentPlane);
             }
         }
         

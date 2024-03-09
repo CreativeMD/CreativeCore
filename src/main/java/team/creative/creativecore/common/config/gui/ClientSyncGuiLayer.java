@@ -112,14 +112,15 @@ public class ClientSyncGuiLayer extends GuiLayer {
             
             GuiColumn second = (GuiColumn) new GuiColumn().setExpandableX();
             row.addColumn(second);
-            String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
-            String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
-            if (key.content != null && key.content.get() instanceof ICreativeConfigHolder)
-                second.add(new GuiButton(caption, x -> {
-                    load(key);
-                }).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
-            else
-                second.add(new GuiLabel(caption).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+            if (key.content != null) {
+                // FIXME: is normal use holder.path on a string concatenation?
+                String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
+                String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
+                if (key.content.get() instanceof ICreativeConfigHolder)
+                    second.add(new GuiButton(caption, x -> load(key)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                else
+                    second.add(new GuiLabel(caption).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+            }
         }
         
         add(new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {

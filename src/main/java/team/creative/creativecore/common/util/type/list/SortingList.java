@@ -1,10 +1,6 @@
 package team.creative.creativecore.common.util.type.list;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -147,15 +143,17 @@ public class SortingList implements List<CreativeIngredient> {
     /** If the given object can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
      * 
-     * @param object */
+     * @param object object to check
+     */
     public boolean canPass(Object object) {
         return canBeFoundInList(object) == isWhitelist;
     }
     
     /** If the given itemstack can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
-     * 
-     * @param object */
+     *
+     * @param stack item stack
+     */
     public boolean canPass(ItemStack stack) {
         return canBeFoundInList(stack) == isWhitelist;
     }
@@ -172,12 +170,12 @@ public class SortingList implements List<CreativeIngredient> {
     
     @Override
     public boolean addAll(Collection<? extends CreativeIngredient> arg0) {
-        return addAll(arg0);
+        return entries.addAll(arg0);
     }
     
     @Override
     public boolean addAll(int arg0, Collection<? extends CreativeIngredient> arg1) {
-        return addAll(arg0, arg1);
+        return entries.addAll(arg0, arg1);
     }
     
     @Override
@@ -192,7 +190,7 @@ public class SortingList implements List<CreativeIngredient> {
     
     @Override
     public boolean containsAll(Collection<?> arg0) {
-        return entries.containsAll(arg0);
+        return new HashSet<>(entries).containsAll(arg0);
     }
     
     @Override

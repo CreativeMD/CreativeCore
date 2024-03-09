@@ -223,44 +223,29 @@ public class Matrix4 {
     public final double getElement(int var1, int var2) {
         switch (var1) {
         case 0:
-            switch (var2) {
-            case 0:
-                return this.m00;
-            case 1:
-                return this.m01;
-            case 2:
-                return this.m02;
-            case 3:
-                return this.m03;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
+            return switch (var2) {
+                case 0 -> this.m00;
+                case 1 -> this.m01;
+                case 2 -> this.m02;
+                case 3 -> this.m03;
+                default -> throw new ArrayIndexOutOfBoundsException();
+            };
         case 1:
-            switch (var2) {
-            case 0:
-                return this.m10;
-            case 1:
-                return this.m11;
-            case 2:
-                return this.m12;
-            case 3:
-                return this.m13;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
+            return switch (var2) {
+                case 0 -> this.m10;
+                case 1 -> this.m11;
+                case 2 -> this.m12;
+                case 3 -> this.m13;
+                default -> throw new ArrayIndexOutOfBoundsException();
+            };
         case 2:
-            switch (var2) {
-            case 0:
-                return this.m20;
-            case 1:
-                return this.m21;
-            case 2:
-                return this.m22;
-            case 3:
-                return this.m23;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
+            return switch (var2) {
+                case 0 -> this.m20;
+                case 1 -> this.m21;
+                case 2 -> this.m22;
+                case 3 -> this.m23;
+                default -> throw new ArrayIndexOutOfBoundsException();
+            };
         case 3:
             switch (var2) {
             case 0:
@@ -1064,7 +1049,7 @@ public class Matrix4 {
             var10 -= 4;
             var2[var9 + 4] = (var2[var9 + 4] - var0[var10 + 2] * var2[var9 + 8] - var0[var10 + 3] * var2[var9 + 12]) / var0[var10 + 1];
             var10 -= 4;
-            var2[var9 + 0] = (var2[var9 + 0] - var0[var10 + 1] * var2[var9 + 4] - var0[var10 + 2] * var2[var9 + 8] - var0[var10 + 3] * var2[var9 + 12]) / var0[var10 + 0];
+            var2[var9] = (var2[var9] - var0[var10 + 1] * var2[var9 + 4] - var0[var10 + 2] * var2[var9 + 8] - var0[var10 + 3] * var2[var9 + 12]) / var0[var10];
         }
         
     }
@@ -1547,9 +1532,7 @@ public class Matrix4 {
         try {
             Matrix4 var2 = (Matrix4) var1;
             return this.m00 == var2.m00 && this.m01 == var2.m01 && this.m02 == var2.m02 && this.m03 == var2.m03 && this.m10 == var2.m10 && this.m11 == var2.m11 && this.m12 == var2.m12 && this.m13 == var2.m13 && this.m20 == var2.m20 && this.m21 == var2.m21 && this.m22 == var2.m22 && this.m23 == var2.m23 && this.m30 == var2.m30 && this.m31 == var2.m31 && this.m32 == var2.m32 && this.m33 == var2.m33;
-        } catch (ClassCastException var3) {
-            return false;
-        } catch (NullPointerException var4) {
+        } catch (ClassCastException | NullPointerException var3) {
             return false;
         }
     }
@@ -1784,7 +1767,7 @@ public class Matrix4 {
         this.m33 = -var1.m33;
     }
     
-    private final void getScaleRotate(double[] var1, double[] var2) {
+    private void getScaleRotate(double[] var1, double[] var2) {
         double[] var3 = new double[] { this.m00, this.m01, this.m02, this.m10, this.m11, this.m12, this.m20, this.m21, this.m22 };
         Matrix3.compute_svd(var3, var1, var2);
     }

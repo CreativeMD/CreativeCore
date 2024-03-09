@@ -12,7 +12,7 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 public class BoxUtils {
     
     public static boolean equals(double a, double b, double deviation) {
-        return a == b ? true : Math.abs(a - b) < deviation;
+        return a == b || Math.abs(a - b) < deviation;
     }
     
     public static boolean greaterEquals(double a, double b, double deviation) {
@@ -64,7 +64,7 @@ public class BoxUtils {
         
         if (rotation >= 90) {
             while (quarterRotation <= Math.abs(rotation) && quarterRotation < 360) {
-                Facing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
+                Facing facing = state.clockwiseMaxFacing();
                 
                 if (length == null)
                     length = lengthIgnoreAxis(vec, axis, rotationCenter);

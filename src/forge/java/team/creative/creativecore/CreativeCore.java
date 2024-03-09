@@ -66,7 +66,7 @@ public class CreativeCore {
     
     public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, MODID);
     public static final RegistryObject<SingletonArgumentInfo<StringArrayArgumentType>> STRING_ARRAY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES.register("string_array",
-        () -> ArgumentTypeInfos.registerByClass(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray())));
+        () -> ArgumentTypeInfos.registerByClass(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(StringArrayArgumentType::stringArray)));
     
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);

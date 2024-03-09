@@ -56,7 +56,7 @@ public class AdvancedComponentHelper {
     }
     
     public static boolean iterateFormatted(Component text, Style style, FormattedSingleSink sink) {
-        return !visit(text, new AdvancedContentConsumer() {
+        return visit(text, new AdvancedContentConsumer() {
             
             @Override
             public Optional accept(Style style, AdvancedContent content) {
@@ -65,10 +65,10 @@ public class AdvancedComponentHelper {
             
             @Override
             public Optional accept(Style style, String content) {
-                return StringDecomposer.iterateFormatted(content.toString(), 0, style, style, sink) ? Optional.empty() : STOP_ITERATION;
+                return StringDecomposer.iterateFormatted(content, 0, style, style, sink) ? Optional.empty() : STOP_ITERATION;
             }
             
-        }, style).isPresent();
+        }, style).isEmpty();
     }
     
     public static <T> Optional<T> visit(Component text, AdvancedContentConsumer<T> consumer, Style defaultStyle) {
@@ -89,9 +89,7 @@ public class AdvancedComponentHelper {
     public static <T> Optional<T> visit(ComponentContents content, AdvancedContentConsumer<T> consumer, Style style) {
         if (content instanceof AdvancedContent adv)
             return adv.visit(consumer, style);
-        return content.visit((cStyle, text) -> {
-            return consumer.accept(cStyle, text);
-        }, style);
+        return content.visit(consumer, style);
     }
     
     public static class Serializer extends Component.Serializer {
@@ -116,12 +114,10 @@ public class AdvancedComponentHelper {
             if (componentcontents == ComponentContents.EMPTY)
                 jsonobject.addProperty("text", "");
             else if (componentcontents instanceof ContentItemStack stack) {
-                jsonobject.addProperty("itemstack", stack.stack.save(new CompoundTag()).toString());
-            } else if (componentcontents instanceof LiteralContents) {
-                LiteralContents literalcontents = (LiteralContents) componentcontents;
+                jsonobject.addProperty("itemstack", stack.stack().save(new CompoundTag()).toString());
+            } else if (componentcontents instanceof LiteralContents literalcontents) {
                 jsonobject.addProperty("text", literalcontents.text());
-            } else if (componentcontents instanceof TranslatableContents) {
-                TranslatableContents translatablecontents = (TranslatableContents) componentcontents;
+            } else if (componentcontents instanceof TranslatableContents translatablecontents) {
                 jsonobject.addProperty("translate", translatablecontents.getKey());
                 if (translatablecontents.getArgs().length > 0) {
                     JsonArray jsonarray1 = new JsonArray();
@@ -136,41 +132,34 @@ public class AdvancedComponentHelper {
                     
                     jsonobject.add("with", jsonarray1);
                 }
-            } else if (componentcontents instanceof ScoreContents) {
-                ScoreContents scorecontents = (ScoreContents) componentcontents;
+            } else if (componentcontents instanceof ScoreContents scorecontents) {
                 JsonObject jsonobject1 = new JsonObject();
                 jsonobject1.addProperty("name", scorecontents.getName());
                 jsonobject1.addProperty("objective", scorecontents.getObjective());
                 jsonobject.add("score", jsonobject1);
-            } else if (componentcontents instanceof SelectorContents) {
-                SelectorContents selectorcontents = (SelectorContents) componentcontents;
+            } else if (componentcontents instanceof SelectorContents selectorcontents) {
                 jsonobject.addProperty("selector", selectorcontents.getPattern());
                 this.serializeSeparator(context, jsonobject, selectorcontents.getSeparator());
-            } else if (componentcontents instanceof KeybindContents) {
-                KeybindContents keybindcontents = (KeybindContents) componentcontents;
+            } else if (componentcontents instanceof KeybindContents keybindcontents) {
                 jsonobject.addProperty("keybind", keybindcontents.getName());
             } else {
-                if (!(componentcontents instanceof NbtContents)) {
+                if (!(componentcontents instanceof NbtContents nbtcontents)) {
                     throw new IllegalArgumentException("Don't know how to serialize " + componentcontents + " as a Component");
                 }
-                
-                NbtContents nbtcontents = (NbtContents) componentcontents;
+
                 jsonobject.addProperty("nbt", nbtcontents.getNbtPath());
                 jsonobject.addProperty("interpret", nbtcontents.isInterpreting());
                 this.serializeSeparator(context, jsonobject, nbtcontents.getSeparator());
                 DataSource datasource = nbtcontents.getDataSource();
-                if (datasource instanceof BlockDataSource) {
-                    BlockDataSource blockdatasource = (BlockDataSource) datasource;
+                if (datasource instanceof BlockDataSource blockdatasource) {
                     jsonobject.addProperty("block", blockdatasource.posPattern());
-                } else if (datasource instanceof EntityDataSource) {
-                    EntityDataSource entitydatasource = (EntityDataSource) datasource;
+                } else if (datasource instanceof EntityDataSource entitydatasource) {
                     jsonobject.addProperty("entity", entitydatasource.selectorPattern());
                 } else {
-                    if (!(datasource instanceof StorageDataSource)) {
+                    if (!(datasource instanceof StorageDataSource storagedatasource)) {
                         throw new IllegalArgumentException("Don't know how to serialize " + componentcontents + " as a Component");
                     }
-                    
-                    StorageDataSource storagedatasource = (StorageDataSource) datasource;
+
                     jsonobject.addProperty("storage", storagedatasource.id().toString());
                 }
             }
@@ -182,8 +171,7 @@ public class AdvancedComponentHelper {
             if (object instanceof Component component) {
                 if (component.getStyle().isEmpty() && component.getSiblings().isEmpty()) {
                     ComponentContents componentcontents = component.getContents();
-                    if (componentcontents instanceof LiteralContents) {
-                        LiteralContents literalcontents = (LiteralContents) componentcontents;
+                    if (componentcontents instanceof LiteralContents literalcontents) {
                         return literalcontents.text();
                     }
                 }

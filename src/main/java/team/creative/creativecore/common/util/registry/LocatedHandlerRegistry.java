@@ -10,8 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class LocatedHandlerRegistry<T> {
     
-    private HashMap<ResourceLocation, T> handlers = new LinkedHashMap<>();
-    private HashMap<T, ResourceLocation> handlersInv = new LinkedHashMap<>();
+    private final HashMap<ResourceLocation, T> handlers = new LinkedHashMap<>();
+    private final HashMap<T, ResourceLocation> handlersInv = new LinkedHashMap<>();
     private T defaultHandler;
     private boolean allowOverwrite = false;
     

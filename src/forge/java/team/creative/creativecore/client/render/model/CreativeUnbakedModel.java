@@ -20,7 +20,7 @@ public record CreativeUnbakedModel(ResourceLocation item, ResourceLocation block
         CreativeBlockModel renderBlock = CreativeCoreClient.BLOCK_MODEL_TYPES.get(block);
         CreativeItemModel renderItem = CreativeCoreClient.ITEM_MODEL_TYPES.get(item);
         if (renderBlock == null && renderItem == null)
-            throw new RuntimeException("Could not find renderer " + block + ", " + item + "");
+            throw new RuntimeException("Could not find renderer " + block + ", " + item);
         if (renderItem != null)
             return renderItem.create(renderBlock);
         return CreativeItemBoxModel.EMPTY.create(renderBlock);

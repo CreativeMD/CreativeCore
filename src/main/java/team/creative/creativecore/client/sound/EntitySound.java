@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @Environment(EnvType.CLIENT)
 public class EntitySound extends AbstractTickableSoundInstance {
     
-    private Entity entity;
+    private final Entity entity;
     
     public EntitySound(SoundEvent event, Entity entity, float volume, float pitch, SoundSource category) {
         super(event, category, SoundInstance.createUnseededRandom());

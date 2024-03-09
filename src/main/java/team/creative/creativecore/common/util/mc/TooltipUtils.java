@@ -34,59 +34,59 @@ public class TooltipUtils {
     public static String printRoman(int input) {
         if (input < 1 || input > 3999)
             return "" + input;
-        String s = "";
+        StringBuilder s = new StringBuilder();
         while (input >= 1000) {
-            s += "M";
+            s.append("M");
             input -= 1000;
         }
         while (input >= 900) {
-            s += "CM";
+            s.append("CM");
             input -= 900;
         }
         while (input >= 500) {
-            s += "D";
+            s.append("D");
             input -= 500;
         }
         while (input >= 400) {
-            s += "CD";
+            s.append("CD");
             input -= 400;
         }
         while (input >= 100) {
-            s += "C";
+            s.append("C");
             input -= 100;
         }
         while (input >= 90) {
-            s += "XC";
+            s.append("XC");
             input -= 90;
         }
         while (input >= 50) {
-            s += "L";
+            s.append("L");
             input -= 50;
         }
         while (input >= 40) {
-            s += "XL";
+            s.append("XL");
             input -= 40;
         }
         while (input >= 10) {
-            s += "X";
+            s.append("X");
             input -= 10;
         }
-        while (input >= 9) {
-            s += "IX";
+        while (input == 9) {
+            s.append("IX");
             input -= 9;
         }
         while (input >= 5) {
-            s += "V";
+            s.append("V");
             input -= 5;
         }
-        while (input >= 4) {
-            s += "IV";
+        while (input == 4) {
+            s.append("IV");
             input -= 4;
         }
         while (input >= 1) {
-            s += "I";
+            s.append("I");
             input -= 1;
         }
-        return s;
+        return s.toString();
     }
 }

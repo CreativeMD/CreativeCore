@@ -24,8 +24,6 @@ public class ControlSyncPacket extends LayerPacket {
     @Override
     public void execute(Player player, IGuiIntegratedParent container) {
         GuiSyncControl sync = GuiSyncHolder.followPathControl(path, container);
-        if (sync == null)
-            throw new RuntimeException("Could not find sync " + path);
         GuiControl syncControl = container.get(control);
         if (syncControl == null)
             throw new RuntimeException("Could not find control " + control);

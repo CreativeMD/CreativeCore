@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.config.group;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.world.entity.player.Player;
@@ -17,8 +18,7 @@ public class Usergroup {
     }
     
     public Usergroup(PlayerSelector... selectors) {
-        for (PlayerSelector selector : selectors)
-            filters.add(selector);
+        filters.addAll(Arrays.asList(selectors));
     }
     
     public boolean is(Player player) {

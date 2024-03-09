@@ -12,12 +12,12 @@ public interface AdvancedFormattedText extends FormattedText {
     
     @Override
     default <T> Optional<T> visit(ContentConsumer<T> consumer) {
-        return null;
+        return Optional.empty();
     }
     
     @Override
     default <T> Optional<T> visit(StyledContentConsumer<T> consumer, Style style) {
-        return null;
+        return Optional.empty();
     }
     
     public int width(WidthProvider widthProvider, Style style);

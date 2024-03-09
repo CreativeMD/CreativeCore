@@ -25,7 +25,7 @@ public class BiFilterSerializer {
         if (filter instanceof BiFilterAnd) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (BiFilter child : ((BiFilterAnd) filter).filters)
+            for (BiFilter child : ((BiFilterAnd) filter).filters())
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "&");
@@ -33,14 +33,14 @@ public class BiFilterSerializer {
         } else if (filter instanceof BiFilterOr) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (BiFilter child : ((BiFilterOr) filter).filters)
+            for (BiFilter child : ((BiFilterOr) filter).filters())
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "+");
             return tag;
         } else if (filter instanceof BiFilterNot) {
             CompoundTag tag = new CompoundTag();
-            tag.put("c", write(((BiFilterNot) filter).filter));
+            tag.put("c", write(((BiFilterNot) filter).filter()));
             tag.putString("t", "!");
             return tag;
         }
@@ -54,20 +54,25 @@ public class BiFilterSerializer {
     
     public BiFilter read(CompoundTag tag) throws RegistryException {
         String type = tag.getString("t");
-        if (type.equals("&")) {
-            ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            BiFilter[] filters = new BiFilter[list.size()];
-            for (int i = 0; i < list.size(); i++)
-                filters[i] = read(list.getCompound(i));
-            return new BiFilterAnd<>(filters);
-        } else if (type.equals("+")) {
-            ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            BiFilter[] filters = new BiFilter[list.size()];
-            for (int i = 0; i < list.size(); i++)
-                filters[i] = read(list.getCompound(i));
-            return new BiFilterOr<>(filters);
-        } else if (type.equals("!"))
-            return new BiFilterNot<>(read(tag.getCompound("c")));
+        switch (type) {
+            case "&" -> {
+                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                BiFilter[] filters = new BiFilter[list.size()];
+                for (int i = 0; i < list.size(); i++)
+                    filters[i] = read(list.getCompound(i));
+                return new BiFilterAnd<>(filters);
+            }
+            case "+" -> {
+                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                BiFilter[] filters = new BiFilter[list.size()];
+                for (int i = 0; i < list.size(); i++)
+                    filters[i] = read(list.getCompound(i));
+                return new BiFilterOr<>(filters);
+            }
+            case "!" -> {
+                return new BiFilterNot<>(read(tag.getCompound("c")));
+            }
+        }
         return REGISTRY.create(type, tag);
     }
     

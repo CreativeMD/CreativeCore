@@ -13,7 +13,7 @@ public class Maths {
     }
     
     public static boolean equals(double a, double b) {
-        return a == b ? true : Math.abs(a - b) < EPSILON;
+        return a == b || Math.abs(a - b) < EPSILON;
     }
 
     /**

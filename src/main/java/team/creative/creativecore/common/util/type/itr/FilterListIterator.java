@@ -2,12 +2,13 @@ package team.creative.creativecore.common.util.type.itr;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class FilterListIterator<T> extends ComputeNextListIterator<T> {
     
     public static <T> FilterListIterator<T> skipNull(ListIterator<T> itr) {
-        return new FilterListIterator<>(itr, x -> x != null);
+        return new FilterListIterator<>(itr, Objects::nonNull);
     }
     
     private final Predicate<T> predicate;
@@ -18,7 +19,7 @@ public class FilterListIterator<T> extends ComputeNextListIterator<T> {
     }
     
     public FilterListIterator(ListIterator iterable, Class clazz) {
-        this(iterable, x -> clazz.isInstance(x));
+        this(iterable, clazz::isInstance);
     }
     
     public FilterListIterator(List<T> iterable, Predicate<T> predicate) {

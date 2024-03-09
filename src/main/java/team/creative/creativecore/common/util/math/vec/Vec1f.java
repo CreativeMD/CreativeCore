@@ -57,7 +57,7 @@ public class Vec1f extends VecNf<Vec1f> {
     
     @Override
     public void scale(double scale) {
-        this.x *= scale;
+        this.x *= (float) scale;
     }
     
     @Override

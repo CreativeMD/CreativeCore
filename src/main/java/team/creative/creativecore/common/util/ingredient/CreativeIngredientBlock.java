@@ -66,7 +66,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.block").append(": " + ChatFormatting.YELLOW + BuiltInRegistries.BLOCK.getKey(block).toString());
+        return Component.translatable("minecraft.block").append(": " + ChatFormatting.YELLOW + BuiltInRegistries.BLOCK.getKey(block));
     }
     
 }

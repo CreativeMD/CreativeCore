@@ -337,7 +337,7 @@ public class GuiTimeline extends GuiParent {
                 if (i % halfArea == 0) {
                     border.render(pose, 1, 4);
                     String text = "" + (i * smallestStep);
-                    graphics.drawString(Minecraft.getInstance().font, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false);
+                    graphics.drawString(Minecraft.getInstance().font, text, 0 - font.width(text) / 2f, 5, ColorUtils.BLACK, false);
                 } else
                     border.render(pose, 1, 2);
                 
