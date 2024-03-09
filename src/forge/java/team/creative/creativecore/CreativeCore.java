@@ -52,7 +52,7 @@ public class CreativeCore {
 
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerMenus);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(MenuType.class, this::registerMenus);
         
         MinecraftForge.EVENT_BUS.addListener(this::server);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CreativeCoreClient.load(FMLJavaModLoadingContext.get().getModEventBus()));
@@ -68,6 +68,7 @@ public class CreativeCore {
                 return new ContainerIntegration(this, windowId, playerInv.player);
             }
         };
+        GUI_CONTAINER.setRegistryName("container");
     }
     
     public void registerMenus(RegistryEvent.Register<MenuType<?>> event) {
