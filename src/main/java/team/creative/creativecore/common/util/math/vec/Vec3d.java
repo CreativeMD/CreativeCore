@@ -64,6 +64,12 @@ public class Vec3d extends VecNd<Vec3d> {
         this.z = vec.z;
     }
     
+    public void set(Vec3 vec) {
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = vec.z;
+    }
+    
     @Override
     public double get(int dim) {
         switch (dim) {
