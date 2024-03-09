@@ -46,8 +46,8 @@ public class CollisionCoordinator {
     public final boolean isSimple;
     
     private final Vec3d rotationCenter;
-    public final IVecOrigin moving;
-    public IVecOrigin origin;
+    private final IVecOrigin moved;
+    private final IVecOrigin original;
     
     private final double originalOffX;
     private final double originalOffY;
@@ -56,7 +56,7 @@ public class CollisionCoordinator {
     private final double originalRotY;
     private final double originalRotZ;
     
-    public CollisionCoordinator(double offX, double offY, double offZ, double rotX, double rotY, double rotZ, IVecOrigin moving, IVecOrigin origin) {
+    public CollisionCoordinator(double offX, double offY, double offZ, double rotX, double rotY, double rotZ, IVecOrigin origin) {
         this.offX = offX;
         this.offY = offY;
         this.offZ = offZ;
@@ -78,34 +78,24 @@ public class CollisionCoordinator {
         this.hasRotation = hasRotX || hasRotY || hasRotZ;
         this.isSimple = isSimple();
         
-        this.moving = moving;
-        this.rotationCenter = new Vec3d(moving.center());
-        if (moving.getParent() != null)
-            moving.getParent().transformPointToWorld(rotationCenter);
-        this.origin = origin;
+        this.original = origin;
+        this.rotationCenter = new Vec3d(origin.center());
+        if (origin.getParent() != null)
+            origin.getParent().transformPointToWorld(rotationCenter);
         
-        this.rotationXInv = hasRotX ? MatrixUtils.createRotationMatrixX(-rotX) : null;
-        this.rotationYInv = hasRotY ? MatrixUtils.createRotationMatrixY(-rotY) : null;
-        this.rotationZInv = hasRotZ ? MatrixUtils.createRotationMatrixZ(-rotZ) : null;
+        this.originalOffX = origin.offX();
+        this.originalOffY = origin.offY();
+        this.originalOffZ = origin.offZ();
+        this.originalRotX = origin.rotX();
+        this.originalRotY = origin.rotY();
+        this.originalRotZ = origin.rotZ();
+        
+        this.moved = original.copy();
+        this.moved.off(originalOffX + offX, originalOffY + offY, originalOffZ + offZ);
+        this.moved.rot(originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
+        
         this.translation = hasTranslation ? new Vec3d(offX, offY, offZ) : null;
         
-        this.originalOffX = moving.offX();
-        this.originalOffY = moving.offY();
-        this.originalOffZ = moving.offZ();
-        this.originalRotX = moving.rotX();
-        this.originalRotY = moving.rotY();
-        this.originalRotZ = moving.rotZ();
-    }
-    
-    public void reset(IVecOrigin origin) {
-        this.origin = origin;
-        this.moving.off(originalOffX, originalOffY, originalOffZ);
-        this.moving.rot(originalRotX, originalRotY, originalRotZ);
-    }
-    
-    public void move() {
-        this.moving.off(originalOffX + offX, originalOffY + offY, originalOffZ + offZ);
-        this.moving.rot(originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
     }
     
     public boolean hasOnlyTranslation() {
@@ -122,38 +112,61 @@ public class CollisionCoordinator {
     }
     
     public Matrix3 getRotationMatrix(Axis axis) {
-        switch (axis) {
-            case X:
+        return switch (axis) {
+            case X -> {
                 if (rotationX == null && hasRotX)
-                    rotationX = MatrixUtils.createRotationMatrixX(rotX);
-                return rotationX;
-            case Y:
+                    rotationX = MatrixUtils.createRotationMatrixXRadians(rotXRadians);
+                yield rotationX;
+            }
+            case Y -> {
                 if (rotationY == null && hasRotY)
-                    rotationY = MatrixUtils.createRotationMatrixX(rotY);
-                return rotationY;
-            case Z:
+                    rotationY = MatrixUtils.createRotationMatrixYRadians(rotYRadians);
+                yield rotationY;
+            }
+            case Z -> {
                 if (rotationZ == null && hasRotZ)
-                    rotationZ = MatrixUtils.createRotationMatrixX(rotZ);
-                return rotationZ;
-            default:
-                return null;
-        }
+                    rotationZ = MatrixUtils.createRotationMatrixZRadians(rotZRadians);
+                yield rotationZ;
+            }
+            default -> null;
+        };
     }
     
     public Matrix3 getRotationMatrixInv(Axis axis) {
         return switch (axis) {
-            case X -> rotationXInv;
-            case Y -> rotationYInv;
-            case Z -> rotationZInv;
+            case X -> {
+                if (rotationXInv == null && hasRotX)
+                    rotationXInv = MatrixUtils.createRotationMatrixXRadians(-rotXRadians);
+                yield rotationXInv;
+            }
+            case Y -> {
+                if (rotationYInv == null && hasRotY)
+                    rotationYInv = MatrixUtils.createRotationMatrixYRadians(-rotYRadians);
+                yield rotationYInv;
+            }
+            case Z -> {
+                if (rotationZInv == null && hasRotZ)
+                    rotationZInv = MatrixUtils.createRotationMatrixZRadians(-rotZRadians);
+                yield rotationZInv;
+            }
+            default -> null;
         };
+    }
+    
+    public IVecOrigin original() {
+        return original;
+    }
+    
+    public IVecOrigin moved() {
+        return moved;
     }
     
     public ABB computeSurroundingBox(ABB box) {
         return box.createRotatedSurrounding(this);
     }
     
-    public ABB computeInverseSurroundingBox(ABB box) {
-        return box.createRotatedSurroundingInverse(this);
+    public ABB computeInverseSurroundingBoxInternal(ABB box) {
+        return box.createRotatedSurroundingInverseInternal(this);
     }
     
     private boolean isSimple() {
@@ -252,6 +265,11 @@ public class CollisionCoordinator {
         vec.x = x;
         vec.y = y;
         vec.add(rotationCenter);
+    }
+    
+    public void finish() {
+        this.original.off(originalOffX + offX, originalOffY + offY, originalOffZ + offZ);
+        this.original.rot(originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
     }
     
 }

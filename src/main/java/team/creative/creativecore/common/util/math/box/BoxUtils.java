@@ -4,6 +4,7 @@ import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollisionCoordinator;
+import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
 import team.creative.creativecore.common.util.math.transformation.BooleanRotation;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -22,20 +23,23 @@ public class BoxUtils {
         return one > minOne && one < maxOne && two > minTwo && two < maxTwo;
     }
     
-    private static double lengthIgnoreAxis(Vec3d vec, Axis axis) {
-        return switch (axis) {
+    private static double lengthIgnoreAxis(Vec3d vec, Axis axis, Vec3d center) {
+        vec.sub(center);
+        double result = switch (axis) {
             case X -> Math.sqrt(vec.y * vec.y + vec.z * vec.z);
             case Y -> Math.sqrt(vec.x * vec.x + vec.z * vec.z);
             case Z -> Math.sqrt(vec.x * vec.x + vec.y * vec.y);
             default -> 0;
         };
+        vec.add(center);
+        return result;
     }
     
     public static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
         double rotation = coordinator.getRotationDegree(axis);
         if (rotation == 0)
             return;
-        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrix(axis), coordinator.translation);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.original().center(), coordinator.getRotationMatrix(axis), coordinator.translation);
     }
     
     public static void includeMaxRotationInBoxInverse(ABB box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
@@ -48,10 +52,10 @@ public class BoxUtils {
             translation.invert();
         } else
             translation = null;
-        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationMatrixInv(axis), translation);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.original().center(), coordinator.getRotationMatrixInv(axis), translation);
     }
     
-    private static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, double rotation, Matrix3 matrix, Vec3d translation) {
+    private static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, double rotation, Vec3d rotationCenter, Matrix3 matrix, Vec3d translation) {
         Double length = null;
         BooleanRotation state = BooleanRotation.get(axis, vec);
         
@@ -63,7 +67,7 @@ public class BoxUtils {
                 Facing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
                 
                 if (length == null)
-                    length = lengthIgnoreAxis(vec, axis);
+                    length = lengthIgnoreAxis(vec, axis, rotationCenter);
                 
                 box.include(facing, length);
                 if (translation != null)
@@ -74,14 +78,17 @@ public class BoxUtils {
             }
         }
         
+        vec.sub(rotationCenter);
         matrix.transform(vec);
+        vec.add(rotationCenter);
+        
         box.include(vec);
         
         if (quarterRotation <= 360 && !state.is(vec)) {
             Facing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
             
             if (length == null)
-                length = lengthIgnoreAxis(vec, axis);
+                length = lengthIgnoreAxis(vec, axis, rotationCenter);
             
             box.include(facing, length);
             if (translation != null)
@@ -152,6 +159,20 @@ public class BoxUtils {
         return get(bb, corner.z);
     }
     
+    public static Vec3d[] getCorners(AABB bb) {
+        Vec3d[] corners = new Vec3d[BoxCorner.values().length];
+        for (int i = 0; i < corners.length; i++)
+            corners[i] = corner(bb, BoxCorner.values()[i]);
+        return corners;
+    }
+    
+    public static Vec3d[] getRotatedCorners(AABB bb, IVecOrigin origin) {
+        Vec3d[] corners = getCorners(bb);
+        for (int i = 0; i < corners.length; i++)
+            origin.transformPointToWorld(corners[i]);
+        return corners;
+    }
+    
     public static boolean intersectsWithAxis(AABB bb, AABB other, Axis one, Axis two) {
         return bb.min(one.toVanilla()) < other.max(one.toVanilla()) && bb.max(one.toVanilla()) > bb.min(one.toVanilla()) && bb.min(two.toVanilla()) < bb.max(two.toVanilla()) && bb
                 .max(two.toVanilla()) > bb.min(two.toVanilla());
@@ -173,5 +194,17 @@ public class BoxUtils {
                     return newDistance;
             }
         return offset;
+    }
+    
+    public static double getIntersectionVolume(AABB bb, ABB other) {
+        double d0 = Math.max(bb.minX, other.minX);
+        double d1 = Math.max(bb.minY, other.minY);
+        double d2 = Math.max(bb.minZ, other.minZ);
+        double d3 = Math.min(bb.maxX, other.maxX);
+        double d4 = Math.min(bb.maxY, other.maxY);
+        double d5 = Math.min(bb.maxZ, other.maxZ);
+        if (d0 < d3 && d1 < d4 && d2 < d5)
+            return Math.abs((d3 - d0) * (d4 - d1) * (d5 - d2));
+        return 0;
     }
 }
