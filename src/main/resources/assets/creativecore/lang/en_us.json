@@ -29,6 +29,7 @@
     "collector.inventory": "Inventory",
     "collector.all": "Creative",
     "minecraft.block": "Block",
+    "minecraft.blocks": "Blocks",
     "minecraft.item": "Item",
     "minecraft.block_tag": "Blocktag",
     "minecraft.item_tag": "Itemtag",

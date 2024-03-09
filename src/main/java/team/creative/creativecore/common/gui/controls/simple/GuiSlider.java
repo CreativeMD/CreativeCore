@@ -11,10 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.IGuiParent;
+import team.creative.creativecore.common.gui.*;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
@@ -27,20 +24,27 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public double maxValue;
     public double minValue;
     public double value;
+    private final ValueFormatter formatter;
     protected boolean grabbedSlider;
     public int sliderWidth = 4;
     
     protected GuiTextfield textfield;
-    
+
+    @Deprecated
     public GuiSlider(String name, double value, double min, double max) {
+        this(name, value, min, max, ValueFormatter.NONE);
+    }
+
+    public GuiSlider(String name, double value, double min, double max, ValueFormatter formatter) {
         super(name);
         this.minValue = min;
         this.maxValue = max;
+        this.formatter = formatter;
         setValue(value);
     }
     
     public String getTextByValue() {
-        return Math.round(value * 100F) / 100F + "";
+        return formatter.get(value, maxValue);
     }
     
     public String getTextfieldValue() {
