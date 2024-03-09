@@ -11,14 +11,15 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-import team.creative.creativecore.common.util.text.content.ContentItemStack;
 
 public class TextBuilder {
     
     private static NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
-    private final List<Component> lines = new ArrayList<>();
+    private final List<Component> components = new ArrayList<>();
     
-    public TextBuilder() {}
+    public TextBuilder() {
+        
+    }
     
     public TextBuilder add(List<Component> components) {
         for (Component component : components)
@@ -27,10 +28,15 @@ public class TextBuilder {
     }
     
     public TextBuilder add(Component component) {
-        if (lines.isEmpty())
-            lines.add(component);
-        else
-            lines.get(lines.size() - 1).getSiblings().add(component);
+        if (components.isEmpty())
+            components.add(component);
+        else {
+            Component last = components.get(components.size() - 1);
+            if (last instanceof MutableComponent)
+                ((MutableComponent) last).append(component);
+            else
+                components.add(component);
+        }
         return this;
     }
     
@@ -94,7 +100,7 @@ public class TextBuilder {
     }
     
     public TextBuilder newLine() {
-        lines.add(Component.empty());
+        components.add(new LinebreakComponent());
         return this;
     }
     
@@ -108,12 +114,12 @@ public class TextBuilder {
     }
     
     public TextBuilder stack(ItemStack stack) {
-        add(MutableComponent.create(new ContentItemStack(stack)));
+        add(new ItemStackComponent(stack));
         return this;
     }
     
     public List<Component> build() {
-        return lines;
+        return components;
     }
     
 }

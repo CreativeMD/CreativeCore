@@ -2,11 +2,10 @@ package team.creative.creativecore.client.render.text;
 
 import net.minecraft.client.StringSplitter;
 import net.minecraft.network.chat.Style;
-import team.creative.creativecore.common.util.text.content.AdvancedContent;
-import team.creative.creativecore.common.util.text.content.FormattedSingleSink;
+import net.minecraft.util.FormattedCharSink;
 import team.creative.creativecore.mixin.StringSplitterAccessor;
 
-public class WidthLimitedCharSink implements FormattedSingleSink {
+public class WidthLimitedCharSink implements FormattedCharSink {
     
     private final StringSplitter.WidthProvider widthProvider;
     private float maxWidth;
@@ -30,12 +29,6 @@ public class WidthLimitedCharSink implements FormattedSingleSink {
             return true;
         } else
             return false;
-    }
-    
-    @Override
-    public boolean accept(Style style, AdvancedContent content) {
-        this.maxWidth -= content.width(widthProvider, style);
-        return this.maxWidth >= 0.0F;
     }
     
     public int getPosition() {
