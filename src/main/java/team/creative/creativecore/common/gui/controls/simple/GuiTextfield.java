@@ -38,15 +38,15 @@ import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiTextfield extends GuiFocusControl {
-    
+
     private String text = "";
+    private String suggestion = "";
     private int maxStringLength = 128;
     private int frame;
     private boolean shift;
     private int lineScrollOffset;
     private int cursorPosition;
     private int selectionEnd;
-    private String suggestion;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
     private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
@@ -188,8 +188,8 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty() && flag && j < s.length())
             graphics.drawString(font, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color, false);
-        
-        if (!flag2 && this.suggestion != null)
+
+        if (text.isEmpty() && !this.suggestion.isEmpty())
             graphics.drawString(font, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
