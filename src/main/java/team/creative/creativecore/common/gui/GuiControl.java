@@ -171,28 +171,28 @@ public abstract class GuiControl {
     }
     
     public String getNestedName() {
-        if (getParent() instanceof GuiControl)
-            return ((GuiControl) getParent()).getNestedName() + "." + name;
+        if (getParent() instanceof GuiControl control)
+            return control.getNestedName() + "." + name;
         return name;
     }
     
     public boolean hasLayer() {
-        if (parent instanceof GuiControl)
-            return ((GuiControl) parent).hasLayer();
+        if (parent instanceof GuiControl control)
+            return control.hasLayer();
         return false;
     }
     
     public GuiLayer getLayer() {
-        if (parent instanceof GuiControl)
-            return ((GuiControl) parent).getLayer();
+        if (parent instanceof GuiControl control)
+            return control.getLayer();
         throw new RuntimeException("Invalid layer control");
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public GuiStyle getStyle() {
-        if (parent instanceof GuiControl)
-            return ((GuiControl) parent).getStyle();
+        if (parent instanceof GuiControl control)
+            return control.getStyle();
         throw new RuntimeException("Invalid layer control");
     }
     
@@ -207,8 +207,8 @@ public abstract class GuiControl {
     }
     
     public boolean is(String... name) {
-        for (int i = 0; i < name.length; i++) {
-            if (this.name.equalsIgnoreCase(name[i]))
+        for (String s: name) {
+            if (this.name.equalsIgnoreCase(s))
                 return true;
         }
         return false;
@@ -371,11 +371,12 @@ public abstract class GuiControl {
     public GuiTooltipEvent getTooltipEvent(Rect rect, double x, double y) {
         List<Component> toolTip = getTooltip();
         
-        if (customTooltip != null)
+        if (customTooltip != null) {
             if (toolTip == null)
                 toolTip = customTooltip;
-            else
+            else if (toolTip != customTooltip)
                 toolTip.addAll(customTooltip);
+        }
             
         if (toolTip == null) {
             String langTooltip = translateOrDefault(getNestedName() + ".tooltip", null);
@@ -389,7 +390,7 @@ public abstract class GuiControl {
     }
     
     public List<Component> getTooltip() {
-        return null;
+        return customTooltip;
     }
     
     // RENDERING
@@ -431,16 +432,16 @@ public abstract class GuiControl {
         PoseStack pose = graphics.pose();
         getBorder(style, style.get(formatting.border)).render(pose, 0, 0, width, height);
         
-        int borderWidth = style.getBorder(formatting.border);
+        int borderSize = style.getBorder(formatting.border);
         
-        width -= borderWidth * 2;
-        height -= borderWidth * 2;
+        width -= borderSize * 2;
+        height -= borderSize * 2;
         
-        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(pose, borderWidth, borderWidth, width, height);
+        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(pose, borderSize, borderSize, width, height);
         
-        controlRect.shrink(borderWidth * scale);
+        controlRect.shrink(borderSize * scale);
         
-        renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        renderContent(graphics, control, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
