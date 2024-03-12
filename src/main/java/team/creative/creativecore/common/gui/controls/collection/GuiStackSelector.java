@@ -259,7 +259,6 @@ public class GuiStackSelector extends GuiLabel {
         @Override
         public boolean allow(ItemStack stack) {
             if (super.allow(stack)) {
-                Block.byItem(stack.getItem());
                 return !(Block.byItem(stack.getItem()) instanceof AirBlock);
             }
             return false;
