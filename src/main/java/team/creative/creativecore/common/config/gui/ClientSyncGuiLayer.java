@@ -94,8 +94,8 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
-        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(Component.literal("/" + String.join("/", holder.path()))))
-                .addRight(new GuiButton("back", x -> load(entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
+        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(Component.literal("/" + String.join("/", holder.path())))).addRight(new GuiButton("back", x -> load(
+            entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
         this.currentView = entry;
         
         GuiScrollY box = new GuiScrollY("").setExpandable().setDim(100, 100);
@@ -112,7 +112,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
             
             GuiColumn second = (GuiColumn) new GuiColumn().setExpandableX();
             row.addColumn(second);
-            String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
+            String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.content.name + ".name", key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
             if (key.content != null && key.content.get() instanceof ICreativeConfigHolder)
                 second.add(new GuiButton(caption, x -> {
