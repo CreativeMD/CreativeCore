@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.config.gui;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
@@ -27,7 +28,7 @@ public class GuiConfigSubControl extends GuiParent {
     }
     
     public void addNameUnmodifieable(String name) {
-        nameLabel = new GuiLabel(name).setTitle(Component.literal(name));
+        nameLabel = new GuiLabel(name).setTitle(new TextComponent(name));
         add(nameLabel);
     }
     

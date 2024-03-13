@@ -1,15 +1,9 @@
 package team.creative.creativecore.common.gui.manager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.ListTag;
@@ -27,6 +21,10 @@ import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.inventory.GuiSlot;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class GuiManagerItem extends GuiManager {
     
@@ -66,7 +64,7 @@ public class GuiManagerItem extends GuiManager {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    public void renderOverlay(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         ItemStack stack = hand;
         int count = stack.getCount();
         if (drag) {
@@ -81,7 +79,6 @@ public class GuiManagerItem extends GuiManager {
         }
         
         if (!stack.isEmpty() && (!drag || rightClick || dragged.size() > 1)) {
-            PoseStack pose = graphics.pose();
             pose.pushPose();
             RenderSystem.disableScissor();
             

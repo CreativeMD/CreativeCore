@@ -1,15 +1,10 @@
 package team.creative.creativecore.common.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
@@ -22,6 +17,11 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder.GuiSyncHolderLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class GuiLayer extends GuiParent {
     
@@ -195,9 +195,9 @@ public abstract class GuiLayer extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         for (GuiManager manager : managers())
-            manager.renderOverlay(graphics, control, rect, mouseX - (int) rect.minX, mouseY - (int) rect.minY);
+            manager.renderOverlay(pose, control, rect, mouseX - (int) rect.minX, mouseY - (int) rect.minY);
     }
     
     public boolean closeLayerUsingEscape() {

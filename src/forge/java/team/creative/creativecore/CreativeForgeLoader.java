@@ -1,11 +1,5 @@
 package team.creative.creativecore;
 
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerLevel;
@@ -14,13 +8,13 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.client.event.RenderGuiEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
-import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
-import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.IExtensionPoint;
@@ -32,8 +26,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.network.NetworkConstants;
+import org.apache.commons.lang3.ArrayUtils;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
+
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class CreativeForgeLoader implements ICreativeLoader {
     
@@ -75,7 +74,8 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerClientRenderGui(Consumer run) {
-        MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Post x) -> run.accept(x.getGuiGraphics()));
+        // TODO: this even is cursed on 1.18.2 (needs special addressing)
+        MinecraftForge.EVENT_BUS.addListener((RenderGameOverlayEvent.Post x) -> run.accept(x.getMatrixStack()));
     }
     
     @Override
@@ -88,16 +88,16 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerLevelTick(Consumer<ServerLevel> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
-            if (x.phase == Phase.END && x.level instanceof ServerLevel level)
+        MinecraftForge.EVENT_BUS.addListener((TickEvent.WorldTickEvent x) -> {
+            if (x.phase == Phase.END && x.world instanceof ServerLevel level)
                 consumer.accept(level);
         });
     }
     
     @Override
     public void registerLevelTickStart(Consumer<ServerLevel> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
-            if (x.phase == Phase.START && x.level instanceof ServerLevel level)
+        MinecraftForge.EVENT_BUS.addListener((TickEvent.WorldTickEvent x) -> {
+            if (x.phase == Phase.START && x.world instanceof ServerLevel level)
                 consumer.accept(level);
         });
         
@@ -105,12 +105,12 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerUnloadLevel(Consumer<LevelAccessor> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelEvent.Unload x) -> consumer.accept(x.getLevel()));
+        MinecraftForge.EVENT_BUS.addListener((WorldEvent.Unload x) -> consumer.accept(x.getWorld()));
     }
     
     @Override
     public void registerLoadLevel(Consumer<LevelAccessor> consumer) {
-        MinecraftForge.EVENT_BUS.addListener((LevelEvent.Load x) -> consumer.accept(x.getLevel()));
+        MinecraftForge.EVENT_BUS.addListener((WorldEvent.Load x) -> consumer.accept(x.getWorld()));
     }
     
     @Override
@@ -135,7 +135,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public float getFluidViscosityMultiplier(Fluid fluid, Level level) {
-        return fluid.getFluidType().getViscosity() / 1000;
+        return fluid.getAttributes().getViscosity() / 1000f;
     }
     
     @Override

@@ -1,13 +1,9 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.function.Consumer;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,6 +15,8 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiIcon;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
+
+import java.util.function.Consumer;
 
 public class GuiIconButton extends GuiControl {
     
@@ -86,8 +84,7 @@ public class GuiIconButton extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, icon.location());
         

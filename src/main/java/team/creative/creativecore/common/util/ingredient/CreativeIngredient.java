@@ -1,20 +1,15 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -24,11 +19,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 public abstract class CreativeIngredient {
     
@@ -64,12 +65,12 @@ public abstract class CreativeIngredient {
         
         @Override
         public Component descriptionDetail() {
-            return Component.literal("empty");
+            return new TextComponent("empty");
         }
         
         @Override
         public Component description() {
-            return Component.literal("invalid");
+            return new TextComponent("invalid");
         }
         
         @Override
@@ -130,7 +131,7 @@ public abstract class CreativeIngredient {
             return null;
         });
         registerType("blocktag", CreativeIngredientBlockTag.class, (x) -> {
-            if (x instanceof TagKey key && key.isFor(Registries.BLOCK))
+            if (x instanceof TagKey key && key.isFor(Registry.BLOCK_REGISTRY))
                 return new CreativeIngredientBlockTag((TagKey<Block>) x);
             return null;
         });
@@ -141,7 +142,7 @@ public abstract class CreativeIngredient {
             return null;
         });
         registerType("itemtag", CreativeIngredientItemTag.class, (x) -> {
-            if (x instanceof TagKey key && key.isFor(Registries.ITEM))
+            if (x instanceof TagKey<?> key && key.isFor(Registry.ITEM_REGISTRY))
                 return new CreativeIngredientItemTag((TagKey<Item>) x);
             return null;
         });

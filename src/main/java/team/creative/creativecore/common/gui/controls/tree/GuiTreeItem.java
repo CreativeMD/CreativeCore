@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
@@ -85,7 +86,7 @@ public class GuiTreeItem extends GuiParent {
     public void toggle() {
         if (button != null) {
             open = !open;
-            button.setTitle(Component.literal(open ? "-" : "+"));
+            button.setTitle(new TextComponent(open ? "-" : "+"));
             tree.updateTree();
         }
     }
@@ -148,7 +149,7 @@ public class GuiTreeItem extends GuiParent {
             add(label);
         } else {
             clear();
-            add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> toggle()).setTitle(Component.literal("-")));
+            add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> toggle()).setTitle(new TextComponent("-")));
             if (tree.hasCheckboxes())
                 add(getOrCreateCheckbox());
             else if (checkbox != null)

@@ -1,13 +1,13 @@
 package team.creative.creativecore.common.util.mc;
 
-import java.nio.file.Path;
-import java.util.List;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraftforge.resource.PathPackResources;
+import net.minecraftforge.resource.PathResourcePack;
 import team.creative.creativecore.mixin.DelegatingPackResourcesAccessor;
+
+import java.nio.file.Path;
+import java.util.List;
 
 public class PlatformResourceUtils {
     
@@ -23,7 +23,7 @@ public class PlatformResourceUtils {
     }
     
     public static Path resolvePath(PackType type, PackResources source, ResourceLocation location, List<String> parts) {
-        if (source instanceof PathPackResources forge) {
+        if (source instanceof PathResourcePack forge) {
             Path path = forge.getSource().resolve(type.getDirectory()).resolve(location.getNamespace());
             for (String name : parts)
                 path = path.resolve(name);

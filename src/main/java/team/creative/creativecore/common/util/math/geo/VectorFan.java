@@ -1,19 +1,8 @@
 package team.creative.creativecore.common.util.math.geo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiConsumer;
-
-import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
+import com.mojang.math.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -31,6 +20,11 @@ import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.math.vec.VectorUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 public class VectorFan {
     
@@ -240,7 +234,7 @@ public class VectorFan {
             Vec3f vec = coords[i];
             builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
         }
-        BufferUploader.drawWithShader(builder.end());
+        BufferUploader.end(builder);
     }
     
     public void renderPreview(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
@@ -249,7 +243,7 @@ public class VectorFan {
             Vec3f vec = coords[i];
             builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
         }
-        BufferUploader.drawWithShader(builder.end());
+        BufferUploader.end(builder);
     }
     
     public void forAllEdges(BiConsumer<Vec3f, Vec3f> consumer) {

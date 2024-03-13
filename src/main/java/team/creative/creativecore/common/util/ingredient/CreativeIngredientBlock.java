@@ -1,12 +1,14 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class CreativeIngredientBlock extends CreativeIngredient {
     
@@ -22,12 +24,12 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        block = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString("block")));
+        block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("block")));
     }
     
     @Override
     protected void saveExtra(CompoundTag nbt) {
-        nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
+        nbt.putString("block", ForgeRegistries.BLOCKS.getKey(block).toString());
     }
     
     @Override
@@ -66,7 +68,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.block").append(": " + ChatFormatting.YELLOW + BuiltInRegistries.BLOCK.getKey(block).toString());
+        return new TranslatableComponent("minecraft.block").append(": " + ChatFormatting.YELLOW + ForgeRegistries.BLOCKS.getKey(block).toString());
     }
     
 }

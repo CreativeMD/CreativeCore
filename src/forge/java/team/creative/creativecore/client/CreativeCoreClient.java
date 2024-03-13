@@ -1,7 +1,6 @@
 package team.creative.creativecore.client;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
@@ -16,9 +15,10 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory;
-import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
+import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -58,7 +58,7 @@ public class CreativeCoreClient {
     }
     
     public static void registerClientConfig(String modid) {
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenFactory.class, () -> new ConfigScreenFactory((a, b) -> {
+        ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> new ConfigGuiHandler.ConfigGuiFactory((a, b) -> {
             ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(modid);
             if (holder != null && !holder.isEmpty(Side.CLIENT))
                 return new GuiScreenIntegration(new ConfigGuiLayer(holder, Side.CLIENT));
@@ -127,8 +127,8 @@ public class CreativeCoreClient {
         });
     }
     
-    public static void modelEvent(RegisterGeometryLoaders event) {
-        event.register("rendered", new CreativeModelLoader());
+    public static void modelEvent(ModelRegistryEvent event) {
+        ModelLoaderRegistry.registerLoader(new ResourceLocation("creativecore", "rendered"), new CreativeModelLoader());
     }
     
     @SubscribeEvent

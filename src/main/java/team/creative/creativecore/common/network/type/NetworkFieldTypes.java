@@ -1,22 +1,21 @@
 package team.creative.creativecore.common.network.type;
 
+import java.io.DataInput;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -24,22 +23,16 @@ import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagTypes;
-import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.protocol.BundlePacket;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
@@ -57,9 +50,7 @@ import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
-import team.creative.creativecore.common.util.text.AdvancedComponentHelper;
-import team.creative.creativecore.common.util.type.Bunch;
-import team.creative.creativecore.common.util.type.itr.IterableIterator;
+import team.creative.creativecore.common.util.text.AdvancedComponent;
 
 public class NetworkFieldTypes {
     
@@ -118,64 +109,8 @@ public class NetworkFieldTypes {
         get(clazz).write(object, clazz, null, buffer);
     }
     
-    public static <T> void writeMany(Class<T> clazz, Bunch<T> bunch, FriendlyByteBuf buffer) {
-        buffer.writeInt(bunch.size());
-        NetworkFieldType<T> type = get(clazz);
-        for (T t : bunch)
-            type.write(t, clazz, null, buffer);
-    }
-    
-    public static <T> void writeMany(Class<T> clazz, Collection<T> collection, FriendlyByteBuf buffer) {
-        buffer.writeInt(collection.size());
-        NetworkFieldType<T> type = get(clazz);
-        for (T t : collection)
-            type.write(t, clazz, null, buffer);
-    }
-    
-    public static <T> void writeMany(Class<T> clazz, T[] collection, FriendlyByteBuf buffer) {
-        buffer.writeInt(collection.length);
-        NetworkFieldType<T> type = get(clazz);
-        for (T t : collection)
-            type.write(t, clazz, null, buffer);
-    }
-    
     public static <T> T read(Class<T> clazz, FriendlyByteBuf buffer) {
         return get(clazz).read(clazz, null, buffer);
-    }
-    
-    public static <T> Iterable<T> readMany(Class<T> clazz, FriendlyByteBuf buffer) {
-        int length = buffer.readInt();
-        NetworkFieldType<T> type = get(clazz);
-        
-        return new IterableIterator<T>() {
-            
-            int index = 0;
-            
-            @Override
-            public boolean hasNext() {
-                return index < length;
-            }
-            
-            @Override
-            public T next() {
-                index++;
-                return type.read(clazz, null, buffer);
-            }
-            
-        };
-    }
-    
-    public static void writeIntArray(int[] array, FriendlyByteBuf buffer) {
-        buffer.writeInt(array.length);
-        for (int i = 0; i < array.length; i++)
-            buffer.writeInt(array[i]);
-    }
-    
-    public static int[] readIntArray(FriendlyByteBuf buffer) {
-        int[] array = new int[buffer.readInt()];
-        for (int i = 0; i < array.length; i++)
-            array[i] = buffer.readInt();
-        return array;
     }
     
     static {
@@ -366,12 +301,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Block content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(content));
+                buffer.writeResourceLocation(Registry.BLOCK.getKey(content));
             }
             
             @Override
             protected Block readContent(FriendlyByteBuf buffer) {
-                return BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
+                return Registry.BLOCK.get(buffer.readResourceLocation());
             }
         }, Block.class);
         
@@ -379,12 +314,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Item content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(content));
+                buffer.writeResourceLocation(Registry.ITEM.getKey(content));
             }
             
             @Override
             protected Item readContent(FriendlyByteBuf buffer) {
-                return BuiltInRegistries.ITEM.get(buffer.readResourceLocation());
+                return Registry.ITEM.get(buffer.readResourceLocation());
             }
         }, Item.class);
         
@@ -568,7 +503,7 @@ public class NetworkFieldTypes {
             }
         });
         
-        register(new NetworkFieldTypeSpecial((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
+        register(new NetworkFieldTypeSpecial<>((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
             
             @Override
             public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
@@ -683,7 +618,7 @@ public class NetworkFieldTypes {
             private static final Gson GSON = Util.make(() -> {
                 GsonBuilder gsonbuilder = new GsonBuilder();
                 gsonbuilder.disableHtmlEscaping();
-                gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponentHelper.Serializer());
+                gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponent.Serializer());
                 gsonbuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
                 gsonbuilder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
                 return gsonbuilder.create();
@@ -701,10 +636,10 @@ public class NetworkFieldTypes {
             
         }, Component.class);
         
-        NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Tag>((x, y) -> Tag.class.isAssignableFrom(x)) {
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<Tag>() {
             
             @Override
-            public void write(Tag content, Class classType, Type genericType, FriendlyByteBuf buffer) {
+            protected void writeContent(Tag content, FriendlyByteBuf buffer) {
                 buffer.writeByte(content.getId());
                 if (content.getId() != 0)
                     try {
@@ -713,10 +648,9 @@ public class NetworkFieldTypes {
             }
             
             @Override
-            public Tag read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-                ByteBufInputStream in = null;
+            protected Tag readContent(FriendlyByteBuf buffer) {
+                DataInput in = new ByteBufInputStream(buffer);
                 try {
-                    in = new ByteBufInputStream(buffer);
                     byte b0 = in.readByte();
                     if (b0 == 0)
                         return EndTag.INSTANCE;
@@ -726,64 +660,10 @@ public class NetworkFieldTypes {
                     CrashReport crashreport = CrashReport.forThrowable(e, "Loading NBT data");
                     crashreport.addCategory("NBT Tag");
                     throw new ReportedException(crashreport);
-                } finally {
-                    try {
-                        in.close();
-                    } catch (IOException e) {}
                 }
                 
             }
-        });
-        
-        NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Packet>((x, y) -> Packet.class.isAssignableFrom(x)) {
-            
-            public static final int BUNDLE_WILDCARD = 234920940;
-            
-            @Override
-            public void write(Packet content, Class classType, Type genericType, FriendlyByteBuf buffer) {
-                Packet packet = content;
-                ConnectionProtocol protocol = ConnectionProtocol.getProtocolForPacket(packet);
-                if (protocol != ConnectionProtocol.PLAY)
-                    throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
-                
-                if (content instanceof BundlePacket<?> bundle) {
-                    buffer.writeInt(BUNDLE_WILDCARD);
-                    int size = 0;
-                    for (@SuppressWarnings("unused")
-                    Packet<?> subPacket : bundle.subPackets())
-                        size++;
-                    buffer.writeInt(size);
-                    for (Packet<?> subPacket : bundle.subPackets())
-                        write(subPacket, subPacket.getClass(), null, buffer);
-                    return;
-                }
-                
-                Integer id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
-                if (id != -1) {
-                    buffer.writeInt(id);
-                    packet.write(buffer);
-                } else {
-                    buffer.writeInt(-protocol.getPacketId(PacketFlow.SERVERBOUND, packet));
-                    packet.write(buffer);
-                }
-                
-            }
-            
-            @Override
-            public Packet read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-                int id = buffer.readInt();
-                if (id == BUNDLE_WILDCARD) {
-                    int size = buffer.readInt();
-                    List<Packet<ClientGamePacketListener>> packets = new ArrayList<>();
-                    for (int i = 0; i < size; i++)
-                        packets.add(read(null, null, buffer));
-                    return new ClientboundBundlePacket(packets);
-                }
-                if (id < 0)
-                    return ConnectionProtocol.PLAY.createPacket(PacketFlow.SERVERBOUND, -id, buffer);
-                return ConnectionProtocol.PLAY.createPacket(PacketFlow.CLIENTBOUND, id, buffer);
-            }
-        });
+        }, Tag.class);
     }
     
 }

@@ -1,9 +1,6 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +21,9 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.StackUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiStackSelector extends GuiLabel {
     
@@ -188,7 +188,7 @@ public class GuiStackSelector extends GuiLabel {
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
                     else {
-                        LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
+                        LazyOptional<IItemHandler> result = StackUtils. getStackInventory(stack);
                         if (result.isPresent())
                             collect(result.orElseThrow(RuntimeException::new), tempStacks);
                     }
@@ -226,7 +226,7 @@ public class GuiStackSelector extends GuiLabel {
             HashMapList<String, ItemStack> stacks = super.collect(player);
             
             List<ItemStack> newStacks = new ArrayList<>();
-            for (Item item : BuiltInRegistries.ITEM) {
+            for (Item item : Registry.ITEM) {
                 ItemStack stack = new ItemStack(item);
                 if (selector.allow(stack))
                     newStacks.add(stack);
@@ -283,7 +283,7 @@ public class GuiStackSelector extends GuiLabel {
         try {
             itemName = stack.getDisplayName().getString();
         } catch (Exception e) {
-            itemName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+            itemName = Registry.ITEM.getKey(stack.getItem()).toString();
         }
         return itemName;
     }

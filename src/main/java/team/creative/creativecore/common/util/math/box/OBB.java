@@ -1,9 +1,5 @@
 package team.creative.creativecore.common.util.math.box;
 
-import java.util.List;
-
-import org.joml.Vector2d;
-
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
@@ -12,6 +8,8 @@ import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
+
+import java.util.List;
 
 public class OBB extends ABB {
     
@@ -76,25 +74,26 @@ public class OBB extends ABB {
                 return outerCornerAxis - closestValue;
             return closestValue - outerCornerAxis;
         }
-        
-        Vector2d[] directions = new Vector2d[3];
+
+        Vec2d[] directions = new Vec2d[3];
         
         double minDistance = Double.MAX_VALUE;
         
         Vec2d[] vectors = { new Vec2d(minOne - outerCornerOne, minTwo - outerCornerTwo), new Vec2d(maxOne - outerCornerOne, minTwo - outerCornerTwo), new Vec2d(maxOne - outerCornerOne, maxTwo - outerCornerTwo), new Vec2d(minOne - outerCornerOne, maxTwo - outerCornerTwo) };
         Vec2d[] vectorsRelative = { new Vec2d(), new Vec2d(), new Vec2d(), new Vec2d() };
-        
-        directions[0] = new Vector2d(corners[1].get(one) - outerCornerOne, corners[1].get(two) - outerCornerTwo);
-        directions[1] = new Vector2d(corners[2].get(one) - outerCornerOne, corners[2].get(two) - outerCornerTwo);
-        directions[2] = new Vector2d(corners[3].get(one) - outerCornerOne, corners[3].get(two) - outerCornerTwo);
+
+        // BACKPORT NOTE: Vector2d of joml was replaced by CC Vec2, apparently is unnecessary and have same effect
+        directions[0] = new Vec2d(corners[1].get(one) - outerCornerOne, corners[1].get(two) - outerCornerTwo);
+        directions[1] = new Vec2d(corners[2].get(one) - outerCornerOne, corners[2].get(two) - outerCornerTwo);
+        directions[2] = new Vec2d(corners[3].get(one) - outerCornerOne, corners[3].get(two) - outerCornerTwo);
         
         face_loop: for (int i = 0; i < 3; i++) { // Calculate faces
             
             int indexFirst = i;
             int indexSecond = i == 2 ? 0 : i + 1;
-            
-            Vector2d first = directions[indexFirst];
-            Vector2d second = directions[indexSecond];
+
+            Vec2d first = directions[indexFirst];
+            Vec2d second = directions[indexSecond];
             
             if (first.x == 0 || second.y == 0) {
                 int temp = indexFirst;

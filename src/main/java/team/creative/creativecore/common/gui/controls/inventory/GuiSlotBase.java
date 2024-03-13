@@ -1,13 +1,9 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -19,6 +15,8 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.List;
 
 public abstract class GuiSlotBase extends GuiControl {
     
@@ -59,10 +57,9 @@ public abstract class GuiSlotBase extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         if (HOVER == null)
             HOVER = new DisplayColor(1, 1, 1, 0.3F);
-        PoseStack pose = graphics.pose();
         pose.translate(1, 1, 10);
         ItemStack stack = getStackToRender();
         GuiRenderHelper.drawItemStack(pose, stack, 1F);

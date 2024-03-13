@@ -1,13 +1,12 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.function.Consumer;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,6 +20,8 @@ import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
+
+import java.util.function.Consumer;
 
 public class GuiCheckBox extends GuiLabel {
     
@@ -67,10 +68,10 @@ public class GuiCheckBox extends GuiLabel {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        Font font = Minecraft.getInstance().font;
         int yoffset = 0;
-        
-        PoseStack pose = graphics.pose();
+
         GuiStyle style = getStyle();
         
         if (!enabled)
@@ -80,7 +81,7 @@ public class GuiCheckBox extends GuiLabel {
         style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(pose, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
         
         if (value)
-            graphics.drawString(Minecraft.getInstance().font, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), false);
+            font.drawShadow(pose, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), true);
         else if (partial) {
             if (PARTIAL_STYLE == null)
                 PARTIAL_STYLE = new DisplayColor();
