@@ -43,7 +43,7 @@ public class GuiTextfield extends GuiFocusControl {
     private int selectionEnd;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
-    private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
+    private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private int cachedWidth;
     
     public GuiTextfield(String name) {

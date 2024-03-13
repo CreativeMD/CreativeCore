@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.ValueFormatter;
+import team.creative.creativecore.common.gui.ValueParser;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -25,15 +25,15 @@ public class GuiSeekBar extends GuiControl {
     private final LongSupplier maxSupplier;
     public final LongConsumer posUpdateConsumer;
 
-    public final ValueFormatter formatter;
+    public final ValueParser parser;
     public boolean grabbedSlider;
 
-    public GuiSeekBar(String name, LongConsumer posUpdateConsumer, LongSupplier posSupplier, LongSupplier maxSupplier, ValueFormatter formatter) {
+    public GuiSeekBar(String name, LongConsumer posUpdateConsumer, LongSupplier posSupplier, LongSupplier maxSupplier, ValueParser parser) {
         super(name);
         this.posSupplier = posSupplier;
         this.maxSupplier = maxSupplier;
         this.posUpdateConsumer = posUpdateConsumer;
-        this.formatter = formatter;
+        this.parser = parser;
     }
 
     public void setValue(long value) {
@@ -62,7 +62,7 @@ public class GuiSeekBar extends GuiControl {
         final double percent = pos / (double) max;
         PoseStack pose = graphics.pose();
         renderProgress(pose, control, rect, percent);
-        GuiRenderHelper.drawStringCentered(pose, formatter.get(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
+        GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
     }
 
     @Environment(EnvType.CLIENT)

@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.ValueFormatter;
+import team.creative.creativecore.common.gui.ValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -22,17 +22,17 @@ public class GuiProgressbar extends GuiControl {
     public double pos;
     public double max;
     public boolean showToolTip = true;
-    public final ValueFormatter formatter;
+    public final ValueParser parser;
 
     public GuiProgressbar(String name, double pos, double max) {
-        this(name, pos, max, ValueFormatter.PERCENT);
+        this(name, pos, max, ValueParser.PERCENT);
     }
 
-    public GuiProgressbar(String name, double pos, double max, ValueFormatter valueFormatter) {
+    public GuiProgressbar(String name, double pos, double max, ValueParser valueParser) {
         super(name);
         this.pos = pos;
         this.max = max;
-        this.formatter = valueFormatter;
+        this.parser = valueParser;
     }
     
     @Override
@@ -66,7 +66,7 @@ public class GuiProgressbar extends GuiControl {
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         this.renderProgress(pose, control, rect, this.getPercentage());
-        GuiRenderHelper.drawStringCentered(pose, formatter.get(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
+        GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)

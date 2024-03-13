@@ -22,7 +22,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public double maxValue;
     public double minValue;
     public double value;
-    private final ValueFormatter formatter;
+    private final ValueParser parser;
     protected boolean grabbedSlider;
     public int sliderWidth = 4;
     
@@ -30,19 +30,19 @@ public class GuiSlider extends GuiControl implements IGuiParent {
 
     @Deprecated
     public GuiSlider(String name, double value, double min, double max) {
-        this(name, value, min, max, ValueFormatter.NONE);
+        this(name, value, min, max, ValueParser.NONE);
     }
 
-    public GuiSlider(String name, double value, double min, double max, ValueFormatter formatter) {
+    public GuiSlider(String name, double value, double min, double max, ValueParser parser) {
         super(name);
         this.minValue = min;
         this.maxValue = max;
-        this.formatter = formatter;
+        this.parser = parser;
         setValue(value);
     }
     
     public String getTextByValue() {
-        return formatter.get(value, maxValue);
+        return parser.parse(value, maxValue);
     }
     
     public String getTextfieldValue() {
