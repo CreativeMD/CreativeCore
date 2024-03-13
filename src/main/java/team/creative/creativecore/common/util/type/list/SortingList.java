@@ -24,8 +24,8 @@ public class SortingList implements List<CreativeIngredient> {
     public boolean isWhitelist;
     
     public SortingList(SortingList list) {
-        isWhitelist = list.isWhitelist;
-        entries = new ArrayList<>(list.entries);
+        this.isWhitelist = list.isWhitelist;
+        this.entries = new ArrayList<>(list.entries);
     }
     
     public SortingList() {
@@ -37,7 +37,7 @@ public class SortingList implements List<CreativeIngredient> {
     }
     
     public boolean isBlacklist() {
-        return !isWhitelist;
+        return !isWhitelist();
     }
     
     public boolean isWhitelist() {
@@ -62,8 +62,8 @@ public class SortingList implements List<CreativeIngredient> {
      *            the array can either contain a Material, a Block, an Item, an
      *            ItemStack or a String for the OreDictionary. */
     public void addSortingObjects(Object... objects) {
-        for (int i = 0; i < objects.length; i++) {
-            addSortingObject(objects[i]);
+        for (Object object: objects) {
+            addSortingObject(object);
         }
     }
     
@@ -73,8 +73,8 @@ public class SortingList implements List<CreativeIngredient> {
      *            can either be a Material, a Block, an Item, an ItemStack or a
      *            String for the OreDictionary. */
     public void addSortingObject(Object object) {
-        if (object instanceof CreativeIngredient) {
-            add((CreativeIngredient) object);
+        if (object instanceof CreativeIngredient ingredient) {
+            add(ingredient);
             return;
         }
         CreativeIngredient info = CreativeIngredient.parse(object);
@@ -127,14 +127,14 @@ public class SortingList implements List<CreativeIngredient> {
         CreativeIngredient info = CreativeIngredient.parse(object);
         if (info == null)
             return false;
-        for (CreativeIngredient ingredient : entries)
+        for (CreativeIngredient ingredient: entries)
             if (ingredient.is(info))
                 return true;
         return false;
     }
     
     protected boolean canBeFoundInList(ItemStack stack) {
-        for (CreativeIngredient ingredient : entries)
+        for (CreativeIngredient ingredient: entries)
             if (ingredient.is(stack))
                 return true;
         return false;
@@ -190,7 +190,7 @@ public class SortingList implements List<CreativeIngredient> {
     
     @Override
     public boolean containsAll(Collection<?> arg0) {
-        return new HashSet<>(entries).containsAll(arg0);
+        return entries.containsAll(arg0);
     }
     
     @Override
