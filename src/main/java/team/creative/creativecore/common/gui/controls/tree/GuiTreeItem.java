@@ -25,7 +25,7 @@ public class GuiTreeItem extends GuiParent {
     private boolean open = true;
     private boolean selected = false;
     private GuiCheckBox checkbox;
-    private GuiLabel label;
+    private final GuiLabel label;
     private GuiButton button;
     private ItemClickState state = null;
     protected boolean moving = false;

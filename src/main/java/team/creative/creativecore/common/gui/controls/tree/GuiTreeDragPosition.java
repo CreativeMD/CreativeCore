@@ -23,7 +23,7 @@ public record GuiTreeDragPosition(
         return position.name() + "," + child;
     }
 
-    public static enum ItemPosition {
+    public enum ItemPosition {
 
         ABOVE {
             @Override
