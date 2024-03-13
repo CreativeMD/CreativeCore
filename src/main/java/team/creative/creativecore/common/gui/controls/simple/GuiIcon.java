@@ -10,25 +10,25 @@ import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiTexIcon;
+import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiIcon extends GuiControl {
-    protected GuiTexIcon guiTexIcon;
+    protected Icon icon;
     protected Color color;
 
-    public GuiIcon(String name, int width, int height, GuiTexIcon guiTexIcon) {
+    public GuiIcon(String name, int width, int height, Icon icon) {
         super(name);
         this.setDim(width, height);
         this.color = Color.WHITE;
-        this.guiTexIcon = guiTexIcon;
+        this.icon = icon;
     }
 
-    public GuiIcon setIcon(GuiTexIcon guiTexIcon) {
-        this.guiTexIcon = guiTexIcon;
+    public GuiIcon setIcon(Icon icon) {
+        this.icon = icon;
         return this;
     }
 
@@ -81,9 +81,9 @@ public class GuiIcon extends GuiControl {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.guiTexIcon.location());
+        RenderSystem.setShaderTexture(0, this.icon.location());
         this.color.glColor();
-        GuiRenderHelper.textureRect(pose, 0, 0, (int)rect.getWidth(), (int)rect.getHeight(), (float)this.guiTexIcon.minX(), (float)this.guiTexIcon.minY(), (float)(this.guiTexIcon.minX() + this.guiTexIcon.width()), (float)(this.guiTexIcon.minY() + this.guiTexIcon.height()));
+        GuiRenderHelper.textureRect(pose, 0, 0, (int)rect.getWidth(), (int)rect.getHeight(), (float)this.icon.minX(), (float)this.icon.minY(), (float)(this.icon.minX() + this.icon.width()), (float)(this.icon.minY() + this.icon.height()));
         RenderSystem.disableBlend();
         pose.popPose();
     }

@@ -13,7 +13,7 @@ import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiTexIcon;
+import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
 
@@ -22,26 +22,26 @@ import java.util.function.Consumer;
 public class GuiButtonIcon extends GuiControl {
     
     protected Consumer<Integer> pressed;
-    protected GuiTexIcon guiTexIcon;
+    protected Icon icon;
     protected Color color = Color.WHITE;
     protected Color shadow = Color.BLACK;
     
-    public GuiButtonIcon(String name, GuiTexIcon guiTexIcon, Consumer<Integer> pressed) {
+    public GuiButtonIcon(String name, Icon icon, Consumer<Integer> pressed) {
         super(name);
         setDim(12, 12);
-        this.guiTexIcon = guiTexIcon;
+        this.icon = icon;
         this.pressed = pressed;
     }
     
-    public GuiButtonIcon(String name, int width, int height, GuiTexIcon guiTexIcon, Consumer<Integer> pressed) {
+    public GuiButtonIcon(String name, int width, int height, Icon icon, Consumer<Integer> pressed) {
         super(name);
         setDim(width, height);
-        this.guiTexIcon = guiTexIcon;
+        this.icon = icon;
         this.pressed = pressed;
     }
     
-    public void setIcon(GuiTexIcon guiTexIcon) {
-        this.guiTexIcon = guiTexIcon;
+    public void setIcon(Icon icon) {
+        this.icon = icon;
     }
     
     @Override
@@ -88,15 +88,15 @@ public class GuiButtonIcon extends GuiControl {
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, guiTexIcon.location());
+        RenderSystem.setShaderTexture(0, icon.location());
         
         shadow.glColor();
         GuiRenderHelper
-                .textureRect(pose, 1, 1, control.getContentWidth(), control.getContentHeight(), guiTexIcon.minX(), guiTexIcon.minY(), guiTexIcon.minX() + guiTexIcon.width(), guiTexIcon.minY() + guiTexIcon.height());
+                .textureRect(pose, 1, 1, control.getContentWidth(), control.getContentHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
         
         color.glColor();
         GuiRenderHelper
-                .textureRect(pose, 0, 0, control.getContentWidth(), control.getContentHeight(), guiTexIcon.minX(), guiTexIcon.minY(), guiTexIcon.minX() + guiTexIcon.width(), guiTexIcon.minY() + guiTexIcon.height());
+                .textureRect(pose, 0, 0, control.getContentWidth(), control.getContentHeight(), icon.minX(), icon.minY(), icon.minX() + icon.width(), icon.minY() + icon.height());
         
         RenderSystem.setShaderColor(1, 1, 1, 1);
     }
