@@ -10,6 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.ValueFormatter;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -17,15 +18,21 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 import java.util.List;
 
 public class GuiProgressbar extends GuiControl {
-    
+
     public double pos;
     public double max;
     public boolean showToolTip = true;
-    
+    public final ValueFormatter formatter;
+
     public GuiProgressbar(String name, double pos, double max) {
+        this(name, pos, max, ValueFormatter.PERCENT);
+    }
+
+    public GuiProgressbar(String name, double pos, double max, ValueFormatter valueFormatter) {
         super(name);
         this.pos = pos;
         this.max = max;
+        this.formatter = valueFormatter;
     }
     
     @Override
@@ -43,6 +50,10 @@ public class GuiProgressbar extends GuiControl {
             return new TextBuilder().number(pos, true).text("/").number(max, true).text(" (").number(pos / max * 100, true).text("%)").build();
         return super.getTooltip();
     }
+
+    public double getPercentage() {
+        return this.pos / this.max;
+    }
     
     @Override
     public ControlFormatting getControlFormatting() {
@@ -53,10 +64,9 @@ public class GuiProgressbar extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        double percent = pos / max;
         PoseStack pose = graphics.pose();
-        renderProgress(pose, control, rect, percent);
-        GuiRenderHelper.drawStringCentered(pose, ((int) Math.round(percent * 100)) + "%", (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
+        this.renderProgress(pose, control, rect, this.getPercentage());
+        GuiRenderHelper.drawStringCentered(pose, formatter.get(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)
