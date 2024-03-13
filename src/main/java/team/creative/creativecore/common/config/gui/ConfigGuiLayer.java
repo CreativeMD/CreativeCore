@@ -53,12 +53,12 @@ public class ConfigGuiLayer extends GuiLayer {
         GuiTable table = get("box.table");
         JsonObject parent = null;
         for (GuiChildControl child : table)
-            if (child.control instanceof GuiConfigControl) {
+            if (child.control instanceof GuiConfigControl control) {
                 JsonElement element = ((GuiConfigControl) child.control).save();
                 if (element != null) {
                     if (parent == null)
                         parent = JsonUtils.get(ROOT, holder.path());
-                    parent.add(((GuiConfigControl) child.control).field.name, element);
+                    parent.add(control.field.name, element);
                 }
             }
     }
@@ -82,7 +82,7 @@ public class ConfigGuiLayer extends GuiLayer {
         box.add(table);
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
-        for (ConfigKey key : holder.fields()) {
+        for (ConfigKey key: holder.fields()) {
             if (key.requiresRestart)
                 continue;
             Object value = key.get();
@@ -92,8 +92,8 @@ public class ConfigGuiLayer extends GuiLayer {
                 path += ".";
             String caption = translateOrDefault(path + key.name + ".name", key.name);
             String comment = path + key.name + ".comment";
-            if (value instanceof ICreativeConfigHolder) {
-                if (!((ICreativeConfigHolder) value).isEmpty(side)) {
+            if (value instanceof ICreativeConfigHolder configHolder) {
+                if (!configHolder.isEmpty(side)) {
                     GuiRow row = new GuiRow();
                     table.addRow(row);
                     GuiColumn col = new GuiColumn();
