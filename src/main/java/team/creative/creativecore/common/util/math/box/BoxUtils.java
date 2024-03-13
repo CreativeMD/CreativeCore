@@ -84,7 +84,7 @@ public class BoxUtils {
         
         box.include(vec);
         
-        if (quarterRotation <= 360 && !state.is(vec)) {
+        if (quarterRotation <= 360 && state != null && !state.is(vec)) {
             Facing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
             
             if (length == null)
