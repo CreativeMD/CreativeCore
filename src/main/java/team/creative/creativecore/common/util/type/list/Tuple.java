@@ -36,12 +36,12 @@ public class Tuple<K, V> implements Entry<K, V> {
     public boolean is(K key) {
         if (this.key != null)
             return this.key.equals(key);
-        return key == null; // FIXME: uhh
+        return key == null;
     }
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Tuple tuple)
+        if (obj instanceof Tuple<?, ?> tuple)
             return key.equals(tuple.key);
         return false;
     }
