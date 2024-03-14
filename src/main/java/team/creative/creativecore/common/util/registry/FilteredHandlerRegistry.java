@@ -11,9 +11,9 @@ import team.creative.creativecore.common.util.type.list.Pair;
 
 public class FilteredHandlerRegistry<U, T> {
     
-    private HashMap<U, T> map = new HashMap<>();
-    private List<Pair<Filter<U>, T>> handlers = new ArrayList<>();
-    private T defaultHandler;
+    private final HashMap<U, T> map = new HashMap<>();
+    private final List<Pair<Filter<U>, T>> handlers = new ArrayList<>();
+    private final T defaultHandler;
     private boolean allowOverwrite = false;
     
     public FilteredHandlerRegistry(T handler) {

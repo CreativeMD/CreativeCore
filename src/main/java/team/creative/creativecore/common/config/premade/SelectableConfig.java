@@ -9,7 +9,7 @@ public class SelectableConfig<T> implements IConfigObject {
     
     private T[] array;
     private int selected;
-    private int defaultSelected;
+    private final int defaultSelected;
     
     public SelectableConfig(int selected, T... array) {
         this.selected = selected;

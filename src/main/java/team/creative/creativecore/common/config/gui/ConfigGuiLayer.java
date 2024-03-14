@@ -52,15 +52,15 @@ public class ConfigGuiLayer extends GuiLayer {
     }
     
     public void savePage() {
-        GuiTable table = (GuiTable) get("box.table");
+        GuiTable table = get("box.table");
         JsonObject parent = null;
         for (GuiChildControl child : table)
-            if (child.control instanceof GuiConfigControl) {
+            if (child.control instanceof GuiConfigControl control) {
                 JsonElement element = ((GuiConfigControl) child.control).save();
                 if (element != null) {
                     if (parent == null)
                         parent = JsonUtils.get(ROOT, holder.path());
-                    parent.add(((GuiConfigControl) child.control).field.name, element);
+                    parent.add(control.field.name, element);
                 }
             }
     }
@@ -73,9 +73,7 @@ public class ConfigGuiLayer extends GuiLayer {
         GuiLeftRightBox upperBox = new GuiLeftRightBox();
         upperBox.addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))));
         
-        upperBox.addRight(new GuiButton("back", x -> {
-            loadHolder(holder.parent());
-        }).setTranslate("gui.back").setEnabled(holder != rootHolder));
+        upperBox.addRight(new GuiButton("back", x -> loadHolder(holder.parent())).setTranslate("gui.back").setEnabled(holder != rootHolder));
         this.holder = holder;
         
         add(upperBox);
@@ -86,7 +84,7 @@ public class ConfigGuiLayer extends GuiLayer {
         box.add(table);
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
-        for (ConfigKey key : holder.fields()) {
+        for (ConfigKey key: holder.fields()) {
             if (key.requiresRestart)
                 continue;
             Object value = key.get();
@@ -96,15 +94,13 @@ public class ConfigGuiLayer extends GuiLayer {
                 path += ".";
             String caption = translateOrDefault(path + key.name + ".name", key.name);
             String comment = path + key.name + ".comment";
-            if (value instanceof ICreativeConfigHolder) {
-                if (!((ICreativeConfigHolder) value).isEmpty(side)) {
+            if (value instanceof ICreativeConfigHolder configHolder) {
+                if (!configHolder.isEmpty(side)) {
                     GuiRow row = new GuiRow();
                     table.addRow(row);
                     GuiColumn col = new GuiColumn();
                     row.addColumn(col);
-                    col.add(new GuiButton(caption, x -> {
-                        loadHolder((ICreativeConfigHolder) value);
-                    }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                    col.add(new GuiButton(caption, x -> loadHolder((ICreativeConfigHolder) value)).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
                 }
             } else {
                 if (!key.is(side))

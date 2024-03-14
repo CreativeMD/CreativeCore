@@ -18,56 +18,38 @@ public interface BiFilter<T, U> {
     public static <T, U> BiFilter<T, U> not(BiFilter<T, U> filter) {
         return new BiFilterNot<>(filter);
     }
-    
-    public static class BiFilterNot<T, U> implements BiFilter<T, U> {
-        
-        public final BiFilter<T, U> filter;
-        
-        public BiFilterNot(BiFilter<T, U> filter) {
-            this.filter = filter;
-        }
-        
+
+    public record BiFilterNot<T, U>(BiFilter<T, U> filter) implements BiFilter<T, U> {
+
         @Override
-        public boolean is(T t, U u) {
-            return !filter.is(t, u);
-        }
-        
+            public boolean is(T t, U u) {
+                return !filter.is(t, u);
+            }
+
     }
-    
-    public static class BiFilterAnd<T, U> implements BiFilter<T, U> {
-        
-        public final BiFilter<T, U>[] filters;
-        
-        public BiFilterAnd(BiFilter<T, U>... filters) {
-            this.filters = filters;
-        }
-        
+
+    public record BiFilterAnd<T, U>(BiFilter<T, U>... filters) implements BiFilter<T, U> {
+
         @Override
-        public boolean is(T t, U u) {
-            for (int i = 0; i < filters.length; i++)
-                if (!filters[i].is(t, u))
-                    return false;
-            return true;
-        }
-        
+            public boolean is(T t, U u) {
+                for (int i = 0; i < filters.length; i++)
+                    if (!filters[i].is(t, u))
+                        return false;
+                return true;
+            }
+
     }
-    
-    public static class BiFilterOr<T, U> implements BiFilter<T, U> {
-        
-        public final BiFilter<T, U>[] filters;
-        
-        public BiFilterOr(BiFilter<T, U>... filters) {
-            this.filters = filters;
-        }
-        
+
+    public record BiFilterOr<T, U>(BiFilter<T, U>... filters) implements BiFilter<T, U> {
+
         @Override
-        public boolean is(T t, U u) {
-            for (int i = 0; i < filters.length; i++)
-                if (filters[i].is(t, u))
-                    return true;
-            return false;
-        }
-        
+            public boolean is(T t, U u) {
+                for (int i = 0; i < filters.length; i++)
+                    if (filters[i].is(t, u))
+                        return true;
+                return false;
+            }
+
     }
     
 }

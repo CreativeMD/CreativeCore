@@ -81,8 +81,7 @@ public class QuadBitSet implements Iterable<Vector2i> {
                 long[][] newChunks = new long[additional + chunks.length][];
                 for (int i = 0; i < additional; i++)
                     newChunks[i] = new long[1];
-                for (int i = 0; i < chunks.length; i++)
-                    newChunks[additional + i] = chunks[i];
+                System.arraycopy(chunks, 0, newChunks, additional, chunks.length);
                 chunks = newChunks;
                 minChunkX = chunkX;
             } else if (chunkX - minChunkX >= chunks.length) {
@@ -98,8 +97,7 @@ public class QuadBitSet implements Iterable<Vector2i> {
                 for (int xIndex = 0; xIndex < chunks.length; xIndex++) {
                     long[] yChunks = chunks[xIndex];
                     long[] newChunks = new long[additional + yChunks.length];
-                    for (int i = 0; i < yChunks.length; i++)
-                        newChunks[additional + i] = yChunks[i];
+                    System.arraycopy(yChunks, 0, newChunks, additional, yChunks.length);
                     chunks[xIndex] = newChunks;
                 }
                 minChunkY = chunkY;
@@ -178,8 +176,7 @@ public class QuadBitSet implements Iterable<Vector2i> {
         count = 0;
         if (chunks != null)
             for (int i = 0; i < chunks.length; i++)
-                for (int j = 0; j < chunks[i].length; j++)
-                    chunks[i][j] = 0;
+                Arrays.fill(chunks[i], 0);
         minChunkX = 0;
         minChunkY = 0;
     }
@@ -214,14 +211,14 @@ public class QuadBitSet implements Iterable<Vector2i> {
     
     @Override
     public Iterator<Vector2i> iterator() {
-        return new ComputeNextIterator<Vector2i>() {
-            
-            private Vector2i vec = new Vector2i();
+        return new ComputeNextIterator<>() {
+
+            private final Vector2i vec = new Vector2i();
             private int found = 0;
             private int i = 0;
             private int j = 0;
             private int k = 0;
-            
+
             @Override
             protected Vector2i computeNext() {
                 if (found >= count)
@@ -271,7 +268,7 @@ public class QuadBitSet implements Iterable<Vector2i> {
                         if (data != 0) {
                             int x = (minChunkX + i) * CHUNK_SIZE + k / CHUNK_SIZE;
                             int y = (minChunkY + j) * CHUNK_SIZE + k % CHUNK_SIZE;
-                            result.append("(" + x + ", " + y + ")");
+                            result.append("(").append(x).append(", ").append(y).append(")");
                         }
                         
                     }

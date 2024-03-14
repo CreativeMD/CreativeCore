@@ -12,7 +12,7 @@ import team.creative.creativecore.common.util.type.itr.FilterIterator;
 public class IndexedCollector<T> implements Iterable<T> {
     
     private static final Predicate PREDICATE = x -> x.getClass() != Integer.class;
-    private List content = new ArrayList();
+    private final List content = new ArrayList();
     private int count;
     private int lastIndex;
     private boolean sectionStarted = false;
@@ -73,12 +73,12 @@ public class IndexedCollector<T> implements Iterable<T> {
                 if (!itr.hasNext())
                     return end();
                 
-                Object next = itr.next();
+                T next = itr.next();
                 if (next.getClass() == Integer.class) {
                     consumer.accept((Integer) next);
                     next = itr.next();
                 }
-                return (T) next;
+                return next;
             }
         };
     }

@@ -5,9 +5,9 @@ import java.util.function.Function;
 
 public class TreeIterator<T> implements IterableIterator<T> {
     
-    private Function<T, Iterator<T>> function;
+    private final Function<T, Iterator<T>> function;
     private T start;
-    private Iterator<T> itr;
+    private final Iterator<T> itr;
     private TreeIterator<T> current;
     
     public TreeIterator(T start, Function<T, Iterator<T>> function) {

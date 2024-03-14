@@ -12,34 +12,34 @@ import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiIcon;
+import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
 
 import java.util.function.Consumer;
 
-public class GuiIconButton extends GuiControl {
+public class GuiButtonIcon extends GuiControl {
     
     protected Consumer<Integer> pressed;
-    protected GuiIcon icon;
+    protected Icon icon;
     protected Color color = Color.WHITE;
     protected Color shadow = Color.BLACK;
     
-    public GuiIconButton(String name, GuiIcon icon, Consumer<Integer> pressed) {
+    public GuiButtonIcon(String name, Icon icon, Consumer<Integer> pressed) {
         super(name);
         setDim(12, 12);
         this.icon = icon;
         this.pressed = pressed;
     }
     
-    public GuiIconButton(String name, int width, int height, GuiIcon icon, Consumer<Integer> pressed) {
+    public GuiButtonIcon(String name, int width, int height, Icon icon, Consumer<Integer> pressed) {
         super(name);
         setDim(width, height);
         this.icon = icon;
         this.pressed = pressed;
     }
     
-    public void setIcon(GuiIcon icon) {
+    public void setIcon(Icon icon) {
         this.icon = icon;
     }
     

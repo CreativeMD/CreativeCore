@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiPlayerSelectorButton;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
@@ -52,7 +53,7 @@ public abstract class PlayerSelector {
         REGISTRY.register("mode", PlayerSelectorGamemode.class);
         REGISTRY.register("selector", PlayerSelectorCommandSelector.class);
         
-        ConfigTypeConveration.registerSpecialType((x) -> PlayerSelector.class.isAssignableFrom(x), new ConfigTypeConveration.SimpleConfigTypeConveration<PlayerSelector>() {
+        ConfigTypeConveration.registerSpecialType(PlayerSelector.class::isAssignableFrom, new ConfigTypeConveration.SimpleConfigTypeConveration<PlayerSelector>() {
             
             @Override
             public PlayerSelector readElement(PlayerSelector defaultValue, boolean loadDefault, JsonElement element) {
@@ -60,7 +61,7 @@ public abstract class PlayerSelector {
                     try {
                         return PlayerSelector.read(TagParser.parseTag(element.getAsString()));
                     } catch (CommandSyntaxException e) {
-                        e.printStackTrace();
+                        CreativeCore.LOGGER.error(e);
                     }
                 return defaultValue;
             }
@@ -81,7 +82,7 @@ public abstract class PlayerSelector {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(PlayerSelector value, GuiParent parent) {
-                GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) parent.get("data");
+                GuiPlayerSelectorButton button = parent.get("data");
                 button.set(value);
             }
             
@@ -89,7 +90,7 @@ public abstract class PlayerSelector {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected PlayerSelector saveValue(GuiParent parent, Class clazz) {
-                GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) parent.get("data");
+                GuiPlayerSelectorButton button = parent.get("data");
                 return button.get();
             }
             
@@ -153,11 +154,11 @@ public abstract class PlayerSelector {
         
         @Override
         public String info() {
-            String text = "[";
+            StringBuilder text = new StringBuilder("[");
             for (int i = 0; i < selectors.length; i++) {
                 if (i > 0)
-                    text += "&";
-                text += selectors[i].info();
+                    text.append("&");
+                text.append(selectors[i].info());
             }
             return text + "]";
         }
@@ -202,11 +203,11 @@ public abstract class PlayerSelector {
         
         @Override
         public String info() {
-            String text = "[";
+            StringBuilder text = new StringBuilder("[");
             for (int i = 0; i < selectors.length; i++) {
                 if (i > 0)
-                    text += "|";
-                text += selectors[i].info();
+                    text.append("|");
+                text.append(selectors[i].info());
             }
             return text + "]";
         }

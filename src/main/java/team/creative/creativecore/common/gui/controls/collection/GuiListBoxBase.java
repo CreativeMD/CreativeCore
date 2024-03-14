@@ -107,7 +107,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     public void clearItems() {
-        while (content.size() > 0)
+        while (!content.isEmpty())
             removeControl(content.size() - 1);
     }
     

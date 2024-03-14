@@ -70,15 +70,11 @@ public enum Rotation {
     }
     
     public static Rotation getRotation(Axis axis, boolean clockwise) {
-        switch (axis) {
-            case X:
-                return clockwise ? X_CLOCKWISE : X_COUNTER_CLOCKWISE;
-            case Y:
-                return clockwise ? Y_CLOCKWISE : Y_COUNTER_CLOCKWISE;
-            case Z:
-                return clockwise ? Z_CLOCKWISE : Z_COUNTER_CLOCKWISE;
-        }
-        return null;
+        return switch (axis) {
+            case X -> clockwise ? X_CLOCKWISE : X_COUNTER_CLOCKWISE;
+            case Y -> clockwise ? Y_CLOCKWISE : Y_COUNTER_CLOCKWISE;
+            case Z -> clockwise ? Z_CLOCKWISE : Z_COUNTER_CLOCKWISE;
+        };
     }
     
     public static Rotation getRotation(Vec3d vec) {
@@ -98,16 +94,12 @@ public enum Rotation {
     }
     
     public static Rotation getRotation(net.minecraft.world.level.block.Rotation rotationIn) {
-        switch (rotationIn) {
-            case CLOCKWISE_90:
-                return Rotation.Y_CLOCKWISE;
-            case CLOCKWISE_180:
-                return Rotation.Y_CLOCKWISE;
-            case COUNTERCLOCKWISE_90:
-                return Rotation.Y_COUNTER_CLOCKWISE;
-            default:
-                return null;
-        }
+        return switch (rotationIn) {
+            case CLOCKWISE_90 -> Rotation.Y_CLOCKWISE;
+            case CLOCKWISE_180 -> Rotation.Y_CLOCKWISE;
+            case COUNTERCLOCKWISE_90 -> Rotation.Y_COUNTER_CLOCKWISE;
+            default -> null;
+        };
     }
     
     public static int getRotationCount(net.minecraft.world.level.block.Rotation rotationIn) {
@@ -226,22 +218,24 @@ public enum Rotation {
     public Axis rotate(Axis axis) {
         if (axis == this.axis)
             return axis;
-        
-        switch (axis) {
-            case X:
+
+        return switch (axis) {
+            case X -> {
                 if (this.axis == Axis.Y)
-                    return Axis.Z;
-                return Axis.Y;
-            case Y:
+                    yield Axis.Z;
+                yield Axis.Y;
+            }
+            case Y -> {
                 if (this.axis == Axis.Z)
-                    return Axis.X;
-                return Axis.Y;
-            case Z:
+                    yield Axis.X;
+                yield Axis.Y;
+            }
+            case Z -> {
                 if (this.axis == Axis.X)
-                    return Axis.Y;
-                return Axis.X;
-        }
-        return axis;
+                    yield Axis.Y;
+                yield Axis.X;
+            }
+        };
     }
     
     public Rotation mirror(Axis axis) {
@@ -399,8 +393,7 @@ public enum Rotation {
         
         @Override
         public boolean equals(Object object) {
-            if (object instanceof RotationMatrix) {
-                RotationMatrix m1 = (RotationMatrix) object;
+            if (object instanceof RotationMatrix m1) {
                 return (this.m00 == m1.m00 && this.m01 == m1.m01 && this.m02 == m1.m02 && this.m10 == m1.m10 && this.m11 == m1.m11 && this.m12 == m1.m12 && this.m20 == m1.m20 && this.m21 == m1.m21 && this.m22 == m1.m22);
             }
             return false;

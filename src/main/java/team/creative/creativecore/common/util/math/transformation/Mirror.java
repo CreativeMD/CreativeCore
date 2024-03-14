@@ -16,27 +16,19 @@ public class Mirror {
     }
     
     public static Vec3i mirror(Vec3i vec, Axis axis) {
-        switch (axis) {
-        case X:
-            return new Vec3i(-vec.getX(), vec.getY(), vec.getZ());
-        case Y:
-            return new Vec3i(vec.getX(), -vec.getY(), vec.getZ());
-        case Z:
-            return new Vec3i(vec.getX(), vec.getY(), -vec.getZ());
-        }
-        return vec;
+        return switch (axis) {
+            case X -> new Vec3i(-vec.getX(), vec.getY(), vec.getZ());
+            case Y -> new Vec3i(vec.getX(), -vec.getY(), vec.getZ());
+            case Z -> new Vec3i(vec.getX(), vec.getY(), -vec.getZ());
+        };
     }
     
     public static BlockPos mirror(BlockPos vec, Axis axis) {
-        switch (axis) {
-        case X:
-            return new BlockPos(-vec.getX(), vec.getY(), vec.getZ());
-        case Y:
-            return new BlockPos(vec.getX(), -vec.getY(), vec.getZ());
-        case Z:
-            return new BlockPos(vec.getX(), vec.getY(), -vec.getZ());
-        }
-        return vec;
+        return switch (axis) {
+            case X -> new BlockPos(-vec.getX(), vec.getY(), vec.getZ());
+            case Y -> new BlockPos(vec.getX(), -vec.getY(), vec.getZ());
+            case Z -> new BlockPos(vec.getX(), vec.getY(), -vec.getZ());
+        };
     }
     
     public static void mirror(Vec3d vec, Axis axis) {

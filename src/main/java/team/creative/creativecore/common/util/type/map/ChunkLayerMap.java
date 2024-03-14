@@ -64,16 +64,15 @@ public class ChunkLayerMap<T> implements Iterable<T> {
     }
     
     public void clear() {
-        for (int i = 0; i < content.length; i++)
-            content[i] = null;
+        Arrays.fill(content, null);
     }
     
     public Iterable<Tuple<RenderType, T>> tuples() {
-        return new ComputeNextIterator<Tuple<RenderType, T>>() {
-            
+        return new ComputeNextIterator<>() {
+
             private int index;
-            private Tuple<RenderType, T> pair = new Tuple<>(null, null);
-            
+            private final Tuple<RenderType, T> pair = new Tuple<>(null, null);
+
             @Override
             protected Tuple<RenderType, T> computeNext() {
                 while (index < content.length && content[index] == null)
@@ -114,21 +113,21 @@ public class ChunkLayerMap<T> implements Iterable<T> {
     public int size() {
         int size = 0;
         for (int i = 0; i < content.length; i++)
-            if (content != null)
+            if (content[i] != null)
                 size++;
         return size;
     }
     
     public boolean isEmpty() {
         for (int i = 0; i < content.length; i++)
-            if (content != null)
+            if (content[i] != null)
                 return false;
         return true;
     }
     
     @Override
     public String toString() {
-        return "[" + String.join(",", () -> new FunctionIterator<>(this, x -> x.toString())) + "]";
+        return "[" + String.join(",", () -> new FunctionIterator<>(this, Object::toString)) + "]";
     }
     
 }

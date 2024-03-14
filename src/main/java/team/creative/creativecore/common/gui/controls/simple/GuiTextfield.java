@@ -32,20 +32,18 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class GuiTextfield extends GuiFocusControl {
-    
+
     private String text = "";
+    private String suggestion = "";
     private int maxStringLength = 128;
     private int frame;
     private boolean shift;
     private int lineScrollOffset;
     private int cursorPosition;
     private int selectionEnd;
-    private String suggestion;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
-    private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
-        return FormattedCharSequence.forward(text, Style.EMPTY);
-    };
+    private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private int cachedWidth;
     
     public GuiTextfield(String name) {
@@ -181,8 +179,8 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty() && flag && j < s.length())
             font.drawShadow(pose, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
-        
-        if (!flag2 && this.suggestion != null)
+
+        if (text.isEmpty() && !this.suggestion.isEmpty())
             font.drawShadow(pose, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)

@@ -45,7 +45,7 @@ public class GuiStyle {
                 input.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            CreativeCore.LOGGER.error(e);
             CreativeCore.LOGGER.error("Could not load default style");
             REGISTRY.registerDefault("default", new GuiStyle());
         }
@@ -72,7 +72,7 @@ public class GuiStyle {
             REGISTRY.register(name, REGISTRY.getDefault());
             return REGISTRY.getDefault();
         } catch (Exception e) {
-            e.printStackTrace();
+            CreativeCore.LOGGER.error(e);
             CreativeCore.LOGGER.error("Found invalid style " + name);
             return REGISTRY.getDefault();
         }

@@ -12,8 +12,8 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public class CollisionCoordinator {
     
-    private HashMap<Double, Matrix4> table = new HashMap<>();
-    private HashMap<Double, Matrix4> invertedTable = new HashMap<>();
+    private final HashMap<Double, Matrix4> table = new HashMap<>();
+    private final HashMap<Double, Matrix4> invertedTable = new HashMap<>();
     
     private final double rotXRadians;
     private final double rotYRadians;

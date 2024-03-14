@@ -5,12 +5,14 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSink;
 import team.creative.creativecore.mixin.StringSplitterAccessor;
 
+import java.util.Arrays;
+
 public class WidthLimitedCharSink implements FormattedCharSink {
     
     private final StringSplitter.WidthProvider widthProvider;
     private float maxWidth;
     private int position;
-    private int[] lastPositions = new int[Linebreaker.values().length];
+    private final int[] lastPositions = new int[Linebreaker.values().length];
     
     public WidthLimitedCharSink(float maxWidth, StringSplitter splitter) {
         this.maxWidth = maxWidth;
@@ -30,7 +32,7 @@ public class WidthLimitedCharSink implements FormattedCharSink {
         } else
             return false;
     }
-    
+
     public int getPosition() {
         return this.position;
     }
@@ -51,8 +53,7 @@ public class WidthLimitedCharSink implements FormattedCharSink {
     
     public void resetPosition() {
         this.position = 0;
-        for (int i = 0; i < lastPositions.length; i++)
-            lastPositions[i] = -1;
+        Arrays.fill(lastPositions, -1);
     }
     
 }

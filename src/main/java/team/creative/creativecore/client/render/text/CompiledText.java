@@ -66,7 +66,7 @@ public class CompiledText {
     public int getMaxHeight() {
         return maxHeight;
     }
-    
+
     public void setText(Component component) {
         setText(new SingletonList<Component>(component));
     }
@@ -97,7 +97,7 @@ public class CompiledText {
         }
         return false;
     }
-    
+
     private void compile() {
         if (CreativeCore.loader().getOverallSide().isServer())
             return;
@@ -132,7 +132,7 @@ public class CompiledText {
         this.alignment = alignment;
         return this;
     }
-    
+
     private CompiledLine compileNext(CompiledLine currentLine, FormattedText component) {
         List<Component> siblings = null;
         if (component instanceof Component && !((Component) component).getSiblings().isEmpty()) {
@@ -168,8 +168,16 @@ public class CompiledText {
         
         usedWidth = 0;
         usedHeight = -lineSpacing;
-        
+
         stack.pushPose();
+        float y = Math.max(0, switch (valign) {
+            case CENTER -> maxHeight / 2 - totalHeight / 2;
+            case BOTTOM -> maxHeight - totalHeight;
+            default -> 0;
+        });
+        stack.translate(0, y, 0);
+        usedHeight += (int) y;
+
         for (CompiledLine line : lines) {
             switch (alignment) {
                 case LEFT:
@@ -208,12 +216,12 @@ public class CompiledText {
     
     public class CompiledLine {
         
-        private List<FormattedText> components = new ArrayList<>();
+        private final List<FormattedText> components = new ArrayList<>();
         private int height = 0;
         private int width = 0;
         
         public CompiledLine() {}
-        
+
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void render(PoseStack stack) {
@@ -261,7 +269,7 @@ public class CompiledText {
                 AdvancedComponent advanced = (AdvancedComponent) component;
                 if (advanced.isEmpty())
                     return null;
-                
+
                 int textWidth = advanced.getWidth(font);
                 if (remainingWidth > textWidth) {
                     components.add(advanced);
@@ -283,7 +291,7 @@ public class CompiledText {
                 } else
                     return advanced;
             }
-            
+
             int textWidth = font.width(component);
             if (remainingWidth >= textWidth) {
                 components.add(component);
@@ -341,25 +349,13 @@ public class CompiledText {
                     head.append(FormattedText.of(text, style));
                 return Optional.empty();
             }
-        }, style).orElse(null);
+        }, style);
         
         return new FormattedTextSplit(head, tail);
     }
-    
-    static class FormattedTextSplit {
-        
-        public final FormattedText head;
-        public final FormattedText tail;
-        
-        public FormattedTextSplit(FormattedText head, FormattedText tail) {
-            this.head = head;
-            this.tail = tail;
-        }
-        
-        public FormattedTextSplit(ComponentCollector head, ComponentCollector tail) {
-            this.head = head.getResult();
-            this.tail = tail.getResult();
-        }
+
+    public record FormattedTextSplit(FormattedText head, FormattedText tail) {
+
     }
     
     @Environment(EnvType.CLIENT)
@@ -392,12 +388,12 @@ public class CompiledText {
                 width += advanced.getWidth(font);
         } else
             width += font.width(component);
-        
+
         if (component instanceof Component && !((Component) component).getSiblings().isEmpty())
             width += calculateWidth(0, false, ((Component) component).getSiblings());
         return width;
     }
-    
+
     public CompiledText copy() {
         CompiledText copy = new CompiledText(maxWidth, maxHeight);
         copy.alignment = alignment;
@@ -414,5 +410,5 @@ public class CompiledText {
     public static CompiledText createAnySize() {
         return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
-    
+
 }

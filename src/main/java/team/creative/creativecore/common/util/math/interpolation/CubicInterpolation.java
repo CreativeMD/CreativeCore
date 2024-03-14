@@ -85,7 +85,7 @@ public class CubicInterpolation<T extends VecNd> extends Interpolation<T> {
         double endTime = points.getLast().key;
         double pointDuration = (endTime - startTime) / (points.size() - 1);
         int steps = 3;
-        double stepDuration = 1 / (steps + 1);
+        double stepDuration = 1f / (steps + 1f);
         
         for (int i = 1; i < points.size(); i++) {
             double distance = 0;
