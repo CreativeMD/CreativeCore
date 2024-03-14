@@ -14,27 +14,21 @@ public class ValueParsers {
     public static final DoubleValueParser PERCENT = (v, max) -> (int) (safeDivide(v, max) * 100.0F) + "%";
     public static final DoubleValueParser ANGLE = (v, max) -> round(v) + "°";
     public static final IntValueParser PIXELS = (v, max) -> v + "px";
-    public static final LongValueParser TIME = (v, max) -> TimeMath.timestamp((v > max) ? safeDivide(v, max) : v);
+    public static final LongValueParser TIME = (v, max) -> TimeMath.timestamp((v > max) ? safePercent(v, max) : v);
     public static final LongValueParser TIME_DURATION = (v, max) -> TIME.parse(v, max) + "/" + TimeMath.timestamp(max);
 
     // ASSUMES VALUE IS A TICK COUNT AND PARSE TICKS TO TIME
-    public static final LongValueParser TIME_TICK = (v, max) -> TimeMath.timestamp(Maths.tickToMs((int) (v > max ? v % max : v)));
+    public static final LongValueParser TIME_TICK = (v, max) -> TimeMath.timestamp(Maths.tickToMs((int) (v > max ? safePercent(v, max) : v)));
     public static final LongValueParser TIME_DURATION_TICK = (v, max) -> TIME_TICK.parse(v, max) + "/" + TimeMath.timestamp(Maths.tickToMs((int) max));
 
     private static double safeDivide(double v1, double v2) {
-        try {
-            return v1 / v2;
-        } catch (ArithmeticException e) {
-            return 0;
-        }
+        if (v1 == 0 && v2 == 0) return 0;
+        return v1 / v2;
     }
 
-    private static long safeDivide(long v1, long v2) {
-        try {
-            return v1 % v2;
-        } catch (ArithmeticException e) {
-            return 0;
-        }
+    private static long safePercent(long v1, long v2) {
+        if (v1 == 0 && v2 == 0) return 0;
+        return v1 % v2;
     }
 
     private static double round(double value) {
