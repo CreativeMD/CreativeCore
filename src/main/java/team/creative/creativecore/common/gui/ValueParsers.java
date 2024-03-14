@@ -22,12 +22,12 @@ public class ValueParsers {
     public static final LongValueParser TIME_DURATION_TICK = (v, max) -> TIME_TICK.parse(v, max) + "/" + TimeMath.timestamp(Maths.tickToMs((int) max));
 
     private static double safeDivide(double v1, double v2) {
-        if (v1 == 0 && v2 == 0) return 0;
+        if (v1 == 0 || v2 == 0) return 0;
         return v1 / v2;
     }
 
     private static long safePercent(long v1, long v2) {
-        if (v1 == 0 && v2 == 0) return 0;
+        if (v1 == 0 || v2 == 0) return 0;
         return v1 % v2;
     }
 
