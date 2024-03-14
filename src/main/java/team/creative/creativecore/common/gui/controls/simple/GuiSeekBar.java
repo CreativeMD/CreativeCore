@@ -23,42 +23,53 @@ import java.util.function.LongSupplier;
 public class GuiSeekBar extends GuiControl {
     private final LongSupplier posSupplier;
     private final LongSupplier maxSupplier;
-    public final LongConsumer posUpdateConsumer;
+    public LongConsumer posConsumer;
+    public LongConsumer lastPosConsumer;
+
+    private long pos;
+    private long max;
 
     public final ValueParser parser;
     public boolean grabbedSlider;
 
-    public GuiSeekBar(String name, LongConsumer posUpdateConsumer, LongSupplier posSupplier, LongSupplier maxSupplier, ValueParser parser) {
+    public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier) {
+        this(name, posSupplier, maxSupplier, ValueParser.TIME);
+    }
+
+    public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier, ValueParser parser) {
         super(name);
         this.posSupplier = posSupplier;
         this.maxSupplier = maxSupplier;
-        this.posUpdateConsumer = posUpdateConsumer;
         this.parser = parser;
+        this.tick();
     }
 
-    public void setValue(long value) {
-        this.posUpdateConsumer.accept(value);
+    public GuiSeekBar setPosConsumer(LongConsumer consumer) {
+        this.posConsumer = consumer;
+        return this;
+    }
 
+    public GuiSeekBar setLastPosConsumer(LongConsumer consumer) {
+        this.lastPosConsumer = consumer;
+        return this;
+    }
+
+    public void setPosition(long value) {
+        this.posConsumer.accept(value);
+        this.pos = value;
         if (getParent() != null)
             raiseEvent(new GuiControlChangedEvent(this));
     }
 
     @Override
-    public GuiControl setTooltip(List<Component> tooltip) {
-        return super.setTooltip(tooltip);
-    }
-
-    public double getPercent() {
-        return posSupplier.getAsLong() / (double) maxSupplier.getAsLong();
+    public GuiSeekBar setTooltip(List<Component> tooltip) {
+        return (GuiSeekBar) super.setTooltip(tooltip);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        final long max = maxSupplier.getAsLong();
-        final long pos = posSupplier.getAsLong();
-
         final double percent = pos / (double) max;
         PoseStack pose = graphics.pose();
         renderProgress(pose, control, rect, percent);
@@ -75,10 +86,13 @@ public class GuiSeekBar extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        playSound(SoundEvents.UI_BUTTON_CLICK);
-        grabbedSlider = true;
-        this.mouseMoved(rect, x, y);
-        return true;
+        if (button == 0) {
+            playSound(SoundEvents.UI_BUTTON_CLICK);
+            grabbedSlider = true;
+            this.mouseMoved(rect, x, y);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -97,7 +111,17 @@ public class GuiSeekBar extends GuiControl {
                 int mouseOffsetX = (int) (x - getContentOffset());
                 value = (long) ((this.maxSupplier.getAsLong()) * ((float) mouseOffsetX / (float) width));
             }
-            this.setValue(value);
+            this.setPosition(value);
+        }
+    }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void mouseReleased(Rect rect, double x, double y, int button) {
+        if (this.grabbedSlider) {
+            this.lastPosConsumer.accept(pos);
+            this.grabbedSlider = false;
         }
     }
 
@@ -108,7 +132,12 @@ public class GuiSeekBar extends GuiControl {
     public void closed() {}
 
     @Override
-    public void tick() {}
+    public void tick() {
+        if (!grabbedSlider) {
+            this.pos = posSupplier.getAsLong();
+            this.max = maxSupplier.getAsLong();
+        }
+    }
 
     @Override
     public ControlFormatting getControlFormatting() {
