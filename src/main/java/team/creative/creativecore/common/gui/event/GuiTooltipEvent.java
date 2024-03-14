@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.gui.event;
 
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.GuiControl;
-
-import java.util.List;
 
 public class GuiTooltipEvent extends GuiControlEvent {
     

@@ -1,5 +1,8 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
@@ -9,9 +12,6 @@ import team.creative.creativecore.common.gui.controls.simple.GuiTabButton.GuiBor
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiTabs extends GuiParent {
     
@@ -46,12 +46,12 @@ public class GuiTabs extends GuiParent {
     public GuiParent getTab(int index) {
         return tabs.get(index);
     }
-
+    
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.TRANSPARENT;
     }
-
+    
     public void select(int select) {
         if (selected != null)
             remove(selected);
@@ -123,7 +123,7 @@ public class GuiTabs extends GuiParent {
         public void removeTab(int index) {
             controls.remove(index);
         }
-
+        
         @Override
         public ControlFormatting getControlFormatting() {
             return ControlFormatting.TRANSPARENT;

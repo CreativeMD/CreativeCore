@@ -1,8 +1,14 @@
 package team.creative.creativecore.client.render.text;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.ComponentCollector;
@@ -27,11 +33,6 @@ import team.creative.creativecore.common.util.text.content.AdvancedContent;
 import team.creative.creativecore.common.util.text.content.AdvancedContentConsumer;
 import team.creative.creativecore.common.util.text.content.AdvancedFormattedText;
 import team.creative.creativecore.common.util.type.list.SingletonList;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 public class CompiledText {
     

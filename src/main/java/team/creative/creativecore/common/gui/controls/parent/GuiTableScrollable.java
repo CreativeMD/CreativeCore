@@ -1,14 +1,18 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
-import team.creative.creativecore.common.gui.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.parent.GuiTable.GuiTableGroup;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.util.type.itr.FunctionIterator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiTableScrollable extends GuiParent {
     

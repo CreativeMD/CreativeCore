@@ -1,6 +1,10 @@
 package team.creative.creativecore.common.gui.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -10,9 +14,6 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.LayerClosePacket;
 import team.creative.creativecore.common.network.CreativePacket;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContainerIntegration extends AbstractContainerMenu implements IGuiIntegratedParent {
     

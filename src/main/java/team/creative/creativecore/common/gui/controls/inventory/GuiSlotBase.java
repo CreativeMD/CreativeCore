@@ -1,7 +1,10 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,8 +19,6 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.util.math.geo.Rect;
-
-import java.util.List;
 
 public abstract class GuiSlotBase extends GuiControl {
     

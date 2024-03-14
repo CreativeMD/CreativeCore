@@ -1,5 +1,9 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
@@ -8,10 +12,6 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
-
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
 
 public class GuiButtonContext extends GuiButton {
     

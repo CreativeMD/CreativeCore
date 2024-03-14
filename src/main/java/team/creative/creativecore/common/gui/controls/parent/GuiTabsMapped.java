@@ -1,10 +1,10 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
-import net.minecraft.network.chat.Component;
-import team.creative.creativecore.common.gui.GuiParent;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.network.chat.Component;
+import team.creative.creativecore.common.gui.GuiParent;
 
 public class GuiTabsMapped<K> extends GuiTabs {
     

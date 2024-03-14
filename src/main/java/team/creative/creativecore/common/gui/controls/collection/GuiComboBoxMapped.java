@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import team.creative.creativecore.common.util.text.TextMapBuilder;
-
 import java.util.List;
+
+import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class GuiComboBoxMapped<K> extends GuiComboBox {
     

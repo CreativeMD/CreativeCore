@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui.dialog;
 
+import java.util.function.BiConsumer;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -7,8 +9,6 @@ import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.sync.GuiSyncGlobalLayer;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
-
-import java.util.function.BiConsumer;
 
 public class GuiDialogHandler {
     

@@ -1,17 +1,17 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
@@ -136,12 +136,12 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     protected int preferredHeight(int width, int availableHeight) {
         return (int) Math.ceil(container.getContainerSize() / (double) cachedCols) * GuiSlotBase.SLOT_SIZE;
     }
-
+    
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.TRANSPARENT;
     }
-
+    
     @Override
     public GuiSlot getSlot(int index) {
         return slots.get(index);

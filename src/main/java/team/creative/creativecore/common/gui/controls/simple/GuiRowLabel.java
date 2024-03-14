@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.function.Consumer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,8 +12,6 @@ import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-
-import java.util.function.Consumer;
 
 public class GuiRowLabel extends GuiLabel {
     

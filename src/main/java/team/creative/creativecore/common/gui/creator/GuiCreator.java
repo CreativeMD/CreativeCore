@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui.creator;
 
+import java.util.function.BiFunction;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -18,8 +20,6 @@ import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
-
-import java.util.function.BiFunction;
 
 public abstract class GuiCreator {
     

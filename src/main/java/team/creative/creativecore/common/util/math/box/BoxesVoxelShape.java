@@ -1,5 +1,11 @@
 package team.creative.creativecore.common.util.math.box;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
+
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleComparators;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
@@ -15,14 +21,9 @@ import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.SliceShape;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 import team.creative.creativecore.common.util.unsafe.CreativeHackery;
 import team.creative.creativecore.mixin.VoxelShapeAccessor;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 public class BoxesVoxelShape extends SliceShape {
     

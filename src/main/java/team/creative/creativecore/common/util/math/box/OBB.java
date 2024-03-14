@@ -1,7 +1,10 @@
 package team.creative.creativecore.common.util.math.box;
 
-import net.minecraft.world.phys.AABB;
+import java.util.List;
+
 import org.joml.Vector2d;
+
+import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
@@ -9,8 +12,6 @@ import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
-
-import java.util.List;
 
 public class OBB extends ABB {
     

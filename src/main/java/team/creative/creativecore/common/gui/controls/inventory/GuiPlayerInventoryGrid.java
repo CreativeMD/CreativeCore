@@ -1,10 +1,10 @@
 package team.creative.creativecore.common.gui.controls.inventory;
 
+import java.util.function.BiFunction;
+
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-
-import java.util.function.BiFunction;
 
 public class GuiPlayerInventoryGrid extends GuiInventoryGrid {
     

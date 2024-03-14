@@ -1,21 +1,22 @@
 package team.creative.creativecore.mixin;
 
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.util.math.box.ABB;
 import team.creative.creativecore.common.util.math.box.ABBs;
 import team.creative.creativecore.common.util.math.box.BoxesVoxelShape;
 import team.creative.creativecore.common.util.type.list.MarkIterator;
 import team.creative.creativecore.common.util.type.list.MarkList;
-
-import java.util.List;
 
 @Mixin(Shapes.class)
 public class ShapesMixin {

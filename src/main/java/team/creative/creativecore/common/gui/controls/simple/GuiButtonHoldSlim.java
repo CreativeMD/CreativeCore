@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.function.Consumer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -8,8 +10,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
-
-import java.util.function.Consumer;
 
 public class GuiButtonHoldSlim extends GuiButtonHold {
     

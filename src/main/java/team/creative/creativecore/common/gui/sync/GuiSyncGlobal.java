@@ -1,10 +1,10 @@
 package team.creative.creativecore.common.gui.sync;
 
+import java.util.function.BiConsumer;
+
 import net.minecraft.nbt.Tag;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
-
-import java.util.function.BiConsumer;
 
 public class GuiSyncGlobal<C extends GuiControl, T extends Tag> extends GuiSyncControl<C, T> {
     

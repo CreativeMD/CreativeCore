@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import team.creative.creativecore.common.util.math.geo.Rect;
-
 import java.util.function.Consumer;
+
+import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiButtonHold extends GuiButton {
     

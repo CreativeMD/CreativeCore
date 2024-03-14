@@ -1,5 +1,8 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -13,6 +16,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -20,9 +24,6 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.StackUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiStackSelector extends GuiLabel {
     

@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui.integration;
 
 import com.mojang.blaze3d.Blaze3D;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;

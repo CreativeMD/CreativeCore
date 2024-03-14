@@ -1,6 +1,9 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.function.Consumer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -18,8 +21,6 @@ import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-
-import java.util.function.Consumer;
 
 public class GuiCheckBox extends GuiLabel {
     
