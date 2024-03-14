@@ -13,7 +13,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.ValueParser;
+import team.creative.creativecore.common.gui.ValueParsers;
+import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -23,13 +24,13 @@ public class GuiProgressbar extends GuiControl {
     public double pos;
     public double max;
     public boolean showToolTip = true;
-    public final ValueParser parser;
+    public final DoubleValueParser parser;
 
     public GuiProgressbar(String name, double pos, double max) {
-        this(name, pos, max, ValueParser.PERCENT);
+        this(name, pos, max, ValueParsers.PERCENT);
     }
 
-    public GuiProgressbar(String name, double pos, double max, ValueParser valueParser) {
+    public GuiProgressbar(String name, double pos, double max, DoubleValueParser valueParser) {
         super(name);
         this.pos = pos;
         this.max = max;
