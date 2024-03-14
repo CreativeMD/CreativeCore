@@ -3,7 +3,6 @@ package team.creative.creativecore.common.gui.controls.simple;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
@@ -55,12 +54,11 @@ public class GuiSeekBar extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         final long max = maxSupplier.getAsLong();
         final long pos = posSupplier.getAsLong();
 
         final double percent = pos / (double) max;
-        PoseStack pose = graphics.pose();
         renderProgress(pose, control, rect, percent);
         GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
     }

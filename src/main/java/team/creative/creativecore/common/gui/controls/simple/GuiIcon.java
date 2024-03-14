@@ -2,7 +2,6 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -10,8 +9,8 @@ import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
@@ -74,8 +73,7 @@ public class GuiIcon extends GuiControl {
     }
 
     @Override
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {;
         pose.pushPose();
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();

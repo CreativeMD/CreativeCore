@@ -68,7 +68,7 @@ public class CompiledText {
     }
 
     public void setText(Component component) {
-        setText(new SingletonList<Component>(component));
+        setText(new SingletonList<>(component));
     }
     
     public void setText(List<Component> components) {
@@ -170,9 +170,9 @@ public class CompiledText {
         usedHeight = -lineSpacing;
 
         stack.pushPose();
-        float y = Math.max(0, switch (valign) {
-            case CENTER -> maxHeight / 2 - totalHeight / 2;
-            case BOTTOM -> maxHeight - totalHeight;
+        float y = Math.max(0, switch (this.vAlign) {
+            case CENTER -> maxHeight / 2 - getTotalWidth() / 2;
+            case BOTTOM -> maxHeight - getTotalHeight();
             default -> 0;
         });
         stack.translate(0, y, 0);
@@ -265,8 +265,7 @@ public class CompiledText {
         public FormattedText add(FormattedText component) {
             Font font = Minecraft.getInstance().font;
             int remainingWidth = maxWidth - width;
-            if (component instanceof AdvancedComponent) {
-                AdvancedComponent advanced = (AdvancedComponent) component;
+            if (component instanceof AdvancedComponent advanced) {
                 if (advanced.isEmpty())
                     return null;
 
@@ -350,13 +349,17 @@ public class CompiledText {
                 return Optional.empty();
             }
         }, style);
-        
-        return new FormattedTextSplit(head, tail);
+
+        FormattedText headText = head.getResult();
+        FormattedText tailText = tail.getResult();
+
+        if (headText == null && tailText == null)
+            return null;
+
+        return new FormattedTextSplit(headText, tailText);
     }
 
-    public record FormattedTextSplit(FormattedText head, FormattedText tail) {
-
-    }
+    public record FormattedTextSplit(FormattedText head, FormattedText tail) {};
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
@@ -379,18 +382,17 @@ public class CompiledText {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    private int calculateWidth(FormattedText component) {
+    private int calculateWidth(FormattedText text) {
         Font font = Minecraft.getInstance().font;
         int width = 0;
-        if (component instanceof AdvancedComponent) {
-            AdvancedComponent advanced = (AdvancedComponent) component;
+        if (text instanceof AdvancedComponent advanced) {
             if (!advanced.isEmpty())
                 width += advanced.getWidth(font);
         } else
-            width += font.width(component);
+            width += font.width(text);
 
-        if (component instanceof Component && !((Component) component).getSiblings().isEmpty())
-            width += calculateWidth(0, false, ((Component) component).getSiblings());
+        if (text instanceof Component component && !component.getSiblings().isEmpty())
+            width += calculateWidth(0, false, component.getSiblings());
         return width;
     }
 
@@ -400,7 +402,7 @@ public class CompiledText {
         copy.lineSpacing = lineSpacing;
         copy.shadow = shadow;
         List<Component> components = new ArrayList<>();
-        for (Component component : original) {
+        for (Component component: original) {
             components.add(component.copy());
         }
         copy.setText(components);

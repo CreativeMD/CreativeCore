@@ -1,12 +1,13 @@
 package team.creative.creativecore.common.gui;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.common.util.math.TimeMath;
 
 @FunctionalInterface
 public interface ValueParser {
-    Component BLOCK_TEXT = Component.translatable("minecraft.block");
-    Component BLOCKS_TEXT = Component.translatable("minecraft.block");
+    Component BLOCK_TEXT = new TranslatableComponent("minecraft.block");
+    Component BLOCKS_TEXT = new TranslatableComponent("minecraft.block");
 
     ValueParser NONE = (v, max) -> (Math.round(v * 100.0F) / 100F) + "";
     ValueParser PERCENT = (v, max) -> (int) ((v / max) * 100.0F) + "%";
