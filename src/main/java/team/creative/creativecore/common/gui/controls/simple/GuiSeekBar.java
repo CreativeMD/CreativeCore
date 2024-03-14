@@ -10,8 +10,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.ValueParser;
+import team.creative.creativecore.common.gui.ValueParsers;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.parser.LongValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
@@ -28,14 +29,14 @@ public class GuiSeekBar extends GuiControl {
     private long pos;
     private long max;
 
-    public final ValueParser parser;
+    public final LongValueParser parser;
     public boolean grabbedSlider;
 
     public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier) {
-        this(name, posSupplier, maxSupplier, ValueParser.TIME);
+        this(name, posSupplier, maxSupplier, ValueParsers.TIME_DURATION);
     }
 
-    public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier, ValueParser parser) {
+    public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier, LongValueParser parser) {
         super(name);
         this.posSupplier = posSupplier;
         this.maxSupplier = maxSupplier;
