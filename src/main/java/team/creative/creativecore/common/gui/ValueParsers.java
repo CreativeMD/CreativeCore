@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.parser.IntValueParser;
 import team.creative.creativecore.common.gui.parser.LongValueParser;
@@ -8,7 +9,7 @@ import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.TimeMath;
 
 public class ValueParsers {
-    public static final DoubleValueParser BLOCKS = (v, max) -> Component.translatable("minecraft.blocks.counting", round(v)).getString();
+    public static final DoubleValueParser BLOCKS = (v, max) -> new TranslatableComponent("minecraft.blocks.counting", round(v)).getString();
     public static final DoubleValueParser NONE = (v, max) -> String.valueOf(round(v));
     public static final DoubleValueParser PERCENT = (v, max) -> (int) (safeDivide(v, max) * 100.0F) + "%";
     public static final DoubleValueParser ANGLE = (v, max) -> round(v) + "°";
