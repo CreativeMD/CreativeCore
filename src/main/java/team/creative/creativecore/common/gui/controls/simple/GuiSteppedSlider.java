@@ -1,12 +1,17 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
 import net.minecraft.client.gui.screens.Screen;
+import team.creative.creativecore.common.gui.ValueParser;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiSteppedSlider extends GuiSlider {
     
     public GuiSteppedSlider(String name, int value, int min, int max) {
         super(name, value, min, max);
+    }
+
+    public GuiSteppedSlider(String name, int value, int min, int max, ValueParser parser) {
+        super(name, value, min, max, parser);
     }
     
     @Override
