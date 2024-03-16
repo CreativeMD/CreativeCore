@@ -113,10 +113,10 @@ public enum Rotation {
     public final int direction;
     public final boolean clockwise;
     private final Vec3d vec;
-    private final RotationMatrix rotationMatrix;
+    private final RotationMatrix rotMatrix;
     
     private Rotation(Axis axis, RotationMatrix matrix, boolean clockwise) {
-        this.rotationMatrix = matrix;
+        this.rotMatrix = matrix;
         this.axis = axis;
         this.clockwise = clockwise;
         this.direction = clockwise ? 1 : -1;
@@ -126,80 +126,86 @@ public enum Rotation {
     
     public boolean getRotatedComponentPositive(Axis axis) {
         switch (axis) {
-            case X:
-                if (rotationMatrix.m00 != 0)
-                    return rotationMatrix.m00 > 0;
-                else if (rotationMatrix.m10 != 0)
-                    return rotationMatrix.m10 > 0;
+            case X -> {
+                if (rotMatrix.m00 != 0)
+                    return rotMatrix.m00 > 0;
+                else if (rotMatrix.m10 != 0)
+                    return rotMatrix.m10 > 0;
                 else
-                    return rotationMatrix.m20 > 0;
-            case Y:
-                if (rotationMatrix.m01 != 0)
-                    return rotationMatrix.m01 > 0;
-                else if (rotationMatrix.m11 != 0)
-                    return rotationMatrix.m11 > 0;
+                    return rotMatrix.m20 > 0;
+            }
+            case Y -> {
+                if (rotMatrix.m01 != 0)
+                    return rotMatrix.m01 > 0;
+                else if (rotMatrix.m11 != 0)
+                    return rotMatrix.m11 > 0;
                 else
-                    return rotationMatrix.m21 > 0;
-            case Z:
-                if (rotationMatrix.m02 != 0)
-                    return rotationMatrix.m02 > 0;
-                else if (rotationMatrix.m12 != 0)
-                    return rotationMatrix.m12 > 0;
+                    return rotMatrix.m21 > 0;
+            }
+            case Z -> {
+                if (rotMatrix.m02 != 0)
+                    return rotMatrix.m02 > 0;
+                else if (rotMatrix.m12 != 0)
+                    return rotMatrix.m12 > 0;
                 else
-                    return rotationMatrix.m22 > 0;
+                    return rotMatrix.m22 > 0;
+            }
         }
         return true;
     }
     
     public Axis getRotatedComponent(Axis axis) {
         switch (axis) {
-            case X:
-                if (rotationMatrix.m00 != 0)
+            case X -> {
+                if (rotMatrix.m00 != 0)
                     return Axis.X;
-                else if (rotationMatrix.m10 != 0)
+                else if (rotMatrix.m10 != 0)
                     return Axis.Y;
                 else
                     return Axis.Z;
-            case Y:
-                if (rotationMatrix.m01 != 0)
+            }
+            case Y -> {
+                if (rotMatrix.m01 != 0)
                     return Axis.X;
-                else if (rotationMatrix.m11 != 0)
+                else if (rotMatrix.m11 != 0)
                     return Axis.Y;
                 else
                     return Axis.Z;
-            case Z:
-                if (rotationMatrix.m02 != 0)
+            }
+            case Z -> {
+                if (rotMatrix.m02 != 0)
                     return Axis.X;
-                else if (rotationMatrix.m12 != 0)
+                else if (rotMatrix.m12 != 0)
                     return Axis.Y;
                 else
                     return Axis.Z;
+            }
         }
         return axis;
     }
     
     public boolean negativeX() {
-        return rotationMatrix.m00 != 0 ? rotationMatrix.m00 < 0 : (rotationMatrix.m01 != 0 ? rotationMatrix.m01 < 0 : rotationMatrix.m02 < 0);
+        return rotMatrix.m00 != 0 ? rotMatrix.m00 < 0 : (rotMatrix.m01 != 0 ? rotMatrix.m01 < 0 : rotMatrix.m02 < 0);
     }
     
     public <T> T getX(T x, T y, T z) {
-        return rotationMatrix.m00 != 0 ? x : (rotationMatrix.m01 != 0 ? y : z);
+        return rotMatrix.m00 != 0 ? x : (rotMatrix.m01 != 0 ? y : z);
     }
     
     public boolean negativeY() {
-        return rotationMatrix.m10 != 0 ? rotationMatrix.m10 < 0 : (rotationMatrix.m11 != 0 ? rotationMatrix.m11 < 0 : rotationMatrix.m12 < 0);
+        return rotMatrix.m10 != 0 ? rotMatrix.m10 < 0 : (rotMatrix.m11 != 0 ? rotMatrix.m11 < 0 : rotMatrix.m12 < 0);
     }
     
     public <T> T getY(T x, T y, T z) {
-        return rotationMatrix.m10 != 0 ? x : (rotationMatrix.m11 != 0 ? y : z);
+        return rotMatrix.m10 != 0 ? x : (rotMatrix.m11 != 0 ? y : z);
     }
     
     public boolean negativeZ() {
-        return rotationMatrix.m20 != 0 ? rotationMatrix.m20 < 0 : (rotationMatrix.m21 != 0 ? rotationMatrix.m21 < 0 : rotationMatrix.m22 < 0);
+        return rotMatrix.m20 != 0 ? rotMatrix.m20 < 0 : (rotMatrix.m21 != 0 ? rotMatrix.m21 < 0 : rotMatrix.m22 < 0);
     }
     
     public <T> T getZ(T x, T y, T z) {
-        return rotationMatrix.m20 != 0 ? x : (rotationMatrix.m21 != 0 ? y : z);
+        return rotMatrix.m20 != 0 ? x : (rotMatrix.m21 != 0 ? y : z);
     }
     
     public Vec3d getVec() {
@@ -207,7 +213,7 @@ public enum Rotation {
     }
     
     public RotationMatrix getMatrix() {
-        return this.rotationMatrix;
+        return this.rotMatrix;
     }
     
     public abstract Rotation opposite();
@@ -221,21 +227,9 @@ public enum Rotation {
             return axis;
 
         return switch (axis) {
-            case X -> {
-                if (this.axis == Axis.Y)
-                    yield Axis.Z;
-                yield Axis.Y;
-            }
-            case Y -> {
-                if (this.axis == Axis.Z)
-                    yield Axis.X;
-                yield Axis.Y;
-            }
-            case Z -> {
-                if (this.axis == Axis.X)
-                    yield Axis.Y;
-                yield Axis.X;
-            }
+            case X -> this.axis == Axis.Y ? Axis.Z : Axis.Y;
+            case Y -> this.axis == Axis.Z ? Axis.X : Axis.Y;
+            case Z -> this.axis == Axis.X ? Axis.Y : Axis.X;
         };
     }
     
@@ -250,23 +244,23 @@ public enum Rotation {
     }
     
     public BlockPos transform(BlockPos vec) {
-        return rotationMatrix.transform(vec);
+        return rotMatrix.transform(vec);
     }
     
     public Vec3i transform(Vec3i vec) {
-        return rotationMatrix.transform(vec);
+        return rotMatrix.transform(vec);
     }
     
     public Vector3d transform(Vector3d vec) {
-        return rotationMatrix.transform(vec);
+        return rotMatrix.transform(vec);
     }
     
     public void transform(Vec3d vec) {
-        rotationMatrix.transform(vec);
+        rotMatrix.transform(vec);
     }
     
     public void transform(Vec3f vec) {
-        rotationMatrix.transform(vec);
+        rotMatrix.transform(vec);
     }
     
     public static class RotationMatrix {
