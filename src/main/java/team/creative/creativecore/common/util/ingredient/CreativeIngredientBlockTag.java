@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 
 public class CreativeIngredientBlockTag extends CreativeIngredient {
@@ -38,7 +39,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     @Override
     public boolean is(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
-        if (block != null)
+        if (!(Block.byItem(stack.getItem()) instanceof AirBlock))
             return block.builtInRegistryHolder().is(tag);
         return false;
     }
@@ -73,7 +74,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.block_tag").append(": " + ChatFormatting.YELLOW + tag.location().toString());
+        return Component.translatable("minecraft.block_tag").append(": " + ChatFormatting.YELLOW + tag.location());
     }
     
 }

@@ -30,10 +30,12 @@ import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 public abstract class CreativeIngredient {
     
     public static final NamedTypeRegistry<CreativeIngredient> REGISTRY = new NamedTypeRegistry<CreativeIngredient>().addConstructorPattern();
-    private static List<Function<Object, ? extends CreativeIngredient>> objectParsers = new ArrayList<>();
+    private static final List<Function<Object, ? extends CreativeIngredient>> objectParsers = new ArrayList<>();
     private static final CreativeIngredient EMPTY = new CreativeIngredient() {
         
         @Override
@@ -103,7 +105,7 @@ public abstract class CreativeIngredient {
     public static CreativeIngredient load(CompoundTag nbt) {
         Class<? extends CreativeIngredient> classType = REGISTRY.get(nbt.getString("id"));
         if (classType == null) {
-            new IllegalArgumentException("'" + nbt.getString("id") + "' is an invalid type").printStackTrace();
+            LOGGER.error(new IllegalArgumentException("'" + nbt.getString("id") + "' is an invalid type"));
             return EMPTY;
         }
         
@@ -151,7 +153,7 @@ public abstract class CreativeIngredient {
         
         final CreativeIngredient temp = new CreativeIngredientBlock(Blocks.DIRT);
         
-        ConfigTypeConveration.registerSpecialType((x) -> CreativeIngredient.class.isAssignableFrom(x), new ConfigTypeConveration.SimpleConfigTypeConveration<CreativeIngredient>() {
+        ConfigTypeConveration.registerSpecialType(CreativeIngredient.class::isAssignableFrom, new ConfigTypeConveration.SimpleConfigTypeConveration<CreativeIngredient>() {
             
             @Override
             public CreativeIngredient readElement(CreativeIngredient defaultValue, boolean loadDefault, JsonElement element) {
@@ -159,7 +161,7 @@ public abstract class CreativeIngredient {
                     try {
                         return CreativeIngredient.load(TagParser.parseTag(element.getAsString()));
                     } catch (CommandSyntaxException e) {
-                        e.printStackTrace();
+                        LOGGER.error(e);
                     }
                 return defaultValue;
             }
@@ -180,7 +182,7 @@ public abstract class CreativeIngredient {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(CreativeIngredient value, GuiParent parent) {
-                GuiInfoStackButton button = (GuiInfoStackButton) parent.get("data");
+                GuiInfoStackButton button = parent.get("data");
                 button.set(value);
             }
             
@@ -188,7 +190,7 @@ public abstract class CreativeIngredient {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected CreativeIngredient saveValue(GuiParent parent, Class clazz) {
-                GuiInfoStackButton button = (GuiInfoStackButton) parent.get("data");
+                GuiInfoStackButton button = parent.get("data");
                 return button.get();
             }
             

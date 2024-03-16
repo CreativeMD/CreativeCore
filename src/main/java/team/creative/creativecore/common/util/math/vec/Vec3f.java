@@ -47,30 +47,22 @@ public class Vec3f extends VecNf<Vec3f> {
     
     @Override
     public float get(Axis axis) {
-        switch (axis) {
-            case X:
-                return x;
-            case Y:
-                return y;
-            case Z:
-                return z;
-            default:
-                return 0;
-        }
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+            default -> 0;
+        };
     }
     
     @Override
     public float get(int dim) {
-        switch (dim) {
-            case 0:
-                return x;
-            case 1:
-                return y;
-            case 2:
-                return z;
-            default:
-                return 0;
-        }
+        return switch (dim) {
+            case 0 -> x;
+            case 1 -> y;
+            case 2 -> z;
+            default -> 0;
+        };
     }
     
     public void set(float x, float y, float z) {
@@ -134,7 +126,8 @@ public class Vec3f extends VecNf<Vec3f> {
     }
     
     @Override
-    public void scale(double scale) {
+    public void scale(double dScale) {
+        float scale = (float) dScale;
         this.x *= scale;
         this.y *= scale;
         this.z *= scale;

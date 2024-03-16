@@ -63,7 +63,7 @@ public class GuiFlowFitX extends GuiStackX {
     @Override
     public void flowX(List<? extends GuiChildControl> controls, int spacing, Align align, int width, int preferred, boolean endless) {
         if (endless) {
-            super.flowX(controls, spacing, align, width, preferred, endless);
+            super.flowX(controls, spacing, align, width, preferred, true);
             return;
         }
         int rowIndex = 0;
@@ -92,7 +92,7 @@ public class GuiFlowFitX extends GuiStackX {
     @Override
     public void flowY(List<? extends GuiChildControl> controls, int spacing, VAlign valign, int width, int height, int preferred, boolean endless) {
         if (endless) {
-            super.flowY(controls, spacing, valign, width, height, preferred, endless);
+            super.flowY(controls, spacing, valign, width, height, preferred, true);
             return;
         }
         

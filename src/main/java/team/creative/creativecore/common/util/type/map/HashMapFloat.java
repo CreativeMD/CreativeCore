@@ -45,7 +45,7 @@ public class HashMapFloat<K> extends HashMap<K, Float> {
                 first = false;
             else
                 builder.append(",");
-            builder.append(entry.getKey() + ": " + entry.getValue() + "");
+            builder.append(entry.getKey()).append(": ").append(entry.getValue());
         }
         builder.append("]");
         return builder.toString();
@@ -59,7 +59,7 @@ public class HashMapFloat<K> extends HashMap<K, Float> {
                 first = false;
             else
                 builder.append(",");
-            builder.append(entry.getKey() + ": " + df.format(entry.getValue()) + "");
+            builder.append(entry.getKey()).append(": ").append(df.format(entry.getValue()));
         }
         builder.append("]");
         return builder.toString();

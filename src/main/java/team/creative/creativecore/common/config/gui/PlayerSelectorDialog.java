@@ -27,13 +27,13 @@ public class PlayerSelectorDialog extends GuiLayer {
         PlayerSelector selector = button.get();
         handler = GuiPlayerSelectorHandler.get(selector);
         
-        GuiComboBoxMapped<String> box = (GuiComboBoxMapped<String>) get("type");
+        GuiComboBoxMapped<String> box = get("type");
         if (box != null)
             handler = GuiPlayerSelectorHandler.REGISTRY.get(box.getSelected());
         
         clear();
         
-        box = new GuiComboBoxMapped<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), x -> Component.literal(x)));
+        box = new GuiComboBoxMapped<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), Component::literal));
         box.select(handler.getName());
         add(box);
         

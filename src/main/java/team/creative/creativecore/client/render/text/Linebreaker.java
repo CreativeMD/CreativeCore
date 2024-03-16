@@ -9,7 +9,7 @@ public enum Linebreaker {
     SLASH('/', true, false),
     BACKSLASH('\\', true, false),
     DASH('-', true, true),
-    UPPERCASE(x -> Character.isUpperCase(x), true, false);
+    UPPERCASE(Character::isUpperCase, true, false);
     
     public final Predicate<Character> predicate;
     public final boolean includeChar;

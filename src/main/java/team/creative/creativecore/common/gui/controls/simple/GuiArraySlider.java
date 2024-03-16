@@ -19,7 +19,7 @@ public class GuiArraySlider extends GuiSteppedSlider {
     public String getTextByValue() {
         if (value > values.length)
             return "";
-        return values[(int) value] + "";
+        return values[(int) value];
     }
     
     public void select(String value) {

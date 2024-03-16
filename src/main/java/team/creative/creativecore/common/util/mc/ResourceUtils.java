@@ -43,7 +43,7 @@ public class ResourceUtils {
             return PlatformResourceUtils.resolvePath(type, source, location, x);
         }, x -> {
             CreativeCore.LOGGER.error("Invalid path {}: {}", location, x.message());
-            return (Path) null;
+            return null;
         });
         if (path != null)
             return path.toFile().length();

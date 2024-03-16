@@ -11,7 +11,7 @@ import team.creative.creativecore.common.gui.GuiControl;
 
 public class TextListBuilder implements ITextCollection {
     
-    private List<List<Component>> list = new ArrayList<>();
+    private final List<List<Component>> list = new ArrayList<>();
     
     public TextListBuilder() {
         

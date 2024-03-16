@@ -42,27 +42,19 @@ public enum BooleanRotation {
     }
     
     private static Axis one(Axis axis) {
-        switch (axis) {
-        case X:
-            return Axis.Y;
-        case Y:
-        case Z:
-            return Axis.X;
-        default:
-            return null;
-        }
+        return switch (axis) {
+            case X -> Axis.Y;
+            case Y, Z -> Axis.X;
+            default -> null;
+        };
     }
     
     private static Axis two(Axis axis) {
-        switch (axis) {
-        case X:
-        case Y:
-            return Axis.Z;
-        case Z:
-            return Axis.Y;
-        default:
-            return null;
-        }
+        return switch (axis) {
+            case X, Y -> Axis.Z;
+            case Z -> Axis.Y;
+            default -> null;
+        };
     }
     
     public BooleanRotation clockwise() {

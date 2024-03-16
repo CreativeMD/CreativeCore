@@ -18,56 +18,38 @@ public interface Filter<T> {
     public static <T> Filter<T> not(Filter<T> filter) {
         return new FilterNot<>(filter);
     }
-    
-    public static class FilterNot<T> implements Filter<T> {
-        
-        public final Filter<T> filter;
-        
-        public FilterNot(Filter<T> filter) {
-            this.filter = filter;
-        }
-        
+
+    public record FilterNot<T>(Filter<T> filter) implements Filter<T> {
+
         @Override
-        public boolean is(T t) {
-            return !filter.is(t);
-        }
-        
+            public boolean is(T t) {
+                return !filter.is(t);
+            }
+
     }
-    
-    public static class FilterAnd<T> implements Filter<T> {
-        
-        public final Filter<T>[] filters;
-        
-        public FilterAnd(Filter<T>... filters) {
-            this.filters = filters;
-        }
-        
+
+    public record FilterAnd<T>(Filter<T>... filters) implements Filter<T> {
+
         @Override
-        public boolean is(T t) {
-            for (int i = 0; i < filters.length; i++)
-                if (!filters[i].is(t))
-                    return false;
-            return true;
-        }
-        
+            public boolean is(T t) {
+                for (int i = 0; i < filters.length; i++)
+                    if (!filters[i].is(t))
+                        return false;
+                return true;
+            }
+
     }
-    
-    public static class FilterOr<T> implements Filter<T> {
-        
-        public final Filter<T>[] filters;
-        
-        public FilterOr(Filter<T>... filters) {
-            this.filters = filters;
-        }
-        
+
+    public record FilterOr<T>(Filter<T>... filters) implements Filter<T> {
+
         @Override
-        public boolean is(T t) {
-            for (int i = 0; i < filters.length; i++)
-                if (filters[i].is(t))
-                    return true;
-            return false;
-        }
-        
+            public boolean is(T t) {
+                for (int i = 0; i < filters.length; i++)
+                    if (filters[i].is(t))
+                        return true;
+                return false;
+            }
+
     }
     
 }

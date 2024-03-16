@@ -56,7 +56,7 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public PlayerSelectorNot parseSelector(PlayerSelectorDialog gui) {
-                GuiPlayerSelectorButton button = (GuiPlayerSelectorButton) gui.get("not");
+                GuiPlayerSelectorButton button = gui.get("not");
                 PlayerSelector selector = button.get();
                 if (selector != null)
                     return new PlayerSelectorNot(selector);
@@ -72,7 +72,7 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public PlayerSelectorLevel parseSelector(PlayerSelectorDialog gui) {
-                GuiTextfield text = (GuiTextfield) gui.get("content");
+                GuiTextfield text = gui.get("content");
                 return new PlayerSelectorLevel(text.parseInteger());
             }
             
@@ -87,7 +87,7 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public PlayerSelectorGamemode parseSelector(PlayerSelectorDialog gui) {
-                GuiStateButton mode = (GuiStateButton) gui.get("mode");
+                GuiStateButton mode = gui.get("mode");
                 return new PlayerSelectorGamemode(GameType.byId(mode.getState()));
             }
             
@@ -96,12 +96,12 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.add(new GuiTextfield("content", selector instanceof PlayerSelectorCommandSelector ? "" + ((PlayerSelectorCommandSelector) selector).pattern : "@a[]"));
+                gui.add(new GuiTextfield("content", selector instanceof PlayerSelectorCommandSelector ? ((PlayerSelectorCommandSelector) selector).pattern : "@a[]"));
             }
             
             @Override
             public PlayerSelectorCommandSelector parseSelector(PlayerSelectorDialog gui) {
-                GuiTextfield text = (GuiTextfield) gui.get("content");
+                GuiTextfield text = gui.get("content");
                 if (text.getText().isEmpty())
                     return null;
                 return new PlayerSelectorCommandSelector(text.getText());
@@ -141,14 +141,12 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
                     buttons.add(new GuiPlayerSelectorButton("" + i, selectors[i]));
             GuiListBoxBase<GuiPlayerSelectorButton> list = new GuiListBoxBase<>("list", true, buttons);
             gui.add(list);
-            gui.add(new GuiButton("add", x -> {
-                list.addItem(new GuiPlayerSelectorButton("new", new PlayerSelectorLevel(0)));
-            }));
+            gui.add(new GuiButton("add", x -> list.addItem(new GuiPlayerSelectorButton("new", new PlayerSelectorLevel(0)))));
         }
         
         @Override
         public T parseSelector(PlayerSelectorDialog gui) {
-            GuiListBoxBase<GuiPlayerSelectorButton> list = (GuiListBoxBase<GuiPlayerSelectorButton>) gui.get("list");
+            GuiListBoxBase<GuiPlayerSelectorButton> list = gui.get("list");
             PlayerSelector[] selectors = new PlayerSelector[list.size()];
             for (int i = 0; i < selectors.length; i++)
                 selectors[i] = list.get(i).get();

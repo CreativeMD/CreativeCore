@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.math.utils;
 
+import java.util.Arrays;
+
 public class BooleanUtils {
     
     public static int toInt(boolean value) {
@@ -48,8 +50,7 @@ public class BooleanUtils {
     }
     
     public static void reset(boolean[] state) {
-        for (int i = 0; i < state.length; i++)
-            state[i] = false;
+        Arrays.fill(state, false);
     }
     
     public static boolean any(boolean[] state) {
@@ -88,10 +89,7 @@ public class BooleanUtils {
     }
     
     public static String print(boolean[] state) {
-        String result = "[";
-        for (int i = 0; i < state.length; i++)
-            result += state[i] ? "1" : "0";
-        return result + "]";
+        return Arrays.toString(state);
     }
     
     public static int getRequiredBandwidth(int number) {
@@ -121,8 +119,7 @@ public class BooleanUtils {
         if (state == null)
             return null;
         boolean[] newState = new boolean[state.length];
-        for (int i = 0; i < newState.length; i++)
-            newState[i] = state[i];
+        System.arraycopy(state, 0, newState, 0, newState.length);
         return newState;
     }
     

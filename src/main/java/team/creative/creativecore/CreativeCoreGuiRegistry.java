@@ -143,7 +143,7 @@ public class CreativeCoreGuiRegistry {
         List<IGuiInventory> inventories = new ArrayList<>();
         ListTag names = t.getList("names", Tag.TAG_STRING);
         for (int i = 0; i < names.size(); i++)
-            inventories.add((IGuiInventory) c.get(names.getString(i)));
+            inventories.add(c.get(names.getString(i)));
         
         List<GuiSlot> slots = new ArrayList<>();
         int[] ids = t.getIntArray("ids");

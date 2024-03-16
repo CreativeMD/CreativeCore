@@ -13,7 +13,7 @@ import net.minecraftforge.resource.DelegatingPackResources;
 @Mixin(DelegatingPackResources.class)
 public interface DelegatingPackResourcesAccessor {
     
-    @Invoker
+    @Invoker(remap = false)
     public List<PackResources> callGetCandidatePacks(PackType type, ResourceLocation location);
     
 }

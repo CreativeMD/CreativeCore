@@ -14,7 +14,7 @@ import team.creative.creativecore.client.render.text.CompiledText;
 
 public class TextMapBuilder<K> implements ITextCollection {
     
-    private LinkedHashMap<K, List<Component>> lines = new LinkedHashMap<>();
+    private final LinkedHashMap<K, List<Component>> lines = new LinkedHashMap<>();
     private Predicate<String> filter;
     
     public TextMapBuilder() {}
