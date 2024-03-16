@@ -4,6 +4,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import net.minecraft.util.Mth;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -42,6 +43,16 @@ public class GuiCounterDecimal extends GuiParent {
         this.buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
         this.add(textfield.setExpandableX());
         this.add(buttons);
+    }
+
+    public GuiCounterDecimal setSpacing(int spacing) {
+        this.spacing = spacing;
+        return this;
+    }
+
+    public GuiCounterDecimal addControl(GuiControl control) {
+        this.add(control);
+        return this;
     }
 
     public GuiButtonHoldSlim getPlusButton() {
