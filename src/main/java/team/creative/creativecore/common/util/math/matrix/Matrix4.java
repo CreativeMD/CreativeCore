@@ -147,116 +147,116 @@ public class Matrix4 {
     
     public final void setElement(int var1, int var2, double var3) {
         switch (var1) {
-        case 0:
-            switch (var2) {
             case 0:
-                this.m00 = var3;
-                return;
+                switch (var2) {
+                    case 0:
+                        this.m00 = var3;
+                        return;
+                    case 1:
+                        this.m01 = var3;
+                        return;
+                    case 2:
+                        this.m02 = var3;
+                        return;
+                    case 3:
+                        this.m03 = var3;
+                        return;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException();
+                }
             case 1:
-                this.m01 = var3;
-                return;
+                switch (var2) {
+                    case 0:
+                        this.m10 = var3;
+                        return;
+                    case 1:
+                        this.m11 = var3;
+                        return;
+                    case 2:
+                        this.m12 = var3;
+                        return;
+                    case 3:
+                        this.m13 = var3;
+                        return;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException();
+                }
             case 2:
-                this.m02 = var3;
-                return;
+                switch (var2) {
+                    case 0:
+                        this.m20 = var3;
+                        return;
+                    case 1:
+                        this.m21 = var3;
+                        return;
+                    case 2:
+                        this.m22 = var3;
+                        return;
+                    case 3:
+                        this.m23 = var3;
+                        return;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException();
+                }
             case 3:
-                this.m03 = var3;
-                return;
+                switch (var2) {
+                    case 0:
+                        this.m30 = var3;
+                        return;
+                    case 1:
+                        this.m31 = var3;
+                        return;
+                    case 2:
+                        this.m32 = var3;
+                        return;
+                    case 3:
+                        this.m33 = var3;
+                        return;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException();
+                }
             default:
                 throw new ArrayIndexOutOfBoundsException();
-            }
-        case 1:
-            switch (var2) {
-            case 0:
-                this.m10 = var3;
-                return;
-            case 1:
-                this.m11 = var3;
-                return;
-            case 2:
-                this.m12 = var3;
-                return;
-            case 3:
-                this.m13 = var3;
-                return;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        case 2:
-            switch (var2) {
-            case 0:
-                this.m20 = var3;
-                return;
-            case 1:
-                this.m21 = var3;
-                return;
-            case 2:
-                this.m22 = var3;
-                return;
-            case 3:
-                this.m23 = var3;
-                return;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        case 3:
-            switch (var2) {
-            case 0:
-                this.m30 = var3;
-                return;
-            case 1:
-                this.m31 = var3;
-                return;
-            case 2:
-                this.m32 = var3;
-                return;
-            case 3:
-                this.m33 = var3;
-                return;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
-        default:
-            throw new ArrayIndexOutOfBoundsException();
         }
     }
     
     public final double getElement(int var1, int var2) {
         switch (var1) {
-        case 0:
-            return switch (var2) {
-                case 0 -> this.m00;
-                case 1 -> this.m01;
-                case 2 -> this.m02;
-                case 3 -> this.m03;
-                default -> throw new ArrayIndexOutOfBoundsException();
-            };
-        case 1:
-            return switch (var2) {
-                case 0 -> this.m10;
-                case 1 -> this.m11;
-                case 2 -> this.m12;
-                case 3 -> this.m13;
-                default -> throw new ArrayIndexOutOfBoundsException();
-            };
-        case 2:
-            return switch (var2) {
-                case 0 -> this.m20;
-                case 1 -> this.m21;
-                case 2 -> this.m22;
-                case 3 -> this.m23;
-                default -> throw new ArrayIndexOutOfBoundsException();
-            };
-        case 3:
-            switch (var2) {
             case 0:
-                return this.m30;
+                return switch (var2) {
+                    case 0 -> this.m00;
+                    case 1 -> this.m01;
+                    case 2 -> this.m02;
+                    case 3 -> this.m03;
+                    default -> throw new ArrayIndexOutOfBoundsException();
+                };
             case 1:
-                return this.m31;
+                return switch (var2) {
+                    case 0 -> this.m10;
+                    case 1 -> this.m11;
+                    case 2 -> this.m12;
+                    case 3 -> this.m13;
+                    default -> throw new ArrayIndexOutOfBoundsException();
+                };
             case 2:
-                return this.m32;
+                return switch (var2) {
+                    case 0 -> this.m20;
+                    case 1 -> this.m21;
+                    case 2 -> this.m22;
+                    case 3 -> this.m23;
+                    default -> throw new ArrayIndexOutOfBoundsException();
+                };
             case 3:
-                return this.m33;
-            }
+                switch (var2) {
+                    case 0:
+                        return this.m30;
+                    case 1:
+                        return this.m31;
+                    case 2:
+                        return this.m32;
+                    case 3:
+                        return this.m33;
+                }
         }
         
         throw new ArrayIndexOutOfBoundsException();
@@ -466,192 +466,192 @@ public class Matrix4 {
     
     public final void setRow(int var1, double var2, double var4, double var6, double var8) {
         switch (var1) {
-        case 0:
-            this.m00 = var2;
-            this.m01 = var4;
-            this.m02 = var6;
-            this.m03 = var8;
-            break;
-        case 1:
-            this.m10 = var2;
-            this.m11 = var4;
-            this.m12 = var6;
-            this.m13 = var8;
-            break;
-        case 2:
-            this.m20 = var2;
-            this.m21 = var4;
-            this.m22 = var6;
-            this.m23 = var8;
-            break;
-        case 3:
-            this.m30 = var2;
-            this.m31 = var4;
-            this.m32 = var6;
-            this.m33 = var8;
-            break;
-        default:
-            throw new ArrayIndexOutOfBoundsException();
+            case 0:
+                this.m00 = var2;
+                this.m01 = var4;
+                this.m02 = var6;
+                this.m03 = var8;
+                break;
+            case 1:
+                this.m10 = var2;
+                this.m11 = var4;
+                this.m12 = var6;
+                this.m13 = var8;
+                break;
+            case 2:
+                this.m20 = var2;
+                this.m21 = var4;
+                this.m22 = var6;
+                this.m23 = var8;
+                break;
+            case 3:
+                this.m30 = var2;
+                this.m31 = var4;
+                this.m32 = var6;
+                this.m33 = var8;
+                break;
+            default:
+                throw new ArrayIndexOutOfBoundsException();
         }
         
     }
     
     public final void setRow(int var1, Vec4d var2) {
         switch (var1) {
-        case 0:
-            this.m00 = var2.x;
-            this.m01 = var2.y;
-            this.m02 = var2.z;
-            this.m03 = var2.w;
-            break;
-        case 1:
-            this.m10 = var2.x;
-            this.m11 = var2.y;
-            this.m12 = var2.z;
-            this.m13 = var2.w;
-            break;
-        case 2:
-            this.m20 = var2.x;
-            this.m21 = var2.y;
-            this.m22 = var2.z;
-            this.m23 = var2.w;
-            break;
-        case 3:
-            this.m30 = var2.x;
-            this.m31 = var2.y;
-            this.m32 = var2.z;
-            this.m33 = var2.w;
-            break;
-        default:
-            throw new ArrayIndexOutOfBoundsException();
+            case 0:
+                this.m00 = var2.x;
+                this.m01 = var2.y;
+                this.m02 = var2.z;
+                this.m03 = var2.w;
+                break;
+            case 1:
+                this.m10 = var2.x;
+                this.m11 = var2.y;
+                this.m12 = var2.z;
+                this.m13 = var2.w;
+                break;
+            case 2:
+                this.m20 = var2.x;
+                this.m21 = var2.y;
+                this.m22 = var2.z;
+                this.m23 = var2.w;
+                break;
+            case 3:
+                this.m30 = var2.x;
+                this.m31 = var2.y;
+                this.m32 = var2.z;
+                this.m33 = var2.w;
+                break;
+            default:
+                throw new ArrayIndexOutOfBoundsException();
         }
         
     }
     
     public final void setRow(int var1, double[] var2) {
         switch (var1) {
-        case 0:
-            this.m00 = var2[0];
-            this.m01 = var2[1];
-            this.m02 = var2[2];
-            this.m03 = var2[3];
-            break;
-        case 1:
-            this.m10 = var2[0];
-            this.m11 = var2[1];
-            this.m12 = var2[2];
-            this.m13 = var2[3];
-            break;
-        case 2:
-            this.m20 = var2[0];
-            this.m21 = var2[1];
-            this.m22 = var2[2];
-            this.m23 = var2[3];
-            break;
-        case 3:
-            this.m30 = var2[0];
-            this.m31 = var2[1];
-            this.m32 = var2[2];
-            this.m33 = var2[3];
-            break;
-        default:
-            throw new ArrayIndexOutOfBoundsException();
+            case 0:
+                this.m00 = var2[0];
+                this.m01 = var2[1];
+                this.m02 = var2[2];
+                this.m03 = var2[3];
+                break;
+            case 1:
+                this.m10 = var2[0];
+                this.m11 = var2[1];
+                this.m12 = var2[2];
+                this.m13 = var2[3];
+                break;
+            case 2:
+                this.m20 = var2[0];
+                this.m21 = var2[1];
+                this.m22 = var2[2];
+                this.m23 = var2[3];
+                break;
+            case 3:
+                this.m30 = var2[0];
+                this.m31 = var2[1];
+                this.m32 = var2[2];
+                this.m33 = var2[3];
+                break;
+            default:
+                throw new ArrayIndexOutOfBoundsException();
         }
         
     }
     
     public final void setColumn(int var1, double var2, double var4, double var6, double var8) {
         switch (var1) {
-        case 0:
-            this.m00 = var2;
-            this.m10 = var4;
-            this.m20 = var6;
-            this.m30 = var8;
-            break;
-        case 1:
-            this.m01 = var2;
-            this.m11 = var4;
-            this.m21 = var6;
-            this.m31 = var8;
-            break;
-        case 2:
-            this.m02 = var2;
-            this.m12 = var4;
-            this.m22 = var6;
-            this.m32 = var8;
-            break;
-        case 3:
-            this.m03 = var2;
-            this.m13 = var4;
-            this.m23 = var6;
-            this.m33 = var8;
-            break;
-        default:
-            throw new ArrayIndexOutOfBoundsException();
+            case 0:
+                this.m00 = var2;
+                this.m10 = var4;
+                this.m20 = var6;
+                this.m30 = var8;
+                break;
+            case 1:
+                this.m01 = var2;
+                this.m11 = var4;
+                this.m21 = var6;
+                this.m31 = var8;
+                break;
+            case 2:
+                this.m02 = var2;
+                this.m12 = var4;
+                this.m22 = var6;
+                this.m32 = var8;
+                break;
+            case 3:
+                this.m03 = var2;
+                this.m13 = var4;
+                this.m23 = var6;
+                this.m33 = var8;
+                break;
+            default:
+                throw new ArrayIndexOutOfBoundsException();
         }
         
     }
     
     public final void setColumn(int var1, Vec4d var2) {
         switch (var1) {
-        case 0:
-            this.m00 = var2.x;
-            this.m10 = var2.y;
-            this.m20 = var2.z;
-            this.m30 = var2.w;
-            break;
-        case 1:
-            this.m01 = var2.x;
-            this.m11 = var2.y;
-            this.m21 = var2.z;
-            this.m31 = var2.w;
-            break;
-        case 2:
-            this.m02 = var2.x;
-            this.m12 = var2.y;
-            this.m22 = var2.z;
-            this.m32 = var2.w;
-            break;
-        case 3:
-            this.m03 = var2.x;
-            this.m13 = var2.y;
-            this.m23 = var2.z;
-            this.m33 = var2.w;
-            break;
-        default:
-            throw new ArrayIndexOutOfBoundsException();
+            case 0:
+                this.m00 = var2.x;
+                this.m10 = var2.y;
+                this.m20 = var2.z;
+                this.m30 = var2.w;
+                break;
+            case 1:
+                this.m01 = var2.x;
+                this.m11 = var2.y;
+                this.m21 = var2.z;
+                this.m31 = var2.w;
+                break;
+            case 2:
+                this.m02 = var2.x;
+                this.m12 = var2.y;
+                this.m22 = var2.z;
+                this.m32 = var2.w;
+                break;
+            case 3:
+                this.m03 = var2.x;
+                this.m13 = var2.y;
+                this.m23 = var2.z;
+                this.m33 = var2.w;
+                break;
+            default:
+                throw new ArrayIndexOutOfBoundsException();
         }
         
     }
     
     public final void setColumn(int var1, double[] var2) {
         switch (var1) {
-        case 0:
-            this.m00 = var2[0];
-            this.m10 = var2[1];
-            this.m20 = var2[2];
-            this.m30 = var2[3];
-            break;
-        case 1:
-            this.m01 = var2[0];
-            this.m11 = var2[1];
-            this.m21 = var2[2];
-            this.m31 = var2[3];
-            break;
-        case 2:
-            this.m02 = var2[0];
-            this.m12 = var2[1];
-            this.m22 = var2[2];
-            this.m32 = var2[3];
-            break;
-        case 3:
-            this.m03 = var2[0];
-            this.m13 = var2[1];
-            this.m23 = var2[2];
-            this.m33 = var2[3];
-            break;
-        default:
-            throw new ArrayIndexOutOfBoundsException();
+            case 0:
+                this.m00 = var2[0];
+                this.m10 = var2[1];
+                this.m20 = var2[2];
+                this.m30 = var2[3];
+                break;
+            case 1:
+                this.m01 = var2[0];
+                this.m11 = var2[1];
+                this.m21 = var2[2];
+                this.m31 = var2[3];
+                break;
+            case 2:
+                this.m02 = var2[0];
+                this.m12 = var2[1];
+                this.m22 = var2[2];
+                this.m32 = var2[3];
+                break;
+            case 3:
+                this.m03 = var2[0];
+                this.m13 = var2[1];
+                this.m23 = var2[2];
+                this.m33 = var2[3];
+                break;
+            default:
+                throw new ArrayIndexOutOfBoundsException();
         }
         
     }

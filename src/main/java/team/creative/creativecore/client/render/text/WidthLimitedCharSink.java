@@ -1,12 +1,12 @@
 package team.creative.creativecore.client.render.text;
 
+import java.util.Arrays;
+
 import net.minecraft.client.StringSplitter;
 import net.minecraft.network.chat.Style;
 import team.creative.creativecore.common.util.text.content.AdvancedContent;
 import team.creative.creativecore.common.util.text.content.FormattedSingleSink;
 import team.creative.creativecore.mixin.StringSplitterAccessor;
-
-import java.util.Arrays;
 
 public class WidthLimitedCharSink implements FormattedSingleSink {
     

@@ -146,7 +146,7 @@ public class AdvancedComponentHelper {
                 if (!(componentcontents instanceof NbtContents nbtcontents)) {
                     throw new IllegalArgumentException("Don't know how to serialize " + componentcontents + " as a Component");
                 }
-
+                
                 jsonobject.addProperty("nbt", nbtcontents.getNbtPath());
                 jsonobject.addProperty("interpret", nbtcontents.isInterpreting());
                 this.serializeSeparator(context, jsonobject, nbtcontents.getSeparator());
@@ -159,7 +159,7 @@ public class AdvancedComponentHelper {
                     if (!(datasource instanceof StorageDataSource storagedatasource)) {
                         throw new IllegalArgumentException("Don't know how to serialize " + componentcontents + " as a Component");
                     }
-
+                    
                     jsonobject.addProperty("storage", storagedatasource.id().toString());
                 }
             }

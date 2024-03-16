@@ -103,7 +103,7 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
         int oldCapacity = content.length;
         if (oldCapacity > 0 || content != DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
             int newCapacity = newLength(oldCapacity, minCapacity - oldCapacity, /* minimum growth */
-                    oldCapacity >> 1 /* preferred growth */);
+                oldCapacity >> 1 /* preferred growth */);
             hadIterator = false;
             return content = Arrays.copyOf(content, newCapacity);
         }
@@ -410,7 +410,7 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
             return true;
         if (!(o instanceof List<?> list))
             return false;
-
+        
         Iterator<?> it = list.iterator();
         for (Object element : content)
             if (!it.hasNext() || !Objects.equals(element, it.next()))

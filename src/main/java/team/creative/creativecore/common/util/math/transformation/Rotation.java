@@ -225,7 +225,7 @@ public enum Rotation {
     public Axis rotate(Axis axis) {
         if (axis == this.axis)
             return axis;
-
+        
         return switch (axis) {
             case X -> this.axis == Axis.Y ? Axis.Z : Axis.Y;
             case Y -> this.axis == Axis.Z ? Axis.X : Axis.Y;

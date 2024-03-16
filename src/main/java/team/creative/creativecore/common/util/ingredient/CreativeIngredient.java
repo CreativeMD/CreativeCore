@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,6 @@ import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
-
-import static team.creative.creativecore.CreativeCore.LOGGER;
 
 public abstract class CreativeIngredient {
     
