@@ -41,7 +41,7 @@ public class Tuple<K, V> implements Entry<K, V> {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Tuple<?, ?> tuple)
+        if (obj instanceof Tuple tuple)
             return key.equals(tuple.key);
         return false;
     }
