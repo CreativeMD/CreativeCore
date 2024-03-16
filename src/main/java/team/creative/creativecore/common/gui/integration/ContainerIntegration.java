@@ -111,9 +111,9 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
             if (isClient())
-                Minecraft.getInstance().setScreen((Screen) null);
+                Minecraft.getInstance().setScreen(null);
             else
-                ((ServerPlayer) player).closeContainer();
+                player.closeContainer();
         else
             getTopLayer().becameTopLayer();
     }

@@ -55,24 +55,23 @@ public class ClientSyncGuiLayer extends GuiLayer {
         BiConsumer<ConfigKey, Boolean> setter = (x, y) -> x.forceSynchronization = y;
         Function<ConfigKey, Boolean> getter = (x) -> x.forceSynchronization;
         Function<ConfigKey, Collection<? extends ConfigKey>> getChildren = (x) -> {
-            if (x.getDefault() instanceof ICreativeConfigHolder) {
+            if (x.getDefault() instanceof ICreativeConfigHolder configHolder) {
                 List<ConfigKey> keys = new ArrayList<>();
-                for (ConfigKey key : ((ICreativeConfigHolder) x.getDefault()).fields())
-                    if (key.isWithoutForce(Side.CLIENT)) {
-                        Object object = key.get();
-                        if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
-                            keys.add(key);
-                    }
+                for (ConfigKey key: configHolder.fields())
+                    if (key.isWithoutForce(Side.CLIENT)
+                            && (!(key.get() instanceof ICreativeConfigHolder objectHolder)
+                            || !(objectHolder.isEmptyWithoutForce(Side.CLIENT))))
+                        keys.add(key);
                 return keys;
             }
             return null;
         };
         
         List<ConfigKey> keys = new ArrayList<>();
-        for (ConfigKey key : holder.fields())
+        for (ConfigKey key: holder.fields())
             if (key.isWithoutForce(Side.CLIENT)) {
                 Object object = key.get();
-                if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
+                if (!(object instanceof ICreativeConfigHolder configHolder) || !configHolder.isEmptyWithoutForce(Side.CLIENT))
                     keys.add(key);
             }
         this.tree = new CheckTree<>(keys, setter, getter, getChildren);
@@ -101,23 +100,21 @@ public class ClientSyncGuiLayer extends GuiLayer {
         GuiScrollY box = new GuiScrollY("").setExpandable().setDim(100, 100);
         add(box);
         
-        for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
+        for (CheckTree<ConfigKey>.CheckTreeEntry key: currentView.children) {
             GuiRow row = new GuiRow();
             box.add(row);
             GuiColumn first = new GuiColumn(20);
             row.addColumn(first);
-            first.valign = VAlign.CENTER;
-            first.align = Align.CENTER;
+            first.setVAlign(VAlign.CENTER);
+            first.setAlign(Align.CENTER);
             first.add(new GuiTreeCheckBox(key));
             
             GuiColumn second = (GuiColumn) new GuiColumn().setExpandableX();
             row.addColumn(second);
             String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.content.name + ".name", key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
-            if (key.content != null && key.content.get() instanceof ICreativeConfigHolder)
-                second.add(new GuiButton(caption, x -> {
-                    load(key);
-                }).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+            if (key.content.get() instanceof ICreativeConfigHolder)
+                second.add(new GuiButton(caption, x -> load(key)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
             else
                 second.add(new GuiLabel(caption).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         }

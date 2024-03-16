@@ -11,7 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 public class StringArrayArgumentType implements ArgumentType<String[]> {
     
-    public static final List<String> EXAMPLES = Arrays.asList(new String[] { "name1", "name1,name2", "name1,name2,name3" });
+    public static final List<String> EXAMPLES = Arrays.asList("name1", "name1,name2", "name1,name2,name3");
     
     public static String[] getStringArray(final CommandContext<?> context, final String name) {
         return context.getArgument(name, String[].class);

@@ -375,21 +375,23 @@ public enum Axis {
     }
     
     public static Axis third(Axis one, Axis two) {
-        switch (one) {
-            case X:
+        return switch (one) {
+            case X -> {
                 if (two == Axis.Y)
-                    return Axis.Z;
-                return Axis.Y;
-            case Y:
+                    yield Axis.Z;
+                yield Axis.Y;
+            }
+            case Y -> {
                 if (two == Axis.X)
-                    return Axis.Z;
-                return Axis.X;
-            case Z:
+                    yield Axis.Z;
+                yield Axis.X;
+            }
+            case Z -> {
                 if (two == Axis.Y)
-                    return Axis.X;
-                return Axis.Y;
-        }
-        throw new IllegalArgumentException();
+                    yield Axis.X;
+                yield Axis.Y;
+            }
+        };
     }
     
     public static Axis getMirrorAxis(Mirror mirrorIn) {

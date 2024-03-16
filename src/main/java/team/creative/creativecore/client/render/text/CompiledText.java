@@ -213,7 +213,7 @@ public class CompiledText {
             default -> 0;
         });
         stack.translate(0, y, 0);
-        usedHeight += y;
+        usedHeight += (int) y;
         
         for (CompiledLine line : lines) {
             switch (align) {
@@ -251,7 +251,7 @@ public class CompiledText {
     
     public class CompiledLine {
         
-        private List<FormattedText> components = new ArrayList<>();
+        private final List<FormattedText> components = new ArrayList<>();
         private int height = 0;
         private int width = 0;
         
@@ -375,7 +375,7 @@ public class CompiledText {
             }, style);
         } else {
             text.visit(new FormattedText.StyledContentConsumer<FormattedText>() {
-                
+
                 @Override
                 public Optional<FormattedText> accept(Style style, String text) {
                     charSink.resetPosition();
@@ -402,7 +402,7 @@ public class CompiledText {
                         head.append(FormattedText.of(text, style));
                     return Optional.empty();
                 }
-            }, style).orElse(null);
+            }, style);
         }
         
         FormattedText headText = head.getResult();
@@ -412,17 +412,9 @@ public class CompiledText {
             return null;
         return new FormattedTextSplit(headText, tailText);
     }
-    
-    static class FormattedTextSplit {
-        
-        public final FormattedText head;
-        public final FormattedText tail;
-        
-        public FormattedTextSplit(FormattedText head, FormattedText tail) {
-            this.head = head;
-            this.tail = tail;
-        }
-        
+
+    public record FormattedTextSplit(FormattedText head, FormattedText tail) {
+
     }
     
     @Environment(EnvType.CLIENT)

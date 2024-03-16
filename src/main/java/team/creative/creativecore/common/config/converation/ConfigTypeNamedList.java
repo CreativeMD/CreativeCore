@@ -117,7 +117,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void loadValue(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         if (!box.isEmpty())
             box.clearItems();
         
@@ -162,7 +162,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);
         
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         T value = create(subClass);
         for (int i = 0; i < box.size(); i++)
             if (converation != null)

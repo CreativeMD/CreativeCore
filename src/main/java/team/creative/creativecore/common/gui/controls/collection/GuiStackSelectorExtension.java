@@ -67,9 +67,9 @@ public class GuiStackSelectorExtension extends GuiScrollY {
         if (comboBox == null)
             return;
         
-        HashMapList<String, ItemStack> stacks = search == null || search.equals("") ? comboBox.getStacks() : new HashMapList<>();
+        HashMapList<String, ItemStack> stacks = search == null || search.isEmpty() ? comboBox.getStacks() : new HashMapList<>();
         
-        if (search != null && !search.equals("")) {
+        if (search != null && !search.isEmpty()) {
             for (Entry<String, ArrayList<ItemStack>> entry : comboBox.getStacks().entrySet()) {
                 for (ItemStack stack : entry.getValue()) {
                     if (GuiStackSelector.contains(search, stack))
@@ -78,7 +78,7 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         }
         
-        GuiTextfield textfield = (GuiTextfield) get("searchBar");
+        GuiTextfield textfield = get("searchBar");
         
         clear();
         

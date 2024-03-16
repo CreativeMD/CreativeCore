@@ -104,10 +104,9 @@ public class IntersectionHelper {
             
             if (result.size() > 2)
                 return result;
-            
-            return Collections.EMPTY_LIST;
-        } else
-            return Collections.EMPTY_LIST;
+
+        }
+        return Collections.EMPTY_LIST;
     }
     
     public static List<Vec2f> cutMinMax(Axis one, Axis two, float minOne, float minTwo, float maxOne, float maxTwo, Vec3f[] corners) {
@@ -198,10 +197,9 @@ public class IntersectionHelper {
             
             if (result.size() > 2)
                 return result;
-            
-            return Collections.EMPTY_LIST;
-        } else
-            return Collections.EMPTY_LIST;
+
+        }
+        return Collections.EMPTY_LIST;
     }
     
     private static Edge iterateLines(int offset, int count, boolean hasFoundInside, Edge edge, Ray2d ray, double minOne, double minTwo, double maxOne, double maxTwo, boolean clockwise, InsideStatus[] status, Vec2d[] corners, List<Vec2d> result) {

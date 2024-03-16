@@ -61,7 +61,7 @@ public class GuiRenderHelper {
         
         RenderSystem.applyModelViewMatrix();
         MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        BakedModel bakedmodel = renderer.getModel(stack, (Level) null, (LivingEntity) null, 0);
+        BakedModel bakedmodel = renderer.getModel(stack, null, null, 0);
         boolean flag = !bakedmodel.usesBlockLight();
         if (flag)
             Lighting.setupForFlatItems();
@@ -83,7 +83,7 @@ public class GuiRenderHelper {
         if (!stack.isEmpty()) {
             int x = 0;
             int y = 0;
-            if (count != 1l) {
+            if (count != 1L) {
                 String s = String.valueOf(count);
                 posestack.translate(0.0D, 0.0D, 0 + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
@@ -134,7 +134,7 @@ public class GuiRenderHelper {
                     } else
                         break;
                 }
-                text = builder.toString() + "...";
+                text = builder + "...";
             }
         }
         BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());

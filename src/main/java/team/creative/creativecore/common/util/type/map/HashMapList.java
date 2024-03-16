@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class HashMapList<K, V> implements Iterable<V> {
     
-    private LinkedHashMap<K, ArrayList<V>> keys;
+    private final LinkedHashMap<K, ArrayList<V>> keys;
     
     public HashMapList() {
         this.keys = new LinkedHashMap<>();
@@ -156,7 +156,7 @@ public class HashMapList<K, V> implements Iterable<V> {
         if (size() > 0) {
             for (Iterator<ArrayList<V>> iterator = values().iterator(); iterator.hasNext();) {
                 ArrayList<V> list = iterator.next();
-                if (list.size() > 0)
+                if (!list.isEmpty())
                     return list.get(0);
             }
         }
@@ -169,7 +169,7 @@ public class HashMapList<K, V> implements Iterable<V> {
             
             int index = 0;
             
-            Iterator<ArrayList<V>> iterator = values().iterator();
+            final Iterator<ArrayList<V>> iterator = values().iterator();
             
             ArrayList<V> currentList;
             

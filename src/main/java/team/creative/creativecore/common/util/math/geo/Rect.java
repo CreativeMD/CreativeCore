@@ -76,14 +76,11 @@ public class Rect {
     }
     
     public double getSize(Axis axis) {
-        switch (axis) {
-            case X:
-                return getWidth();
-            case Y:
-                return getHeight();
-            default:
-                return 0;
-        }
+        return switch (axis) {
+            case X -> getWidth();
+            case Y -> getHeight();
+            default -> 0;
+        };
     }
     
     @Environment(EnvType.CLIENT)

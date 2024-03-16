@@ -107,7 +107,7 @@ public class InventoryUtils {
     public static void cleanInventory(Container inventory) {
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack != null && stack.isEmpty())
+            if (stack.isEmpty())
                 inventory.setItem(i, ItemStack.EMPTY);
         }
     }
@@ -147,17 +147,17 @@ public class InventoryUtils {
         }
         
         if (alphabetical)
-            Collections.sort(sorting, new Comparator<ItemStack>() {
-                
+            sorting.sort(new Comparator<ItemStack>() {
+
                 @Override
                 public int compare(ItemStack arg0, ItemStack arg1) {
                     return BuiltInRegistries.ITEM.getKey(arg0.getItem()).toString().compareToIgnoreCase(BuiltInRegistries.ITEM.getKey(arg1.getItem()).toString());
                 }
-                
+
             });
         else
-            Collections.sort(sorting, new Comparator<ItemStack>() {
-                
+            sorting.sort(new Comparator<ItemStack>() {
+
                 @Override
                 public int compare(ItemStack arg0, ItemStack arg1) {
                     int id0 = Item.getId(arg0.getItem());
@@ -166,7 +166,7 @@ public class InventoryUtils {
                         return -1;
                     if (id0 > id1)
                         return 1;
-                    
+
                     if (arg0.getDamageValue() < arg1.getDamageValue())
                         return -1;
                     if (arg0.getDamageValue() > arg1.getDamageValue())
@@ -174,7 +174,7 @@ public class InventoryUtils {
                     
                     return BuiltInRegistries.ITEM.getKey(arg0.getItem()).toString().compareToIgnoreCase(BuiltInRegistries.ITEM.getKey(arg1.getItem()).toString());
                 }
-                
+
             });
         
         int maxStackSize = inventory.getMaxStackSize();
@@ -202,7 +202,7 @@ public class InventoryUtils {
     }
     
     public static String toString(Container inventory) {
-        String result = "[";
+        StringBuilder result = new StringBuilder("[");
         boolean first = true;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
@@ -210,8 +210,8 @@ public class InventoryUtils {
                 if (first)
                     first = false;
                 else
-                    result += ",";
-                result += stack.toString();
+                    result.append(",");
+                result.append(stack);
             }
         }
         return result + "]";

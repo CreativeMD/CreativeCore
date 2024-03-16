@@ -79,7 +79,7 @@ public class GuiButtonContext extends GuiButton {
     
     public void closeExtension() {
         if (extension != null) {
-            ((GuiParent) getLayer()).remove(extension);
+            getLayer().remove(extension);
             extension = null;
         }
     }

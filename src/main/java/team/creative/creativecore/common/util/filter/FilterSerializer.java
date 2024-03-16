@@ -25,7 +25,7 @@ public class FilterSerializer {
         if (filter instanceof FilterAnd) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (Filter child : ((FilterAnd) filter).filters)
+            for (Filter child : ((FilterAnd) filter).filters())
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "&");
@@ -33,14 +33,14 @@ public class FilterSerializer {
         } else if (filter instanceof FilterOr) {
             CompoundTag tag = new CompoundTag();
             ListTag list = new ListTag();
-            for (Filter child : ((FilterOr) filter).filters)
+            for (Filter child : ((FilterOr) filter).filters())
                 list.add(write(child));
             tag.put("c", list);
             tag.putString("t", "+");
             return tag;
         } else if (filter instanceof FilterNot) {
             CompoundTag tag = new CompoundTag();
-            tag.put("c", write(((FilterNot) filter).filter));
+            tag.put("c", write(((FilterNot) filter).filter()));
             tag.putString("t", "!");
             return tag;
         }
@@ -54,20 +54,25 @@ public class FilterSerializer {
     
     public Filter read(CompoundTag tag) throws RegistryException {
         String type = tag.getString("t");
-        if (type.equals("&")) {
-            ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            Filter[] filters = new Filter[list.size()];
-            for (int i = 0; i < list.size(); i++)
-                filters[i] = read(list.getCompound(i));
-            return new FilterAnd<>(filters);
-        } else if (type.equals("+")) {
-            ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
-            Filter[] filters = new Filter[list.size()];
-            for (int i = 0; i < list.size(); i++)
-                filters[i] = read(list.getCompound(i));
-            return new FilterOr<>(filters);
-        } else if (type.equals("!"))
-            return new FilterNot<>(read(tag.getCompound("c")));
+        switch (type) {
+            case "&" -> {
+                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                Filter[] filters = new Filter[list.size()];
+                for (int i = 0; i < list.size(); i++)
+                    filters[i] = read(list.getCompound(i));
+                return new FilterAnd<>(filters);
+            }
+            case "+" -> {
+                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                Filter[] filters = new Filter[list.size()];
+                for (int i = 0; i < list.size(); i++)
+                    filters[i] = read(list.getCompound(i));
+                return new FilterOr<>(filters);
+            }
+            case "!" -> {
+                return new FilterNot<>(read(tag.getCompound("c")));
+            }
+        }
         return REGISTRY.create(type, tag);
     }
     

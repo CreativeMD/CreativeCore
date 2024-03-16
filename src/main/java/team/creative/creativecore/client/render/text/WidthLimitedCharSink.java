@@ -6,12 +6,14 @@ import team.creative.creativecore.common.util.text.content.AdvancedContent;
 import team.creative.creativecore.common.util.text.content.FormattedSingleSink;
 import team.creative.creativecore.mixin.StringSplitterAccessor;
 
+import java.util.Arrays;
+
 public class WidthLimitedCharSink implements FormattedSingleSink {
     
     private final StringSplitter.WidthProvider widthProvider;
     private float maxWidth;
     private int position;
-    private int[] lastPositions = new int[Linebreaker.values().length];
+    private final int[] lastPositions = new int[Linebreaker.values().length];
     
     public WidthLimitedCharSink(float maxWidth, StringSplitter splitter) {
         this.maxWidth = maxWidth;
@@ -58,8 +60,7 @@ public class WidthLimitedCharSink implements FormattedSingleSink {
     
     public void resetPosition() {
         this.position = 0;
-        for (int i = 0; i < lastPositions.length; i++)
-            lastPositions[i] = -1;
+        Arrays.fill(lastPositions, -1);
     }
     
 }

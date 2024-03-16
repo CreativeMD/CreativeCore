@@ -54,20 +54,20 @@ public abstract class ConfigKey {
     }
     
     public boolean isDefault(Side side) {
-        if (defaultValue instanceof IConfigObject)
-            return ((IConfigObject) defaultValue).isDefault(side);
+        if (defaultValue instanceof IConfigObject configObject)
+            return configObject.isDefault(side);
         return checkEqual(defaultValue, get());
     }
     
     public boolean isDefault(Object value, Side side) {
-        if (defaultValue instanceof IConfigObject)
-            return ((IConfigObject) defaultValue).isDefault(side);
+        if (defaultValue instanceof IConfigObject configObject)
+            return configObject.isDefault(side);
         return checkEqual(defaultValue, value);
     }
     
     public void restoreDefault(Side side, boolean ignoreRestart) {
-        if (defaultValue instanceof IConfigObject)
-            ((IConfigObject) defaultValue).restoreDefault(side, ignoreRestart);
+        if (defaultValue instanceof IConfigObject configObject)
+            configObject.restoreDefault(side, ignoreRestart);
         if (defaultValue instanceof ICreativeConfigHolder holder)
             holder.restoreDefault(side, ignoreRestart);
         else

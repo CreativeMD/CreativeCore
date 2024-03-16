@@ -82,10 +82,7 @@ public class GuiInventoryGridPreview extends GuiParent {
             int row = i / cachedCols;
             control.setY(offset + row * GuiSlotBase.SLOT_SIZE);
             control.flowY();
-            if (row > cachedRows)
-                control.control.visible = false;
-            else
-                control.control.visible = true;
+            control.control.visible = row <= cachedRows;
             if (reverse)
                 i--;
             else

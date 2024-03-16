@@ -139,7 +139,7 @@ public class GuiStackSelector extends GuiLabel {
     
     public void closeBox() {
         if (extension != null) {
-            ((GuiParent) getLayer()).remove(extension);
+            getLayer().remove(extension);
             extension = null;
         }
     }
@@ -258,15 +258,16 @@ public class GuiStackSelector extends GuiLabel {
         
         @Override
         public boolean allow(ItemStack stack) {
-            if (super.allow(stack))
-                return Block.byItem(stack.getItem()) != null && !(Block.byItem(stack.getItem()) instanceof AirBlock);
+            if (super.allow(stack)) {
+                return !(Block.byItem(stack.getItem()) instanceof AirBlock);
+            }
             return false;
         }
         
     }
     
     public static boolean contains(String search, ItemStack stack) {
-        if (search.equals(""))
+        if (search.isEmpty())
             return true;
         if (getItemName(stack).toLowerCase().contains(search))
             return true;

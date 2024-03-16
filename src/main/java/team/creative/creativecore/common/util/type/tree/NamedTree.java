@@ -11,8 +11,8 @@ public class NamedTree<T> implements Iterable<T> {
     
     private final NamedTree<T> parent;
     private final String name;
-    private LinkedHashMap<String, NamedTree<T>> children = new LinkedHashMap<>();
-    private LinkedHashMap<String, T> values = new LinkedHashMap<>();
+    private final LinkedHashMap<String, NamedTree<T>> children = new LinkedHashMap<>();
+    private final LinkedHashMap<String, T> values = new LinkedHashMap<>();
     
     public NamedTree() {
         parent = null;

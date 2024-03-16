@@ -43,9 +43,11 @@ import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.registry.LocatedHandlerRegistry;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 public class CreativeCoreClient {
     
-    private static Minecraft mc = Minecraft.getInstance();
+    private static final Minecraft mc = Minecraft.getInstance();
     public static final LocatedHandlerRegistry<CreativeBlockModel> BLOCK_MODEL_TYPES = new LocatedHandlerRegistry<CreativeBlockModel>(null).allowOverwrite();
     public static final LocatedHandlerRegistry<CreativeItemModel> ITEM_MODEL_TYPES = new LocatedHandlerRegistry<CreativeItemModel>(null).allowOverwrite();
     
@@ -89,7 +91,7 @@ public class CreativeCoreClient {
             try {
                 GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e);
             }
             return 1;
         }));

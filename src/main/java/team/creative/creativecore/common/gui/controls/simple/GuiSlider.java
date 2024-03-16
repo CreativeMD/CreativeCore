@@ -11,11 +11,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.IGuiParent;
+import team.creative.creativecore.common.gui.*;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -27,20 +25,26 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public double maxValue;
     public double minValue;
     public double value;
+    private final DoubleValueParser parser;
     protected boolean grabbedSlider;
     public int sliderWidth = 4;
     
     protected GuiTextfield textfield;
-    
+
     public GuiSlider(String name, double value, double min, double max) {
+        this(name, value, min, max, ValueParsers.NONE);
+    }
+
+    public GuiSlider(String name, double value, double min, double max, DoubleValueParser parser) {
         super(name);
         this.minValue = min;
         this.maxValue = max;
+        this.parser = parser;
         setValue(value);
     }
     
     public String getTextByValue() {
-        return Math.round(value * 100F) / 100F + "";
+        return parser.parse(value, maxValue);
     }
     
     public String getTextfieldValue() {
@@ -123,7 +127,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             
             if (x < getContentOffset())
                 this.value = this.minValue;
-            else if (x > getContentOffset() + width + sliderWidth / 2)
+            else if (x > getContentOffset() + width + sliderWidth / 2f)
                 this.value = this.maxValue;
             else {
                 int mouseOffsetX = (int) (x - getContentOffset() - sliderWidth / 2);

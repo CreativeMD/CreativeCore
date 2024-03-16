@@ -16,7 +16,7 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     public final Container container;
-    protected boolean hasFixedSize = false;
+    protected boolean hasFixedSize;
     protected int fixedSize;
     protected boolean reverse = false;
     private int cols;
@@ -25,9 +25,9 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     private int cachedCols;
     private int cachedRows;
     private boolean allChanged = false;
-    private BitSet changed = new BitSet();
+    private final BitSet changed = new BitSet();
     private List<Consumer<GuiSlot>> listeners;
-    private List<GuiSlot> slots = new ArrayList<>();
+    private final List<GuiSlot> slots = new ArrayList<>();
     
     public GuiInventoryGrid(String name, Container container) {
         this(name, container, (int) Math.ceil(Math.sqrt(container.getContainerSize())));
@@ -119,10 +119,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
             control.setY(offset + row * GuiSlotBase.SLOT_SIZE);
             control.setHeight(GuiSlotBase.SLOT_SIZE, height);
             control.flowY();
-            if (row > cachedRows)
-                control.control.visible = false;
-            else
-                control.control.visible = true;
+            control.control.visible = row <= cachedRows;
             if (reverse)
                 i--;
             else

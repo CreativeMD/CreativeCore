@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class GuiEventManager {
     
-    private List<GuiEventHandler> handlers = new ArrayList<>();
+    private final List<GuiEventHandler> handlers = new ArrayList<>();
     
     public void raiseEvent(GuiEvent event) {
         for (GuiEventHandler handler : handlers) {

@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.type.list;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Comparator;
@@ -15,6 +16,7 @@ import team.creative.creativecore.common.util.type.itr.SingleIterator;
 
 public class SingletonList<E> extends AbstractList<E> implements RandomAccess, Serializable {
     
+    @Serial
     private static final long serialVersionUID = 3093736618740652951L;
     
     private E element;
@@ -40,7 +42,7 @@ public class SingletonList<E> extends AbstractList<E> implements RandomAccess, S
     
     @Override
     public boolean contains(Object obj) {
-        return element == null ? obj == null : element.equals(obj);
+        return Objects.equals(element, obj);
     }
     
     @Override

@@ -29,7 +29,7 @@ public class AdvancedComponentHelper {
     }
     
     public static boolean iterateFormatted(Component text, Style style, FormattedSingleSink sink) {
-        return !visit(text, new AdvancedContentConsumer() {
+        return visit(text, new AdvancedContentConsumer() {
             
             @Override
             public Optional accept(Style style, AdvancedContent content) {
@@ -38,10 +38,10 @@ public class AdvancedComponentHelper {
             
             @Override
             public Optional accept(Style style, String content) {
-                return StringDecomposer.iterateFormatted(content.toString(), 0, style, style, sink) ? Optional.empty() : STOP_ITERATION;
+                return StringDecomposer.iterateFormatted(content, 0, style, style, sink) ? Optional.empty() : STOP_ITERATION;
             }
             
-        }, style).isPresent();
+        }, style).isEmpty();
     }
     
     public static <T> Optional<T> visit(Component text, AdvancedContentConsumer<T> consumer, Style defaultStyle) {
@@ -62,9 +62,7 @@ public class AdvancedComponentHelper {
     public static <T> Optional<T> visit(ComponentContents content, AdvancedContentConsumer<T> consumer, Style style) {
         if (content instanceof AdvancedContent adv)
             return adv.visit(consumer, style);
-        return content.visit((cStyle, text) -> {
-            return consumer.accept(cStyle, text);
-        }, style);
+        return content.visit(consumer, style);
     }
     
 }

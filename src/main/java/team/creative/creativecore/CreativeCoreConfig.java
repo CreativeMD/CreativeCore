@@ -22,7 +22,7 @@ public class CreativeCoreConfig {
     public boolean useOptifineCompat = true;
     
     @CreativeConfig(type = ConfigSynchronization.CLIENT)
-    public List<ColorPalette> palette = Arrays.asList(new ColorPalette("basic", ColorUtils.WHITE, ColorUtils.BLACK, ColorUtils.RED, ColorUtils.GREEN, ColorUtils.BLUE));
+    public List<ColorPalette> palette = List.of(new ColorPalette("basic", ColorUtils.WHITE, ColorUtils.BLACK, ColorUtils.RED, ColorUtils.GREEN, ColorUtils.BLUE));
     
     @CreativeConfig
     public NamedList<Usergroup> usergroups = new NamedList<>();

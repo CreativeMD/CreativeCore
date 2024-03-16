@@ -134,7 +134,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public float getFluidViscosityMultiplier(Fluid fluid, Level level) {
-        return fluid.getFluidType().getViscosity() / 1000;
+        return fluid.getFluidType().getViscosity() / 1000f;
     }
     
     @Override

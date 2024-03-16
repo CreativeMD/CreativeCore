@@ -15,7 +15,7 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiTabs extends GuiParent {
     
-    private List<SpecialParent> tabs = new ArrayList<>();
+    private final List<SpecialParent> tabs = new ArrayList<>();
     private int index = -1;
     private GuiParent selected;
     private int lastWidth;

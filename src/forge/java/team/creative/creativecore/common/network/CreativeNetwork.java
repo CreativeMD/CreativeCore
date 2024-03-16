@@ -30,7 +30,7 @@ public class CreativeNetwork {
         return Minecraft.getInstance().player;
     }
     
-    private HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
+    private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     
     private final Logger logger;
     private final String modid;
@@ -59,7 +59,7 @@ public class CreativeNetwork {
             try {
                 ctx.workHandler().execute(() -> message.packet().execute(ctx.player().isPresent() ? ctx.player().get() : getClientPlayer()));
             } catch (Throwable e) {
-                CreativeCore.LOGGER.error(e);
+                CreativeCore.LOGGER.error("Executing a packet ran into an exception", e);
                 throw e;
             }
         });
