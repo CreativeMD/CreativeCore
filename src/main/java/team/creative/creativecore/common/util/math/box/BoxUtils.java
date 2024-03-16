@@ -59,12 +59,12 @@ public class BoxUtils {
         Double length = null;
         BooleanRotation state = BooleanRotation.get(axis, vec);
         
-        boolean positive = rotation > 0;
+        final boolean positive = rotation > 0;
         int quarterRotation = 90;
         
         if (rotation >= 90) {
             while (quarterRotation <= Math.abs(rotation) && quarterRotation < 360) {
-                Facing facing = state.clockwiseMaxFacing();
+                Facing facing = positive ? state.clockwiseMaxFacing() : state.counterMaxClockwiseFacing();
                 
                 if (length == null)
                     length = lengthIgnoreAxis(vec, axis, rotationCenter);

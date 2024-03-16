@@ -31,7 +31,7 @@ public class ValueParsers {
         return v1 % v2;
     }
 
-    private static double round(double value) {
+    private static float round(double value) {
         return value != 0 ? Math.round(value * 100F) / 100F : 0;
     }
 }
