@@ -503,7 +503,7 @@ public class VectorFan {
         
         if (copy)
             return new VectorFan(right.toArray(new Vec3f[0]));
-
+        
         coords = right.toArray(new Vec3f[0]);
         return null;
     }
@@ -568,7 +568,7 @@ public class VectorFan {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof VectorFan other) {
-
+            
             if (coords.length != other.coords.length)
                 return false;
             
@@ -597,7 +597,7 @@ public class VectorFan {
         diff = vec.get(two) - other.get(two);
         if (Float.isNaN(diff))
             return false;
-
+        
         return !((diff < 0 ? -diff : diff) > VectorFan.EPSILON);
     }
     
@@ -797,7 +797,7 @@ public class VectorFan {
             
             before1 = vec1;
         }
-
+        
         return isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse);
     }
     

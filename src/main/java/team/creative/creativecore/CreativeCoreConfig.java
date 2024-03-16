@@ -1,7 +1,6 @@
 package team.creative.creativecore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.world.entity.player.Player;

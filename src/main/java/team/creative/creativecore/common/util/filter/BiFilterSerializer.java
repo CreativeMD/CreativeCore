@@ -4,7 +4,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import team.creative.creativecore.common.util.CompoundSerializer;
-import team.creative.creativecore.common.util.filter.BiFilter.*;
+import team.creative.creativecore.common.util.filter.BiFilter.BiFilterAnd;
+import team.creative.creativecore.common.util.filter.BiFilter.BiFilterNot;
+import team.creative.creativecore.common.util.filter.BiFilter.BiFilterOr;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 

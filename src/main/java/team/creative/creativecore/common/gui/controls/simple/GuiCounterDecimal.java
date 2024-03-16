@@ -43,26 +43,26 @@ public class GuiCounterDecimal extends GuiParent {
         this.add(textfield.setExpandableX());
         this.add(buttons);
     }
-
+    
     protected void createButtons() {
         this.buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()).setTranslate("gui.plus").setDim(6, 3));
         this.buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
     }
-
+    
     public GuiCounterDecimal setSpacing(int spacing) {
         this.spacing = spacing;
         return this;
     }
-
+    
     public GuiCounterDecimal addControl(GuiControl control) {
         this.add(control);
         return this;
     }
-
+    
     public GuiButtonHoldSlim getPlusButton() {
         return this.buttons.get("+");
     }
-
+    
     public GuiButtonHoldSlim getMinusButton() {
         return this.buttons.get("-");
     }

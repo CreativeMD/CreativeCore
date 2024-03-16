@@ -89,23 +89,23 @@ public enum BoxFace {
     public BoxCorner[] getTriangleSecond(boolean inverted) {
         return getTriangle(false, inverted);
     }
-
+    
     public BoxCorner[] getCorners() {
         return corners;
     }
-
+    
     public Facing getFacing() {
         return facing;
     }
-
+    
     public Axis getOne() {
         return one;
     }
-
+    
     public Axis getTwo() {
         return two;
     }
-
+    
     public Vec3d first(Vec3d[] corners) {
         return corners[this.corners[0].ordinal()];
     }

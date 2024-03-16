@@ -104,7 +104,7 @@ public class IntersectionHelper {
             
             if (result.size() > 2)
                 return result;
-
+            
         }
         return Collections.EMPTY_LIST;
     }
@@ -197,7 +197,7 @@ public class IntersectionHelper {
             
             if (result.size() > 2)
                 return result;
-
+            
         }
         return Collections.EMPTY_LIST;
     }

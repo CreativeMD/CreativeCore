@@ -57,10 +57,8 @@ public class ClientSyncGuiLayer extends GuiLayer {
         Function<ConfigKey, Collection<? extends ConfigKey>> getChildren = (x) -> {
             if (x.getDefault() instanceof ICreativeConfigHolder configHolder) {
                 List<ConfigKey> keys = new ArrayList<>();
-                for (ConfigKey key: configHolder.fields())
-                    if (key.isWithoutForce(Side.CLIENT)
-                            && (!(key.get() instanceof ICreativeConfigHolder objectHolder)
-                            || !(objectHolder.isEmptyWithoutForce(Side.CLIENT))))
+                for (ConfigKey key : configHolder.fields())
+                    if (key.isWithoutForce(Side.CLIENT) && (!(key.get() instanceof ICreativeConfigHolder objectHolder) || !(objectHolder.isEmptyWithoutForce(Side.CLIENT))))
                         keys.add(key);
                 return keys;
             }
@@ -68,7 +66,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         };
         
         List<ConfigKey> keys = new ArrayList<>();
-        for (ConfigKey key: holder.fields())
+        for (ConfigKey key : holder.fields())
             if (key.isWithoutForce(Side.CLIENT)) {
                 Object object = key.get();
                 if (!(object instanceof ICreativeConfigHolder configHolder) || !configHolder.isEmptyWithoutForce(Side.CLIENT))
@@ -100,7 +98,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         GuiScrollY box = new GuiScrollY("").setExpandable().setDim(100, 100);
         add(box);
         
-        for (CheckTree<ConfigKey>.CheckTreeEntry key: currentView.children) {
+        for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
             GuiRow row = new GuiRow();
             box.add(row);
             GuiColumn first = new GuiColumn(20);

@@ -45,9 +45,7 @@ public class RangedBitSet {
         }
         return ranges;
     }
-
-    public record BitRange(int min, int max) {
-
-    }
+    
+    public record BitRange(int min, int max) {}
     
 }

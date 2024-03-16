@@ -33,29 +33,29 @@ public class Mirror {
     
     public static void mirror(Vec3d vec, Axis axis) {
         switch (axis) {
-        case X:
-            vec.x = -vec.x;
-            break;
-        case Y:
-            vec.y = -vec.y;
-            break;
-        case Z:
-            vec.z = -vec.z;
-            break;
+            case X:
+                vec.x = -vec.x;
+                break;
+            case Y:
+                vec.y = -vec.y;
+                break;
+            case Z:
+                vec.z = -vec.z;
+                break;
         }
     }
     
     public static void mirror(Vec3f vec, Axis axis) {
         switch (axis) {
-        case X:
-            vec.x = -vec.x;
-            break;
-        case Y:
-            vec.y = -vec.y;
-            break;
-        case Z:
-            vec.z = -vec.z;
-            break;
+            case X:
+                vec.x = -vec.x;
+                break;
+            case Y:
+                vec.y = -vec.y;
+                break;
+            case Z:
+                vec.z = -vec.z;
+                break;
         }
     }
 }

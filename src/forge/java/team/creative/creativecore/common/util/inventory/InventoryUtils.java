@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.util.inventory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -148,16 +147,16 @@ public class InventoryUtils {
         
         if (alphabetical)
             sorting.sort(new Comparator<ItemStack>() {
-
+                
                 @Override
                 public int compare(ItemStack arg0, ItemStack arg1) {
                     return BuiltInRegistries.ITEM.getKey(arg0.getItem()).toString().compareToIgnoreCase(BuiltInRegistries.ITEM.getKey(arg1.getItem()).toString());
                 }
-
+                
             });
         else
             sorting.sort(new Comparator<ItemStack>() {
-
+                
                 @Override
                 public int compare(ItemStack arg0, ItemStack arg1) {
                     int id0 = Item.getId(arg0.getItem());
@@ -166,7 +165,7 @@ public class InventoryUtils {
                         return -1;
                     if (id0 > id1)
                         return 1;
-
+                    
                     if (arg0.getDamageValue() < arg1.getDamageValue())
                         return -1;
                     if (arg0.getDamageValue() > arg1.getDamageValue())
@@ -174,7 +173,7 @@ public class InventoryUtils {
                     
                     return BuiltInRegistries.ITEM.getKey(arg0.getItem()).toString().compareToIgnoreCase(BuiltInRegistries.ITEM.getKey(arg1.getItem()).toString());
                 }
-
+                
             });
         
         int maxStackSize = inventory.getMaxStackSize();

@@ -1,17 +1,14 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.gui.*;
+import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.ITextCollection;
-
-import java.util.List;
 
 public class GuiComboBox extends GuiLabel {
     
@@ -20,7 +17,7 @@ public class GuiComboBox extends GuiLabel {
     private int index;
     public boolean extensionLostFocus;
     private boolean searchbar;
-
+    
     public GuiComboBox(String name, ITextCollection builder) {
         super(name);
         lines = builder.build();
@@ -53,7 +50,7 @@ public class GuiComboBox extends GuiLabel {
             index = lines.length - 1;
         select(index);
     }
-
+    
     protected void updateDisplay() {
         if (index >= 0 && index < lines.length)
             text = lines[index];

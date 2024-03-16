@@ -375,7 +375,7 @@ public class CompiledText {
             }, style);
         } else {
             text.visit(new FormattedText.StyledContentConsumer<FormattedText>() {
-
+                
                 @Override
                 public Optional<FormattedText> accept(Style style, String text) {
                     charSink.resetPosition();
@@ -412,9 +412,9 @@ public class CompiledText {
             return null;
         return new FormattedTextSplit(headText, tailText);
     }
-
+    
     public record FormattedTextSplit(FormattedText head, FormattedText tail) {
-
+        
     }
     
     @Environment(EnvType.CLIENT)

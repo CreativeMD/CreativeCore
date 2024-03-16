@@ -132,7 +132,7 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
         
         if (conversation != null && !conversation.areEqual(one.value, two.value, null))
             return false;
-
+        
         return conversation != null || one.value.equals(two.value);
     }
 }

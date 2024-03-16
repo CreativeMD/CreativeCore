@@ -11,7 +11,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.*;
+import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.IGuiParent;
+import team.creative.creativecore.common.gui.ValueParsers;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -30,11 +34,11 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public int sliderWidth = 4;
     
     protected GuiTextfield textfield;
-
+    
     public GuiSlider(String name, double value, double min, double max) {
         this(name, value, min, max, ValueParsers.NONE);
     }
-
+    
     public GuiSlider(String name, double value, double min, double max, DoubleValueParser parser) {
         super(name);
         this.minValue = min;

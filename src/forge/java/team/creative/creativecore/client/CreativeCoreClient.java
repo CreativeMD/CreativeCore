@@ -1,5 +1,7 @@
 package team.creative.creativecore.client;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
@@ -42,8 +44,6 @@ import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.registry.LocatedHandlerRegistry;
-
-import static team.creative.creativecore.CreativeCore.LOGGER;
 
 public class CreativeCoreClient {
     
