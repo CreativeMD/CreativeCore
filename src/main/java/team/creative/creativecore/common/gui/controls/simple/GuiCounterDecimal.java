@@ -39,10 +39,14 @@ public class GuiCounterDecimal extends GuiParent {
         this.textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
         this.buttons = new GuiParent(GuiFlow.STACK_Y);
         this.buttons.spacing = 0;
-        this.buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()).setTranslate("gui.plus").setDim(6, 3));
-        this.buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
+        this.createButtons();
         this.add(textfield.setExpandableX());
         this.add(buttons);
+    }
+
+    protected void createButtons() {
+        this.buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()).setTranslate("gui.plus").setDim(6, 3));
+        this.buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
     }
 
     public GuiCounterDecimal setSpacing(int spacing) {

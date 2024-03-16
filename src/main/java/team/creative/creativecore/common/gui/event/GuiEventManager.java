@@ -6,10 +6,10 @@ import java.util.function.Consumer;
 
 public class GuiEventManager {
     
-    private final List<GuiEventHandler<? extends GuiEvent>> handlers = new ArrayList<>();
+    private final List<GuiEventHandler> handlers = new ArrayList<>();
     
     public void raiseEvent(GuiEvent event) {
-        for (GuiEventHandler<? extends GuiEvent> handler : handlers) {
+        for (GuiEventHandler handler : handlers) {
             handler.react(event);
             if (event.isCanceled())
                 return;
