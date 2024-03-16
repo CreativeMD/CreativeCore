@@ -59,8 +59,7 @@ minecraft {
 dependencies {
     minecraft "net.minecraftforge:forge:${project.property 'minecraft_version'}-${project.property 'forge_version'}"
 
-    // MIXINS
-    annotationProcessor "net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 def modDependencies = []
