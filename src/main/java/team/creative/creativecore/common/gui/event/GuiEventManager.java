@@ -17,7 +17,7 @@ public class GuiEventManager {
     }
     
     public <T extends GuiEvent> void registerEvent(Class<T> clazz, Consumer<T> action) {
-        handlers.add(new GuiEventHandler(clazz, action));
+        handlers.add(new GuiEventHandler<>(clazz, action));
     }
     
     public void clear() {
