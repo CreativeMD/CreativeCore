@@ -20,8 +20,9 @@ public class GuiCounterDecimal extends GuiParent {
     
     public double min;
     public double max;
+    public final GuiParent buttons;
     public GuiTextfield textfield;
-    public double stepAmount = 1;
+    public double stepAmount;
     
     public GuiCounterDecimal(String name, double value) {
         this(name, value, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -31,15 +32,24 @@ public class GuiCounterDecimal extends GuiParent {
         super(name);
         this.min = min;
         this.max = max;
-        flow = GuiFlow.STACK_X;
-        spacing = 1;
-        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
-        add(textfield.setExpandableX());
-        GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
-        buttons.spacing = 0;
-        add(buttons);
-        buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()).setTranslate("gui.plus").setDim(6, 3));
-        buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
+        this.stepAmount = 1;
+        this.flow = GuiFlow.STACK_X;
+        this.spacing = 1;
+        this.textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
+        this.buttons = new GuiParent(GuiFlow.STACK_Y);
+        this.buttons.spacing = 0;
+        this.buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()).setTranslate("gui.plus").setDim(6, 3));
+        this.buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
+        this.add(textfield.setExpandableX());
+        this.add(buttons);
+    }
+
+    public GuiButtonHoldSlim getPlusButton() {
+        return this.buttons.get("+");
+    }
+
+    public GuiButtonHoldSlim getMinusButton() {
+        return this.buttons.get("-");
     }
     
     public GuiCounterDecimal setStep(double amount) {
