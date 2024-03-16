@@ -138,7 +138,7 @@ modrinth {
     uploadFile = jar
     gameVersions = [ project.minecraft_version ]
     changelog = getChangelogText()
-    loaders = [ "forge", "neoforge" ]
+    loaders = [ "forge" ]
 }
 
 tasks.curseforge.enabled = System.getenv("CURSEFORGE_TOKEN") != null
