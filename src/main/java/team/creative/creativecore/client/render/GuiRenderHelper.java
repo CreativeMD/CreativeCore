@@ -25,11 +25,9 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.mc.ColorUtils;
@@ -87,8 +85,8 @@ public class GuiRenderHelper {
                 String s = String.valueOf(count);
                 posestack.translate(0.0D, 0.0D, 0 + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last()
-                        .pose(), multibuffersource$buffersource, DisplayMode.NORMAL, 0, 15728880);
+                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last().pose(), multibuffersource$buffersource, DisplayMode.NORMAL, 0,
+                    15728880);
                 multibuffersource$buffersource.endBatch();
             }
             if (stack.isBarVisible()) {
@@ -138,8 +136,8 @@ public class GuiRenderHelper {
             }
         }
         BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2f, height / 2 - mc.font.lineHeight / 2f, ColorUtils.WHITE, shadow, stack.last()
-                .pose(), buffer, DisplayMode.NORMAL, 0, 15728880);
+        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2f, height / 2 - mc.font.lineHeight / 2f, ColorUtils.WHITE, shadow, stack.last().pose(), buffer,
+            DisplayMode.NORMAL, 0, 15728880);
         buffer.endBatch();
     }
     

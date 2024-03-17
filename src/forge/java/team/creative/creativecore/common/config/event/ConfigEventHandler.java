@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,7 +34,6 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey;
@@ -140,9 +140,9 @@ public class ConfigEventHandler {
                 
                 if (json.size() > 0) {
                     FileWriter writer = new FileWriter(config);
-
+                    
                     JsonWriter jsonWriter = getJsonWriter(writer);
-
+                    
                     try {
                         GSON.toJson(json, jsonWriter);
                     } finally {
@@ -156,31 +156,31 @@ public class ConfigEventHandler {
         }
         
     }
-
+    
     @NotNull
     private JsonWriter getJsonWriter(FileWriter writer) {
         JsonWriter jsonWriter = new JsonWriter(writer) {
-
+            
             @Override
             public JsonWriter value(double value) throws IOException {
                 if (Double.isNaN(value) || Double.isInfinite(value))
                     throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
-
+                
                 return jsonValue(df.format(value));
             }
-
+            
             @Override
             public JsonWriter value(Number value) throws IOException {
                 if (value instanceof Double || value.getClass() == double.class)
                     return value(value.doubleValue());
                 return super.value(value);
             }
-
+            
         };
         jsonWriter.setIndent("  ");
         return jsonWriter;
     }
-
+    
     public void save(Side side) {
         for (String modid : CreativeConfigRegistry.ROOT.names())
             save(modid, side);

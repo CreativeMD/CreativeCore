@@ -209,7 +209,7 @@ public abstract class GuiControl {
     }
     
     public boolean is(String... name) {
-        for (String s: name) {
+        for (String s : name) {
             if (this.name.equalsIgnoreCase(s))
                 return true;
         }
@@ -379,7 +379,7 @@ public abstract class GuiControl {
             else if (toolTip != customTooltip)
                 toolTip.addAll(customTooltip);
         }
-            
+        
         if (toolTip == null) {
             String langTooltip = translateOrDefault(getNestedName() + ".tooltip", null);
             if (langTooltip != null)

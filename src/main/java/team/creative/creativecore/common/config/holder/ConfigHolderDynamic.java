@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.config.holder;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 import java.lang.reflect.Field;
 
 import team.creative.creativecore.Side;
@@ -7,8 +9,6 @@ import team.creative.creativecore.common.config.converation.ConfigTypeConveratio
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyDynamic;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyDynamicField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
-
-import static team.creative.creativecore.CreativeCore.LOGGER;
 
 public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
     

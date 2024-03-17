@@ -82,7 +82,7 @@ public class ConfigGuiLayer extends GuiLayer {
         box.add(table);
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
-        for (ConfigKey key: holder.fields()) {
+        for (ConfigKey key : holder.fields()) {
             if (key.requiresRestart)
                 continue;
             Object value = key.get();
@@ -98,7 +98,8 @@ public class ConfigGuiLayer extends GuiLayer {
                     table.addRow(row);
                     GuiColumn col = new GuiColumn();
                     row.addColumn(col);
-                    col.add(new GuiButton(caption, x -> loadHolder((ICreativeConfigHolder) value)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                    col.add(new GuiButton(caption, x -> loadHolder((ICreativeConfigHolder) value)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(
+                        comment).build()));
                 }
             } else {
                 if (!key.is(side))

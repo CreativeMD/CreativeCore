@@ -38,7 +38,7 @@ import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiTextfield extends GuiFocusControl {
-
+    
     private String text = "";
     private String suggestion = "";
     private int maxStringLength = 128;
@@ -186,7 +186,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty() && flag && j < s.length())
             graphics.drawString(font, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color, false);
-
+        
         if (text.isEmpty() && !this.suggestion.isEmpty())
             graphics.drawString(font, this.suggestion, k1 - 1, yOffset, -8355712);
         

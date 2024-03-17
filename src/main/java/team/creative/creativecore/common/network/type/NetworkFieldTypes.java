@@ -103,7 +103,7 @@ public class NetworkFieldTypes {
             NetworkFieldType parser = parsers.get(classType);
             if (parser != null)
                 return parser;
-
+            
             for (int i = 0; i < specialParsers.size(); i++)
                 if (specialParsers.get(i).predicate.test(classType, genericType))
                     return specialParsers.get(i);

@@ -36,7 +36,7 @@ public class GuiEventHandler {
             if (window.getWidth() != displayWidth || window.getHeight() != displayHeight) {
                 displayWidth = window.getWidth();
                 displayHeight = window.getHeight();
-                if (mc.screen instanceof IScaleableGuiScreen gui) {
+                if (mc.screen instanceof IScaleableGuiScreen) {
                     mc.options.guiScale().set(defaultScale);
                     window.setGuiScale(window.calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode()));
                     if (mc.screen != null)

@@ -69,10 +69,10 @@ public class ChunkLayerMap<T> implements Iterable<T> {
     
     public Iterable<Tuple<RenderType, T>> tuples() {
         return new ComputeNextIterator<>() {
-
+            
             private int index;
             private final Tuple<RenderType, T> pair = new Tuple<>(null, null);
-
+            
             @Override
             protected Tuple<RenderType, T> computeNext() {
                 while (index < content.length && content[index] == null)
