@@ -68,33 +68,33 @@ public class Vec4d extends VecNd<Vec4d> {
     @Override
     public void set(Axis axis, double value) {
         switch (axis) {
-        case X:
-            this.x = value;
-            break;
-        case Y:
-            this.y = value;
-            break;
-        case Z:
-            this.z = value;
-            break;
+            case X:
+                this.x = value;
+                break;
+            case Y:
+                this.y = value;
+                break;
+            case Z:
+                this.z = value;
+                break;
         }
     }
     
     @Override
     public void set(int dim, double value) {
         switch (dim) {
-        case 0:
-            this.x = value;
-            break;
-        case 1:
-            this.y = value;
-            break;
-        case 2:
-            this.z = value;
-            break;
-        case 3:
-            this.w = value;
-            break;
+            case 0:
+                this.x = value;
+                break;
+            case 1:
+                this.y = value;
+                break;
+            case 2:
+                this.z = value;
+                break;
+            case 3:
+                this.w = value;
+                break;
         }
     }
     

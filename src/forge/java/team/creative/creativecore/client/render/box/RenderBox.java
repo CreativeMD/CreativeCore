@@ -211,15 +211,12 @@ public class RenderBox extends AlignedBox {
     
     public boolean intersectsWithFace(Facing facing, QuadGeneratorContext holder, BlockPos offset) {
         return switch (facing.axis) {
-            case X ->
-                    holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset
-                            .getZ() && holder.minZ < this.maxZ - offset.getZ();
-            case Y ->
-                    holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxZ > this.minZ - offset
-                            .getZ() && holder.minZ < this.maxZ - offset.getZ();
-            case Z ->
-                    holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxY > this.minY - offset
-                            .getY() && holder.minY < this.maxY - offset.getY();
+            case X -> holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset
+                    .getZ() && holder.minZ < this.maxZ - offset.getZ();
+            case Y -> holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxZ > this.minZ - offset
+                    .getZ() && holder.minZ < this.maxZ - offset.getZ();
+            case Z -> holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxY > this.minY - offset
+                    .getY() && holder.minY < this.maxY - offset.getY();
         };
     }
     
@@ -360,7 +357,7 @@ public class RenderBox extends AlignedBox {
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List list)
+                if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
                         ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)

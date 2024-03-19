@@ -269,14 +269,14 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
     @Override
     public Iterator<MutableBlockPos> iterator() {
         return new ComputeNextIterator<>() {
-
+            
             private final MutableBlockPos pos = new MutableBlockPos();
             private int found = 0;
             private int i = 0;
             private int j = 0;
             private int k = 0;
             private int l = 0;
-
+            
             @Override
             protected MutableBlockPos computeNext() {
                 if (found >= count)
@@ -289,7 +289,8 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
                                 while (l < 64) {
                                     long data = word & (1L << l);
                                     if (data != 0) {
-                                        pos.set((minChunkX + i) * CHUNK_SIZE + l / CHUNK_SIZE_SQUARE, (minChunkY + j) * CHUNK_SIZE + l / CHUNK_SIZE, (minChunkZ + k) * CHUNK_SIZE + l % CHUNK_SIZE);
+                                        pos.set((minChunkX + i) * CHUNK_SIZE + l / CHUNK_SIZE_SQUARE, (minChunkY + j) * CHUNK_SIZE + l / CHUNK_SIZE,
+                                            (minChunkZ + k) * CHUNK_SIZE + l % CHUNK_SIZE);
                                         found++;
                                         l++;
                                         return pos;

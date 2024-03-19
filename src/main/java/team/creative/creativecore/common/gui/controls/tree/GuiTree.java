@@ -215,8 +215,8 @@ public class GuiTree extends GuiScrollXY {
             lastDragPosition = calculatePosition((int) (mouseX - realRect.minX - getContentOffset()), (int) (mouseY - realRect.minY - getContentOffset()));
             if (lastDragPosition != null) {
                 if (lastDragPosition.position() == ItemPosition.IN)
-                    dragHover.render(pose, lastDragPosition.child().rect.minX, lastDragPosition.child().rect.minY, lastDragPosition.child().rect.getWidth(), lastDragPosition.child().rect
-                            .getHeight());
+                    dragHover.render(pose, lastDragPosition.child().rect.minX, lastDragPosition.child().rect.minY, lastDragPosition.child().rect.getWidth(), lastDragPosition
+                            .child().rect.getHeight());
                 else {
                     int thickness = 1;
                     int minY;

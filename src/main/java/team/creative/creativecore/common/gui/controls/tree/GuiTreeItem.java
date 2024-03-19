@@ -138,7 +138,7 @@ public class GuiTreeItem extends GuiParent {
     protected void updateControls() {
         if (tree.hasCheckboxes() == (checkbox != null) && items.isEmpty() == (button == null))
             return;
-
+        
         clear();
         if (items.isEmpty()) {
             button = null;

@@ -1,12 +1,12 @@
 package team.creative.creativecore.common.network;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 import java.lang.reflect.Field;
 
 import net.minecraft.network.FriendlyByteBuf;
 import team.creative.creativecore.common.network.type.NetworkFieldType;
 import team.creative.creativecore.common.network.type.NetworkFieldTypes;
-
-import static team.creative.creativecore.CreativeCore.LOGGER;
 
 public class CreativeNetworkField {
     

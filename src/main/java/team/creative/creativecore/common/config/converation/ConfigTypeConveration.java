@@ -510,26 +510,26 @@ public abstract class ConfigTypeConveration<T> {
         registerTypeCreator(String.class, () -> "");
         
         registerType(ResourceLocation.class, new SimpleConfigTypeConveration<>() {
-
+            
             @Override
             public ResourceLocation readElement(ResourceLocation defaultValue, boolean loadDefault, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     return new ResourceLocation(element.getAsString());
                 return defaultValue;
             }
-
+            
             @Override
             public JsonElement writeElement(ResourceLocation value, ResourceLocation defaultValue, boolean saveDefault) {
                 return new JsonPrimitive(value.toString());
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, Class clazz) {
                 parent.add(new GuiTextfield("data").setDim(30, 8).setExpandableX());
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
@@ -537,7 +537,7 @@ public abstract class ConfigTypeConveration<T> {
                 GuiTextfield button = parent.get("data");
                 button.setText(value.toString());
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
@@ -545,12 +545,12 @@ public abstract class ConfigTypeConveration<T> {
                 GuiTextfield button = parent.get("data");
                 return new ResourceLocation(button.getText());
             }
-
+            
             @Override
             public ResourceLocation set(ConfigKeyField key, ResourceLocation value) {
                 return value;
             }
-
+            
         });
         registerTypeCreator(ResourceLocation.class, () -> new ResourceLocation(""));
         
@@ -624,19 +624,19 @@ public abstract class ConfigTypeConveration<T> {
         registerTypeCreator(SoundConfig.class, () -> new SoundConfig(new ResourceLocation("missing")));
         
         registerType(RegistryObjectConfig.class, new ConfigTypeConveration<>() {
-
+            
             @Override
             public RegistryObjectConfig readElement(RegistryObjectConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKeyField key) {
                 if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
                     return new RegistryObjectConfig(defaultValue.registry, new ResourceLocation(element.getAsString()));
                 return defaultValue;
             }
-
+            
             @Override
             public JsonElement writeElement(RegistryObjectConfig value, RegistryObjectConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKeyField key) {
                 return new JsonPrimitive(value.location.toString());
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
@@ -648,7 +648,7 @@ public abstract class ConfigTypeConveration<T> {
                     return new TextComponent(x.toString());
                 })));
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
@@ -656,22 +656,22 @@ public abstract class ConfigTypeConveration<T> {
                 GuiComboBoxMapped<ResourceLocation> box = parent.get("elements");
                 box.select(value.location);
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected RegistryObjectConfig saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, ConfigKeyField key) {
                 RegistryObjectConfig object = (RegistryObjectConfig) key.getDefault();
                 GuiComboBoxMapped<ResourceLocation> box = parent.get("elements");
-
+                
                 return new RegistryObjectConfig(object.registry, box.getSelected());
             }
-
+            
             @Override
             public RegistryObjectConfig set(ConfigKeyField key, RegistryObjectConfig value) {
                 return value;
             }
-
+            
         });
         
         registerType(SelectableConfig.class, new ConfigTypeConveration<SelectableConfig>() {
@@ -747,7 +747,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(ToggleableConfig.class, new ConfigTypeToggleable());
         
         holderConveration = registerType(ConfigHolderObject.class, new ConfigTypeConveration<>() {
-
+            
             @Override
             public ConfigHolderObject readElement(ConfigHolderObject defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
                 if (element.isJsonObject())
@@ -756,31 +756,29 @@ public abstract class ConfigTypeConveration<T> {
                     defaultValue.restoreDefault(side, ignoreRestart);
                 return defaultValue;
             }
-
+            
             @Override
             public JsonElement writeElement(ConfigHolderObject value, ConfigHolderObject defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
                 return value.save(saveDefault, ignoreRestart, side);
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
-            }
-
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {}
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void loadValue(ConfigHolderObject value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
-            }
-
+            public void loadValue(ConfigHolderObject value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {}
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected ConfigHolderObject saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
                 return null;
             }
-
+            
             @Override
             public ConfigHolderObject set(ConfigKeyField key, ConfigHolderObject value) {
                 return null;
@@ -788,7 +786,7 @@ public abstract class ConfigTypeConveration<T> {
         });
         
         registerType(ConfigHolderDynamic.class, new ConfigTypeConveration<>() {
-
+            
             @Override
             public ConfigHolderDynamic readElement(ConfigHolderDynamic defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
                 if (element.isJsonObject())
@@ -797,36 +795,34 @@ public abstract class ConfigTypeConveration<T> {
                     defaultValue.restoreDefault(side, ignoreRestart);
                 return defaultValue;
             }
-
+            
             @Override
             public JsonElement writeElement(ConfigHolderDynamic value, ConfigHolderDynamic defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
                 return value.save(saveDefault, ignoreRestart, side);
             }
-
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
-            }
-
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {}
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void loadValue(ConfigHolderDynamic value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
-            }
-
+            public void loadValue(ConfigHolderDynamic value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {}
+            
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected ConfigHolderDynamic saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
                 return null;
             }
-
+            
             @Override
             public ConfigHolderDynamic set(ConfigKeyField key, ConfigHolderDynamic value) {
                 return null;
             }
-
+            
         });
         
         registerSpecialType((x) -> {

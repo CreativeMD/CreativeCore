@@ -18,16 +18,16 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 import java.util.List;
 
 public class GuiProgressbar extends GuiControl {
-
+    
     public double pos;
     public double max;
     public boolean showToolTip = true;
     public final DoubleValueParser parser;
-
+    
     public GuiProgressbar(String name, double pos, double max) {
         this(name, pos, max, ValueParsers.PERCENT);
     }
-
+    
     public GuiProgressbar(String name, double pos, double max, DoubleValueParser valueParser) {
         super(name);
         this.pos = pos;
@@ -50,7 +50,7 @@ public class GuiProgressbar extends GuiControl {
             return new TextBuilder().number(pos, true).text("/").number(max, true).text(" (").number(pos / max * 100, true).text("%)").build();
         return super.getTooltip();
     }
-
+    
     public double getPercentage() {
         return this.pos / this.max;
     }

@@ -212,13 +212,13 @@ public class QuadBitSet implements Iterable<Vector2i> {
     @Override
     public Iterator<Vector2i> iterator() {
         return new ComputeNextIterator<>() {
-
+            
             private final Vector2i vec = new Vector2i();
             private int found = 0;
             private int i = 0;
             private int j = 0;
             private int k = 0;
-
+            
             @Override
             protected Vector2i computeNext() {
                 if (found >= count)

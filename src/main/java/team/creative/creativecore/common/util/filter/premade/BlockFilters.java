@@ -143,21 +143,21 @@ public class BlockFilters {
         }
         
     }
-
+    
     private record BlockPropertyFilter(Property<?> property) implements Filter<Block> {
-
+        
         @Override
-            public boolean is(Block t) {
-                return t.defaultBlockState().hasProperty(property);
-            }
+        public boolean is(Block t) {
+            return t.defaultBlockState().hasProperty(property);
         }
-
+    }
+    
     private record BlockTagFilter(TagKey<Block> tag) implements Filter<Block> {
-
+        
         @Override
-            public boolean is(Block t) {
-                return t.builtInRegistryHolder().is(tag);
-            }
-
+        public boolean is(Block t) {
+            return t.builtInRegistryHolder().is(tag);
+        }
+        
     }
 }

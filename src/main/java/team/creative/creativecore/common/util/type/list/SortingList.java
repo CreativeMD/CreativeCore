@@ -1,6 +1,10 @@
 package team.creative.creativecore.common.util.type.list;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -62,9 +66,8 @@ public class SortingList implements List<CreativeIngredient> {
      *            the array can either contain a Material, a Block, an Item, an
      *            ItemStack or a String for the OreDictionary. */
     public void addSortingObjects(Object... objects) {
-        for (Object object: objects) {
-            addSortingObject(object);
-        }
+        for (int i = 0; i < objects.length; i++)
+            addSortingObject(objects[i]);
     }
     
     /** The given parameter will be added to the list.
@@ -127,14 +130,14 @@ public class SortingList implements List<CreativeIngredient> {
         CreativeIngredient info = CreativeIngredient.parse(object);
         if (info == null)
             return false;
-        for (CreativeIngredient ingredient: entries)
+        for (CreativeIngredient ingredient : entries)
             if (ingredient.is(info))
                 return true;
         return false;
     }
     
     protected boolean canBeFoundInList(ItemStack stack) {
-        for (CreativeIngredient ingredient: entries)
+        for (CreativeIngredient ingredient : entries)
             if (ingredient.is(stack))
                 return true;
         return false;
@@ -143,8 +146,8 @@ public class SortingList implements List<CreativeIngredient> {
     /** If the given object can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
      * 
-     * @param object object to check
-     */
+     * @param object
+     *            object to check */
     public boolean canPass(Object object) {
         return canBeFoundInList(object) == isWhitelist;
     }
@@ -152,8 +155,8 @@ public class SortingList implements List<CreativeIngredient> {
     /** If the given itemstack can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
      *
-     * @param stack item stack
-     */
+     * @param stack
+     *            item stack */
     public boolean canPass(ItemStack stack) {
         return canBeFoundInList(stack) == isWhitelist;
     }
