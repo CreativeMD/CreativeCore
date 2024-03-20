@@ -81,7 +81,7 @@ public class GuiSeekBar extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderProgress(PoseStack pose, GuiChildControl control, Rect rect, double percent) {
-        this.getStyle().clickable.render(pose, 0, 0, (rect.getWidth() * percent), rect.getHeight());
+        this.getStyle().clickable.render(pose, 0, 0, (rect.getWidth() * Math.min(percent, 1.0d)), rect.getHeight());
     }
     
     @Override
