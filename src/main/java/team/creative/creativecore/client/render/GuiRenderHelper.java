@@ -201,7 +201,7 @@ public class GuiRenderHelper {
     }
     
     public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v, float u2, float v2) {
-        textureRect(pose, x, x + width, y, y + height, 0, u, v, u2, v2, 256, 256);
+        textureRect(pose, x, y, 0, width, height, u, v, u2, v2, 256, 256);
     }
     
     private static void textureRect(PoseStack pose, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth, int textureHeight) {
@@ -214,14 +214,14 @@ public class GuiRenderHelper {
     
     private static void drawTextureRect(Matrix4f matrix, int x, int x2, int y, int y2, int z, float u, float u2, float v, float v2) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferbuilder.vertex(matrix, x, y2, z).uv(u, v2).endVertex();
         bufferbuilder.vertex(matrix, x2, y2, z).uv(u2, v2).endVertex();
         bufferbuilder.vertex(matrix, x2, y, z).uv(u2, v).endVertex();
         bufferbuilder.vertex(matrix, x, y, z).uv(u, v).endVertex();
-        tesselator.end();
+        bufferbuilder.end();
+        BufferUploader.end(bufferbuilder);
     }
     
 }

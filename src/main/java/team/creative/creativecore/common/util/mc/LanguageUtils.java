@@ -4,7 +4,7 @@ import java.util.IllegalFormatException;
 
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.locale.Language;
-import team.creative.creativecore.CreativeCore;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class LanguageUtils {
     
@@ -13,7 +13,7 @@ public class LanguageUtils {
     }
     
     public static String translate(String name) {
-        if (CreativeCore.loader().getOverallSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return I18n.get(name);
         return Language.getInstance().getOrDefault(name);
     }
@@ -22,11 +22,11 @@ public class LanguageUtils {
         String result = translate(name);
         if (name.equals(result))
             return defaultString;
-        return result;
+        return name;
     }
     
     public static String translate(String name, Object... args) {
-        if (CreativeCore.loader().getOverallSide().isClient())
+        if (FMLEnvironment.dist.isClient())
             return I18n.get(name, args);
         try {
             return String.format(Language.getInstance().getOrDefault(name), args);

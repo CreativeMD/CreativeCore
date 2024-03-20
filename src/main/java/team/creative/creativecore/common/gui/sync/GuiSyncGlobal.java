@@ -22,16 +22,11 @@ public class GuiSyncGlobal<C extends GuiControl, T extends Tag> extends GuiSync<
         this.consumer.accept(control, tag);
     }
     
-    public void send(C control, T tag) {
+    public void send(GuiControl control, T tag) {
         if (control.isClient())
             CreativeCore.NETWORK.sendToServer(new ControlSyncPacket(control, this, tag));
         else
             CreativeCore.NETWORK.sendToClient(new ControlSyncPacket(control, this, tag), (ServerPlayer) control.getPlayer());
-    }
-    
-    public void sendAndExecute(C control, T tag) {
-        send(control, tag);
-        receive(control, tag);
     }
     
 }

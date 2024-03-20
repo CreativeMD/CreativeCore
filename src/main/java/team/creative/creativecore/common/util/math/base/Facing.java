@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.util.math.base;
 
-import com.mojang.math.Vector3f;
-
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
@@ -9,7 +7,7 @@ import team.creative.creativecore.common.util.math.geo.NormalPlane;
 
 public enum Facing {
     
-    DOWN(Axis.Y, false, new Vec3i(0, -1, 0), -1) {
+    DOWN(Axis.Y, false, new Vec3i(0, -1, 0)) {
         
         @Override
         public Facing opposite() {
@@ -26,13 +24,8 @@ public enum Facing {
             return bb.minY;
         }
         
-        @Override
-        public Vector3f rotation() {
-            return Vector3f.YN;
-        }
-        
     },
-    UP(Axis.Y, true, new Vec3i(0, 1, 0), -1) {
+    UP(Axis.Y, true, new Vec3i(0, 1, 0)) {
         
         @Override
         public Facing opposite() {
@@ -49,13 +42,8 @@ public enum Facing {
             return bb.maxY;
         }
         
-        @Override
-        public Vector3f rotation() {
-            return Vector3f.YP;
-        }
-        
     },
-    NORTH(Axis.Z, false, new Vec3i(0, 0, -1), 2) {
+    NORTH(Axis.Z, false, new Vec3i(0, 0, -1)) {
         
         @Override
         public Facing opposite() {
@@ -72,13 +60,8 @@ public enum Facing {
             return bb.minZ;
         }
         
-        @Override
-        public Vector3f rotation() {
-            return Vector3f.ZN;
-        }
-        
     },
-    SOUTH(Axis.Z, true, new Vec3i(0, 0, 1), 0) {
+    SOUTH(Axis.Z, true, new Vec3i(0, 0, 1)) {
         
         @Override
         public Facing opposite() {
@@ -95,13 +78,8 @@ public enum Facing {
             return bb.maxZ;
         }
         
-        @Override
-        public Vector3f rotation() {
-            return Vector3f.ZP;
-        }
-        
     },
-    WEST(Axis.X, false, new Vec3i(-1, 0, 0), 1) {
+    WEST(Axis.X, false, new Vec3i(-1, 0, 0)) {
         
         @Override
         public Facing opposite() {
@@ -118,13 +96,8 @@ public enum Facing {
             return bb.minX;
         }
         
-        @Override
-        public Vector3f rotation() {
-            return Vector3f.XN;
-        }
-        
     },
-    EAST(Axis.X, true, new Vec3i(1, 0, 0), 3) {
+    EAST(Axis.X, true, new Vec3i(1, 0, 0)) {
         
         @Override
         public Facing opposite() {
@@ -140,64 +113,59 @@ public enum Facing {
         public double get(AABB bb) {
             return bb.maxX;
         }
-        
-        @Override
-        public Vector3f rotation() {
-            return Vector3f.XP;
-        }
     };
     
     public static final Facing[] VALUES = new Facing[] { DOWN, UP, NORTH, SOUTH, WEST, EAST };
-    public static final Facing[] HORIZONTA_VALUES = new Facing[] { SOUTH, WEST, NORTH, EAST };
     
     public static final String[] FACING_NAMES = new String[] { "down", "up", "north", "south", "west", "east" };
     public static final String[] HORIZONTAL_FACING_NAMES = new String[] { "north", "south", "west", "east" };
     
     public static Facing get(int index) {
         switch (index) {
-            case 0:
-                return Facing.DOWN;
-            case 1:
-                return Facing.UP;
-            case 2:
-                return Facing.NORTH;
-            case 3:
-                return Facing.SOUTH;
-            case 4:
-                return Facing.WEST;
-            case 5:
-                return Facing.EAST;
+        case 0:
+            return Facing.DOWN;
+        case 1:
+            return Facing.UP;
+        case 2:
+            return Facing.NORTH;
+        case 3:
+            return Facing.SOUTH;
+        case 4:
+            return Facing.WEST;
+        case 5:
+            return Facing.EAST;
         }
         throw new IllegalArgumentException();
     }
     
     public static Facing get(Direction direction) {
-        if (direction == null)
-            return null;
-        return switch (direction) {
-            case DOWN -> Facing.DOWN;
-            case UP -> Facing.UP;
-            case NORTH -> Facing.NORTH;
-            case SOUTH -> Facing.SOUTH;
-            case WEST -> Facing.WEST;
-            case EAST -> Facing.EAST;
-        };
-    }
-    
-    public static Facing get(Axis axis, boolean positive) {
-        switch (axis) {
-            case X:
-                return positive ? Facing.EAST : Facing.WEST;
-            case Y:
-                return positive ? Facing.UP : Facing.DOWN;
-            case Z:
-                return positive ? Facing.SOUTH : Facing.NORTH;
+        switch (direction) {
+        case DOWN:
+            return Facing.DOWN;
+        case UP:
+            return Facing.UP;
+        case NORTH:
+            return Facing.NORTH;
+        case SOUTH:
+            return Facing.SOUTH;
+        case WEST:
+            return Facing.WEST;
+        case EAST:
+            return Facing.EAST;
         }
         throw new IllegalArgumentException();
     }
     
-    public static Facing getHorizontal(int index) {
-        return HORIZONTA_VALUES[index];
+    public static Facing get(Axis axis, boolean positive) {
+        switch (axis) {
+        case X:
+            return positive ? Facing.EAST : Facing.WEST;
+        case Y:
+            return positive ? Facing.UP : Facing.DOWN;
+        case Z:
+            return positive ? Facing.SOUTH : Facing.NORTH;
+        }
+        throw new IllegalArgumentException();
     }
     
     /** gets the direction from the first position to the second. It assumes the positions are next to each other.
@@ -226,15 +194,13 @@ public enum Facing {
     public final boolean positive;
     public final Vec3i normal;
     public final NormalPlane plane;
-    public final int horizontalIndex;
     
-    private Facing(Axis axis, boolean positive, Vec3i normal, int horizontalIndex) {
+    private Facing(Axis axis, boolean positive, Vec3i normal) {
         this.name = name().toLowerCase();
         this.axis = axis;
         this.positive = positive;
         this.normal = normal;
         this.plane = new NormalPlane(this);
-        this.horizontalIndex = horizontalIndex;
     }
     
     public int offset() {
@@ -261,54 +227,52 @@ public enum Facing {
     
     public Axis getUAxis() {
         switch (axis) {
-            case X:
-                return Axis.Z;
-            case Y:
-                return Axis.X;
-            case Z:
-                return Axis.X;
+        case X:
+            return Axis.Z;
+        case Y:
+            return Axis.X;
+        case Z:
+            return Axis.X;
         }
         return null;
     }
     
     public Axis getVAxis() {
         switch (axis) {
-            case X:
-                return Axis.Y;
-            case Y:
-                return Axis.Z;
-            case Z:
-                return Axis.Y;
+        case X:
+            return Axis.Y;
+        case Y:
+            return Axis.Z;
+        case Z:
+            return Axis.Y;
         }
         return null;
     }
     
     public float getU(float x, float y, float z) {
         switch (axis) {
-            case X:
-                return z;
-            case Y:
-                return x;
-            case Z:
-                return x;
+        case X:
+            return z;
+        case Y:
+            return x;
+        case Z:
+            return x;
         }
         return 0;
     }
     
     public float getV(float x, float y, float z) {
         switch (axis) {
-            case X:
-                return y;
-            case Y:
-                return z;
-            case Z:
-                return y;
+        case X:
+            return y;
+        case Y:
+            return z;
+        case Z:
+            return y;
         }
         return 0;
     }
     
     public abstract double get(AABB bb);
-    
-    public abstract Vector3f rotation();
     
 }

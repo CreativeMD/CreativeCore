@@ -125,20 +125,11 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return null;
     }
     
-    public <T extends GuiControl> T get(String name) {
-        if (name.isBlank())
-            return (T) this;
+    public GuiControl get(String name) {
         GuiControl result = get(name, controls);
         if (result != null)
-            return (T) result;
-        return (T) get(name, hoverControls);
-    }
-    
-    public <T extends GuiControl> T get(String name, Class<T> clazz) {
-        GuiControl result = get(name);
-        if (clazz.isInstance(result))
-            return (T) result;
-        return null;
+            return result;
+        return get(name, hoverControls);
     }
     
     public boolean has(String name) {

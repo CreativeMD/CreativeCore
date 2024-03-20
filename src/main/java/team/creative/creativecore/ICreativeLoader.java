@@ -4,16 +4,12 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.Event;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
 public interface ICreativeLoader {
-    
-    public Side getOverallSide();
     
     public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest);
     
@@ -32,8 +28,6 @@ public interface ICreativeLoader {
     public void registerLoadLevel(Consumer<LevelAccessor> consumer);
     
     public <T> void registerListener(Consumer<T> consumer);
-    
-    public float getFluidViscosityMultiplier(Fluid fluid, Level level);
     
     public void postForge(Event event);
     

@@ -184,9 +184,11 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
+                @SuppressWarnings("deprecation")
                 GuiComboBoxMapped<TagKey<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Block>>()
                         .addComponents(Registry.BLOCK.getTagNames().toList(), x -> {
                             TextBuilder builder = new TextBuilder();
+                            @SuppressWarnings("deprecation")
                             Optional<Named<Block>> tag = Registry.BLOCK.getTag(x);
                             if (tag.isPresent() && tag.get().size() > 0)
                                 builder.stack(new ItemStack(tag.get().get(0).value()));
@@ -204,6 +206,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
+            @SuppressWarnings("deprecation")
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<TagKey<Block>> box = (GuiComboBoxMapped<TagKey<Block>>) gui.get("tag");
@@ -234,8 +237,10 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
+                @SuppressWarnings("deprecation")
                 GuiComboBoxMapped<TagKey<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(Registry.ITEM.getTagNames().toList(), x -> {
                     TextBuilder builder = new TextBuilder();
+                    @SuppressWarnings("deprecation")
                     Optional<Named<Item>> tag = Registry.ITEM.getTag(x);
                     if (tag.isPresent() && tag.get().size() > 0)
                         builder.stack(new ItemStack(tag.get().get(0).value()));
@@ -253,6 +258,7 @@ public abstract class GuiCreativeIngredientHandler {
             }
             
             @Override
+            @SuppressWarnings("deprecation")
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<TagKey<Item>> box = (GuiComboBoxMapped<TagKey<Item>>) gui.get("tag");

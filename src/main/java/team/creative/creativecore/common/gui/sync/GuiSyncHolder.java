@@ -37,7 +37,7 @@ public abstract class GuiSyncHolder {
         return sync;
     }
     
-    public static final GuiSyncHolderGlobal GLOBAL = new GuiSyncHolderGlobal();
+    public static final GuiSyncHolder GLOBAL = new GuiSyncHolderGlobal();
     
     protected final NamedHandlerRegistry<GuiSync> REGISTRY = new NamedHandlerRegistry<GuiSync>(null);
     

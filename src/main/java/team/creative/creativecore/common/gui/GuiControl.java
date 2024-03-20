@@ -19,7 +19,6 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
@@ -297,16 +296,6 @@ public abstract class GuiControl {
     
     // RENDERING
     
-    @OnlyIn(Dist.CLIENT)
-    public StyleDisplay getBorder(GuiStyle style, StyleDisplay display) {
-        return display;
-    }
-    
-    @OnlyIn(Dist.CLIENT)
-    public StyleDisplay getBackground(GuiStyle style, StyleDisplay display) {
-        return display;
-    }
-    
     @OnlyIn(value = Dist.CLIENT)
     public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
@@ -318,12 +307,11 @@ public abstract class GuiControl {
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
         
-        getBorder(style, style.get(formatting.border)).render(pose, 0, 0, controlRect.getWidth(), controlRect.getHeight());
+        style.get(formatting.border).render(pose, 0, 0, controlRect.getWidth(), controlRect.getHeight());
         
         int borderWidth = style.getBorder(formatting.border);
         controlRect.shrink(borderWidth);
-        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)))
-                .render(pose, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
+        style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)).render(pose, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
         
         renderContent(pose, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
         

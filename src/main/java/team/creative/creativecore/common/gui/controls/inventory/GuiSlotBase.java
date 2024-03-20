@@ -19,9 +19,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 public abstract class GuiSlotBase extends GuiControl {
     
     public static final int SLOT_SIZE = 18;
-    
-    @OnlyIn(value = Dist.CLIENT)
-    private DisplayColor hover;
+    private static DisplayColor hover = new DisplayColor(1, 1, 1, 0.2F);
     
     public GuiSlotBase(String name) {
         super(name);
@@ -53,14 +51,13 @@ public abstract class GuiSlotBase extends GuiControl {
     @Override
     @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        if (hover == null)
-            hover = new DisplayColor(1, 1, 1, 0.2F);
         matrix.translate(0, 0, 10);
         GuiRenderHelper.drawItemStack(matrix, getStack(), 1F);
         GuiRenderHelper.drawItemStackDecorations(matrix, getStack());
         matrix.translate(0, 0, 10);
         if (rect.inside(mouseX, mouseY))
             hover.render(matrix, rect.getWidth(), rect.getHeight());
+        
     }
     
     @Override

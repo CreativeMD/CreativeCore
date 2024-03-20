@@ -4,9 +4,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,17 +20,11 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkConstants;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
 public class CreativeForgeLoader implements ICreativeLoader {
-    
-    @Override
-    public Side getOverallSide() {
-        return FMLEnvironment.dist.isClient() ? Side.CLIENT : Side.SERVER;
-    }
     
     @Override
     public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest) {
@@ -96,11 +88,6 @@ public class CreativeForgeLoader implements ICreativeLoader {
     @Override
     public boolean isModLoaded(String modid) {
         return ModList.get().isLoaded(modid);
-    }
-    
-    @Override
-    public float getFluidViscosityMultiplier(Fluid fluid, Level level) {
-        return fluid.getAttributes().getViscosity() / 1000;
     }
     
 }

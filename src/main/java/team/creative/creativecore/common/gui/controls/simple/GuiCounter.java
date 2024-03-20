@@ -2,7 +2,6 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
@@ -19,26 +18,20 @@ public class GuiCounter extends GuiParent {
         this.min = min;
         this.max = max;
         flow = GuiFlow.STACK_X;
-        valign = VAlign.STRETCH;
         spacing = 0;
         textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max), 20, 8).setNumbersOnly();
-        add(textfield.setExpandableX());
+        add(textfield);
         GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
         add(buttons);
-        buttons.add(new GuiButton("+", x -> {
-            textfield.setText("" + stepUp(textfield.parseInteger()));
-            raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
-        }).setTranslate("gui.plus"));
         buttons.add(new GuiButton("-", x -> {
             textfield.setText("" + stepDown(textfield.parseInteger()));
             raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
         }).setTranslate("gui.minus"));
+        buttons.add(new GuiButton("+", x -> {
+            textfield.setText("" + stepUp(textfield.parseInteger()));
+            raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
+        }).setTranslate("gui.plus"));
         
-    }
-    
-    @Override
-    public boolean isExpandableX() {
-        return expandableX;
     }
     
     @Override

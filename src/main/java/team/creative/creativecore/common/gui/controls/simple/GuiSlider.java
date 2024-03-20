@@ -68,10 +68,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             textfield = createTextfield(rect);
             textfield.focus();
             textfield.setText(getTextfieldValue());
-            textfield.setCursorPositionEnd();
             textfield.setParent(this);
-            int width = (int) rect.getWidth();
-            textfield.flowX(width, width);
             return true;
         }
         return false;
@@ -124,12 +121,12 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         if (grabbedSlider) {
             int width = (int) rect.getWidth() - getContentOffset() * 2 - sliderWidth;
             
-            if (x < getContentOffset())
+            if (x < rect.minX + getContentOffset())
                 this.value = this.minValue;
-            else if (x > getContentOffset() + width + sliderWidth / 2)
+            else if (x > rect.minX + getContentOffset() + width + sliderWidth / 2)
                 this.value = this.maxValue;
             else {
-                int mouseOffsetX = (int) (x - getContentOffset() - sliderWidth / 2);
+                int mouseOffsetX = (int) (x - rect.minX - getContentOffset() - sliderWidth / 2);
                 this.value = (float) (this.minValue + (float) ((this.maxValue - this.minValue) * ((float) mouseOffsetX / (float) width)));
             }
             setValue(value);
@@ -200,9 +197,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
-    public void flowY(int width, int preferred) {
+    public void flowY(int height, int preferred) {
         if (textfield != null)
-            textfield.flowY(width, preferred);
+            textfield.flowY(height, preferred);
     }
     
     @Override

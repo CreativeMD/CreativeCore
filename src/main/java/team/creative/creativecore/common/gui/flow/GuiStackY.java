@@ -5,7 +5,6 @@ import java.util.List;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.VAlign;
-import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.type.list.MarkIterator;
 import team.creative.creativecore.common.util.type.list.MarkList;
 
@@ -92,31 +91,6 @@ public class GuiStackY extends GuiFlow {
         if (height >= preferred) { // If there is enough space available
             if (valign == VAlign.STRETCH && !areChildrenExpandableY(controls)) { // force expansion
                 
-                for (GuiChildControl child : list) { // Make sure min dimensions are used
-                    int min = child.getMinHeight();
-                    if (min != -1) {
-                        available -= min;
-                        child.setHeight(min);
-                    } else
-                        child.setHeight(0);
-                }
-                
-                while (available > 0 && !list.isEmpty()) { // add height to remaining controls which are smaller than their preferred height
-                    int average = (int) Math.ceil((double) available / list.remaing());
-                    for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {
-                        GuiChildControl child = itr.next();
-                        int toAdd = Maths.min(average, available, child.getPreferredHeight() - child.getHeight());
-                        if (toAdd <= 0) {
-                            itr.mark();
-                            continue;
-                        }
-                        available -= child.addHeight(toAdd);
-                        if (child.isMaxHeight())
-                            itr.mark();
-                    }
-                }
-                
-                list.clear();
                 while (available > 0 && !list.isEmpty()) { // add height to remaining controls until there is no space available or everything is at max
                     int average = (int) Math.ceil((double) available / list.remaing());
                     for (MarkIterator<GuiChildControl> itr = list.iterator(); itr.hasNext();) {

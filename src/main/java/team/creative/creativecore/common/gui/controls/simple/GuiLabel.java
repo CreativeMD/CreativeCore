@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -28,11 +26,6 @@ public class GuiLabel extends GuiControl {
     
     public GuiLabel(String name, int width, int height) {
         super(name, width, height);
-    }
-    
-    public GuiLabel setDefaultColor(int color) {
-        text.defaultColor = color;
-        return this;
     }
     
     public GuiLabel setAlign(Align align) {
@@ -73,8 +66,7 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn(value = Dist.CLIENT)
     protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         text.render(matrix);
     }

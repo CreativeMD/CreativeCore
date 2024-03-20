@@ -371,46 +371,45 @@ public class GuiTextfield extends GuiFocusControl {
                 return true;
             } else {
                 switch (keyCode) {
-                    case 259:
-                        this.shift = false;
-                        this.delete(-1);
-                        this.shift = Screen.hasShiftDown();
-                        
-                        return true;
-                    case 260:
-                    case 264:
-                    case 265:
-                    case 266:
-                    case 267:
-                        return false;
-                    default:
-                        return SharedConstants.isAllowedChatCharacter((char) keyCode);
-                    case 261:
-                        this.shift = false;
-                        this.delete(1);
-                        this.shift = Screen.hasShiftDown();
-                        
-                        return true;
-                    case 262:
-                        if (Screen.hasControlDown())
-                            this.setCursorPosition(this.getNthWordFromCursor(1));
-                        else
-                            this.moveCursorBy(1);
-                        
-                        return true;
-                    case 263:
-                        if (Screen.hasControlDown())
-                            this.setCursorPosition(this.getNthWordFromCursor(-1));
-                        else
-                            this.moveCursorBy(-1);
-                        
-                        return true;
-                    case 268:
-                        this.setCursorPositionZero();
-                        return true;
-                    case 269:
-                        this.setCursorPositionEnd();
-                        return true;
+                case 259:
+                    this.shift = false;
+                    this.delete(-1);
+                    this.shift = Screen.hasShiftDown();
+                    
+                    return true;
+                case 260:
+                case 264:
+                case 265:
+                case 266:
+                case 267:
+                default:
+                    return false;
+                case 261:
+                    this.shift = false;
+                    this.delete(1);
+                    this.shift = Screen.hasShiftDown();
+                    
+                    return true;
+                case 262:
+                    if (Screen.hasControlDown())
+                        this.setCursorPosition(this.getNthWordFromCursor(1));
+                    else
+                        this.moveCursorBy(1);
+                    
+                    return true;
+                case 263:
+                    if (Screen.hasControlDown())
+                        this.setCursorPosition(this.getNthWordFromCursor(-1));
+                    else
+                        this.moveCursorBy(-1);
+                    
+                    return true;
+                case 268:
+                    this.setCursorPositionZero();
+                    return true;
+                case 269:
+                    this.setCursorPositionEnd();
+                    return true;
                 }
             }
         }
