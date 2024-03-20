@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.config.gui;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
@@ -11,6 +12,7 @@ public class GuiConfigSubControl extends GuiParent {
     
     public GuiTextfield nameField;
     public GuiLabel nameLabel;
+    public boolean defaultHolder;
     
     public GuiConfigSubControl(String name) {
         super(name, GuiFlow.STACK_X);
@@ -31,12 +33,11 @@ public class GuiConfigSubControl extends GuiParent {
     }
     
     public void addNameTextfield(String name) {
-        nameField = new GuiTextfield(name, 50);
-        add(nameField);
+        add(nameField = new GuiTextfield(name, name).setDim(50, 8));
     }
     
     @Override
     public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
+        return ControlFormatting.NESTED;
     }
 }

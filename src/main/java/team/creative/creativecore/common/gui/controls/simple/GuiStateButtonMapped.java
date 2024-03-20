@@ -6,11 +6,23 @@ import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class GuiStateButtonMapped<K> extends GuiStateButton {
     
-    private List<K> keys;
+    private final List<K> keys;
     
     public GuiStateButtonMapped(String name, TextMapBuilder<K> lines) {
         super(name, lines);
         this.keys = lines.keys();
+    }
+    
+    public GuiStateButtonMapped(String name, int index, TextMapBuilder<K> lines) {
+        super(name, lines);
+        this.keys = lines.keys();
+        setState(index);
+    }
+    
+    public GuiStateButtonMapped(String name, K selected, TextMapBuilder<K> lines) {
+        super(name, lines);
+        this.keys = lines.keys();
+        select(selected);
     }
     
     public K getSelected() {

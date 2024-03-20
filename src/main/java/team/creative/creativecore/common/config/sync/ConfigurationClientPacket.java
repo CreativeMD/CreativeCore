@@ -49,9 +49,7 @@ public class ConfigurationClientPacket extends CreativePacket {
         return list;
     }
     
-    public ConfigurationClientPacket() {
-        
-    }
+    public ConfigurationClientPacket() {}
     
     public ICreativeConfigHolder run() {
         ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(path);
@@ -68,7 +66,7 @@ public class ConfigurationClientPacket extends CreativePacket {
     
     @Override
     public void executeServer(ServerPlayer player) {
-        CreativeCore.NETWORK.sendToClientAll(new ConfigurationClientPacket(run()));
+        CreativeCore.NETWORK.sendToClientAll(player.getServer(), new ConfigurationClientPacket(run()));
         CreativeCore.CONFIG_HANDLER.saveClientFields();
         CreativeCore.CONFIG_HANDLER.save(Side.SERVER);
     }

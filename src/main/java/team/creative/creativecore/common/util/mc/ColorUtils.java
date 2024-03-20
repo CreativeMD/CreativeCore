@@ -1,14 +1,12 @@
 package team.creative.creativecore.common.util.mc;
 
 import com.mojang.math.Vector3d;
-
-import net.minecraft.core.Vec3i;
 import team.creative.creativecore.common.util.type.Color;
 
 public class ColorUtils {
     
     public static enum ColorPart {
-        RED(0xFF000000) {
+        RED(0xFF0000) {
             @Override
             public int get(Color color) {
                 return color.getRed();
@@ -19,7 +17,7 @@ public class ColorUtils {
                 color.setRed(value);
             }
         },
-        GREEN(0x00FF0000) {
+        GREEN(0x00FF00) {
             @Override
             public int get(Color color) {
                 return color.getGreen();
@@ -30,7 +28,7 @@ public class ColorUtils {
                 color.setGreen(value);
             }
         },
-        BLUE(0x0000FF00) {
+        BLUE(0x0000FF) {
             @Override
             public int get(Color color) {
                 return color.getBlue();
@@ -41,7 +39,7 @@ public class ColorUtils {
                 color.setBlue(value);
             }
         },
-        ALPHA(0x000000FF) {
+        ALPHA(0xFF000000) {
             @Override
             public int get(Color color) {
                 return color.getAlpha();
@@ -120,22 +118,11 @@ public class ColorUtils {
     }
     
     public static int rgb(int red, int green, int blue) {
-        return (255 & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
+        return (255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
     
     public static int rgb(float red, float green, float blue) {
-        return (255 & 255) << 24 | (((int) (red * 255)) & 255) << 16 | (((int) (green * 255)) & 255) << 8 | ((int) (blue * 255)) & 255;
-    }
-    
-    public static int rgb(Vec3i color) {
-        return (255 & 255) << 24 | (color.getX() & 255) << 16 | (color.getY() & 255) << 8 | color.getZ() & 255;
-    }
-    
-    public static Vec3i toIntVec(int color) {
-        float r = color >> 16 & 255;
-        float g = color >> 8 & 255;
-        float b = color & 255;
-        return new Vec3i(r, g, b);
+        return (255) << 24 | (((int) (red * 255)) & 255) << 16 | (((int) (green * 255)) & 255) << 8 | ((int) (blue * 255)) & 255;
     }
     
     public static Vector3d toVec(int color) {

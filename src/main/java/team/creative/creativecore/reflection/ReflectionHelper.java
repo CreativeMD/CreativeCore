@@ -1,6 +1,8 @@
 package team.creative.creativecore.reflection;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class ReflectionHelper {
     
@@ -19,6 +21,26 @@ public class ReflectionHelper {
             }
         } catch (Exception e) {
             throw new RuntimeException("Unable to locate field " + clazz.getSimpleName() + "." + offical + " (" + obfuscated + ")", e);
+        }
+    }
+    
+    public static <T> Field findField(Class<? super T> clazz, String offical) {
+        try {
+            Field f = clazz.getDeclaredField(offical);
+            f.setAccessible(true);
+            return f;
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to locate field " + clazz.getSimpleName() + "." + offical, e);
+        }
+    }
+    
+    public static Method findMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+        try {
+            Method m = clazz.getDeclaredMethod(methodName, parameterTypes);
+            m.setAccessible(true);
+            return m;
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to locate method " + clazz.getSimpleName() + "." + methodName + "(" + Arrays.toString(parameterTypes) + ")", e);
         }
     }
 }

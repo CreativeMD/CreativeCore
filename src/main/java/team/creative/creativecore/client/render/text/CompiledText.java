@@ -8,6 +8,8 @@ import java.util.Optional;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -19,14 +21,16 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.StringDecomposer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.text.AdvancedComponent;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 
 public class CompiledText {
-    
+    public static final CompiledText EMPTY = new CompiledText(0, 0);
+
     private int maxWidth;
     private int maxHeight;
     public int usedWidth;
@@ -35,6 +39,7 @@ public class CompiledText {
     public boolean shadow = true;
     public int defaultColor = ColorUtils.WHITE;
     public Align alignment = Align.LEFT;
+    public VAlign vAlign = VAlign.TOP;
     private List<CompiledLine> lines;
     private List<Component> original;
     
@@ -61,18 +66,40 @@ public class CompiledText {
     public int getMaxHeight() {
         return maxHeight;
     }
-    
+
     public void setText(Component component) {
-        setText(new SingletonList<Component>(component));
+        setText(new SingletonList<>(component));
     }
     
     public void setText(List<Component> components) {
         this.original = components;
         compile();
     }
-    
+
+    public CompiledText setDefaultColor(int defaultColor) {
+        this.defaultColor = defaultColor;
+        return this;
+    }
+
+    public CompiledText setShadow(boolean shadow) {
+        this.shadow = shadow;
+        return this;
+    }
+
+    public CompiledText setVAlign(VAlign vAlign) {
+        this.vAlign = vAlign;
+        return this;
+    }
+
+    public boolean contains(String value) {
+        for (Component c: original) {
+            if (c.getContents().contains(value)) return true;
+        }
+        return false;
+    }
+
     private void compile() {
-        if (FMLEnvironment.dist.isDedicatedServer())
+        if (CreativeCore.loader().getOverallSide().isServer())
             return;
         
         List<Component> copy = new ArrayList<>();
@@ -82,6 +109,7 @@ public class CompiledText {
         compileNext(null, true, copy);
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
@@ -92,13 +120,19 @@ public class CompiledText {
         return currentLine;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, FormattedText component) {
         if (newLine)
             lines.add(currentLine = new CompiledLine());
         return compileNext(currentLine, component);
     }
-    
+
+    public CompiledText setAlign(Align alignment) {
+        this.alignment = alignment;
+        return this;
+    }
+
     private CompiledLine compileNext(CompiledLine currentLine, FormattedText component) {
         List<Component> siblings = null;
         if (component instanceof Component && !((Component) component).getSiblings().isEmpty()) {
@@ -117,6 +151,7 @@ public class CompiledText {
         return currentLine;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public int getTotalHeight() {
         int height = -lineSpacing;
@@ -125,6 +160,7 @@ public class CompiledText {
         return height;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void render(PoseStack stack) {
         if (lines == null)
@@ -132,32 +168,40 @@ public class CompiledText {
         
         usedWidth = 0;
         usedHeight = -lineSpacing;
-        
+
         stack.pushPose();
+        float y = Math.max(0, switch (this.vAlign) {
+            case CENTER -> maxHeight / 2 - getTotalWidth() / 2;
+            case BOTTOM -> maxHeight - getTotalHeight();
+            default -> 0;
+        });
+        stack.translate(0, y, 0);
+        usedHeight += (int) y;
+
         for (CompiledLine line : lines) {
             switch (alignment) {
-            case LEFT:
-                line.render(stack);
-                usedWidth = Math.max(usedWidth, line.width);
-                break;
-            case CENTER:
-                stack.pushPose();
-                stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
-                line.render(stack);
-                usedWidth = Math.max(usedWidth, maxWidth);
-                stack.popPose();
-                break;
-            case RIGHT:
-                stack.pushPose();
-                stack.translate(maxWidth - line.width, 0, 0);
-                line.render(stack);
-                usedWidth = Math.max(usedWidth, maxWidth);
-                stack.popPose();
-                break;
-            case STRETCH:
-                break;
-            default:
-                break;
+                case LEFT:
+                    line.render(stack);
+                    usedWidth = Math.max(usedWidth, line.width);
+                    break;
+                case CENTER:
+                    stack.pushPose();
+                    stack.translate(maxWidth / 2 - line.width / 2, 0, 0);
+                    line.render(stack);
+                    usedWidth = Math.max(usedWidth, maxWidth);
+                    stack.popPose();
+                    break;
+                case RIGHT:
+                    stack.pushPose();
+                    stack.translate(maxWidth - line.width, 0, 0);
+                    line.render(stack);
+                    usedWidth = Math.max(usedWidth, maxWidth);
+                    stack.popPose();
+                    break;
+                case STRETCH:
+                    break;
+                default:
+                    break;
             }
             int height = line.height + lineSpacing;
             stack.translate(0, height, 0);
@@ -172,12 +216,13 @@ public class CompiledText {
     
     public class CompiledLine {
         
-        private List<FormattedText> components = new ArrayList<>();
+        private final List<FormattedText> components = new ArrayList<>();
         private int height = 0;
         private int width = 0;
         
         public CompiledLine() {}
-        
+
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void render(PoseStack stack) {
             Font font = Minecraft.getInstance().font;
@@ -210,6 +255,7 @@ public class CompiledText {
             }
         }
         
+        @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
         public void updateDimension(int width, int height) {
             this.width = Math.max(width, this.width);
@@ -219,11 +265,10 @@ public class CompiledText {
         public FormattedText add(FormattedText component) {
             Font font = Minecraft.getInstance().font;
             int remainingWidth = maxWidth - width;
-            if (component instanceof AdvancedComponent) {
-                AdvancedComponent advanced = (AdvancedComponent) component;
+            if (component instanceof AdvancedComponent advanced) {
                 if (advanced.isEmpty())
                     return null;
-                
+
                 int textWidth = advanced.getWidth(font);
                 if (remainingWidth > textWidth) {
                     components.add(advanced);
@@ -245,7 +290,7 @@ public class CompiledText {
                 } else
                     return advanced;
             }
-            
+
             int textWidth = font.width(component);
             if (remainingWidth >= textWidth) {
                 components.add(component);
@@ -269,6 +314,7 @@ public class CompiledText {
         
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public FormattedTextSplit splitByWidth(FormattedText text, int width, Style style, boolean force) {
         Font font = Minecraft.getInstance().font;
@@ -302,32 +348,26 @@ public class CompiledText {
                     head.append(FormattedText.of(text, style));
                 return Optional.empty();
             }
-        }, style).orElse(null);
-        
-        return new FormattedTextSplit(head, tail);
+        }, style);
+
+        FormattedText headText = head.getResult();
+        FormattedText tailText = tail.getResult();
+
+        if (headText == null && tailText == null)
+            return null;
+
+        return new FormattedTextSplit(headText, tailText);
     }
+
+    public record FormattedTextSplit(FormattedText head, FormattedText tail) {};
     
-    static class FormattedTextSplit {
-        
-        public final FormattedText head;
-        public final FormattedText tail;
-        
-        public FormattedTextSplit(FormattedText head, FormattedText tail) {
-            this.head = head;
-            this.tail = tail;
-        }
-        
-        public FormattedTextSplit(ComponentCollector head, ComponentCollector tail) {
-            this.head = head.getResult();
-            this.tail = tail.getResult();
-        }
-    }
-    
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public int getTotalWidth() {
         return calculateWidth(0, true, original);
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     private int calculateWidth(int width, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
@@ -340,29 +380,29 @@ public class CompiledText {
         return width;
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    private int calculateWidth(FormattedText component) {
+    private int calculateWidth(FormattedText text) {
         Font font = Minecraft.getInstance().font;
         int width = 0;
-        if (component instanceof AdvancedComponent) {
-            AdvancedComponent advanced = (AdvancedComponent) component;
+        if (text instanceof AdvancedComponent advanced) {
             if (!advanced.isEmpty())
                 width += advanced.getWidth(font);
         } else
-            width += font.width(component);
-        
-        if (component instanceof Component && !((Component) component).getSiblings().isEmpty())
-            width += calculateWidth(0, false, ((Component) component).getSiblings());
+            width += font.width(text);
+
+        if (text instanceof Component component && !component.getSiblings().isEmpty())
+            width += calculateWidth(0, false, component.getSiblings());
         return width;
     }
-    
+
     public CompiledText copy() {
         CompiledText copy = new CompiledText(maxWidth, maxHeight);
         copy.alignment = alignment;
         copy.lineSpacing = lineSpacing;
         copy.shadow = shadow;
         List<Component> components = new ArrayList<>();
-        for (Component component : original) {
+        for (Component component: original) {
             components.add(component.copy());
         }
         copy.setText(components);
@@ -372,5 +412,5 @@ public class CompiledText {
     public static CompiledText createAnySize() {
         return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
-    
+
 }

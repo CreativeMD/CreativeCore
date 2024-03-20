@@ -16,9 +16,9 @@ import team.creative.creativecore.common.util.registry.exception.RegistryExcepti
 
 public class NamedTypeRegistry<T> {
     
-    private HashMap<String, Class<? extends T>> types = new LinkedHashMap<>();
-    private HashMap<Class<? extends T>, String> typesInv = new LinkedHashMap<>();
-    private List<Class[]> possibleConstructors = new ArrayList<>();
+    private final HashMap<String, Class<? extends T>> types = new LinkedHashMap<>();
+    private final HashMap<Class<? extends T>, String> typesInv = new LinkedHashMap<>();
+    private final List<Class[]> possibleConstructors = new ArrayList<>();
     private boolean allowOverwrite = false;
     
     public NamedTypeRegistry<T> addConstructorPattern(Class... classes) {
@@ -94,6 +94,10 @@ public class NamedTypeRegistry<T> {
         return typesInv.get(type.getClass());
     }
     
+    public String getIdOrDefault(T type, String defaultValue) {
+        return typesInv.getOrDefault(type.getClass(), defaultValue);
+    }
+    
     public String getId(Class<? extends T> type) {
         return typesInv.get(type);
     }
@@ -116,7 +120,7 @@ public class NamedTypeRegistry<T> {
         try {
             return clazz.getConstructor(classes).newInstance(objects);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            throw new ConstructorForbiddenException(classes);
+            throw new ConstructorForbiddenException(classes, clazz);
         }
     }
     
@@ -162,8 +166,8 @@ public class NamedTypeRegistry<T> {
     
     public static class ConstructorForbiddenException extends RegistryException {
         
-        public ConstructorForbiddenException(Class[] classes) {
-            super("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable");
+        public ConstructorForbiddenException(Class[] classes, Class clazz) {
+            super("Constructor " + NamedTypeRegistry.toString(classes) + " is not reachable in " + clazz.getSimpleName());
         }
         
     }

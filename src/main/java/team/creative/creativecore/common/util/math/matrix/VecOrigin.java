@@ -11,10 +11,10 @@ public class VecOrigin implements IVecOrigin {
     
     protected boolean rotated = false;
     
-    private Vec3d center;
+    private final Vec3d center;
     private Vec3d translation = new Vec3d(0, 0, 0);
     private Matrix3 rotation = MatrixUtils.createIdentityMatrix();
-    private Matrix3 rotationInv = rotation;
+    private final Matrix3 rotationInv = rotation;
     
     protected double rotX;
     protected double rotY;
@@ -190,6 +190,35 @@ public class VecOrigin implements IVecOrigin {
         offsetXLast = offsetX;
         offsetYLast = offsetY;
         offsetZLast = offsetZ;
+    }
+    
+    protected VecOrigin createInternalCopy() {
+        return new VecOrigin(new Vec3d(this.center));
+    }
+    
+    @Override
+    public IVecOrigin copy() {
+        VecOrigin copy = createInternalCopy();
+        copy.translation = new Vec3d(translation);
+        copy.rotated = this.rotated;
+        
+        copy.rotX = this.rotX;
+        copy.rotY = this.rotY;
+        copy.rotZ = this.rotZ;
+        copy.rotXLast = this.rotXLast;
+        copy.rotYLast = this.rotYLast;
+        copy.rotZLast = this.rotZLast;
+        
+        copy.offsetX = this.offsetX;
+        copy.offsetY = this.offsetY;
+        copy.offsetZ = this.offsetZ;
+        copy.offsetXLast = this.offsetXLast;
+        copy.offsetYLast = this.offsetYLast;
+        copy.offsetZLast = this.offsetZLast;
+        
+        copy.updateRotated();
+        copy.updateTranslation();
+        return copy;
     }
     
     @Override

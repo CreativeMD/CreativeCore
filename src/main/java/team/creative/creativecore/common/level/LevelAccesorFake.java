@@ -1,9 +1,5 @@
 package team.creative.creativecore.common.level;
 
-import java.util.List;
-import java.util.Random;
-import java.util.function.Predicate;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -37,6 +33,10 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.ticks.LevelTickAccess;
+
+import java.util.List;
+import java.util.Random;
+import java.util.function.Predicate;
 
 public class LevelAccesorFake implements LevelAccessor {
     
@@ -230,5 +230,9 @@ public class LevelAccesorFake implements LevelAccessor {
     public void gameEvent(Entity p_151549_, GameEvent p_151550_, BlockPos p_151551_) {
         level.gameEvent(p_151549_, p_151550_, p_151551_);
     }
-    
+
+    @Override
+    public void gameEvent(GameEvent p_151556_, BlockPos p_151557_) {
+        level.gameEvent(p_151556_, pos);
+    }
 }

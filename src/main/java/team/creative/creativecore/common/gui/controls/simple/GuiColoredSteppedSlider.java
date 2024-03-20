@@ -1,7 +1,10 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -29,15 +32,17 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         if (part == ColorPart.ALPHA) {
             Color startColor = new Color(picker.color);
             startColor.setAlpha(0);
             Color endColor = new Color(picker.color);
             endColor.setAlpha(255);
-            GuiRenderHelper.gradientRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), startColor.toInt(), endColor.toInt());
+            GuiRenderHelper.horizontalGradientRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), startColor.toInt(), endColor.toInt());
         } else
-            GuiRenderHelper.gradientMaskRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), picker.color.toInt(), part.code);
+            GuiRenderHelper.horizontalGradientMaskRect(pose, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), picker.color.toInt(), part.code);
         super.renderContent(pose, control, rect, mouseX, mouseY);
     }
 }

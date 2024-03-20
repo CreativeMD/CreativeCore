@@ -4,12 +4,17 @@ public class ControlFormatting {
     
     public static final ControlFormatting PROGRESSBAR = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.BAR);
     public static final ControlFormatting CLICKABLE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
+    public static final ControlFormatting CLICKABLE_NO_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.CLICKABLE);
+    public static final ControlFormatting CLICKABLE_INACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE_INACTIVE);
+    public static final ControlFormatting CLICKABLE_INACTIVE_NO_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.CLICKABLE_INACTIVE);
+    public static final ControlFormatting HEADER = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.HEADER_BACKGROUND);
     public static final ControlFormatting NESTED = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.NESTED_BACKGROUND);
     public static final ControlFormatting NESTED_NO_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.NESTED_BACKGROUND);
     public static final ControlFormatting GUI = new ControlFormatting(ControlStyleBorder.BIG, 5, ControlStyleFace.BACKGROUND);
     public static final ControlFormatting TRANSPARENT = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE);
     public static final ControlFormatting TRANSPARENT_NO_DISABLE = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.NONE, false);
-    public static final ControlFormatting SLOT = new ControlFormatting(ControlStyleBorder.NONE, 1, ControlStyleFace.SLOT, false);
+    public static final ControlFormatting SLOT = new ControlFormatting(ControlStyleBorder.NONE, 0, ControlStyleFace.SLOT, false);
+    public static final ControlFormatting OUTLINE = new ControlFormatting(ControlStyleBorder.SMALL, 1, ControlStyleFace.NONE);
     
     public final ControlStyleBorder border;
     public final int padding;
@@ -42,10 +47,13 @@ public class ControlFormatting {
         
         BAR,
         CLICKABLE,
+        CLICKABLE_INACTIVE,
+        HEADER_BACKGROUND,
         NESTED_BACKGROUND,
         BACKGROUND,
         SLOT,
-        NONE;
+        NONE,
+        DISABLED;
         
     }
     

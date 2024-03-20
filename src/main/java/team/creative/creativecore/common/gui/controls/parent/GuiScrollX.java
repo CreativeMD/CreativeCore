@@ -1,14 +1,20 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.math.vec.SmoothValue;
 
@@ -16,9 +22,9 @@ public class GuiScrollX extends GuiParent {
     
     public int maxScroll = 0;
     public SmoothValue scrolled = new SmoothValue(200);
-    public double scaleFactor;
     public boolean dragged;
     public int scrollbarHeight = 3;
+    public boolean hoveredScroll;
     protected int cachedWidth;
     
     public GuiScrollX() {
@@ -27,21 +33,35 @@ public class GuiScrollX extends GuiParent {
     
     public GuiScrollX(String name) {
         super(name, GuiFlow.STACK_X);
-        this.scaleFactor = 1;
     }
     
-    public GuiScrollX(String name, int width, int height, float scaleFactor) {
-        super(name, GuiFlow.STACK_X, width, height);
-        this.scaleFactor = scaleFactor;
+    public GuiScrollX setHovered() {
+        this.hoveredScroll = true;
+        return this;
+    }
+    
+    public GuiScrollX setHover(boolean hover) {
+        this.hoveredScroll = hover;
+        return this;
     }
     
     @Override
-    public double getScaleFactor() {
-        return scaleFactor;
+    public GuiScrollX setDim(int width, int height) {
+        return (GuiScrollX) super.setDim(width, height);
     }
     
     @Override
-    public double getOffsetY() {
+    public GuiScrollX setDim(GuiSizeRule dim) {
+        return (GuiScrollX) super.setDim(dim);
+    }
+    
+    @Override
+    public GuiScrollX setExpandable() {
+        return (GuiScrollX) super.setExpandable();
+    }
+    
+    @Override
+    public double getOffsetX() {
         return -scrolled.current();
     }
     
@@ -61,9 +81,13 @@ public class GuiScrollX extends GuiParent {
     public boolean mouseScrolled(Rect rect, double x, double y, double scrolled) {
         if (super.mouseScrolled(rect, x, y, scrolled))
             return true;
+        scroll(scrolled);
+        return true;
+    }
+    
+    public void scroll(double scrolled) {
         this.scrolled.set(this.scrolled.aimed() - scrolled * 10);
         onScrolled();
-        return true;
     }
     
     @Override
@@ -105,52 +129,73 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
-    protected void renderContent(PoseStack matrix, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        super.renderContent(matrix, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        pose.pushPose();
+        super.renderContent(pose, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        pose.popPose();
+        
+        if (!needsScrollbar(controlRect) && hoveredScroll)
+            return;
+        
+        if (hoveredScroll)
+            RenderSystem.disableDepthTest();
+        
+        float controlInvScale = (float) scaleFactorInv();
+        pose.scale(controlInvScale, controlInvScale, controlInvScale);
+        
         realRect.scissor();
         GuiStyle style = getStyle();
         
         scrolled.tick();
         
-        int completeWidth = control.getWidth() - style.getBorder(formatting.border) * 2;
+        int completeWidth = control.getWidth() - borderWidth * 2;
         
         int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
         if (scrollThingWidth < completeWidth)
             scrollThingWidth = completeWidth;
         double percent = scrolled.current() / maxScroll;
         
-        style.get(ControlStyleFace.CLICKABLE, false).render(matrix, controlRect
-                .getWidth() + formatting.padding * 2 - scrollbarHeight + borderWidth, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, scrollbarHeight, scrollThingWidth);
+        StyleDisplay display = hoveredScroll ? style.disabled : style.get(ControlStyleFace.CLICKABLE, false);
+        display.render(pose, control.getWidth() - scrollbarHeight - borderWidth, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, scrollbarHeight,
+            scrollThingWidth);
         
         maxScroll = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
         
+        float controlScale = (float) scaleFactor();
+        pose.scale(controlScale, controlScale, controlScale);
+        
+        if (hoveredScroll)
+            RenderSystem.enableDepthTest();
     }
     
     @Override
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return 10;
     }
     
     @Override
-    public int getMinHeight() {
+    protected int minHeight(int width, int availableHeight) {
         return 10;
+    }
+    
+    @Override
+    protected boolean endlessX() {
+        return true;
     }
     
     @Override
     public void flowX(int width, int preferred) {
-        int x = 0;
-        for (GuiChildControl child : controls) {
-            child.setWidth(child.getPreferredWidth());
-            child.setX(x);
-            child.flowX();
-            x += child.getWidth() + spacing;
-        }
-        cachedWidth = x;
+        super.flowX(width, preferred);
+        cachedWidth = preferred;
     }
     
     @Override
-    public void flowY(int height, int preferred) {
-        super.flowY(height - scrollbarHeight, preferred);
+    public void flowY(int width, int height, int preferred) {
+        if (!hoveredScroll)
+            height -= scrollbarHeight;
+        super.flowY(width, height, preferred);
     }
     
 }

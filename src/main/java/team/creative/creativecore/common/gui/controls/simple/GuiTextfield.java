@@ -1,20 +1,11 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
-
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -27,6 +18,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.GuiFocusControl;
@@ -35,21 +27,23 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+
 public class GuiTextfield extends GuiFocusControl {
-    
+
     private String text = "";
+    private String suggestion = "";
     private int maxStringLength = 128;
     private int frame;
     private boolean shift;
     private int lineScrollOffset;
     private int cursorPosition;
     private int selectionEnd;
-    private String suggestion;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
-    private BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> {
-        return FormattedCharSequence.forward(text, Style.EMPTY);
-    };
+    private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private int cachedWidth;
     
     public GuiTextfield(String name) {
@@ -62,17 +56,13 @@ public class GuiTextfield extends GuiFocusControl {
         setText(text);
     }
     
-    public GuiTextfield(String name, int width) {
-        this(name, width, 20);
+    @Override
+    public GuiTextfield setDim(int width, int height) {
+        return (GuiTextfield) super.setDim(width, height);
     }
     
-    public GuiTextfield(String name, int width, int height) {
-        this(name, "", width, height);
-    }
-    
-    public GuiTextfield(String name, String text, int width, int height) {
-        super(name, width, height);
-        setText(text);
+    public GuiTextfield setDim(int width) {
+        return (GuiTextfield) super.setDim(width, 10);
     }
     
     public GuiTextfield setFloatOnly() {
@@ -124,6 +114,14 @@ public class GuiTextfield extends GuiFocusControl {
         }
     }
     
+    public double parseDouble() {
+        try {
+            return Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+    
     public int parseInteger() {
         try {
             return Integer.parseInt(text);
@@ -149,14 +147,15 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        Font fontRenderer = GuiRenderHelper.getFont();
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        Font font = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();
         int color = enabled ? style.fontColor.toInt() : style.fontColorDisabled.toInt();
-        String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
+        String s = font.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
         boolean flag = j >= 0 && j <= s.length();
         boolean flag1 = this.isFocused() && this.frame / 6 % 2 == 0 && flag;
         int yOffset = 0;
@@ -166,7 +165,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            xOffset = fontRenderer.draw(matrix, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
+            xOffset = font.drawShadow(pose, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
         }
         
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -179,20 +178,20 @@ public class GuiTextfield extends GuiFocusControl {
         }
         
         if (!s.isEmpty() && flag && j < s.length())
-            fontRenderer.draw(matrix, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
-        
-        if (!flag2 && this.suggestion != null)
-            fontRenderer.drawShadow(matrix, this.suggestion, k1 - 1, yOffset, -8355712);
+            font.drawShadow(pose, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
+
+        if (text.isEmpty() && !this.suggestion.isEmpty())
+            font.drawShadow(pose, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
             if (flag2)
-                GuiComponent.fill(matrix, k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
+                GuiComponent.fill(pose, k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
             else
-                fontRenderer.drawShadow(matrix, "_", k1, yOffset, color);
+                font.draw(pose, "_", k1, yOffset, color);
             
         if (k != j) {
-            int l1 = fontRenderer.width(s.substring(0, k));
-            this.drawSelectionBox(control, matrix.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
+            int l1 = font.width(s.substring(0, k));
+            this.drawSelectionBox(control, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
     }
     
@@ -270,7 +269,7 @@ public class GuiTextfield extends GuiFocusControl {
             if (this.selectionEnd != this.cursorPosition)
                 this.writeText("");
             else {
-                int i = this.func_238516_r_(num);
+                int i = this.getCursorPos(num);
                 int j = Math.min(i, this.cursorPosition);
                 int k = Math.max(i, this.cursorPosition);
                 if (j != k) {
@@ -320,10 +319,10 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     public void moveCursorBy(int num) {
-        this.setCursorPosition(this.func_238516_r_(num));
+        this.setCursorPosition(this.getCursorPos(num));
     }
     
-    private int func_238516_r_(int p_238516_1_) {
+    private int getCursorPos(int p_238516_1_) {
         return Util.offsetByCodepoints(this.text, this.cursorPosition, p_238516_1_);
     }
     
@@ -351,39 +350,40 @@ public class GuiTextfield extends GuiFocusControl {
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (!this.canWrite())
             return false;
-        else {
-            this.shift = Screen.hasShiftDown();
-            if (Screen.isSelectAll(keyCode)) {
-                this.setCursorPositionEnd();
-                this.setSelectionPos(0);
-                return true;
-            } else if (Screen.isCopy(keyCode)) {
-                Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
-                return true;
-            } else if (Screen.isPaste(keyCode)) {
-                this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
-                
-                return true;
-            } else if (Screen.isCut(keyCode)) {
-                Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
-                this.writeText("");
-                
-                return true;
-            } else {
-                switch (keyCode) {
+        this.shift = Screen.hasShiftDown();
+        if (Screen.isSelectAll(keyCode)) {
+            this.setCursorPositionEnd();
+            this.setSelectionPos(0);
+            return true;
+        } else if (Screen.isCopy(keyCode)) {
+            Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
+            return true;
+        } else if (Screen.isPaste(keyCode)) {
+            this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
+            
+            return true;
+        } else if (Screen.isCut(keyCode)) {
+            Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
+            this.writeText("");
+            
+            return true;
+        } else {
+            switch (keyCode) {
                 case 259:
                     this.shift = false;
                     this.delete(-1);
                     this.shift = Screen.hasShiftDown();
                     
                     return true;
+                case 258:
                 case 260:
                 case 264:
                 case 265:
                 case 266:
                 case 267:
-                default:
                     return false;
+                default:
+                    return SharedConstants.isAllowedChatCharacter((char) keyCode);
                 case 261:
                     this.shift = false;
                     this.delete(1);
@@ -410,7 +410,6 @@ public class GuiTextfield extends GuiFocusControl {
                 case 269:
                     this.setCursorPositionEnd();
                     return true;
-                }
             }
         }
     }
@@ -468,7 +467,6 @@ public class GuiTextfield extends GuiFocusControl {
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
-        RenderSystem.disableTexture();
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -479,7 +477,6 @@ public class GuiTextfield extends GuiFocusControl {
         tesselator.end();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableColorLogicOp();
-        RenderSystem.enableTexture();
     }
     
     public void setMaxStringLength(int length) {
@@ -511,22 +508,22 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     @Override
-    public void flowY(int height, int preferred) {}
+    public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredHeight() {
+    protected int preferredHeight(int width, int availableHeight) {
         return 10;
     }
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 40;
     }
     
     public void setSelectionPos(int position) {
         int textLength = this.text.length();
         this.selectionEnd = Mth.clamp(position, 0, textLength);
-        if (getParent() == null || !hasLayer())
+        if (getParent() == null || !hasLayer() || !isClient())
             return;
         Font fontRenderer = GuiRenderHelper.getFont();
         if (fontRenderer != null) {

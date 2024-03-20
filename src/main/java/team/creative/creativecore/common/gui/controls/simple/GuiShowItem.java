@@ -1,8 +1,11 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -11,7 +14,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiShowItem extends GuiControl {
     
-    public ItemStack stack;
+    public ItemStack stack = ItemStack.EMPTY;
     
     public GuiShowItem(String name) {
         super(name);
@@ -19,15 +22,6 @@ public class GuiShowItem extends GuiControl {
     
     public GuiShowItem(String name, ItemStack stack) {
         super(name);
-        this.stack = stack;
-    }
-    
-    public GuiShowItem(String name, int width, int height) {
-        super(name, width, height);
-    }
-    
-    public GuiShowItem(String name, int width, int height, ItemStack stack) {
-        super(name, width, height);
         this.stack = stack;
     }
     
@@ -44,15 +38,15 @@ public class GuiShowItem extends GuiControl {
     public void flowX(int width, int preferred) {}
     
     @Override
-    public void flowY(int height, int preferred) {}
+    public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 16;
     }
     
     @Override
-    protected int preferredHeight() {
+    protected int preferredHeight(int width, int availableHeight) {
         return 16;
     }
     
@@ -62,6 +56,8 @@ public class GuiShowItem extends GuiControl {
     }
     
     @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         float scale = (float) Math.min(rect.getWidth() / 16, rect.getHeight() / 16);
         pose.scale(scale, scale, 1);

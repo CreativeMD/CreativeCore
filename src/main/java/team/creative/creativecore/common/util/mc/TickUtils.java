@@ -1,20 +1,23 @@
 package team.creative.creativecore.common.util.mc;
 
-import net.minecraft.world.level.Level;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.CreativeCoreClient;
 
 public class TickUtils {
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    private static float getDeltaFrameTimeClient() {
-        return CreativeCoreClient.getDeltaFrameTime();
+    private static float getFrameTimeClient() {
+        return CreativeCoreClient.getFrameTime();
     }
     
-    public static float getDeltaFrameTime(Level level) {
-        if (level.isClientSide)
-            return getDeltaFrameTimeClient();
+    public static float getFrameTime(LevelAccessor level) {
+        if (level.isClientSide())
+            return getFrameTimeClient();
         return 1.0F;
     }
     

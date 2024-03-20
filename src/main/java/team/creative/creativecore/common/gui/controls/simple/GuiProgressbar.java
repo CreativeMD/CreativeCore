@@ -1,36 +1,38 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.ValueParsers;
+import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
+
+import java.util.List;
 
 public class GuiProgressbar extends GuiControl {
     
     public double pos;
     public double max;
     public boolean showToolTip = true;
-    
-    public GuiProgressbar(String name, int width, int height, double pos, double max) {
-        super(name, width, height);
-        this.pos = pos;
-        this.max = max;
-    }
+    public final DoubleValueParser parser;
     
     public GuiProgressbar(String name, double pos, double max) {
+        this(name, pos, max, ValueParsers.PERCENT);
+    }
+    
+    public GuiProgressbar(String name, double pos, double max, DoubleValueParser valueParser) {
         super(name);
         this.pos = pos;
         this.max = max;
+        this.parser = valueParser;
     }
     
     @Override
@@ -49,33 +51,42 @@ public class GuiProgressbar extends GuiControl {
         return super.getTooltip();
     }
     
+    public double getPercentage() {
+        return this.pos / this.max;
+    }
+
     @Override
     public ControlFormatting getControlFormatting() {
         return ControlFormatting.PROGRESSBAR;
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        GuiStyle style = getStyle();
-        double percent = pos / max;
-        style.clickable.render(matrix, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
-        GuiRenderHelper.drawStringCentered(matrix, ((int) Math.round(percent * 100)) + "%", (float) rect.getWidth(), (float) rect.getHeight(), style.fontColor.toInt(), true);
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        this.renderProgress(pose, control, rect, this.getPercentage());
+        GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderProgress(PoseStack pose, GuiChildControl control, Rect rect, double percent) {
+        getStyle().clickable.render(pose, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
     }
     
     @Override
     public void flowX(int width, int preferred) {}
     
     @Override
-    public void flowY(int height, int preferred) {}
+    public void flowY(int width, int height, int preferred) {}
     
     @Override
-    protected int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return 40;
     }
     
     @Override
-    protected int preferredHeight() {
+    protected int preferredHeight(int width, int availableHeight) {
         return 10;
     }
     

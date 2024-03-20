@@ -1,17 +1,22 @@
 package team.creative.creativecore.common.util.text;
 
+import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.BaseComponent;
-
-public class LinebreakComponent extends BaseComponent implements AdvancedComponent {
+public class LinebreakComponent extends MutableComponentCreative implements AdvancedComponent {
+    
+    public LinebreakComponent() {
+        super("", Lists.newArrayList(), Style.EMPTY);
+    }
     
     @Override
-    public BaseComponent plainCopy() {
-        return new LinebreakComponent();
+    public MutableComponent plainCopy() {
+        return null; //new LinebreakComponent();
     }
     
     @Override

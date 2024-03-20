@@ -1,16 +1,15 @@
 package team.creative.creativecore.common.util.filter.premade;
 
-import org.apache.commons.lang3.ArrayUtils;
-
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Material;
-import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.ArrayUtils;
 import team.creative.creativecore.common.util.CompoundSerializer;
 import team.creative.creativecore.common.util.filter.Filter;
 
@@ -44,8 +43,8 @@ public class BlockFilters {
         return new BlockPropertyFilter(property);
     }
     
-    public static Filter<Block> material(Material material) {
-        return new BlockMaterialFilter(material);
+    public static Filter<Block> tag(TagKey<Block> tag) {
+        return new BlockTagFilter(tag);
     }
     
     static {
@@ -64,7 +63,7 @@ public class BlockFilters {
         
         @SuppressWarnings("unused")
         public BlockFilter(CompoundTag nbt) {
-            this.block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("b")));
+            this.block = Registry.BLOCK.get(new ResourceLocation(nbt.getString("b")));
         }
         
         @Override
@@ -75,7 +74,7 @@ public class BlockFilters {
         @Override
         public CompoundTag write() {
             CompoundTag nbt = new CompoundTag();
-            nbt.putString("b", block.getRegistryName().toString());
+            nbt.putString("b", Registry.BLOCK.getKey(block).toString());
             return nbt;
         }
         
@@ -94,7 +93,7 @@ public class BlockFilters {
             ListTag list = nbt.getList("b", Tag.TAG_STRING);
             this.blocks = new Block[list.size()];
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(list.getString(i)));
+                blocks[i] = Registry.BLOCK.get(new ResourceLocation(list.getString(i)));
         }
         
         @Override
@@ -107,7 +106,7 @@ public class BlockFilters {
             CompoundTag nbt = new CompoundTag();
             ListTag list = new ListTag();
             for (int i = 0; i < blocks.length; i++)
-                list.add(StringTag.valueOf(blocks[i].getRegistryName().toString()));
+                list.add(StringTag.valueOf(Registry.BLOCK.getKey(blocks[i]).toString()));
             nbt.put("b", list);
             return nbt;
         }
@@ -145,13 +144,7 @@ public class BlockFilters {
         
     }
     
-    private static class BlockPropertyFilter implements Filter<Block> {
-        
-        public final Property<?> property;
-        
-        public BlockPropertyFilter(Property<?> property) {
-            this.property = property;
-        }
+    private record BlockPropertyFilter(Property<?> property) implements Filter<Block> {
         
         @Override
         public boolean is(Block t) {
@@ -159,17 +152,11 @@ public class BlockFilters {
         }
     }
     
-    private static class BlockMaterialFilter implements Filter<Block> {
-        
-        public final Material material;
-        
-        public BlockMaterialFilter(Material material) {
-            this.material = material;
-        }
+    private record BlockTagFilter(TagKey<Block> tag) implements Filter<Block> {
         
         @Override
         public boolean is(Block t) {
-            return t.defaultBlockState().getMaterial() == material;
+            return t.builtInRegistryHolder().is(tag);
         }
         
     }

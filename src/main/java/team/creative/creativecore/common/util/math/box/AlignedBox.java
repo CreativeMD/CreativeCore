@@ -1,14 +1,17 @@
 package team.creative.creativecore.common.util.math.box;
 
 import com.mojang.math.Vector3d;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
 import team.creative.creativecore.common.util.math.transformation.Rotation;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public class AlignedBox {
@@ -84,12 +87,20 @@ public class AlignedBox {
         this.maxZ *= scale;
     }
     
-    public Vector3d getSize() {
-        return new Vector3d(maxX - minX, maxY - minY, maxZ - minZ);
+    public float getSize(Axis axis) {
+        return switch (axis) {
+            case X -> maxX - minX;
+            case Y -> maxY - minY;
+            case Z -> maxZ - minZ;
+        };
     }
     
-    public Vector3d getCenter() {
-        return new Vector3d((maxX + minX) * 0.5, (maxY + minY) * 0.5, (maxZ + minZ) * 0.5);
+    public Vec3d getSize() {
+        return new Vec3d(maxX - minX, maxY - minY, maxZ - minZ);
+    }
+    
+    public Vec3d getCenter() {
+        return new Vec3d((maxX + minX) * 0.5, (maxY + minY) * 0.5, (maxZ + minZ) * 0.5);
     }
     
     @Override
@@ -107,6 +118,14 @@ public class AlignedBox {
     
     public AABB getBB(BlockPos pos) {
         return new AABB(minX + pos.getX(), minY + pos.getY(), minZ + pos.getZ(), maxX + pos.getX(), maxY + pos.getY(), maxZ + pos.getZ());
+    }
+    
+    public VoxelShape voxelShape() {
+        return Shapes.box(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+    
+    public VoxelShape voxelShape(BlockPos pos) {
+        return Shapes.box(minX + pos.getX(), minY + pos.getY(), minZ + pos.getZ(), maxX + pos.getX(), maxY + pos.getY(), maxZ + pos.getZ());
     }
     
     public void rotate(Rotation rotation, Vec3f center) {
@@ -151,90 +170,61 @@ public class AlignedBox {
     }
     
     public BlockPos getOffset() {
-        return new BlockPos(minX, minY, minZ);
+        return new BlockPos(Mth.floor(minX), Mth.floor(minY), Mth.floor(minZ));
     }
     
     public float get(Facing facing) {
-        switch (facing) {
-        case EAST:
-            return maxX;
-        case WEST:
-            return minX;
-        case UP:
-            return maxY;
-        case DOWN:
-            return minY;
-        case SOUTH:
-            return maxZ;
-        case NORTH:
-            return minZ;
-        
-        }
-        return 0;
+        return switch (facing) {
+            case EAST -> maxX;
+            case WEST -> minX;
+            case UP -> maxY;
+            case DOWN -> minY;
+            case SOUTH -> maxZ;
+            case NORTH -> minZ;
+        };
     }
     
-    public float getSize(Axis axis) {
-        switch (axis) {
-        case X:
-            return maxX - minX;
-        case Y:
-            return maxY - minY;
-        case Z:
-            return maxZ - minZ;
-        }
-        return 0;
+    public void set(Facing facing, float value) {
+        switch (facing) {
+            case EAST -> maxX = value;
+            case WEST -> minX = value;
+            case UP -> maxY = value;
+            case DOWN -> minY = value;
+            case SOUTH -> maxZ = value;
+            case NORTH -> minZ = value;
+        };
     }
     
     public void setMin(Axis axis, float value) {
         switch (axis) {
-        case X:
-            minX = value;
-            break;
-        case Y:
-            minY = value;
-            break;
-        case Z:
-            minZ = value;
-            break;
+            case X -> minX = value;
+            case Y -> minY = value;
+            case Z -> minZ = value;
         }
     }
     
     public float getMin(Axis axis) {
-        switch (axis) {
-        case X:
-            return minX;
-        case Y:
-            return minY;
-        case Z:
-            return minZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> minX;
+            case Y -> minY;
+            case Z -> minZ;
+        };
     }
     
     public void setMax(Axis axis, float value) {
         switch (axis) {
-        case X:
-            maxX = value;
-            break;
-        case Y:
-            maxY = value;
-            break;
-        case Z:
-            maxZ = value;
-            break;
+            case X -> maxX = value;
+            case Y -> maxY = value;
+            case Z -> maxZ = value;
         }
     }
     
     public float getMax(Axis axis) {
-        switch (axis) {
-        case X:
-            return maxX;
-        case Y:
-            return maxY;
-        case Z:
-            return maxZ;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> maxX;
+            case Y -> maxY;
+            case Z -> maxZ;
+        };
     }
     
     public void grow(Axis axis, float value) {

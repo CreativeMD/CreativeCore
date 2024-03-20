@@ -3,6 +3,7 @@ package team.creative.creativecore.common.util.math.vec;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
 
@@ -114,7 +115,7 @@ public abstract class VecNd<T extends VecNd> {
         try {
             return className.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
+            CreativeCore.LOGGER.error(e);
         }
         throw new IllegalArgumentException();
     }

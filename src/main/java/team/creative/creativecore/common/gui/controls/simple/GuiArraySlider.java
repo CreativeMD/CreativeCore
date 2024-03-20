@@ -15,16 +15,11 @@ public class GuiArraySlider extends GuiSteppedSlider {
         this(name, "", "");
     }
     
-    public GuiArraySlider(String name, int width, int height, String value, String... values) {
-        super(name, width, height, ArrayUtils.indexOf(values, value), 0, values.length - 1);
-        this.values = values;
-    }
-    
     @Override
     public String getTextByValue() {
         if (value > values.length)
             return "";
-        return values[(int) value] + "";
+        return values[(int) value];
     }
     
     public void select(String value) {

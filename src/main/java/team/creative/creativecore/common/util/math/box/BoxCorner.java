@@ -48,43 +48,52 @@ public enum BoxCorner {
     }
     
     public Facing getFacing(Axis axis) {
-        switch (axis) {
-        case X:
-            return x;
-        case Y:
-            return y;
-        case Z:
-            return z;
-        }
-        throw new RuntimeException("null axis not permitted");
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+        };
     }
     
     public BoxCorner mirror(Axis axis) {
-        switch (axis) {
-        case X:
-            return getCorner(x.opposite(), y, z);
-        case Y:
-            return getCorner(x, y.opposite(), z);
-        case Z:
-            return getCorner(x, y, z.opposite());
-        }
-        throw new RuntimeException("null axis not permitted");
+        return switch (axis) {
+            case X -> getCorner(x.opposite(), y, z);
+            case Y -> getCorner(x, y.opposite(), z);
+            case Z -> getCorner(x, y, z.opposite());
+        };
     }
     
     public BoxCorner rotate(Rotation rotation) {
         int normalX = x.offset();
         int normalY = y.offset();
         int normalZ = z.offset();
-        return getCorner(Facing.get(Axis.X, rotation.getMatrix().getX(normalX, normalY, normalZ) > 0), Facing
-                .get(Axis.Y, rotation.getMatrix().getY(normalX, normalY, normalZ) > 0), Facing.get(Axis.Z, rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0));
+        return getCorner(Facing.get(Axis.X, rotation.getMatrix().getX(normalX, normalY, normalZ) > 0), Facing.get(Axis.Y, rotation.getMatrix().getY(normalX, normalY, normalZ) > 0),
+            Facing.get(Axis.Z, rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0));
+    }
+    
+    public Vec3d get(ABB bb) {
+        return new Vec3d(bb.get(x), bb.get(y), bb.get(z));
+    }
+    
+    public void set(ABB bb, Vec3d vec) {
+        vec.x = bb.get(x);
+        vec.y = bb.get(y);
+        vec.z = bb.get(z);
     }
     
     public Vec3d get(AABB bb) {
-        return new Vec3d(x.get(bb), y.get(bb), z.get(bb));
+        return new Vec3d(BoxUtils.get(bb, x), BoxUtils.get(bb, y), BoxUtils.get(bb, z));
+    }
+    
+    public void set(AABB bb, Vec3d vec) {
+        vec.x = BoxUtils.get(bb, x);
+        vec.y = BoxUtils.get(bb, y);
+        vec.z = BoxUtils.get(bb, z);
     }
     
     public static BoxCorner getCornerUnsorted(Facing facing, Facing facing2, Facing facing3) {
-        return getCorner(facing.axis != Axis.X ? facing2.axis != Axis.X ? facing3 : facing2 : facing, facing.axis != Axis.Y ? facing2.axis != Axis.Y ? facing3 : facing2 : facing, facing.axis != Axis.Z ? facing2.axis != Axis.Z ? facing3 : facing2 : facing);
+        return getCorner(facing.axis != Axis.X ? facing2.axis != Axis.X ? facing3 : facing2 : facing, facing.axis != Axis.Y ? facing2.axis != Axis.Y ? facing3 : facing2 : facing,
+            facing.axis != Axis.Z ? facing2.axis != Axis.Z ? facing3 : facing2 : facing);
     }
     
     public static BoxCorner getCorner(Facing x, Facing y, Facing z) {

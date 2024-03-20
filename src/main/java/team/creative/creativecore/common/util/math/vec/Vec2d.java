@@ -34,6 +34,11 @@ public class Vec2d extends VecNd<Vec2d> {
         return 0;
     }
     
+    public void set(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+    
     @Override
     public void set(int dim, double value) {
         if (dim == 0)

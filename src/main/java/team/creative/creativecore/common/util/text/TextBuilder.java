@@ -6,21 +6,20 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class TextBuilder {
     
-    private static NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+    private static final NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
     private final List<Component> components = new ArrayList<>();
     
     public TextBuilder() {
-        
+
     }
     
     public TextBuilder add(List<Component> components) {
@@ -34,8 +33,8 @@ public class TextBuilder {
             components.add(component);
         else {
             Component last = components.get(components.size() - 1);
-            if (last instanceof BaseComponent)
-                ((BaseComponent) last).append(component);
+            if (last instanceof MutableComponent)
+                ((MutableComponent) last).append(component);
             else
                 components.add(component);
         }
@@ -49,21 +48,30 @@ public class TextBuilder {
     public TextBuilder translateIfCan(String text) {
         String translated = GuiControl.translate(text);
         if (!translated.equals(text))
-            add(new TranslatableComponent(text));
+            text(translated);
         return this;
     }
     
     public TextBuilder translate(String text) {
-        add(new TranslatableComponent(text));
+        text(GuiControl.translate(text));
         return this;
     }
     
     public TextBuilder translate(String text, Object... param) {
-        add(new TranslatableComponent(text, param));
+        text(GuiControl.translate(text, param));
         return this;
     }
     
     public TextBuilder text(String text) {
+        if (text.contains("\n")) {
+            String[] lines = text.split("\\n");
+            add(new TextComponent(lines[0]));
+            for (int i = 1; i < lines.length; i++) {
+                newLine();
+                add(new TextComponent(lines[i]));
+            }
+            return this;
+        }
         add(new TextComponent(text));
         return this;
     }
@@ -76,7 +84,7 @@ public class TextBuilder {
         if (rounded)
             text("" + Math.round(number));
         else
-            text("" + format.format(number));
+            text(format.format(number));
         return this;
     }
     
@@ -88,7 +96,7 @@ public class TextBuilder {
         if (rounded)
             text("" + Math.round(number));
         else
-            text("" + format.format(number));
+            text(format.format(number));
         return this;
     }
     

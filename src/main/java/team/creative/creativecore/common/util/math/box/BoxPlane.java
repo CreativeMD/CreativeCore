@@ -24,12 +24,11 @@ public class BoxPlane {
     
     public static Double linePlaneIntersection(Vec3d ray, Vec3d rayOrigin, Vec3d normal, Vec3d origin) {
         // get d value
-        Double d = normal.dot(origin);
+        double d = normal.dot(origin);
         
-        if (normal.dot(ray) == 0) {
+        if (normal.dot(ray) == 0)
             return null; // No intersection, the line is parallel to the plane
-        }
-        
+            
         // Compute the X value for the directed line ray intersecting the plane
         return (d - normal.dot(rayOrigin)) / normal.dot(ray);
     }

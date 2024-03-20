@@ -5,9 +5,10 @@ import java.util.Collection;
 import com.google.gson.JsonObject;
 
 import team.creative.creativecore.Side;
+import team.creative.creativecore.common.config.api.IConfigObject;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
-public interface ICreativeConfigHolder {
+public interface ICreativeConfigHolder extends IConfigObject {
     
     public ICreativeConfigHolder parent();
     
@@ -25,10 +26,6 @@ public interface ICreativeConfigHolder {
     
     public ConfigKey getField(String key);
     
-    public boolean isDefault(Side side);
-    
-    public void restoreDefault(Side side, boolean ignoreRestart);
-    
     public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side);
     
     public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side);
@@ -38,5 +35,7 @@ public interface ICreativeConfigHolder {
     public boolean isEmptyWithoutForce(Side side);
     
     public ConfigSynchronization synchronization();
+    
+    public void configured(Side side);
     
 }

@@ -9,17 +9,13 @@ public class GuiButtonHold extends GuiButton {
     public static final int initialWait = 250;
     public static final int continousWait = 100;
     
-    public GuiButtonHold(String name, Consumer<Integer> pressed) {
-        super(name, pressed);
-    }
-    
-    public GuiButtonHold(String name, int width, int height, Consumer<Integer> pressed) {
-        super(name, width, height, pressed);
-    }
-    
     public int clicked = -1;
     public boolean inital = false;
     public long wait = 0;
+    
+    public GuiButtonHold(String name, Consumer<Integer> pressed) {
+        super(name, pressed);
+    }
     
     @Override
     public boolean mouseClicked(Rect rect, double x, double y, int button) {

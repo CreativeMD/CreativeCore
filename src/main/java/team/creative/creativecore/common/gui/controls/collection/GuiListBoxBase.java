@@ -2,7 +2,9 @@ package team.creative.creativecore.common.gui.controls.collection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
@@ -22,12 +24,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public final boolean modifiable;
     
-    public GuiListBoxBase(String name, int width, int height, boolean modifiable, List<T> entries) {
-        super(name, width, height);
-        this.content = entries;
-        this.modifiable = modifiable;
-        createItems();
-    }
+    public Predicate<T> canBeModified = x -> true;
     
     public GuiListBoxBase(String name, boolean modifiable, List<T> entries) {
         super(name);
@@ -48,7 +45,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         content.align = Align.CENTER;
         content.add(this.content.get(index));
         row.addColumn(content);
-        if (modifiable) {
+        if (modifiable && canBeModified.test(this.content.get(index))) {
             GuiColumn remove = new GuiColumn(20);
             remove.align = Align.CENTER;
             remove.add(new GuiButtonRemove(index));
@@ -61,6 +58,10 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         remove(rows.get(index));
         rows.remove(index);
         content.remove(index);
+    }
+    
+    protected GuiChildControl addCustomControl(GuiControl control) {
+        return super.add(control);
     }
     
     @Override
@@ -82,15 +83,15 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         this.cachedHeight = height;
-        super.flowY(height, preferred);
+        super.flowY(width, height, preferred);
     }
     
     public void reflowInternal() {
         if (hasGui()) {
-            super.flowX(cachedWidth, preferredWidth());
-            super.flowY(cachedHeight, preferredHeight());
+            super.flowX(cachedWidth, preferredWidth(cachedWidth));
+            super.flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth, cachedHeight));
         }
     }
     
@@ -99,13 +100,14 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         
         if (modifiable)
             for (int i = 0; i < rows.size(); i++)
-                ((GuiButtonRemove) rows.get(i).getCol(1).get("x")).index = i;
+                if (canBeModified.test(this.content.get(i)))
+                    ((GuiButtonRemove) rows.get(i).getCol(1).get("x")).index = i;
         reflowInternal();
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
     public void clearItems() {
-        while (content.size() > 0)
+        while (!content.isEmpty())
             removeControl(content.size() - 1);
     }
     
@@ -141,12 +143,17 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         return content.get(index);
     }
     
+    public Iterable<T> items() {
+        return content;
+    }
+    
     public class GuiButtonRemove extends GuiButton {
         
         public int index;
         
         public GuiButtonRemove(int index) {
-            super("x", 6, 8, null);
+            super("x", null);
+            setDim(6, 8);
             setAlign(Align.CENTER);
             setTitle(new TextComponent("x"));
             pressed = (x) -> GuiListBoxBase.this.removeItem(this.index);

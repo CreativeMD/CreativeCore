@@ -14,7 +14,7 @@ import team.creative.creativecore.client.render.text.CompiledText;
 
 public class TextMapBuilder<K> implements ITextCollection {
     
-    private LinkedHashMap<K, List<Component>> lines = new LinkedHashMap<>();
+    private final LinkedHashMap<K, List<Component>> lines = new LinkedHashMap<>();
     private Predicate<String> filter;
     
     public TextMapBuilder() {}
@@ -52,7 +52,7 @@ public class TextMapBuilder<K> implements ITextCollection {
         return this;
     }
     
-    public TextMapBuilder<K> addComponent(Collection<K> collection, Function<K, Component> toComponent) {
+    public TextMapBuilder<K> addComponent(Iterable<K> collection, Function<K, Component> toComponent) {
         for (K t : collection)
             addNewLine(t, toComponent.apply(t));
         return this;
@@ -64,10 +64,18 @@ public class TextMapBuilder<K> implements ITextCollection {
         return this;
     }
     
-    public TextMapBuilder<K> addComponents(Collection<K> collection, Function<K, List<Component>> toComponent) {
+    public TextMapBuilder<K> addComponents(Iterable<K> collection, Function<K, List<Component>> toComponent) {
         for (K t : collection)
             addNewLine(t, toComponent.apply(t));
         return this;
+    }
+    
+    public int size() {
+        return lines.size();
+    }
+    
+    public K first() {
+        return lines.keySet().iterator().next();
     }
     
     @Override
@@ -80,6 +88,14 @@ public class TextMapBuilder<K> implements ITextCollection {
             i++;
         }
         return lines;
+    }
+    
+    public Set<Entry<K, List<Component>>> entrySet() {
+        return lines.entrySet();
+    }
+    
+    public Collection<List<Component>> values() {
+        return lines.values();
     }
     
     public List<K> keys() {

@@ -1,0 +1,23 @@
+{
+    "gui.client-config": "Client Einstellung",
+    "gui.config": "Einstellung",
+    "gui.save": "Speichern",
+    "gui.add": "Hinzufügen",
+    "dialog.savechanges": "Möchtest du deine Änderungen speichern?",
+    "dialog.button.OK": "Okay",
+    "dialog.button.YES": "Ja",
+    "dialog.button.NO": "Nein",
+    "dialog.button.MAYBE": "Vielleicht",
+    "dialog.button.CANCEL": "Beenden",
+    "dialog.button.ABORT": "Abbrechen",
+    "dialog.button.CONFIRM": "Bestätigen",
+    "collector.inventory": "Inventar",
+    "collector.all": "Kreativ",
+    "minecraft.block": "Block",
+    "minecraft.item": "Item",
+    "minecraft.block_tag": "Blocktag",
+    "minecraft.item_tag": "Itemtag",
+    "minecraft.fuel": "Treibstoff",
+    "minecraft.stack": "Stack",
+    "minecraft.material": "Material"
+}

@@ -1,31 +1,28 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.util.mc.StackUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiStackSelector extends GuiLabel {
     
@@ -47,22 +44,13 @@ public class GuiStackSelector extends GuiLabel {
         setAlign(Align.CENTER);
     }
     
-    public GuiStackSelector(String name, int width, Player player, StackCollector collector, boolean searchBar) {
-        super(name, width, 14);
-        this.searchBar = searchBar;
-        this.player = player;
-        this.collector = collector;
-        updateCollectedStacks();
-        selectFirst();
-        setAlign(Align.CENTER);
-    }
-    
-    public GuiStackSelector(String name, int width, Player player, StackCollector collector) {
-        this(name, width, player, collector, true);
-    }
-    
     public GuiStackSelector(String name, Player player, StackCollector collector) {
         this(name, player, collector, true);
+    }
+    
+    public GuiStackSelector setWidth(int width) {
+        setDim(width, 14);
+        return this;
     }
     
     @Override
@@ -129,19 +117,24 @@ public class GuiStackSelector extends GuiLabel {
     
     public void openBox(Rect rect) {
         this.extension = createBox();
-        GuiLayer layer = getLayer();
-        GuiChildControl child = layer.addHover(extension);
+        GuiChildControl child = getLayer().addHover(extension);
+        
+        rect = toLayerRect(new Rect(0, 0, rect.getWidth(), rect.getHeight()));
         extension.init();
         child.setX((int) rect.minX);
         child.setY((int) rect.maxY);
         
-        child.setWidth((int) rect.getWidth());
+        child.setWidth((int) rect.getWidth(), (int) getLayer().rect.getWidth() - getContentOffset() * 2);
         child.flowX();
-        child.setHeight(child.getPreferredHeight());
+        int height = (int) getLayer().rect.getHeight() - getContentOffset() * 2;
+        child.setHeight(child.getPreferredHeight(height), height);
         child.flowY();
         
-        if (child.getY() + child.getHeight() > layer.getHeight() && rect.minY >= child.getHeight())
-            child.setY(child.getY() - (int) rect.getHeight() + child.getHeight());
+        Rect absolute = toScreenRect(child.rect.copy());
+        Rect screen = Rect.getScreenRect();
+        
+        if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
+            child.setY(child.getY() - ((int) rect.getHeight() + child.getHeight()));
     }
     
     public void closeBox() {
@@ -194,9 +187,9 @@ public class GuiStackSelector extends GuiLabel {
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
                     else {
-                        LazyOptional<IItemHandler> result = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+                        LazyOptional<IItemHandler> result = StackUtils. getStackInventory(stack);
                         if (result.isPresent())
-                            collect((IItemHandler) result.cast(), tempStacks);
+                            collect(result.orElseThrow(RuntimeException::new), tempStacks);
                     }
                 
                 stacks.add("collector.inventory", tempStacks);
@@ -211,9 +204,9 @@ public class GuiStackSelector extends GuiLabel {
                 if (!stack.isEmpty() && selector.allow(stack))
                     stacks.add(stack.copy());
                 else {
-                    LazyOptional<IItemHandler> result = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+                    LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
                     if (result.isPresent())
-                        collect((IItemHandler) result.cast(), stacks);
+                        collect(result.orElseThrow(RuntimeException::new), stacks);
                 }
                 
             }
@@ -231,17 +224,13 @@ public class GuiStackSelector extends GuiLabel {
         public HashMapList<String, ItemStack> collect(Player player) {
             HashMapList<String, ItemStack> stacks = super.collect(player);
             
-            NonNullList<ItemStack> tempStacks = NonNullList.create();
-            
-            for (Item item : ForgeRegistries.ITEMS)
-                if (!item.getCreativeTabs().isEmpty())
-                    item.fillItemCategory(CreativeModeTab.TAB_SEARCH, tempStacks);
-                
             List<ItemStack> newStacks = new ArrayList<>();
-            for (ItemStack stack : tempStacks) {
-                if (!stack.isEmpty() && selector.allow(stack))
+            for (Item item : Registry.ITEM) {
+                ItemStack stack = new ItemStack(item);
+                if (selector.allow(stack))
                     newStacks.add(stack);
             }
+            
             stacks.add("collector.all", newStacks);
             
             return stacks;
@@ -269,15 +258,16 @@ public class GuiStackSelector extends GuiLabel {
         
         @Override
         public boolean allow(ItemStack stack) {
-            if (super.allow(stack))
-                return Block.byItem(stack.getItem()) != null && !(Block.byItem(stack.getItem()) instanceof AirBlock);
+            if (super.allow(stack)) {
+                return !(Block.byItem(stack.getItem()) instanceof AirBlock);
+            }
             return false;
         }
         
     }
     
     public static boolean contains(String search, ItemStack stack) {
-        if (search.equals(""))
+        if (search.isEmpty())
             return true;
         if (getItemName(stack).toLowerCase().contains(search))
             return true;
@@ -293,7 +283,7 @@ public class GuiStackSelector extends GuiLabel {
         try {
             itemName = stack.getDisplayName().getString();
         } catch (Exception e) {
-            itemName = stack.getItem().getRegistryName().toString();
+            itemName = Registry.ITEM.getKey(stack.getItem()).toString();
         }
         return itemName;
     }

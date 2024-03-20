@@ -46,16 +46,6 @@ public class RangedBitSet {
         return ranges;
     }
     
-    public static class BitRange {
-        
-        public final int min;
-        public final int max;
-        
-        public BitRange(int min, int max) {
-            this.min = min;
-            this.max = max;
-        }
-        
-    }
+    public record BitRange(int min, int max) {}
     
 }

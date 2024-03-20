@@ -3,11 +3,13 @@ package team.creative.creativecore.common.config.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.parent.GuiTopBottomBox;
@@ -15,13 +17,15 @@ import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
-import team.creative.creativecore.common.util.text.TextListBuilder;
+import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class FullItemDialogGuiLayer extends GuiLayer {
     
     public static List<CreativeIngredient> latest = new ArrayList<CreativeIngredient>();
     
     public GuiInfoStackButton button;
+    
+    public GuiCreativeIngredientHandler handler;
     
     public FullItemDialogGuiLayer() {
         super("info", 250, 230);
@@ -34,31 +38,29 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         });
     }
     
-    public GuiCreativeIngredientHandler handler;
-    
     @Override
     public void create() {
         if (button == null)
             return;
         CreativeIngredient info = button.get();
-        handler = GuiCreativeIngredientHandler.getHandler(info);
+        handler = GuiCreativeIngredientHandler.find(info);
         
-        GuiComboBox box = (GuiComboBox) get("type");
+        GuiComboBoxMapped<GuiCreativeIngredientHandler> box = get("type");
         if (box != null)
-            handler = GuiCreativeIngredientHandler.get(box.getIndex());
+            handler = box.getSelected();
         
         clear();
         
         GuiTopBottomBox topBottom = new GuiTopBottomBox();
         add(topBottom);
-        List<String> lines = new ArrayList<>(GuiCreativeIngredientHandler.getNames());
-        box = new GuiComboBox("type", new TextListBuilder().add(lines));
+        box = new GuiComboBoxMapped<GuiCreativeIngredientHandler>("type", new TextMapBuilder<GuiCreativeIngredientHandler>()
+                .addEntrySet(GuiCreativeIngredientHandler.REGISTRY.entrySet(), x -> new TextComponent(x.getKey())));
         box.setExpandableX();
-        box.select(lines.indexOf(handler.getName()));
+        box.select(handler);
         topBottom.addTop(box);
         
         handler.createControls(topBottom.top, info);
-        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest", 100, 80).setExpandableX();
+        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest").setDim(100, 80).setExpandableX();
         for (int i = 0; i < latest.size(); i++) {
             final int id = i;
             scroll.add(new GuiButton("" + i, x -> {

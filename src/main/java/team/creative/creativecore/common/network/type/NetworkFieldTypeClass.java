@@ -2,7 +2,7 @@ package team.creative.creativecore.common.network.type;
 
 import java.lang.reflect.Type;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
 

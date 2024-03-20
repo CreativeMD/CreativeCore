@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.util.Optional;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
@@ -10,10 +8,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.Optional;
 
 public class CreativeIngredientItemTag extends CreativeIngredient {
     
@@ -34,11 +33,10 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        tag = ItemTags.create(new ResourceLocation(nbt.getString("tag")));
+        tag = TagKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(nbt.getString("tag")));
     }
     
     @Override
-    @SuppressWarnings("deprecation")
     public boolean is(ItemStack stack) {
         return stack.getItem().builtInRegistryHolder().is(tag);
     }
@@ -50,7 +48,6 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        @SuppressWarnings("deprecation")
         Optional<Named<Item>> optional = Registry.ITEM.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;
@@ -74,7 +71,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.item_tag").append(": " + ChatFormatting.YELLOW).append(tag.location().toString());
+        return new TranslatableComponent("minecraft.item_tag").append(": " + ChatFormatting.YELLOW + tag.location());
     }
     
 }

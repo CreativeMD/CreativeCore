@@ -36,7 +36,7 @@ public class Tuple<K, V> implements Entry<K, V> {
     public boolean is(K key) {
         if (this.key != null)
             return this.key.equals(key);
-        return this.key == key;
+        return key == null;
     }
     
     @Override

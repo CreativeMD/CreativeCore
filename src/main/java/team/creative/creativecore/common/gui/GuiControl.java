@@ -1,27 +1,35 @@
 package team.creative.creativecore.common.gui;
 
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.opengl.GL11;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiFixedDimension;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
+
+import java.util.List;
 
 public abstract class GuiControl {
     
@@ -29,9 +37,7 @@ public abstract class GuiControl {
     public final String name;
     public boolean enabled = true;
     
-    public boolean hasPreferredDimensions;
-    public int preferredWidth;
-    public int preferredHeight;
+    public GuiSizeRule preferred;
     public boolean expandableX = false;
     public boolean expandableY = false;
     
@@ -41,25 +47,26 @@ public abstract class GuiControl {
     
     public GuiControl(String name) {
         this.name = name;
-        this.hasPreferredDimensions = false;
-    }
-    
-    public GuiControl(String name, int width, int height) {
-        this.name = name;
-        this.hasPreferredDimensions = true;
-        this.preferredWidth = width;
-        this.preferredHeight = height;
     }
     
     // BASICS
     
     public boolean isClient() {
-        return parent.isClient();
+        if (parent != null)
+            return parent.isClient();
+        return CreativeCore.loader().getEffectiveSide().isClient();
     }
     
     public GuiControl setTooltip(List<Component> tooltip) {
-        if (!tooltip.isEmpty())
+        if (tooltip != null && tooltip.isEmpty())
+            this.customTooltip = null;
+        else
             this.customTooltip = tooltip;
+        return this;
+    }
+    
+    public GuiControl setTooltip(String translate) {
+        setTooltip(new TextBuilder().translate(translate).build());
         return this;
     }
     
@@ -90,13 +97,39 @@ public abstract class GuiControl {
         return this;
     }
     
+    public GuiControl setUnexpandable() {
+        this.expandableX = false;
+        this.expandableY = false;
+        return this;
+    }
+    
     public GuiControl setExpandableX() {
         this.expandableX = true;
         return this;
     }
     
+    public GuiControl setUnexpandableX() {
+        this.expandableX = false;
+        return this;
+    }
+    
     public GuiControl setExpandableY() {
         this.expandableY = true;
+        return this;
+    }
+    
+    public GuiControl setUnexpandableY() {
+        this.expandableY = false;
+        return this;
+    }
+    
+    public GuiControl setDim(int width, int height) {
+        this.preferred = new GuiFixedDimension(width, height);
+        return this;
+    }
+    
+    public GuiControl setDim(GuiSizeRule dim) {
+        this.preferred = dim;
         return this;
     }
     
@@ -125,6 +158,10 @@ public abstract class GuiControl {
         return parent;
     }
     
+    public IGuiIntegratedParent getIntegratedParent() {
+        return parent.getIntegratedParent();
+    }
+    
     public boolean isExpandableX() {
         return expandableX;
     }
@@ -134,27 +171,28 @@ public abstract class GuiControl {
     }
     
     public String getNestedName() {
-        if (getParent() instanceof GuiControl)
-            return ((GuiControl) getParent()).getNestedName() + "." + name;
+        if (getParent() instanceof GuiControl control)
+            return control.getNestedName() + "." + name;
         return name;
     }
     
     public boolean hasLayer() {
-        if (parent instanceof GuiControl)
-            return ((GuiControl) parent).hasLayer();
+        if (parent instanceof GuiControl control)
+            return control.hasLayer();
         return false;
     }
     
     public GuiLayer getLayer() {
-        if (parent instanceof GuiControl)
-            return ((GuiControl) parent).getLayer();
+        if (parent instanceof GuiControl control)
+            return control.getLayer();
         throw new RuntimeException("Invalid layer control");
     }
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public GuiStyle getStyle() {
-        if (parent instanceof GuiControl)
-            return ((GuiControl) parent).getStyle();
+        if (parent instanceof GuiControl control)
+            return control.getStyle();
         throw new RuntimeException("Invalid layer control");
     }
     
@@ -164,9 +202,13 @@ public abstract class GuiControl {
     
     public abstract void tick();
     
+    public boolean is(String name) {
+        return this.name.equalsIgnoreCase(name);
+    }
+    
     public boolean is(String... name) {
-        for (int i = 0; i < name.length; i++) {
-            if (this.name.equalsIgnoreCase(name[i]))
+        for (String s: name) {
+            if (this.name.equalsIgnoreCase(s))
                 return true;
         }
         return false;
@@ -174,49 +216,104 @@ public abstract class GuiControl {
     
     // SIZE
     
+    public Rect createChildRect(GuiChildControl child, Rect contentRect, double scale, double xOffset, double yOffset) {
+        return contentRect.child(child.rect, scale, xOffset, yOffset);
+    }
+    
     public abstract void flowX(int width, int preferred);
     
-    public abstract void flowY(int height, int preferred);
+    public abstract void flowY(int width, int height, int preferred);
     
     public void reflow() {
-        parent.reflow();
+        if (parent != null)
+            parent.reflow();
     }
     
-    public int getMinWidth() {
+    protected int minWidth(int availableWidth) {
         return -1;
     }
     
-    protected abstract int preferredWidth();
-    
-    public int getPreferredWidth() {
-        if (hasPreferredDimensions)
-            return preferredWidth;
-        return preferredWidth();
+    public final int getMinWidth(int availableWidth) {
+        if (preferred != null) {
+            int minWidth = preferred.minWidth(this, availableWidth);
+            if (minWidth != -1)
+                return minWidth;
+        }
+        return minWidth(availableWidth);
     }
     
-    public int getMaxWidth() {
+    protected abstract int preferredWidth(int availableWidth);
+    
+    public final int getPreferredWidth(int availableWidth) {
+        if (preferred != null) {
+            int prefWidth = preferred.preferredWidth(this, availableWidth);
+            if (prefWidth != -1)
+                return prefWidth;
+        }
+        return preferredWidth(availableWidth);
+    }
+    
+    protected int maxWidth(int availableWidth) {
         return -1;
     }
     
-    public int getMinHeight() {
+    public final int getMaxWidth(int availableWidth) {
+        if (preferred != null) {
+            int maxWidth = preferred.maxWidth(this, availableWidth);
+            if (maxWidth != -1)
+                return maxWidth;
+        }
+        return maxWidth(availableWidth);
+    }
+    
+    protected int minHeight(int width, int availableHeight) {
         return -1;
     }
     
-    protected abstract int preferredHeight();
-    
-    public int getPreferredHeight() {
-        if (hasPreferredDimensions)
-            return preferredHeight;
-        return preferredHeight();
+    public final int getMinHeight(int width, int availableHeight) {
+        if (preferred != null) {
+            int minHeight = preferred.minHeight(this, width, availableHeight);
+            if (minHeight != -1)
+                return minHeight;
+        }
+        return minHeight(width, availableHeight);
     }
     
-    public int getMaxHeight() {
+    protected abstract int preferredHeight(int width, int availableHeight);
+    
+    public final int getPreferredHeight(int width, int availableHeight) {
+        if (preferred != null) {
+            int prefHeight = preferred.preferredHeight(this, width, availableHeight);
+            if (prefHeight != -1)
+                return prefHeight;
+        }
+        return preferredHeight(width, availableHeight);
+    }
+    
+    protected int maxHeight(int width, int availableHeight) {
         return -1;
+    }
+    
+    public final int getMaxHeight(int width, int availableHeight) {
+        if (preferred != null) {
+            int maxHeight = preferred.maxHeight(this, width, availableHeight);
+            if (maxHeight != -1)
+                return maxHeight;
+        }
+        return maxHeight(width, availableHeight);
+    }
+    
+    public Rect toLayerRect(Rect rect) {
+        return getParent().toLayerRect(this, rect);
+    }
+    
+    public Rect toScreenRect(Rect rect) {
+        return getParent().toScreenRect(this, rect);
     }
     
     // INTERACTION
     
-    public boolean testForDoubleClick(Rect rect, double x, double y) {
+    public boolean testForDoubleClick(Rect rect, double x, double y, int button) {
         return false;
     }
     
@@ -265,6 +362,7 @@ public abstract class GuiControl {
     
     public abstract ControlFormatting getControlFormatting();
     
+    @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public int getContentOffset() {
         return getStyle().getContentOffset(getControlFormatting());
@@ -273,12 +371,13 @@ public abstract class GuiControl {
     public GuiTooltipEvent getTooltipEvent(Rect rect, double x, double y) {
         List<Component> toolTip = getTooltip();
         
-        if (customTooltip != null)
+        if (customTooltip != null) {
             if (toolTip == null)
                 toolTip = customTooltip;
-            else
+            else if (toolTip != customTooltip)
                 toolTip.addAll(customTooltip);
-            
+        }
+
         if (toolTip == null) {
             String langTooltip = translateOrDefault(getNestedName() + ".tooltip", null);
             if (langTooltip != null)
@@ -291,52 +390,88 @@ public abstract class GuiControl {
     }
     
     public List<Component> getTooltip() {
-        return null;
+        return customTooltip;
     }
     
     // RENDERING
     
-    @OnlyIn(value = Dist.CLIENT)
-    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public StyleDisplay getBorder(GuiStyle style, StyleDisplay display) {
+        return display;
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public StyleDisplay getBackground(GuiStyle style, StyleDisplay display) {
+        return display;
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         
         Rect rectCopy = null;
         if (!enabled)
             rectCopy = controlRect.copy();
         
+        int width;
+        int height;
+        if (control == null) {
+            width = (int) controlRect.getWidth();
+            height = (int) controlRect.getHeight();
+        } else {
+            width = control.getWidth();
+            height = control.getHeight();
+        }
+        
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
+
+        getBorder(style, style.get(formatting.border)).render(pose, 0, 0, width, height);
         
-        style.get(formatting.border).render(pose, 0, 0, controlRect.getWidth(), controlRect.getHeight());
+        int borderSize = style.getBorder(formatting.border);
         
-        int borderWidth = style.getBorder(formatting.border);
-        controlRect.shrink(borderWidth);
-        style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY)).render(pose, borderWidth, borderWidth, controlRect.getWidth(), controlRect.getHeight());
+        width -= borderSize * 2;
+        height -= borderSize * 2;
         
-        renderContent(pose, control, formatting, borderWidth, controlRect, realRect, mouseX, mouseY);
+        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(pose, borderSize, borderSize, width, height);
+        
+        controlRect.shrink(borderSize * scale);
+        
+        renderContent(pose, control, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
-            style.disabled.render(pose, realRect, rectCopy);
+            RenderSystem.disableDepthTest();
+            RenderSystem.enableBlend();
+            style.disabled.render(pose, null, rectCopy);
+            RenderSystem.enableDepthTest();
         }
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        controlRect.shrink(formatting.padding);
-        pose.pushPose();
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack pose, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        controlRect.shrink(formatting.padding * scale);
+        if (!enabled)
+            pose.pushPose();
         pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(pose, control, controlRect, controlRect.intersection(realRect), mouseX, mouseY);
-        pose.popPose();
+        renderContent(pose, control, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
+        if (!enabled)
+            pose.popPose();
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, int mouseX, int mouseY) {
-        renderContent(pose, control, controlRect, mouseX, mouseY);
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        renderContent(graphics, control, controlRect, mouseX, mouseY);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    protected abstract void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY);
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected abstract void renderContent(PoseStack graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY);
     
     // MINECRAFT
     
@@ -346,6 +481,18 @@ public abstract class GuiControl {
     
     // UTILS
     
+    public static MutableComponent translatable(String text) {
+        return new TextComponent(translate(text));
+    }
+    
+    public static MutableComponent translatable(String text, Object... parameters) {
+        return new TextComponent(translate(text, parameters));
+    }
+    
+    public static String translate(String text) {
+        return LanguageUtils.translate(text);
+    }
+    
     public static String translate(String text, Object... parameters) {
         return LanguageUtils.translate(text, parameters);
     }
@@ -354,18 +501,33 @@ public abstract class GuiControl {
         return LanguageUtils.translateOr(text, defaultText);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundInstance sound) {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public static void playSound(Holder.Reference<SoundEvent> sound) {
+        playSound(sound.value());
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundEvent event) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F));
     }
     
-    @OnlyIn(value = Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void playSound(SoundEvent event, float volume, float pitch) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public static void playSound(Holder.Reference<SoundEvent> event, float volume, float pitch) {
+        playSound(event.value(), volume, pitch);
     }
 }

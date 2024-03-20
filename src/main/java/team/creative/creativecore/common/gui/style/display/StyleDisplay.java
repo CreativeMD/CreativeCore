@@ -10,12 +10,15 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-@OnlyIn(value = Dist.CLIENT)
+@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @JsonAdapter(value = StyleDisplayDeserializer.class)
 public abstract class StyleDisplay {
     
@@ -25,7 +28,7 @@ public abstract class StyleDisplay {
         public void render(PoseStack pose, double x, double y, double width, double height) {}
     };
     
-    private static HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
+    private static final HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
     
     public static void registerType(String id, Class<? extends StyleDisplay> clazz) {
         if (types.containsKey(id))
@@ -38,7 +41,6 @@ public abstract class StyleDisplay {
     }
     
     public void render(PoseStack matrix, Rect origin, Rect rect) {
-        //render(matrix, rect.minX - origin.minX, rect.minY - origin.minY, rect.getWidth(), rect.getHeight());
         render(matrix, rect.getWidth(), rect.getHeight());
     }
     

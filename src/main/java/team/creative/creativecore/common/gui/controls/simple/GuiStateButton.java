@@ -1,7 +1,8 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
@@ -16,7 +17,6 @@ public class GuiStateButton extends GuiButton {
     
     private int index = 0;
     public CompiledText[] states;
-    public boolean autosize;
     
     public GuiStateButton(String name, ITextCollection states) {
         this(name, 0, states);
@@ -31,7 +31,6 @@ public class GuiStateButton extends GuiButton {
                 nextState();
         };
         this.index = index;
-        this.autosize = true;
         buildStates(states);
     }
     
@@ -52,13 +51,13 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         for (CompiledText text : states)
             text.setMaxHeight(height);
     }
     
     @Override
-    public int preferredWidth() {
+    public int preferredWidth(int availableWidth) {
         int width = 0;
         for (CompiledText text : states)
             width = Math.max(width, text.getTotalWidth());
@@ -66,7 +65,7 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    public int preferredHeight() {
+    public int preferredHeight(int width, int availableHeight) {
         int height = 0;
         for (CompiledText text : states)
             height = Math.max(height, text.getTotalHeight());
@@ -104,11 +103,12 @@ public class GuiStateButton extends GuiButton {
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         CompiledText text = states[index];
-        matrix.translate(rect.getWidth() / 2 - text.usedWidth / 2, rect.getHeight() / 2 - text.usedHeight / 2, 0);
-        text.render(matrix);
+        pose.translate(rect.getWidth() / 2f - text.getTotalWidth() / 2f, rect.getHeight() / 2f - text.getTotalHeight() / 2f, 0);
+        text.render(pose);
     }
     
     @Override

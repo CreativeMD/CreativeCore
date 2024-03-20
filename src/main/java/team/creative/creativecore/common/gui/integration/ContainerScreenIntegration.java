@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.gui.integration;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,12 +21,31 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     protected void init() {
         this.addWidget(listener);
     }
-    
+
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        getMenu().render(stack, this, listener, mouseX, mouseY);
+    public void resize(Minecraft p_96575_, int p_96576_, int p_96577_) {
+        super.resize(p_96575_, p_96576_, p_96577_);
+        rebuildWidgets();
+    }
+
+    protected void rebuildWidgets() {
+        for (GuiLayer layer : getMenu().getLayers())
+            layer.reflow();
     }
     
+    @Override
+    public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
+        return this.getFocused() != null && this.isDragging() && button == 0 && this.getFocused().mouseDragged(x, y, button, dragX, dragY);
+    }
+    
+    @Override
+    public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
+        getMenu().render(pose, this, listener, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderBg(PoseStack poseStack, float v, int i, int i1) {}
+
     @Override
     public void clientTick() {
         for (GuiLayer layer : getMenu().getLayers())
@@ -48,9 +67,6 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
             height = Math.max(height, layer.getHeight());
         return height;
     }
-    
-    @Override
-    protected void renderBg(PoseStack stack, float partialTicks, int x, int y) {}
     
     @Override
     public void mouseMoved(double x, double y) {

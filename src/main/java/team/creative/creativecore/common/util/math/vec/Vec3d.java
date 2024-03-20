@@ -2,9 +2,9 @@ package team.creative.creativecore.common.util.math.vec;
 
 import com.mojang.math.Vector3d;
 import com.mojang.math.Vector3f;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import team.creative.creativecore.common.util.math.base.Axis;
 
@@ -33,6 +33,10 @@ public class Vec3d extends VecNd<Vec3d> {
         super(vec);
     }
     
+    public Vec3d(Vec3f vec) {
+        this(vec.x, vec.y, vec.z);
+    }
+    
     public Vec3d(Vector3d vec) {
         this(vec.x, vec.y, vec.z);
     }
@@ -50,7 +54,7 @@ public class Vec3d extends VecNd<Vec3d> {
     }
     
     public BlockPos toBlockPos() {
-        return new BlockPos(x, y, z);
+        return new BlockPos(Mth.floor(x), Mth.floor(y), Mth.floor(z));
     }
     
     @Override
@@ -60,32 +64,30 @@ public class Vec3d extends VecNd<Vec3d> {
         this.z = vec.z;
     }
     
+    public void set(Vec3 vec) {
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = vec.z;
+    }
+    
     @Override
     public double get(int dim) {
-        switch (dim) {
-        case 0:
-            return x;
-        case 1:
-            return y;
-        case 2:
-            return z;
-        default:
-            return 0;
-        }
+        return switch (dim) {
+            case 0 -> x;
+            case 1 -> y;
+            case 2 -> z;
+            default -> 0;
+        };
     }
     
     @Override
     public double get(Axis axis) {
-        switch (axis) {
-        case X:
-            return x;
-        case Y:
-            return y;
-        case Z:
-            return z;
-        default:
-            return 0;
-        }
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+            default -> 0;
+        };
     }
     
     public void set(double x, double y, double z) {
@@ -97,30 +99,30 @@ public class Vec3d extends VecNd<Vec3d> {
     @Override
     public void set(Axis axis, double value) {
         switch (axis) {
-        case X:
-            this.x = value;
-            break;
-        case Y:
-            this.y = value;
-            break;
-        case Z:
-            this.z = value;
-            break;
+            case X:
+                this.x = value;
+                break;
+            case Y:
+                this.y = value;
+                break;
+            case Z:
+                this.z = value;
+                break;
         }
     }
     
     @Override
     public void set(int dim, double value) {
         switch (dim) {
-        case 0:
-            this.x = value;
-            break;
-        case 1:
-            this.y = value;
-            break;
-        case 2:
-            this.z = value;
-            break;
+            case 0:
+                this.x = value;
+                break;
+            case 1:
+                this.y = value;
+                break;
+            case 2:
+                this.z = value;
+                break;
         }
     }
     
@@ -181,6 +183,10 @@ public class Vec3d extends VecNd<Vec3d> {
             return (var3 < 0.0F ? -var3 : var3) <= var2;
     }
     
+    public double distance(Vec3 vec) {
+        return distance(vec.x, vec.y, vec.z);
+    }
+    
     @Override
     public double distance(Vec3d vec) {
         double x = this.x - vec.x;
@@ -195,6 +201,20 @@ public class Vec3d extends VecNd<Vec3d> {
         double y = this.y - vec.y;
         double z = this.z - vec.z;
         return x * x + y * y + z * z;
+    }
+    
+    public double distance(double x, double y, double z) {
+        double posX = this.x - x;
+        double posY = this.y - y;
+        double posZ = this.z - z;
+        return Math.sqrt(posX * posX + posY * posY + posZ * posZ);
+    }
+    
+    public double distanceSqr(double x, double y, double z) {
+        double posX = this.x - x;
+        double posY = this.y - y;
+        double posZ = this.z - z;
+        return posX * posX + posY * posY + posZ * posZ;
     }
     
     @Override

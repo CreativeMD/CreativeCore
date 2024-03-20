@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -56,14 +57,11 @@ public class ClientSyncGuiLayer extends GuiLayer {
         BiConsumer<ConfigKey, Boolean> setter = (x, y) -> x.forceSynchronization = y;
         Function<ConfigKey, Boolean> getter = (x) -> x.forceSynchronization;
         Function<ConfigKey, Collection<? extends ConfigKey>> getChildren = (x) -> {
-            if (x.getDefault() instanceof ICreativeConfigHolder) {
+            if (x.getDefault() instanceof ICreativeConfigHolder configHolder) {
                 List<ConfigKey> keys = new ArrayList<>();
-                for (ConfigKey key : ((ICreativeConfigHolder) x.getDefault()).fields())
-                    if (key.isWithoutForce(Side.CLIENT)) {
-                        Object object = key.get();
-                        if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
-                            keys.add(key);
-                    }
+                for (ConfigKey key : configHolder.fields())
+                    if (key.isWithoutForce(Side.CLIENT) && (!(key.get() instanceof ICreativeConfigHolder objectHolder) || !(objectHolder.isEmptyWithoutForce(Side.CLIENT))))
+                        keys.add(key);
                 return keys;
             }
             return null;
@@ -73,7 +71,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         for (ConfigKey key : holder.fields())
             if (key.isWithoutForce(Side.CLIENT)) {
                 Object object = key.get();
-                if (!(object instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) object).isEmptyWithoutForce(Side.CLIENT))
+                if (!(object instanceof ICreativeConfigHolder configHolder) || !configHolder.isEmptyWithoutForce(Side.CLIENT))
                     keys.add(key);
             }
         this.tree = new CheckTree<>(keys, setter, getter, getChildren);
@@ -86,7 +84,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
     }
     
     public void save() {
-        CreativeCore.NETWORK.sendToServer(new ConfigurationClientPacket(root, tree));
+        getIntegratedParent().send(new ConfigurationClientPacket(root, tree));
     }
     
     public void load(CheckTree<ConfigKey>.CheckTreeEntry entry) {
@@ -95,11 +93,11 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
         
-        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path()))))
-                .addRight(new GuiButton("back", x -> load(entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
+        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(new TextComponent("/" + String.join("/", holder.path())))).addRight(new GuiButton("back", x -> load(
+            entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
         this.currentView = entry;
         
-        GuiScrollY box = new GuiScrollY("", 100, 100).setExpandable();
+        GuiScrollY box = new GuiScrollY("").setExpandable().setDim(100, 100);
         add(box);
         
         for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
@@ -107,18 +105,16 @@ public class ClientSyncGuiLayer extends GuiLayer {
             box.add(row);
             GuiColumn first = new GuiColumn(20);
             row.addColumn(first);
-            first.valign = VAlign.CENTER;
-            first.align = Align.CENTER;
+            first.setVAlign(VAlign.CENTER);
+            first.setAlign(Align.CENTER);
             first.add(new GuiTreeCheckBox(key));
             
             GuiColumn second = (GuiColumn) new GuiColumn().setExpandableX();
             row.addColumn(second);
-            String caption = translateOrDefault("config." + String.join(".", holder.path() + "." + key.content.name + ".name"), key.content.name);
+            String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.content.name + ".name", key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
-            if (key.content != null && key.content.get() instanceof ICreativeConfigHolder)
-                second.add(new GuiButton(caption, x -> {
-                    load(key);
-                }).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+            if (key.content.get() instanceof ICreativeConfigHolder)
+                second.add(new GuiButton(caption, x -> load(key)).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
             else
                 second.add(new GuiLabel(caption).setTitle(new TextComponent(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         }
@@ -146,7 +142,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
             else if (nextAction == 1)
                 CreativeCore.CONFIG_OPEN.open(getPlayer());
         } else
-            GuiDialogHandler.openDialog(getParent(), "savechanges", (x, y) -> {
+            GuiDialogHandler.openDialog(getIntegratedParent(), "savechanges", (x, y) -> {
                 if (y == DialogButton.YES) {
                     save();
                 }
@@ -162,7 +158,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         public final CheckTree<ConfigKey>.CheckTreeEntry entry;
         
         public GuiTreeCheckBox(CheckTree<ConfigKey>.CheckTreeEntry entry) {
-            super(entry.content.name, "", entry.isEnabled());
+            super(entry.content.name, entry.isEnabled());
             this.entry = entry;
             if (!value)
                 partial = entry.isChildEnabled();

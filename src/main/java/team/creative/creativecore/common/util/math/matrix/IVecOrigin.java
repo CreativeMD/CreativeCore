@@ -1,19 +1,18 @@
 package team.creative.creativecore.common.util.math.matrix;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3d;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
+import team.creative.creativecore.common.util.math.box.ABB;
 import team.creative.creativecore.common.util.math.box.BoxCorner;
-import team.creative.creativecore.common.util.math.box.OBB;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public interface IVecOrigin {
@@ -73,6 +72,16 @@ public interface IVecOrigin {
     public void tick();
     
     public IVecOrigin getParent();
+    
+    public default void set(IVecOrigin origin) {
+        off(origin.offXLast(), origin.offYLast(), origin.offZLast());
+        rot(origin.rotXLast(), origin.rotYLast(), origin.rotZLast());
+        
+        tick();
+        
+        off(origin.offX(), origin.offY(), origin.offZ());
+        rot(origin.rotX(), origin.rotY(), origin.rotZ());
+    }
     
     public default double translationCombined(Axis axis) {
         return translation().get(axis);
@@ -134,56 +143,85 @@ public interface IVecOrigin {
         return new Vec3(real.x, real.y, real.z);
     }
     
-    public default AABB getAxisAlignedBox(AABB box) {
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE;
-        double maxX = -Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
-        double maxZ = -Double.MAX_VALUE;
-        
+    public default ABB getAABB(AABB box) {
+        ABB bb = ABB.createEmptyBox();
+        Vec3d vec = new Vec3d();
         for (int i = 0; i < BoxCorner.values().length; i++) {
-            Vec3d vec = BoxCorner.values()[i].get(box);
+            BoxCorner.values()[i].set(box, vec);
             
             transformPointToWorld(vec);
             
-            minX = Math.min(minX, vec.x);
-            minY = Math.min(minY, vec.y);
-            minZ = Math.min(minZ, vec.z);
-            maxX = Math.max(maxX, vec.x);
-            maxY = Math.max(maxY, vec.y);
-            maxZ = Math.max(maxZ, vec.z);
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
         }
         
-        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+        return bb;
     }
     
-    public default OBB getOrientatedBox(AABB box) {
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE;
-        double maxX = -Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
-        double maxZ = -Double.MAX_VALUE;
-        
+    public default ABB getOBB(AABB box) {
+        ABB bb = ABB.createEmptyBox();
+        Vec3d vec = new Vec3d();
         for (int i = 0; i < BoxCorner.values().length; i++) {
-            Vec3d vec = BoxCorner.values()[i].get(box);
+            BoxCorner.values()[i].set(box, vec);
             
             transformPointToFakeWorld(vec);
             
-            minX = Math.min(minX, vec.x);
-            minY = Math.min(minY, vec.y);
-            minZ = Math.min(minZ, vec.z);
-            maxX = Math.max(maxX, vec.x);
-            maxY = Math.max(maxY, vec.y);
-            maxZ = Math.max(maxZ, vec.z);
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
         }
         
-        return new OBB(this, minX, minY, minZ, maxX, maxY, maxZ);
+        return bb;
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    public default void setupRenderingInternal(PoseStack matrixStack, Entity entity, float partialTicks) {
+    public default ABB getAABB(ABB box) {
+        ABB bb = ABB.createEmptyBox();
+        Vec3d vec = new Vec3d();
+        for (int i = 0; i < BoxCorner.values().length; i++) {
+            BoxCorner.values()[i].set(box, vec);
+            
+            transformPointToWorld(vec);
+            
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
+        }
+        
+        return bb;
+    }
+    
+    public default ABB getOBB(ABB box) {
+        ABB bb = ABB.createEmptyBox();
+        Vec3d vec = new Vec3d();
+        for (int i = 0; i < BoxCorner.values().length; i++) {
+            BoxCorner.values()[i].set(box, vec);
+            
+            transformPointToFakeWorld(vec);
+            
+            bb.minX = Math.min(bb.minX, vec.x);
+            bb.minY = Math.min(bb.minY, vec.y);
+            bb.minZ = Math.min(bb.minZ, vec.z);
+            bb.maxX = Math.max(bb.maxX, vec.x);
+            bb.maxY = Math.max(bb.maxY, vec.y);
+            bb.maxZ = Math.max(bb.maxZ, vec.z);
+        }
+        
+        return bb;
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public default void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
         double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
@@ -196,23 +234,22 @@ public interface IVecOrigin {
         
         matrixStack.translate(offX, offY, offZ);
         
-        matrixStack.translate(rotationCenter.x, rotationCenter.y, rotationCenter.z);
+        matrixStack.translate(rotationCenter.x - camX, rotationCenter.y - camY, rotationCenter.z - camZ);
+        matrixStack.mulPose(new Quaternion((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ), false));
+        matrixStack.translate(-rotationCenter.x + camX, -rotationCenter.y + camY, -rotationCenter.z + camZ);
         
-        // TODO USE PROPER MATRIX ROTATIOn
-        GL11.glRotated(rotX, 1, 0, 0);
-        GL11.glRotated(rotY, 0, 1, 0);
-        GL11.glRotated(rotZ, 0, 0, 1);
-        
-        matrixStack.translate(-rotationCenter.x, -rotationCenter.y, -rotationCenter.z);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    public default void setupRendering(PoseStack matrixStack, Entity entity, float partialTicks) {
-        setupRenderingInternal(matrixStack, entity, partialTicks);
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public default void setupRendering(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
+        setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
     }
     
     public default boolean hasChanged() {
         return offXLast() != offX() || offYLast() != offY() || offZLast() != offZ() || rotXLast() != rotX() || rotYLast() != rotY() || rotZLast() != rotZ();
     }
+    
+    public IVecOrigin copy();
     
 }

@@ -5,11 +5,18 @@ import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 
 public class LayerClosePacket extends LayerPacket {
     
+    public int index;
+    
+    public LayerClosePacket(int index) {
+        this.index = index;
+    }
+    
     public LayerClosePacket() {}
     
     @Override
     public void execute(Player player, IGuiIntegratedParent container) {
-        container.closeLayer(container.getLayers().size() - 1);
+        if (container.getLayers().size() > index)
+            container.closeLayer(index);
     }
     
 }

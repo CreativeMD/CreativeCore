@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class FunctionIterator<T> implements Iterator<T> {
+public class FunctionIterator<T> implements IterableIterator<T> {
     
-    protected Iterator itr;
-    protected Function convert;
+    protected final Iterator itr;
+    protected final Function convert;
     
     public <V> FunctionIterator(Iterator<V> itr, Function<V, T> func) {
         Objects.requireNonNull(itr);

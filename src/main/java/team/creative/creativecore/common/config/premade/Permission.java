@@ -17,11 +17,15 @@ public class Permission<T> extends NamedList<T> {
     }
     
     public Permission<T> add(String usergroup, T value) {
-        if (usergroup.equals("default"))
-            this.value = value;
-        else
-            super.put(usergroup, value);
+        put(usergroup, value);
         return this;
+    }
+    
+    @Override
+    public T put(String key, T value) {
+        if (key.equals("default"))
+            this.value = value;
+        return super.put(key, value);
     }
     
     public T get(Player player) {
@@ -29,6 +33,11 @@ public class Permission<T> extends NamedList<T> {
             if (!pair.getKey().equals("default") && CreativeCore.CONFIG.is(player, pair.getKey()))
                 return pair.getValue();
         return value;
+    }
+    
+    @Deprecated
+    public T getDirect(Object key) {
+        return super.get(key);
     }
     
     @Override

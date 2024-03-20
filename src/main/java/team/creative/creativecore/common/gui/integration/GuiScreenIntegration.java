@@ -1,17 +1,16 @@
 package team.creative.creativecore.common.gui.integration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
-import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
+import team.creative.creativecore.common.network.CreativePacket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {
     
@@ -31,6 +30,17 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
         if (listener == null)
             listener = new ScreenEventListener(this, this);
         this.addWidget(listener);
+    }
+
+    @Override
+    public void resize(Minecraft p_96575_, int p_96576_, int p_96577_) {
+        super.resize(p_96575_, p_96576_, p_96577_);
+        rebuildWidgets();
+    }
+
+    protected void rebuildWidgets() {
+        for (GuiLayer layer : layers)
+            layer.reflow();
     }
     
     @Override
@@ -77,8 +87,8 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     }
     
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        render(stack, this, listener, mouseX, mouseY);
+    public void render(PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
+        render(graphics, this, listener, mouseX, mouseY);
     }
     
     @Override
@@ -109,20 +119,18 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     
     @Override
     public void closeLayer(int layer) {
+        for (int i = layer; i < layers.size(); i++)
+            layers.get(i).closed();
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
             onClose();
+        else
+            getTopLayer().becameTopLayer();
     }
     
     @Override
     public void closeTopLayer() {
         closeLayer(layers.size() - 1);
-    }
-    
-    @Override
-    public GuiLayer openLayer(LayerOpenPacket packet) {
-        packet.executeClient(getPlayer());
-        return layers.get(layers.size() - 1);
     }
     
     @Override
@@ -150,5 +158,8 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
             return true;
         return super.charTyped(codePoint, modifiers);
     }
+    
+    @Override
+    public void send(CreativePacket message) {}
     
 }

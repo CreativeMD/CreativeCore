@@ -40,11 +40,8 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
             
             if (((CreativeIngredientItemStack) info).stack.getDamageValue() != stack.getDamageValue())
                 return false;
-            
-            if (!ItemStack.isSame(((CreativeIngredientItemStack) info).stack, stack))
-                return false;
-            
-            return true;
+
+            return ItemStack.isSame(((CreativeIngredientItemStack) info).stack, stack);
         }
         return false;
     }
@@ -56,11 +53,8 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
         
         if (stack.getDamageValue() != this.stack.getDamageValue())
             return false;
-        
-        if (!ItemStack.isSame(this.stack, stack))
-            return false;
-        
-        return true;
+
+        return ItemStack.isSame(this.stack, stack);
     }
     
     @Override
@@ -70,7 +64,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     public boolean equals(CreativeIngredient object) {
-        return object instanceof CreativeIngredientItemStack && ((CreativeIngredientItemStack) object).is(stack);
+        return object instanceof CreativeIngredientItemStack && object.is(stack);
     }
     
     @Override
@@ -85,7 +79,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.stack").append(": " + ChatFormatting.YELLOW).append(stack.getDisplayName());
+        return new TranslatableComponent("minecraft.stack").append(": " + ChatFormatting.YELLOW + stack.getDisplayName());
     }
     
 }

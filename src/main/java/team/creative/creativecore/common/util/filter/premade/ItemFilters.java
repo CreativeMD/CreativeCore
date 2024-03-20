@@ -1,14 +1,13 @@
 package team.creative.creativecore.common.util.filter.premade;
 
-import org.apache.commons.lang3.ArrayUtils;
-
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.ArrayUtils;
 import team.creative.creativecore.common.util.CompoundSerializer;
 import team.creative.creativecore.common.util.filter.Filter;
 
@@ -54,7 +53,7 @@ public class ItemFilters {
         
         @SuppressWarnings("unused")
         public ItemFilter(CompoundTag nbt) {
-            this.item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(nbt.getString("i")));
+            this.item = Registry.ITEM.get(new ResourceLocation(nbt.getString("i")));
         }
         
         @Override
@@ -65,7 +64,7 @@ public class ItemFilters {
         @Override
         public CompoundTag write() {
             CompoundTag nbt = new CompoundTag();
-            nbt.putString("i", item.getRegistryName().toString());
+            nbt.putString("i", Registry.ITEM.getKey(item).toString());
             return nbt;
         }
         
@@ -84,7 +83,7 @@ public class ItemFilters {
             ListTag list = nbt.getList("i", Tag.TAG_STRING);
             this.items = new Item[list.size()];
             for (int i = 0; i < items.length; i++)
-                items[i] = ForgeRegistries.ITEMS.getValue(new ResourceLocation(list.getString(i)));
+                items[i] = Registry.ITEM.get(new ResourceLocation(list.getString(i)));
         }
         
         @Override
@@ -97,7 +96,7 @@ public class ItemFilters {
             CompoundTag nbt = new CompoundTag();
             ListTag list = new ListTag();
             for (int i = 0; i < items.length; i++)
-                list.add(StringTag.valueOf(items[i].getRegistryName().toString()));
+                list.add(StringTag.valueOf(Registry.ITEM.getKey(items[i]).toString()));
             nbt.put("i", list);
             return nbt;
         }

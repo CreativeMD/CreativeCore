@@ -1,20 +1,21 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
+
+import java.util.List;
 
 public class GuiLabel extends GuiControl {
     
@@ -24,17 +25,32 @@ public class GuiLabel extends GuiControl {
         super(name);
     }
     
-    public GuiLabel(String name, int width, int height) {
-        super(name, width, height);
+    public GuiLabel setDefaultColor(int color) {
+        text.setDefaultColor(color);
+        return this;
+    }
+    
+    public GuiLabel setDropShadow(boolean shadow) {
+        text.setShadow(shadow);
+        return this;
     }
     
     public GuiLabel setAlign(Align align) {
-        text.alignment = align;
+        text.setAlign(align);
+        return this;
+    }
+    
+    public GuiLabel setVAlign(VAlign valgin) {
+        text.setVAlign(valgin);
         return this;
     }
     
     public GuiLabel setTranslate(String translate) {
-        return setTitle(new TranslatableComponent(translate));
+        return setTitle(translatable(translate));
+    }
+    
+    public GuiLabel setTranslate(String translate, Object... params) {
+        return setTitle(translatable(translate, params));
     }
     
     public GuiLabel setTitle(Component component) {
@@ -46,6 +62,13 @@ public class GuiLabel extends GuiControl {
     
     public GuiLabel setTitle(List<Component> components) {
         text.setText(components);
+        if (hasGui())
+            reflow();
+        return this;
+    }
+    
+    public GuiLabel setText(CompiledText text) {
+        this.text = text;
         if (hasGui())
             reflow();
         return this;
@@ -66,9 +89,10 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
-    protected void renderContent(PoseStack matrix, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        text.render(matrix);
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        text.render(pose);
     }
     
     @Override
@@ -77,27 +101,27 @@ public class GuiLabel extends GuiControl {
     }
     
     @Override
-    public void flowY(int height, int preferred) {
+    public void flowY(int width, int height, int preferred) {
         text.setMaxHeight(height);
     }
     
     @Override
-    public int getMinWidth() {
-        return 10;
+    protected int minWidth(int availableWidth) {
+        return 0;
     }
     
     @Override
-    public int preferredWidth() {
+    protected int preferredWidth(int availableWidth) {
         return text.getTotalWidth();
     }
     
     @Override
-    public int getMinHeight() {
+    protected int minHeight(int width, int availableHeight) {
         return Minecraft.getInstance().font.lineHeight;
     }
     
     @Override
-    public int preferredHeight() {
+    protected int preferredHeight(int width, int availableHeight) {
         return text.getTotalHeight();
     }
     

@@ -2,7 +2,6 @@ package team.creative.creativecore.common.util.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import team.creative.creativecore.common.util.filter.Filter;
@@ -12,9 +11,9 @@ import team.creative.creativecore.common.util.type.list.Pair;
 
 public class FilteredHandlerRegistry<U, T> {
     
-    private HashMap<U, T> map = new HashMap<>();
-    private List<Pair<Filter<U>, T>> handlers = new ArrayList<>();
-    private T defaultHandler;
+    private final HashMap<U, T> map = new HashMap<>();
+    private final List<Pair<Filter<U>, T>> handlers = new ArrayList<>();
+    private final T defaultHandler;
     private boolean allowOverwrite = false;
     
     public FilteredHandlerRegistry(T handler) {
@@ -51,13 +50,7 @@ public class FilteredHandlerRegistry<U, T> {
     }
     
     public Iterable<T> handlers() {
-        return new Iterable<T>() {
-            
-            @Override
-            public Iterator<T> iterator() {
-                return new ConsecutiveIterator<T>(map.values().iterator(), new FunctionIterator<T>(handlers, (pair) -> pair.value));
-            }
-        };
+        return new ConsecutiveIterator<T>(map.values().iterator(), new FunctionIterator<T>(handlers, (pair) -> pair.value));
     }
     
 }

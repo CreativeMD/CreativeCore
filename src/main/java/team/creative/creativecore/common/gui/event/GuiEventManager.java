@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class GuiEventManager {
     
-    private List<GuiEventHandler> handlers = new ArrayList<>();
+    private final List<GuiEventHandler> handlers = new ArrayList<>();
     
     public void raiseEvent(GuiEvent event) {
         for (GuiEventHandler handler : handlers) {
@@ -18,6 +18,10 @@ public class GuiEventManager {
     
     public <T extends GuiEvent> void registerEvent(Class<T> clazz, Consumer<T> action) {
         handlers.add(new GuiEventHandler<>(clazz, action));
+    }
+    
+    public void clear() {
+        handlers.clear();
     }
     
     public static class GuiEventHandler<T extends GuiEvent> {

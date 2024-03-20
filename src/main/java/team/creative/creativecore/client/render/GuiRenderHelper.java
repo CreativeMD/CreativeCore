@@ -3,19 +3,16 @@ package team.creative.creativecore.client.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -29,7 +26,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
-@OnlyIn(value = Dist.CLIENT)
+@Environment(EnvType.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiRenderHelper {
     
     private static final Minecraft mc = Minecraft.getInstance();
@@ -48,14 +46,14 @@ public class GuiRenderHelper {
         PoseStack matrix = RenderSystem.getModelViewStack();
         matrix.pushPose();
         matrix.mulPoseMatrix(mat.last().pose());
-        matrix.translate(0, 0, 100.0F + renderer.blitOffset);
-        matrix.translate(8.0D, 8.0D, 0.0D);
-        matrix.scale(1.0F, -1.0F, 1.0F);
-        matrix.scale(16.0F, 16.0F, 16.0F);
+        matrix.translate(0, 0, 100);
+        matrix.translate(8, 8, 8);
+        matrix.mulPoseMatrix(Matrix4f.createScaleMatrix(1, -1, 1));
+        matrix.scale(16, 16, 16);
         
         RenderSystem.applyModelViewMatrix();
         MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        BakedModel bakedmodel = renderer.getModel(stack, (Level) null, (LivingEntity) null, 0);
+        BakedModel bakedmodel = renderer.getModel(stack, null, null, 0);
         boolean flag = !bakedmodel.usesBlockLight();
         if (flag)
             Lighting.setupForFlatItems();
@@ -70,19 +68,23 @@ public class GuiRenderHelper {
     }
     
     public static void drawItemStackDecorations(PoseStack posestack, ItemStack stack) {
+        drawItemStackDecorations(posestack, stack, stack.getCount());
+    }
+    
+    public static void drawItemStackDecorations(PoseStack posestack, ItemStack stack, int count) {
         if (!stack.isEmpty()) {
             int x = 0;
             int y = 0;
-            if (stack.getCount() != 1l) {
-                String s = String.valueOf(stack.getCount());
+            if (count != 1L) {
+                String s = String.valueOf(count);
                 posestack.translate(0.0D, 0.0D, 0 + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last().pose(), multibuffersource$buffersource, false, 0, 15728880);
+                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last()
+                        .pose(), multibuffersource$buffersource, false, 0, 15728880);
                 multibuffersource$buffersource.endBatch();
             }
             if (stack.isBarVisible()) {
                 RenderSystem.disableDepthTest();
-                RenderSystem.disableTexture();
                 RenderSystem.disableBlend();
                 Tesselator tesselator = Tesselator.getInstance();
                 BufferBuilder bufferbuilder = tesselator.getBuilder();
@@ -91,7 +93,6 @@ public class GuiRenderHelper {
                 colorRect(posestack, bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
                 colorRect(posestack, bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
                 RenderSystem.enableBlend();
-                RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
             
@@ -99,13 +100,11 @@ public class GuiRenderHelper {
             float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack.getItem(), Minecraft.getInstance().getFrameTime());
             if (f > 0.0F) {
                 RenderSystem.disableDepthTest();
-                RenderSystem.disableTexture();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 Tesselator tesselator1 = Tesselator.getInstance();
                 BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
                 colorRect(posestack, bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-                RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
             
@@ -127,27 +126,54 @@ public class GuiRenderHelper {
                     } else
                         break;
                 }
-                text = builder.toString() + "...";
+                text = builder + "...";
             }
         }
-        mc.font.drawShadow(stack, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, color);
+        BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        mc.font.drawInBatch(text, width / 2f - mc.font.width(text) / 2f, height / 2f - mc.font.lineHeight / 2f, ColorUtils.WHITE, shadow, stack.last()
+                .pose(), buffer, false, 0, 15728880);
+        buffer.endBatch();
     }
     
-    public static void gradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        RenderSystem.disableTexture();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+    public static void horizontalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        gradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
+        horizontalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
         tesselator.end();
-        RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
     
-    public static void gradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
+    public static void horizontalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
+        float f = (colorA >> 24 & 255) / 255.0F;
+        float f1 = (colorA >> 16 & 255) / 255.0F;
+        float f2 = (colorA >> 8 & 255) / 255.0F;
+        float f3 = (colorA & 255) / 255.0F;
+        float f4 = (colorB >> 24 & 255) / 255.0F;
+        float f5 = (colorB >> 16 & 255) / 255.0F;
+        float f6 = (colorB >> 8 & 255) / 255.0F;
+        float f7 = (colorB & 255) / 255.0F;
+        
+        /*builder.vertex(matrix, x2, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y2, z).color(f5, f6, f7, f4).endVertex();
+        builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();*/
+        builder.vertex(matrix, x2, y, z).color(f5, f6, f7, f4).endVertex();
+        builder.vertex(matrix, x, y, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x, y2, z).color(f1, f2, f3, f).endVertex();
+        builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();
+    }
+    
+    public static void verticalGradientRect(PoseStack pose, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        verticalGradientRect(pose.last().pose(), bufferbuilder, x, y, x2, y2, 0, colorFrom, colorTo);
+        tesselator.end();
+    }
+    
+    public static void verticalGradientRect(Matrix4f matrix, BufferBuilder builder, int x, int y, int x2, int y2, int z, int colorA, int colorB) {
         float f = (colorA >> 24 & 255) / 255.0F;
         float f1 = (colorA >> 16 & 255) / 255.0F;
         float f2 = (colorA >> 8 & 255) / 255.0F;
@@ -162,22 +188,13 @@ public class GuiRenderHelper {
         builder.vertex(matrix, x2, y2, z).color(f5, f6, f7, f4).endVertex();
     }
     
-    public static void gradientMaskRect(PoseStack pose, int x, int y, int x2, int y2, int color, int mask) {
-        gradientRect(pose, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
+    public static void horizontalGradientMaskRect(PoseStack pose, int x, int y, int x2, int y2, int color, int mask) {
+        horizontalGradientRect(pose, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
     }
     
     public static void colorRect(PoseStack pose, int x, int y, int width, int height, int color) {
-        RenderSystem.disableTexture();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        colorRect(pose, bufferbuilder, x, y, x + width, y + height, ColorUtils.red(color), ColorUtils.green(color), ColorUtils.blue(color), ColorUtils.alpha(color));
-        tesselator.end();
-        RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
+        colorRect(pose, Tesselator.getInstance().getBuilder(), x, y, x + width, y + height, ColorUtils.red(color), ColorUtils.green(color), ColorUtils.blue(color), ColorUtils
+                .alpha(color));
     }
     
     public static void colorRect(PoseStack pose, BufferBuilder builder, int x, int y, int width, int height, int red, int green, int blue, int alpha) {
@@ -188,11 +205,10 @@ public class GuiRenderHelper {
         builder.vertex(mat, x, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
         builder.vertex(mat, x + width, y + height, 0.0F).color(red, green, blue, alpha).endVertex();
         builder.vertex(mat, x + width, y, 0.0F).color(red, green, blue, alpha).endVertex();
-        builder.end();
-        BufferUploader.end(builder);
+        Tesselator.getInstance().end();
     }
     
-    private static void textureRect(PoseStack pose, int x, int y, int width, int height, int z, float u, float v, int textureWidth, int textureHeight) {
+    private static void textureRect(PoseStack pose, int x, int y, int z, int width, int height, float u, float v, int textureWidth, int textureHeight) {
         textureRect(pose, x, x + width, y, y + height, z, u, v, width, height, textureWidth, textureHeight);
     }
     
@@ -201,7 +217,7 @@ public class GuiRenderHelper {
     }
     
     public static void textureRect(PoseStack pose, int x, int y, int width, int height, float u, float v, float u2, float v2) {
-        textureRect(pose, x, y, 0, width, height, u, v, u2, v2, 256, 256);
+        textureRect(pose, x, x + width, y, y + height, 0, u, v, u2, v2, 256, 256);
     }
     
     private static void textureRect(PoseStack pose, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth, int textureHeight) {
@@ -220,8 +236,7 @@ public class GuiRenderHelper {
         bufferbuilder.vertex(matrix, x2, y2, z).uv(u2, v2).endVertex();
         bufferbuilder.vertex(matrix, x2, y, z).uv(u2, v).endVertex();
         bufferbuilder.vertex(matrix, x, y, z).uv(u, v).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
+        Tesselator.getInstance().end();
     }
     
 }

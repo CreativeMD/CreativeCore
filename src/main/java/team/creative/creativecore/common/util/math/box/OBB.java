@@ -1,276 +1,176 @@
 package team.creative.creativecore.common.util.math.box;
 
-import com.mojang.math.Vector3d;
-
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
+import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
-import team.creative.creativecore.common.util.math.collision.CollidingPlane.PlaneCache;
+import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
+import team.creative.creativecore.common.util.math.vec.Vec2d;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
 
-public class OBB extends CreativeAABB {
+import java.util.List;
+
+public class OBB extends ABB {
+    
+    /** @return -1 -> value is too small; 0 -> value is inside min and max; 1 ->
+     *         value is too large */
+    private static int getCornerOffset(double value, double min, double max) {
+        if (value <= min)
+            return -1;
+        else if (value >= max)
+            return 1;
+        return 0;
+    }
+    
+    public static double calculateDistanceFromPlane(boolean positive, double closestValue, Vec2d vec, double firstAxisValue, double secondAxisValue, double outerCornerAxis) {
+        double valueAxis = outerCornerAxis + (firstAxisValue - outerCornerAxis) * vec.x + (secondAxisValue - outerCornerAxis) * vec.y;
+        return positive ? valueAxis - closestValue : closestValue - valueAxis;
+    }
     
     public IVecOrigin origin;
-    public PlaneCache cache;
     
-    public void buildCache() {
-        this.cache = new PlaneCache(this);
-    }
-    
-    public OBB(IVecOrigin origin, double x1, double y1, double z1, double x2, double y2, double z2) {
-        super(x1, y1, z1, x2, y2, z2);
+    public OBB(ABB bb, IVecOrigin origin) {
+        super(bb);
         this.origin = origin;
     }
     
-    public OBB(IVecOrigin origin, AABB bb) {
-        super(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
+    public OBB(AABB bb, IVecOrigin origin) {
+        super(bb);
         this.origin = origin;
     }
     
     @Override
-    public OBB setMinX(double value) {
-        return new OBB(origin, value, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+    public OBB copy() {
+        return new OBB(this, origin);
     }
     
-    @Override
-    public OBB setMinY(double value) {
-        return new OBB(origin, this.minX, value, this.minZ, this.maxX, this.maxY, this.maxZ);
-    }
-    
-    @Override
-    public OBB setMinZ(double value) {
-        return new OBB(origin, this.minX, this.minY, value, this.maxX, this.maxY, this.maxZ);
-    }
-    
-    @Override
-    public OBB setMaxX(double value) {
-        return new OBB(origin, this.minX, this.minY, this.minZ, value, this.maxY, this.maxZ);
-    }
-    
-    @Override
-    public OBB setMaxY(double value) {
-        return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, value, this.maxZ);
-    }
-    
-    @Override
-    public OBB setMaxZ(double value) {
-        return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, this.maxY, value);
-    }
-    
-    public OBB set(Facing facing, double value) {
-        switch (facing) {
-        case EAST:
-            return new OBB(origin, this.minX, this.minY, this.minZ, value, this.maxY, this.maxZ);
-        case WEST:
-            return new OBB(origin, value, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
-        case UP:
-            return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, value, this.maxZ);
-        case DOWN:
-            return new OBB(origin, this.minX, value, this.minZ, this.maxX, this.maxY, this.maxZ);
-        case SOUTH:
-            return new OBB(origin, this.minX, this.minY, this.minZ, this.maxX, this.maxY, value);
-        case NORTH:
-            return new OBB(origin, this.minX, this.minY, value, this.maxX, this.maxY, this.maxZ);
-        default:
-            throw new UnsupportedOperationException();
+    public double calculateDistanceRotated(AABB other, Axis axis, double offset) {
+        boolean positive = offset > 0;
+        Facing facing = Facing.get(axis, !positive);
+        double closestValue = get(other, facing.opposite());
+        
+        Axis one = axis.one();
+        Axis two = axis.two();
+        
+        double minOne = min(other, one);
+        double minTwo = min(other, two);
+        double maxOne = max(other, one);
+        double maxTwo = max(other, two);
+        
+        Vec3d[] corners = getOuterCorner(facing, origin, minOne, minTwo, maxOne, maxTwo);
+        
+        Vec3d outerCorner = corners[0];
+        double outerCornerOne = outerCorner.get(one);
+        double outerCornerTwo = outerCorner.get(two);
+        double outerCornerAxis = outerCorner.get(axis);
+        
+        int outerCornerOffsetOne = getCornerOffset(outerCornerOne, minOne, maxOne);
+        int outerCornerOffsetTwo = getCornerOffset(outerCornerTwo, minTwo, maxTwo);
+        
+        if (outerCornerOffsetOne == 0 && outerCornerOffsetTwo == 0) {
+            // Hits the outer corner
+            if (positive)
+                return outerCornerAxis - closestValue;
+            return closestValue - outerCornerAxis;
         }
-    }
-    
-    @Override
-    public boolean equals(Object p_equals_1_) {
-        if (this == p_equals_1_) {
-            return true;
-        } else if (!(p_equals_1_ instanceof OBB)) {
-            return false;
-        } else {
-            OBB axisalignedbb = (OBB) p_equals_1_;
+
+        Vec2d[] directions = new Vec2d[3];
+        
+        double minDistance = Double.MAX_VALUE;
+        
+        Vec2d[] vectors = { new Vec2d(minOne - outerCornerOne, minTwo - outerCornerTwo), new Vec2d(maxOne - outerCornerOne, minTwo - outerCornerTwo), new Vec2d(maxOne - outerCornerOne, maxTwo - outerCornerTwo), new Vec2d(minOne - outerCornerOne, maxTwo - outerCornerTwo) };
+        Vec2d[] vectorsRelative = { new Vec2d(), new Vec2d(), new Vec2d(), new Vec2d() };
+
+        // BACKPORT NOTE: Vector2d of joml was replaced by CC Vec2, apparently is unnecessary and have same effect
+        directions[0] = new Vec2d(corners[1].get(one) - outerCornerOne, corners[1].get(two) - outerCornerTwo);
+        directions[1] = new Vec2d(corners[2].get(one) - outerCornerOne, corners[2].get(two) - outerCornerTwo);
+        directions[2] = new Vec2d(corners[3].get(one) - outerCornerOne, corners[3].get(two) - outerCornerTwo);
+        
+        face_loop: for (int i = 0; i < 3; i++) { // Calculate faces
             
-            if (axisalignedbb.origin != origin) {
-                return false;
-            } else if (Double.compare(axisalignedbb.minX, this.minX) != 0) {
-                return false;
-            } else if (Double.compare(axisalignedbb.minY, this.minY) != 0) {
-                return false;
-            } else if (Double.compare(axisalignedbb.minZ, this.minZ) != 0) {
-                return false;
-            } else if (Double.compare(axisalignedbb.maxX, this.maxX) != 0) {
-                return false;
-            } else if (Double.compare(axisalignedbb.maxY, this.maxY) != 0) {
-                return false;
+            int indexFirst = i;
+            int indexSecond = i == 2 ? 0 : i + 1;
+
+            Vec2d first = directions[indexFirst];
+            Vec2d second = directions[indexSecond];
+            
+            if (first.x == 0 || second.y == 0) {
+                int temp = indexFirst;
+                indexFirst = indexSecond;
+                indexSecond = temp;
+                first = directions[indexFirst];
+                second = directions[indexSecond];
+            }
+            
+            double firstAxisValue = corners[indexFirst + 1].get(axis);
+            double secondAxisValue = corners[indexSecond + 1].get(axis);
+            
+            boolean allInside = true;
+            
+            for (int j = 0; j < 4; j++) {
+                
+                Vec2d vector = vectors[j];
+                
+                double t = (vector.x * second.y - vector.y * second.x) / (first.x * second.y - first.y * second.x);
+                if (Double.isNaN(t) || Double.isInfinite(t))
+                    continue face_loop;
+                double s = (vector.y - t * first.y) / second.y;
+                if (Double.isNaN(s) || Double.isInfinite(s))
+                    continue face_loop;
+                
+                if (t <= 0 || t >= 1 || s <= 0 || s >= 1)
+                    allInside = false;
+                vectorsRelative[j].set(t, s);
+            }
+            
+            if (allInside) {
+                for (int j = 0; j < vectorsRelative.length; j++) {
+                    double distance = calculateDistanceFromPlane(positive, closestValue, vectorsRelative[j], firstAxisValue, secondAxisValue, outerCornerAxis);
+                    minDistance = Math.min(distance, minDistance);
+                }
             } else {
-                return Double.compare(axisalignedbb.maxZ, this.maxZ) == 0;
+                List<Vec2d> points = IntersectionHelper.cutMinMax(0, 0, 1, 1, vectorsRelative);
+                for (int j = 0; j < points.size(); j++) {
+                    double distance = calculateDistanceFromPlane(positive, closestValue, points.get(j), firstAxisValue, secondAxisValue, outerCornerAxis);
+                    minDistance = Math.min(distance, minDistance);
+                }
             }
+            
         }
+        
+        if (minDistance == Double.MAX_VALUE)
+            return -1;
+        
+        return minDistance;
     }
     
     @Override
-    public OBB contract(double x, double y, double z) {
-        double d0 = this.minX;
-        double d1 = this.minY;
-        double d2 = this.minZ;
-        double d3 = this.maxX;
-        double d4 = this.maxY;
-        double d5 = this.maxZ;
+    public double calculateAxisOffset(Axis axis, Axis one, Axis two, AABB other, double offset) {
+        if (offset == 0)
+            return offset;
+        if (Math.abs(offset) < 1.0E-7D)
+            return 0.0D;
         
-        if (x < 0.0D) {
-            d0 -= x;
-        } else if (x > 0.0D) {
-            d3 -= x;
+        double distance = calculateDistanceRotated(other, axis, offset);
+        
+        if (distance < 0 && !Maths.equals(distance, 0))
+            return offset;
+        
+        if (offset > 0.0D) {
+            if (distance < offset)
+                return distance;
+            return offset;
+        } else if (offset < 0.0D) {
+            if (-distance > offset)
+                return -distance;
+            return offset;
         }
-        
-        if (y < 0.0D) {
-            d1 -= y;
-        } else if (y > 0.0D) {
-            d4 -= y;
-        }
-        
-        if (z < 0.0D) {
-            d2 -= z;
-        } else if (z > 0.0D) {
-            d5 -= z;
-        }
-        
-        return new OBB(origin, d0, d1, d2, d3, d4, d5);
-    }
-    
-    @Override
-    public OBB expandTowards(double x, double y, double z) {
-        double d0 = this.minX;
-        double d1 = this.minY;
-        double d2 = this.minZ;
-        double d3 = this.maxX;
-        double d4 = this.maxY;
-        double d5 = this.maxZ;
-        
-        if (x < 0.0D) {
-            d0 += x;
-        } else if (x > 0.0D) {
-            d3 += x;
-        }
-        
-        if (y < 0.0D) {
-            d1 += y;
-        } else if (y > 0.0D) {
-            d4 += y;
-        }
-        
-        if (z < 0.0D) {
-            d2 += z;
-        } else if (z > 0.0D) {
-            d5 += z;
-        }
-        
-        return new OBB(origin, d0, d1, d2, d3, d4, d5);
-    }
-    
-    @Override
-    public OBB inflate(double x, double y, double z) {
-        double d0 = this.minX - x;
-        double d1 = this.minY - y;
-        double d2 = this.minZ - z;
-        double d3 = this.maxX + x;
-        double d4 = this.maxY + y;
-        double d5 = this.maxZ + z;
-        return new OBB(origin, d0, d1, d2, d3, d4, d5);
-    }
-    
-    @Override
-    public OBB inflate(double value) {
-        return this.inflate(value, value, value);
-    }
-    
-    @Override
-    public OBB move(double x, double y, double z) {
-        return new OBB(origin, this.minX + x, this.minY + y, this.minZ + z, this.maxX + x, this.maxY + y, this.maxZ + z);
-    }
-    
-    @Override
-    public OBB move(BlockPos pos) {
-        return new OBB(origin, this.minX + pos.getX(), this.minY + pos.getY(), this.minZ + pos.getZ(), this.maxX + pos.getX(), this.maxY + pos.getY(), this.maxZ + pos.getZ());
-    }
-    
-    public static final float EPSILON = 0.001F;
-    
-    public static boolean smallerThanAndEquals(double a, double b) {
-        return a < b || equals(a, b);
-    }
-    
-    public static boolean greaterThanAndEquals(double a, double b) {
-        return a > b || equals(a, b);
-    }
-    
-    public static boolean equals(double a, double b) {
-        return a == b ? true : Math.abs(a - b) < EPSILON;
-    }
-    
-    public double getMaxTranslated(Axis axis) {
-        return getMax(axis) + origin.translationCombined(axis);
-    }
-    
-    public double getMinTranslated(Axis axis) {
-        return getMin(axis) + origin.translationCombined(axis);
-    }
-    
-    @Override
-    public boolean intersects(AABB other) {
-        if (other instanceof OBB) {
-            if (((OBB) other).origin == origin)
-                return this.minX < other.maxX && this.maxX > other.minX && this.minY < other.maxY && this.maxY > other.minY && this.minZ < other.maxZ && this.maxZ > other.minZ;
-            else {
-                OBB converted = ((OBB) other).origin.getOrientatedBox(origin.getAxisAlignedBox(this));
-                return converted.minX < other.maxX && converted.maxX > other.minX && converted.minY < other.maxY && converted.maxY > other.minY && converted.minZ < other.maxZ && converted.maxZ > other.minZ;
-            }
-        }
-        
-        return this.intersects(other.minX, other.minY, other.minZ, other.maxX, other.maxY, other.maxZ);
-    }
-    
-    @Override
-    public boolean intersects(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        AABB box = origin.getAxisAlignedBox(this);
-        return box.minX < maxX && box.maxX > minX && box.minY < maxY && box.maxY > minY && box.minZ < maxZ && box.maxZ > minZ;
+        return offset;
     }
     
     @Override
     public String toString() {
-        return "box[" + this.minX + ", " + this.minY + ", " + this.minZ + " -> " + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
+        return "OBB[" + this.minX + ", " + this.minY + ", " + this.minZ + "] -> [" + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
     }
-    
-    public Vector3d getCenter3d() {
-        return new Vector3d(this.minX + (this.maxX - this.minX) * 0.5D, this.minY + (this.maxY - this.minY) * 0.5D, this.minZ + (this.maxZ - this.minZ) * 0.5D);
-    }
-    
-    public double getPushOutScale(double minScale, OBB fakeBox, Vector3d pushVec) {
-        double scale = Double.MAX_VALUE;
-        
-        boolean pushX = pushVec.x != 0;
-        boolean pushY = pushVec.y != 0;
-        boolean pushZ = pushVec.z != 0;
-        
-        if (pushX)
-            if (pushVec.x > 0)
-                scale = Math.min(scale, Math.abs((this.maxX - fakeBox.minX) / pushVec.x));
-            else
-                scale = Math.min(scale, Math.abs((this.minX - fakeBox.maxX) / pushVec.x));
-            
-        if (pushY)
-            if (pushVec.y > 0)
-                scale = Math.min(scale, Math.abs((this.maxY - fakeBox.minY) / pushVec.y));
-            else
-                scale = Math.min(scale, Math.abs((this.minY - fakeBox.maxY) / pushVec.y));
-            
-        if (pushZ)
-            if (pushVec.z > 0)
-                scale = Math.min(scale, Math.abs((this.maxZ - fakeBox.minZ) / pushVec.z));
-            else
-                scale = Math.min(scale, Math.abs((this.minZ - fakeBox.maxZ) / pushVec.z));
-            
-        if (scale <= minScale)
-            return minScale;
-        
-        return scale;
-        
-    }
-    
 }

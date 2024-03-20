@@ -2,45 +2,36 @@ package team.creative.creativecore.common.util.filter;
 
 @FunctionalInterface
 public interface BiFilter<T, U> {
+    BiFilterSerializer SERIALIZER = new BiFilterSerializer();
     
-    public static final BiFilterSerializer SERIALIZER = new BiFilterSerializer();
+    boolean is(T t, U u);
     
-    public boolean is(T t, U u);
-    
-    public static <T, U> BiFilter<T, U> and(BiFilter<T, U>... filters) {
+    @SafeVarargs
+    static <T, U> BiFilter<T, U> and(BiFilter<T, U>... filters) {
         return new BiFilterAnd<>(filters);
     }
     
-    public static <T, U> BiFilter<T, U> or(BiFilter<T, U>... filters) {
+    @SafeVarargs
+    static <T, U> BiFilter<T, U> or(BiFilter<T, U>... filters) {
         return new BiFilterOr<>(filters);
     }
     
-    public static <T, U> BiFilter<T, U> not(BiFilter<T, U> filter) {
+    static <T, U> BiFilter<T, U> not(BiFilter<T, U> filter) {
         return new BiFilterNot<>(filter);
     }
     
-    public static class BiFilterNot<T, U> implements BiFilter<T, U> {
-        
-        public final BiFilter<T, U> filter;
-        
-        public BiFilterNot(BiFilter<T, U> filter) {
-            this.filter = filter;
-        }
-        
+    record BiFilterNot<T, U>(BiFilter<T, U> filter) implements BiFilter<T, U> {
         @Override
         public boolean is(T t, U u) {
             return !filter.is(t, u);
         }
-        
     }
     
-    public static class BiFilterAnd<T, U> implements BiFilter<T, U> {
+    record BiFilterAnd<T, U>(BiFilter<T, U>... filters) implements BiFilter<T, U> {
+        @SafeVarargs
+        public BiFilterAnd
         
-        public final BiFilter<T, U>[] filters;
-        
-        public BiFilterAnd(BiFilter<T, U>... filters) {
-            this.filters = filters;
-        }
+        {}
         
         @Override
         public boolean is(T t, U u) {
@@ -49,16 +40,11 @@ public interface BiFilter<T, U> {
                     return false;
             return true;
         }
-        
     }
     
-    public static class BiFilterOr<T, U> implements BiFilter<T, U> {
-        
-        public final BiFilter<T, U>[] filters;
-        
-        public BiFilterOr(BiFilter<T, U>... filters) {
-            this.filters = filters;
-        }
+    record BiFilterOr<T, U>(BiFilter<T, U>... filters) implements BiFilter<T, U> {
+        @SafeVarargs
+        public BiFilterOr {}
         
         @Override
         public boolean is(T t, U u) {
@@ -67,7 +53,5 @@ public interface BiFilter<T, U> {
                     return true;
             return false;
         }
-        
     }
-    
 }

@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.util.Optional;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
@@ -10,10 +8,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
+
+import java.util.Optional;
 
 public class CreativeIngredientBlockTag extends CreativeIngredient {
     
@@ -34,14 +34,13 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(CompoundTag nbt) {
-        tag = BlockTags.create(new ResourceLocation(nbt.getString("tag")));
+        tag = TagKey.create(Registry.BLOCK_REGISTRY, new ResourceLocation(nbt.getString("tag")));
     }
     
     @Override
-    @SuppressWarnings("deprecation")
     public boolean is(ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
-        if (block != null)
+        if (!(Block.byItem(stack.getItem()) instanceof AirBlock))
             return block.builtInRegistryHolder().is(tag);
         return false;
     }
@@ -53,7 +52,6 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        @SuppressWarnings("deprecation")
         Optional<Named<Block>> optional = Registry.BLOCK.getTag(tag);
         if (optional.isEmpty() || optional.get().size() == 0)
             return ItemStack.EMPTY;
@@ -77,7 +75,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.block_tag").append(": " + ChatFormatting.YELLOW).append(tag.location().toString());
+        return new TranslatableComponent("minecraft.block_tag").append(": " + ChatFormatting.YELLOW + tag.location());
     }
     
 }

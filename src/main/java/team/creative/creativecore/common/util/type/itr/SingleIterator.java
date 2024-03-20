@@ -1,11 +1,10 @@
 package team.creative.creativecore.common.util.type.itr;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public class SingleIterator<E> implements Iterator<E> {
+public class SingleIterator<E> implements IterableIterator<E> {
     
     private E element;
     

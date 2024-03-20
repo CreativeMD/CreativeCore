@@ -8,8 +8,14 @@ import java.util.Set;
 
 public class NamedHandlerRegistry<T> {
     
-    private HashMap<String, T> handlers = new LinkedHashMap<>();
-    private HashMap<T, String> handlersInv = new LinkedHashMap<>();
+    public static void clearRegistry(NamedHandlerRegistry registry) {
+        registry.handlers.clear();
+        registry.handlersInv.clear();
+        registry.defaultHandler = null;
+    }
+    
+    private final HashMap<String, T> handlers = new LinkedHashMap<>();
+    private final HashMap<T, String> handlersInv = new LinkedHashMap<>();
     private T defaultHandler;
     private boolean allowOverwrite = false;
     
@@ -44,6 +50,13 @@ public class NamedHandlerRegistry<T> {
     
     public T get(String id) {
         return handlers.getOrDefault(id, defaultHandler);
+    }
+    
+    public T getOrThrow(String id) {
+        T handler = handlers.get(id);
+        if (handler == null)
+            throw new IllegalArgumentException("'" + id + "' does not exist");
+        return handler;
     }
     
     public boolean contains(String id) {

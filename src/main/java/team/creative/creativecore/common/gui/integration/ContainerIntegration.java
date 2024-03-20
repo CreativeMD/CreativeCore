@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.LayerClosePacket;
-import team.creative.creativecore.common.gui.packet.LayerOpenPacket;
 import team.creative.creativecore.common.network.CreativePacket;
 
 public class ContainerIntegration extends AbstractContainerMenu implements IGuiIntegratedParent {
@@ -25,7 +24,6 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
         this.player = player;
         layer.setParent(this);
         this.layers.add(layer);
-        layer.init();
     }
     
     public ContainerIntegration(MenuType<ContainerIntegration> type, int id, Player player) {
@@ -91,55 +89,45 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     }
     
     @Override
-    public GuiLayer openLayer(LayerOpenPacket packet) {
-        packet.execute(player);
-        if (isClient())
-            CreativeCore.NETWORK.sendToServer(packet);
-        else
-            CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
-        
-        return layers.get(layers.size() - 1);
-    }
-    
-    @Override
     public void closeTopLayer() {
         int index = layers.size() - 1;
-        sendPacket(new LayerClosePacket());
-        closeLayer(index);
+        if (index != -1)
+            closeLayer(index);
     }
     
     @Override
     public void closeLayer(GuiLayer layer) {
         int index = layers.indexOf(layer);
-        if (index != -1) {
-            sendPacket(new LayerClosePacket());
+        if (index != -1)
             closeLayer(index);
-        }
     }
     
     @Override
     public void closeLayer(int layer) {
+        for (int i = layer; i < layers.size(); i++)
+            layers.get(i).closed();
+        send(new LayerClosePacket(layer));
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
             if (isClient())
-                Minecraft.getInstance().setScreen((Screen) null);
+                Minecraft.getInstance().setScreen(null);
             else
-                ((ServerPlayer) player).closeContainer();
-    }
-    
-    public void sendPacket(CreativePacket packet) {
-        if (isClient())
-            sendPacketToServer(packet);
+                player.closeContainer();
         else
-            sendPacketToClient(packet);
+            getTopLayer().becameTopLayer();
     }
     
-    public void sendPacketToServer(CreativePacket packet) {
-        CreativeCore.NETWORK.sendToServer(packet);
+    @Override
+    public void send(CreativePacket packet) {
+        if (isClient())
+            CreativeCore.NETWORK.sendToServer(packet);
+        else
+            CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
     }
     
-    public void sendPacketToClient(CreativePacket packet) {
-        CreativeCore.NETWORK.sendToClient(packet, (ServerPlayer) player);
+    @Override
+    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+        return null;
     }
     
 }

@@ -4,15 +4,18 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
+import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
@@ -21,15 +24,23 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     
     @Override
     public Object readElement(Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+        Class clazz = defaultValue.getClass().getComponentType();
+        
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
             int size = Math.min(array.size(), Array.getLength(defaultValue));
-            Object object = Array.newInstance(defaultValue.getClass().getComponentType(), size);
+            Object object = Array.newInstance(clazz, size);
             for (int i = 0; i < size; i++)
                 Array.set(object, i, read(defaultValue.getClass().getComponentType(), Array.get(defaultValue, i), loadDefault, ignoreRestart, array.get(i), side, null));
             return object;
         }
-        return defaultValue;
+        
+        int size = Array.getLength(defaultValue);
+        
+        Object object = Array.newInstance(clazz, size);
+        for (int i = 0; i < size; i++)
+            Array.set(object, i, copy(side, Array.get(object, i), clazz));
+        return object;
     }
     
     @Override
@@ -42,15 +53,17 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
-    public void createControls(GuiParent parent, @Nullable ConfigKeyField key, Class clazz) {
-        parent.add(new GuiListBoxBase<>("data", 50, 150, false, new ArrayList<>()).setExpandable());
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
+        parent.add(new GuiListBoxBase<>("data", false, new ArrayList<>()).setDim(50, 150).setExpandable());
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
-    public void loadValue(Object value, GuiParent parent, @Nullable ConfigKeyField key) {
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void loadValue(Object value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         if (!box.isEmpty())
             box.clear();
         
@@ -62,8 +75,8 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         for (int i = 0; i < length; i++) {
             Object entry = Array.get(value, i);
             GuiConfigSubControl control = new GuiConfigSubControl("" + i);
-            converation.createControls(control, null, clazz);
-            converation.loadValue(entry, control, null);
+            converation.createControls(control, null, null, clazz);
+            converation.loadValue(entry, control, null, null);
             controls.add(control);
         }
         
@@ -71,15 +84,16 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
-    protected Object saveValue(GuiParent parent, Class clazz, @Nullable ConfigKeyField key) {
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected Object saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
         Class subClass = clazz.getComponentType();
         ConfigTypeConveration converation = get(subClass);
         
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         Object value = Array.newInstance(subClass, box.size());
         for (int i = 0; i < box.size(); i++)
-            Array.set(value, i, converation.save(box.get(i), subClass, null));
+            Array.set(value, i, converation.save(box.get(i), null, subClass, null));
         return value;
     }
     

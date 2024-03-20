@@ -3,17 +3,19 @@ package team.creative.creativecore.common.gui.controls.collection;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.controls.inventory.GuiInventoryGrid;
-import team.creative.creativecore.common.gui.controls.inventory.GuiSlot;
+import team.creative.creativecore.common.gui.controls.inventory.GuiInventoryGridPreview;
+import team.creative.creativecore.common.gui.controls.inventory.GuiSlotViewer;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.map.HashMapList;
 
@@ -33,14 +35,15 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         });
         registerEventClick((event) -> {
-            if (event.control instanceof GuiSlot && event.control.isParent(this)) {
-                comboBox.setSelected(((GuiSlot) event.control).getStack());
+            if (event.control instanceof GuiSlotViewer && event.control.isParent(this)) {
+                comboBox.setSelected(((GuiSlotViewer) event.control).getStack());
                 playSound(SoundEvents.UI_BUTTON_CLICK);
                 comboBox.closeBox();
             }
         });
         this.align = Align.STRETCH;
         reloadControls();
+        setDim(new GuiSizeRule.GuiSizeRules().maxHeight(100));
     }
     
     @Override
@@ -51,33 +54,23 @@ public class GuiStackSelectorExtension extends GuiScrollY {
     }
     
     @Override
-    public int preferredWidth() {
-        return 100;
-    }
-    
-    @Override
-    public int preferredHeight() {
-        return 100;
-    }
-    
-    @Override
     public void flowX(int width, int preferred) {
         this.cachedWidth = width;
         super.flowX(width, preferred);
     }
     
     public void reflowInternal() {
-        flowX(cachedWidth, getPreferredWidth());
-        flowY(cachedHeight, getPreferredHeight());
+        flowX(cachedWidth, preferredWidth(cachedWidth));
+        flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth, cachedHeight));
     }
     
     public void reloadControls() {
         if (comboBox == null)
             return;
         
-        HashMapList<String, ItemStack> stacks = search == null || search.equals("") ? comboBox.getStacks() : new HashMapList<>();
+        HashMapList<String, ItemStack> stacks = search == null || search.isEmpty() ? comboBox.getStacks() : new HashMapList<>();
         
-        if (search != null && !search.equals("")) {
+        if (search != null && !search.isEmpty()) {
             for (Entry<String, ArrayList<ItemStack>> entry : comboBox.getStacks().entrySet()) {
                 for (ItemStack stack : entry.getValue()) {
                     if (GuiStackSelector.contains(search, stack))
@@ -86,7 +79,7 @@ public class GuiStackSelectorExtension extends GuiScrollY {
             }
         }
         
-        GuiTextfield textfield = (GuiTextfield) get("searchBar");
+        GuiTextfield textfield = get("searchBar");
         
         clear();
         
@@ -106,7 +99,7 @@ public class GuiStackSelectorExtension extends GuiScrollY {
                 container.setItem(i, stack);
                 i++;
             }
-            add(new GuiInventoryGrid(entry.getKey(), container));
+            add(new GuiInventoryGridPreview(entry.getKey(), container));
         }
         if (hasGui())
             reflowInternal();

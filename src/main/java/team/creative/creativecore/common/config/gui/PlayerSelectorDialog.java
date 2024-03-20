@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.config.gui;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
@@ -27,13 +28,13 @@ public class PlayerSelectorDialog extends GuiLayer {
         PlayerSelector selector = button.get();
         handler = GuiPlayerSelectorHandler.get(selector);
         
-        GuiComboBoxMapped<String> box = (GuiComboBoxMapped<String>) get("type");
+        GuiComboBoxMapped<String> box = get("type");
         if (box != null)
             handler = GuiPlayerSelectorHandler.REGISTRY.get(box.getSelected());
         
         clear();
         
-        box = new GuiComboBoxMapped<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), x -> new TextComponent(x)));
+        box = new GuiComboBoxMapped<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), TextComponent::new));
         box.select(handler.getName());
         add(box);
         

@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
 import net.minecraft.util.Mth;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -11,32 +12,68 @@ public class GuiCounter extends GuiParent {
     
     public int min;
     public int max;
+    public final GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
     public GuiTextfield textfield;
+    public final ControlFormatting buttonsFormatting;
+    
+    public GuiCounter(String name, int value) {
+        this(name, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
     
     public GuiCounter(String name, int value, int min, int max) {
+        this(name, value, min, max, ControlFormatting.TRANSPARENT);
+    }
+
+    public GuiCounter(String name, int value, int min, int max, ControlFormatting buttonsFormatting) {
         super(name);
         this.min = min;
         this.max = max;
-        flow = GuiFlow.STACK_X;
-        spacing = 0;
-        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max), 20, 8).setNumbersOnly();
-        add(textfield);
-        GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
-        add(buttons);
-        buttons.add(new GuiButton("-", x -> {
-            textfield.setText("" + stepDown(textfield.parseInteger()));
-            raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
-        }).setTranslate("gui.minus"));
-        buttons.add(new GuiButton("+", x -> {
-            textfield.setText("" + stepUp(textfield.parseInteger()));
-            raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
-        }).setTranslate("gui.plus"));
-        
+        this.flow = GuiFlow.STACK_X;
+        this.setSpacing(1);
+        this.textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(20, 10).setNumbersIncludingNegativeOnly();
+        this.buttons.spacing = 0;
+        this.buttonsFormatting = buttonsFormatting;
+        this.createButtons();
+        this.add(textfield.setExpandableX());
+        this.add(buttons);
     }
-    
+
+    protected void createButtons() {
+        this.buttons.add(new GuiButtonHoldSlim("+", x -> {
+            this.textfield.setText("" + stepUp(this.textfield.parseInteger()));
+            this.raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
+        }).setTranslate("gui.plus").setDim(6, 3));
+        this.buttons.add(new GuiButtonHoldSlim("-", x -> {
+            this.textfield.setText("" + stepDown(this.textfield.parseInteger()));
+            this.raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
+        }).setTranslate("gui.minus").setDim(6, 4));
+    }
+
+    public GuiCounter setSpacing(int spacing) {
+        this.spacing = spacing;
+        return this;
+    }
+
+    public GuiCounter addControl(GuiControl control) {
+        this.add(control);
+        return this;
+    }
+
+    public GuiButtonHoldSlim getPlusButton() {
+        return this.buttons.get("+");
+    }
+
+    public GuiButtonHoldSlim getMinusButton() {
+        return this.buttons.get("-");
+    }
+
     @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
+    public boolean isExpandableX() {
+        return expandableX;
+    }
+
+    public void resetTextfield() {
+        textfield.setCursorPositionZero();
     }
     
     @Override
@@ -62,5 +99,4 @@ public class GuiCounter extends GuiParent {
     public void setValue(int value) {
         textfield.setText("" + Mth.clamp(value, min, max));
     }
-    
 }

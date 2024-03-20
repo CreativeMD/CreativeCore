@@ -1,0 +1,86 @@
+2.11.25
+Added way to copy VecOrigin
+Added set Vec3 to Vec3d
+Added PlaneCache (reworked from port)
+Reworked CollisionCoordinator
+Fixed client sync gui wrong caption
+Fixed loading mixin on server side which is client side only (fabric)
+Fixed several issues related to calculating surrounding boxes of transformations
+Fixed obbs collision not working properly
+
+2.11.24
+Fixed vector fan not properly coping vectors when cutting it
+
+2.11.23
+Added addOrDrop to PlayerUtils
+
+2.11.22
+Fixed slot swap not working (removing item in slot)
+
+2.11.21
+Fixed weird lighting issues with embeddium
+
+2.11.20
+Added option to mob effect configuration to hide particles
+
+2.11.19
+Added GuiButtonContext
+Fixed display repeat getting stuck in rendering if width or height is a decimal number
+
+2.11.18
+Fixed crash with slot view on client side
+
+2.11.17
+Fixed not displaying error when executing packet in log
+Fixed crash when scanning through inventories
+Significantly enhanced performance related to boxes-voxel-shapes when combining shapes
+
+2.11.16
+Added write and read int array to NetworkFieldTypes
+
+2.11.15
+Added GuiDuration control
+Fixed exception when gui creator does not return a gui layer to open
+
+2.11.14
+Added another constructor to creative baked quad
+Reworked iterators by adding interface which extends both Iterable and Iterator
+
+2.11.13
+Fixed inventory not sending slot update
+
+2.11.12
+Fixed calling init for layer before menu is created
+Fixed minWidth calculation of flow fit x
+Fixed saving of inventory not working
+
+2.11.11
+Added NamedClassBoundHandlerRegistry
+Added more helper methods to Facing
+Added GuiSyncLocal.sendAndExecute
+Added chinese translate (Thanks to ToryRegulus)
+Reworked GuiCounterDecimal
+Fixed GuiTabButton not being clickable
+Fixed rotation transform not working
+
+2.11.10
+Added log when exception occurs during the execution of a GuiSync
+Fixed not using slot.remove which caused some issues
+Fixed extracting slots with negative numbers which caused items to get lost
+Fixed continuously setting player inventory to changed, causing loss in performance and errors when closing gui
+Fixed several slot rendering issues
+Fixed player inventory wrong slot order
+
+2.11.9
+Added SpecialSoundInstance (ported getStream to fabric)
+Added ResourceUtils
+
+2.11.8
+Fixed crash when checking two registryobjects (used by solonion config)
+
+2.11.7
+Fixed crash with ListBox due to newly added canBeModified being null in some cases
+
+2.11.6
+Added epsilon for intersect2d method in VectorFan
+Fixed NormalPlaneD and NormalPlaneF not considering float point precision when checking if the intersection is valid

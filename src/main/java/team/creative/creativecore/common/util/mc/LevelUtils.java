@@ -7,19 +7,9 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.EmptyLevelChunk;
-import net.minecraft.world.level.chunk.LevelChunk;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class LevelUtils {
-    
-    public static boolean checkIfChunkExists(LevelChunk chunk) {
-        if (chunk == null)
-            return false;
-        if (chunk instanceof EmptyLevelChunk)
-            return false;
-        return true;
-    }
     
     public static void dropItem(Level level, List<ItemStack> stacks, BlockPos pos) {
         for (int i = 0; i < stacks.size(); i++)

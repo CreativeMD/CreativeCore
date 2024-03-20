@@ -1,22 +1,17 @@
 package team.creative.creativecore.common.util.math.geo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3d;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.client.render.VertexFormatUtils;
+import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
-import team.creative.creativecore.client.render.box.RenderBox.RenderInformationHolder;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
@@ -26,9 +21,37 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.math.vec.VectorUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiConsumer;
+
 public class VectorFan {
     
     public static final float EPSILON = 0.0001F;
+    
+    protected static void setLineNormal(Vec3f normal, Vec3f first, Vec3f second) {
+        setLineNormal(normal, first.x, first.y, first.z, second.x, second.y, second.z);
+    }
+    
+    protected static void setLineNormal(Vec3f normal, float x1, float y1, float z1, float x2, float y2, float z2) {
+        float f = x2 - x1;
+        float f1 = y2 - y1;
+        float f2 = z2 - z1;
+        float f3 = Mth.sqrt(f * f + f1 * f1 + f2 * f2);
+        f /= f3;
+        f1 /= f3;
+        f2 /= f3;
+        normal.set(f, f1, f2);
+    }
+    
+    private static boolean isPointBetween(Vec3f start, Vec3f end, Vec3f between) {
+        float x = (end.y - start.y) * (between.z - start.z) - (end.z - start.z) * (between.y - start.y);
+        float y = (between.x - start.x) * (end.z - start.z) - (between.z - start.z) * (end.x - start.x);
+        float z = (end.x - start.x) * (between.y - start.y) - (end.y - start.y) * (between.x - start.x);
+        float test = Math.abs(x) + Math.abs(y) + Math.abs(z);
+        return Math.abs(test) < EPSILON;
+    }
     
     protected Vec3f[] coords;
     
@@ -57,7 +80,9 @@ public class VectorFan {
             float valueOne = coords[i].get(one);
             float valueTwo = coords[i].get(two);
             
-            inside[i] = valueOne >= minOne && valueOne <= maxOne && valueTwo >= minTwo && valueTwo <= maxTwo;
+            inside[i] = VectorUtils.greaterEquals(valueOne, minOne) && VectorUtils.smallerEquals(valueOne, maxOne) && VectorUtils.greaterEquals(valueTwo, minTwo) && VectorUtils
+                    .smallerEquals(valueTwo, maxTwo);
+            
             if (allTheSame) {
                 if (i == 0)
                     allValue = inside[i];
@@ -72,24 +97,24 @@ public class VectorFan {
         if (shape == null)
             return null;
         
-        NormalPlane plane = createPlane();
+        NormalPlaneF plane = createPlane();
         Vec3f[] result = new Vec3f[shape.size()];
         for (int i = 0; i < result.length; i++) {
             Vec3f vec = new Vec3f();
             Vec2f vec2d = shape.get(i);
             vec.set(one, vec2d.x);
-            vec.set(two, vec2d.x);
+            vec.set(two, vec2d.y);
             vec.set(axis, plane.project(one, two, axis, vec2d.x, vec2d.y));
             result[i] = vec;
         }
         return result;
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    public void generate(RenderInformationHolder holder, List<BakedQuad> quads) {
-        holder.normal = null;
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void generate(QuadGeneratorContext holder, List<BakedQuad> quads) {
         Vec3f[] coords = this.coords;
-        if (!holder.getBox().allowOverlap && holder.hasBounds()) {
+        if (!holder.box.allowOverlap && holder.hasBounds()) {
             Axis one = holder.facing.one();
             Axis two = holder.facing.two();
             
@@ -118,19 +143,20 @@ public class VectorFan {
         }
         if (coords == null)
             return;
-        int index = 0;
-        while (index < coords.length - 3) {
-            generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
+        int index = 1;
+        while (index < coords.length - 2) {
+            generate(holder, coords[0], coords[index], coords[index + 1], coords[index + 2], quads);
             index += 2;
         }
-        if (index < coords.length - 2)
-            generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
+        if (index < coords.length - 1)
+            generate(holder, coords[0], coords[index], coords[index + 1], coords[index + 1], quads);
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    protected void generate(RenderInformationHolder holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
-        BakedQuad quad = new CreativeBakedQuad(holder.quad, holder.getBox(), holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
-        RenderBox box = holder.getBox();
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void generate(QuadGeneratorContext holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
+        int[] vertices = holder.quad.getVertices().clone();
+        RenderBox box = holder.box;
         
         for (int k = 0; k < 4; k++) {
             Vec3f vec;
@@ -143,7 +169,7 @@ public class VectorFan {
             else
                 vec = vec4;
             
-            int index = k * holder.format.getIntegerSize();
+            int index = k * VertexFormatUtils.blockFormatIntSize();
             
             float x;
             float y;
@@ -168,18 +194,18 @@ public class VectorFan {
                     z = Mth.clamp(z, holder.minZ, holder.maxZ);
             }
             
-            float oldX = Float.intBitsToFloat(quad.getVertices()[index]);
-            float oldY = Float.intBitsToFloat(quad.getVertices()[index + 1]);
-            float oldZ = Float.intBitsToFloat(quad.getVertices()[index + 2]);
+            float oldX = Float.intBitsToFloat(vertices[index]);
+            float oldY = Float.intBitsToFloat(vertices[index + 1]);
+            float oldZ = Float.intBitsToFloat(vertices[index + 2]);
             
-            quad.getVertices()[index] = Float.floatToIntBits(x + holder.offset.getX());
-            quad.getVertices()[index + 1] = Float.floatToIntBits(y + holder.offset.getY());
-            quad.getVertices()[index + 2] = Float.floatToIntBits(z + holder.offset.getZ());
+            vertices[index] = Float.floatToIntBits(x + holder.offset.getX());
+            vertices[index + 1] = Float.floatToIntBits(y + holder.offset.getY());
+            vertices[index + 2] = Float.floatToIntBits(z + holder.offset.getZ());
             
             if (box.keepVU)
                 continue;
             
-            int uvIndex = index + holder.uvOffset / 4;
+            int uvIndex = index + holder.uvOffset;
             
             float uOffset;
             float vOffset;
@@ -190,9 +216,11 @@ public class VectorFan {
                 uOffset = ((holder.facing.getU(oldX, oldY, oldZ) - holder.facing.getU(x, y, z)) / holder.facing.getU(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeU;
                 vOffset = ((holder.facing.getV(oldX, oldY, oldZ) - holder.facing.getV(x, y, z)) / holder.facing.getV(holder.sizeX, holder.sizeY, holder.sizeZ)) * holder.sizeV;
             }
-            quad.getVertices()[uvIndex] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex]) - uOffset);
-            quad.getVertices()[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(quad.getVertices()[uvIndex + 1]) - vOffset);
+            vertices[uvIndex] = Float.floatToIntBits(Float.intBitsToFloat(vertices[uvIndex]) - uOffset);
+            vertices[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(vertices[uvIndex + 1]) - vOffset);
         }
+        
+        BakedQuad quad = new CreativeBakedQuad(vertices, holder.quad, holder.box, holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
         quads.add(quad);
     }
     
@@ -206,7 +234,7 @@ public class VectorFan {
             Vec3f vec = coords[i];
             builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
         }
-        builder.end();
+        BufferUploader.end(builder);
     }
     
     public void renderPreview(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
@@ -215,150 +243,129 @@ public class VectorFan {
             Vec3f vec = coords[i];
             builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
         }
-        builder.end();
+        BufferUploader.end(builder);
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha) {
+    public void forAllEdges(BiConsumer<Vec3f, Vec3f> consumer) {
         int index = 0;
         while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
-            }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
+            consumer.accept(coords[coords.length - 1], coords[0]);
+            for (int i = index + 1; i < index + 4; i++)
+                consumer.accept(coords[i - 1], coords[i]);
             index += 2;
         }
         
         if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
-            }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
-        }
-        
-    }
-    
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
-        int index = 0;
-        while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
-            }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
-            index += 2;
-        }
-        
-        if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++) {
-                Vec3f vec = coords[i];
-                builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
-            }
-            builder.vertex(matrix, coords[index].x, coords[index].y, coords[index].z).color(red, green, blue, alpha).endVertex();
-            builder.end();
+            consumer.accept(coords[coords.length - 1], coords[0]);
+            for (int i = index + 1; i < index + 3; i++)
+                consumer.accept(coords[i - 1], coords[i]);
         }
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
-        int index = 0;
-        while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++)
-                renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            builder.end();
-            index += 2;
-        }
-        
-        if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++)
-                renderLinePoint(matrix, builder, coords[i], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], offX, offY, offZ, scaleX, scaleY, scaleZ, red, green, blue, alpha, center, grow);
-            builder.end();
-        }
-        
+    protected void renderLinePoint() {}
+    
+    public void renderLines(Pose pose, VertexConsumer consumer, int red, int green, int blue, int alpha) {
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            setLineNormal(normal, x, y);
+            consumer.vertex(pose.pose(), x.x, x.y, x.z).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), y.x, y.y, y.z).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
-    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vector3d center, double grow) {
-        float x = vec.x * scaleX + offX;
-        if (x > center.x)
-            x += grow;
-        else
-            x -= grow;
-        float y = vec.y * scaleY + offY;
-        
-        if (y > center.y)
-            y += grow;
-        else
-            y -= grow;
-        
-        float z = vec.z * scaleZ + offZ;
-        if (z > center.z)
-            z += grow;
-        else
-            z -= grow;
-        
-        builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
+    public void renderLines(Pose pose, VertexConsumer consumer, int red, int green, int blue, int alpha, Vec3d center, double dGrow) {
+        float grow = (float) dGrow;
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            float x1 = x.x;
+            if (x1 > center.x)
+                x1 += grow;
+            else
+                x1 -= grow;
+            float y1 = x.y;
+            if (y1 > center.y)
+                y1 += grow;
+            else
+                y1 -= grow;
+            float z1 = x.z;
+            if (z1 > center.z)
+                z1 += grow;
+            else
+                z1 -= grow;
+            float x2 = y.x;
+            if (x2 > center.x)
+                x2 += grow;
+            else
+                x2 -= grow;
+            float y2 = y.y;
+            if (y2 > center.y)
+                y2 += grow;
+            else
+                y2 -= grow;
+            float z2 = y.z;
+            if (z2 > center.z)
+                z2 += grow;
+            else
+                z2 -= grow;
+            setLineNormal(normal, x1, y1, z1, x2, y2, z2);
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
-    protected void renderLinePoint(Matrix4f matrix, BufferBuilder builder, Vec3f vec, int red, int green, int blue, int alpha, Vector3d center, double grow) {
-        float x = vec.x;
-        if (x > center.x)
-            x += grow;
-        else
-            x -= grow;
-        float y = vec.y;
-        
-        if (y > center.y)
-            y += grow;
-        else
-            y -= grow;
-        
-        float z = vec.z;
-        if (z > center.z)
-            z += grow;
-        else
-            z -= grow;
-        
-        builder.vertex(matrix, x, y, z).color(red, green, blue, alpha).endVertex();
+    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            float x1 = x.x * scaleX + offX;
+            float y1 = x.y * scaleY + offY;
+            float z1 = x.z * scaleZ + offZ;
+            float x2 = y.x * scaleX + offX;
+            float y2 = y.y * scaleY + offY;
+            float z2 = y.z * scaleZ + offZ;
+            setLineNormal(normal, x1, y1, z1, x2, y2, z2);
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
-    public void renderLines(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha, Vector3d center, double grow) {
-        int index = 0;
-        while (index < coords.length - 3) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 4; i++)
-                renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
-            builder.end();
-            index += 2;
-        }
-        
-        if (index < coords.length - 2) {
-            builder.begin(Mode.LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-            for (int i = index; i < index + 3; i++)
-                renderLinePoint(matrix, builder, coords[i], red, green, blue, alpha, center, grow);
-            renderLinePoint(matrix, builder, coords[index], red, green, blue, alpha, center, grow);
-            builder.end();
-        }
-        
-    }
-    
-    private static boolean isPointBetween(Vec3f start, Vec3f end, Vec3f between) {
-        float x = (end.y - start.y) * (between.z - start.z) - (end.z - start.z) * (between.y - start.y);
-        float y = (between.x - start.x) * (end.z - start.z) - (between.z - start.z) * (end.x - start.x);
-        float z = (end.x - start.x) * (between.y - start.y) - (end.y - start.y) * (between.x - start.x);
-        float test = Math.abs(x) + Math.abs(y) + Math.abs(z);
-        return Math.abs(test) < EPSILON;
+    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double dGrow) {
+        float grow = (float) dGrow;
+        Vec3f normal = new Vec3f();
+        forAllEdges((x, y) -> {
+            float x1 = x.x * scaleX + offX;
+            if (x1 > center.x)
+                x1 += grow;
+            else
+                x1 -= grow;
+            float y1 = x.y * scaleY + offY;
+            if (y1 > center.y)
+                y1 += grow;
+            else
+                y1 -= grow;
+            float z1 = x.z * scaleZ + offZ;
+            if (z1 > center.z)
+                z1 += grow;
+            else
+                z1 -= grow;
+            float x2 = y.x * scaleX + offX;
+            if (x2 > center.x)
+                x2 += grow;
+            else
+                x2 -= grow;
+            float y2 = y.y * scaleY + offY;
+            if (y2 > center.y)
+                y2 += grow;
+            else
+                y2 -= grow;
+            float z2 = y.z * scaleZ + offZ;
+            if (z2 > center.z)
+                z2 += grow;
+            else
+                z2 -= grow;
+            setLineNormal(normal, x1, y1, z1, x2, y2, z2);
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+        });
     }
     
     public void add(List<Vec3f> list, Vec3f toAdd) {
@@ -376,13 +383,12 @@ public class VectorFan {
     
     public void set(Vec3f[] coords) {
         this.coords = new Vec3f[coords.length];
-        for (int i = 0; i < coords.length; i++)
-            this.coords[i] = coords[i];
+        System.arraycopy(coords, 0, this.coords, 0, coords.length);
     }
     
     /** @param planes
      * @return whether the fan is empty */
-    public boolean cutWithoutCopy(NormalPlane[] planes) {
+    public boolean cutWithoutCopy(NormalPlaneF[] planes) {
         for (int i = 0; i < planes.length; i++) {
             cutWithoutCopy(planes[i]);
             
@@ -392,15 +398,29 @@ public class VectorFan {
         return true;
     }
     
-    public void cutWithoutCopy(NormalPlane plane) {
+    public boolean cutWithoutCopy(NormalPlaneD[] planes) {
+        for (int i = 0; i < planes.length; i++) {
+            cutWithoutCopy(planes[i]);
+            
+            if (isEmpty())
+                return false;
+        }
+        return true;
+    }
+    
+    public void cutWithoutCopy(NormalPlaneF plane) {
         cutInternal(plane, false);
+    }
+    
+    public void cutWithoutCopy(NormalPlaneD plane) {
+        cutInternal(plane.toFloat(), false);
     }
     
     public boolean isEmpty() {
         return coords == null;
     }
     
-    protected VectorFan cutInternal(NormalPlane plane, boolean copy) {
+    protected VectorFan cutInternal(NormalPlaneF plane, boolean copy) {
         boolean allTheSame = true;
         Boolean allValue = null;
         Boolean[] cutted = new Boolean[coords.length];
@@ -448,7 +468,7 @@ public class VectorFan {
                     if (intersection != null)
                         right.add(intersection);
                 }
-                right.add(vec);
+                right.add(vec.copy());
             } else if (BooleanUtils.isFalse(cutted[i])) {
                 if (BooleanUtils.isTrue(beforeCutted)) {
                     //Intersection
@@ -457,7 +477,7 @@ public class VectorFan {
                         right.add(intersection);
                 }
             } else
-                right.add(vec);
+                right.add(vec.copy());
             
             beforeCutted = cutted[i];
             beforeVec = vec;
@@ -476,14 +496,13 @@ public class VectorFan {
         }
         
         if (copy)
-            return new VectorFan(right.toArray(new Vec3f[right.size()]));
+            return new VectorFan(right.toArray(new Vec3f[0]));
         
-        if (right != null)
-            coords = right.toArray(new Vec3f[right.size()]);
+        coords = right.toArray(new Vec3f[0]);
         return null;
     }
     
-    public VectorFan cut(NormalPlane plane) {
+    public VectorFan cut(NormalPlaneF plane) {
         return cutInternal(plane, true);
     }
     
@@ -504,7 +523,7 @@ public class VectorFan {
         scale(1F / ratio);
     }
     
-    public boolean intersects(NormalPlane plane1, NormalPlane plane2) {
+    public boolean intersects(NormalPlaneF plane1, NormalPlaneF plane2) {
         Boolean beforeOne = null;
         Boolean beforeTwo = null;
         Vec3f before = null;
@@ -542,8 +561,7 @@ public class VectorFan {
     
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof VectorFan) {
-            VectorFan other = (VectorFan) obj;
+        if (obj instanceof VectorFan other) {
             
             if (coords.length != other.coords.length)
                 return false;
@@ -573,9 +591,8 @@ public class VectorFan {
         diff = vec.get(two) - other.get(two);
         if (Float.isNaN(diff))
             return false;
-        if ((diff < 0 ? -diff : diff) > VectorFan.EPSILON)
-            return false;
-        return true;
+        
+        return !((diff < 0 ? -diff : diff) > VectorFan.EPSILON);
     }
     
     public boolean equalsIgnoreOrder(VectorFan other, Axis toIgnore) {
@@ -640,7 +657,7 @@ public class VectorFan {
         return null;
     }
     
-    public NormalPlane createPlane() {
+    public Vec3f createNormal() {
         Vec3f a = new Vec3f(coords[1]);
         a.sub(coords[0]);
         
@@ -649,10 +666,14 @@ public class VectorFan {
         
         Vec3f normal = new Vec3f();
         normal.cross(a, b);
-        return new NormalPlane(coords[0], normal);
+        return normal;
     }
     
-    public NormalPlane createPlane(RenderInformationHolder holder) {
+    public NormalPlaneF createPlane() {
+        return new NormalPlaneF(coords[0], createNormal());
+    }
+    
+    public NormalPlaneF createPlane(QuadGeneratorContext holder) {
         Vec3f a = new Vec3f(coords[1]);
         a.sub(coords[0]);
         if (holder.scaleAndOffset) {
@@ -681,12 +702,12 @@ public class VectorFan {
             origin.z *= holder.scaleZ;
             origin.z += holder.offsetZ;
         }
-        return new NormalPlane(origin, normal);
+        return new NormalPlaneF(origin, normal);
     }
     
-    public boolean isInside(List<List<NormalPlane>> shapes) {
+    public boolean isInside(List<List<NormalPlaneF>> shapes) {
         for (int j = 0; j < shapes.size(); j++) {
-            List<NormalPlane> shape = shapes.get(j);
+            List<NormalPlaneF> shape = shapes.get(j);
             
             Boolean[] firstOutside = null;
             Boolean[] beforeOutside = null;
@@ -726,7 +747,7 @@ public class VectorFan {
         return false;
     }
     
-    public boolean intersect2d(VectorFan other, Axis one, Axis two, boolean inverse) {
+    public boolean intersect2d(VectorFan other, Axis one, Axis two, boolean inverse, float episilon) {
         if (this.equals(other))
             return true;
         
@@ -753,12 +774,12 @@ public class VectorFan {
                 try {
                     double t = ray1.intersectWhen(ray2);
                     double otherT = ray2.intersectWhen(ray1);
-                    if (t > EPSILON && t < 1 - EPSILON && otherT > EPSILON && otherT < 1 - EPSILON)
+                    if (t > episilon && t < 1 - episilon && otherT > episilon && otherT < 1 - episilon)
                         return true;
                 } catch (ParallelException e) {
                     double startT = ray1.getT(one, ray2.originOne);
                     double endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
-                    if ((startT > EPSILON && startT < 1 - EPSILON) || endT > EPSILON && endT < 1 - EPSILON) {
+                    if ((startT > episilon && startT < 1 - episilon) || endT > episilon && endT < 1 - episilon) {
                         parrallel++;
                         if (parrallel > 1)
                             return true;
@@ -770,9 +791,8 @@ public class VectorFan {
             
             before1 = vec1;
         }
-        if ((isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse)))
-            return true;
-        return false;
+        
+        return isInside2d(one, two, other, inverse) || other.isInside2d(one, two, this, inverse);
     }
     
     private boolean isInside2d(Axis one, Axis two, VectorFan other, boolean inverse) {
@@ -926,40 +946,36 @@ public class VectorFan {
         }
         
         if (left.size() >= 3 && done != null)
-            done.add(new VectorFan(left.toArray(new Vec3f[left.size()])));
+            done.add(new VectorFan(left.toArray(new Vec3f[0])));
         
         if (right.size() < 3)
             return null;
-        return new VectorFan(right.toArray(new Vec3f[right.size()]));
+        return new VectorFan(right.toArray(new Vec3f[0]));
     }
     
-    public static boolean isInside(List<NormalPlane> shape, Vec3f before, Vec3f vec, Boolean beforeOutside, Boolean outside, int currentPlane) {
+    public static boolean isInside(List<NormalPlaneF> shape, Vec3f before, Vec3f vec, Boolean beforeOutside, Boolean outside, int currentPlane) {
         if (BooleanUtils.isFalse(beforeOutside)) {
             if (outside == null) {
-                if (isInside(shape, vec, currentPlane))
-                    return true;
-            } else if (outside == true) {
+                return isInside(shape, vec, currentPlane);
+            } else if (outside) {
                 Vec3f intersection = shape.get(currentPlane).intersect(before, vec);
-                if (intersection != null && isInside(shape, intersection, currentPlane))
-                    return true;
+                return intersection != null && isInside(shape, intersection, currentPlane);
             }
         } else if (BooleanUtils.isFalse(outside)) {
             if (beforeOutside == null) {
-                if (isInside(shape, before, currentPlane))
-                    return true;
-            } else if (beforeOutside == true) {
+                return isInside(shape, before, currentPlane);
+            } else if (beforeOutside) {
                 Vec3f intersection = shape.get(currentPlane).intersect(before, vec);
-                if (intersection != null && isInside(shape, intersection, currentPlane))
-                    return true;
+                return intersection != null && isInside(shape, intersection, currentPlane);
             }
         }
         
         return false;
     }
     
-    public static boolean isInside(List<NormalPlane> shape, Vec3f vec, int toSkip) {
+    public static boolean isInside(List<NormalPlaneF> shape, Vec3f vec, int toSkip) {
         for (int i = 0; i < shape.size(); i++)
-            if (i != toSkip && !BooleanUtils.isFalse(shape.get(i).isInFront(vec)))
+            if (i != toSkip && !BooleanUtils.isFalse(shape.get(i).isInFront(vec, VectorFan.EPSILON)))
                 return false;
         return true;
     }
@@ -969,8 +985,6 @@ public class VectorFan {
         return Arrays.toString(coords);
     }
     
-    public static class ParallelException extends Exception {
-        
-    }
+    public static class ParallelException extends Exception {}
     
 }

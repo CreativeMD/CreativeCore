@@ -1,9 +1,12 @@
 package team.creative.creativecore.common.util.type.list;
 
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 
 public class MarkList<T> implements Iterable<T> {
+    
+    public static final MarkList EMPTY = new MarkList<>(Collections.EMPTY_LIST);
     
     private final List<T> content;
     private final BitSet set;
@@ -79,6 +82,18 @@ public class MarkList<T> implements Iterable<T> {
     public void clear() {
         set.clear();
         remaining = content.size();
+    }
+    
+    public Iterable<T> allIgnoreMark() {
+        return content;
+    }
+    
+    public T getIgnoreMark(int index) {
+        return content.get(index);
+    }
+    
+    public int sizeIgnoreMark() {
+        return content.size();
     }
     
 }

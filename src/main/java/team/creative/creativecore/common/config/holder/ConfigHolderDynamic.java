@@ -1,7 +1,10 @@
 package team.creative.creativecore.common.config.holder;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 import java.lang.reflect.Field;
 
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyDynamic;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyDynamicField;
@@ -23,9 +26,9 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
     
     public ConfigHolderDynamic registerFolder(String key, ConfigSynchronization synchronization) {
         if (key.contains(".") || key.contains("/"))
-            throw new RuntimeException("Invalid key " + key + "");
+            throw new RuntimeException("Invalid key " + key);
         if (fields.containsKey(key))
-            throw new RuntimeException("Key already registered " + key + "");
+            throw new RuntimeException("Key already registered " + key);
         
         synchronization = this.synchronization != ConfigSynchronization.UNIVERSAL ? this.synchronization : synchronization;
         
@@ -42,9 +45,9 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
         if (ConfigTypeConveration.has(defaultValue.getClass()))
             throw new IllegalArgumentException("Only holder objects are allowed");
         if (key.contains(".") || key.contains("/"))
-            throw new RuntimeException("Invalid key " + key + "");
+            throw new RuntimeException("Invalid key " + key);
         if (fields.containsKey(key))
-            throw new RuntimeException("Key already registered " + key + "");
+            throw new RuntimeException("Key already registered " + key);
         
         synchronization = this.synchronization != ConfigSynchronization.UNIVERSAL ? this.synchronization : synchronization;
         fields.add(key, new ConfigKeyDynamic(key, ConfigTypeConveration.parseObject(this, synchronization, key, defaultValue), synchronization, requiresRestart));
@@ -65,9 +68,12 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
             ConfigKeyDynamicField configKey = new ConfigKeyDynamicField(field, key, field.get(object), synchronization, requiresRestart, object);
             fields.add(key, configKey);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.error(e);
         }
         
     }
+    
+    @Override
+    public void configured(Side side) {}
     
 }

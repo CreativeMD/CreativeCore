@@ -1,12 +1,19 @@
 {
-	"required": true,
-	"package": "team.creative.creativecore.mixin",
-	"compatibilityLevel": "JAVA_17",
-	"refmap": "creativecore.mixins.refmap.json",
-	"mixins": [
-	],
-	"client": [
-		"BlockInfoMixin"
-	],
-	"minVersion": "0.8"
+    "required": true,
+    "package": "team.creative.creativecore.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "refmap": "creativecore.mixins.refmap.json",
+    "mixins": [
+        "FilePackResourcesAccessor",
+        "PathPackResourcesAccessor",
+        "ShapesMixin",
+        "VanillaPackResourcesAccessor",
+        "VoxelShapeAccessor"
+    ],
+    "client": [
+        "BufferBuilderAccessor",
+        "MouseHandlerAccessor",
+        "StringSplitterAccessor"
+    ],
+    "minVersion": "0.8"
 }

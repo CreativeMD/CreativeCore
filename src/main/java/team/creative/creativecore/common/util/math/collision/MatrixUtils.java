@@ -88,7 +88,7 @@ public class MatrixUtils {
         return matrix;
     }
     
-    protected static Matrix3 createRotationMatrixXRadians(double radians) {
+    public static Matrix3 createRotationMatrixXRadians(double radians) {
         Matrix3 matrix = new Matrix3();
         matrix.rotX(radians);
         return matrix;
@@ -100,7 +100,7 @@ public class MatrixUtils {
         return matrix;
     }
     
-    private static Matrix3 createRotationMatrixYRadians(double radians) {
+    public static Matrix3 createRotationMatrixYRadians(double radians) {
         Matrix3 matrix = new Matrix3();
         matrix.rotY(radians);
         return matrix;
@@ -112,7 +112,7 @@ public class MatrixUtils {
         return matrix;
     }
     
-    private static Matrix3 createRotationMatrixZRadians(double radians) {
+    public static Matrix3 createRotationMatrixZRadians(double radians) {
         Matrix3 matrix = new Matrix3();
         matrix.rotZ(radians);
         return matrix;
