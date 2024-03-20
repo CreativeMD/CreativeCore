@@ -130,9 +130,11 @@ public class GuiStateIconButton extends GuiControl {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, states[index].location());
-        if (shadow != null) this.shadow.glColor();
-        GuiRenderHelper.textureRect(pose, 1, 1, control.getContentWidth(), control.getContentHeight(), (float)this.states[index].minX(), (float)this.states[index].minY(), (float)(this.states[index].minX() + this.states[index].width()), (float)(this.states[index].minY() + this.states[index].height()));
-        if (color != null) this.color.glColor();
+        if (shadow != null) {
+            this.shadow.glColor();
+            GuiRenderHelper.textureRect(pose, 1, 1, control.getContentWidth(), control.getContentHeight(), (float)this.states[index].minX(), (float)this.states[index].minY(), (float)(this.states[index].minX() + this.states[index].width()), (float)(this.states[index].minY() + this.states[index].height()));
+        }
+        this.color.glColor();
         GuiRenderHelper.textureRect(pose, 0, 0, (int)rect.getWidth(), (int)rect.getHeight(), (float)this.states[index].minX(), (float)this.states[index].minY(), (float)(this.states[index].minX() + this.states[index].width()), (float)(this.states[index].minY() + this.states[index].height()));
         RenderSystem.disableBlend();
         pose.popPose();

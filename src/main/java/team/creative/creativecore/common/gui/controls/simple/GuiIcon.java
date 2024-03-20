@@ -19,9 +19,8 @@ public class GuiIcon extends GuiControl {
     protected Icon icon;
     protected Color color;
 
-    public GuiIcon(String name, int width, int height, Icon icon) {
+    public GuiIcon(String name, Icon icon) {
         super(name);
-        this.setDim(width, height);
         this.color = Color.WHITE;
         this.icon = icon;
     }
@@ -47,13 +46,11 @@ public class GuiIcon extends GuiControl {
     }
 
     @Override
-    public void flowX(int i, int i1) {
-
+    public void flowX(int width, int preferred) {
     }
 
     @Override
-    public void flowY(int i, int i1, int i2) {
-
+    public void flowY(int width, int height, int preferred) {
     }
 
     @Override
