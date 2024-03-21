@@ -4,8 +4,10 @@ public class ControlFormatting {
     
     public static final ControlFormatting PROGRESSBAR = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.BAR);
     public static final ControlFormatting CLICKABLE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
+    public static final ControlFormatting CLICKABLE_SMALL_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 1, ControlStyleFace.CLICKABLE);
     public static final ControlFormatting CLICKABLE_NO_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.CLICKABLE);
     public static final ControlFormatting CLICKABLE_INACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE_INACTIVE);
+    public static final ControlFormatting CLICKABLE_INACTIVE_SMALL_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 1, ControlStyleFace.CLICKABLE_INACTIVE);
     public static final ControlFormatting CLICKABLE_INACTIVE_NO_PADDING = new ControlFormatting(ControlStyleBorder.SMALL, 0, ControlStyleFace.CLICKABLE_INACTIVE);
     public static final ControlFormatting HEADER = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.HEADER_BACKGROUND);
     public static final ControlFormatting NESTED = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.NESTED_BACKGROUND);
