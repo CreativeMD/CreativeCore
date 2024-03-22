@@ -12,7 +12,11 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class Color {
-    
+
+    public static final Color NONE = new Color(0) {
+        @Override
+        public void glColor() {}
+    };
     public static final Color WHITE = new Color(ColorUtils.WHITE);
     public static final Color RED = new Color(ColorUtils.RED);
     public static final Color GREEN = new Color(ColorUtils.GREEN);
@@ -101,18 +105,10 @@ public class Color {
     
     public void set(ColorType type, short value) {
         switch (type) {
-            case ALPHA:
-                alpha = value;
-                break;
-            case RED:
-                red = value;
-                break;
-            case GREEN:
-                green = value;
-                break;
-            case BLUE:
-                blue = value;
-                break;
+            case ALPHA -> alpha = value;
+            case RED -> red = value;
+            case GREEN -> green = value;
+            case BLUE -> blue = value;
         }
     }
     
