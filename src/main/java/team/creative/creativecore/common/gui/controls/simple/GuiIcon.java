@@ -97,7 +97,7 @@ public class GuiIcon extends GuiControl {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.icon.location());
 
-        int x = 0, y = 0, width = control.getWidth(), height = control.getHeight();
+        int x = 0, y = 0, width = control.getContentWidth(), height = control.getContentHeight();
         if (squared) {
             int size = Math.min(width, height);
             int diff = Math.abs(width - height);
