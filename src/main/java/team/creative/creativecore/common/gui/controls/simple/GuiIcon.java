@@ -109,7 +109,7 @@ public class GuiIcon extends GuiControl {
         if (this.shadow == Color.NONE) {
             this.shadow.glColor();
             GuiRenderHelper.textureRect(pose, x + 1, y + 1, width, height, (float) this.icon.minX(), (float) this.icon.minY(), (float) (this.icon
-                    .minX() + this.icon.width()), (float) (this.icon.minY() + this.icon.height()));2
+                    .minX() + this.icon.width()), (float) (this.icon.minY() + this.icon.height()));
         }
 
         this.color.glColor();
