@@ -15,7 +15,7 @@ import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.event.GuiSliderUpdateEvent;
 import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
@@ -49,7 +49,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     public String getTextByValue() {
-        return parser.parse(value, maxValue);
+        return parser.parse(getValue(), getMaxValue());
     }
     
     public String getTextfieldValue() {
@@ -145,6 +145,18 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         }
     }
 
+    public double getValue() {
+        return value;
+    }
+
+    public double getMinValue() {
+        return minValue;
+    }
+
+    public double getMaxValue() {
+        return maxValue;
+    }
+
     public GuiSlider setSliderSize(int size) {
         this.sliderSize = size;
         return this;
@@ -168,7 +180,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public void mouseMoved(Rect rect, double x, double y) {
         if (grabbedSlider) {
             int width = (int) rect.getWidth() - getContentOffset() * 2 - sliderSize;
-            
+
             if (x < getContentOffset())
                 this.value = this.minValue;
             else if (x > getContentOffset() + width + sliderSize / 2f)

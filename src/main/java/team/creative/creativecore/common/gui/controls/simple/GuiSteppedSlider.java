@@ -18,7 +18,7 @@ public class GuiSteppedSlider extends GuiSlider {
     
     @Override
     public String getTextByValue() {
-        return steppedParser.parse((int) value, (int) maxValue);
+        return steppedParser.parse(this.getIntValue(), this.getIntMaxValue());
     }
     
     @Override
@@ -36,7 +36,7 @@ public class GuiSteppedSlider extends GuiSlider {
     
     @Override
     public boolean mouseScrolled(Rect rect, double x, double y, double scrolled) {
-        this.setValue(value + (Screen.hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1));
+        this.setValue(getIntValue() + (Screen.hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1));
         return true;
     }
     
@@ -61,8 +61,31 @@ public class GuiSteppedSlider extends GuiSlider {
         super.setMinValue((int) minValue);
     }
 
-    public int getValue() {
+    @Override
+    public double getValue() {
+        return (int) super.getValue();
+    }
+
+    @Override
+    public double getMinValue() {
+        return (int) super.getMinValue();
+    }
+
+    @Override
+    public double getMaxValue() {
+        return (int) super.getMaxValue();
+    }
+
+    public int getIntValue() {
         return (int) value;
+    }
+
+    public int getIntMaxValue() {
+        return (int) maxValue;
+    }
+
+    public int getIntMinValue() {
+        return (int) minValue;
     }
     
     @Override
