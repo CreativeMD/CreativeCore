@@ -10,8 +10,8 @@ public class GuiStateButtonIcon extends GuiButtonIcon {
     public final Icon[] states;
     private int index;
 
-    public GuiStateButtonIcon(String name, boolean iconsSquared, Icon... icons) {
-        super(name, icons[0], iconsSquared, null);
+    public GuiStateButtonIcon(String name, Icon... icons) {
+        super(name, icons[0], null);
         this.states = icons;
     }
 
