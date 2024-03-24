@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -177,12 +178,34 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         controls.add(child);
         return child;
     }
+
+    public GuiParent addWidget(GuiControl control) {
+        this.add(control);
+        return this;
+    }
+
+    public GuiParent addWidgetIf(boolean conditional, Supplier<GuiControl> controlSupplier) {
+        if (conditional)
+            return this.addWidget(controlSupplier.get());
+        return this;
+    }
     
     public GuiChildControl addHover(GuiControl control) {
         control.setParent(this);
         GuiChildControl child = new GuiChildControl(control);
         hoverControls.add(child);
         return child;
+    }
+
+    public GuiParent addHoverWidget(GuiControl control) {
+        this.addHover(control);
+        return this;
+    }
+
+    public GuiParent addHoverWidgetIf(boolean conditional, Supplier<GuiControl> controlSupplier) {
+        if (conditional)
+            return this.addHoverWidget(controlSupplier.get());
+        return this;
     }
     
     public boolean remove(GuiChildControl control) {
