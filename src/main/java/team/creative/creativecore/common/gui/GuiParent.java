@@ -44,11 +44,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     public GuiParent(String name, GuiFlow flow) {
         super(name);
         this.setFlow(flow);
-        this.flow = flow;
     }
     
     public GuiParent(String name, GuiFlow flow, VAlign valign) {
         this(name, flow, Align.LEFT, valign);
+    }
+
+    public GuiParent(String name, GuiFlow flow, Align align) {
+        this(name, flow, align, VAlign.TOP);
     }
     
     public GuiParent(String name, GuiFlow flow, Align align, VAlign valign) {
@@ -71,12 +74,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public boolean isClient() {
-        return getParent().isClient();
+        return this.getParent().isClient();
     }
     
-    public void setScale(double scale) {
+    public GuiParent setScale(double scale) {
         this.scale = scale;
         this.scaleInv = 1 / scale;
+        return this;
     }
     
     public final double scaleFactor() {
