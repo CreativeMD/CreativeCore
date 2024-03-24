@@ -102,7 +102,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         this.valign = valign;
         return this;
     }
-    
+
+    public GuiParent setSpacing(int spacing) {
+        this.spacing = spacing;
+        return this;
+    }
+
+    public GuiParent setFlow(GuiFlow flow) {
+        this.flow = flow;
+        return this;
+    }
+
     @Override
     public boolean isExpandableX() {
         if (super.isExpandableX())
