@@ -2,9 +2,9 @@ package team.creative.creativecore.common.gui.event;
 
 import team.creative.creativecore.common.gui.GuiControl;
 
-public class GuiControlChangedEvent extends GuiControlEvent {
+public class GuiControlChangedEvent<T extends GuiControl> extends GuiControlEvent<T> {
     
-    public GuiControlChangedEvent(GuiControl control) {
+    public GuiControlChangedEvent(T control) {
         super(control);
     }
     
