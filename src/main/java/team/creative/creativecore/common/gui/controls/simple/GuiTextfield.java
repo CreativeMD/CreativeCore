@@ -560,7 +560,8 @@ public class GuiTextfield extends GuiFocusControl {
         
     }
     
-    public void setSuggestion(@Nullable String p_195612_1_) {
+    public GuiTextfield setSuggestion(@Nullable String p_195612_1_) {
         this.suggestion = p_195612_1_;
+        return this;
     }
 }
