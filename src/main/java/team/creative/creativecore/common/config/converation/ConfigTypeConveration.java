@@ -411,9 +411,9 @@ public abstract class ConfigTypeConveration<T> {
                 GuiControl control = parent.get("data");
                 String text;
                 if (control instanceof GuiSteppedSlider button) {
-                    text = "" + ((int) button.value);
+                    text = "" + button.getIntValue();
                 } else if (control instanceof GuiSlider button) {
-                    text = "" + button.value;
+                    text = "" + button.getValue();
                 } else
                     text = ((GuiTextfield) control).getText();
                 return parseNumber(clazz, text);
@@ -612,7 +612,7 @@ public abstract class ConfigTypeConveration<T> {
                 GuiSlider volume = parent.get("volume");
                 GuiSlider pitch = parent.get("pitch");
                 
-                return new SoundConfig(box.getSelected(), (float) volume.value, (float) pitch.value);
+                return new SoundConfig(box.getSelected(), (float) volume.getValue(), (float) pitch.getValue());
             }
             
             @Override

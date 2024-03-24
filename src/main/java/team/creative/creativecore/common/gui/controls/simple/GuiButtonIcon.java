@@ -11,12 +11,11 @@ import team.creative.creativecore.common.util.type.Color;
 import java.util.function.Consumer;
 
 public class GuiButtonIcon extends GuiIcon {
-    protected boolean fixed;
     protected Consumer<Integer> pressed;
     private ControlFormatting formatting;
 
-    public GuiButtonIcon(String name, Icon icon, boolean iconSquared, Consumer<Integer> pressed) {
-        super(name, icon, iconSquared);
+    public GuiButtonIcon(String name, Icon icon, Consumer<Integer> pressed) {
+        super(name, icon);
         this.pressed = pressed;
         this.formatting = ControlFormatting.CLICKABLE;
         this.color = Color.WHITE;
@@ -40,19 +39,25 @@ public class GuiButtonIcon extends GuiIcon {
 
     @Override
     public GuiButtonIcon setIcon(Icon icon) {
-        this.icon = icon;
+        super.setIcon(icon);
         return this;
     }
 
     @Override
     public GuiButtonIcon setColor(Color color) {
-        this.color = color;
+        super.setColor(color);
         return this;
     }
 
     @Override
     public GuiButtonIcon setShadow(Color colorShadow) {
-        this.shadow = colorShadow;
+        super.setShadow(colorShadow);
+        return this;
+    }
+
+    @Override
+    public GuiButtonIcon setSquared(boolean squared) {
+        super.setSquared(squared);
         return this;
     }
 

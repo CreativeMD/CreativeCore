@@ -19,14 +19,13 @@ public class GuiIcon extends GuiControl {
     protected Icon icon;
     protected Color shadow;
     protected Color color;
-protected final boolean squared;
+protected boolean squared;
 
-    public GuiIcon(String name, Icon icon, boolean iconSquared) {
+    public GuiIcon(String name, Icon icon) {
         super(name);
         this.icon = icon;
         this.shadow = Color.NONE;
         this.color = Color.WHITE;
-        this.squared = iconSquared;
     }
 
     public GuiIcon setIcon(Icon icon) {
@@ -40,6 +39,10 @@ public GuiIcon setColor(Color color) {
 
     public GuiIcon setShadow(Color shadowColor) {
         this.shadow = shadowColor;
+        return this;
+    }
+public GuiIcon setSquared(boolean squared) {
+        this.squared = squared;
         return this;
     }
 
