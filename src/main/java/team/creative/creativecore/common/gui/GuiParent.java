@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
     
