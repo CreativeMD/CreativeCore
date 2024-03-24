@@ -42,6 +42,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     public GuiParent(String name, GuiFlow flow) {
         super(name);
+        this.setFlow(flow);
         this.flow = flow;
     }
     
@@ -51,8 +52,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     public GuiParent(String name, GuiFlow flow, Align align, VAlign valign) {
         this(name, flow);
-        this.align = align;
-        this.valign = valign;
+        this.setAlign(align);
+        this.setVAlign(valign);
     }
     
     public GuiParent(String name) {
@@ -138,13 +139,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
             GuiControl control = collection.get(i).control;
             if (control.name.equalsIgnoreCase(name))
                 return control;
-            else if (control instanceof GuiParent) {
+            else if (control instanceof GuiParent parent) {
                 if (control.name.isBlank()) {
-                    GuiControl result = ((GuiParent) control).get(name);
+                    GuiControl result = parent.get(name);
                     if (result != null)
                         return result;
                 } else if (name.startsWith(control.name + "."))
-                    return ((GuiParent) control).get(name.substring(control.name.length() + 1));
+                    return parent.get(name.substring(control.name.length() + 1));
             }
         }
         return null;
@@ -160,9 +161,9 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     public <T extends GuiControl> T get(String name, Class<T> clazz) {
-        GuiControl result = get(name);
+        T result = get(name);
         if (clazz.isInstance(result))
-            return (T) result;
+            return result;
         return null;
     }
     
