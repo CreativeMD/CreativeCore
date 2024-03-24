@@ -17,11 +17,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
-import team.creative.creativecore.common.gui.event.GuiEvent;
-import team.creative.creativecore.common.gui.event.GuiEventManager;
-import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
+import team.creative.creativecore.common.gui.event.*;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -188,7 +184,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return this;
     }
 
-    public GuiParent addWidgetIf(boolean conditional, Supplier<GuiControl> controlSupplier) {
+    public GuiParent addWidget(GuiControl... controls) {
+        for (GuiControl c: controls) {
+            this.add(c);
+        }
+        return this;
+    }
+
+    public GuiParent addWidget(boolean conditional, Supplier<GuiControl> controlSupplier) {
         if (conditional)
             return this.addWidget(controlSupplier.get());
         return this;
@@ -206,7 +209,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return this;
     }
 
-    public GuiParent addHoverWidgetIf(boolean conditional, Supplier<GuiControl> controlSupplier) {
+    public GuiParent addHoverWidget(GuiControl... controls) {
+        for (GuiControl c: controls) {
+            this.addHover(c);
+        }
+        return this;
+    }
+
+    public GuiParent addHoverWidget(boolean conditional, Supplier<GuiControl> controlSupplier) {
         if (conditional)
             return this.addHoverWidget(controlSupplier.get());
         return this;
