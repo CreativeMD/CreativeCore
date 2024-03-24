@@ -16,7 +16,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.ValueParsers;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.parser.LongValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -35,7 +34,7 @@ public class GuiSeekBar extends GuiControl {
     public boolean grabbedSlider;
     
     public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier) {
-        this(name, posSupplier, maxSupplier, ValueParsers.TIME_DURATION);
+        this(name, posSupplier, maxSupplier, LongValueParser.TIME_DURATION);
     }
     
     public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier, LongValueParser parser) {
@@ -59,13 +58,14 @@ public class GuiSeekBar extends GuiControl {
     public void setPosition(long value) {
         this.posConsumer.accept(value);
         this.pos = value;
-        if (getParent() != null)
-            raiseEvent(new GuiControlChangedEvent(this));
+        if (this.getParent() != null)
+            this.raiseEvent(new GuiControlChangedEvent(this));
     }
     
     @Override
     public GuiSeekBar setTooltip(List<Component> tooltip) {
-        return (GuiSeekBar) super.setTooltip(tooltip);
+        super.setTooltip(tooltip);
+        return this;
     }
     
     @Override
@@ -74,7 +74,7 @@ public class GuiSeekBar extends GuiControl {
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         final double percent = pos / (double) max;
         PoseStack pose = graphics.pose();
-        renderProgress(pose, control, rect, percent);
+        this.renderProgress(pose, control, rect, percent);
         GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
     }
     
@@ -159,6 +159,6 @@ public class GuiSeekBar extends GuiControl {
     
     @Override
     protected int preferredHeight(int width, int availableHeight) {
-        return 10;
+        return 12;
     }
 }
