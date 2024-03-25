@@ -57,8 +57,7 @@ public class GuiTextfield extends GuiFocusControl {
     private Predicate<String> validator = Objects::nonNull;
     private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private int cachedWidth;
-    private final List<Pair<Function<GuiTextfield, Boolean>, GuiControl>> toggleControls = new ArrayList<>();
-    
+
     public GuiTextfield(String name) {
         super(name);
         this.setText("");
@@ -209,7 +208,7 @@ public class GuiTextfield extends GuiFocusControl {
         }
     }
     
-    public void setText(String textIn) {
+    public GuiTextfield setText(String textIn) {
         if (this.validator.test(textIn)) {
             if (textIn.length() > this.maxStringLength)
                 this.text = textIn.substring(0, this.maxStringLength);
@@ -220,6 +219,7 @@ public class GuiTextfield extends GuiFocusControl {
             this.setSelectionPos(this.cursorPosition);
             this.onTextChanged(textIn);
         }
+        return this;
     }
     
     public String getText() {
@@ -387,7 +387,7 @@ public class GuiTextfield extends GuiFocusControl {
                     this.shift = false;
                     this.delete(-1);
                     this.shift = Screen.hasShiftDown();
-                    
+
                     return true;
                 case 258:
                 case 260:
@@ -402,21 +402,21 @@ public class GuiTextfield extends GuiFocusControl {
                     this.shift = false;
                     this.delete(1);
                     this.shift = Screen.hasShiftDown();
-                    
+
                     return true;
                 case 262:
                     if (Screen.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(1));
                     else
                         this.moveCursorBy(1);
-                    
+
                     return true;
                 case 263:
                     if (Screen.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(-1));
                     else
                         this.moveCursorBy(-1);
-                    
+
                     return true;
                 case 268:
                     this.setCursorPositionZero();
