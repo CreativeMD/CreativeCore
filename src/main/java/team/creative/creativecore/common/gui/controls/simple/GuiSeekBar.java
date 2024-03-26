@@ -24,8 +24,8 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 public class GuiSeekBar extends GuiControl {
     private final LongSupplier posSupplier;
     private final LongSupplier maxSupplier;
-    public LongConsumer posConsumer;
-    public LongConsumer lastPosConsumer;
+    public LongConsumer timeUpdate;
+    public LongConsumer lastTimeUpdate;
     
     private long pos;
     private long max;
@@ -45,18 +45,18 @@ public class GuiSeekBar extends GuiControl {
         this.tick();
     }
     
-    public GuiSeekBar setOnPositionChange(LongConsumer consumer) {
-        this.posConsumer = consumer;
+    public GuiSeekBar setOnTimeUpdate(LongConsumer consumer) {
+        this.timeUpdate = consumer;
         return this;
     }
     
-    public GuiSeekBar setOnLastPosition(LongConsumer consumer) {
-        this.lastPosConsumer = consumer;
+    public GuiSeekBar setOnLastTimeUpdate(LongConsumer consumer) {
+        this.lastTimeUpdate = consumer;
         return this;
     }
     
     public void setPosition(long value) {
-        this.posConsumer.accept(value);
+        this.timeUpdate.accept(value);
         this.pos = value;
         if (this.getParent() != null)
             this.raiseEvent(new GuiControlChangedEvent(this));
@@ -122,7 +122,7 @@ public class GuiSeekBar extends GuiControl {
     @OnlyIn(Dist.CLIENT)
     public void mouseReleased(Rect rect, double x, double y, int button) {
         if (this.grabbedSlider) {
-            this.lastPosConsumer.accept(pos);
+            this.lastTimeUpdate.accept(pos);
             this.grabbedSlider = false;
         }
     }
