@@ -93,8 +93,7 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
                 long[][][] newChunks = new long[additional + chunks.length][][];
                 for (int i = 0; i < additional; i++)
                     newChunks[i] = new long[1][1];
-                for (int i = 0; i < chunks.length; i++)
-                    newChunks[additional + i] = chunks[i];
+                System.arraycopy(chunks, 0, newChunks, additional, chunks.length);
                 chunks = newChunks;
                 minChunkX = chunkX;
             } else if (chunkX - minChunkX >= chunks.length) {
@@ -112,8 +111,7 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
                     long[][] newChunks = new long[additional + yChunks.length][];
                     for (int i = 0; i < additional; i++)
                         newChunks[i] = new long[1];
-                    for (int i = 0; i < yChunks.length; i++)
-                        newChunks[additional + i] = yChunks[i];
+                    System.arraycopy(yChunks, 0, newChunks, additional, yChunks.length);
                     chunks[xIndex] = newChunks;
                 }
                 minChunkY = chunkY;
@@ -134,8 +132,7 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
                     for (int yIndex = 0; yIndex < chunks[xIndex].length; yIndex++) {
                         long[] zChunks = chunks[xIndex][yIndex];
                         long[] newChunks = new long[additional + zChunks.length];
-                        for (int i = 0; i < zChunks.length; i++)
-                            newChunks[additional + i] = zChunks[i];
+                        System.arraycopy(zChunks, 0, newChunks, additional, zChunks.length);
                         chunks[xIndex][yIndex] = newChunks;
                     }
                 }
@@ -271,9 +268,9 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
     
     @Override
     public Iterator<MutableBlockPos> iterator() {
-        return new ComputeNextIterator<MutableBlockPos>() {
+        return new ComputeNextIterator<>() {
             
-            private MutableBlockPos pos = new MutableBlockPos();
+            private final MutableBlockPos pos = new MutableBlockPos();
             private int found = 0;
             private int i = 0;
             private int j = 0;
@@ -292,7 +289,8 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
                                 while (l < 64) {
                                     long data = word & (1L << l);
                                     if (data != 0) {
-                                        pos.set((minChunkX + i) * CHUNK_SIZE + l / CHUNK_SIZE_SQUARE, (minChunkY + j) * CHUNK_SIZE + l / CHUNK_SIZE, (minChunkZ + k) * CHUNK_SIZE + l % CHUNK_SIZE);
+                                        pos.set((minChunkX + i) * CHUNK_SIZE + l / CHUNK_SIZE_SQUARE, (minChunkY + j) * CHUNK_SIZE + l / CHUNK_SIZE,
+                                            (minChunkZ + k) * CHUNK_SIZE + l % CHUNK_SIZE);
                                         found++;
                                         l++;
                                         return pos;
@@ -335,7 +333,7 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
                                 int x = (minChunkX + i) * CHUNK_SIZE + l / CHUNK_SIZE_SQUARE;
                                 int y = (minChunkY + j) * CHUNK_SIZE + l / CHUNK_SIZE;
                                 int z = (minChunkY + k) * CHUNK_SIZE + l % CHUNK_SIZE;
-                                result.append("(" + x + ", " + y + ", " + z + ")");
+                                result.append("(").append(x).append(", ").append(y).append(", ").append(z).append(")");
                             }
                             
                         }

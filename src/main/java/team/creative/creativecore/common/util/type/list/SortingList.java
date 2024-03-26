@@ -28,8 +28,8 @@ public class SortingList implements List<CreativeIngredient> {
     public boolean isWhitelist;
     
     public SortingList(SortingList list) {
-        isWhitelist = list.isWhitelist;
-        entries = new ArrayList<>(list.entries);
+        this.isWhitelist = list.isWhitelist;
+        this.entries = new ArrayList<>(list.entries);
     }
     
     public SortingList() {
@@ -41,7 +41,7 @@ public class SortingList implements List<CreativeIngredient> {
     }
     
     public boolean isBlacklist() {
-        return !isWhitelist;
+        return !isWhitelist();
     }
     
     public boolean isWhitelist() {
@@ -66,9 +66,8 @@ public class SortingList implements List<CreativeIngredient> {
      *            the array can either contain a Material, a Block, an Item, an
      *            ItemStack or a String for the OreDictionary. */
     public void addSortingObjects(Object... objects) {
-        for (int i = 0; i < objects.length; i++) {
+        for (int i = 0; i < objects.length; i++)
             addSortingObject(objects[i]);
-        }
     }
     
     /** The given parameter will be added to the list.
@@ -77,8 +76,8 @@ public class SortingList implements List<CreativeIngredient> {
      *            can either be a Material, a Block, an Item, an ItemStack or a
      *            String for the OreDictionary. */
     public void addSortingObject(Object object) {
-        if (object instanceof CreativeIngredient) {
-            add((CreativeIngredient) object);
+        if (object instanceof CreativeIngredient ingredient) {
+            add(ingredient);
             return;
         }
         CreativeIngredient info = CreativeIngredient.parse(object);
@@ -147,15 +146,17 @@ public class SortingList implements List<CreativeIngredient> {
     /** If the given object can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
      * 
-     * @param object */
+     * @param object
+     *            object to check */
     public boolean canPass(Object object) {
         return canBeFoundInList(object) == isWhitelist;
     }
     
     /** If the given itemstack can pass the test. Whitelist: if it can be found.
      * Blacklist: if it cannot be found.
-     * 
-     * @param object */
+     *
+     * @param stack
+     *            item stack */
     public boolean canPass(ItemStack stack) {
         return canBeFoundInList(stack) == isWhitelist;
     }
@@ -172,12 +173,12 @@ public class SortingList implements List<CreativeIngredient> {
     
     @Override
     public boolean addAll(Collection<? extends CreativeIngredient> arg0) {
-        return addAll(arg0);
+        return entries.addAll(arg0);
     }
     
     @Override
     public boolean addAll(int arg0, Collection<? extends CreativeIngredient> arg1) {
-        return addAll(arg0, arg1);
+        return entries.addAll(arg0, arg1);
     }
     
     @Override

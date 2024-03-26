@@ -28,7 +28,7 @@ public abstract class StyleDisplay {
         public void render(PoseStack pose, double x, double y, double width, double height) {}
     };
     
-    private static HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
+    private static final HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
     
     public static void registerType(String id, Class<? extends StyleDisplay> clazz) {
         if (types.containsKey(id))

@@ -13,6 +13,7 @@ import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey;
@@ -127,27 +128,9 @@ public class ConfigEventHandler {
                 
                 if (json.size() > 0) {
                     FileWriter writer = new FileWriter(config);
-                    
-                    JsonWriter jsonWriter = new JsonWriter(writer) {
-                        
-                        @Override
-                        public JsonWriter value(double value) throws IOException {
-                            if (Double.isNaN(value) || Double.isInfinite(value))
-                                throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
-                            
-                            return jsonValue(df.format(value));
-                        }
-                        
-                        @Override
-                        public JsonWriter value(Number value) throws IOException {
-                            if (value instanceof Double || value.getClass() == double.class)
-                                return value((double) value);
-                            return super.value(value);
-                        }
-                        
-                    };
-                    jsonWriter.setIndent("  ");
-                    
+
+                    JsonWriter jsonWriter = getJsonWriter(writer);
+
                     try {
                         GSON.toJson(json, jsonWriter);
                     } finally {
@@ -159,9 +142,33 @@ public class ConfigEventHandler {
         } catch (IOException e) {
             LOGGER.error("Failed to save config file of '{0}', {1}", modid, e);
         }
-        
+
     }
-    
+
+    @NotNull
+    private JsonWriter getJsonWriter(FileWriter writer) {
+        JsonWriter jsonWriter = new JsonWriter(writer) {
+
+            @Override
+            public JsonWriter value(double value) throws IOException {
+                if (Double.isNaN(value) || Double.isInfinite(value))
+                    throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
+
+                return jsonValue(df.format(value));
+            }
+
+            @Override
+            public JsonWriter value(Number value) throws IOException {
+                if (value instanceof Double || value.getClass() == double.class)
+                    return value(value.doubleValue());
+                return super.value(value);
+            }
+
+        };
+        jsonWriter.setIndent("  ");
+        return jsonWriter;
+    }
+
     public void save(Side side) {
         for (String modid : CreativeConfigRegistry.ROOT.names())
             save(modid, side);
@@ -197,8 +204,7 @@ public class ConfigEventHandler {
     
     public void load(String modid, Side side) {
         Object object = CreativeConfigRegistry.ROOT.get(modid);
-        if (object instanceof ICreativeConfigHolder) {
-            ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
+        if (object instanceof ICreativeConfigHolder holder) {
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
             if (config.exists()) {
                 try {
@@ -207,7 +213,7 @@ public class ConfigEventHandler {
                     try {
                         json = GSON.fromJson(reader, JsonObject.class);
                     } catch (JsonSyntaxException e) {
-                        e.printStackTrace();
+                        LOGGER.error(e);
                     }
                     if (json == null)
                         json = new JsonObject();
@@ -230,7 +236,7 @@ public class ConfigEventHandler {
     }
     
     public boolean isSynchronizedWithServer(String key) {
-        String[] path = key.split(".");
+        String[] path = key.split("\\.");
         ConfigKey config = CreativeConfigRegistry.ROOT.findKey(path);
         if (config != null)
             return config.is(Side.SERVER);
@@ -251,8 +257,7 @@ public class ConfigEventHandler {
             return list;
         }
         
-        if (field.get() instanceof ICreativeConfigHolder) {
-            ICreativeConfigHolder holder = (ICreativeConfigHolder) field.get();
+        if (field.get() instanceof ICreativeConfigHolder holder) {
             for (ConfigKey key : holder.fields())
                 if (key.isWithoutForce(Side.CLIENT))
                     loadClientFieldList(holder, key, list);

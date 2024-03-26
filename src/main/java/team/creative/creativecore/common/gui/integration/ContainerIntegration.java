@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -111,9 +110,9 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
         layers = layers.subList(0, layer);
         if (layers.isEmpty())
             if (isClient())
-                Minecraft.getInstance().setScreen((Screen) null);
+                Minecraft.getInstance().setScreen(null);
             else
-                ((ServerPlayer) player).closeContainer();
+                player.closeContainer();
         else
             getTopLayer().becameTopLayer();
     }

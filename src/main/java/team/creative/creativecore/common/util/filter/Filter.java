@@ -19,13 +19,7 @@ public interface Filter<T> {
         return new FilterNot<>(filter);
     }
     
-    public static class FilterNot<T> implements Filter<T> {
-        
-        public final Filter<T> filter;
-        
-        public FilterNot(Filter<T> filter) {
-            this.filter = filter;
-        }
+    public record FilterNot<T>(Filter<T> filter) implements Filter<T> {
         
         @Override
         public boolean is(T t) {
@@ -34,13 +28,7 @@ public interface Filter<T> {
         
     }
     
-    public static class FilterAnd<T> implements Filter<T> {
-        
-        public final Filter<T>[] filters;
-        
-        public FilterAnd(Filter<T>... filters) {
-            this.filters = filters;
-        }
+    public record FilterAnd<T>(Filter<T>... filters) implements Filter<T> {
         
         @Override
         public boolean is(T t) {
@@ -52,13 +40,7 @@ public interface Filter<T> {
         
     }
     
-    public static class FilterOr<T> implements Filter<T> {
-        
-        public final Filter<T>[] filters;
-        
-        public FilterOr(Filter<T>... filters) {
-            this.filters = filters;
-        }
+    public record FilterOr<T>(Filter<T>... filters) implements Filter<T> {
         
         @Override
         public boolean is(T t) {

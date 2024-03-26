@@ -21,12 +21,12 @@ public class GuiTreeItem extends GuiParent {
     
     public final GuiTree tree;
     private GuiTreeItem parentItem;
-    private List<GuiTreeItem> items = new ArrayList<>();
+    private final List<GuiTreeItem> items = new ArrayList<>();
     private int level = 0;
     private boolean open = true;
     private boolean selected = false;
     private GuiCheckBox checkbox;
-    private GuiLabel label;
+    private final GuiLabel label;
     private GuiButton button;
     private ItemClickState state = null;
     protected boolean moving = false;
@@ -139,23 +139,17 @@ public class GuiTreeItem extends GuiParent {
         if (tree.hasCheckboxes() == (checkbox != null) && items.isEmpty() == (button == null))
             return;
         
+        clear();
         if (items.isEmpty()) {
-            clear();
             button = null;
-            if (tree.hasCheckboxes())
-                add(getOrCreateCheckbox());
-            else if (checkbox != null)
-                checkbox = null;
-            add(label);
         } else {
-            clear();
             add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> toggle()).setTitle(new TextComponent("-")));
-            if (tree.hasCheckboxes())
-                add(getOrCreateCheckbox());
-            else if (checkbox != null)
-                checkbox = null;
-            add(label);
         }
+        if (tree.hasCheckboxes())
+            add(getOrCreateCheckbox());
+        else if (checkbox != null)
+            checkbox = null;
+        add(label);
     }
     
     public GuiTreeItem getParentItem() {
@@ -232,7 +226,7 @@ public class GuiTreeItem extends GuiParent {
     }
     
     public Iterable<GuiTreeItem> itemsChecked() {
-        return new FilterIterator<>(items, x -> x.isAtLeastPartiallyChecked());
+        return new FilterIterator<>(items, GuiTreeItem::isAtLeastPartiallyChecked);
     }
     
     public GuiTreeItem getItem(int index) {

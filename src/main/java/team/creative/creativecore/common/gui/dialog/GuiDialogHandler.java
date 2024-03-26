@@ -35,9 +35,8 @@ public class GuiDialogHandler {
         for (int i = 0; i < array.length; i++)
             array[i] = buttons[i].ordinal();
         nbt.putIntArray("buttons", array);
-        GuiLayer layer = DIALOG_HANDLER.open(parent, nbt);
-        ((DialogGuiLayer) layer).onClicked = onClicked;
+        DialogGuiLayer layer = DIALOG_HANDLER.open(parent, nbt);
+        layer.onClicked = onClicked;
         return layer;
     }
-    
 }

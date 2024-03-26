@@ -137,21 +137,14 @@ public class RenderBox extends AlignedBox {
     }
     
     public Object getQuad(Facing facing) {
-        switch (facing) {
-            case DOWN:
-                return quadDown;
-            case EAST:
-                return quadEast;
-            case NORTH:
-                return quadNorth;
-            case SOUTH:
-                return quadSouth;
-            case UP:
-                return quadUp;
-            case WEST:
-                return quadWest;
-        }
-        return null;
+        return switch (facing) {
+            case DOWN -> quadDown;
+            case EAST -> quadEast;
+            case NORTH -> quadNorth;
+            case SOUTH -> quadSouth;
+            case UP -> quadUp;
+            case WEST -> quadWest;
+        };
     }
     
     public int countQuads() {
@@ -217,38 +210,27 @@ public class RenderBox extends AlignedBox {
     }
     
     public boolean intersectsWithFace(Facing facing, QuadGeneratorContext holder, BlockPos offset) {
-        switch (facing.axis) {
-            case X:
-                return holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset
-                        .getZ() && holder.minZ < this.maxZ - offset.getZ();
-            case Y:
-                return holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxZ > this.minZ - offset
-                        .getZ() && holder.minZ < this.maxZ - offset.getZ();
-            case Z:
-                return holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxY > this.minY - offset
-                        .getY() && holder.minY < this.maxY - offset.getY();
-        }
-        return false;
+        return switch (facing.axis) {
+            case X -> holder.maxY > this.minY - offset.getY() && holder.minY < this.maxY - offset.getY() && holder.maxZ > this.minZ - offset
+                    .getZ() && holder.minZ < this.maxZ - offset.getZ();
+            case Y -> holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxZ > this.minZ - offset
+                    .getZ() && holder.minZ < this.maxZ - offset.getZ();
+            case Z -> holder.maxX > this.minX - offset.getX() && holder.minX < this.maxX - offset.getX() && holder.maxY > this.minY - offset
+                    .getY() && holder.minY < this.maxY - offset.getY();
+        };
     }
     
     protected Object getRenderQuads(Facing facing) {
         if (getFace(facing).hasCachedFans())
             return getFace(facing).getCachedFans();
-        switch (facing) {
-            case DOWN:
-                return DOWN;
-            case EAST:
-                return EAST;
-            case NORTH:
-                return NORTH;
-            case SOUTH:
-                return SOUTH;
-            case UP:
-                return UP;
-            case WEST:
-                return WEST;
-        }
-        return null;
+        return switch (facing) {
+            case DOWN -> DOWN;
+            case EAST -> EAST;
+            case NORTH -> NORTH;
+            case SOUTH -> SOUTH;
+            case UP -> UP;
+            case WEST -> WEST;
+        };
     }
     
     protected float getOffsetX() {
@@ -375,7 +357,7 @@ public class RenderBox extends AlignedBox {
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List list)
+                if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
                         ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)

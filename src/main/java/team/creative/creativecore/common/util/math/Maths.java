@@ -13,7 +13,27 @@ public class Maths {
     }
     
     public static boolean equals(double a, double b) {
-        return a == b ? true : Math.abs(a - b) < EPSILON;
+        return a == b || Math.abs(a - b) < EPSILON;
+    }
+    
+    /** 1 seconds in Minecraft equals 20 ticks
+     * 20x50 equals 1000ms (1 sec)
+     *
+     * @param ticks
+     *            Minecraft Tick count
+     * @return ticks converted to MS */
+    public static long tickToMs(int ticks) {
+        return ticks * 50L;
+    }
+    
+    /** 1000ms (1 sec) equals 20 ms in Minecraft
+     * 1000/50 equals 20 Ticks (1 sec)
+     *
+     * @param ms
+     *            Time in milliseconds
+     * @return Milliseconds converted to Ticks */
+    public static int msToTick(long ms) {
+        return (int) (ms / 50);
     }
     
     public static int min(int a, int b, int c) {

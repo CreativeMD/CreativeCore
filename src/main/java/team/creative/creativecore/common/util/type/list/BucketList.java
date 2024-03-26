@@ -12,7 +12,7 @@ import team.creative.creativecore.common.util.type.itr.NestedIterator;
 
 public class BucketList<T> implements Iterable<T> {
     
-    private List<List<T>> buckets = new ArrayList<>();
+    private final List<List<T>> buckets = new ArrayList<>();
     private int size = 0;
     
     public BucketList() {}

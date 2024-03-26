@@ -12,7 +12,11 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class Color {
-    
+
+    public static final Color NONE = new Color(0) {
+        @Override
+        public void glColor() {}
+    };
     public static final Color WHITE = new Color(ColorUtils.WHITE);
     public static final Color RED = new Color(ColorUtils.RED);
     public static final Color GREEN = new Color(ColorUtils.GREEN);
@@ -101,18 +105,10 @@ public class Color {
     
     public void set(ColorType type, short value) {
         switch (type) {
-            case ALPHA:
-                alpha = value;
-                break;
-            case RED:
-                red = value;
-                break;
-            case GREEN:
-                green = value;
-                break;
-            case BLUE:
-                blue = value;
-                break;
+            case ALPHA -> alpha = value;
+            case RED -> red = value;
+            case GREEN -> green = value;
+            case BLUE -> blue = value;
         }
     }
     
@@ -149,18 +145,13 @@ public class Color {
     }
     
     public short get(ColorType type) {
-        switch (type) {
-            case ALPHA:
-                return alpha;
-            case RED:
-                return red;
-            case GREEN:
-                return green;
-            case BLUE:
-                return blue;
-            default:
-                return 0;
-        }
+        return switch (type) {
+            case ALPHA -> alpha;
+            case RED -> red;
+            case GREEN -> green;
+            case BLUE -> blue;
+            default -> 0;
+        };
     }
     
     public short getAlpha() {
@@ -180,18 +171,13 @@ public class Color {
     }
     
     public float getDecimal(ColorType type) {
-        switch (type) {
-            case ALPHA:
-                return alpha / 255F;
-            case RED:
-                return red / 255F;
-            case GREEN:
-                return green / 255F;
-            case BLUE:
-                return blue / 255F;
-            default:
-                return 0;
-        }
+        return switch (type) {
+            case ALPHA -> alpha / 255F;
+            case RED -> red / 255F;
+            case GREEN -> green / 255F;
+            case BLUE -> blue / 255F;
+            default -> 0;
+        };
     }
     
     public float getAlphaDecimal() {

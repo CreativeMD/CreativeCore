@@ -4,6 +4,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import net.minecraft.util.Mth;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -20,26 +21,65 @@ public class GuiCounterDecimal extends GuiParent {
     
     public double min;
     public double max;
+    public final GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
     public GuiTextfield textfield;
-    public double stepAmount = 1;
-    
+    public double stepAmount;
+    public final ControlFormatting buttonsFormatting;
+
     public GuiCounterDecimal(String name, double value) {
         this(name, value, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
     
     public GuiCounterDecimal(String name, double value, double min, double max) {
+        this(name, value, min, max, ControlFormatting.TRANSPARENT);
+    }
+
+    public GuiCounterDecimal(String name, double value, double min, double max, ControlFormatting buttonsFormatting) {
         super(name);
         this.min = min;
         this.max = max;
-        flow = GuiFlow.STACK_X;
-        spacing = 1;
-        textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
-        add(textfield.setExpandableX());
-        GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
-        buttons.spacing = 0;
-        add(buttons);
-        buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()).setTranslate("gui.plus").setDim(6, 3));
-        buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()).setTranslate("gui.minus").setDim(6, 3));
+        this.stepAmount = 1;
+        this.setSpacing(1);
+        this.flow = GuiFlow.STACK_X;
+        this.textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
+        this.buttons.spacing = 0;
+        this.buttonsFormatting = buttonsFormatting;
+        this.createButtons();
+        this.add(textfield.setExpandableX());
+        this.add(buttons);
+    }
+
+    protected void createButtons() {
+        this.buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()) {
+            @Override
+            public ControlFormatting getControlFormatting() {
+                return GuiCounterDecimal.this.buttonsFormatting;
+            }
+        }.setTranslate("gui.plus").setDim(6, 3));
+        this.buttons.add(new GuiButtonHoldSlim("-", x -> stepDown()) {
+            @Override
+            public ControlFormatting getControlFormatting() {
+                return GuiCounterDecimal.this.buttonsFormatting;
+            }
+        }.setTranslate("gui.minus").setDim(6, 3));
+    }
+
+    public GuiCounterDecimal setSpacing(int spacing) {
+        this.spacing = spacing;
+        return this;
+    }
+
+    public GuiCounterDecimal addControl(GuiControl control) {
+        this.add(control);
+        return this;
+    }
+
+    public GuiButtonHoldSlim getPlusButton() {
+        return this.buttons.get("+");
+    }
+
+    public GuiButtonHoldSlim getMinusButton() {
+        return this.buttons.get("-");
     }
     
     public GuiCounterDecimal setStep(double amount) {

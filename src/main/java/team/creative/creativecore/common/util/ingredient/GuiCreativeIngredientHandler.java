@@ -97,8 +97,7 @@ public abstract class GuiCreativeIngredientHandler {
             @Override
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("inv")) {
-                    GuiStackSelector selector = (GuiStackSelector) event.control;
-                    if (selector != null) {
+                    if (event.control instanceof GuiStackSelector selector) {
                         ItemStack stack = selector.getSelected();
                         if (!stack.isEmpty()) {
                             ((GuiLabel) gui.get("guilabel1")).setTitle(new TextComponent("damage: " + stack.getDamageValue()));
@@ -116,7 +115,7 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
-                GuiComboBoxMapped<TagKey<Block>> box = (GuiComboBoxMapped<TagKey<Block>>) gui.get("tag");
+                GuiComboBoxMapped<TagKey<Block>> box = gui.get("tag");
                 TagKey<Block> tag = box.getSelected();
                 if (tag != null)
                     return new CreativeIngredientBlockTag(tag);
@@ -149,7 +148,7 @@ public abstract class GuiCreativeIngredientHandler {
             @Override
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
-                    GuiComboBoxMapped<TagKey<Block>> box = (GuiComboBoxMapped<TagKey<Block>>) gui.get("tag");
+                    GuiComboBoxMapped<TagKey<Block>> box = gui.get("tag");
                     box.setLines(new TextMapBuilder<TagKey<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
                             .addComponents(Registry.BLOCK.getTagNames().toList(), x -> {
                                 TextBuilder builder = new TextBuilder();
@@ -166,7 +165,7 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
-                GuiComboBoxMapped<TagKey<Item>> box = (GuiComboBoxMapped<TagKey<Item>>) gui.get("tag");
+                GuiComboBoxMapped<TagKey<Item>> box = gui.get("tag");
                 TagKey<Item> tag = box.getSelected();
                 if (tag != null)
                     return new CreativeIngredientItemTag(tag);
@@ -199,7 +198,7 @@ public abstract class GuiCreativeIngredientHandler {
             @Override
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
-                    GuiComboBoxMapped<TagKey<Item>> box = (GuiComboBoxMapped<TagKey<Item>>) gui.get("tag");
+                    GuiComboBoxMapped<TagKey<Item>> box = gui.get("tag");
                     box.setLines(new TextMapBuilder<TagKey<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText()))
                             .addComponents(Registry.ITEM.getTagNames().toList(), x -> {
                                 TextBuilder builder = new TextBuilder();

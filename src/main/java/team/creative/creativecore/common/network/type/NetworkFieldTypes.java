@@ -41,6 +41,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.math.vec.Vec1d;
@@ -82,7 +83,7 @@ public class NetworkFieldTypes {
                 return parser;
             
         } catch (Exception e1) {
-            e1.printStackTrace();
+            CreativeCore.LOGGER.error(e1);
         }
         
         throw new RuntimeException("No field type found for " + classType.getSimpleName());
@@ -99,7 +100,7 @@ public class NetworkFieldTypes {
                     return specialParsers.get(i);
                 
         } catch (Exception e1) {
-            e1.printStackTrace();
+            CreativeCore.LOGGER.error(e1);
         }
         
         throw new RuntimeException("No field type found for " + classType.getSimpleName());
@@ -108,11 +109,11 @@ public class NetworkFieldTypes {
     public static <T> void write(Class<T> clazz, T object, FriendlyByteBuf buffer) {
         get(clazz).write(object, clazz, null, buffer);
     }
-    
+
     public static <T> T read(Class<T> clazz, FriendlyByteBuf buffer) {
         return get(clazz).read(clazz, null, buffer);
     }
-    
+
     static {
         register(new NetworkFieldTypeClass<Boolean>() {
             
@@ -574,7 +575,7 @@ public class NetworkFieldTypes {
                 try {
                     buffer.writeNbt(Filter.SERIALIZER.write(content));
                 } catch (RegistryException e) {
-                    e.printStackTrace();
+                    CreativeCore.LOGGER.error(e);
                 }
             }
             
@@ -583,7 +584,7 @@ public class NetworkFieldTypes {
                 try {
                     return Filter.SERIALIZER.read(buffer.readAnySizeNbt());
                 } catch (RegistryException e) {
-                    e.printStackTrace();
+                    CreativeCore.LOGGER.error(e);
                     return Filter.or();
                 }
             }
@@ -597,7 +598,7 @@ public class NetworkFieldTypes {
                 try {
                     buffer.writeNbt(BiFilter.SERIALIZER.write(content));
                 } catch (RegistryException e) {
-                    e.printStackTrace();
+                    CreativeCore.LOGGER.error(e);
                 }
             }
             
@@ -606,7 +607,7 @@ public class NetworkFieldTypes {
                 try {
                     return BiFilter.SERIALIZER.read(buffer.readAnySizeNbt());
                 } catch (RegistryException e) {
-                    e.printStackTrace();
+                    CreativeCore.LOGGER.error(e);
                     return BiFilter.or();
                 }
             }
@@ -661,7 +662,7 @@ public class NetworkFieldTypes {
                     crashreport.addCategory("NBT Tag");
                     throw new ReportedException(crashreport);
                 }
-                
+
             }
         }, Tag.class);
     }

@@ -71,7 +71,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return new TranslatableComponent("minecraft.item_tag").append(": " + ChatFormatting.YELLOW + tag.location().toString());
+        return new TranslatableComponent("minecraft.item_tag").append(": " + ChatFormatting.YELLOW + tag.location());
     }
     
 }

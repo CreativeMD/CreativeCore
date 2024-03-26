@@ -16,9 +16,9 @@ import team.creative.creativecore.common.util.registry.exception.RegistryExcepti
 
 public class NamedTypeRegistry<T> {
     
-    private HashMap<String, Class<? extends T>> types = new LinkedHashMap<>();
-    private HashMap<Class<? extends T>, String> typesInv = new LinkedHashMap<>();
-    private List<Class[]> possibleConstructors = new ArrayList<>();
+    private final HashMap<String, Class<? extends T>> types = new LinkedHashMap<>();
+    private final HashMap<Class<? extends T>, String> typesInv = new LinkedHashMap<>();
+    private final List<Class[]> possibleConstructors = new ArrayList<>();
     private boolean allowOverwrite = false;
     
     public NamedTypeRegistry<T> addConstructorPattern(Class... classes) {

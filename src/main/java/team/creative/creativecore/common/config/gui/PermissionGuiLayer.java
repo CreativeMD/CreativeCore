@@ -42,7 +42,7 @@ public class PermissionGuiLayer extends GuiLayer {
     protected GuiTableScrollable table;
     protected ConfigTypeConveration converation;
     private List<PermissionGuiGroup> groups;
-    private HashMap<ConfigKey, GuiRow> rows = new HashMap<>();
+    private final HashMap<ConfigKey, GuiRow> rows = new HashMap<>();
     
     public PermissionGuiLayer() {
         super("permission", 500, 260);
@@ -250,7 +250,7 @@ public class PermissionGuiLayer extends GuiLayer {
         return perm;
     }
     
-    public abstract class PermissionGuiGroup {
+    public static abstract class PermissionGuiGroup {
         
         public final String originalGroup;
         public GuiTextfield textfield;
@@ -319,7 +319,7 @@ public class PermissionGuiLayer extends GuiLayer {
         
     }
     
-    public class PermissionGuiGroupMulti extends PermissionGuiGroup {
+    public static class PermissionGuiGroupMulti extends PermissionGuiGroup {
         
         public final ConfigHolderObject holder;
         public final List<GuiConfigControl> controls = new ArrayList<>();

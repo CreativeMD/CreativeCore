@@ -73,7 +73,7 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
         if (c instanceof CopyArrayCollection)
             content = Arrays.copyOf(((CopyArrayCollection) c).content, ((CopyArrayCollection) c).content.length, Object[].class);
         else
-            content = c.toArray(new Object[c.size()]);
+            content = c.toArray(new Object[0]);
         this.size = c.size();
     }
     
@@ -103,7 +103,7 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
         int oldCapacity = content.length;
         if (oldCapacity > 0 || content != DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {
             int newCapacity = newLength(oldCapacity, minCapacity - oldCapacity, /* minimum growth */
-                    oldCapacity >> 1 /* preferred growth */);
+                oldCapacity >> 1 /* preferred growth */);
             hadIterator = false;
             return content = Arrays.copyOf(content, newCapacity);
         }
@@ -317,12 +317,11 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
             this.size -= 1;
             this.hadIterator = false;
             this.content = newElements;
-            return true;
         } else {
             final Object[] es = this.content;
             fastRemove(es, index);
-            return true;
         }
+        return true;
     }
     
     private synchronized void fastRemove(Object[] es, int i) {
@@ -335,7 +334,7 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
     @Override
     public boolean removeAll(Collection<?> c) {
         Objects.requireNonNull(c);
-        return bulkRemove(e -> c.contains(e));
+        return bulkRemove(c::contains);
     }
     
     @Override
@@ -372,7 +371,9 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
         // assert Thread.holdsLock(lock);
         final Object[] es = content;
         // Optimize for initial run of survivors
-        for (; i < end && !filter.test((E) es[i]); i++);
+        while (i < end && !filter.test((E) es[i])) {
+            i++;
+        }
         if (i < end) {
             final int beg = i;
             final long[] deathRow = nBits(end - beg);
@@ -407,10 +408,9 @@ public class CopyArrayCollection<E> implements Collection<E>, Cloneable {
     public boolean equals(Object o) {
         if (o == this)
             return true;
-        if (!(o instanceof List))
+        if (!(o instanceof List<?> list))
             return false;
         
-        List<?> list = (List<?>) o;
         Iterator<?> it = list.iterator();
         for (Object element : content)
             if (!it.hasNext() || !Objects.equals(element, it.next()))

@@ -107,7 +107,7 @@ public class GuiStateButton extends GuiButton {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         CompiledText text = states[index];
-        pose.translate(rect.getWidth() / 2 - text.getTotalWidth() / 2, rect.getHeight() / 2 - text.getTotalHeight() / 2, 0);
+        pose.translate(rect.getWidth() / 2f - text.getTotalWidth() / 2f, rect.getHeight() / 2f - text.getTotalHeight() / 2f, 0);
         text.render(pose);
     }
     

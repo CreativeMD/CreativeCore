@@ -61,8 +61,7 @@ public class LineBitSet implements Iterable<Integer> {
             if (chunk < minChunk) {
                 int additional = minChunk - chunk;
                 long[] newChunks = new long[additional + chunks.length];
-                for (int i = 0; i < chunks.length; i++)
-                    newChunks[additional + i] = chunks[i];
+                System.arraycopy(chunks, 0, newChunks, additional, chunks.length);
                 chunks = newChunks;
                 minChunk = chunk;
             } else if (chunk - minChunk >= chunks.length) {
@@ -129,8 +128,7 @@ public class LineBitSet implements Iterable<Integer> {
     public void clear() {
         count = 0;
         if (chunks != null)
-            for (int i = 0; i < chunks.length; i++)
-                chunks[i] = 0;
+            Arrays.fill(chunks, 0);
         minChunk = 0;
     }
     
@@ -205,8 +203,8 @@ public class LineBitSet implements Iterable<Integer> {
                 for (int k = 0; k < 64; k++) {
                     long data = word & (1L << k);
                     if (data != 0) {
-                        int x = (minChunk + i) * CHUNK_SIZE + k / CHUNK_SIZE;
-                        result.append(x + "");
+                        float x = (minChunk + i) * CHUNK_SIZE + k / (float) CHUNK_SIZE;
+                        result.append(x);
                     }
                     
                 }

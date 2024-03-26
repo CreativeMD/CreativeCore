@@ -21,15 +21,11 @@ public class VectorUtils {
     }
     
     public static Vec3 set(Vec3 vec, double value, Axis axis) {
-        switch (axis) {
-            case X:
-                return new Vec3(value, vec.y, vec.z);
-            case Y:
-                return new Vec3(vec.x, value, vec.z);
-            case Z:
-                return new Vec3(vec.x, vec.y, value);
-        }
-        throw new IllegalArgumentException();
+        return switch (axis) {
+            case X -> new Vec3(value, vec.y, vec.z);
+            case Y -> new Vec3(vec.x, value, vec.z);
+            case Z -> new Vec3(vec.x, vec.y, value);
+        };
     }
     
     public static void set(MutableBlockPos vec, int value, Axis axis) {
@@ -48,15 +44,11 @@ public class VectorUtils {
     }
     
     public static BlockPos set(BlockPos vec, int value, Axis axis) {
-        switch (axis) {
-            case X:
-                return new BlockPos(value, vec.getY(), vec.getZ());
-            case Y:
-                return new BlockPos(vec.getX(), value, vec.getZ());
-            case Z:
-                return new BlockPos(vec.getX(), vec.getY(), value);
-        }
-        return null;
+        return switch (axis) {
+            case X -> new BlockPos(value, vec.getY(), vec.getZ());
+            case Y -> new BlockPos(vec.getX(), value, vec.getZ());
+            case Z -> new BlockPos(vec.getX(), vec.getY(), value);
+        };
     }
     
     public static double get(Axis axis, Vector3d vec) {
@@ -80,75 +72,51 @@ public class VectorUtils {
     }
     
     public static float get(Axis axis, float x, float y, float z) {
-        switch (axis) {
-            case X:
-                return x;
-            case Y:
-                return y;
-            case Z:
-                return z;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+        };
     }
     
     public static double get(Axis axis, double x, double y, double z) {
-        switch (axis) {
-            case X:
-                return x;
-            case Y:
-                return y;
-            case Z:
-                return z;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+        };
     }
     
     public static int get(Axis axis, int x, int y, int z) {
-        switch (axis) {
-            case X:
-                return x;
-            case Y:
-                return y;
-            case Z:
-                return z;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+        };
     }
     
     public static float get(net.minecraft.core.Direction.Axis axis, float x, float y, float z) {
-        switch (axis) {
-            case X:
-                return x;
-            case Y:
-                return y;
-            case Z:
-                return z;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+        };
     }
     
     public static double get(net.minecraft.core.Direction.Axis axis, double x, double y, double z) {
-        switch (axis) {
-            case X:
-                return x;
-            case Y:
-                return y;
-            case Z:
-                return z;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+        };
     }
     
     public static int get(net.minecraft.core.Direction.Axis axis, int x, int y, int z) {
-        switch (axis) {
-            case X:
-                return x;
-            case Y:
-                return y;
-            case Z:
-                return z;
-        }
-        return 0;
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+        };
     }
     
     public static boolean isZero(double number) {

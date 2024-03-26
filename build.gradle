@@ -2,7 +2,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-//    id 'com.diffplug.eclipse.apt'
+    id 'com.diffplug.eclipse.apt'
     id 'org.spongepowered.mixin'
     id 'com.modrinth.minotaur' version '2.+'
     id 'com.matthewprenger.cursegradle' version '1.4+'
@@ -26,7 +26,7 @@ java.sourceSets {
 minecraft {
     mappings channel: 'official', version: "${project.property 'minecraft_version'}"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    
+
     runs {
         client {
             taskName "creativecore_client"
@@ -59,8 +59,7 @@ minecraft {
 dependencies {
     minecraft "net.minecraftforge:forge:${project.property 'minecraft_version'}-${project.property 'forge_version'}"
 
-    // MIXINS
-    annotationProcessor "net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 def modDependencies = []
@@ -138,13 +137,13 @@ modrinth {
     uploadFile = jar
     gameVersions = [ project.minecraft_version ]
     changelog = getChangelogText()
-    loaders = [ "forge", "neoforge" ]
+    loaders = [ "forge" ]
 }
 
 tasks.curseforge.enabled = System.getenv("CURSEFORGE_TOKEN") != null
 tasks.curseforge.group = 'publishing'
 curseforge {
-    apiKey = System.getenv("CURSEFORGE_TOKEN") != null ? System.getenv("CURSEFORGE_TOKEN") : "00dds"
+    apiKey = System.getenv("CURSEFORGE_TOKEN") != null ? System.getenv("CURSEFORGE_TOKEN") : "empty"
     project {
         id = project.curse_id
         changelog = getChangelogText()

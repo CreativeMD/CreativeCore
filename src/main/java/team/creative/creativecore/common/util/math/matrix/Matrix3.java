@@ -97,56 +97,56 @@ public class Matrix3 {
      *            the new value */
     public final void setElement(int row, int column, double value) {
         switch (row) {
-        case 0:
-            switch (column) {
             case 0:
-                this.m00 = value;
+                switch (column) {
+                    case 0:
+                        this.m00 = value;
+                        break;
+                    case 1:
+                        this.m01 = value;
+                        break;
+                    case 2:
+                        this.m02 = value;
+                        break;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException();
+                }
                 break;
+            
             case 1:
-                this.m01 = value;
+                switch (column) {
+                    case 0:
+                        this.m10 = value;
+                        break;
+                    case 1:
+                        this.m11 = value;
+                        break;
+                    case 2:
+                        this.m12 = value;
+                        break;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException();
+                }
                 break;
+            
             case 2:
-                this.m02 = value;
+                switch (column) {
+                    case 0:
+                        this.m20 = value;
+                        break;
+                    case 1:
+                        this.m21 = value;
+                        break;
+                    case 2:
+                        this.m22 = value;
+                        break;
+                    default:
+                        throw new ArrayIndexOutOfBoundsException();
+                }
                 break;
+            
             default:
                 throw new ArrayIndexOutOfBoundsException();
-            }
-            break;
-        
-        case 1:
-            switch (column) {
-            case 0:
-                this.m10 = value;
-                break;
-            case 1:
-                this.m11 = value;
-                break;
-            case 2:
-                this.m12 = value;
-                break;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
-            break;
-        
-        case 2:
-            switch (column) {
-            case 0:
-                this.m20 = value;
-                break;
-            case 1:
-                this.m21 = value;
-                break;
-            case 2:
-                this.m22 = value;
-                break;
-            default:
-                throw new ArrayIndexOutOfBoundsException();
-            }
-            break;
-        
-        default:
-            throw new ArrayIndexOutOfBoundsException();
         }
     }
     
@@ -160,46 +160,46 @@ public class Matrix3 {
      * @return the value at the indexed element. */
     public final double getElement(int row, int column) {
         switch (row) {
-        case 0:
-            switch (column) {
             case 0:
-                return (this.m00);
+                switch (column) {
+                    case 0:
+                        return (this.m00);
+                    case 1:
+                        return (this.m01);
+                    case 2:
+                        return (this.m02);
+                    default:
+                        break;
+                }
+                break;
             case 1:
-                return (this.m01);
+                switch (column) {
+                    case 0:
+                        return (this.m10);
+                    case 1:
+                        return (this.m11);
+                    case 2:
+                        return (this.m12);
+                    default:
+                        break;
+                }
+                break;
+            
             case 2:
-                return (this.m02);
+                switch (column) {
+                    case 0:
+                        return (this.m20);
+                    case 1:
+                        return (this.m21);
+                    case 2:
+                        return (this.m22);
+                    default:
+                        break;
+                }
+                break;
+            
             default:
                 break;
-            }
-            break;
-        case 1:
-            switch (column) {
-            case 0:
-                return (this.m10);
-            case 1:
-                return (this.m11);
-            case 2:
-                return (this.m12);
-            default:
-                break;
-            }
-            break;
-        
-        case 2:
-            switch (column) {
-            case 0:
-                return (this.m20);
-            case 1:
-                return (this.m21);
-            case 2:
-                return (this.m22);
-            default:
-                break;
-            }
-            break;
-        
-        default:
-            break;
         }
         
         throw new ArrayIndexOutOfBoundsException();
@@ -295,8 +295,8 @@ public class Matrix3 {
     }
     
     public final void invert() {
-        double result[] = new double[9];
-        int row_perm[] = new int[3];
+        double[] result = new double[9];
+        int[] row_perm = new int[3];
         int i;
         double[] tmp = new double[9]; // scratch matrix
         
@@ -345,8 +345,8 @@ public class Matrix3 {
     }
     
     public final void invert(Matrix3 m) {
-        double result[] = new double[9];
-        int row_perm[] = new int[3];
+        double[] result = new double[9];
+        int[] row_perm = new int[3];
         int i;
         double[] tmp = new double[9]; // scratch matrix
         
@@ -414,7 +414,7 @@ public class Matrix3 {
     //
     static boolean luDecomposition(double[] matrix0, int[] row_perm) {
         
-        double row_scale[] = new double[3];
+        double[] row_scale = new double[3];
         
         // Determine implicit scaling information by looping over rows
         {
@@ -599,10 +599,10 @@ public class Matrix3 {
             matrix2[cv + 3 * 2] /= matrix1[rv + 2];
             
             rv -= 3;
-            matrix2[cv + 3 * 1] = (matrix2[cv + 3 * 1] - matrix1[rv + 2] * matrix2[cv + 3 * 2]) / matrix1[rv + 1];
+            matrix2[cv + 3] = (matrix2[cv + 3] - matrix1[rv + 2] * matrix2[cv + 3 * 2]) / matrix1[rv + 1];
             
             rv -= 3;
-            matrix2[cv + 4 * 0] = (matrix2[cv + 3 * 0] - matrix1[rv + 1] * matrix2[cv + 3 * 1] - matrix1[rv + 2] * matrix2[cv + 3 * 2]) / matrix1[rv + 0];
+            matrix2[cv] = (matrix2[cv] - matrix1[rv + 1] * matrix2[cv + 3] - matrix1[rv + 2] * matrix2[cv + 3 * 2]) / matrix1[rv];
             
         }
     }
@@ -821,9 +821,7 @@ public class Matrix3 {
         try {
             Matrix3 m2 = (Matrix3) t1;
             return (this.m00 == m2.m00 && this.m01 == m2.m01 && this.m02 == m2.m02 && this.m10 == m2.m10 && this.m11 == m2.m11 && this.m12 == m2.m12 && this.m20 == m2.m20 && this.m21 == m2.m21 && this.m22 == m2.m22);
-        } catch (ClassCastException e1) {
-            return false;
-        } catch (NullPointerException e2) {
+        } catch (ClassCastException | NullPointerException e1) {
             return false;
         }
         
@@ -854,7 +852,7 @@ public class Matrix3 {
     }
     
     /** perform SVD (if necessary to get rotational component */
-    final void getScaleRotate(double scales[], double rots[]) {
+    final void getScaleRotate(double[] scales, double[] rots) {
         
         double[] tmp = new double[9]; // scratch matrix
         
@@ -871,7 +869,6 @@ public class Matrix3 {
         tmp[8] = m22;
         compute_svd(tmp, scales, rots);
         
-        return;
     }
     
     static void compute_svd(double[] m, double[] outScale, double[] outRot) {
@@ -956,7 +953,6 @@ public class Matrix3 {
         }
         
         // u2
-        
         if (m[6] * m[6] < EPS) {} else if (m[0] * m[0] < EPS) {
             tmp[0] = m[0];
             tmp[1] = m[1];
@@ -1314,10 +1310,10 @@ public class Matrix3 {
             outRot[0] = rot[index];
             
             index = out[in0] + 3;
-            outRot[0 + 3] = rot[index];
+            outRot[3] = rot[index];
             
             index = out[in0] + 6;
-            outRot[0 + 6] = rot[index];
+            outRot[6] = rot[index];
             
             index = out[in1];
             outRot[1] = rot[index];
@@ -1597,10 +1593,7 @@ public class Matrix3 {
         ha = Math.abs(h);
         
         pmax = 1;
-        if (ha > fa)
-            swap = true;
-        else
-            swap = false;
+        swap = ha > fa;
         
         if (swap) {
             pmax = 3;
@@ -1829,7 +1822,7 @@ public class Matrix3 {
     static void print_mat(double[] mat) {
         int i;
         for (i = 0; i < 3; i++) {
-            System.out.println(mat[i * 3 + 0] + " " + mat[i * 3 + 1] + " " + mat[i * 3 + 2] + "\n");
+            System.out.println(mat[i * 3] + " " + mat[i * 3 + 1] + " " + mat[i * 3 + 2] + "\n");
         }
         
     }
@@ -1890,7 +1883,7 @@ public class Matrix3 {
         }
     }
     
-    private static final boolean almostEqual(double a, double b) {
+    private static boolean almostEqual(double a, double b) {
         if (a == b)
             return true;
         
@@ -1904,10 +1897,7 @@ public class Matrix3 {
         if (diff < EPSILON_ABSOLUTE)
             return true;
         
-        if ((diff / max) < EPSILON_RELATIVE)
-            return true;
-        
-        return false;
+        return (diff / max) < EPSILON_RELATIVE;
     }
     
 }

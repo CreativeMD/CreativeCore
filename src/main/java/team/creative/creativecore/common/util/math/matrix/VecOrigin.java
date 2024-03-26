@@ -11,10 +11,10 @@ public class VecOrigin implements IVecOrigin {
     
     protected boolean rotated = false;
     
-    private Vec3d center;
+    private final Vec3d center;
     private Vec3d translation = new Vec3d(0, 0, 0);
     private Matrix3 rotation = MatrixUtils.createIdentityMatrix();
-    private Matrix3 rotationInv = rotation;
+    private final Matrix3 rotationInv = rotation;
     
     protected double rotX;
     protected double rotY;

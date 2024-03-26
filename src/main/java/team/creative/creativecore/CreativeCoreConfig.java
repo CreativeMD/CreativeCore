@@ -1,7 +1,6 @@
 package team.creative.creativecore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +21,7 @@ public class CreativeCoreConfig {
     public boolean useOptifineCompat = true;
     
     @CreativeConfig(type = ConfigSynchronization.CLIENT)
-    public List<ColorPalette> palette = Arrays.asList(new ColorPalette("basic", ColorUtils.WHITE, ColorUtils.BLACK, ColorUtils.RED, ColorUtils.GREEN, ColorUtils.BLUE));
+    public List<ColorPalette> palette = List.of(new ColorPalette("basic", ColorUtils.WHITE, ColorUtils.BLACK, ColorUtils.RED, ColorUtils.GREEN, ColorUtils.BLUE));
     
     @CreativeConfig
     public NamedList<Usergroup> usergroups = new NamedList<>();

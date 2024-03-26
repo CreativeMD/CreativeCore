@@ -4,7 +4,6 @@ import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -51,12 +50,6 @@ public class GuiComboBox extends GuiLabel {
             index = lines.length - 1;
         select(index);
     }
-    
-    @Override
-    public void tick() {}
-    
-    @Override
-    public void closed() {}
     
     protected void updateDisplay() {
         if (index >= 0 && index < lines.length)
@@ -150,7 +143,7 @@ public class GuiComboBox extends GuiLabel {
     
     public void closeBox() {
         if (extension != null) {
-            ((GuiParent) getLayer()).remove(extension);
+            getLayer().remove(extension);
             extension = null;
         }
     }

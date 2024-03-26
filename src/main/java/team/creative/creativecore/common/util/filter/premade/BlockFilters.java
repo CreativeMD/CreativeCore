@@ -144,13 +144,7 @@ public class BlockFilters {
         
     }
     
-    private static class BlockPropertyFilter implements Filter<Block> {
-        
-        public final Property<?> property;
-        
-        public BlockPropertyFilter(Property<?> property) {
-            this.property = property;
-        }
+    private record BlockPropertyFilter(Property<?> property) implements Filter<Block> {
         
         @Override
         public boolean is(Block t) {
@@ -158,13 +152,7 @@ public class BlockFilters {
         }
     }
     
-    private static class BlockTagFilter implements Filter<Block> {
-        
-        public final TagKey<Block> tag;
-        
-        public BlockTagFilter(TagKey<Block> tag) {
-            this.tag = tag;
-        }
+    private record BlockTagFilter(TagKey<Block> tag) implements Filter<Block> {
         
         @Override
         public boolean is(Block t) {

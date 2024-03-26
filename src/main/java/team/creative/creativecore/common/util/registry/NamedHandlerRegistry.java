@@ -14,8 +14,8 @@ public class NamedHandlerRegistry<T> {
         registry.defaultHandler = null;
     }
     
-    private HashMap<String, T> handlers = new LinkedHashMap<>();
-    private HashMap<T, String> handlersInv = new LinkedHashMap<>();
+    private final HashMap<String, T> handlers = new LinkedHashMap<>();
+    private final HashMap<T, String> handlersInv = new LinkedHashMap<>();
     private T defaultHandler;
     private boolean allowOverwrite = false;
     

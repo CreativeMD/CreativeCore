@@ -15,11 +15,11 @@ import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class TextBuilder {
     
-    private static NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
+    private static final NumberFormat format = NumberFormat.getNumberInstance(Locale.US);
     private final List<Component> components = new ArrayList<>();
     
     public TextBuilder() {
-        
+
     }
     
     public TextBuilder add(List<Component> components) {
@@ -84,7 +84,7 @@ public class TextBuilder {
         if (rounded)
             text("" + Math.round(number));
         else
-            text("" + format.format(number));
+            text(format.format(number));
         return this;
     }
     
@@ -96,7 +96,7 @@ public class TextBuilder {
         if (rounded)
             text("" + Math.round(number));
         else
-            text("" + format.format(number));
+            text(format.format(number));
         return this;
     }
     

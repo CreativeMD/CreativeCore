@@ -7,7 +7,7 @@ import team.creative.creativecore.common.gui.GuiControl;
 
 public class GuiTooltipEvent extends GuiControlEvent {
     
-    public List<Component> tooltip;
+    public final List<Component> tooltip;
     
     public GuiTooltipEvent(GuiControl control, List<Component> tooltip) {
         super(control);

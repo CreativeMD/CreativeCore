@@ -39,32 +39,23 @@ public class Vec4d extends VecNd<Vec4d> {
     
     @Override
     public double get(int dim) {
-        switch (dim) {
-        case 0:
-            return x;
-        case 1:
-            return y;
-        case 2:
-            return z;
-        case 3:
-            return w;
-        default:
-            return 0;
-        }
+        return switch (dim) {
+            case 0 -> x;
+            case 1 -> y;
+            case 2 -> z;
+            case 3 -> w;
+            default -> 0;
+        };
     }
     
     @Override
     public double get(Axis axis) {
-        switch (axis) {
-        case X:
-            return x;
-        case Y:
-            return y;
-        case Z:
-            return z;
-        default:
-            return 0;
-        }
+        return switch (axis) {
+            case X -> x;
+            case Y -> y;
+            case Z -> z;
+            default -> 0;
+        };
     }
     
     public void set(double x, double y, double z, double w) {
@@ -77,33 +68,33 @@ public class Vec4d extends VecNd<Vec4d> {
     @Override
     public void set(Axis axis, double value) {
         switch (axis) {
-        case X:
-            this.x = value;
-            break;
-        case Y:
-            this.y = value;
-            break;
-        case Z:
-            this.z = value;
-            break;
+            case X:
+                this.x = value;
+                break;
+            case Y:
+                this.y = value;
+                break;
+            case Z:
+                this.z = value;
+                break;
         }
     }
     
     @Override
     public void set(int dim, double value) {
         switch (dim) {
-        case 0:
-            this.x = value;
-            break;
-        case 1:
-            this.y = value;
-            break;
-        case 2:
-            this.z = value;
-            break;
-        case 3:
-            this.w = value;
-            break;
+            case 0:
+                this.x = value;
+                break;
+            case 1:
+                this.y = value;
+                break;
+            case 2:
+                this.z = value;
+                break;
+            case 3:
+                this.w = value;
+                break;
         }
     }
     

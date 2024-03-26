@@ -102,7 +102,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void loadValue(List value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         if (!box.isEmpty())
             box.clearItems();
         
@@ -135,7 +135,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         Class subClass = getListType(key);
         ConfigTypeConveration converation = getUnsafe(subClass);
         
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         List value = new ArrayList(box.size());
         for (int i = 0; i < box.size(); i++)
             if (converation != null)

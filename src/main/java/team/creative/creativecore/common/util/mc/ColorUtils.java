@@ -118,11 +118,11 @@ public class ColorUtils {
     }
     
     public static int rgb(int red, int green, int blue) {
-        return (255 & 255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
+        return (255) << 24 | (red & 255) << 16 | (green & 255) << 8 | blue & 255;
     }
     
     public static int rgb(float red, float green, float blue) {
-        return (255 & 255) << 24 | (((int) (red * 255)) & 255) << 16 | (((int) (green * 255)) & 255) << 8 | ((int) (blue * 255)) & 255;
+        return (255) << 24 | (((int) (red * 255)) & 255) << 16 | (((int) (green * 255)) & 255) << 8 | ((int) (blue * 255)) & 255;
     }
     
     public static Vector3d toVec(int color) {

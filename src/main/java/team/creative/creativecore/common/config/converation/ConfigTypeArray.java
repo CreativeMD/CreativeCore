@@ -63,7 +63,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void loadValue(Object value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         if (!box.isEmpty())
             box.clear();
         
@@ -90,7 +90,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         Class subClass = clazz.getComponentType();
         ConfigTypeConveration converation = get(subClass);
         
-        GuiListBoxBase<GuiConfigSubControl> box = (GuiListBoxBase<GuiConfigSubControl>) parent.get("data");
+        GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         Object value = Array.newInstance(subClass, box.size());
         for (int i = 0; i < box.size(); i++)
             Array.set(value, i, converation.save(box.get(i), null, subClass, null));

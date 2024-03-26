@@ -94,7 +94,7 @@ public class GuiTree extends GuiScrollXY {
     public Iterable<GuiTreeItem> itemsChecked() {
         if (visibleRoot)
             return root.itemsChecked();
-        return new NestedFunctionIterator<>(root.items(), x -> x.itemsChecked());
+        return new NestedFunctionIterator<>(root.items(), GuiTreeItem::itemsChecked);
     }
     
     public GuiTreeItem selected() {
@@ -214,32 +214,32 @@ public class GuiTree extends GuiScrollXY {
             pose.translate(getContentOffset() + getOffsetX(), getContentOffset() + getOffsetY(), 0);
             lastDragPosition = calculatePosition((int) (mouseX - realRect.minX - getContentOffset()), (int) (mouseY - realRect.minY - getContentOffset()));
             if (lastDragPosition != null) {
-                if (lastDragPosition.position == ItemPosition.IN)
-                    dragHover.render(pose, lastDragPosition.child.rect.minX, lastDragPosition.child.rect.minY, lastDragPosition.child.rect.getWidth(), lastDragPosition.child.rect
-                            .getHeight());
+                if (lastDragPosition.position() == ItemPosition.IN)
+                    dragHover.render(pose, lastDragPosition.child().rect.minX, lastDragPosition.child().rect.minY, lastDragPosition.child().rect.getWidth(), lastDragPosition
+                            .child().rect.getHeight());
                 else {
                     int thickness = 1;
                     int minY;
-                    int width = (int) lastDragPosition.child.rect.getWidth();
-                    if (lastDragPosition.position == ItemPosition.ABOVE) {
-                        minY = (int) (lastDragPosition.child.rect.minY - thickness) - 1;
-                        if (lastDragPosition.above != null)
-                            width = Math.max(width, (int) lastDragPosition.above.rect.getWidth());
+                    int width = (int) lastDragPosition.child().rect.getWidth();
+                    if (lastDragPosition.position() == ItemPosition.ABOVE) {
+                        minY = (int) (lastDragPosition.child().rect.minY - thickness) - 1;
+                        if (lastDragPosition.above() != null)
+                            width = Math.max(width, (int) lastDragPosition.above().rect.getWidth());
                     } else
-                        minY = (int) lastDragPosition.child.rect.maxY + 1;
+                        minY = (int) lastDragPosition.child().rect.maxY + 1;
                     
-                    if (lastDragPosition.above != null) {
-                        dragLine.render(pose, lastDragPosition.child.rect.minX - thickness, minY - thickness, thickness, thickness * 3);
-                        dragLine.render(pose, lastDragPosition.child.rect.minX + width, minY - thickness, thickness, thickness * 3);
-                    } else if (lastDragPosition.position == ItemPosition.ABOVE) {
-                        dragLine.render(pose, lastDragPosition.child.rect.minX - thickness, minY, thickness, thickness * 2);
-                        dragLine.render(pose, lastDragPosition.child.rect.minX + width, minY, thickness, thickness * 2);
+                    if (lastDragPosition.above() != null) {
+                        dragLine.render(pose, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 3);
+                        dragLine.render(pose, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 3);
+                    } else if (lastDragPosition.position() == ItemPosition.ABOVE) {
+                        dragLine.render(pose, lastDragPosition.child().rect.minX - thickness, minY, thickness, thickness * 2);
+                        dragLine.render(pose, lastDragPosition.child().rect.minX + width, minY, thickness, thickness * 2);
                     } else {
-                        dragLine.render(pose, lastDragPosition.child.rect.minX - thickness, minY - thickness, thickness, thickness * 2);
-                        dragLine.render(pose, lastDragPosition.child.rect.minX + width, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(pose, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(pose, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 2);
                     }
                     
-                    dragLine.render(pose, lastDragPosition.child.rect.minX, minY, width, thickness);
+                    dragLine.render(pose, lastDragPosition.child().rect.minX, minY, width, thickness);
                 }
             }
             pose.popPose();
@@ -253,9 +253,8 @@ public class GuiTree extends GuiScrollXY {
         List<GuiTreeLine> lines = new ArrayList<>();
         int size = -1;
         for (GuiChildControl child : controls) {
-            if (!(child.control instanceof GuiTreeItem))
+            if (!(child.control instanceof GuiTreeItem item))
                 continue;
-            GuiTreeItem item = (GuiTreeItem) child.control;
             int lineY = (int) ((child.rect.minY + child.rect.maxY) / 2) + halfLineThickness;
             int level = item.getLevel() - (visibleRoot ? 1 : 2);
             
@@ -284,7 +283,7 @@ public class GuiTree extends GuiScrollXY {
             }
             
             if (level >= 0)
-                line.render(pose, lines.get(level).x + lineThickness, lineY - lineThickness, levelSpacing / 2, lineThickness);
+                line.render(pose, lines.get(level).x + lineThickness, lineY - lineThickness, levelSpacing / 2f, lineThickness);
         }
         
         if (size >= 0) {
@@ -336,7 +335,7 @@ public class GuiTree extends GuiScrollXY {
     }
     
     public boolean performModication(GuiTreeItem item, GuiTreeDragPosition position) {
-        if (item.isChild(position.item))
+        if (item.isChild(position.item()))
             return false;
         
         try {
