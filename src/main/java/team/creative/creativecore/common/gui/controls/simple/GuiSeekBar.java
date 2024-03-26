@@ -45,12 +45,12 @@ public class GuiSeekBar extends GuiControl {
         this.tick();
     }
     
-    public GuiSeekBar setPosConsumer(LongConsumer consumer) {
+    public GuiSeekBar setOnPositionChange(LongConsumer consumer) {
         this.posConsumer = consumer;
         return this;
     }
     
-    public GuiSeekBar setLastPosConsumer(LongConsumer consumer) {
+    public GuiSeekBar setOnLastPosition(LongConsumer consumer) {
         this.lastPosConsumer = consumer;
         return this;
     }
@@ -159,6 +159,6 @@ public class GuiSeekBar extends GuiControl {
     
     @Override
     protected int preferredHeight(int width, int availableHeight) {
-        return 12;
+        return 14;
     }
 }
