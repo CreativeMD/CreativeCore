@@ -56,6 +56,7 @@ public class GuiSeekBar extends GuiControl {
     }
     
     public void setPosition(long value) {
+        if (this.pos >= this.max) value = this.max;
         this.timeUpdate.accept(value);
         this.pos = value;
         if (this.getParent() != null)
@@ -72,7 +73,7 @@ public class GuiSeekBar extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        final double percent = pos / (double) max;
+        final double percent = this.max > 0 ? pos / (double) max : 0;
         PoseStack pose = graphics.pose();
         this.renderProgress(pose, control, rect, percent);
         GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
@@ -90,7 +91,7 @@ public class GuiSeekBar extends GuiControl {
     public boolean mouseClicked(Rect rect, double x, double y, int button) {
         if (button == 0) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
-            grabbedSlider = true;
+            grabbedSlider = this.max > 0; // validates maxTime is not a custom state
             this.mouseMoved(rect, x, y);
             return true;
         }
