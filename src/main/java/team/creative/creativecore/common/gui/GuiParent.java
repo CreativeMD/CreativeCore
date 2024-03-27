@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -16,11 +17,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
-import team.creative.creativecore.common.gui.event.GuiEvent;
-import team.creative.creativecore.common.gui.event.GuiEventManager;
-import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
+import team.creative.creativecore.common.gui.event.*;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -42,17 +39,21 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     public GuiParent(String name, GuiFlow flow) {
         super(name);
-        this.flow = flow;
+        this.setFlow(flow);
     }
     
     public GuiParent(String name, GuiFlow flow, VAlign valign) {
         this(name, flow, Align.LEFT, valign);
     }
+
+    public GuiParent(String name, GuiFlow flow, Align align) {
+        this(name, flow, align, VAlign.TOP);
+    }
     
     public GuiParent(String name, GuiFlow flow, Align align, VAlign valign) {
         this(name, flow);
-        this.align = align;
-        this.valign = valign;
+        this.setAlign(align);
+        this.setVAlign(valign);
     }
     
     public GuiParent(String name) {
@@ -69,12 +70,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public boolean isClient() {
-        return getParent().isClient();
+        return this.getParent().isClient();
     }
     
-    public void setScale(double scale) {
+    public GuiParent setScale(double scale) {
         this.scale = scale;
         this.scaleInv = 1 / scale;
+        return this;
     }
     
     public final double scaleFactor() {
@@ -102,7 +104,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         this.valign = valign;
         return this;
     }
-    
+
+    public GuiParent setSpacing(int spacing) {
+        this.spacing = spacing;
+        return this;
+    }
+
+    public GuiParent setFlow(GuiFlow flow) {
+        this.flow = flow;
+        return this;
+    }
+
     @Override
     public boolean isExpandableX() {
         if (super.isExpandableX())
@@ -128,13 +140,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
             GuiControl control = collection.get(i).control;
             if (control.name.equalsIgnoreCase(name))
                 return control;
-            else if (control instanceof GuiParent) {
+            else if (control instanceof GuiParent parent) {
                 if (control.name.isBlank()) {
-                    GuiControl result = ((GuiParent) control).get(name);
+                    GuiControl result = parent.get(name);
                     if (result != null)
                         return result;
                 } else if (name.startsWith(control.name + "."))
-                    return ((GuiParent) control).get(name.substring(control.name.length() + 1));
+                    return parent.get(name.substring(control.name.length() + 1));
             }
         }
         return null;
@@ -150,9 +162,9 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     public <T extends GuiControl> T get(String name, Class<T> clazz) {
-        GuiControl result = get(name);
+        T result = get(name);
         if (clazz.isInstance(result))
-            return (T) result;
+            return result;
         return null;
     }
     
@@ -166,12 +178,48 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         controls.add(child);
         return child;
     }
+
+    public GuiParent addWidget(GuiControl control) {
+        this.add(control);
+        return this;
+    }
+
+    public GuiParent addWidget(GuiControl... controls) {
+        for (GuiControl c: controls) {
+            this.add(c);
+        }
+        return this;
+    }
+
+    public GuiParent addWidget(boolean conditional, Supplier<GuiControl> controlSupplier) {
+        if (conditional)
+            return this.addWidget(controlSupplier.get());
+        return this;
+    }
     
     public GuiChildControl addHover(GuiControl control) {
         control.setParent(this);
         GuiChildControl child = new GuiChildControl(control);
         hoverControls.add(child);
         return child;
+    }
+
+    public GuiParent addHoverWidget(GuiControl control) {
+        this.addHover(control);
+        return this;
+    }
+
+    public GuiParent addHoverWidget(GuiControl... controls) {
+        for (GuiControl c: controls) {
+            this.addHover(c);
+        }
+        return this;
+    }
+
+    public GuiParent addHoverWidget(boolean conditional, Supplier<GuiControl> controlSupplier) {
+        if (conditional)
+            return this.addHoverWidget(controlSupplier.get());
+        return this;
     }
     
     public boolean remove(GuiChildControl control) {
