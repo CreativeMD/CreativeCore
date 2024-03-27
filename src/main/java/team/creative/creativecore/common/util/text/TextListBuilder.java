@@ -111,6 +111,10 @@ public class TextListBuilder implements ITextCollection {
     public int size() {
         return list.size();
     }
+
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
     
     public List<Component> get(int index) {
         return list.get(index);
