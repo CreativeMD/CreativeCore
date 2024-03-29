@@ -121,7 +121,8 @@ public GuiIcon setSquared(boolean squared) {
         }
 
         this.color.glColor();
-        GuiRenderHelper.textureRect(pose, x, y, width, height, (float)this.icon.minX(), (float)this.icon.minY(), (float)(this.icon.minX() + this.icon.width()), (float)(this.icon.minY() + this.icon.height()));
+        GuiRenderHelper.textureRect(pose, x, y, width, height, (float) this.icon.minX(), (float) this.icon.minY(), (float) (this.icon
+                .minX() + this.icon.width()), (float) (this.icon.minY() + this.icon.height()));
         RenderSystem.disableBlend();
         pose.popPose();
     }
