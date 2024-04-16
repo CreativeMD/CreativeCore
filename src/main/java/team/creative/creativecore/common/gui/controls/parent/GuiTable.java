@@ -48,6 +48,8 @@ public class GuiTable extends GuiParent {
                 i++;
             }
         }
+        if (cols.isEmpty())
+            return;
         GuiFlow.STACK_X.flowX(cols, spacing, Align.STRETCH, width, preferred, endlessX());
         
         if (cols.isEmpty())
