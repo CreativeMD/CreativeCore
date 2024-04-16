@@ -172,53 +172,53 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return get(name) != null;
     }
     
-    public GuiChildControl add(GuiControl control) {
+    public GuiChildControl addControl(GuiControl control) {
         control.setParent(this);
         GuiChildControl child = new GuiChildControl(control);
         controls.add(child);
         return child;
     }
 
-    public GuiParent addWidget(GuiControl control) {
-        this.add(control);
+    public GuiParent add(GuiControl control) {
+        this.addControl(control);
         return this;
     }
 
-    public GuiParent addWidget(GuiControl... controls) {
+    public GuiParent add(GuiControl... controls) {
         for (GuiControl c: controls) {
-            this.add(c);
+            this.addControl(c);
         }
         return this;
     }
 
-    public GuiParent addWidget(boolean conditional, Supplier<GuiControl> controlSupplier) {
+    public GuiParent add(boolean conditional, Supplier<GuiControl> controlSupplier) {
         if (conditional)
-            return this.addWidget(controlSupplier.get());
+            return this.add(controlSupplier.get());
         return this;
     }
     
-    public GuiChildControl addHover(GuiControl control) {
+    public GuiChildControl addHoverControl(GuiControl control) {
         control.setParent(this);
         GuiChildControl child = new GuiChildControl(control);
         hoverControls.add(child);
         return child;
     }
 
-    public GuiParent addHoverWidget(GuiControl control) {
-        this.addHover(control);
+    public GuiParent addHover(GuiControl control) {
+        this.addHoverControl(control);
         return this;
     }
 
-    public GuiParent addHoverWidget(GuiControl... controls) {
+    public GuiParent addHover(GuiControl... controls) {
         for (GuiControl c: controls) {
-            this.addHover(c);
+            this.addHoverControl(c);
         }
         return this;
     }
 
-    public GuiParent addHoverWidget(boolean conditional, Supplier<GuiControl> controlSupplier) {
+    public GuiParent addHover(boolean conditional, Supplier<GuiControl> controlSupplier) {
         if (conditional)
-            return this.addHoverWidget(controlSupplier.get());
+            return this.addHover(controlSupplier.get());
         return this;
     }
     

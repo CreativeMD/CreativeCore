@@ -581,11 +581,11 @@ public abstract class ConfigTypeConveration<T> {
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
                 })).setSearchbar(true));
-                GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
-                hBox.add(new GuiLabel("volumeLabel").setTranslate("gui.volume"));
-                hBox.add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10));
-                hBox.add(new GuiLabel("pitchLabel").setTranslate("gui.pitch"));
-                hBox.add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
+                GuiParent hBox = new GuiParent(GuiFlow.STACK_X)
+                        .add(new GuiLabel("volumeLabel").setTranslate("gui.volume"))
+                        .add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10))
+                        .add(new GuiLabel("pitchLabel").setTranslate("gui.pitch"))
+                        .add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
                 parent.add(hBox);
             }
             

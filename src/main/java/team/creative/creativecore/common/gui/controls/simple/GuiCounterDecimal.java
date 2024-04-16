@@ -69,8 +69,9 @@ public class GuiCounterDecimal extends GuiParent {
         return this;
     }
 
-    public GuiCounterDecimal addControl(GuiControl control) {
-        this.add(control);
+    @Override
+    public GuiCounterDecimal add(GuiControl control) {
+        this.addControl(control);
         return this;
     }
 
