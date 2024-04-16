@@ -420,10 +420,9 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public Number set(ConfigKeyField key, Number value) {
-                Class clazz = key.getType();
-                boolean decimal = isDecimal(clazz);
                 if (key != null) {
-                    if (decimal) {
+                    Class clazz = key.getType();
+                    if (isDecimal(clazz)) {
                         CreativeConfig.DecimalRange decRange = key.field.getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null)
                             return parseDecimal(clazz, Mth.clamp(value.doubleValue(), decRange.min(), decRange.max()));
