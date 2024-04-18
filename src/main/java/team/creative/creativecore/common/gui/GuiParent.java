@@ -39,7 +39,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     public GuiParent(String name, GuiFlow flow) {
         super(name);
-        this.setFlow(flow);
+        this.flow = flow;
     }
     
     public GuiParent(String name, GuiFlow flow, VAlign valign) {
@@ -52,8 +52,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     public GuiParent(String name, GuiFlow flow, Align align, VAlign valign) {
         this(name, flow);
-        this.setAlign(align);
-        this.setVAlign(valign);
+        this.align = align;
+        this.valign = valign;
     }
     
     public GuiParent(String name) {
