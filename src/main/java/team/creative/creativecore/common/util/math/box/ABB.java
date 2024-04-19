@@ -377,6 +377,10 @@ public class ABB {
         return this.contains(vec.x, vec.y, vec.z);
     }
     
+    public boolean intersectsPrecise(AABB bb) {
+        return this.intersects(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
+    }
+    
     public boolean intersects(AABB bb) {
         return this.intersects(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
     }
