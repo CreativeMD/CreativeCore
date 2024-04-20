@@ -13,7 +13,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.ValueParsers;
 import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -27,7 +26,7 @@ public class GuiProgressbar extends GuiControl {
     public final DoubleValueParser parser;
     
     public GuiProgressbar(String name, double pos, double max) {
-        this(name, pos, max, ValueParsers.PERCENT);
+        this(name, pos, max, DoubleValueParser.PERCENT);
     }
     
     public GuiProgressbar(String name, double pos, double max, DoubleValueParser valueParser) {

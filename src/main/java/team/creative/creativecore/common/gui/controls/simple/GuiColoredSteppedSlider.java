@@ -28,7 +28,7 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
     public void setValue(double value) {
         super.setValue((int) value);
         if (part != null) {
-            part.set(picker.color, (int) this.value);
+            part.set(picker.color, this.getIntValue());
             picker.onColorChanged();
         }
     }

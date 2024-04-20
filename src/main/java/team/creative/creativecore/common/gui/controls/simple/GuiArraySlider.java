@@ -17,23 +17,23 @@ public class GuiArraySlider extends GuiSteppedSlider {
     
     @Override
     public String getTextByValue() {
-        if (value > values.length)
+        if (this.getIntValue() > values.length)
             return "";
-        return values[(int) value];
+        return values[this.getIntValue()];
     }
     
     public void select(String value) {
-        setValue(ArrayUtils.indexOf(values, value));
+        this.setValue(ArrayUtils.indexOf(values, value));
     }
     
     public void setValues(String[] values) {
-        minValue = 0;
-        maxValue = values.length - 1;
+        this.setMinValue(0);
+        this.setMaxValue(values.length - 1);
         this.values = values;
-        setValue(0);
+        this.setValue(0);
     }
     
     public String get() {
-        return values[(int) value];
+        return values[this.getIntValue()];
     }
 }

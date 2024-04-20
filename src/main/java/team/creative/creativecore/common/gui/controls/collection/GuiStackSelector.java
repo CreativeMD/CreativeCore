@@ -116,7 +116,7 @@ public class GuiStackSelector extends GuiLabel {
     
     public void openBox(Rect rect) {
         this.extension = createBox();
-        GuiChildControl child = getLayer().addHover(extension);
+        GuiChildControl child = getLayer().addHoverControl(extension);
         
         rect = toLayerRect(new Rect(0, 0, rect.getWidth(), rect.getHeight()));
         extension.init();

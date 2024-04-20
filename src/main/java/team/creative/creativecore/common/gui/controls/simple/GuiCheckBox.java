@@ -29,7 +29,7 @@ public class GuiCheckBox extends GuiLabel {
     private static StyleDisplay PARTIAL_STYLE;
     public static final int CHECKBOX_WIDTH = 7;
     
-    public boolean value = false;
+    public boolean value;
     public String title;
     public boolean partial = false;
     public Consumer<Boolean> changed;
