@@ -214,6 +214,22 @@ public class BoxesVoxelShape extends SliceShape {
         return this;
     }
     
+    public boolean intersectsWith(AABB bb) {
+        for (ABB abb : boxes)
+            if (abb.intersectsPrecise(bb))
+                return true;
+        return false;
+    }
+    
+    /** Removes all boxes which are not intersecting with the parameter.
+     *
+     * @param bb
+     * @return whether if there is at least one box intersecting */
+    public boolean onlyKeepIntersecting(AABB bb) {
+        boxes.removeIf(x -> x.intersectsPrecise(bb));
+        return !boxes.isEmpty();
+    }
+    
     @Override
     public double collide(Direction.Axis axis, AABB other, double distance) {
         if (this.isEmpty())

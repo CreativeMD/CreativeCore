@@ -1,3 +1,9 @@
+2.11.26
+Fixed crash when table is empty
+Fixed GuiLayer not respecting setDim after initial constructor
+Fixed crash oauth
+SrRapero720: Implemented GuiIcon, GuiSeekBar and ValueFormatter + code cleanup and optimization
+
 2.11.25
 Added way to copy VecOrigin
 Added set Vec3 to Vec3d

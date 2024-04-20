@@ -110,7 +110,7 @@ public class NormalPlaneF {
     
     @Override
     public String toString() {
-        return "[o:" + origin + ",n:" + normal + "]";
+        return "PerpendicularPlane(" + origin + ",Vector(" + normal + "))";
     }
     
 }

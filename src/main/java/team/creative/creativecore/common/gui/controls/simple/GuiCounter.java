@@ -54,8 +54,9 @@ public class GuiCounter extends GuiParent {
         return this;
     }
 
-    public GuiCounter addControl(GuiControl control) {
-        this.add(control);
+    @Override
+    public GuiCounter add(GuiControl control) {
+        this.addControl(control);
         return this;
     }
 

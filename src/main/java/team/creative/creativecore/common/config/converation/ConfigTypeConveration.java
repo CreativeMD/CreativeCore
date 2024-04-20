@@ -421,10 +421,9 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public Number set(ConfigKeyField key, Number value) {
-                Class clazz = key.getType();
-                boolean decimal = isDecimal(clazz);
                 if (key != null) {
-                    if (decimal) {
+                    Class clazz = key.getType();
+                    if (isDecimal(clazz)) {
                         CreativeConfig.DecimalRange decRange = key.field.getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null)
                             return parseDecimal(clazz, Mth.clamp(value.doubleValue(), decRange.min(), decRange.max()));
@@ -583,11 +582,11 @@ public abstract class ConfigTypeConveration<T> {
                         return new TextComponent(x.getPath());
                     return new TextComponent(x.toString());
                 })).setSearchbar(true));
-                GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
-                hBox.add(new GuiLabel("volumeLabel").setTranslate("gui.volume"));
-                hBox.add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10));
-                hBox.add(new GuiLabel("pitchLabel").setTranslate("gui.pitch"));
-                hBox.add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
+                GuiParent hBox = new GuiParent(GuiFlow.STACK_X)
+                        .add(new GuiLabel("volumeLabel").setTranslate("gui.volume"))
+                        .add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10))
+                        .add(new GuiLabel("pitchLabel").setTranslate("gui.pitch"))
+                        .add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
                 parent.add(hBox);
             }
             
