@@ -10,7 +10,7 @@ public abstract class GuiEvent {
     
     public void cancel() {
         if (cancelable())
-            canceled = false;
+            canceled = true;
         throw new UnsupportedOperationException("Event cannot be canceled " + getClass());
     }
     
