@@ -9,7 +9,6 @@ import java.util.function.Predicate;
 
 import it.unimi.dsi.fastutil.Pair;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
