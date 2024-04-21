@@ -27,6 +27,15 @@ public abstract class GuiLayer extends GuiParent {
     
     public static final int MINIMUM_LAYER_SPACING = 10;
     
+    protected static void collectInventories(Iterable<GuiChildControl> parent, List<IGuiInventory> inventories) {
+        for (GuiChildControl child : parent) {
+            if (child.control instanceof IGuiInventory)
+                inventories.add((IGuiInventory) child.control);
+            else if (child.control instanceof GuiParent)
+                collectInventories((GuiParent) child.control, inventories);
+        }
+    }
+    
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public GuiStyle style;
@@ -43,19 +52,17 @@ public abstract class GuiLayer extends GuiParent {
     
     public GuiLayer(String name, int width, int height) {
         super(name, GuiFlow.STACK_X);
+        this.rect = new Rect(0, 0, 0, 0);
         setDim(width, height);
-        this.rect = new Rect(0, 0, width, height);
         if (CreativeCore.loader().getOverallSide().isClient())
             this.style = GuiStyle.getStyle(name);
     }
     
-    protected static void collectInventories(Iterable<GuiChildControl> parent, List<IGuiInventory> inventories) {
-        for (GuiChildControl child : parent) {
-            if (child.control instanceof IGuiInventory)
-                inventories.add((IGuiInventory) child.control);
-            else if (child.control instanceof GuiParent)
-                collectInventories((GuiParent) child.control, inventories);
-        }
+    @Override
+    public GuiControl setDim(int width, int height) {
+        rect.maxX = width;
+        rect.maxY = height;
+        return super.setDim(width, height);
     }
     
     public Iterable<IGuiInventory> inventoriesToInsert() {

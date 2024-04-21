@@ -294,7 +294,7 @@ public class GuiTimeline extends GuiParent {
                 lastZoom = zoom.current();
                 adjustKeysPositionX();
             }
-            
+
             double tickWidth = getTickWidth();
             
             if (cursorHighlight == null)
@@ -332,7 +332,7 @@ public class GuiTimeline extends GuiParent {
                 if (i % halfArea == 0) {
                     border.render(pose, 1, 4);
                     String text = "" + (i * smallestStep);
-                    font.drawShadow(pose, text, 0 - font.width(text) / 2f, 5, ColorUtils.BLACK, false);
+                    font.drawShadow(pose, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false);
                 } else
                     border.render(pose, 1, 2);
                 

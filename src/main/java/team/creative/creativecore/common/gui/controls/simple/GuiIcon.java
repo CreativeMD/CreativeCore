@@ -8,6 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.Icon;
@@ -45,7 +46,17 @@ public GuiIcon setSquared(boolean squared) {
         this.squared = squared;
         return this;
     }
+@Override
+    public GuiIcon setDim(int width, int height) {
+        super.setDim(width, height);
+        return this;
+    }
 
+    @Override
+    public GuiIcon setDim(GuiSizeRule dim) {
+        super.setDim(dim);
+        return this;
+    }
     @Override
     public void init() {
 
@@ -110,7 +121,8 @@ public GuiIcon setSquared(boolean squared) {
         }
 
         this.color.glColor();
-        GuiRenderHelper.textureRect(pose, x, y, width, height, (float)this.icon.minX(), (float)this.icon.minY(), (float)(this.icon.minX() + this.icon.width()), (float)(this.icon.minY() + this.icon.height()));
+        GuiRenderHelper.textureRect(pose, x, y, width, height, (float) this.icon.minX(), (float) this.icon.minY(), (float) (this.icon
+                .minX() + this.icon.width()), (float) (this.icon.minY() + this.icon.height()));
         RenderSystem.disableBlend();
         pose.popPose();
     }

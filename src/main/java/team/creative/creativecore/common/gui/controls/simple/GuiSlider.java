@@ -127,7 +127,6 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             this.setValue(value);
         }
     }
-
     public void setValue(double value) {
         this.value = Math.max(minValue, value);
         this.value = Math.min(maxValue, this.value);

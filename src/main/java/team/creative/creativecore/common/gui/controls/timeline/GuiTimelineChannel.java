@@ -45,7 +45,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     
     public GuiTimelineKey<T> addKey(int tick, T value) {
         GuiTimelineKey<T> key = new GuiTimelineKey<T>(this, tick, value);
-        GuiChildControl child = add(key);
+        GuiChildControl child = addControl(key);
         if (hasLayer()) {
             child.setWidth(child.getPreferredWidth(0), 0);
             child.flowX();

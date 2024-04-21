@@ -45,6 +45,12 @@ public class OBB extends ABB {
         return new OBB(this, origin);
     }
     
+    @Override
+    public boolean intersectsPrecise(AABB bb) {
+        // TODO Proper calculations need to be there otherwise crouching on obbs will not work
+        return false;
+    }
+    
     public double calculateDistanceRotated(AABB other, Axis axis, double offset) {
         boolean positive = offset > 0;
         Facing facing = Facing.get(axis, !positive);

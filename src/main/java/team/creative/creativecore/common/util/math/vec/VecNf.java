@@ -79,13 +79,13 @@ public abstract class VecNf<T extends VecNf> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("[");
+        builder.append("(");
         for (int i = 0; i < dimensions(); i++) {
             if (i > 0)
                 builder.append(",");
             builder.append(get(i));
         }
-        builder.append("]");
+        builder.append(")");
         return builder.toString();
     }
     

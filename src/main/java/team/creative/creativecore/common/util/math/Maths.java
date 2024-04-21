@@ -35,6 +35,23 @@ public class Maths {
     public static int msToTick(long ms) {
         return (int) (ms / 50);
     }
+
+
+    public static double safeDivide(double v1, double v2) {
+        if (v1 == 0 || v2 == 0)
+            return 0;
+        return v1 / v2;
+    }
+
+    public static long safePercent(long v1, long v2) {
+        if (v1 == 0 || v2 == 0)
+            return 0;
+        return v1 % v2;
+    }
+
+    public static float safeRound(double value) {
+        return value != 0 ? Math.round(value * 100F) / 100F : 0;
+    }
     
     public static int min(int a, int b, int c) {
         return a <= b ? (a <= c ? a : c) : (b <= c ? b : c);
@@ -67,5 +84,4 @@ public class Maths {
     public static long max(long a, long b, long c) {
         return a >= b ? (a >= c ? a : c) : (b >= c ? b : c);
     }
-    
 }

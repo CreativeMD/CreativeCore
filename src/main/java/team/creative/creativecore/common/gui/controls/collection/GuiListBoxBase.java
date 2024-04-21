@@ -40,7 +40,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     protected void createControl(int index) {
         GuiRow row = new GuiRow();
-        super.add(row);
+        super.addControl(row);
         GuiColumn content = (GuiColumn) new GuiColumn().setExpandableX();
         content.align = Align.CENTER;
         content.add(this.content.get(index));
@@ -61,18 +61,23 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     protected GuiChildControl addCustomControl(GuiControl control) {
-        return super.add(control);
+        return super.addControl(control);
+    }
+
+    protected GuiListBoxBase addCustom(GuiControl control) {
+        super.addControl(control);
+        return this;
     }
     
     @Override
     @Deprecated
-    public GuiChildControl add(GuiControl control) {
+    public GuiChildControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
     @Override
     @Deprecated
-    public GuiChildControl addHover(GuiControl control) {
+    public GuiChildControl addHoverControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
