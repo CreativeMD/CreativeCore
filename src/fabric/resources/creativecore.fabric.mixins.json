@@ -5,7 +5,6 @@
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
         "ArgumentTypeInfosAccessor",
-        "GroupResourcePackAccessor",
         "ModNioResourcePackAccessor"
     ],
     "client": [

@@ -11,8 +11,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -56,7 +56,8 @@ public class GuiSeekBar extends GuiControl {
     }
     
     public void setPosition(long value) {
-        if (this.pos >= this.max) value = this.max;
+        if (this.pos >= this.max)
+            value = this.max;
         this.timeUpdate.accept(value);
         this.pos = value;
         if (this.getParent() != null)

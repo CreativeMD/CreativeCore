@@ -726,8 +726,7 @@ public class NetworkFieldTypes {
                     return;
                 }
                 
-                int id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
-                Integer id = protocol.codec(PacketFlow.CLIENTBOUND).packetId(packet);
+                int id = protocol.codec(PacketFlow.CLIENTBOUND).packetId(packet);
                 if (id != -1) {
                     buffer.writeInt(id);
                     packet.write(buffer);
@@ -743,7 +742,7 @@ public class NetworkFieldTypes {
                 int id = buffer.readInt();
                 if (id == BUNDLE_WILDCARD) {
                     int size = buffer.readInt();
-                    List<Packet<? super ClientGamePacketListener>> packets = new ArrayList<>();
+                    List<Packet<ClientGamePacketListener>> packets = new ArrayList<>();
                     for (int i = 0; i < size; i++)
                         packets.add(read(null, null, buffer));
                     return new ClientboundBundlePacket(packets);

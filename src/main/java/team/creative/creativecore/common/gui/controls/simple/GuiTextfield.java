@@ -1,13 +1,9 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
-import it.unimi.dsi.fastutil.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -35,9 +31,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.controls.GuiFocusControl;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiTextUpdateEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -57,7 +51,7 @@ public class GuiTextfield extends GuiFocusControl {
     private Predicate<String> validator = Objects::nonNull;
     private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private int cachedWidth;
-
+    
     public GuiTextfield(String name) {
         super(name);
         this.setText("");
@@ -387,7 +381,7 @@ public class GuiTextfield extends GuiFocusControl {
                     this.shift = false;
                     this.delete(-1);
                     this.shift = Screen.hasShiftDown();
-
+                    
                     return true;
                 case 258:
                 case 260:
@@ -402,21 +396,21 @@ public class GuiTextfield extends GuiFocusControl {
                     this.shift = false;
                     this.delete(1);
                     this.shift = Screen.hasShiftDown();
-
+                    
                     return true;
                 case 262:
                     if (Screen.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(1));
                     else
                         this.moveCursorBy(1);
-
+                    
                     return true;
                 case 263:
                     if (Screen.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(-1));
                     else
                         this.moveCursorBy(-1);
-
+                    
                     return true;
                 case 268:
                     this.setCursorPositionZero();
