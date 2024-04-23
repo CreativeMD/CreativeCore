@@ -1,3 +1,10 @@
+2.11.27
+Fixed guis overlapping with JEI overlay
+Some enhancements arroung widgets (by SrRapero720)
+Added intersectsPrecise to ABB
+Added intersectsWith and onlyKeepIntersecting to BoxesVoxelShape
+Modified toString method of NormalPlaneF, VecNd and VecNf to be better usable for GeoGebra
+
 2.11.26
 Fixed crash when table is empty
 Fixed GuiLayer not respecting setDim after initial constructor
