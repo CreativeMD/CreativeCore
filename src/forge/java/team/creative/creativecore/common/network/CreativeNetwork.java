@@ -5,30 +5,25 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
-    
-    @OnlyIn(Dist.CLIENT)
-    private static Player getClientPlayer() {
-        return Minecraft.getInstance().player;
-    }
     
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     
@@ -36,7 +31,7 @@ public class CreativeNetwork {
     private final String modid;
     private String version;
     
-    private IPayloadRegistrar registrar;
+    private PayloadRegistrar registrar;
     
     private int id = 0;
     
@@ -48,21 +43,23 @@ public class CreativeNetwork {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::register);
     }
     
-    public void register(final RegisterPayloadHandlerEvent event) {
+    public void register(final RegisterPayloadHandlersEvent event) {
         registrar = event.registrar(modid).versioned(version).optional();
         for (CreativeNetworkPacket packet : packetTypes.values())
             registerType(packet);
     }
     
-    private <T extends CreativePacket> void registerType(CreativeNetworkPacket handler) {
-        registrar.play(handler.id, buffer -> new CreativePacketWrapper<>(handler, handler.read(buffer)), (message, ctx) -> {
+    private <T extends CreativePacket> void registerType(CreativeNetworkPacket<CreativePacket> handler) {
+        IPayloadHandler<CreativePacket> executor = (packet, ctx) -> {
             try {
-                ctx.workHandler().execute(() -> message.packet().execute(ctx.player().isPresent() ? ctx.player().get() : getClientPlayer()));
+                ctx.enqueueWork(() -> packet.execute(ctx.player()));
             } catch (Throwable e) {
                 CreativeCore.LOGGER.error("Executing a packet ran into an exception", e);
                 throw e;
             }
-        });
+        };
+        registrar.playToClient(handler.id, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.CLIENTBOUND), x -> handler.read(x, PacketFlow.CLIENTBOUND)), executor);
+        registrar.playToServer(handler.id, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.SERVERBOUND), x -> handler.read(x, PacketFlow.SERVERBOUND)), executor);
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
@@ -73,45 +70,45 @@ public class CreativeNetwork {
         id++;
     }
     
-    protected <T extends CreativePacket> CreativePacketWrapper<T> wrap(T packet) {
-        return new CreativePacketWrapper<>(packetTypes.get(packet.getClass()), packet);
+    protected <T extends CreativePacket> T prepare(T packet) {
+        packet.setType(packetTypes.get(packet.getClass()).id);
+        return packet;
     }
     
     public void sendToServer(CreativePacket message) {
-        PacketDistributor.SERVER.noArg().send(wrap(message));
+        PacketDistributor.sendToServer(prepare(message));
     }
     
     public void sendToClient(CreativePacket message, ServerPlayer player) {
-        PacketDistributor.PLAYER.with(player).send(wrap(message));
+        PacketDistributor.sendToPlayer(player, prepare(message));
     }
     
     public void sendToClient(CreativePacket message, Level level, BlockPos pos) {
         if (level instanceof ISubLevel)
             sendToClientTracking(message, ((ISubLevel) level).getHolder());
         else
-            
             sendToClient(message, level.getChunkAt(pos));
     }
     
     public void sendToClient(CreativePacket message, LevelChunk chunk) {
-        PacketDistributor.TRACKING_CHUNK.with(chunk).send(wrap(message));
+        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) chunk.getLevel(), chunk.getPos(), prepare(message));
     }
     
     public void sendToClientTracking(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTracking(message, sub.getHolder());
         else
-            PacketDistributor.TRACKING_ENTITY.with(entity).send(wrap(message));
+            PacketDistributor.sendToPlayersTrackingEntity(entity, prepare(message));
     }
     
     public void sendToClientTrackingAndSelf(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTrackingAndSelf(message, sub.getHolder());
         else
-            PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity).send(wrap(message));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, prepare(message));
     }
     
     public void sendToClientAll(MinecraftServer server, CreativePacket message) {
-        PacketDistributor.ALL.noArg().send(wrap(message));
+        PacketDistributor.sendToAllPlayers(prepare(message));
     }
 }

@@ -4,12 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class PlayerUtils {
     
@@ -33,7 +33,7 @@ public class PlayerUtils {
     }
     
     public static double getReach(Player player) {
-        double attrib = player.getAttribute(NeoForgeMod.BLOCK_REACH.value()).getValue();
+        double attrib = player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
         return player.isCreative() ? attrib : attrib - 0.5;
     }
     

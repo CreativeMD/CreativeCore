@@ -11,6 +11,7 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
@@ -81,7 +82,7 @@ public class CreativeCore {
         
         GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {
             @Override
-            public ContainerIntegration create(int windowId, Inventory playerInv, net.minecraft.network.FriendlyByteBuf extraData) {
+            public ContainerIntegration create(int windowId, Inventory playerInv, RegistryFriendlyByteBuf extraData) {
                 return new ContainerIntegration(this, windowId, playerInv.player);
             }
             

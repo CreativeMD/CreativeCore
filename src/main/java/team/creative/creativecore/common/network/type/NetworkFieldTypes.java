@@ -23,15 +23,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBundlePacket;
+import net.minecraft.network.protocol.game.GameProtocols;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -105,36 +104,36 @@ public class NetworkFieldTypes {
         throw new RuntimeException("No field type found for " + classType.getSimpleName());
     }
     
-    public static <T> void write(Class<T> clazz, T object, FriendlyByteBuf buffer) {
-        get(clazz).write(object, clazz, null, buffer);
+    public static <T> void write(Class<T> clazz, T object, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+        get(clazz).write(object, clazz, null, buffer, flow);
     }
     
-    public static <T> void writeMany(Class<T> clazz, Bunch<T> bunch, FriendlyByteBuf buffer) {
+    public static <T> void writeMany(Class<T> clazz, Bunch<T> bunch, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         buffer.writeInt(bunch.size());
         NetworkFieldType<T> type = get(clazz);
         for (T t : bunch)
-            type.write(t, clazz, null, buffer);
+            type.write(t, clazz, null, buffer, flow);
     }
     
-    public static <T> void writeMany(Class<T> clazz, Collection<T> collection, FriendlyByteBuf buffer) {
+    public static <T> void writeMany(Class<T> clazz, Collection<T> collection, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         buffer.writeInt(collection.size());
         NetworkFieldType<T> type = get(clazz);
         for (T t : collection)
-            type.write(t, clazz, null, buffer);
+            type.write(t, clazz, null, buffer, flow);
     }
     
-    public static <T> void writeMany(Class<T> clazz, T[] collection, FriendlyByteBuf buffer) {
+    public static <T> void writeMany(Class<T> clazz, T[] collection, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         buffer.writeInt(collection.length);
         NetworkFieldType<T> type = get(clazz);
         for (T t : collection)
-            type.write(t, clazz, null, buffer);
+            type.write(t, clazz, null, buffer, flow);
     }
     
-    public static <T> T read(Class<T> clazz, FriendlyByteBuf buffer) {
-        return get(clazz).read(clazz, null, buffer);
+    public static <T> T read(Class<T> clazz, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+        return get(clazz).read(clazz, null, buffer, flow);
     }
     
-    public static <T> Iterable<T> readMany(Class<T> clazz, FriendlyByteBuf buffer) {
+    public static <T> Iterable<T> readMany(Class<T> clazz, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         int length = buffer.readInt();
         NetworkFieldType<T> type = get(clazz);
         
@@ -150,19 +149,19 @@ public class NetworkFieldTypes {
             @Override
             public T next() {
                 index++;
-                return type.read(clazz, null, buffer);
+                return type.read(clazz, null, buffer, flow);
             }
             
         };
     }
     
-    public static void writeIntArray(int[] array, FriendlyByteBuf buffer) {
+    public static void writeIntArray(int[] array, RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(array.length);
         for (int i = 0; i < array.length; i++)
             buffer.writeInt(array[i]);
     }
     
-    public static int[] readIntArray(FriendlyByteBuf buffer) {
+    public static int[] readIntArray(RegistryFriendlyByteBuf buffer) {
         int[] array = new int[buffer.readInt()];
         for (int i = 0; i < array.length; i++)
             array[i] = buffer.readInt();
@@ -173,12 +172,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Boolean>() {
             
             @Override
-            protected void writeContent(Boolean content, FriendlyByteBuf buffer) {
+            protected void writeContent(Boolean content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeBoolean(content);
             }
             
             @Override
-            protected Boolean readContent(FriendlyByteBuf buffer) {
+            protected Boolean readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readBoolean();
             }
             
@@ -187,12 +186,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Byte>() {
             
             @Override
-            protected void writeContent(Byte content, FriendlyByteBuf buffer) {
+            protected void writeContent(Byte content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeByte(content);
             }
             
             @Override
-            protected Byte readContent(FriendlyByteBuf buffer) {
+            protected Byte readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readByte();
             }
         }, byte.class, Byte.class);
@@ -200,12 +199,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Short>() {
             
             @Override
-            protected void writeContent(Short content, FriendlyByteBuf buffer) {
+            protected void writeContent(Short content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeShort(content);
             }
             
             @Override
-            protected Short readContent(FriendlyByteBuf buffer) {
+            protected Short readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readShort();
             }
         }, short.class, Short.class);
@@ -213,12 +212,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Integer>() {
             
             @Override
-            protected void writeContent(Integer content, FriendlyByteBuf buffer) {
+            protected void writeContent(Integer content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeInt(content);
             }
             
             @Override
-            protected Integer readContent(FriendlyByteBuf buffer) {
+            protected Integer readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readInt();
             }
         }, int.class, Integer.class);
@@ -226,12 +225,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Long>() {
             
             @Override
-            protected void writeContent(Long content, FriendlyByteBuf buffer) {
+            protected void writeContent(Long content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeLong(content);
             }
             
             @Override
-            protected Long readContent(FriendlyByteBuf buffer) {
+            protected Long readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readLong();
             }
         }, long.class, Long.class);
@@ -239,12 +238,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Float>() {
             
             @Override
-            protected void writeContent(Float content, FriendlyByteBuf buffer) {
+            protected void writeContent(Float content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeFloat(content);
             }
             
             @Override
-            protected Float readContent(FriendlyByteBuf buffer) {
+            protected Float readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readFloat();
             }
         }, float.class, Float.class);
@@ -252,12 +251,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Double>() {
             
             @Override
-            protected void writeContent(Double content, FriendlyByteBuf buffer) {
+            protected void writeContent(Double content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeDouble(content);
             }
             
             @Override
-            protected Double readContent(FriendlyByteBuf buffer) {
+            protected Double readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readDouble();
             }
         }, double.class, Double.class);
@@ -265,12 +264,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<BlockPos>() {
             
             @Override
-            protected void writeContent(BlockPos content, FriendlyByteBuf buffer) {
+            protected void writeContent(BlockPos content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeBlockPos(content);
             }
             
             @Override
-            protected BlockPos readContent(FriendlyByteBuf buffer) {
+            protected BlockPos readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readBlockPos();
             }
         }, BlockPos.class);
@@ -278,12 +277,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<String>() {
             
             @Override
-            protected void writeContent(String content, FriendlyByteBuf buffer) {
+            protected void writeContent(String content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeUtf(content);
             }
             
             @Override
-            protected String readContent(FriendlyByteBuf buffer) {
+            protected String readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readUtf(32767);
             }
         }, String.class);
@@ -291,25 +290,25 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Component>() {
             
             @Override
-            protected void writeContent(Component content, FriendlyByteBuf buffer) {
-                buffer.writeComponent(content);
+            protected void writeContent(Component content, RegistryFriendlyByteBuf buffer) {
+                FriendlyByteBuf.writeNullable(buffer, content, ComponentSerialization.STREAM_CODEC);
             }
             
             @Override
-            protected Component readContent(FriendlyByteBuf buffer) {
-                return buffer.readComponent();
+            protected Component readContent(RegistryFriendlyByteBuf buffer) {
+                return FriendlyByteBuf.readNullable(buffer, ComponentSerialization.STREAM_CODEC);
             }
         }, Component.class);
         
         register(new NetworkFieldTypeClass<CompoundTag>() {
             
             @Override
-            protected void writeContent(CompoundTag content, FriendlyByteBuf buffer) {
+            protected void writeContent(CompoundTag content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeNbt(content);
             }
             
             @Override
-            protected CompoundTag readContent(FriendlyByteBuf buffer) {
+            protected CompoundTag readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readNbt();
             }
         }, CompoundTag.class);
@@ -317,25 +316,25 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<ItemStack>() {
             
             @Override
-            protected void writeContent(ItemStack content, FriendlyByteBuf buffer) {
-                buffer.writeItem(content);
+            protected void writeContent(ItemStack content, RegistryFriendlyByteBuf buffer) {
+                FriendlyByteBuf.writeNullable(buffer, content, ItemStack.STREAM_CODEC);
             }
             
             @Override
-            protected ItemStack readContent(FriendlyByteBuf buffer) {
-                return buffer.readItem();
+            protected ItemStack readContent(RegistryFriendlyByteBuf buffer) {
+                return FriendlyByteBuf.readNullable(buffer, ItemStack.STREAM_CODEC);
             }
         }, ItemStack.class);
         
         register(new NetworkFieldTypeClass<ResourceLocation>() {
             
             @Override
-            protected void writeContent(ResourceLocation content, FriendlyByteBuf buffer) {
+            protected void writeContent(ResourceLocation content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeResourceLocation(content);
             }
             
             @Override
-            protected ResourceLocation readContent(FriendlyByteBuf buffer) {
+            protected ResourceLocation readContent(RegistryFriendlyByteBuf buffer) {
                 return buffer.readResourceLocation();
             }
         }, ResourceLocation.class);
@@ -343,12 +342,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<BlockState>() {
             
             @Override
-            protected void writeContent(BlockState content, FriendlyByteBuf buffer) {
+            protected void writeContent(BlockState content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeInt(Block.getId(content));
             }
             
             @Override
-            protected BlockState readContent(FriendlyByteBuf buffer) {
+            protected BlockState readContent(RegistryFriendlyByteBuf buffer) {
                 return Block.stateById(buffer.readInt());
             }
         }, BlockState.class);
@@ -356,12 +355,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Block>() {
             
             @Override
-            protected void writeContent(Block content, FriendlyByteBuf buffer) {
+            protected void writeContent(Block content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(content));
             }
             
             @Override
-            protected Block readContent(FriendlyByteBuf buffer) {
+            protected Block readContent(RegistryFriendlyByteBuf buffer) {
                 return BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
             }
         }, Block.class);
@@ -369,12 +368,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Item>() {
             
             @Override
-            protected void writeContent(Item content, FriendlyByteBuf buffer) {
+            protected void writeContent(Item content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(content));
             }
             
             @Override
-            protected Item readContent(FriendlyByteBuf buffer) {
+            protected Item readContent(RegistryFriendlyByteBuf buffer) {
                 return BuiltInRegistries.ITEM.get(buffer.readResourceLocation());
             }
         }, Item.class);
@@ -382,14 +381,14 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vector3d>() {
             
             @Override
-            protected void writeContent(Vector3d content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vector3d content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeDouble(content.x);
                 buffer.writeDouble(content.y);
                 buffer.writeDouble(content.z);
             }
             
             @Override
-            protected Vector3d readContent(FriendlyByteBuf buffer) {
+            protected Vector3d readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
             }
         }, Vector3d.class);
@@ -397,14 +396,14 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vec3>() {
             
             @Override
-            protected void writeContent(Vec3 content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vec3 content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeDouble(content.x);
                 buffer.writeDouble(content.y);
                 buffer.writeDouble(content.z);
             }
             
             @Override
-            protected Vec3 readContent(FriendlyByteBuf buffer) {
+            protected Vec3 readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
             }
         }, Vec3.class);
@@ -412,12 +411,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vec1d>() {
             
             @Override
-            protected void writeContent(Vec1d content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vec1d content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeDouble(content.x);
             }
             
             @Override
-            protected Vec1d readContent(FriendlyByteBuf buffer) {
+            protected Vec1d readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vec1d(buffer.readDouble());
             }
         }, Vec1d.class);
@@ -425,12 +424,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vec1f>() {
             
             @Override
-            protected void writeContent(Vec1f content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vec1f content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeFloat(content.x);
             }
             
             @Override
-            protected Vec1f readContent(FriendlyByteBuf buffer) {
+            protected Vec1f readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vec1f(buffer.readFloat());
             }
         }, Vec1f.class);
@@ -438,13 +437,13 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vec2d>() {
             
             @Override
-            protected void writeContent(Vec2d content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vec2d content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeDouble(content.x);
                 buffer.writeDouble(content.y);
             }
             
             @Override
-            protected Vec2d readContent(FriendlyByteBuf buffer) {
+            protected Vec2d readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vec2d(buffer.readDouble(), buffer.readDouble());
             }
         }, Vec2d.class);
@@ -452,13 +451,13 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vec2f>() {
             
             @Override
-            protected void writeContent(Vec2f content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vec2f content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeFloat(content.x);
                 buffer.writeFloat(content.y);
             }
             
             @Override
-            protected Vec2f readContent(FriendlyByteBuf buffer) {
+            protected Vec2f readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vec2f(buffer.readFloat(), buffer.readFloat());
             }
         }, Vec2f.class);
@@ -466,14 +465,14 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vec3d>() {
             
             @Override
-            protected void writeContent(Vec3d content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vec3d content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeDouble(content.x);
                 buffer.writeDouble(content.y);
                 buffer.writeDouble(content.z);
             }
             
             @Override
-            protected Vec3d readContent(FriendlyByteBuf buffer) {
+            protected Vec3d readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vec3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
             }
         }, Vec3d.class);
@@ -481,14 +480,14 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vec3f>() {
             
             @Override
-            protected void writeContent(Vec3f content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vec3f content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeFloat(content.x);
                 buffer.writeFloat(content.y);
                 buffer.writeFloat(content.z);
             }
             
             @Override
-            protected Vec3f readContent(FriendlyByteBuf buffer) {
+            protected Vec3f readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vec3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
             }
         }, Vec3f.class);
@@ -496,14 +495,14 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<Vector3f>() {
             
             @Override
-            protected void writeContent(Vector3f content, FriendlyByteBuf buffer) {
+            protected void writeContent(Vector3f content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeFloat(content.x());
                 buffer.writeFloat(content.y());
                 buffer.writeFloat(content.z());
             }
             
             @Override
-            protected Vector3f readContent(FriendlyByteBuf buffer) {
+            protected Vector3f readContent(RegistryFriendlyByteBuf buffer) {
                 return new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
             }
         }, Vector3f.class);
@@ -511,12 +510,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<UUID>() {
             
             @Override
-            protected void writeContent(UUID content, FriendlyByteBuf buffer) {
+            protected void writeContent(UUID content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeUtf(content.toString());
             }
             
             @Override
-            protected UUID readContent(FriendlyByteBuf buffer) {
+            protected UUID readContent(RegistryFriendlyByteBuf buffer) {
                 return UUID.fromString(buffer.readUtf(32767));
             }
         }, UUID.class);
@@ -524,12 +523,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeClass<JsonObject>() {
             
             @Override
-            protected void writeContent(JsonObject content, FriendlyByteBuf buffer) {
+            protected void writeContent(JsonObject content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeUtf(content.toString());
             }
             
             @Override
-            protected JsonObject readContent(FriendlyByteBuf buffer) {
+            protected JsonObject readContent(RegistryFriendlyByteBuf buffer) {
                 return GSON.fromJson(buffer.readUtf(32767), JsonObject.class);
             }
             
@@ -538,23 +537,23 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeSpecial<>((x, y) -> x.isArray()) {
             
             @Override
-            public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public void write(Object content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 Class subClass = classType.getComponentType();
                 NetworkFieldType subParser = get(subClass, null);
                 int length = Array.getLength(content);
                 buffer.writeInt(length);
                 for (int i = 0; i < length; i++)
-                    subParser.write(Array.get(content, i), subClass, null, buffer);
+                    subParser.write(Array.get(content, i), subClass, null, buffer, flow);
             }
             
             @Override
-            public Object read(Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public Object read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 int length = buffer.readInt();
                 Class subClass = classType.getComponentType();
                 NetworkFieldType subParser = get(subClass, null);
                 Object object = Array.newInstance(subClass, length);
                 for (int i = 0; i < length; i++)
-                    Array.set(object, i, subParser.read(subClass, null, buffer));
+                    Array.set(object, i, subParser.read(subClass, null, buffer, flow));
                 return object;
             }
         });
@@ -562,7 +561,7 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeSpecial((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
             
             @Override
-            public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public void write(Object content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
@@ -581,11 +580,11 @@ public class NetworkFieldTypes {
                 int length = ((List) content).size();
                 buffer.writeInt(length);
                 for (int i = 0; i < length; i++)
-                    subParser.write(((List) content).get(i), subClass, subType, buffer);
+                    subParser.write(((List) content).get(i), subClass, subType, buffer, flow);
             }
             
             @Override
-            public Object read(Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public Object read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
@@ -605,7 +604,7 @@ public class NetworkFieldTypes {
                 int length = buffer.readInt();
                 List list = new ArrayList<>(length);
                 for (int j = 0; j < length; j++)
-                    list.add(subParser.read(subClass, subType, buffer));
+                    list.add(subParser.read(subClass, subType, buffer, flow));
                 return list;
             }
         });
@@ -613,12 +612,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeSpecial<>((x, y) -> x.isEnum()) {
             
             @Override
-            public void write(Object content, Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public void write(Object content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 buffer.writeEnum((Enum<?>) content);
             }
             
             @Override
-            public Object read(Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public Object read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 return buffer.readEnum(classType);
             }
         });
@@ -626,7 +625,7 @@ public class NetworkFieldTypes {
         NetworkFieldTypes.register(new NetworkFieldTypeClass<Filter>() {
             
             @Override
-            protected void writeContent(Filter content, FriendlyByteBuf buffer) {
+            protected void writeContent(Filter content, RegistryFriendlyByteBuf buffer) {
                 try {
                     buffer.writeNbt(Filter.SERIALIZER.write(content));
                 } catch (RegistryException e) {
@@ -635,7 +634,7 @@ public class NetworkFieldTypes {
             }
             
             @Override
-            protected Filter readContent(FriendlyByteBuf buffer) {
+            protected Filter readContent(RegistryFriendlyByteBuf buffer) {
                 try {
                     return Filter.SERIALIZER.read((CompoundTag) buffer.readNbt(NbtAccounter.unlimitedHeap()));
                 } catch (RegistryException e) {
@@ -649,7 +648,7 @@ public class NetworkFieldTypes {
         NetworkFieldTypes.register(new NetworkFieldTypeClass<BiFilter>() {
             
             @Override
-            protected void writeContent(BiFilter content, FriendlyByteBuf buffer) {
+            protected void writeContent(BiFilter content, RegistryFriendlyByteBuf buffer) {
                 try {
                     buffer.writeNbt(BiFilter.SERIALIZER.write(content));
                 } catch (RegistryException e) {
@@ -658,7 +657,7 @@ public class NetworkFieldTypes {
             }
             
             @Override
-            protected BiFilter readContent(FriendlyByteBuf buffer) {
+            protected BiFilter readContent(RegistryFriendlyByteBuf buffer) {
                 try {
                     return BiFilter.SERIALIZER.read((CompoundTag) buffer.readNbt(NbtAccounter.unlimitedHeap()));
                 } catch (RegistryException e) {
@@ -681,12 +680,12 @@ public class NetworkFieldTypes {
             });
             
             @Override
-            protected void writeContent(Component content, FriendlyByteBuf buffer) {
+            protected void writeContent(Component content, RegistryFriendlyByteBuf buffer) {
                 buffer.writeUtf(GSON.toJson(content));
             }
             
             @Override
-            protected Component readContent(FriendlyByteBuf buffer) {
+            protected Component readContent(RegistryFriendlyByteBuf buffer) {
                 return GsonHelper.fromJson(GSON, buffer.readUtf(), MutableComponent.class, false);
             }
             
@@ -695,61 +694,28 @@ public class NetworkFieldTypes {
         NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Tag>((x, y) -> Tag.class.isAssignableFrom(x)) {
             
             @Override
-            public void write(Tag content, Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public void write(Tag content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 buffer.writeNbt(content);
             }
             
             @Override
-            public Tag read(Class classType, Type genericType, FriendlyByteBuf buffer) {
+            public Tag read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
                 return buffer.readNbt(NbtAccounter.unlimitedHeap());
             }
         });
         
         NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Packet>((x, y) -> Packet.class.isAssignableFrom(x)) {
             
-            public static final int BUNDLE_WILDCARD = 234920940;
-            
             @Override
-            public void write(Packet content, Class classType, Type genericType, FriendlyByteBuf buffer) {
-                Packet packet = content;
-                ConnectionProtocol protocol = ConnectionProtocol.PLAY;
-                
-                if (content instanceof BundlePacket<?> bundle) {
-                    buffer.writeInt(BUNDLE_WILDCARD);
-                    int size = 0;
-                    for (@SuppressWarnings("unused")
-                    Packet<?> subPacket : bundle.subPackets())
-                        size++;
-                    buffer.writeInt(size);
-                    for (Packet<?> subPacket : bundle.subPackets())
-                        write(subPacket, subPacket.getClass(), null, buffer);
-                    return;
-                }
-                
-                int id = protocol.codec(PacketFlow.CLIENTBOUND).packetId(packet);
-                if (id != -1) {
-                    buffer.writeInt(id);
-                    packet.write(buffer);
-                } else {
-                    buffer.writeInt(-protocol.codec(PacketFlow.SERVERBOUND).packetId(packet));
-                    packet.write(buffer);
-                }
-                
+            public void write(Packet content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+                buffer.writeNullable(content, (flow.isClientbound() ? GameProtocols.CLIENTBOUND : GameProtocols.SERVERBOUND).bind(RegistryFriendlyByteBuf.decorator(buffer
+                        .registryAccess())).codec());
             }
             
             @Override
-            public Packet read(Class classType, Type genericType, FriendlyByteBuf buffer) {
-                int id = buffer.readInt();
-                if (id == BUNDLE_WILDCARD) {
-                    int size = buffer.readInt();
-                    List<Packet<ClientGamePacketListener>> packets = new ArrayList<>();
-                    for (int i = 0; i < size; i++)
-                        packets.add(read(null, null, buffer));
-                    return new ClientboundBundlePacket(packets);
-                }
-                if (id < 0)
-                    return ConnectionProtocol.PLAY.codec(PacketFlow.SERVERBOUND).createPacket(-id, buffer);
-                return ConnectionProtocol.PLAY.codec(PacketFlow.CLIENTBOUND).createPacket(id, buffer);
+            public Packet read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+                return buffer.readNullable((flow.isClientbound() ? GameProtocols.CLIENTBOUND : GameProtocols.SERVERBOUND).bind(RegistryFriendlyByteBuf.decorator(buffer
+                        .registryAccess())).codec());
             }
         });
     }

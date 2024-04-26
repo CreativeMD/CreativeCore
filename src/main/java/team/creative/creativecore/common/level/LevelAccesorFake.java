@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkSource;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -230,18 +230,13 @@ public class LevelAccesorFake implements LevelAccessor {
     }
     
     @Override
-    public void gameEvent(Entity p_151549_, GameEvent p_151550_, BlockPos p_151551_) {
-        level.gameEvent(p_151549_, p_151550_, p_151551_);
-    }
-    
-    @Override
-    public void gameEvent(GameEvent p_220404_, Vec3 p_220405_, Context p_220406_) {
-        level.gameEvent(p_220404_, pos, p_220406_);
-    }
-    
-    @Override
     public FeatureFlagSet enabledFeatures() {
         return level.enabledFeatures();
+    }
+    
+    @Override
+    public void gameEvent(Holder<GameEvent> event, Vec3 vec, Context context) {
+        level.gameEvent(event, vec, context);
     }
     
 }

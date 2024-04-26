@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -14,26 +15,26 @@ import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 
 public class InventoryUtils {
     
-    public static CompoundTag save(SimpleContainer basic) {
+    public static CompoundTag save(HolderLookup.Provider provider, SimpleContainer basic) {
         CompoundTag nbt = new CompoundTag();
         for (int i = 0; i < basic.getContainerSize(); i++) {
             if (basic.getItem(i).isEmpty())
                 continue;
-            nbt.put("s" + i, basic.getItem(i).save(new CompoundTag()));
+            nbt.put("s" + i, basic.getItem(i).save(provider, new CompoundTag()));
         }
         nbt.putInt("size", basic.getContainerSize());
         return nbt;
     }
     
-    public static SimpleContainer load(CompoundTag nbt) {
-        return load(nbt, nbt.getInt("size"));
+    public static SimpleContainer load(HolderLookup.Provider provider, CompoundTag nbt) {
+        return load(provider, nbt, nbt.getInt("size"));
     }
     
-    public static SimpleContainer load(CompoundTag nbt, int length) {
+    public static SimpleContainer load(HolderLookup.Provider provider, CompoundTag nbt, int length) {
         SimpleContainer basic = new SimpleContainer(length);
         for (int i = 0; i < length; i++) {
             if (nbt.contains("s" + i))
-                basic.setItem(i, ItemStack.of(nbt.getCompound("s" + i)));
+                basic.setItem(i, ItemStack.parseOptional(provider, nbt.getCompound("s" + i)));
             else
                 basic.setItem(i, ItemStack.EMPTY);
         }
@@ -50,7 +51,7 @@ public class InventoryUtils {
         if (stackA.getItem() != stackB.getItem())
             return false;
         
-        return ItemStack.isSameItemSameTags(stackA, stackB) && stackA.areAttachmentsCompatible(stackB);
+        return ItemStack.isSameItemSameComponents(stackA, stackB);
     }
     
     public static boolean consumeItemStack(Container inventory, ItemStack stack) {

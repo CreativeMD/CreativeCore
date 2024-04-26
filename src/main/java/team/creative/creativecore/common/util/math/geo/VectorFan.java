@@ -274,8 +274,8 @@ public class VectorFan {
         Vec3f normal = new Vec3f();
         forAllEdges((x, y) -> {
             setLineNormal(normal, x, y);
-            consumer.vertex(pose.pose(), x.x, x.y, x.z).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), y.x, y.y, y.z).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x.x, x.y, x.z).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), y.x, y.y, y.z).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
         });
     }
     
@@ -314,8 +314,8 @@ public class VectorFan {
             else
                 z2 -= grow;
             setLineNormal(normal, x1, y1, z1, x2, y2, z2);
-            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
         });
     }
     
@@ -329,8 +329,8 @@ public class VectorFan {
             float y2 = y.y * scaleY + offY;
             float z2 = y.z * scaleZ + offZ;
             setLineNormal(normal, x1, y1, z1, x2, y2, z2);
-            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
         });
     }
     
@@ -369,8 +369,8 @@ public class VectorFan {
             else
                 z2 -= grow;
             setLineNormal(normal, x1, y1, z1, x2, y2, z2);
-            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose.normal(), normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
         });
     }
     

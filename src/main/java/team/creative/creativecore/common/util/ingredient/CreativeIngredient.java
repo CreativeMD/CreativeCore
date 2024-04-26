@@ -13,6 +13,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -39,10 +40,10 @@ public abstract class CreativeIngredient {
     private static final CreativeIngredient EMPTY = new CreativeIngredient() {
         
         @Override
-        protected void saveExtra(CompoundTag nbt) {}
+        protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {}
         
         @Override
-        protected void loadExtra(CompoundTag nbt) {}
+        protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {}
         
         @Override
         public boolean is(CreativeIngredient info) {
@@ -205,16 +206,16 @@ public abstract class CreativeIngredient {
         
     }
     
-    public CompoundTag save() {
+    public CompoundTag save(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("id", REGISTRY.getIdOrDefault(this, "empty"));
-        saveExtra(nbt);
+        saveExtra(provider, nbt);
         return nbt;
     }
     
-    protected abstract void saveExtra(CompoundTag nbt);
+    protected abstract void saveExtra(HolderLookup.Provider provider, CompoundTag nbt);
     
-    protected abstract void loadExtra(CompoundTag nbt);
+    protected abstract void loadExtra(HolderLookup.Provider provider, CompoundTag nbt);
     
     public abstract boolean is(ItemStack stack);
     

@@ -19,6 +19,7 @@ import com.google.gson.JsonPrimitive;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -185,12 +186,12 @@ public abstract class ConfigTypeConveration<T> {
         return null;
     }
     
-    public static Object read(Class typeClass, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
-        return get(typeClass).readElement(defaultValue, loadDefault, ignoreRestart, element, side, key);
+    public static Object read(HolderLookup.Provider provider, Class typeClass, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+        return get(typeClass).readElement(provider, defaultValue, loadDefault, ignoreRestart, element, side, key);
     }
     
-    public static JsonElement write(Class typeClass, Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
-        return get(typeClass).writeElement(value, defaultValue, saveDefault, ignoreRestart, side, key);
+    public static JsonElement write(HolderLookup.Provider provider, Class typeClass, Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+        return get(typeClass).writeElement(provider, value, defaultValue, saveDefault, ignoreRestart, side, key);
     }
     
     public static Object createObject(Class clazz) {
@@ -203,12 +204,12 @@ public abstract class ConfigTypeConveration<T> {
         return null;
     }
     
-    public static Object copy(Side side, Object object, Class clazz) {
+    public static Object copy(HolderLookup.Provider provider, Side side, Object object, Class clazz) {
         ConfigTypeConveration conversation = getUnsafe(clazz);
         if (conversation != null) {
-            JsonElement element = conversation.writeElement(object, null, false, true, side, null);
+            JsonElement element = conversation.writeElement(provider, object, null, false, true, side, null);
             Object value = createObject(clazz);
-            conversation.readElement(value, true, true, element, side, null);
+            conversation.readElement(provider, value, true, true, element, side, null);
         }
         Object value = createObject(clazz);
         JsonElement element = holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, object, value), null, false, true, side, null);
@@ -581,11 +582,8 @@ public abstract class ConfigTypeConveration<T> {
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
                 })).setSearchbar(true));
-                GuiParent hBox = new GuiParent(GuiFlow.STACK_X)
-                        .add(new GuiLabel("volumeLabel").setTranslate("gui.volume"))
-                        .add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10))
-                        .add(new GuiLabel("pitchLabel").setTranslate("gui.pitch"))
-                        .add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
+                GuiParent hBox = new GuiParent(GuiFlow.STACK_X).add(new GuiLabel("volumeLabel").setTranslate("gui.volume")).add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10))
+                        .add(new GuiLabel("pitchLabel").setTranslate("gui.pitch")).add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
                 parent.add(hBox);
             }
             
@@ -884,9 +882,9 @@ public abstract class ConfigTypeConveration<T> {
         registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeList());
     }
     
-    public abstract T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key);
+    public abstract T readElement(HolderLookup.Provider provider, T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key);
     
-    public abstract JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key);
+    public abstract JsonElement writeElement(HolderLookup.Provider provider, T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key);
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)

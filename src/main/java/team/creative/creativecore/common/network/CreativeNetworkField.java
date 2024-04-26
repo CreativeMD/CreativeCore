@@ -4,7 +4,8 @@ import static team.creative.creativecore.CreativeCore.LOGGER;
 
 import java.lang.reflect.Field;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.PacketFlow;
 import team.creative.creativecore.common.network.type.NetworkFieldType;
 import team.creative.creativecore.common.network.type.NetworkFieldTypes;
 
@@ -20,25 +21,25 @@ public class CreativeNetworkField {
         this.type = type;
     }
     
-    public void write(CreativePacket packet, FriendlyByteBuf buffer) {
+    public void write(CreativePacket packet, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         try {
             Object content = field.get(packet);
             if (nullable)
                 buffer.writeBoolean(content != null);
             if (content != null)
-                type.write(content, field.getType(), field.getGenericType(), buffer);
+                type.write(content, field.getType(), field.getGenericType(), buffer, flow);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             LOGGER.error(e);
         }
     }
     
-    public void read(CreativePacket packet, FriendlyByteBuf buffer) {
+    public void read(CreativePacket packet, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         try {
             Object content;
             if (nullable && !buffer.readBoolean())
                 content = null;
             else
-                content = type.read(field.getType(), field.getGenericType(), buffer);
+                content = type.read(field.getType(), field.getGenericType(), buffer, flow);
             field.set(packet, content);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             LOGGER.error(e);

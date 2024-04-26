@@ -7,19 +7,21 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import net.fabricmc.api.Environment;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class CreativeNetworkPacket<T extends CreativePacket> {
     
-    public final ResourceLocation id;
+    public final CustomPacketPayload.Type<T> id;
     public final Class<T> classType;
     public final Supplier<T> supplier;
     public List<CreativeNetworkField> parsers = new ArrayList<>();
     
     public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier) {
-        this.id = id;
+        this.id = new CustomPacketPayload.Type(id);
         this.classType = classType;
         this.supplier = supplier;
         
@@ -36,16 +38,16 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
         }
     }
     
-    public void write(T packet, FriendlyByteBuf buffer) {
+    public void write(T packet, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         for (CreativeNetworkField parser : parsers)
-            parser.write(packet, buffer);
+            parser.write(packet, buffer, flow);
     }
     
-    public T read(FriendlyByteBuf buffer) {
+    public T read(RegistryFriendlyByteBuf buffer, PacketFlow flow) {
         T message = supplier.get();
         
         for (CreativeNetworkField parser : parsers)
-            parser.read(message, buffer);
+            parser.read(message, buffer, flow);
         
         return message;
     }

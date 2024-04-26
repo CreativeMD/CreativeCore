@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.be;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
@@ -29,20 +30,20 @@ public abstract class BlockEntityCreative extends BlockEntity {
     }
     
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
         handleUpdate(pkt.getTag(), false);
     }
     
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         handleUpdate(tag, true);
     }
     
     public abstract void handleUpdate(CompoundTag nbt, boolean chunkUpdate);
     
     @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithFullMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return saveWithFullMetadata(provider);
     }
     
     public void markDirty() {

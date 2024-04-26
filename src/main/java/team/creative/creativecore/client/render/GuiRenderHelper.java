@@ -1,6 +1,7 @@
 package team.creative.creativecore.client.render;
 
 import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
@@ -49,12 +50,12 @@ public class GuiRenderHelper {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-        PoseStack matrix = RenderSystem.getModelViewStack();
-        matrix.pushPose();
-        matrix.mulPoseMatrix(mat.last().pose());
+        Matrix4fStack matrix = RenderSystem.getModelViewStack();
+        matrix.pushMatrix();
+        matrix.mul(mat.last().pose());
         matrix.translate(0, 0, 100);
         matrix.translate(8, 8, 8);
-        matrix.mulPoseMatrix((new Matrix4f()).scaling(1, -1, 1));
+        matrix.mul((new Matrix4f()).scaling(1, -1, 1));
         matrix.scale(16, 16, 16);
         
         RenderSystem.applyModelViewMatrix();
@@ -69,7 +70,7 @@ public class GuiRenderHelper {
         if (flag)
             Lighting.setupFor3DItems();
         
-        matrix.popPose();
+        matrix.popMatrix();
         RenderSystem.applyModelViewMatrix();
     }
     

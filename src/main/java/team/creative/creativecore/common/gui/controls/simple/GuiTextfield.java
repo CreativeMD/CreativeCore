@@ -17,7 +17,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -27,6 +26,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
@@ -235,7 +235,7 @@ public class GuiTextfield extends GuiFocusControl {
         int i = Math.min(this.cursorPosition, this.selectionEnd);
         int j = Math.max(this.cursorPosition, this.selectionEnd);
         int k = this.maxStringLength - this.text.length() - (i - j);
-        String s = SharedConstants.filterText(textToWrite);
+        String s = StringUtil.filterText(textToWrite);
         int l = s.length();
         if (k < l) {
             s = s.substring(0, k);
@@ -391,7 +391,7 @@ public class GuiTextfield extends GuiFocusControl {
                 case 267:
                     return false;
                 default:
-                    return SharedConstants.isAllowedChatCharacter((char) keyCode);
+                    return StringUtil.isAllowedChatCharacter((char) keyCode);
                 case 261:
                     this.shift = false;
                     this.delete(1);
@@ -430,7 +430,7 @@ public class GuiTextfield extends GuiFocusControl {
     public boolean charTyped(char codePoint, int modifiers) {
         if (!this.canWrite())
             return false;
-        else if (SharedConstants.isAllowedChatCharacter(codePoint)) {
+        else if (StringUtil.isAllowedChatCharacter(codePoint)) {
             this.writeText(Character.toString(codePoint));
             return true;
         } else
