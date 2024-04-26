@@ -63,6 +63,9 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
 
     @Override
+    protected void renderBg(PoseStack poseStack, float v, int i, int i1) {}
+
+    @Override
     public void clientTick() {
         for (GuiLayer layer : getMenu().getLayers())
             layer.tick();
