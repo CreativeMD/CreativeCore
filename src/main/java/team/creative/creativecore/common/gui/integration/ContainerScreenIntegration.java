@@ -41,6 +41,25 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     @Override
     public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
         getMenu().render(pose, this, listener, mouseX, mouseY);
+
+        // Update dimensions for JEI
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        for (GuiLayer layer : getMenu().getLayers()) {
+            int offsetX = (width - layer.getWidth()) / 2;
+            int offsetY = (height - layer.getHeight()) / 2;
+            minX = Math.min(minX, offsetX + (int) layer.rect.minX);
+            minY = Math.min(minY, offsetY + (int) layer.rect.minY);
+            maxX = Math.max(maxX, offsetX + (int) layer.rect.maxX);
+            maxY = Math.max(maxY, offsetY + (int) layer.rect.maxY);
+        }
+
+        leftPos = minX;
+        topPos = minY;
+        imageWidth = maxX - minX;
+        imageHeight = maxY - minY;
     }
 
     @Override
