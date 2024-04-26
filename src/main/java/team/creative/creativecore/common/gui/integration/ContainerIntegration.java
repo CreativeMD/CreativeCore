@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -128,6 +129,11 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     @Override
     public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
         return null;
+    }
+    
+    @Override
+    public Provider provider() {
+        return player.registryAccess();
     }
     
 }

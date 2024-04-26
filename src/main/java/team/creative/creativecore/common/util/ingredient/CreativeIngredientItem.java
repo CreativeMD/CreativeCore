@@ -1,9 +1,12 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,18 +19,16 @@ public class CreativeIngredientItem extends CreativeIngredient {
         this.item = item;
     }
     
-    public CreativeIngredientItem() {
-        super();
+    public CreativeIngredientItem() {}
+    
+    @Override
+    protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {
+        nbt.putString("item", item.builtInRegistryHolder().getRegisteredName());
     }
     
     @Override
-    protected void saveExtra(CompoundTag nbt) {
-        nbt.putString("item", BuiltInRegistries.ITEM.getKey(item).toString());
-    }
-    
-    @Override
-    protected void loadExtra(CompoundTag nbt) {
-        item = BuiltInRegistries.ITEM.get(new ResourceLocation(nbt.getString("item")));
+    protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
+        item = provider.lookup(Registries.ITEM).get().getOrThrow(ResourceKey.create(Registries.ITEM, new ResourceLocation(nbt.getString("item")))).value();
     }
     
     @Override

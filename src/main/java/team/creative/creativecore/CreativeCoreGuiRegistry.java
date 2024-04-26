@@ -22,7 +22,8 @@ import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 
 public class CreativeCoreGuiRegistry {
     
-    public static final GuiSyncGlobal<GuiLayer, CompoundTag> HAND = GuiSyncHolder.GLOBAL.register("hand", (c, t) -> c.itemManager().setHand(ItemStack.of(t)));
+    public static final GuiSyncGlobal<GuiLayer, CompoundTag> HAND = GuiSyncHolder.GLOBAL.register("hand", (c, t) -> c.itemManager().setHand(ItemStack.parseOptional(c.provider(),
+        t)));
     
     public static final GuiSyncGlobal<GuiSlot, ByteTag> DROP = GuiSyncHolder.GLOBAL.register("drop", (c, t) -> {
         boolean ctrl = t.getAsByte() == 1;
@@ -170,7 +171,7 @@ public class CreativeCoreGuiRegistry {
                 slot.slot, rightClick ? ClickAction.SECONDARY : ClickAction.PRIMARY, player, c.itemManager().handAccess)) {
                 if (!slot.slot.hasItem())
                     slot.slot.set(toTransfer);
-                else if (ItemStack.isSameItemSameTags(toTransfer, stack))
+                else if (ItemStack.isSameItemSameComponents(toTransfer, stack))
                     stack.grow(transfer);
                 else
                     continue;

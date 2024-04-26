@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.config.holder;
 
+import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
@@ -53,8 +54,8 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
         return fields.removeKey(modid);
     }
     
-    public static void load(String modid, Side side) {
-        CreativeCore.CONFIG_HANDLER.load(modid, side);
+    public static void load(HolderLookup.Provider provider, String modid, Side side) {
+        CreativeCore.CONFIG_HANDLER.load(provider, modid, side);
     }
     
 }

@@ -68,7 +68,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                     json.add(((GuiConfigControl) child.control).field.name, element);
             }
         
-        holder.load(false, true, json, Side.SERVER);
+        holder.load(provider(), false, true, json, Side.SERVER);
     }
     
 }

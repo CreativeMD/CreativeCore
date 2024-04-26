@@ -1,6 +1,5 @@
 package team.creative.creativecore;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -25,10 +24,6 @@ public interface ICreativeLoader {
     public Side getOverallSide();
     
     public Side getEffectiveSide();
-    
-    public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest);
-    
-    public String ignoreServerNetworkConstant();
     
     public void register(CommonLoader loader);
     

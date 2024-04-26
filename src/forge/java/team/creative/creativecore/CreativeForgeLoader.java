@@ -1,6 +1,5 @@
 package team.creative.creativecore;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -15,9 +14,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.DistExecutor;
-import net.neoforged.fml.IExtensionPoint;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -39,16 +36,6 @@ public class CreativeForgeLoader implements ICreativeLoader {
     @Override
     public Side getOverallSide() {
         return FMLEnvironment.dist.isClient() ? Side.CLIENT : Side.SERVER;
-    }
-    
-    @Override
-    public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest) {
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(suppliedVersion, remoteVersionTest));
-    }
-    
-    @Override
-    public String ignoreServerNetworkConstant() {
-        return IExtensionPoint.DisplayTest.IGNORESERVERONLY;
     }
     
     @Override

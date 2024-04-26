@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
@@ -77,7 +78,7 @@ public class PermissionGuiLayer extends GuiLayer {
             } else {
                 Object newValue = ConfigTypeConveration.createObject(button.clazz);
                 ConfigHolderObject holder = ConfigHolderObject.createUnrelated(Side.SERVER, newValue, newValue);
-                group = new PermissionGuiGroupMulti("", holder);
+                group = new PermissionGuiGroupMulti(provider(), "", holder);
                 groups.add(group);
                 
                 for (Entry<ConfigKey, GuiRow> entry : rows.entrySet()) {
@@ -133,12 +134,12 @@ public class PermissionGuiLayer extends GuiLayer {
             List<GuiRow> rows = new ArrayList<>();
             
             for (Entry<String, ?> entry : button.value.entrySet()) {
-                Object copiedEntry = ConfigTypeConveration.copy(Side.SERVER, entry.getValue(), button.clazz);
+                Object copiedEntry = ConfigTypeConveration.copy(provider(), Side.SERVER, entry.getValue(), button.clazz);
                 Object defaultReference = button.defaultValue.getDirect(entry.getKey());
                 if (defaultReference == null)
                     defaultReference = copiedEntry;
                 ConfigHolderObject holder = ConfigHolderObject.createUnrelated(Side.SERVER, copiedEntry, defaultReference);
-                PermissionGuiGroupMulti group = new PermissionGuiGroupMulti(entry.getKey(), holder);
+                PermissionGuiGroupMulti group = new PermissionGuiGroupMulti(provider(), entry.getKey(), holder);
                 groups.add(group);
                 
                 int i = 0;
@@ -320,12 +321,14 @@ public class PermissionGuiLayer extends GuiLayer {
     
     public static class PermissionGuiGroupMulti extends PermissionGuiGroup {
         
+        public final HolderLookup.Provider provider;
         public final ConfigHolderObject holder;
         public final List<GuiConfigControl> controls = new ArrayList<>();
         public GuiTextfield textfield;
         
-        public PermissionGuiGroupMulti(String group, ConfigHolderObject holder) {
+        public PermissionGuiGroupMulti(HolderLookup.Provider provider, String group, ConfigHolderObject holder) {
             super(group);
+            this.provider = provider;
             this.holder = holder;
         }
         
@@ -339,7 +342,7 @@ public class PermissionGuiLayer extends GuiLayer {
                     json.add(control.field.name, element);
             }
             
-            holder.load(false, true, json, Side.SERVER);
+            holder.load(provider, false, true, json, Side.SERVER);
             return holder.object;
         }
         

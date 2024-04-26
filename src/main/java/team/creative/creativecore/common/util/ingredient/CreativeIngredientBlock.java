@@ -1,9 +1,11 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -16,18 +18,16 @@ public class CreativeIngredientBlock extends CreativeIngredient {
         this.block = block;
     }
     
-    public CreativeIngredientBlock() {
-        super();
+    public CreativeIngredientBlock() {}
+    
+    @Override
+    protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
+        block = provider.lookup(Registries.BLOCK).get().getOrThrow(ResourceKey.create(Registries.BLOCK, new ResourceLocation(nbt.getString("block")))).value();
     }
     
     @Override
-    protected void loadExtra(CompoundTag nbt) {
-        block = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString("block")));
-    }
-    
-    @Override
-    protected void saveExtra(CompoundTag nbt) {
-        nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
+    protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {
+        nbt.putString("block", block.builtInRegistryHolder().getRegisteredName());
     }
     
     @Override
@@ -66,7 +66,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     public Component descriptionDetail() {
-        return Component.translatable("minecraft.block").append(": " + ChatFormatting.YELLOW + BuiltInRegistries.BLOCK.getKey(block));
+        return Component.translatable("minecraft.block").append(": " + ChatFormatting.YELLOW + block.builtInRegistryHolder().getRegisteredName());
     }
     
 }

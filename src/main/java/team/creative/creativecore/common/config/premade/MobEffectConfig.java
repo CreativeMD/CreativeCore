@@ -25,7 +25,7 @@ public class MobEffectConfig {
     }
     
     public MobEffectInstance create() {
-        return new MobEffectInstance(effect.value, duration, amplifier, false, hideParticles);
+        return new MobEffectInstance(effect.registry.wrapAsHolder(effect.value), duration, amplifier, false, hideParticles);
     }
     
     @Override

@@ -101,7 +101,7 @@ public abstract class GuiCreativeIngredientHandler {
                         ItemStack stack = selector.getSelected();
                         if (!stack.isEmpty()) {
                             ((GuiLabel) gui.get("guilabel1")).setTitle(Component.literal("damage: " + stack.getDamageValue()));
-                            ((GuiLabel) gui.get("guilabel2")).setTitle(Component.literal("nbt: " + stack.getTag()));
+                            ((GuiLabel) gui.get("guilabel2")).setTitle(Component.literal("nbt: " + stack.getComponents()));
                         } else {
                             ((GuiLabel) gui.get("guilabel1")).setTitle(Component.literal(""));
                             ((GuiLabel) gui.get("guilabel2")).setTitle(Component.literal(""));

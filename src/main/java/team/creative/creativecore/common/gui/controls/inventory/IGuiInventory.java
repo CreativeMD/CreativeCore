@@ -16,7 +16,7 @@ public interface IGuiInventory {
         IGuiInventory inventory = (IGuiInventory) control;
         for (String name : nbt.getAllKeys()) {
             int id = Integer.parseInt(name);
-            inventory.getSlot(id).slot.set(ItemStack.of(nbt.getCompound(name)));
+            inventory.getSlot(id).slot.set(ItemStack.parseOptional(control.provider(), nbt.getCompound(name)));
             inventory.setChanged(id);
         }
     });
@@ -24,7 +24,7 @@ public interface IGuiInventory {
     public static final GuiSyncGlobal<GuiControl, ListTag> SYNC_ALL = GuiSyncHolder.GLOBAL.register("inv_all", (control, list) -> {
         IGuiInventory inventory = (IGuiInventory) control;
         for (int i = 0; i < inventory.inventorySize(); i++)
-            inventory.getSlot(i).slot.set(ItemStack.of(list.getCompound(i)));
+            inventory.getSlot(i).slot.set(ItemStack.parseOptional(control.provider(), list.getCompound(i)));
         inventory.setChanged();
     });
     
@@ -53,7 +53,7 @@ public interface IGuiInventory {
         Player player = ((GuiControl) this).getPlayer();
         for (int i = 0; i < inventorySize(); i++) {
             GuiSlot slot = getSlot(i);
-            if (slot.slot.mayPickup(player) && ItemStack.isSameItemSameTags(toDrain, slot.getStack())) {
+            if (slot.slot.mayPickup(player) && ItemStack.isSameItemSameComponents(toDrain, slot.getStack())) {
                 int transfer = Math.min(toDrain.getCount(), slot.getStack().getCount());
                 if (transfer <= 0)
                     continue;
@@ -71,13 +71,15 @@ public interface IGuiInventory {
     
     public default void sync(BitSet set) {
         GuiControl control = (GuiControl) this;
+        
         if (control.isClient())
             return;
+        var provider = control.provider();
         CompoundTag nbt = new CompoundTag();
         for (int i = set.nextSetBit(0); i >= 0; i = set.nextSetBit(i + 1)) {
             GuiSlot slot = getSlot(i);
             slot.onSendUpdate();
-            nbt.put("" + i, slot.slot.getItem().save(new CompoundTag()));
+            nbt.put("" + i, slot.slot.getItem().save(provider, new CompoundTag()));
         }
         SYNC.send(control, nbt);
     }
@@ -86,9 +88,10 @@ public interface IGuiInventory {
         GuiControl control = (GuiControl) this;
         if (control.isClient())
             return;
+        var provider = control.provider();
         ListTag list = new ListTag();
         for (int i = 0; i < inventorySize(); i++)
-            list.add(getSlot(i).slot.getItem().save(new CompoundTag()));
+            list.add(getSlot(i).slot.getItem().save(provider, new CompoundTag()));
         SYNC_ALL.send(control, list);
     }
 }

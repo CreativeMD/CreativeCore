@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.HolderLookup;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
@@ -23,7 +24,7 @@ import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 public class ConfigTypeArray extends ConfigTypeConveration {
     
     @Override
-    public Object readElement(Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+    public Object readElement(HolderLookup.Provider provider, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         Class clazz = defaultValue.getClass().getComponentType();
         
         if (element.isJsonArray()) {
@@ -31,7 +32,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
             int size = Math.min(array.size(), Array.getLength(defaultValue));
             Object object = Array.newInstance(clazz, size);
             for (int i = 0; i < size; i++)
-                Array.set(object, i, read(defaultValue.getClass().getComponentType(), Array.get(defaultValue, i), loadDefault, ignoreRestart, array.get(i), side, null));
+                Array.set(object, i, read(provider, defaultValue.getClass().getComponentType(), Array.get(defaultValue, i), loadDefault, ignoreRestart, array.get(i), side, null));
             return object;
         }
         
@@ -39,16 +40,16 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         
         Object object = Array.newInstance(clazz, size);
         for (int i = 0; i < size; i++)
-            Array.set(object, i, copy(side, Array.get(object, i), clazz));
+            Array.set(object, i, copy(provider, side, Array.get(object, i), clazz));
         return object;
     }
     
     @Override
-    public JsonElement writeElement(Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(HolderLookup.Provider provider, Object value, Object defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         int length = Array.getLength(value);
         JsonArray array = new JsonArray();
         for (int i = 0; i < length; i++)
-            array.add(write(value.getClass().getComponentType(), Array.get(value, i), Array.get(defaultValue, i), saveDefault, ignoreRestart, side, null));
+            array.add(write(provider, value.getClass().getComponentType(), Array.get(value, i), Array.get(defaultValue, i), saveDefault, ignoreRestart, side, null));
         return array;
     }
     

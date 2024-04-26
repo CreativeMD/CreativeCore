@@ -20,12 +20,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.IExtensionPoint;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.ConfigScreenHandler.ConfigScreenFactory;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
@@ -59,7 +58,7 @@ public class CreativeCoreClient {
     }
     
     public static void registerClientConfig(String modid) {
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenFactory.class, () -> new ConfigScreenFactory((a, b) -> {
+        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> ((a, b) -> {
             ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(modid);
             if (holder != null && !holder.isEmpty(Side.CLIENT))
                 return new GuiScreenIntegration(new ConfigGuiLayer(holder, Side.CLIENT));
@@ -100,8 +99,6 @@ public class CreativeCoreClient {
     public static void init(FMLClientSetupEvent event) {
         NeoForge.EVENT_BUS.register(CreativeCoreClient.class);
         NeoForge.EVENT_BUS.register(GuiEventHandler.class);
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class,
-            () -> new IExtensionPoint.DisplayTest(() -> IExtensionPoint.DisplayTest.IGNORESERVERONLY, (a, b) -> true));
         GuiStyle.reload();
         Minecraft minecraft = Minecraft.getInstance();
         ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();

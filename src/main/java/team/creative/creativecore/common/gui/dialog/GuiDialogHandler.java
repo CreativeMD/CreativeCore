@@ -12,12 +12,12 @@ import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 
 public class GuiDialogHandler {
     
-    public static final GuiSyncGlobalLayer<DialogGuiLayer> DIALOG_HANDLER = GuiSyncHolder.GLOBAL.layer("dialog", (nbt) -> {
+    public static final GuiSyncGlobalLayer<DialogGuiLayer> DIALOG_HANDLER = GuiSyncHolder.GLOBAL.layer("dialog", (p, nbt) -> {
         int[] array = nbt.getIntArray("buttons");
         DialogButton[] buttons = new DialogButton[array.length];
         for (int i = 0; i < array.length; i++)
             buttons[i] = DialogButton.values()[array[i]];
-        return new DialogGuiLayer(nbt.getString("name"), Component.Serializer.fromJson(nbt.getString("title")), null, buttons);
+        return new DialogGuiLayer(nbt.getString("name"), Component.Serializer.fromJson(nbt.getString("title"), p), null, buttons);
     });
     
     public static void init() {}
@@ -29,7 +29,7 @@ public class GuiDialogHandler {
     public static GuiLayer openDialog(IGuiIntegratedParent parent, String name, Component title, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("name", name);
-        nbt.putString("title", Component.Serializer.toJson(title));
+        nbt.putString("title", Component.Serializer.toJson(title, parent.provider()));
         int[] array = new int[buttons.length];
         for (int i = 0; i < array.length; i++)
             array[i] = buttons[i].ordinal();

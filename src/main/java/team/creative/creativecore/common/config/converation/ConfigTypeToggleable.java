@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.HolderLookup;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
@@ -30,17 +31,17 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
     }
     
     @Override
-    public ToggleableConfig readElement(ToggleableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+    public ToggleableConfig readElement(HolderLookup.Provider provider, ToggleableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         Class clazz = getConfigType(key);
         if (element.isJsonObject()) {
             Object value;
             JsonObject object = element.getAsJsonObject();
             ConfigTypeConveration conversation = getUnsafe(clazz);
             if (conversation != null)
-                value = conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, object.get("content"), side, null);
+                value = conversation.readElement(provider, ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, object.get("content"), side, null);
             else {
                 value = ConfigTypeConveration.createObject(clazz);
-                holderConveration.readElement(ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, object.get("content"), side, null);
+                holderConveration.readElement(provider, ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, object.get("content"), side, null);
             }
             return new ToggleableConfig(value, object.get("enabled").getAsBoolean());
         }
@@ -48,15 +49,16 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
     }
     
     @Override
-    public JsonElement writeElement(ToggleableConfig value, ToggleableConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(HolderLookup.Provider provider, ToggleableConfig value, ToggleableConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         Class clazz = getConfigType(key);
         ConfigTypeConveration conversation = getUnsafe(clazz);
         JsonObject object = new JsonObject();
         object.addProperty("enabled", value.isEnabled());
         if (conversation != null)
-            object.add("content", conversation.writeElement(value.value, null, true, ignoreRestart, side, null));
+            object.add("content", conversation.writeElement(provider, value.value, null, true, ignoreRestart, side, null));
         else
-            object.add("content", holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, value.value, value.value), null, true, ignoreRestart, side, null));
+            object.add("content", holderConveration.writeElement(provider, ConfigHolderObject.createUnrelated(side, value.value, value.value), null, true, ignoreRestart, side,
+                null));
         return object;
     }
     
@@ -93,7 +95,7 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
         if (converation != null)
             converation.loadValue(value.value, control, null, null);
         else {
-            Object entry = copy(Side.SERVER, value.value, clazz);
+            Object entry = copy(configParent.provider(), Side.SERVER, value.value, clazz);
             ((GuiConfigSubControlHolder) control).load(ConfigHolderObject.createUnrelated(Side.SERVER, entry, entry), entry);
             ((GuiConfigSubControlHolder) control).createControls();
         }

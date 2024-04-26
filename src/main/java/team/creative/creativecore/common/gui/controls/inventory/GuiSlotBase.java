@@ -9,6 +9,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
@@ -53,7 +54,7 @@ public abstract class GuiSlotBase extends GuiControl {
     public List<Component> getTooltip() {
         if (getStack().isEmpty())
             return super.getTooltip();
-        return getStack().getTooltipLines(getPlayer(), TooltipFlag.Default.NORMAL);
+        return getStack().getTooltipLines(TooltipContext.of(provider()), getPlayer(), TooltipFlag.Default.NORMAL);
     }
     
     @Override

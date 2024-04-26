@@ -3,6 +3,7 @@ package team.creative.creativecore.common.util.ingredient;
 import java.util.Optional;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -21,17 +22,15 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
         this.tag = tag;
     }
     
-    public CreativeIngredientItemTag() {
-        
-    }
+    public CreativeIngredientItemTag() {}
     
     @Override
-    protected void saveExtra(CompoundTag nbt) {
+    protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {
         nbt.putString("tag", tag.location().toString());
     }
     
     @Override
-    protected void loadExtra(CompoundTag nbt) {
+    protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
         tag = TagKey.create(Registries.ITEM, new ResourceLocation(nbt.getString("tag")));
     }
     

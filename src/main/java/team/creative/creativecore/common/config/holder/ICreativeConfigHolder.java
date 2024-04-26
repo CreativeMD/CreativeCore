@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.IConfigObject;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
@@ -26,9 +27,9 @@ public interface ICreativeConfigHolder extends IConfigObject {
     
     public ConfigKey getField(String key);
     
-    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side);
+    public void load(HolderLookup.Provider provider, boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side);
     
-    public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side);
+    public JsonObject save(HolderLookup.Provider provider, boolean saveDefault, boolean ignoreRestart, Side side);
     
     public boolean isEmpty(Side side);
     

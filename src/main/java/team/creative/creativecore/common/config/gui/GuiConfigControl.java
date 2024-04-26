@@ -72,8 +72,8 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     
     public void init(JsonElement initalValue) {
         field.converation.createControls(main, this, field, field.getType());
-        field.converation.loadValue(initalValue != null ? field.converation.readElement(field.getDefault(), false, false, initalValue, side, field) : field.get(), main, this,
-            field);
+        field.converation.loadValue(initalValue != null ? field.converation.readElement(provider(), field.getDefault(), false, false, initalValue, side, field) : field.get(), main,
+            this, field);
         
         updateButton();
     }
@@ -91,7 +91,7 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     public JsonElement save() {
         Object value = field.converation.save(main, this, field.getType(), field);
         if (field.converation.shouldSave(value, main, this, field))
-            return field.converation.writeElement(value, field.getDefault(), true, false, side, field);
+            return field.converation.writeElement(provider(), value, field.getDefault(), true, false, side, field);
         return null;
     }
     

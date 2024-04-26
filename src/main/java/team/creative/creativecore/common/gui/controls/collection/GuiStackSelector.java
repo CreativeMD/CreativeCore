@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.AirBlock;
@@ -270,7 +271,7 @@ public class GuiStackSelector extends GuiLabel {
             return true;
         if (getItemName(stack).toLowerCase().contains(search))
             return true;
-        for (Component line : stack.getTooltipLines(null, TooltipFlag.Default.NORMAL))
+        for (Component line : stack.getTooltipLines(TooltipContext.EMPTY, null, TooltipFlag.Default.NORMAL))
             if (line.getString().toLowerCase().contains(search))
                 return true;
             

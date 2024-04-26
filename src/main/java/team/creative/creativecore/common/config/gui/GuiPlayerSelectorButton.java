@@ -10,7 +10,7 @@ import team.creative.creativecore.common.util.player.PlayerSelector;
 
 public class GuiPlayerSelectorButton extends GuiButton {
     
-    public static final GuiSyncGlobalLayer<PlayerSelectorDialog> PLAYER_SELECTOR = GuiSyncHolder.GLOBAL.layer("player_selector", (nbt) -> new PlayerSelectorDialog());
+    public static final GuiSyncGlobalLayer<PlayerSelectorDialog> PLAYER_SELECTOR = GuiSyncHolder.GLOBAL.layer("player_selector", (p, nbt) -> new PlayerSelectorDialog());
     
     private PlayerSelector info;
     

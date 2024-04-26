@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.HolderLookup;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
@@ -37,7 +38,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     }
     
     @Override
-    public T readElement(T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+    public T readElement(HolderLookup.Provider provider, T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         Class clazz = getListType(key);
         T list = create(clazz);
         
@@ -48,10 +49,11 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
             
             for (Entry<String, JsonElement> entry : object.entrySet()) {
                 if (conversation != null)
-                    addToList(list, entry.getKey(), conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, entry.getValue(), side, null));
+                    addToList(list, entry.getKey(), conversation.readElement(provider, ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, entry.getValue(),
+                        side, null));
                 else {
                     Object value = ConfigTypeConveration.createObject(clazz);
-                    holderConveration.readElement(ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
+                    holderConveration.readElement(provider, ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, entry.getValue(), side, null);
                     addToList(list, entry.getKey(), value);
                 }
             }
@@ -60,21 +62,21 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
         }
         
         for (Entry<String, T> entry : (Iterable<Entry<String, T>>) defaultValue.entrySet())
-            addToList(list, entry.getKey(), copy(side, entry.getValue(), clazz));
+            addToList(list, entry.getKey(), copy(provider, side, entry.getValue(), clazz));
         return list;
     }
     
     @Override
-    public JsonElement writeElement(T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(HolderLookup.Provider provider, T value, T defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         JsonObject array = new JsonObject();
         Class clazz = getListType(key);
         ConfigTypeConveration conversation = getUnsafe(clazz);
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) value.entrySet())
             if (conversation != null)
-                array.add(entry.getKey(), conversation.writeElement(entry.getValue(), null, true, ignoreRestart, side, key));
+                array.add(entry.getKey(), conversation.writeElement(provider, entry.getValue(), null, true, ignoreRestart, side, key));
             else
-                array.add(entry.getKey(), holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, entry.getValue(), entry.getValue()), null, true, ignoreRestart,
-                    side, key));
+                array.add(entry.getKey(), holderConveration.writeElement(provider, ConfigHolderObject.createUnrelated(side, entry.getValue(), entry.getValue()), null, true,
+                    ignoreRestart, side, key));
         return array;
     }
     
@@ -110,7 +112,8 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void restoreDefault(T value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
-        loadValue(readElement(value, true, false, writeElement(value, value, true, false, Side.SERVER, key), Side.SERVER, key), parent, configParent, key);
+        loadValue(readElement(configParent.provider(), value, true, false, writeElement(configParent.provider(), value, value, true, false, Side.SERVER, key), Side.SERVER, key),
+            parent, configParent, key);
     }
     
     @Override
@@ -137,7 +140,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
                 converation.createControls(control, null, null, clazz);
                 converation.loadValue(entry.getValue(), control, null, null);
             } else {
-                Object copiedEntry = copy(Side.SERVER, entry.getValue(), clazz);
+                Object copiedEntry = copy(configParent.provider(), Side.SERVER, entry.getValue(), clazz);
                 control = new GuiConfigSubControlHolder("" + 0, ConfigHolderObject.createUnrelated(Side.SERVER, copiedEntry, copiedEntry), copiedEntry, configParent::changed);
                 if (entry.getKey().equals("default"))
                     control.addNameUnmodifieable(entry.getKey());

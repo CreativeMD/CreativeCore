@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -20,14 +21,14 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     }
     
     @Override
-    protected void saveExtra(CompoundTag nbt) {
-        stack.save(nbt);
+    protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {
+        stack.save(provider, nbt);
         nbt.putBoolean("needNBT", needNBT);
     }
     
     @Override
-    protected void loadExtra(CompoundTag nbt) {
-        stack = ItemStack.of(nbt);
+    protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
+        stack = ItemStack.parseOptional(provider, nbt);
         needNBT = nbt.getBoolean("needNBT");
     }
     

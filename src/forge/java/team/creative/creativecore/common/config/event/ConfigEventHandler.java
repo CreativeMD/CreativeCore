@@ -25,6 +25,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
@@ -69,7 +70,7 @@ public class ConfigEventHandler {
     public void playerLoggedIn(OnDatapackSyncEvent event) {
         if (event.getPlayer() != null && (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer().getServer()))) {
             CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), event.getPlayer());
-            CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), event.getPlayer());
+            CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(event.getPlayer().registryAccess(), CreativeConfigRegistry.ROOT, false), event.getPlayer());
         }
     }
     
@@ -81,20 +82,20 @@ public class ConfigEventHandler {
     @SubscribeEvent
     public void loadLevel(LevelEvent.Load event) {
         if (event.getLevel().isClientSide() && !(event.getLevel() instanceof IOrientatedLevel))
-            load(Side.CLIENT);
+            load(event.getLevel().registryAccess(), Side.CLIENT);
     }
     
     @SubscribeEvent
     public void startServer(ServerAboutToStartEvent event) {
-        load(Side.SERVER);
+        load(event.getServer().registryAccess(), Side.SERVER);
     }
     
     public void sync(MinecraftServer server, ICreativeConfigHolder holder) {
-        CreativeCore.NETWORK.sendToClientAll(server, new ConfigurationPacket(holder, true));
+        CreativeCore.NETWORK.sendToClientAll(server, new ConfigurationPacket(server.registryAccess(), holder, true));
     }
     
     public void sync(ICreativeConfigHolder holder, ServerPlayer player) {
-        CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(holder, true), player);
+        CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(player.registryAccess(), holder, true), player);
     }
     
     public void syncAll(MinecraftServer server) {
@@ -129,13 +130,13 @@ public class ConfigEventHandler {
         }
     }
     
-    public void save(String modid, Side side) {
+    public void save(HolderLookup.Provider provider, String modid, Side side) {
         try {
             Object object = CreativeConfigRegistry.ROOT.get(modid);
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
             if (object instanceof ICreativeConfigHolder || object == null) {
                 ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
-                JsonObject json = holder.save(true, false, side);
+                JsonObject json = holder.save(provider, true, false, side);
                 JsonUtils.cleanUp(json);
                 
                 if (json.size() > 0) {
@@ -181,9 +182,9 @@ public class ConfigEventHandler {
         return jsonWriter;
     }
     
-    public void save(Side side) {
+    public void save(HolderLookup.Provider provider, Side side) {
         for (String modid : CreativeConfigRegistry.ROOT.names())
-            save(modid, side);
+            save(provider, modid, side);
     }
     
     public void loadClientFields() {
@@ -214,7 +215,7 @@ public class ConfigEventHandler {
         saveClientFieldList(CreativeConfigRegistry.ROOT, list);
     }
     
-    public void load(String modid, Side side) {
+    public void load(HolderLookup.Provider provider, String modid, Side side) {
         Object object = CreativeConfigRegistry.ROOT.get(modid);
         if (object instanceof ICreativeConfigHolder holder) {
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
@@ -229,7 +230,7 @@ public class ConfigEventHandler {
                     }
                     if (json == null)
                         json = new JsonObject();
-                    holder.load(true, false, json, side);
+                    holder.load(provider, true, false, json, side);
                 } catch (FileNotFoundException e) {
                     LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
                 }
@@ -238,13 +239,13 @@ public class ConfigEventHandler {
         }
     }
     
-    public void load(Side side) {
+    public void load(HolderLookup.Provider provider, Side side) {
         loadClientFields();
         
         for (String modid : CreativeConfigRegistry.ROOT.names())
-            load(modid, side);
+            load(provider, modid, side);
         
-        save(side);
+        save(provider, side);
     }
     
     public boolean isSynchronizedWithServer(String key) {

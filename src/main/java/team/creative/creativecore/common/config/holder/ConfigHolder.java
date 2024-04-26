@@ -5,6 +5,7 @@ import java.util.Collection;
 import com.google.common.collect.ObjectArrays;
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
@@ -113,12 +114,12 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
+    public void load(HolderLookup.Provider provider, boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.is(side) && (!ignoreRestart || !field.requiresRestart)) {
                 if (json.has(field.name))
-                    field.set(ConfigTypeConveration.read(field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side,
+                    field.set(ConfigTypeConveration.read(provider, field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side,
                         field instanceof ConfigKeyField ? (ConfigKeyField) field : null), side);
                 else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
                     field.restoreDefault(side, ignoreRestart);
@@ -128,12 +129,12 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public JsonObject save(boolean saveDefault, boolean ignoreRestart, Side side) {
+    public JsonObject save(HolderLookup.Provider provider, boolean saveDefault, boolean ignoreRestart, Side side) {
         JsonObject object = new JsonObject();
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.is(side) && (!ignoreRestart || !field.requiresRestart) && (saveDefault || !field.isDefault(side)))
-                object.add(field.name, ConfigTypeConveration.write(field.getType(), field.get(), field.getDefault(), saveDefault, ignoreRestart, side,
+                object.add(field.name, ConfigTypeConveration.write(provider, field.getType(), field.get(), field.getDefault(), saveDefault, ignoreRestart, side,
                     field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
         }
         return object;

@@ -139,8 +139,8 @@ public class ConfigGuiLayer extends GuiLayer {
         if (side.isServer())
             getIntegratedParent().send(new ConfigurationChangePacket(rootHolder, ROOT));
         else {
-            rootHolder.load(false, true, JsonUtils.get(ROOT, rootHolder.path()), Side.CLIENT);
-            CreativeCore.CONFIG_HANDLER.save(Side.CLIENT);
+            rootHolder.load(provider(), false, true, JsonUtils.get(ROOT, rootHolder.path()), Side.CLIENT);
+            CreativeCore.CONFIG_HANDLER.save(provider(), Side.CLIENT);
         }
     }
     

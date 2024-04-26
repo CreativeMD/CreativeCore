@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -157,5 +158,10 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     
     @Override
     public void send(CreativePacket message) {}
+    
+    @Override
+    public Provider provider() {
+        return null;
+    }
     
 }

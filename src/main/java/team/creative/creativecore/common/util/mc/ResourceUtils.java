@@ -30,7 +30,7 @@ public class ResourceUtils {
             return 0;
         }
         
-        Path path = FileUtil.decomposePath(location.getPath()).get().map(x -> {
+        Path path = FileUtil.decomposePath(location.getPath()).mapOrElse(x -> {
             if (source instanceof VanillaPackResourcesAccessor vanilla)
                 return resolve(vanilla.getPathsForType().get(type), location, x);
             

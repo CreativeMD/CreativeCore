@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -28,7 +29,7 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
-    public List readElement(List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
+    public List readElement(HolderLookup.Provider provider, List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
         Class clazz = getListType(key);
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
@@ -36,30 +37,30 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             ConfigTypeConveration conversation = getUnsafe(clazz);
             for (int i = 0; i < array.size(); i++)
                 if (conversation != null)
-                    list.add(conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
+                    list.add(conversation.readElement(provider, ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, array.get(i), side, null));
                 else {
                     Object value = ConfigTypeConveration.createObject(clazz);
-                    holderConveration.readElement(ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, array.get(i), side, null);
+                    holderConveration.readElement(provider, ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, array.get(i), side, null);
                     list.add(value);
                 }
             return list;
         }
         List list = new ArrayList<>(defaultValue.size());
         for (int i = 0; i < defaultValue.size(); i++)
-            list.add(copy(side, defaultValue.get(i), clazz));
+            list.add(copy(provider, side, defaultValue.get(i), clazz));
         return list;
     }
     
     @Override
-    public JsonElement writeElement(List value, List defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
+    public JsonElement writeElement(HolderLookup.Provider provider, List value, List defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
         JsonArray array = new JsonArray();
         Class clazz = getListType(key);
         ConfigTypeConveration conversation = getUnsafe(clazz);
         for (int i = 0; i < value.size(); i++)
             if (conversation != null)
-                array.add(conversation.writeElement(value.get(i), null, true, ignoreRestart, side, null));
+                array.add(conversation.writeElement(provider, value.get(i), null, true, ignoreRestart, side, null));
             else
-                array.add(holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, value.get(i), value.get(i)), null, true, ignoreRestart, side, null));
+                array.add(holderConveration.writeElement(provider, ConfigHolderObject.createUnrelated(side, value.get(i), value.get(i)), null, true, ignoreRestart, side, null));
         return array;
     }
     
@@ -94,7 +95,8 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void restoreDefault(List value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
-        loadValue(readElement(value, true, false, writeElement(value, value, true, false, Side.SERVER, key), Side.SERVER, key), parent, configParent, key);
+        loadValue(readElement(configParent.provider(), value, true, false, writeElement(configParent.provider(), value, value, true, false, Side.SERVER, key), Side.SERVER, key),
+            parent, configParent, key);
     }
     
     @Override
@@ -117,7 +119,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 converation.createControls(control, null, null, clazz);
                 converation.loadValue(entry, control, null, null);
             } else {
-                entry = copy(Side.SERVER, entry, clazz);
+                entry = copy(configParent.provider(), Side.SERVER, entry, clazz);
                 control = new GuiConfigSubControlHolder("" + 0, ConfigHolderObject.createUnrelated(Side.SERVER, entry, entry), entry, configParent::changed);
                 ((GuiConfigSubControlHolder) control).createControls();
             }

@@ -98,7 +98,7 @@ public class GuiManagerItem extends GuiManager {
         if (handChanged) {
             handChanged = false;
             if (!layer.isClient())
-                CreativeCoreGuiRegistry.HAND.send(layer, hand.save(new CompoundTag()));
+                CreativeCoreGuiRegistry.HAND.send(layer, (CompoundTag) hand.save(layer.provider(), new CompoundTag()));
         }
         super.tick();
     }

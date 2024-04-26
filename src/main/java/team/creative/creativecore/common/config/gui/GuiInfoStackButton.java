@@ -13,7 +13,7 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiInfoStackButton extends GuiButton {
     
-    public static final GuiSyncGlobalLayer<FullItemDialogGuiLayer> ITEM_DIALOG = GuiSyncHolder.GLOBAL.layer("item_dialog", (t) -> new FullItemDialogGuiLayer());
+    public static final GuiSyncGlobalLayer<FullItemDialogGuiLayer> ITEM_DIALOG = GuiSyncHolder.GLOBAL.layer("item_dialog", (p, t) -> new FullItemDialogGuiLayer());
     
     private CreativeIngredient info;
     

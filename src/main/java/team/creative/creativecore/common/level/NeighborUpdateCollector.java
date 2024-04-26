@@ -40,7 +40,7 @@ public class NeighborUpdateCollector {
         for (int i = 0; i < 6; i++) {
             BlockPos neighbour = pos.relative(Direction.values()[i]);
             if (!notifiedBlocks.contains(neighbour) && !blocksToUpdate.contains(neighbour)) {
-                level.getBlockState(neighbour).neighborChanged(level, neighbour, origin.getBlock(), pos, false);
+                level.getBlockState(neighbour).handleNeighborChanged(level, neighbour, origin.getBlock(), pos, false);
                 notifiedBlocks.add(neighbour);
             }
         }

@@ -43,6 +43,7 @@ dependencies {
 	implementation "net.neoforged:neoforge:${forge_version}"
 }
 
+modProperties = [ 'displayTest="NONE"' ]
 modDependencies = []
 modMixins = [ "creativecore.mixins.json", "creativecore.forge.mixins.json" ]
 

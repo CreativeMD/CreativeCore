@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.ingredient;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -8,15 +9,13 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 
 public class CreativeIngredientFuel extends CreativeIngredient {
     
-    public CreativeIngredientFuel() {
-        
-    }
+    public CreativeIngredientFuel() {}
     
     @Override
-    protected void saveExtra(CompoundTag nbt) {}
+    protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {}
     
     @Override
-    protected void loadExtra(CompoundTag nbt) {}
+    protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {}
     
     @Override
     public ItemStack getExample() {

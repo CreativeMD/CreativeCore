@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
@@ -68,8 +69,8 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
     }
     
     @Override
-    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
-        super.load(loadDefault, ignoreRestart, json, side);
+    public void load(HolderLookup.Provider provider, boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
+        super.load(provider, loadDefault, ignoreRestart, json, side);
         configured(side);
     }
     

@@ -22,7 +22,7 @@ import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 
 public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     
-    public static final GuiSyncGlobalLayer<PermissionGuiLayer> PERMISSION_DIALOG = GuiSyncHolder.GLOBAL.layer("permission_dialog", (t) -> new PermissionGuiLayer());
+    public static final GuiSyncGlobalLayer<PermissionGuiLayer> PERMISSION_DIALOG = GuiSyncHolder.GLOBAL.layer("permission_dialog", (p, t) -> new PermissionGuiLayer());
     
     @Override
     protected Permission create(Class clazz) {
