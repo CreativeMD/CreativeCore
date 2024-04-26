@@ -15,7 +15,7 @@ license="LGPL-3.0-only"
 [[dependencies.creativecore]]
     modId="forge"
     mandatory=true
-    versionRange="[40,)"
+    versionRange="[40.2,)"
     ordering="NONE"
     side="BOTH"
 
