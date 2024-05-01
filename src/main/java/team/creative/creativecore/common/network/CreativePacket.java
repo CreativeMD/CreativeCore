@@ -8,7 +8,7 @@ public abstract class CreativePacket {
     public CreativePacket() {}
     
     public void execute(Player player) {
-        if (player.level().isClientSide)
+        if (player.level.isClientSide)
             executeClient(player);
         else
             executeServer((ServerPlayer) player);
@@ -19,12 +19,12 @@ public abstract class CreativePacket {
     public abstract void executeServer(ServerPlayer player);
     
     public void requiresClient(Player player) {
-        if (!player.level().isClientSide)
+        if (!player.level.isClientSide)
             throw new InvalidSideException(player);
     }
     
     public void requiresServer(Player player) {
-        if (player.level().isClientSide)
+        if (player.level.isClientSide)
             throw new InvalidSideException(player);
     }
     

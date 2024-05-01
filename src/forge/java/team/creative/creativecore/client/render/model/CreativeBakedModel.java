@@ -19,7 +19,6 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
@@ -92,7 +91,7 @@ public class CreativeBakedModel implements BakedModel {
     }
     
     @Override
-    public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+    public BakedModel applyTransform(ItemTransforms.TransformType transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
         if (renderedStack != null)
             item.applyCustomOpenGLHackery(poseStack, renderedStack, transformType);
         return BakedModel.super.applyTransform(transformType, poseStack, applyLeftHandTransform);

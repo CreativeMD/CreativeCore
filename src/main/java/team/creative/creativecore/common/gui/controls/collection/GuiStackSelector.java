@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.controls.collection;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -225,7 +225,7 @@ public class GuiStackSelector extends GuiLabel {
             HashMapList<String, ItemStack> stacks = super.collect(player);
             
             List<ItemStack> newStacks = new ArrayList<>();
-            for (Item item : BuiltInRegistries.ITEM) {
+            for (Item item : Registry.ITEM) {
                 ItemStack stack = new ItemStack(item);
                 if (selector.allow(stack))
                     newStacks.add(stack);
@@ -283,7 +283,7 @@ public class GuiStackSelector extends GuiLabel {
         try {
             itemName = stack.getDisplayName().getString();
         } catch (Exception e) {
-            itemName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+            itemName = Registry.ITEM.getKey(stack.getItem()).toString();
         }
         return itemName;
     }

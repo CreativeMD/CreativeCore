@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Font;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -67,10 +67,9 @@ public class GuiCheckBox extends GuiLabel {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         int yoffset = 0;
-        
-        PoseStack pose = graphics.pose();
+
         GuiStyle style = getStyle();
         
         if (!enabled)
@@ -78,9 +77,10 @@ public class GuiCheckBox extends GuiLabel {
         
         style.get(ControlStyleBorder.SMALL).render(pose, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
         style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(pose, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
-        
+
+        Font font = Minecraft.getInstance().font;
         if (value)
-            graphics.drawString(Minecraft.getInstance().font, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), false);
+            font.drawShadow(pose, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), false);
         else if (partial) {
             if (PARTIAL_STYLE == null)
                 PARTIAL_STYLE = new DisplayColor();

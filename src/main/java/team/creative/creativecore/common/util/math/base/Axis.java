@@ -1,8 +1,7 @@
 package team.creative.creativecore.common.util.math.base;
 
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -94,12 +93,12 @@ public enum Axis {
         
         @Override
         public float get(Vector3f vec) {
-            return vec.x;
+            return vec.x();
         }
         
         @Override
         public void set(Vector3f vec, float value) {
-            vec.x = value;
+            vec.setX(value);;
         }
         
         @Override
@@ -210,12 +209,12 @@ public enum Axis {
         
         @Override
         public float get(Vector3f vec) {
-            return vec.y;
+            return vec.y();
         }
         
         @Override
         public void set(Vector3f vec, float value) {
-            vec.y = value;
+            vec.setY(value);
         }
         
         @Override
@@ -326,12 +325,12 @@ public enum Axis {
         
         @Override
         public float get(Vector3f vec) {
-            return vec.z;
+            return vec.z();
         }
         
         @Override
         public void set(Vector3f vec, float value) {
-            vec.z = value;
+            vec.setZ(value);;
         }
         
         @Override

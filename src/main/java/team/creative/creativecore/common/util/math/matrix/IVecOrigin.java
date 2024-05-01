@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.util.math.matrix;
 
-import org.joml.Quaternionf;
-import org.joml.Vector3d;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3d;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -237,7 +237,7 @@ public interface IVecOrigin {
         matrixStack.translate(offX, offY, offZ);
         
         matrixStack.translate(rotationCenter.x - camX, rotationCenter.y - camY, rotationCenter.z - camZ);
-        matrixStack.mulPose(new Quaternionf().rotationXYZ((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ)));
+        matrixStack.mulPose(new Quaternion((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ), false));
         matrixStack.translate(-rotationCenter.x + camX, -rotationCenter.y + camY, -rotationCenter.z + camZ);
         
     }

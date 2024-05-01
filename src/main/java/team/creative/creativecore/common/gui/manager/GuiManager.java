@@ -2,9 +2,9 @@ package team.creative.creativecore.common.gui.manager;
 
 import java.util.function.Function;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiChildControl;
@@ -34,7 +34,7 @@ public abstract class GuiManager {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
+    public void renderOverlay(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
     
     public void mouseReleased(double x, double y, int button) {}
     

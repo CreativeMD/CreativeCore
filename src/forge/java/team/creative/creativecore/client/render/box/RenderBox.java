@@ -402,7 +402,7 @@ public class RenderBox extends AlignedBox {
     public boolean isTranslucent() {
         if (ColorUtils.isTransparent(color))
             return true;
-        return !state.isSolid();
+        return !state.canOcclude();
     }
     
     public List<BakedQuad> getBakedQuad(QuadGeneratorContext holder, LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {

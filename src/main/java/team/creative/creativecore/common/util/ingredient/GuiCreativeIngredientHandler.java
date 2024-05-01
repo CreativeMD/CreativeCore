@@ -5,7 +5,7 @@ import java.util.Optional;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -126,10 +126,10 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<TagKey<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Block>>().addComponents(BuiltInRegistries.BLOCK.getTagNames()
+                GuiComboBoxMapped<TagKey<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Block>>().addComponents(Registry.BLOCK.getTagNames()
                         .toList(), x -> {
                             TextBuilder builder = new TextBuilder();
-                            Optional<Named<Block>> tag = BuiltInRegistries.BLOCK.getTag(x);
+                            Optional<Named<Block>> tag = Registry.BLOCK.getTag(x);
                             if (tag.isPresent() && tag.get().size() > 0)
                                 builder.stack(new ItemStack(tag.get().get(0).value()));
                             return builder.text(x.location().toString()).build();
@@ -150,9 +150,9 @@ public abstract class GuiCreativeIngredientHandler {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<TagKey<Block>> box = gui.get("tag");
                     box.setLines(new TextMapBuilder<TagKey<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
-                        BuiltInRegistries.BLOCK.getTagNames().toList(), x -> {
+                        Registry.BLOCK.getTagNames().toList(), x -> {
                             TextBuilder builder = new TextBuilder();
-                            Optional<Named<Block>> tag = BuiltInRegistries.BLOCK.getTag(x);
+                            Optional<Named<Block>> tag = Registry.BLOCK.getTag(x);
                             if (tag.isPresent() && tag.get().size() > 0)
                                 builder.stack(new ItemStack(tag.get().get(0).value()));
                             return builder.text(x.location().toString()).build();
@@ -176,10 +176,10 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<TagKey<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(BuiltInRegistries.ITEM.getTagNames().toList(),
+                GuiComboBoxMapped<TagKey<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(Registry.ITEM.getTagNames().toList(),
                     x -> {
                         TextBuilder builder = new TextBuilder();
-                        Optional<Named<Item>> tag = BuiltInRegistries.ITEM.getTag(x);
+                        Optional<Named<Item>> tag = Registry.ITEM.getTag(x);
                         if (tag.isPresent() && tag.get().size() > 0)
                             builder.stack(new ItemStack(tag.get().get(0).value()));
                         return builder.text(x.location().toString()).build();
@@ -200,9 +200,9 @@ public abstract class GuiCreativeIngredientHandler {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<TagKey<Item>> box = gui.get("tag");
                     box.setLines(new TextMapBuilder<TagKey<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
-                        BuiltInRegistries.ITEM.getTagNames().toList(), x -> {
+                        Registry.ITEM.getTagNames().toList(), x -> {
                             TextBuilder builder = new TextBuilder();
-                            Optional<Named<Item>> tag = BuiltInRegistries.ITEM.getTag(x);
+                            Optional<Named<Item>> tag = Registry.ITEM.getTag(x);
                             if (tag.isPresent() && tag.get().size() > 0)
                                 builder.stack(new ItemStack(tag.get().get(0).value()));
                             return builder.text(x.location().toString()).build();
