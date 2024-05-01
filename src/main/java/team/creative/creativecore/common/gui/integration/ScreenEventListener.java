@@ -116,13 +116,14 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     public boolean charTyped(char codePoint, int modifiers) {
         return gui.getTopLayer().charTyped(codePoint, modifiers);
     }
-    
+
     @Override
-    public void setFocused(boolean focused) {
+    public boolean changeFocus(boolean focused) {
         this.focused = focused;
+        return true;
     }
-    
-    @Override
+
+
     public boolean isFocused() {
         return focused;
     }

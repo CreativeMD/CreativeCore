@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.util.math.geo;
 
-import org.joml.Vector3d;
+import com.mojang.math.Vector3d;
 
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;

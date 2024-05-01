@@ -2,9 +2,9 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import java.util.function.Consumer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,14 +35,14 @@ public class GuiRowLabel extends GuiLabel {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         if (selected)
             text.setDefaultColor(rect.inside(mouseX, mouseY) ? ColorUtils.rgba(230, 230, 0, 255) : ColorUtils.rgba(200, 200, 0, 255));
         else if (rect.inside(mouseX, mouseY))
             text.setDefaultColor(ColorUtils.YELLOW);
         else
             text.setDefaultColor(ColorUtils.WHITE);
-        super.renderContent(graphics, control, rect, mouseX, mouseY);
+        super.renderContent(pose, control, rect, mouseX, mouseY);
         text.setDefaultColor(ColorUtils.WHITE);
     }
     

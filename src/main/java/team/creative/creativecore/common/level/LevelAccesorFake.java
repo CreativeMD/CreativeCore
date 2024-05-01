@@ -15,7 +15,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
@@ -238,10 +237,4 @@ public class LevelAccesorFake implements LevelAccessor {
     public void gameEvent(GameEvent p_220404_, Vec3 p_220405_, Context p_220406_) {
         level.gameEvent(p_220404_, pos, p_220406_);
     }
-    
-    @Override
-    public FeatureFlagSet enabledFeatures() {
-        return level.enabledFeatures();
-    }
-    
 }

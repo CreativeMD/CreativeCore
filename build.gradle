@@ -25,7 +25,7 @@ java.sourceSets {
 
 minecraft {
     mappings channel: 'official', version: "${project.property 'minecraft_version'}"
-    
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
             taskName "creativecore_client"

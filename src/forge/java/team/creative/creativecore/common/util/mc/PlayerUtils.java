@@ -33,7 +33,7 @@ public class PlayerUtils {
     }
     
     public static double getReach(Player player) {
-        double attrib = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
+        double attrib = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
         return player.isCreative() ? attrib : attrib - 0.5;
     }
     

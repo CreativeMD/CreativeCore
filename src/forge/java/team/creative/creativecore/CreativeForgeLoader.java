@@ -75,7 +75,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerClientRenderGui(Consumer run) {
-        MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Post x) -> run.accept(x.getGuiGraphics()));
+        MinecraftForge.EVENT_BUS.addListener((RenderGuiEvent.Post x) -> run.accept(x.getPoseStack()));
     }
     
     @Override

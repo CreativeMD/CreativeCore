@@ -13,11 +13,6 @@ import net.minecraft.server.packs.PackType;
 @Mixin(FilePackResources.class)
 public interface FilePackResourcesAccessor {
     
-    @Invoker
-    public static String callGetPathFromLocation(PackType type, ResourceLocation location) {
-        throw new UnsupportedOperationException();
-    }
-    
     @Accessor
     public ZipFile getZipFile();
     
