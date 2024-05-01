@@ -61,7 +61,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-//modDependencies = []
+modDependencies = []
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE

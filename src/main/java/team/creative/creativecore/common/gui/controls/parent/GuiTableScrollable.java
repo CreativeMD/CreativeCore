@@ -57,8 +57,8 @@ public class GuiTableScrollable extends GuiParent {
         scrollableTable.alternativeScrolling = true;
         
         this.flow = GuiFlow.STACK_Y;
-        super.add(topRow);
-        super.add(bottom);
+        super.addControl(topRow);
+        super.addControl(bottom);
         bottom.add(firstCol);
         bottom.add(scrollableTable);
         spacing = 4;
@@ -66,7 +66,7 @@ public class GuiTableScrollable extends GuiParent {
     
     @Override
     @Deprecated
-    public GuiChildControl add(GuiControl control) {
+    public GuiChildControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

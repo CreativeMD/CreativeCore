@@ -376,7 +376,7 @@ public class RenderBox extends AlignedBox {
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
-                if (renderQuads instanceof List list)
+                if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
                         ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)

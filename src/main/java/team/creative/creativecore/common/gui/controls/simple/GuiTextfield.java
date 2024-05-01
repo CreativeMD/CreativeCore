@@ -32,7 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.GuiFocusControl;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.event.GuiTextUpdateEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -54,12 +54,12 @@ public class GuiTextfield extends GuiFocusControl {
     
     public GuiTextfield(String name) {
         super(name);
-        setText("");
+        this.setText("");
     }
     
     public GuiTextfield(String name, String text) {
         super(name);
-        setText(text);
+        this.setText(text);
     }
     
     @Override
@@ -202,7 +202,7 @@ public class GuiTextfield extends GuiFocusControl {
         }
     }
     
-    public void setText(String textIn) {
+    public GuiTextfield setText(String textIn) {
         if (this.validator.test(textIn)) {
             if (textIn.length() > this.maxStringLength)
                 this.text = textIn.substring(0, this.maxStringLength);
@@ -213,6 +213,7 @@ public class GuiTextfield extends GuiFocusControl {
             this.setSelectionPos(this.cursorPosition);
             this.onTextChanged(textIn);
         }
+        return this;
     }
     
     public String getText() {
@@ -220,8 +221,8 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     public String getSelectedText() {
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         return this.text.substring(i, j);
     }
     
@@ -231,8 +232,8 @@ public class GuiTextfield extends GuiFocusControl {
     
     /** Adds the given text after the cursor, or replaces the currently selected text if there is a selection. */
     public void writeText(String textToWrite) {
-        int i = this.cursorPosition < this.selectionEnd ? this.cursorPosition : this.selectionEnd;
-        int j = this.cursorPosition < this.selectionEnd ? this.selectionEnd : this.cursorPosition;
+        int i = Math.min(this.cursorPosition, this.selectionEnd);
+        int j = Math.max(this.cursorPosition, this.selectionEnd);
         int k = this.maxStringLength - this.text.length() - (i - j);
         String s = SharedConstants.filterText(textToWrite);
         int l = s.length();
@@ -251,7 +252,7 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     private void onTextChanged(String newText) {
-        raiseEvent(new GuiControlChangedEvent(this));
+        this.raiseEvent(new GuiTextUpdateEvent(this));
     }
     
     private void delete(int p_212950_1_) {
@@ -259,7 +260,7 @@ public class GuiTextfield extends GuiFocusControl {
             this.deleteWords(p_212950_1_);
         else
             this.deleteFromCursor(p_212950_1_);
-        onTextChanged(text);
+        this.onTextChanged(text);
     }
     
     public void deleteWords(int num) {
@@ -553,7 +554,8 @@ public class GuiTextfield extends GuiFocusControl {
         
     }
     
-    public void setSuggestion(@Nullable String p_195612_1_) {
+    public GuiTextfield setSuggestion(@Nullable String p_195612_1_) {
         this.suggestion = p_195612_1_;
+        return this;
     }
 }

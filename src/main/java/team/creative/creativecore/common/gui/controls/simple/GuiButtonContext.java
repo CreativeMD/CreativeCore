@@ -55,7 +55,7 @@ public class GuiButtonContext extends GuiButton {
             i++;
         }
         
-        extension = getLayer().addHover(parent);
+        extension = getLayer().addHoverControl(parent);
         
         rect = toLayerRect(new Rect(0, 0, rect.getWidth(), rect.getHeight()));
         extension.control.init();

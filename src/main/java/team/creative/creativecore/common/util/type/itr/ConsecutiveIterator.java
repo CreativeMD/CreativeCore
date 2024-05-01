@@ -7,10 +7,12 @@ public class ConsecutiveIterator<T> implements IterableIterator<T> {
     public final Iterator<T>[] itrs;
     protected int index;
     
+    @SafeVarargs
     public ConsecutiveIterator(Iterator<T>... itrs) {
         this.itrs = itrs;
     }
     
+    @SafeVarargs
     public ConsecutiveIterator(Iterable<T>... itrs) {
         this.itrs = new Iterator[itrs.length];
         for (int i = 0; i < itrs.length; i++)

@@ -33,6 +33,8 @@ public class CreativeCoreConfig {
     }
     
     public boolean is(Player player, String usergroup) {
+        if (player == null)
+            return false;
         Usergroup group = usergroups.get(usergroup);
         if (group != null)
             return group.is(player);

@@ -58,7 +58,7 @@ public class GuiTabs extends GuiParent {
         index = select;
         selected = tabs.get(select);
         bar.highlight(select);
-        GuiChildControl control = add(selected);
+        GuiChildControl control = addControl(selected);
         if (lastHeight == -1 && getParent() != null)
             reflow();
         else {
@@ -112,7 +112,7 @@ public class GuiTabs extends GuiParent {
         }
         
         public void addTab(Component component, int index) {
-            add(new GuiBorderlessButton("b" + count, x -> select(index)).setTitle(component));
+            addControl(new GuiBorderlessButton("b" + count, x -> select(index)).setTitle(component));
             count++;
         }
         
