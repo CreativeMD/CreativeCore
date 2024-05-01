@@ -1,8 +1,7 @@
 package team.creative.creativecore.common.util.math.vec;
 
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 import team.creative.creativecore.common.util.math.base.Axis;
 
 public class Vec3f extends VecNf<Vec3f> {

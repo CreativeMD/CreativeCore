@@ -13,7 +13,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
@@ -132,7 +132,7 @@ public abstract class CreativeIngredient {
             return null;
         });
         registerType("blocktag", CreativeIngredientBlockTag.class, (x) -> {
-            if (x instanceof TagKey key && key.isFor(Registries.BLOCK))
+            if (x instanceof TagKey key && key.isFor(Registry.BLOCK_REGISTRY))
                 return new CreativeIngredientBlockTag((TagKey<Block>) x);
             return null;
         });
@@ -143,7 +143,7 @@ public abstract class CreativeIngredient {
             return null;
         });
         registerType("itemtag", CreativeIngredientItemTag.class, (x) -> {
-            if (x instanceof TagKey key && key.isFor(Registries.ITEM))
+            if (x instanceof TagKey key && key.isFor(Registry.ITEM_REGISTRY))
                 return new CreativeIngredientItemTag((TagKey<Item>) x);
             return null;
         });

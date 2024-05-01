@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import net.minecraft.core.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.JsonElement;
@@ -19,7 +20,6 @@ import com.google.gson.JsonPrimitive;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -576,7 +576,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
                 parent.flow = GuiFlow.STACK_Y;
-                parent.add(new GuiComboBoxMapped<>("sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
+                parent.add(new GuiComboBoxMapped<>("sound", new TextMapBuilder<ResourceLocation>().addComponent(Registry.SOUND_EVENT.keySet(), x -> {
                     if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
@@ -740,7 +740,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(NamedList.class, new ConfigTypeNamedList());
         registerType(Permission.class, new ConfigTypePermission());
         
-        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1, false));
+        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1, false));
         
         registerType(ToggleableConfig.class, new ConfigTypeToggleable());
         

@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.util.math.box;
 
-import org.joml.Vector3d;
-
+import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -170,7 +170,7 @@ public class AlignedBox {
     }
     
     public BlockPos getOffset() {
-        return BlockPos.containing(minX, minY, minZ);
+        return new BlockPos(Mth.floor(minX), Mth.floor(minY), Mth.floor(minZ));
     }
     
     public float get(Facing facing) {

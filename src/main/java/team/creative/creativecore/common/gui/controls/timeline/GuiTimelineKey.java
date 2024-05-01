@@ -1,15 +1,14 @@
 package team.creative.creativecore.common.gui.controls.timeline;
 
+import com.mojang.math.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -120,10 +119,8 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
-    public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(PoseStack pose, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
-        
-        PoseStack pose = graphics.pose();
         GuiStyle style = getStyle();
         
         pose.pushPose();
@@ -131,7 +128,7 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
         double height = control.getHeight();
         
         pose.translate(width * 0.5, height * 0.5, 0);
-        pose.mulPose(Axis.ZP.rotationDegrees(45));
+        pose.mulPose(Vector3f.ZP.rotationDegrees(45));
         pose.translate(width * -0.5, height * -0.5, 0);
         
         int borderWidth = style.getBorder(ControlStyleBorder.SMALL);
@@ -153,5 +150,5 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(PoseStack pose, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
 }

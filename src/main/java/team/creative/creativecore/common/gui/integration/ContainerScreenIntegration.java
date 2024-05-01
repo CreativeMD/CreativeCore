@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.integration;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,8 +34,8 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        getMenu().render(graphics, this, listener, mouseX, mouseY);
+    public void render(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
+        getMenu().render(pose, this, listener, mouseX, mouseY);
         
         // Update dimensions for JEI
         int minX = Integer.MAX_VALUE;
@@ -80,7 +80,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {}
+    protected void renderBg(PoseStack pose, float partialTicks, int x, int y) {}
     
     @Override
     public void mouseMoved(double x, double y) {

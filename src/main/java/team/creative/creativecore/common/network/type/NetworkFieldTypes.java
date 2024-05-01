@@ -11,20 +11,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import com.mojang.math.Vector3d;
+import com.mojang.math.Vector3f;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -35,11 +34,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
@@ -367,12 +363,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Block content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(content));
+                buffer.writeResourceLocation(Registry.BLOCK.getKey(content));
             }
             
             @Override
             protected Block readContent(FriendlyByteBuf buffer) {
-                return BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
+                return Registry.BLOCK.get(buffer.readResourceLocation());
             }
         }, Block.class);
         
@@ -380,12 +376,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Item content, FriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(content));
+                buffer.writeResourceLocation(Registry.ITEM.getKey(content));
             }
             
             @Override
             protected Item readContent(FriendlyByteBuf buffer) {
-                return BuiltInRegistries.ITEM.get(buffer.readResourceLocation());
+                return Registry.ITEM.get(buffer.readResourceLocation());
             }
         }, Item.class);
         
@@ -737,27 +733,13 @@ public class NetworkFieldTypes {
         });
         
         NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Packet>((x, y) -> Packet.class.isAssignableFrom(x)) {
-            
-            public static final int BUNDLE_WILDCARD = 234920940;
-            
+
             @Override
             public void write(Packet content, Class classType, Type genericType, FriendlyByteBuf buffer) {
                 Packet packet = content;
                 ConnectionProtocol protocol = ConnectionProtocol.getProtocolForPacket(packet);
                 if (protocol != ConnectionProtocol.PLAY)
                     throw new RuntimeException("Cannot send packet protocol " + protocol + ". Only " + ConnectionProtocol.PLAY + " is allowed");
-                
-                if (content instanceof BundlePacket<?> bundle) {
-                    buffer.writeInt(BUNDLE_WILDCARD);
-                    int size = 0;
-                    for (@SuppressWarnings("unused")
-                    Packet<?> subPacket : bundle.subPackets())
-                        size++;
-                    buffer.writeInt(size);
-                    for (Packet<?> subPacket : bundle.subPackets())
-                        write(subPacket, subPacket.getClass(), null, buffer);
-                    return;
-                }
                 
                 int id = protocol.getPacketId(PacketFlow.CLIENTBOUND, packet);
                 if (id != -1) {
@@ -773,13 +755,6 @@ public class NetworkFieldTypes {
             @Override
             public Packet read(Class classType, Type genericType, FriendlyByteBuf buffer) {
                 int id = buffer.readInt();
-                if (id == BUNDLE_WILDCARD) {
-                    int size = buffer.readInt();
-                    List<Packet<ClientGamePacketListener>> packets = new ArrayList<>();
-                    for (int i = 0; i < size; i++)
-                        packets.add(read(null, null, buffer));
-                    return new ClientboundBundlePacket(packets);
-                }
                 if (id < 0)
                     return ConnectionProtocol.PLAY.createPacket(PacketFlow.SERVERBOUND, -id, buffer);
                 return ConnectionProtocol.PLAY.createPacket(PacketFlow.CLIENTBOUND, id, buffer);

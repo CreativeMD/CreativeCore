@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.util.filter.premade;
 
+import net.minecraft.core.Registry;
 import org.apache.commons.lang3.ArrayUtils;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -54,7 +54,7 @@ public class ItemFilters {
         
         @SuppressWarnings("unused")
         public ItemFilter(CompoundTag nbt) {
-            this.item = BuiltInRegistries.ITEM.get(new ResourceLocation(nbt.getString("i")));
+            this.item = Registry.ITEM.get(new ResourceLocation(nbt.getString("i")));
         }
         
         @Override
@@ -65,7 +65,7 @@ public class ItemFilters {
         @Override
         public CompoundTag write() {
             CompoundTag nbt = new CompoundTag();
-            nbt.putString("i", BuiltInRegistries.ITEM.getKey(item).toString());
+            nbt.putString("i", Registry.ITEM.getKey(item).toString());
             return nbt;
         }
         
@@ -84,7 +84,7 @@ public class ItemFilters {
             ListTag list = nbt.getList("i", Tag.TAG_STRING);
             this.items = new Item[list.size()];
             for (int i = 0; i < items.length; i++)
-                items[i] = BuiltInRegistries.ITEM.get(new ResourceLocation(list.getString(i)));
+                items[i] = Registry.ITEM.get(new ResourceLocation(list.getString(i)));
         }
         
         @Override
@@ -97,7 +97,7 @@ public class ItemFilters {
             CompoundTag nbt = new CompoundTag();
             ListTag list = new ListTag();
             for (int i = 0; i < items.length; i++)
-                list.add(StringTag.valueOf(BuiltInRegistries.ITEM.getKey(items[i]).toString()));
+                list.add(StringTag.valueOf(Registry.ITEM.getKey(items[i]).toString()));
             nbt.put("i", list);
             return nbt;
         }

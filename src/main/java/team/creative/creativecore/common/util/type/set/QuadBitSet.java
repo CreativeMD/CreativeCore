@@ -3,12 +3,11 @@ package team.creative.creativecore.common.util.type.set;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.joml.Vector2i;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.nbt.Tag;
+import team.creative.creativecore.backport.Vector2i;
 import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 
 public class QuadBitSet implements Iterable<Vector2i> {
