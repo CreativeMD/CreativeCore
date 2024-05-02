@@ -15,13 +15,15 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 public class CreativeNetworkPacket<T extends CreativePacket> {
     
-    public final CustomPacketPayload.Type<T> id;
+    public final CustomPacketPayload.Type<T> sid;
+    public final CustomPacketPayload.Type<T> cid;
     public final Class<T> classType;
     public final Supplier<T> supplier;
     public List<CreativeNetworkField> parsers = new ArrayList<>();
     
     public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier) {
-        this.id = new CustomPacketPayload.Type(id);
+        this.sid = new CustomPacketPayload.Type(new ResourceLocation(id.getNamespace(), id.getPath() + "s"));
+        this.cid = new CustomPacketPayload.Type(new ResourceLocation(id.getNamespace(), id.getPath() + "c"));
         this.classType = classType;
         this.supplier = supplier;
         

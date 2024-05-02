@@ -8,5 +8,5 @@ import net.minecraft.client.MouseHandler;
 @Mixin(MouseHandler.class)
 public interface MouseHandlerAccessor {
     @Accessor
-    double getLastMouseEventTime();
+    double getLastHandleMovementTime();
 }

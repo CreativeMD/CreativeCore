@@ -41,7 +41,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     }
     
     public double getEventTime() {
-        return ((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).getLastMouseEventTime();
+        return ((MouseHandlerAccessor) Minecraft.getInstance().mouseHandler).getLastHandleMovementTime();
     }
     
     protected void fireRemaingEvents() {

@@ -58,8 +58,8 @@ public class CreativeNetwork {
                 throw e;
             }
         };
-        registrar.playToClient(handler.id, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.CLIENTBOUND), x -> handler.read(x, PacketFlow.CLIENTBOUND)), executor);
-        registrar.playToServer(handler.id, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.SERVERBOUND), x -> handler.read(x, PacketFlow.SERVERBOUND)), executor);
+        registrar.playToClient(handler.cid, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.CLIENTBOUND), x -> handler.read(x, PacketFlow.CLIENTBOUND)), executor);
+        registrar.playToServer(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.SERVERBOUND), x -> handler.read(x, PacketFlow.SERVERBOUND)), executor);
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
@@ -70,17 +70,17 @@ public class CreativeNetwork {
         id++;
     }
     
-    protected <T extends CreativePacket> T prepare(T packet) {
-        packet.setType(packetTypes.get(packet.getClass()).id);
+    protected <T extends CreativePacket> T prepare(T packet, PacketFlow flow) {
+        packet.setType(flow.isClientbound() ? packetTypes.get(packet.getClass()).cid : packetTypes.get(packet.getClass()).sid);
         return packet;
     }
     
     public void sendToServer(CreativePacket message) {
-        PacketDistributor.sendToServer(prepare(message));
+        PacketDistributor.sendToServer(prepare(message, PacketFlow.CLIENTBOUND));
     }
     
     public void sendToClient(CreativePacket message, ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, prepare(message));
+        PacketDistributor.sendToPlayer(player, prepare(message, PacketFlow.SERVERBOUND));
     }
     
     public void sendToClient(CreativePacket message, Level level, BlockPos pos) {
@@ -91,24 +91,24 @@ public class CreativeNetwork {
     }
     
     public void sendToClient(CreativePacket message, LevelChunk chunk) {
-        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) chunk.getLevel(), chunk.getPos(), prepare(message));
+        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) chunk.getLevel(), chunk.getPos(), prepare(message, PacketFlow.SERVERBOUND));
     }
     
     public void sendToClientTracking(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTracking(message, sub.getHolder());
         else
-            PacketDistributor.sendToPlayersTrackingEntity(entity, prepare(message));
+            PacketDistributor.sendToPlayersTrackingEntity(entity, prepare(message, PacketFlow.SERVERBOUND));
     }
     
     public void sendToClientTrackingAndSelf(CreativePacket message, Entity entity) {
         if (entity.level() instanceof ISubLevel sub)
             sendToClientTrackingAndSelf(message, sub.getHolder());
         else
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, prepare(message));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, prepare(message, PacketFlow.SERVERBOUND));
     }
     
     public void sendToClientAll(MinecraftServer server, CreativePacket message) {
-        PacketDistributor.sendToAllPlayers(prepare(message));
+        PacketDistributor.sendToAllPlayers(prepare(message, PacketFlow.SERVERBOUND));
     }
 }

@@ -7,7 +7,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -22,12 +21,12 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.client.render.model.CreativeBlockModel;
@@ -55,6 +54,7 @@ public class CreativeCoreClient {
     public static void load(IEventBus bus) {
         bus.addListener(CreativeCoreClient::init);
         bus.addListener(CreativeCoreClient::modelEvent);
+        bus.addListener(CreativeCoreClient::screenEvent);
     }
     
     public static void registerClientConfig(String modid) {
@@ -116,7 +116,14 @@ public class CreativeCoreClient {
             }
         });
         
-        MenuScreens.register(CreativeCore.GUI_CONTAINER, new ScreenConstructor<ContainerIntegration, ContainerScreenIntegration>() {
+    }
+    
+    public static void modelEvent(RegisterGeometryLoaders event) {
+        event.register("rendered", new CreativeModelLoader());
+    }
+    
+    public static void screenEvent(RegisterMenuScreensEvent event) {
+        event.register(CreativeCore.GUI_CONTAINER, new ScreenConstructor<ContainerIntegration, ContainerScreenIntegration>() {
             
             @Override
             public ContainerScreenIntegration create(ContainerIntegration container, Inventory inventory, Component p_create_3_) {
@@ -125,13 +132,9 @@ public class CreativeCoreClient {
         });
     }
     
-    public static void modelEvent(RegisterGeometryLoaders event) {
-        event.register("rendered", new CreativeModelLoader());
-    }
-    
     @SubscribeEvent
-    public static void clientTick(ClientTickEvent event) {
-        if (event.phase == Phase.START && Minecraft.getInstance().screen instanceof IScaleableGuiScreen gui)
+    public static void clientTick(ClientTickEvent.Pre event) {
+        if (Minecraft.getInstance().screen instanceof IScaleableGuiScreen gui)
             gui.clientTick();
     }
 }

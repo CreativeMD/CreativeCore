@@ -20,14 +20,13 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
-import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.neoforge.event.TickEvent.RenderTickEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
@@ -53,10 +52,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerClientTick(Runnable run) {
-        NeoForge.EVENT_BUS.addListener((ClientTickEvent x) -> {
-            if (x.phase == Phase.START)
-                run.run();
-        });
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Pre x) -> run.run());
     }
     
     @Override
@@ -66,24 +62,21 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerClientRenderStart(Runnable run) {
-        NeoForge.EVENT_BUS.addListener((RenderTickEvent x) -> {
-            if (x.phase == Phase.START)
-                run.run();
-        });
+        NeoForge.EVENT_BUS.addListener((RenderFrameEvent.Pre x) -> run.run());
     }
     
     @Override
     public void registerLevelTick(Consumer<ServerLevel> consumer) {
-        NeoForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
-            if (x.phase == Phase.END && x.level instanceof ServerLevel level)
+        NeoForge.EVENT_BUS.addListener((LevelTickEvent.Post x) -> {
+            if (x.getLevel() instanceof ServerLevel level)
                 consumer.accept(level);
         });
     }
     
     @Override
     public void registerLevelTickStart(Consumer<ServerLevel> consumer) {
-        NeoForge.EVENT_BUS.addListener((LevelTickEvent x) -> {
-            if (x.phase == Phase.START && x.level instanceof ServerLevel level)
+        NeoForge.EVENT_BUS.addListener((LevelTickEvent.Pre x) -> {
+            if (x.getLevel() instanceof ServerLevel level)
                 consumer.accept(level);
         });
         

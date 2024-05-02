@@ -1,9 +1,13 @@
 package team.creative.creativecore.common.util.mc;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
+import cpw.mods.niofs.union.UnionFileSystem;
+import cpw.mods.niofs.union.UnionPath;
 import net.minecraft.FileUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
@@ -43,7 +47,14 @@ public class ResourceUtils {
             return null;
         });
         if (path != null)
-            return path.toFile().length();
+            if (path.getFileSystem() instanceof UnionFileSystem u)
+                try {
+                    return u.readAttributes((UnionPath) path, BasicFileAttributes.class).size();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            else
+                return path.toFile().length();
         return 0;
     }
     
