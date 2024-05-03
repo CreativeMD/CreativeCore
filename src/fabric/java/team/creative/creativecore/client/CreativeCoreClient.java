@@ -9,9 +9,10 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -59,8 +60,12 @@ public class CreativeCoreClient implements ClientModInitializer {
     public void onInitializeClient() {
         ClientTickEvents.START_CLIENT_TICK.register(GuiEventHandler::onTick);
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> GuiStyle.reload());
-        ScreenRegistry.register(CreativeCore.GUI_CONTAINER, (ContainerIntegration container, Inventory inventory, Component p_create_3_) -> {
-            return new ContainerScreenIntegration(container, inventory);
+        MenuScreens.register(CreativeCore.GUI_CONTAINER, new ScreenConstructor<ContainerIntegration, ContainerScreenIntegration>() {
+            
+            @Override
+            public ContainerScreenIntegration create(ContainerIntegration container, Inventory inventory, Component p_create_3_) {
+                return new ContainerScreenIntegration(container, inventory);
+            }
         });
         CommandRegistrationCallback.EVENT.register(CreativeCoreClient::commands);
         ClientTickEvents.START_CLIENT_TICK.register(CreativeCoreClient::clientTick);

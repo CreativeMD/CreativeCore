@@ -20,6 +20,7 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
     public final Class<T> classType;
     public final Supplier<T> supplier;
     public List<CreativeNetworkField> parsers = new ArrayList<>();
+    public boolean fabric;
     
     public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier) {
         this.sid = new CustomPacketPayload.Type(new ResourceLocation(id.getNamespace(), id.getPath() + "s"));

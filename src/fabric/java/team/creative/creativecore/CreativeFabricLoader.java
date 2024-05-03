@@ -1,6 +1,5 @@
 package team.creative.creativecore;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -24,14 +23,6 @@ import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
 public class CreativeFabricLoader implements ICreativeLoader {
-    
-    @Override
-    public void registerDisplayTest(Supplier<String> suppliedVersion, BiPredicate<String, Boolean> remoteVersionTest) {}
-    
-    @Override
-    public String ignoreServerNetworkConstant() {
-        return "";
-    }
     
     @Override
     public void register(CommonLoader loader) {}

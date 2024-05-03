@@ -11,6 +11,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -27,6 +28,8 @@ public interface IGuiIntegratedParent extends IGuiParent {
         @Override
         public void create() {}
     };
+    
+    public HolderLookup.Provider provider();
     
     List<GuiLayer> getLayers();
     

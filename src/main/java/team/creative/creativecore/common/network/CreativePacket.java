@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 
 public abstract class CreativePacket implements CustomPacketPayload {
     
-    private Type<CreativePacket> type;
+    private Type<? extends CreativePacket> type;
     
     public CreativePacket() {}
     
@@ -22,7 +22,7 @@ public abstract class CreativePacket implements CustomPacketPayload {
         return type;
     }
     
-    void setType(CustomPacketPayload.Type<CreativePacket> type) {
+    void setType(CustomPacketPayload.Type<? extends CreativePacket> type) {
         this.type = type;
     }
     
