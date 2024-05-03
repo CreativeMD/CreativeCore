@@ -20,13 +20,14 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
     public final Class<T> classType;
     public final Supplier<T> supplier;
     public List<CreativeNetworkField> parsers = new ArrayList<>();
-    public boolean fabric;
+    public final boolean fabric;
     
-    public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier) {
+    public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier, boolean fabric) {
         this.sid = new CustomPacketPayload.Type(new ResourceLocation(id.getNamespace(), id.getPath() + "s"));
         this.cid = new CustomPacketPayload.Type(new ResourceLocation(id.getNamespace(), id.getPath() + "c"));
         this.classType = classType;
         this.supplier = supplier;
+        this.fabric = fabric;
         
         for (Field field : this.classType.getFields()) {
             
@@ -51,6 +52,8 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
         
         for (CreativeNetworkField parser : parsers)
             parser.read(message, buffer, flow);
+        
+        message.setType(!fabric && flow == PacketFlow.CLIENTBOUND ? cid : sid);
         
         return message;
     }
