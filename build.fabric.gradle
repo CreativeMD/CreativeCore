@@ -13,8 +13,6 @@ repositories {
 	maven { url = 'https://maven.neoforged.net/releases' }
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
 java.sourceSets {
     main {
         java {
