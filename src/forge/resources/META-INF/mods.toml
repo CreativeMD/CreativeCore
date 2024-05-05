@@ -9,6 +9,7 @@ license="LGPL-3.0-only"
     version="2.11.27"
     displayName="CreativeCore"
     displayURL="https://modrinth.com/mod/creativecore"
+    displayTest="MATCH_VERSION"
     authors="CreativeMD"
     description='''A simple but powerful coremod.'''
 
