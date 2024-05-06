@@ -119,7 +119,7 @@ public class CreativeCoreClient {
     }
     
     public static void modelEvent(RegisterGeometryLoaders event) {
-        event.register("rendered", new CreativeModelLoader());
+        event.register(new ResourceLocation(CreativeCore.MODID, "rendered"), new CreativeModelLoader());
     }
     
     public static void screenEvent(RegisterMenuScreensEvent event) {
