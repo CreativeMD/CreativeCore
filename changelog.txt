@@ -1,3 +1,6 @@
+2.11.28
+Fixed crash with newer NeoForge versions
+
 2.11.27
 Fixed packets not working properly
 
