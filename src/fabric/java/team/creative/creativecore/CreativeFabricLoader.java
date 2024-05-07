@@ -14,7 +14,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -75,6 +77,11 @@ public class CreativeFabricLoader implements ICreativeLoader {
     public float getFluidViscosityMultiplier(Fluid fluid, Level level) {
         // 5.0F is the tick delay of Water
         return fluid.getTickDelay(level) / 5.0F;
+    }
+    
+    @Override
+    public float getFriction(LevelAccessor level, BlockPos pos, Entity entity) {
+        return level.getBlockState(pos).getBlock().getFriction();
     }
     
     @Override

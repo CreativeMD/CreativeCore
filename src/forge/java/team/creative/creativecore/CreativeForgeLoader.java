@@ -7,7 +7,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -115,6 +117,11 @@ public class CreativeForgeLoader implements ICreativeLoader {
     @Override
     public float getFluidViscosityMultiplier(Fluid fluid, Level level) {
         return fluid.getFluidType().getViscosity() / 1000f;
+    }
+    
+    @Override
+    public float getFriction(LevelAccessor level, BlockPos pos, Entity entity) {
+        return level.getBlockState(pos).getFriction(level, pos, entity);
     }
     
     @Override

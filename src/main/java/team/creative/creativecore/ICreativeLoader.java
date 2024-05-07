@@ -4,7 +4,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -18,7 +20,6 @@ public interface ICreativeLoader {
     public default void loadCommon() {
         CreativeCoreGuiRegistry.init();
         GuiDialogHandler.init();
-        
     }
     
     public Side getOverallSide();
@@ -50,6 +51,8 @@ public interface ICreativeLoader {
     public <T> void registerListener(Consumer<T> consumer);
     
     public float getFluidViscosityMultiplier(Fluid fluid, Level level);
+    
+    public float getFriction(LevelAccessor level, BlockPos pos, Entity entity);
     
     public void postForge(Event event);
     

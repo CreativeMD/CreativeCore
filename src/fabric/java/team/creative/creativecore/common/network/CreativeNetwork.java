@@ -32,7 +32,7 @@ public class CreativeNetwork {
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
-        CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(new ResourceLocation(modid, "" + id), classType, supplier);
+        CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(new ResourceLocation(modid, "" + id), classType, supplier, true);
         
         PayloadTypeRegistry.playC2S().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.CLIENTBOUND), x -> {
             T packet = handler.read(x, PacketFlow.CLIENTBOUND);
