@@ -2,7 +2,6 @@ package team.creative.creativecore.common.config.gui;
 
 import com.google.gson.JsonElement;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;

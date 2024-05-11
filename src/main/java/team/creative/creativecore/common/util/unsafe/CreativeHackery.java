@@ -1,9 +1,9 @@
 package team.creative.creativecore.common.util.unsafe;
 
-import sun.misc.Unsafe;
-
 import java.lang.reflect.Field;
 import java.security.PrivilegedExceptionAction;
+
+import sun.misc.Unsafe;
 
 public class CreativeHackery {
     

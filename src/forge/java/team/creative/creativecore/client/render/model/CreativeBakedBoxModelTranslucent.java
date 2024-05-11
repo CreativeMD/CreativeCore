@@ -1,13 +1,14 @@
 package team.creative.creativecore.client.render.model;
 
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class CreativeBakedBoxModelTranslucent extends CreativeBakedBoxModel {
     

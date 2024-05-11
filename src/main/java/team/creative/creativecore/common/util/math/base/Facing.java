@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.util.math.base;
 
 import com.mojang.math.Vector3f;
-import net.minecraft.client.gui.Gui;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;

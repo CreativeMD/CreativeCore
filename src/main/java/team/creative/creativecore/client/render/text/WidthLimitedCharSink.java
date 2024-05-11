@@ -1,11 +1,11 @@
 package team.creative.creativecore.client.render.text;
 
+import java.util.Arrays;
+
 import net.minecraft.client.StringSplitter;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSink;
 import team.creative.creativecore.mixin.StringSplitterAccessor;
-
-import java.util.Arrays;
 
 public class WidthLimitedCharSink implements FormattedCharSink {
     

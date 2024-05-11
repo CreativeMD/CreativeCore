@@ -1,6 +1,9 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -13,8 +16,6 @@ import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
-
-import java.util.List;
 
 public class GuiProgressbar extends GuiControl {
     

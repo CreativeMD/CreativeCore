@@ -3,7 +3,6 @@ package team.creative.creativecore.common.config.gui;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import team.creative.creativecore.CreativeCore;

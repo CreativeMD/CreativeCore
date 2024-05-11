@@ -1,5 +1,8 @@
 package team.creative.creativecore.common.gui.controls.collection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -20,9 +23,6 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.StackUtils;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiStackSelector extends GuiLabel {
     

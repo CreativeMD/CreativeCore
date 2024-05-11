@@ -1,9 +1,14 @@
 package team.creative.creativecore.common.util.math.geo;
 
 import com.mojang.math.Vector3d;
+
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.geo.VectorFan.ParallelException;
-import team.creative.creativecore.common.util.math.vec.*;
+import team.creative.creativecore.common.util.math.vec.Vec2d;
+import team.creative.creativecore.common.util.math.vec.Vec2f;
+import team.creative.creativecore.common.util.math.vec.Vec3d;
+import team.creative.creativecore.common.util.math.vec.Vec3f;
+import team.creative.creativecore.common.util.math.vec.VectorUtils;
 
 public class Ray2d {
     

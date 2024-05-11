@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
+import java.util.Optional;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderSet.Named;
@@ -25,8 +27,6 @@ import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
-
-import java.util.Optional;
 
 @Environment(EnvType.CLIENT)
 @OnlyIn(Dist.CLIENT)

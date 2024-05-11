@@ -1,5 +1,12 @@
 package team.creative.creativecore.client.render.model;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -15,16 +22,10 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
-import org.jetbrains.annotations.NotNull;
 import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 public class CreativeBakedBoxModel extends CreativeBakedModel {
     
@@ -100,7 +101,7 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
             return block.getModelData(level, pos, state, modelData);
         return modelData;
     }
-
+    
     public boolean translucent() {
         return false;
     }

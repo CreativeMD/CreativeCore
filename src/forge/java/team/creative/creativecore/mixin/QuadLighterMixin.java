@@ -1,7 +1,8 @@
 package team.creative.creativecore.mixin;
 
-import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import org.spongepowered.asm.mixin.Mixin;
+
+import net.minecraftforge.client.model.pipeline.VertexLighterFlat;
 import team.creative.creativecore.client.render.model.CreativeQuadLighter;
 
 @Mixin(value = VertexLighterFlat.class, remap = false)

@@ -1,6 +1,13 @@
 package team.creative.creativecore.common.util.text;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -8,11 +15,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.FormattedCharSequence;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.UnaryOperator;
 
 public class MutableComponentCreative implements Component {
     private final String contents;

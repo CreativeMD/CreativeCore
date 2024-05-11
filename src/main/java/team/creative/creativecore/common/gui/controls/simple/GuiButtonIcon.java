@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.function.Consumer;
+
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
@@ -7,8 +9,6 @@ import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
-
-import java.util.function.Consumer;
 
 public class GuiButtonIcon extends GuiIcon {
     protected Consumer<Integer> pressed;

@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
+import java.util.Optional;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
@@ -12,8 +14,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-
-import java.util.Optional;
 
 public class CreativeIngredientBlockTag extends CreativeIngredient {
     

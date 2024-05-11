@@ -36,14 +36,14 @@ public class GuiEventHandler {
             if (window.getWidth() != displayWidth || window.getHeight() != displayHeight) {
                 displayWidth = window.getWidth();
                 displayHeight = window.getHeight();
-                if (mc.screen instanceof IScaleableGuiScreen gui) {
+                if (mc.screen instanceof IScaleableGuiScreen) {
                     mc.options.guiScale = defaultScale;
                     window.setGuiScale(window.calculateScale(mc.options.guiScale, mc.isEnforceUnicode()));
                     if (mc.screen != null)
                         mc.screen.resize(mc, window.getGuiScaledWidth(), window.getGuiScaledHeight());
                 }
             }
-
+            
             if (mc.screen instanceof IScaleableGuiScreen gui) {
                 if (!changed)
                     defaultScale = mc.options.guiScale;

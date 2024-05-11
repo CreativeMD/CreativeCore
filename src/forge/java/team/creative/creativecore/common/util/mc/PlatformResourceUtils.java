@@ -1,13 +1,13 @@
 package team.creative.creativecore.common.util.mc;
 
+import java.nio.file.Path;
+import java.util.List;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraftforge.resource.PathResourcePack;
 import team.creative.creativecore.mixin.DelegatingPackResourcesAccessor;
-
-import java.nio.file.Path;
-import java.util.List;
 
 public class PlatformResourceUtils {
     

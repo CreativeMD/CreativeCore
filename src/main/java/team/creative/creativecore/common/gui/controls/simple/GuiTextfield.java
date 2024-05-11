@@ -8,9 +8,13 @@ import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
-import it.unimi.dsi.fastutil.Pair;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
@@ -25,25 +29,16 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.GuiFocusControl;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiTextUpdateEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 public class GuiTextfield extends GuiFocusControl {
-
+    
     private String text = "";
     private String suggestion = "";
     private int maxStringLength = 128;
@@ -56,7 +51,7 @@ public class GuiTextfield extends GuiFocusControl {
     private Predicate<String> validator = Objects::nonNull;
     private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private int cachedWidth;
-
+    
     public GuiTextfield(String name) {
         super(name);
         this.setText("");
@@ -190,7 +185,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty() && flag && j < s.length())
             font.drawShadow(pose, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
-
+        
         if (text.isEmpty() && !this.suggestion.isEmpty())
             font.drawShadow(pose, this.suggestion, k1 - 1, yOffset, -8355712);
         
@@ -385,7 +380,7 @@ public class GuiTextfield extends GuiFocusControl {
                     this.shift = false;
                     this.delete(-1);
                     this.shift = Screen.hasShiftDown();
-
+                    
                     return true;
                 case 258:
                 case 260:
@@ -400,21 +395,21 @@ public class GuiTextfield extends GuiFocusControl {
                     this.shift = false;
                     this.delete(1);
                     this.shift = Screen.hasShiftDown();
-
+                    
                     return true;
                 case 262:
                     if (Screen.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(1));
                     else
                         this.moveCursorBy(1);
-
+                    
                     return true;
                 case 263:
                     if (Screen.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(-1));
                     else
                         this.moveCursorBy(-1);
-
+                    
                     return true;
                 case 268:
                     this.setCursorPositionZero();

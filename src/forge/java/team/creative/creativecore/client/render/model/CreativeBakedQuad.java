@@ -2,6 +2,7 @@ package team.creative.creativecore.client.render.model;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
 import team.creative.creativecore.client.render.box.RenderBox;

@@ -3,7 +3,6 @@ package team.creative.creativecore.common.config.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;

@@ -3,6 +3,7 @@ package team.creative.creativecore.common.gui.controls.simple;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraftforge.api.distmarker.Dist;

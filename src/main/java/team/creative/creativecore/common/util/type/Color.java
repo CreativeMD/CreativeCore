@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.util.type;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import com.mojang.math.Vector3d;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Vec3i;

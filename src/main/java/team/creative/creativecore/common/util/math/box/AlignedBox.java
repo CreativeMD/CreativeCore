@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.math.box;
 
 import com.mojang.math.Vector3d;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;

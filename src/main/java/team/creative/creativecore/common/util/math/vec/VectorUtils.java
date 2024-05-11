@@ -2,6 +2,7 @@ package team.creative.creativecore.common.util.math.vec;
 
 import com.mojang.math.Vector3d;
 import com.mojang.math.Vector3f;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Vec3i;

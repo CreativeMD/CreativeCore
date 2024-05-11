@@ -1,6 +1,10 @@
 package team.creative.creativecore.common.gui.controls.timeline;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -34,9 +38,6 @@ import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.math.vec.SmoothValue;
 import team.creative.creativecore.common.util.mc.ColorUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiTimeline extends GuiParent {
     

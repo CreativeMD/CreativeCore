@@ -1,6 +1,10 @@
 package team.creative.creativecore.common.gui.controls.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,9 +22,6 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.type.itr.NestedFunctionIterator;
 import team.creative.creativecore.common.util.type.itr.TreeIterator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiTree extends GuiScrollXY {
     

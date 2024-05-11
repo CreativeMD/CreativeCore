@@ -3,6 +3,7 @@ package team.creative.creativecore.client;
 import static team.creative.creativecore.CreativeCore.LOGGER;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;

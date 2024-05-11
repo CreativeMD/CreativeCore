@@ -1,5 +1,10 @@
 package team.creative.creativecore.common.util.mc;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Locale;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
@@ -9,16 +14,11 @@ import team.creative.creativecore.mixin.FilePackResourcesAccessor;
 import team.creative.creativecore.mixin.PathPackResourcesAccessor;
 import team.creative.creativecore.mixin.VanillaPackResourcesAccessor;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Locale;
-
 public class ResourceUtils {
     private static String getPathFromLocation(PackType pPackType, ResourceLocation pLocation) {
         return String.format(Locale.ROOT, "%s/%s/%s", pPackType.getDirectory(), pLocation.getNamespace(), pLocation.getPath());
     }
-
+    
     public static long length(PackType type, PackResources source, ResourceLocation location) {
         if (source instanceof FilePackResourcesAccessor zip) {
             var entry = zip.getZipFile().getEntry(getPathFromLocation(type, location));

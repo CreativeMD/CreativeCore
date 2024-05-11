@@ -1,6 +1,5 @@
 package team.creative.creativecore.common.config.gui;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;

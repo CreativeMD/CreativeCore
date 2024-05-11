@@ -1,10 +1,11 @@
 package team.creative.creativecore.mixin;
 
-import net.minecraft.server.packs.AbstractPackResources;
+import java.io.File;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.io.File;
+import net.minecraft.server.packs.AbstractPackResources;
 
 @Mixin(AbstractPackResources.class)
 public interface PathPackResourcesAccessor {
