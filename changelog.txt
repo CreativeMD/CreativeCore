@@ -1,3 +1,8 @@
+2.11.28
+Added missing constructor to linear interpolation
+Added DebugTextRenderer
+Removed unnecessary variable in fabric
+
 2.11.27
 Fixed guis overlapping with JEI overlay
 Some enhancements arroung widgets (by SrRapero720)
