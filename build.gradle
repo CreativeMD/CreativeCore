@@ -10,10 +10,6 @@ group= "team.creative" + project.mod_id
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
-}
-
 java.sourceSets {
     main {
         java {
@@ -44,8 +40,7 @@ runs {
 }
 
 dependencies {
-	compileOnly "net.neoforged:neoforge:${forge_version}"
-	localRuntime "net.neoforged:neoforge:${forge_version}"
+	implementation "net.neoforged:neoforge:${forge_version}"
 }
 
 modProperties = [ '    displayTest="NONE"' ]
