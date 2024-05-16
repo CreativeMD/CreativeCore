@@ -5,10 +5,12 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Logger;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
@@ -45,13 +47,9 @@ public class CreativeNetwork {
             return packet;
         }));
         
-        ClientPlayNetworking.registerGlobalReceiver(handler.sid, (payload, context) -> {
-            try {
-                context.client().execute(() -> payload.executeClient(context.player()));
-            } catch (Exception e) {
-                CreativeCore.LOGGER.error("Failed to handle packet " + handler.sid.id(), e);
-            }
-        });
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
+            CreativeNetworkClient.registerClientType(handler);
+        
         ServerPlayNetworking.registerGlobalReceiver(handler.sid, (payload, context) -> {
             try {
                 context.player().getServer().execute(() -> payload.executeServer(context.player()));
