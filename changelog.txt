@@ -1,3 +1,6 @@
+2.11.31
+Fixed fabric version not loading on server side
+
 2.11.30
 Added missing constructor to linear interpolation
 Added DebugTextRenderer
