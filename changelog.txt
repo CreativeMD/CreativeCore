@@ -1,3 +1,6 @@
+2.11.32
+Fixed not being able to send empty itemstacks
+
 2.11.31
 Fixed fabric version not loading on server side
 
