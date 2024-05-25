@@ -59,8 +59,8 @@ public class Vec2f extends VecNf<Vec2f> {
     
     @Override
     public void add(Vec2f vec) {
-        this.x += x;
-        this.y += y;
+        this.x += vec.x;
+        this.y += vec.y;
     }
     
     public void sub(float x, float y) {
