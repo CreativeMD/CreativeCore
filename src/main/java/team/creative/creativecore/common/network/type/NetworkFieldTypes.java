@@ -317,12 +317,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(ItemStack content, RegistryFriendlyByteBuf buffer) {
-                FriendlyByteBuf.writeNullable(buffer, content, ItemStack.STREAM_CODEC);
+                FriendlyByteBuf.writeNullable(buffer, content, ItemStack.OPTIONAL_STREAM_CODEC);
             }
             
             @Override
             protected ItemStack readContent(RegistryFriendlyByteBuf buffer) {
-                return FriendlyByteBuf.readNullable(buffer, ItemStack.STREAM_CODEC);
+                return FriendlyByteBuf.readNullable(buffer, ItemStack.OPTIONAL_STREAM_CODEC);
             }
         }, ItemStack.class);
         
