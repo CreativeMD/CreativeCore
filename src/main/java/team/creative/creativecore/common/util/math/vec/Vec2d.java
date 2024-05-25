@@ -64,8 +64,8 @@ public class Vec2d extends VecNd<Vec2d> {
     
     @Override
     public void add(Vec2d vec) {
-        this.x += x;
-        this.y += y;
+        this.x += vec.x;
+        this.y += vec.y;
     }
     
     public void sub(double x, double y) {
