@@ -16,6 +16,7 @@ public abstract class MouseHandlerMixin extends Screen {
 
     @Inject(method = "mouseReleased", at = @At(value = "HEAD"))
     private void handleWhenYouReleaseMouse(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+        // PORTED FIX FROM FORGE: this was required to make sliders work properly
         super.mouseReleased(mouseX, mouseY, button);
     }
 }
