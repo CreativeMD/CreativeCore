@@ -5,7 +5,8 @@
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
         "ArgumentTypeInfosAccessor",
-        "ModNioResourcePackAccessor"
+        "ModNioResourcePackAccessor",
+        "AbstractContainerScreenMixin"
     ],
     "client": [
     ],
