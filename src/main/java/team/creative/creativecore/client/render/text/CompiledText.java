@@ -210,7 +210,7 @@ public class CompiledText {
         int height = -lineSpacing;
         for (CompiledLine line : lines)
             height += line.height + lineSpacing;
-        return (int) (height * scale);
+        return Mth.ceil(height * scale);
     }
     
     @Environment(EnvType.CLIENT)
@@ -447,7 +447,7 @@ public class CompiledText {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public int getTotalWidth() {
-        return (int) (calculateWidth(0, true, original) * scale);
+        return Mth.ceil(calculateWidth(0, true, original) * scale);
     }
     
     @Environment(EnvType.CLIENT)
