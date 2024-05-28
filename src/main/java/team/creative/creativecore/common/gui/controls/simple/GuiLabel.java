@@ -74,6 +74,11 @@ public class GuiLabel extends GuiControl {
         return this;
     }
     
+    public GuiLabel setScale(double scale) {
+        this.text.setScale(scale);
+        return this;
+    }
+    
     @Override
     public void init() {}
     

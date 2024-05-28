@@ -77,7 +77,9 @@ public class CompiledText {
     };
     
     private int maxWidth;
+    private int maxWidthScaled;
     private int maxHeight;
+    private int maxHeightScaled;
     private int usedWidth;
     private int usedHeight;
     private int lineSpacing = 2;
@@ -87,24 +89,29 @@ public class CompiledText {
     private VAlign valign = VAlign.TOP;
     protected List<CompiledLine> lines;
     protected List<Component> original;
+    private double scale = 1;
     
     public CompiledText(int width, int height) {
-        this.maxWidth = width;
-        this.maxHeight = height;
+        this.maxWidth = this.maxWidthScaled = width;
+        
+        this.maxHeight = this.maxHeightScaled = height;
         setText(Collections.EMPTY_LIST);
     }
     
     public void setMaxHeight(int height) {
         this.maxHeight = height;
+        this.maxHeightScaled = (int) (maxHeight * scale);
     }
     
     public void setDimension(int width, int height) {
         this.maxWidth = width;
+        this.maxWidthScaled = (int) (maxWidth / scale);
         this.maxHeight = height;
+        this.maxHeightScaled = (int) (maxHeight / scale);
         compile();
     }
     
-    public int getMaxWidht() {
+    public int getMaxWidth() {
         return maxWidth;
     }
     
@@ -126,6 +133,17 @@ public class CompiledText {
     
     public void setVAlign(VAlign valign) {
         this.valign = valign;
+    }
+    
+    public void setScale(double scale) {
+        this.scale = scale;
+        this.maxWidthScaled = (int) (maxWidth / scale);
+        this.maxHeightScaled = (int) (maxHeight / scale);
+        compile();
+    }
+    
+    public double getScale() {
+        return scale;
     }
     
     public void setText(Component component) {
@@ -191,7 +209,7 @@ public class CompiledText {
         int height = -lineSpacing;
         for (CompiledLine line : lines)
             height += line.height + lineSpacing;
-        return height;
+        return (int) (height * scale);
     }
     
     @Environment(EnvType.CLIENT)
@@ -205,10 +223,15 @@ public class CompiledText {
         
         int totalHeight = getTotalHeight();
         var stack = graphics.pose();
+        
+        if (scale != 1) {
+            stack.pushPose();
+            stack.scale((float) scale, (float) scale, 1);
+        }
         stack.pushPose();
         float y = Math.max(0, switch (valign) {
-            case CENTER -> maxHeight / 2 - totalHeight / 2;
-            case BOTTOM -> maxHeight - totalHeight;
+            case CENTER -> maxHeightScaled / 2 - totalHeight / 2;
+            case BOTTOM -> maxHeightScaled - totalHeight;
             default -> 0;
         });
         stack.translate(0, y, 0);
@@ -217,18 +240,18 @@ public class CompiledText {
         for (CompiledLine line : lines) {
             switch (align) {
                 case CENTER -> {
-                    int x = maxWidth / 2 - line.width / 2;
+                    int x = maxWidthScaled / 2 - line.width / 2;
                     stack.translate(x, 0, 0);
                     line.render(graphics);
                     stack.translate(-x, 0, 0);
-                    usedWidth = Math.max(usedWidth, maxWidth);
+                    usedWidth = Math.max(usedWidth, maxWidthScaled);
                 }
                 case RIGHT -> {
-                    int x = maxWidth - line.width;
+                    int x = maxWidthScaled - line.width;
                     stack.translate(x, 0, 0);
                     line.render(graphics);
                     stack.translate(-x, 0, 0);
-                    usedWidth = Math.max(usedWidth, maxWidth);
+                    usedWidth = Math.max(usedWidth, maxWidthScaled);
                 }
                 default -> {
                     line.render(graphics);
@@ -240,12 +263,17 @@ public class CompiledText {
             stack.translate(0, height, 0);
             usedHeight += height;
             
-            if (usedHeight > maxHeight)
+            if (usedHeight > maxHeightScaled)
                 break;
         }
         
         stack.popPose();
+        if (scale != 1)
+            stack.popPose();
         RenderSystem.enableBlend();
+        
+        usedWidth *= scale;
+        usedHeight *= scale;
     }
     
     public class CompiledLine {
@@ -298,7 +326,7 @@ public class CompiledText {
         }
         
         public FormattedText add(FormattedText component) {
-            int remainingWidth = maxWidth - width;
+            int remainingWidth = maxWidthScaled - width;
             int textWidth = width(component);
             if (remainingWidth >= textWidth) {
                 if (component instanceof Component comp && comp.getContents() instanceof AdvancedContent adv)
@@ -420,7 +448,7 @@ public class CompiledText {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public int getTotalWidth() {
-        return calculateWidth(0, true, original);
+        return (int) (calculateWidth(0, true, original) * scale);
     }
     
     @Environment(EnvType.CLIENT)
@@ -443,6 +471,9 @@ public class CompiledText {
         copy.defaultColor = defaultColor;
         copy.lineSpacing = lineSpacing;
         copy.shadow = shadow;
+        copy.scale = scale;
+        copy.maxWidthScaled = maxWidthScaled;
+        copy.maxHeightScaled = maxHeightScaled;
         List<Component> components = new ArrayList<>();
         for (Component component : original)
             components.add(component.copy());
