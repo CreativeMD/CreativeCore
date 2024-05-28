@@ -1,3 +1,9 @@
+2.11.29
+Added scale setting to labels and compiled text
+Fixed parent with scale not respecting scale dimensions correctly
+Fixed Vec2f and Vec2d having invalid add functions (noted by @SrRapero720)
+Fixed GuiSliders on Fabric get stick into mouse due to missing Forge Patch (by SrRapero720)
+
 2.11.28
 Added missing constructor to linear interpolation
 Added DebugTextRenderer
