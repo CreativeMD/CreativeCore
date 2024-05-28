@@ -15,9 +15,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.event.*;
+import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
+import team.creative.creativecore.common.gui.event.GuiEvent;
+import team.creative.creativecore.common.gui.event.GuiEventManager;
+import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -45,7 +50,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     public GuiParent(String name, GuiFlow flow, VAlign valign) {
         this(name, flow, Align.LEFT, valign);
     }
-
+    
     public GuiParent(String name, GuiFlow flow, Align align) {
         this(name, flow, align, VAlign.TOP);
     }
@@ -104,17 +109,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         this.valign = valign;
         return this;
     }
-
+    
     public GuiParent setSpacing(int spacing) {
         this.spacing = spacing;
         return this;
     }
-
+    
     public GuiParent setFlow(GuiFlow flow) {
         this.flow = flow;
         return this;
     }
-
+    
     @Override
     public boolean isExpandableX() {
         if (super.isExpandableX())
@@ -178,19 +183,19 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         controls.add(child);
         return child;
     }
-
+    
     public GuiParent add(GuiControl control) {
         this.addControl(control);
         return this;
     }
-
+    
     public GuiParent add(GuiControl... controls) {
-        for (GuiControl c: controls) {
+        for (GuiControl c : controls) {
             this.addControl(c);
         }
         return this;
     }
-
+    
     public GuiParent add(boolean conditional, Supplier<GuiControl> controlSupplier) {
         if (conditional)
             return this.add(controlSupplier.get());
@@ -203,19 +208,19 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         hoverControls.add(child);
         return child;
     }
-
+    
     public GuiParent addHover(GuiControl control) {
         this.addHoverControl(control);
         return this;
     }
-
+    
     public GuiParent addHover(GuiControl... controls) {
-        for (GuiControl c: controls) {
+        for (GuiControl c : controls) {
             this.addHoverControl(c);
         }
         return this;
     }
-
+    
     public GuiParent addHover(boolean conditional, Supplier<GuiControl> controlSupplier) {
         if (conditional)
             return this.addHover(controlSupplier.get());
@@ -639,22 +644,22 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     protected int minWidth(int availableWidth) {
-        return flow.minWidth(controls, spacing, availableWidth);
+        return Mth.ceil(flow.minWidth(controls, spacing, availableWidth) * scale);
     }
     
     @Override
     protected int preferredWidth(int availableWidth) {
-        return flow.preferredWidth(controls, spacing, availableWidth);
+        return Mth.ceil(flow.preferredWidth(controls, spacing, availableWidth) * scale);
     }
     
     @Override
     protected int minHeight(int width, int availableHeight) {
-        return flow.minHeight(controls, spacing, width, availableHeight);
+        return Mth.ceil(flow.minHeight(controls, spacing, width, availableHeight) * scale);
     }
     
     @Override
     protected int preferredHeight(int width, int availableHeight) {
-        return flow.preferredHeight(controls, spacing, width, availableHeight);
+        return Mth.ceil(flow.preferredHeight(controls, spacing, width, availableHeight) * scale);
     }
     
     @Override
