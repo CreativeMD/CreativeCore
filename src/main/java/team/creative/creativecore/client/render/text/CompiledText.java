@@ -282,7 +282,7 @@ public class CompiledText {
                 if (text instanceof AdvancedFormattedText adv)
                     adv.render(pose, defaultColor);
                 else {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(text).toString(), 0, 0, defaultColor, shadow, pose.last().pose(), renderType, false, 0, 15728880);
+                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0f, 0f, defaultColor, shadow, pose.last().pose(), renderType, false, 0, 15728880);
                     renderType.endBatch();
                 }
                 pose.popPose();

@@ -171,7 +171,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            xOffset = font.drawShadow(pose, this.textFormatter.apply(s1, this.lineScrollOffset).toString(), xOffset, yOffset, color, false) + 1;
+            xOffset = font.drawShadow(pose, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color) + 1;
         }
         
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -184,7 +184,7 @@ public class GuiTextfield extends GuiFocusControl {
         }
         
         if (!s.isEmpty() && flag && j < s.length())
-            font.drawShadow(pose, this.textFormatter.apply(s.substring(j), this.cursorPosition).toString(), xOffset, yOffset, color, false);
+            font.drawShadow(pose, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color);
         
         if (text.isEmpty() && !this.suggestion.isEmpty())
             font.drawShadow(pose, this.suggestion, k1 - 1, yOffset, -8355712);
