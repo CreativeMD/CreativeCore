@@ -1,3 +1,6 @@
+2.11.33
+Fixed crash when using config gui in main menu
+
 2.11.32
 Fixed not being able to send empty itemstacks
 
