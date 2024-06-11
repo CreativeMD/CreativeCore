@@ -55,7 +55,8 @@ public abstract class GuiControl {
     // BASICS
     
     public HolderLookup.Provider provider() {
-        return getPlayer().registryAccess();
+        var player = getPlayer();
+        return player != null ? player.registryAccess() : null;
     }
     
     public boolean isClient() {
