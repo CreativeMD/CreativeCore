@@ -3,8 +3,6 @@ package team.creative.creativecore.common.gui.style.display;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
-import javax.annotation.Nullable;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -42,7 +40,7 @@ public abstract class StyleDisplay {
         render(graphics, 0, 0, width, height);
     }
     
-    public void render(GuiGraphics graphics, @Nullable Rect origin, Rect rect) {
+    public void render(GuiGraphics graphics, Rect origin, Rect rect) {
         render(graphics, rect.getWidth(), rect.getHeight());
     }
     

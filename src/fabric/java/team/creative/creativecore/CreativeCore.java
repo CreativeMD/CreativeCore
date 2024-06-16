@@ -46,7 +46,7 @@ public class CreativeCore implements ModInitializer {
     private static final ILoaderUtils UTILS = new FabricLoaderUtils();
     public static final String MODID = "creativecore";
     public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
-    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, new ResourceLocation(CreativeCore.MODID, "main"));
+    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, ResourceLocation.tryBuild(CreativeCore.MODID, "main"));
     public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
     
     public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator.register("config",
@@ -87,7 +87,7 @@ public class CreativeCore implements ModInitializer {
         NETWORK.registerType(SyncPacket.class, SyncPacket::new);
         NETWORK.registerType(ImmediateItemStackPacket.class, ImmediateItemStackPacket::new);
         
-        Registry.register(BuiltInRegistries.MENU, new ResourceLocation(MODID, "container"), GUI_CONTAINER);
+        Registry.register(BuiltInRegistries.MENU, ResourceLocation.tryBuild(MODID, "container"), GUI_CONTAINER);
         
         CONFIG_HANDLER = new ConfigEventHandler(FabricLoader.getInstance().getConfigDir().toFile(), LOGGER);
         

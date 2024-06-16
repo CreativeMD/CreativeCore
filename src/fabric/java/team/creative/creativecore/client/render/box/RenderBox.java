@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -326,7 +325,7 @@ public class RenderBox extends AlignedBox {
         return maxZ - minZ;
     }
     
-    public void renderPreview(PoseStack pose, BufferBuilder builder, int alpha) {
+    public void renderPreview(PoseStack pose, int alpha) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
@@ -336,20 +335,20 @@ public class RenderBox extends AlignedBox {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List list)
                     for (int j = 0; j < list.size(); j++)
-                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
                             getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(),
-                        red, green, blue, alpha);
+                    fan.renderPreview(pose.last().pose(), getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red,
+                        green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List list)
                     for (int j = 0; j < list.size(); j++)
-                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                    fan.renderPreview(pose.last().pose(), red, green, blue, alpha);
             }
         }
     }
@@ -452,7 +451,7 @@ public class RenderBox extends AlignedBox {
             
             holder.uvInverted = false;
             
-            index = 1 * holder.format.getIntegerSize();
+            index = 1 * holder.format.getVertexSize() / 4;
             uvIndex = index + holder.uvOffset;
             if (tempMinX != Float.intBitsToFloat(data[index])) {
                 if (tempU != Float.intBitsToFloat(data[uvIndex]))
@@ -471,7 +470,7 @@ public class RenderBox extends AlignedBox {
                     holder.uvInverted = Axis.Z != facing.getVAxis();
             }
             
-            index = 2 * holder.format.getIntegerSize();
+            index = 2 * holder.format.getVertexSize() / 4;
             float tempMaxX = Float.intBitsToFloat(data[index]);
             float tempMaxY = Float.intBitsToFloat(data[index + 1]);
             float tempMaxZ = Float.intBitsToFloat(data[index + 2]);
@@ -485,7 +484,7 @@ public class RenderBox extends AlignedBox {
             uvIndex = holder.uvOffset;
             float u1 = Float.intBitsToFloat(data[uvIndex]);
             float v1 = Float.intBitsToFloat(data[uvIndex + 1]);
-            uvIndex = 2 * holder.format.getIntegerSize() + holder.uvOffset;
+            uvIndex = 2 * holder.format.getVertexSize() / 4 + holder.uvOffset;
             float u2 = Float.intBitsToFloat(data[uvIndex]);
             float v2 = Float.intBitsToFloat(data[uvIndex + 1]);
             

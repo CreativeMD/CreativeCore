@@ -12,11 +12,11 @@ public class FabricLoaderUtils implements ILoaderUtils {
     }
     
     @Override
-    public int onItemPickup(ItemEntity item, Player player) {
+    public int fireItemPickupPre(ItemEntity item, Player player) {
         return 0;
     }
     
     @Override
-    public void firePlayerItemPickupEvent(Player player, ItemEntity item, ItemStack stack) {}
+    public void fireItemPickupPost(ItemEntity item, Player player, ItemStack copy) {}
     
 }

@@ -46,7 +46,7 @@ public class CreativeCoreClient implements ClientModInitializer {
     public static float getFrameTime() {
         if (mc.isPaused())
             return 1.0F;
-        return mc.getFrameTime();
+        return mc.getTimer().getGameTimeDeltaPartialTick(false);
     }
     
     public static void commands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {

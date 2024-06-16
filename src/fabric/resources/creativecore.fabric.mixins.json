@@ -8,7 +8,6 @@
         "ModNioResourcePackAccessor"
     ],
     "client": [
-        "VertexFormatMixin"
     ],
     "minVersion": "0.8"
 }
