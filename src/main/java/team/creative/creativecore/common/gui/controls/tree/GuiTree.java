@@ -218,7 +218,7 @@ public class GuiTree extends GuiScrollXY {
             lastDragPosition = calculatePosition((int) (mouseX - realRect.minX - getContentOffset()), (int) (mouseY - realRect.minY - getContentOffset()));
             if (lastDragPosition != null) {
                 if (lastDragPosition.position() == ItemPosition.IN)
-                    dragHover.render(pose, lastDragPosition.child().rect.minX, lastDragPosition.child().rect.minY, lastDragPosition.child().rect.getWidth(), lastDragPosition
+                    dragHover.render(graphics, lastDragPosition.child().rect.minX, lastDragPosition.child().rect.minY, lastDragPosition.child().rect.getWidth(), lastDragPosition
                             .child().rect.getHeight());
                 else {
                     int thickness = 1;
@@ -232,17 +232,17 @@ public class GuiTree extends GuiScrollXY {
                         minY = (int) lastDragPosition.child().rect.maxY + 1;
                     
                     if (lastDragPosition.above() != null) {
-                        dragLine.render(pose, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 3);
-                        dragLine.render(pose, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 3);
+                        dragLine.render(graphics, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 3);
+                        dragLine.render(graphics, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 3);
                     } else if (lastDragPosition.position() == ItemPosition.ABOVE) {
-                        dragLine.render(pose, lastDragPosition.child().rect.minX - thickness, minY, thickness, thickness * 2);
-                        dragLine.render(pose, lastDragPosition.child().rect.minX + width, minY, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.child().rect.minX - thickness, minY, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.child().rect.minX + width, minY, thickness, thickness * 2);
                     } else {
-                        dragLine.render(pose, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 2);
-                        dragLine.render(pose, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 2);
                     }
                     
-                    dragLine.render(pose, lastDragPosition.child().rect.minX, minY, width, thickness);
+                    dragLine.render(graphics, lastDragPosition.child().rect.minX, minY, width, thickness);
                 }
             }
             pose.popPose();
@@ -268,7 +268,7 @@ public class GuiTree extends GuiScrollXY {
                     if (lines.get(i).invalid)
                         continue;
                     
-                    lines.get(i).render(pose);
+                    lines.get(i).render(graphics, pose);
                     lines.get(i).invalid = false;
                 }
                 size = level;
@@ -286,7 +286,7 @@ public class GuiTree extends GuiScrollXY {
             }
             
             if (level >= 0)
-                line.render(pose, lines.get(level).x + lineThickness, lineY - lineThickness, levelSpacing / 2f, lineThickness);
+                line.render(graphics, lines.get(level).x + lineThickness, lineY - lineThickness, levelSpacing / 2f, lineThickness);
         }
         
         if (size >= 0) {
@@ -294,7 +294,7 @@ public class GuiTree extends GuiScrollXY {
                 if (lines.get(i).invalid)
                     continue;
                 
-                lines.get(i).render(pose);
+                lines.get(i).render(graphics, pose);
                 lines.get(i).invalid = false;
             }
         }
@@ -423,8 +423,8 @@ public class GuiTree extends GuiScrollXY {
             invalid = false;
         }
         
-        public void render(PoseStack pose) {
-            line.render(pose, x, y, lineThickness, y2 - y);
+        public void render(GuiGraphics graphics, PoseStack pose) {
+            line.render(graphics, x, y, lineThickness, y2 - y);
         }
     }
     

@@ -17,10 +17,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -55,7 +55,7 @@ public class CreativeCore {
     public static final String MODID = "creativecore";
     public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
     public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
-    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, new ResourceLocation(CreativeCore.MODID, "main"));
+    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, ResourceLocation.tryBuild(CreativeCore.MODID, "main"));
     public static ConfigEventHandler CONFIG_HANDLER;
     
     public static MenuType<ContainerIntegration> GUI_CONTAINER;
@@ -70,12 +70,13 @@ public class CreativeCore {
         () -> ArgumentTypeInfos.registerByClass(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(StringArrayArgumentType::stringArray)));
     
     public CreativeCore() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerMenus);
-        COMMAND_ARGUMENT_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::init);
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::registerMenus);
+        COMMAND_ARGUMENT_TYPES.register(ModLoadingContext.get().getActiveContainer().getEventBus());
         
         NeoForge.EVENT_BUS.addListener(this::server);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CreativeCoreClient.load(FMLJavaModLoadingContext.get().getModEventBus()));
+        if (FMLLoader.getDist() == Dist.CLIENT)
+            CreativeCoreClient.load(ModLoadingContext.get().getActiveContainer().getEventBus());
         
         GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {
             @Override
@@ -91,7 +92,7 @@ public class CreativeCore {
     }
     
     public void registerMenus(RegisterEvent event) {
-        event.register(Registries.MENU, (x) -> x.register(new ResourceLocation(MODID, "container"), GUI_CONTAINER));
+        event.register(Registries.MENU, (x) -> x.register(ResourceLocation.tryBuild(MODID, "container"), GUI_CONTAINER));
     }
     
     private void server(final ServerStartingEvent event) {

@@ -13,13 +13,13 @@ public class ForgeLoaderUtils implements ILoaderUtils {
     }
     
     @Override
-    public int onItemPickup(ItemEntity item, Player player) {
-        return EventHooks.onItemPickup(item, player);
+    public int fireItemPickupPre(ItemEntity item, Player player) {
+        return EventHooks.fireItemPickupPre(item, player).canPickup().ordinal();
     }
     
     @Override
-    public void firePlayerItemPickupEvent(Player player, ItemEntity item, ItemStack stack) {
-        EventHooks.firePlayerItemPickupEvent(player, item, stack);
+    public void fireItemPickupPost(ItemEntity item, Player player, ItemStack copy) {
+        EventHooks.fireItemPickupPost(item, player, copy);
     }
     
 }

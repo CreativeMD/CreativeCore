@@ -2,8 +2,6 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,7 +33,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     protected GuiTextfield textfield;
     private GuiSlider minSlider;
     private GuiSlider maxSlider;
-
+    
     public GuiSlider(String name, double value, double min, double max) {
         this(name, value, min, max, DoubleValueParser.NONE);
     }
@@ -116,14 +114,14 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             return textfield.charTyped(codePoint, modifiers);
         return super.charTyped(codePoint, modifiers);
     }
-
+    
     public void setMaxValue(double maxValue) {
         if (this.maxValue != maxValue) {
             this.maxValue = Math.max(this.minValue, maxValue);
             this.setValue(value);
         }
     }
-
+    
     public void setMinValue(double minValue) {
         if (this.minValue != minValue) {
             this.minValue = Math.min(minValue, this.maxValue);
@@ -144,31 +142,31 @@ public class GuiSlider extends GuiControl implements IGuiParent {
             this.maxSlider.setMinValue(value);
         }
     }
-
+    
     public double getValue() {
         return value;
     }
-
+    
     public double getMinValue() {
         return minValue;
     }
-
+    
     public double getMaxValue() {
         return maxValue;
     }
-
+    
     public GuiSlider setSliderSize(int size) {
         this.sliderSize = size;
         return this;
     }
-
+    
     public GuiSlider setMinSlider(GuiSlider slider) {
         if (slider == this)
             throw new IllegalArgumentException("slider argument is current slider");
         this.minSlider = slider;
         return this;
     }
-
+    
     public GuiSlider setMaxSlider(GuiSlider slider) {
         if (slider == this)
             throw new IllegalArgumentException("slider argument is current slider");
@@ -180,7 +178,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public void mouseMoved(Rect rect, double x, double y) {
         if (grabbedSlider) {
             int width = (int) rect.getWidth() - getContentOffset() * 2 - sliderSize;
-
+            
             if (x < getContentOffset())
                 this.value = this.minValue;
             else if (x > getContentOffset() + width + sliderSize / 2f)
@@ -247,14 +245,13 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         double percent = getPercentage();
         
         int posX = (int) ((control.getContentWidth() - sliderSize) * percent);
-        PoseStack pose = graphics.pose();
         GuiStyle style = getStyle();
-        style.get(ControlStyleFace.CLICKABLE, false).render(pose, posX, 0, sliderSize, control.getContentHeight());
+        style.get(ControlStyleFace.CLICKABLE, false).render(graphics, posX, 0, sliderSize, control.getContentHeight());
         
         if (textfield != null)
             textfield.render(graphics, control, rect, rect, 1, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(pose, getTextByValue(), control.getContentWidth(), control.getContentHeight(), ColorUtils.WHITE, true);
+            GuiRenderHelper.drawStringCentered(graphics, getTextByValue(), control.getContentWidth(), control.getContentHeight(), ColorUtils.WHITE, true);
     }
     
     @Override

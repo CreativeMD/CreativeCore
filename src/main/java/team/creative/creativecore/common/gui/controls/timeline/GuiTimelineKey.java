@@ -136,7 +136,7 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
         
         int borderWidth = style.getBorder(ControlStyleBorder.SMALL);
         
-        style.border.render(pose, width, height);
+        style.border.render(graphics, width, height);
         
         StyleDisplay foreground = style.clickable;
         if (!enabled || !modifiable)
@@ -146,7 +146,7 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
         else if (controlRect.inside(mouseX, mouseY))
             foreground = style.clickableHighlight;
         
-        foreground.render(pose, borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2);
+        foreground.render(graphics, borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2);
         pose.popPose();
     }
     

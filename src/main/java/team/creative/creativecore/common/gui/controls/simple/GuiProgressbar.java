@@ -2,8 +2,6 @@ package team.creative.creativecore.common.gui.controls.simple;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -65,15 +63,14 @@ public class GuiProgressbar extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
-        this.renderProgress(pose, control, rect, this.getPercentage());
-        GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
+        this.renderProgress(graphics, control, rect, this.getPercentage());
+        GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderProgress(PoseStack pose, GuiChildControl control, Rect rect, double percent) {
-        getStyle().clickable.render(pose, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
+    protected void renderProgress(GuiGraphics graphics, GuiChildControl control, Rect rect, double percent) {
+        getStyle().clickable.render(graphics, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
     }
     
     @Override

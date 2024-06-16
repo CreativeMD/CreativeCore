@@ -325,7 +325,7 @@ public class GuiTimeline extends GuiParent {
             int end = stepOffset + stamps + 1;
             
             int pointerWidth = Math.max((int) tickWidth, 1);
-            cursorHighlight.render(pose, tickWidth * handler.get() - pointerWidth / 2D - scrollX.current(), 0, pointerWidth, height);
+            cursorHighlight.render(graphics, tickWidth * handler.get() - pointerWidth / 2D - scrollX.current(), 0, pointerWidth, height);
             
             GuiStyle style = getStyle();
             StyleDisplay border = style.get(ControlStyleBorder.SMALL);
@@ -335,11 +335,11 @@ public class GuiTimeline extends GuiParent {
             pose.translate(-scrollX.current() + begin * stepWidth, 0, 0);
             for (int i = begin; i < end; i++) {
                 if (i % halfArea == 0) {
-                    border.render(pose, 1, 4);
+                    border.render(graphics, 1, 4);
                     String text = "" + (i * smallestStep);
                     graphics.drawString(Minecraft.getInstance().font, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false);
                 } else
-                    border.render(pose, 1, 2);
+                    border.render(graphics, 1, 2);
                 
                 pose.translate(stepWidth, 0, 0);
             }

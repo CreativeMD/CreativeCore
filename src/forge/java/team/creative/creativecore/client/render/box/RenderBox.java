@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -309,7 +308,7 @@ public class RenderBox extends AlignedBox {
         return maxZ - minZ;
     }
     
-    public void renderPreview(PoseStack pose, BufferBuilder builder, int alpha) {
+    public void renderPreview(PoseStack pose, int alpha) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
@@ -319,20 +318,20 @@ public class RenderBox extends AlignedBox {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List list)
                     for (int j = 0; j < list.size(); j++)
-                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
                             getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderPreview(pose.last().pose(), builder, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(),
-                        red, green, blue, alpha);
+                    fan.renderPreview(pose.last().pose(), getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red,
+                        green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List list)
                     for (int j = 0; j < list.size(); j++)
-                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                        ((List<VectorFan>) list).get(j).renderPreview(pose.last().pose(), red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderPreview(pose.last().pose(), builder, red, green, blue, alpha);
+                    fan.renderPreview(pose.last().pose(), red, green, blue, alpha);
             }
         }
     }

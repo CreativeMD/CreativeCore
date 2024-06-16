@@ -3,15 +3,17 @@ package team.creative.creativecore.common.gui.style.display;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
@@ -25,7 +27,7 @@ public abstract class StyleDisplay {
     public static final StyleDisplay NONE = new StyleDisplay() {
         
         @Override
-        public void render(PoseStack pose, double x, double y, double width, double height) {}
+        public void render(GuiGraphics graphics, double x, double y, double width, double height) {}
     };
     
     private static final HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
@@ -36,15 +38,15 @@ public abstract class StyleDisplay {
         types.put(id, clazz);
     }
     
-    public void render(PoseStack matrix, double width, double height) {
-        render(matrix, 0, 0, width, height);
+    public void render(GuiGraphics graphics, double width, double height) {
+        render(graphics, 0, 0, width, height);
     }
     
-    public void render(PoseStack matrix, Rect origin, Rect rect) {
-        render(matrix, rect.getWidth(), rect.getHeight());
+    public void render(GuiGraphics graphics, @Nullable Rect origin, Rect rect) {
+        render(graphics, rect.getWidth(), rect.getHeight());
     }
     
-    public abstract void render(PoseStack pose, double x, double y, double width, double height);
+    public abstract void render(GuiGraphics graphics, double x, double y, double width, double height);
     
     static {
         registerType("color", DisplayColor.class);

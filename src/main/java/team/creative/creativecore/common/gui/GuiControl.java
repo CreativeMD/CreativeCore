@@ -437,15 +437,14 @@ public abstract class GuiControl {
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
         
-        PoseStack pose = graphics.pose();
-        getBorder(style, style.get(formatting.border)).render(pose, 0, 0, width, height);
+        getBorder(style, style.get(formatting.border)).render(graphics, 0, 0, width, height);
         
         int borderSize = style.getBorder(formatting.border);
         
         width -= borderSize * 2;
         height -= borderSize * 2;
         
-        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(pose, borderSize, borderSize, width, height);
+        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(graphics, borderSize, borderSize, width, height);
         
         controlRect.shrink(borderSize * scale);
         
@@ -455,7 +454,7 @@ public abstract class GuiControl {
             realRect.scissor();
             RenderSystem.disableDepthTest();
             RenderSystem.enableBlend();
-            style.disabled.render(pose, null, rectCopy);
+            style.disabled.render(graphics, null, rectCopy);
             RenderSystem.enableDepthTest();
         }
     }

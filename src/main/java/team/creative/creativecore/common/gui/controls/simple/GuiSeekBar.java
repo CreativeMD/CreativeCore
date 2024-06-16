@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -75,15 +73,14 @@ public class GuiSeekBar extends GuiControl {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         final double percent = this.max > 0 ? pos / (double) max : 0;
-        PoseStack pose = graphics.pose();
-        this.renderProgress(pose, control, rect, percent);
-        GuiRenderHelper.drawStringCentered(pose, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
+        this.renderProgress(graphics, control, rect, percent);
+        GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderProgress(PoseStack pose, GuiChildControl control, Rect rect, double percent) {
-        this.getStyle().clickable.render(pose, 0, 0, (rect.getWidth() * Math.min(percent, 1.0d)), rect.getHeight());
+    protected void renderProgress(GuiGraphics graphics, GuiChildControl control, Rect rect, double percent) {
+        this.getStyle().clickable.render(graphics, 0, 0, (rect.getWidth() * Math.min(percent, 1.0d)), rect.getHeight());
     }
     
     @Override

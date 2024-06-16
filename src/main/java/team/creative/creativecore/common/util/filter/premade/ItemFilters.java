@@ -54,7 +54,7 @@ public class ItemFilters {
         
         @SuppressWarnings("unused")
         public ItemFilter(CompoundTag nbt) {
-            this.item = BuiltInRegistries.ITEM.get(new ResourceLocation(nbt.getString("i")));
+            this.item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(nbt.getString("i")));
         }
         
         @Override
@@ -84,7 +84,7 @@ public class ItemFilters {
             ListTag list = nbt.getList("i", Tag.TAG_STRING);
             this.items = new Item[list.size()];
             for (int i = 0; i < items.length; i++)
-                items[i] = BuiltInRegistries.ITEM.get(new ResourceLocation(list.getString(i)));
+                items[i] = BuiltInRegistries.ITEM.get(ResourceLocation.parse(list.getString(i)));
         }
         
         @Override

@@ -7,10 +7,10 @@ import java.util.function.BiConsumer;
 
 import org.joml.Matrix4f;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -234,22 +234,22 @@ public class VectorFan {
         return false;
     }
     
-    public void renderPreview(Matrix4f matrix, BufferBuilder builder, int red, int green, int blue, int alpha) {
-        builder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+    public void renderPreview(Matrix4f matrix, int red, int green, int blue, int alpha) {
+        var builder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            builder.vertex(matrix, vec.x, vec.y, vec.z).color(red, green, blue, alpha).endVertex();
+            builder.addVertex(matrix, vec.x, vec.y, vec.z).setColor(red, green, blue, alpha);
         }
-        BufferUploader.drawWithShader(builder.end());
+        BufferUploader.drawWithShader(builder.buildOrThrow());
     }
     
-    public void renderPreview(Matrix4f matrix, BufferBuilder builder, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
-        builder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+    public void renderPreview(Matrix4f matrix, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
+        var builder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            builder.vertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).color(red, green, blue, alpha).endVertex();
+            builder.addVertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).setColor(red, green, blue, alpha);
         }
-        BufferUploader.drawWithShader(builder.end());
+        BufferUploader.drawWithShader(builder.buildOrThrow());
     }
     
     public void forAllEdges(BiConsumer<Vec3f, Vec3f> consumer) {
@@ -274,8 +274,8 @@ public class VectorFan {
         Vec3f normal = new Vec3f();
         forAllEdges((x, y) -> {
             setLineNormal(normal, x, y);
-            consumer.vertex(pose.pose(), x.x, x.y, x.z).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), y.x, y.y, y.z).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.addVertex(pose.pose(), x.x, x.y, x.z).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
+            consumer.addVertex(pose.pose(), y.x, y.y, y.z).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
         });
     }
     
@@ -314,8 +314,8 @@ public class VectorFan {
             else
                 z2 -= grow;
             setLineNormal(normal, x1, y1, z1, x2, y2, z2);
-            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.addVertex(pose.pose(), x1, y1, z1).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
+            consumer.addVertex(pose.pose(), x2, y2, z2).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
         });
     }
     
@@ -329,8 +329,8 @@ public class VectorFan {
             float y2 = y.y * scaleY + offY;
             float z2 = y.z * scaleZ + offZ;
             setLineNormal(normal, x1, y1, z1, x2, y2, z2);
-            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.addVertex(pose.pose(), x1, y1, z1).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
+            consumer.addVertex(pose.pose(), x2, y2, z2).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
         });
     }
     
@@ -369,8 +369,8 @@ public class VectorFan {
             else
                 z2 -= grow;
             setLineNormal(normal, x1, y1, z1, x2, y2, z2);
-            consumer.vertex(pose.pose(), x1, y1, z1).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
-            consumer.vertex(pose.pose(), x2, y2, z2).color(red, green, blue, alpha).normal(pose, normal.x, normal.y, normal.z).endVertex();
+            consumer.addVertex(pose.pose(), x1, y1, z1).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
+            consumer.addVertex(pose.pose(), x2, y2, z2).setColor(red, green, blue, alpha).setNormal(pose, normal.x, normal.y, normal.z);
         });
     }
     

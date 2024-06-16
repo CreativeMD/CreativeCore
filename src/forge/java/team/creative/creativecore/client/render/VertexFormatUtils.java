@@ -1,7 +1,5 @@
 package team.creative.creativecore.client.render;
 
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
@@ -20,15 +18,14 @@ public class VertexFormatUtils {
     public static void update() {
         VertexFormat format = DefaultVertexFormat.BLOCK;
         VERTEX_FORMAT_SIZE = format.getVertexSize();
-        VERTEX_FORMAT_INT_SIZE = format.getIntegerSize();
+        VERTEX_FORMAT_INT_SIZE = VERTEX_FORMAT_SIZE * 4;
         UV_OFFSET = -1;
-        List<VertexFormatElement> elements = format.getElements();
-        for (int i = 0; i < elements.size(); i++)
-            switch (elements.get(i).getUsage()) {
-                case POSITION -> POSITION_OFFSET = format.getOffset(i);
+        for (VertexFormatElement element : format.getElements())
+            switch (element.usage()) {
+                case POSITION -> POSITION_OFFSET = format.getOffset(element);
                 case UV -> {
                     if (UV_OFFSET == -1)
-                        UV_OFFSET = format.getOffset(i);
+                        UV_OFFSET = format.getOffset(element);
                 }
             }
     }

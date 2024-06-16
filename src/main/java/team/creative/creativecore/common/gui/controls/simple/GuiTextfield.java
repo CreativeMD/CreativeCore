@@ -7,13 +7,7 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -198,7 +192,7 @@ public class GuiTextfield extends GuiFocusControl {
             
         if (k != j) {
             int l1 = font.width(s.substring(0, k));
-            this.drawSelectionBox(control, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
+            this.drawSelectionBox(graphics, control, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
     }
     
@@ -452,7 +446,7 @@ public class GuiTextfield extends GuiFocusControl {
         return false;
     }
     
-    private void drawSelectionBox(GuiChildControl control, Matrix4f matrix, int startX, int startY, int endX, int endY) {
+    private void drawSelectionBox(GuiGraphics graphics, GuiChildControl control, Matrix4f matrix, int startX, int startY, int endX, int endY) {
         if (startX < endX) {
             int i = startX;
             startX = endX;
@@ -471,20 +465,7 @@ public class GuiTextfield extends GuiFocusControl {
         if (startX > control.rect.maxX)
             startX = (int) control.rect.maxX;
         
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
-        RenderSystem.enableColorLogicOp();
-        RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-        bufferbuilder.vertex(matrix, startX, endY, 0).endVertex();
-        bufferbuilder.vertex(matrix, endX, endY, 0).endVertex();
-        bufferbuilder.vertex(matrix, endX, startY, 0).endVertex();
-        bufferbuilder.vertex(matrix, startX, startY, 0).endVertex();
-        tesselator.end();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableColorLogicOp();
+        graphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
     }
     
     public void setMaxStringLength(int length) {

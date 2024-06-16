@@ -1,7 +1,5 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
@@ -46,10 +44,9 @@ public class GuiColorPlate extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
-        getStyle().transparencyBackground.render(pose, rect.getWidth(), rect.getHeight());
+        getStyle().transparencyBackground.render(graphics, rect.getWidth(), rect.getHeight());
         colorPlate.set(color);
-        colorPlate.render(pose, rect.getWidth(), rect.getHeight());
+        colorPlate.render(graphics, rect.getWidth(), rect.getHeight());
     }
     
     @Override

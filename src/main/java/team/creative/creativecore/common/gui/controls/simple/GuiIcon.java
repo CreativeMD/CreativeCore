@@ -127,12 +127,12 @@ public class GuiIcon extends GuiControl {
         
         if (this.shadow != Color.NONE) {
             this.shadow.glColor();
-            GuiRenderHelper.textureRect(pose, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon.minY() + this.icon
-                    .height());
+            GuiRenderHelper.textureRect(graphics, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
+                    .minY() + this.icon.height());
         }
         
         this.color.glColor();
-        GuiRenderHelper.textureRect(pose, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon.minY() + this.icon.height());
+        GuiRenderHelper.textureRect(graphics, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon.minY() + this.icon.height());
         RenderSystem.disableBlend();
         pose.popPose();
     }

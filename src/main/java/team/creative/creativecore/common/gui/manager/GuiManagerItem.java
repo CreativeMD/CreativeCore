@@ -87,8 +87,7 @@ public class GuiManagerItem extends GuiManager {
             
             pose.translate(mouseX - 8, mouseY - 8, 200);
             GuiRenderHelper.drawItemStack(pose, stack, 1);
-            GuiRenderHelper.drawItemStackDecorations(pose, stack, count);
-            
+            graphics.renderItemDecorations(GuiRenderHelper.getFont(), stack, 0, 0, "" + count);
             pose.popPose();
         }
     }

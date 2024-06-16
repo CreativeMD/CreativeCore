@@ -83,7 +83,7 @@ public class BoxesVoxelShape extends SliceShape {
     }
     
     @Override
-    protected DoubleList getCoords(Axis axis) {
+    public DoubleList getCoords(Axis axis) {
         DoubleArrayList list = new DoubleArrayList(boxes.size() * 2);
         for (ABB bb : boxes) {
             list.add(bb.min(axis));

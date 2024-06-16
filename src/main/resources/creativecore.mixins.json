@@ -10,7 +10,6 @@
         "VoxelShapeAccessor"
     ],
     "client": [
-        "BufferBuilderAccessor",
         "MouseHandlerAccessor",
         "StringSplitterAccessor"
     ],

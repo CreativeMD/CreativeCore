@@ -30,7 +30,7 @@ public class EntitySound extends AbstractTickableSoundInstance {
     public void tick() {
         Minecraft mc = Minecraft.getInstance();
         Entity view = mc.cameraEntity;
-        float partialTicks = mc.getFrameTime();
+        float partialTicks = mc.getTimer().getGameTimeDeltaPartialTick(false);
         
         if (view == null) {
             stop();

@@ -74,22 +74,22 @@ public class GuiCheckBox extends GuiLabel {
         GuiStyle style = getStyle();
         
         if (!enabled)
-            style.disabled.render(pose, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
+            style.disabled.render(graphics, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
         
-        style.get(ControlStyleBorder.SMALL).render(pose, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
-        style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(pose, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
+        style.get(ControlStyleBorder.SMALL).render(graphics, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
+        style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(graphics, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
         
         if (value)
             graphics.drawString(Minecraft.getInstance().font, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), false);
         else if (partial) {
             if (PARTIAL_STYLE == null)
                 PARTIAL_STYLE = new DisplayColor();
-            PARTIAL_STYLE.render(pose, 2, yoffset + 2, CHECKBOX_WIDTH - 4, CHECKBOX_WIDTH - 4);
+            PARTIAL_STYLE.render(graphics, 2, yoffset + 2, CHECKBOX_WIDTH - 4, CHECKBOX_WIDTH - 4);
         }
         
         pose.pushPose();
         pose.translate(CHECKBOX_WIDTH + 3, 0, 0);
-        text.render(pose);
+        text.render(graphics);
         pose.popPose();
     }
     

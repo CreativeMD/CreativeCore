@@ -13,10 +13,10 @@ public class CreativeModelLoader implements IGeometryLoader<CreativeUnbakedModel
     public CreativeUnbakedModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {
         ResourceLocation block = null;
         if (jsonObject.has("block"))
-            block = new ResourceLocation(jsonObject.get("block").getAsString());
+            block = ResourceLocation.parse(jsonObject.get("block").getAsString());
         ResourceLocation item = null;
         if (jsonObject.has("item"))
-            item = new ResourceLocation(jsonObject.get("item").getAsString());
+            item = ResourceLocation.parse(jsonObject.get("item").getAsString());
         return new CreativeUnbakedModel(item, block);
     }
     

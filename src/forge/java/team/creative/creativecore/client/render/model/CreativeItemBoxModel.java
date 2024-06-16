@@ -16,7 +16,7 @@ public abstract class CreativeItemBoxModel extends CreativeItemModel {
     
     public static final Minecraft mc = Minecraft.getInstance();
     
-    public static final CreativeItemBoxModel EMPTY = new CreativeItemBoxModel(new ModelResourceLocation("minecraft", "stone", "inventory")) {
+    public static final CreativeItemBoxModel EMPTY = new CreativeItemBoxModel(ModelResourceLocation.vanilla("stone", "inventory")) {
         
         @Override
         public List<? extends RenderBox> getBoxes(ItemStack stack, boolean translucent) {

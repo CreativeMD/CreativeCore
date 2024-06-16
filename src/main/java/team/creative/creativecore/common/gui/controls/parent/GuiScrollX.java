@@ -161,7 +161,7 @@ public class GuiScrollX extends GuiParent {
         double percent = scrolled.current() / maxScroll;
         
         StyleDisplay display = hoveredScroll ? style.disabled : style.get(ControlStyleFace.CLICKABLE, false);
-        display.render(pose, control.getWidth() - scrollbarHeight - borderWidth, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, scrollbarHeight,
+        display.render(graphics, control.getWidth() - scrollbarHeight - borderWidth, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, scrollbarHeight,
             scrollThingWidth);
         
         maxScroll = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);

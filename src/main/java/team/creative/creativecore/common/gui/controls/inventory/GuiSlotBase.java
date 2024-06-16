@@ -67,11 +67,11 @@ public abstract class GuiSlotBase extends GuiControl {
         pose.translate(1, 1, 10);
         ItemStack stack = getStackToRender();
         GuiRenderHelper.drawItemStack(pose, stack, 1F);
-        GuiRenderHelper.drawItemStackDecorations(pose, stack);
+        graphics.renderItemDecorations(GuiRenderHelper.getFont(), stack, 0, 0);
         pose.translate(-1, -1, 10);
         if (rect.inside(mouseX, mouseY) && enabled) {
             RenderSystem.enableBlend();
-            HOVER.render(pose, rect.getWidth(), rect.getHeight());
+            HOVER.render(graphics, rect.getWidth(), rect.getHeight());
         }
         
     }

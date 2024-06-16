@@ -57,7 +57,7 @@ public class GuiStyle {
             return cached;
         
         try {
-            Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name)).orElseThrow();
+            Resource resource = mc.getResourceManager().getResource(ResourceLocation.parse(name)).orElseThrow();
             InputStream input = resource.open();
             try {
                 JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();

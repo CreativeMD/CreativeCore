@@ -81,7 +81,7 @@ public class CreativeCoreClient {
     public static float getFrameTime() {
         if (mc.isPaused())
             return 1.0F;
-        return mc.getFrameTime();
+        return mc.getTimer().getGameTimeDeltaPartialTick(false);
     }
     
     @SubscribeEvent
@@ -119,7 +119,7 @@ public class CreativeCoreClient {
     }
     
     public static void modelEvent(RegisterGeometryLoaders event) {
-        event.register(new ResourceLocation(CreativeCore.MODID, "rendered"), new CreativeModelLoader());
+        event.register(ResourceLocation.tryBuild(CreativeCore.MODID, "rendered"), new CreativeModelLoader());
     }
     
     public static void screenEvent(RegisterMenuScreensEvent event) {

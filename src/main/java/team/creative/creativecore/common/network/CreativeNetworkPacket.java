@@ -23,8 +23,8 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
     public final boolean fabric;
     
     public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier, boolean fabric) {
-        this.sid = new CustomPacketPayload.Type(new ResourceLocation(id.getNamespace(), id.getPath() + "s"));
-        this.cid = new CustomPacketPayload.Type(new ResourceLocation(id.getNamespace(), id.getPath() + "c"));
+        this.sid = new CustomPacketPayload.Type(ResourceLocation.tryBuild(id.getNamespace(), id.getPath() + "s"));
+        this.cid = new CustomPacketPayload.Type(ResourceLocation.tryBuild(id.getNamespace(), id.getPath() + "c"));
         this.classType = classType;
         this.supplier = supplier;
         this.fabric = fabric;

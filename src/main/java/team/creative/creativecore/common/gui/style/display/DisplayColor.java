@@ -1,17 +1,8 @@
 package team.creative.creativecore.common.gui.style.display;
 
-import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.mc.ColorUtils;
@@ -21,10 +12,7 @@ import team.creative.creativecore.common.util.type.Color;
 @OnlyIn(Dist.CLIENT)
 public class DisplayColor extends StyleDisplay {
     
-    public float alpha;
-    public float red;
-    public float green;
-    public float blue;
+    public int color;
     
     public DisplayColor() {
         set(1, 1, 1, 1);
@@ -47,10 +35,7 @@ public class DisplayColor extends StyleDisplay {
     }
     
     public void set(float r, float g, float b, float a) {
-        this.red = r;
-        this.green = g;
-        this.blue = b;
-        this.alpha = a;
+        this.color = ColorUtils.rgba(r, g, b, a);
     }
     
     public void set(Color color) {
@@ -58,18 +43,8 @@ public class DisplayColor extends StyleDisplay {
     }
     
     @Override
-    public void render(PoseStack pose, double x, double y, double width, double height) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        
-        Matrix4f mat = pose.last().pose();
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        buffer.vertex(mat, (float) (x + width), (float) y, 0).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(mat, (float) x, (float) y, 0).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(mat, (float) x, (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
-        buffer.vertex(mat, (float) (x + width), (float) (y + height), 0).color(red, green, blue, alpha).endVertex();
-        tessellator.end();
+    public void render(GuiGraphics graphics, double x, double y, double width, double height) {
+        graphics.fill((int) x, (int) y, (int) (x + width), (int) (y + height), color);
     }
     
 }

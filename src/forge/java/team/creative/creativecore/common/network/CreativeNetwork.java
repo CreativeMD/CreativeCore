@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
@@ -40,7 +40,7 @@ public class CreativeNetwork {
         this.version = "" + version;
         this.modid = location.getNamespace();
         this.logger.debug("Created network " + location + "");
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::register);
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::register);
     }
     
     public void register(final RegisterPayloadHandlersEvent event) {
@@ -63,7 +63,7 @@ public class CreativeNetwork {
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
-        CreativeNetworkPacket handler = new CreativeNetworkPacket(new ResourceLocation(modid, "" + id), classType, supplier, false);
+        CreativeNetworkPacket handler = new CreativeNetworkPacket(ResourceLocation.tryBuild(modid, "" + id), classType, supplier, false);
         packetTypes.put(classType, handler);
         if (registrar != null)
             registerType(handler);

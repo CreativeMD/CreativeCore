@@ -15,12 +15,12 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.Event;
-import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
@@ -41,15 +41,15 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void register(CommonLoader loader) {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent x) -> loader.onInitialize());
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((FMLCommonSetupEvent x) -> loader.onInitialize());
     }
     
     @Override
     public void registerClient(ClientLoader loader) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLClientSetupEvent x) -> loader.onInitializeClient());
+        if (FMLLoader.getDist() == Dist.CLIENT) {
+            ModLoadingContext.get().getActiveContainer().getEventBus().addListener((FMLClientSetupEvent x) -> loader.onInitializeClient());
             NeoForge.EVENT_BUS.addListener((RegisterClientCommandsEvent x) -> loader.registerClientCommands(x.getDispatcher()));
-        });
+        }
     }
     
     @Override

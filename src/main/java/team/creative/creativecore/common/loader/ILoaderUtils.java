@@ -8,8 +8,8 @@ public interface ILoaderUtils {
     
     public int getLifeSpan(ItemEntity item);
     
-    public int onItemPickup(ItemEntity item, Player player);
+    public int fireItemPickupPre(ItemEntity item, Player player);
     
-    public void firePlayerItemPickupEvent(Player player, ItemEntity item, ItemStack stack);
+    public void fireItemPickupPost(ItemEntity item, Player player, ItemStack copy);
     
 }

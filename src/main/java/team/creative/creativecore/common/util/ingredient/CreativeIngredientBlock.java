@@ -22,7 +22,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        block = provider.lookup(Registries.BLOCK).get().getOrThrow(ResourceKey.create(Registries.BLOCK, new ResourceLocation(nbt.getString("block")))).value();
+        block = provider.lookup(Registries.BLOCK).get().getOrThrow(ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getString("block")))).value();
     }
     
     @Override

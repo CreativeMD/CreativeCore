@@ -65,7 +65,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             if (i == layers.size() - 1) {
                 RenderSystem.disableDepthTest();
                 if (layer.hasGrayBackground())
-                    GuiRenderHelper.verticalGradientRect(pose, 0, 0, width, height, -1072689136, -804253680);
+                    GuiRenderHelper.verticalGradientRect(graphics, 0, 0, width, height, -1072689136, -804253680);
                 if (screen instanceof AbstractContainerScreen)
                     NeoForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, graphics, mouseX, mouseY));
             }

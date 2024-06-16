@@ -92,7 +92,7 @@ public class GuiLabel extends GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        text.render(graphics.pose());
+        text.render(graphics);
     }
     
     @Override

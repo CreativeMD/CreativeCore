@@ -513,7 +513,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             public ResourceLocation readElement(ResourceLocation defaultValue, boolean loadDefault, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
-                    return new ResourceLocation(element.getAsString());
+                    return ResourceLocation.parse(element.getAsString());
                 return defaultValue;
             }
             
@@ -542,7 +542,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             protected ResourceLocation saveValue(GuiParent parent, Class clazz) {
                 GuiTextfield button = parent.get("data");
-                return new ResourceLocation(button.getText());
+                return ResourceLocation.parse(button.getText());
             }
             
             @Override
@@ -551,15 +551,15 @@ public abstract class ConfigTypeConveration<T> {
             }
             
         });
-        registerTypeCreator(ResourceLocation.class, () -> new ResourceLocation(""));
+        registerTypeCreator(ResourceLocation.class, () -> ResourceLocation.withDefaultNamespace(""));
         
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override
             public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKeyField key) {
                 if (element.isJsonObject())
-                    return new SoundConfig(new ResourceLocation(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume").getAsFloat(), element
-                            .getAsJsonObject().get("pitch").getAsFloat());
+                    return new SoundConfig(ResourceLocation.parse(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume")
+                            .getAsFloat(), element.getAsJsonObject().get("pitch").getAsFloat());
                 return defaultValue;
             }
             
@@ -617,14 +617,14 @@ public abstract class ConfigTypeConveration<T> {
             }
             
         });
-        registerTypeCreator(SoundConfig.class, () -> new SoundConfig(new ResourceLocation("missing")));
+        registerTypeCreator(SoundConfig.class, () -> new SoundConfig(ResourceLocation.withDefaultNamespace("missing")));
         
         registerType(RegistryObjectConfig.class, new ConfigTypeConveration<>() {
             
             @Override
             public RegistryObjectConfig readElement(HolderLookup.Provider provider, RegistryObjectConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKeyField key) {
                 if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
-                    return new RegistryObjectConfig(defaultValue.registry, new ResourceLocation(element.getAsString()));
+                    return new RegistryObjectConfig(defaultValue.registry, ResourceLocation.parse(element.getAsString()));
                 return defaultValue;
             }
             
@@ -738,7 +738,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(NamedList.class, new ConfigTypeNamedList());
         registerType(Permission.class, new ConfigTypePermission());
         
-        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1, false));
+        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, ResourceLocation.withDefaultNamespace("slowness"), 2, 1, false));
         
         registerType(ToggleableConfig.class, new ConfigTypeToggleable());
         

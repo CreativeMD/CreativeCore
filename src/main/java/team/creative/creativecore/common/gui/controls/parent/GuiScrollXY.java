@@ -206,8 +206,8 @@ public class GuiScrollXY extends GuiParent {
                 scrollThingWidth = completeWidth;
             double percent = scrolledX.current() / maxScrollX;
             
-            style.get(scrollbarFace, false).render(pose, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, control.getHeight() - scrollbarThickness - borderWidth,
-                scrollThingWidth, scrollbarThickness);
+            style.get(scrollbarFace, false).render(graphics, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, control
+                    .getHeight() - scrollbarThickness - borderWidth, scrollThingWidth, scrollbarThickness);
             
             maxScrollX = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
         }
@@ -222,7 +222,7 @@ public class GuiScrollXY extends GuiParent {
                 scrollThingHeight = completeHeight;
             double percent = scrolledY.current() / maxScrollY;
             
-            style.get(scrollbarFace, false).render(pose, control.getWidth() - scrollbarThickness - borderWidth,
+            style.get(scrollbarFace, false).render(graphics, control.getWidth() - scrollbarThickness - borderWidth,
                 (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarThickness, scrollThingHeight);
             
             maxScrollY = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
