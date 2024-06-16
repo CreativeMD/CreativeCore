@@ -2,6 +2,7 @@ package team.creative.creativecore.common.config.premade;
 
 import java.util.Objects;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import team.creative.creativecore.Side;
@@ -22,6 +23,10 @@ public class RegistryObjectConfig<T> implements ICreativeConfig {
     @Override
     public void configured(Side side) {
         value = registry.get(location);
+    }
+    
+    public Holder<T> getHolder() {
+        return registry.wrapAsHolder(value);
     }
     
     @Override
