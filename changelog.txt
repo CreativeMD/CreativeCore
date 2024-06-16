@@ -1,3 +1,6 @@
+2.11.34
+Added getHolder() to RegistryObjectConfig
+
 2.11.33
 Fixed crash when using config gui in main menu
 
