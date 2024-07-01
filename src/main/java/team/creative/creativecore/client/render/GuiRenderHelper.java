@@ -4,18 +4,16 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-
 import com.mojang.math.Matrix4f;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -84,8 +82,7 @@ public class GuiRenderHelper {
                 String s = String.valueOf(count);
                 posestack.translate(0.0D, 0.0D, 0 + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last().pose(), multibuffersource$buffersource, false, 0,
-                    15728880);
+                mc.font.drawInBatch(s, x + 19 - 2 - mc.font.width(s), y + 6 + 3, 16777215, true, posestack.last().pose(), multibuffersource$buffersource, false, 0, 15728880);
                 multibuffersource$buffersource.endBatch();
             }
             if (stack.isBarVisible()) {
@@ -135,8 +132,8 @@ public class GuiRenderHelper {
             }
         }
         BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2f, height / 2 - mc.font.lineHeight / 2f, ColorUtils.WHITE, shadow, stack.last().pose(), buffer,
-            false, 0, 15728880);
+        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2f, height / 2 - mc.font.lineHeight / 2f, ColorUtils.WHITE, shadow, stack.last().pose(), buffer, false, 0,
+            15728880);
         buffer.endBatch();
     }
     

@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,7 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
 import net.minecraftforge.registries.RegisterEvent;
 import team.creative.creativecore.client.CreativeCoreClient;
@@ -57,7 +55,7 @@ public class CreativeCore {
         new GuiCreatorBasic((player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.SERVER)));
     public static final GuiCreatorBasic CONFIG_CLIENT_SYNC_OPEN = GuiCreator.register("clientconfig",
         new GuiCreatorBasic((player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT)));
-
+    
     public CreativeCore() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerMenus);
@@ -77,7 +75,7 @@ public class CreativeCore {
             }
         };
     }
-
+    
     public void registerMenus(RegisterEvent event) {
         event.register(Keys.MENU_TYPES, (x) -> x.register("container", GUI_CONTAINER));
     }
