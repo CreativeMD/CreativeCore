@@ -161,6 +161,8 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     
     @Override
     public Provider provider() {
+        if (mc.player != null)
+            return mc.player.registryAccess();
         return null;
     }
     

@@ -67,4 +67,7 @@ public class SelectableConfig<T> implements IConfigObject {
         reset();
     }
     
+    @Override
+    public void configured(Side side) {}
+    
 }

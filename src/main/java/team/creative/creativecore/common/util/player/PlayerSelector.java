@@ -20,9 +20,10 @@ import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiPlayerSelectorButton;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.mc.PlayerUtils;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
@@ -56,7 +57,7 @@ public abstract class PlayerSelector {
         ConfigTypeConveration.registerSpecialType(PlayerSelector.class::isAssignableFrom, new ConfigTypeConveration.SimpleConfigTypeConveration<PlayerSelector>() {
             
             @Override
-            public PlayerSelector readElement(PlayerSelector defaultValue, boolean loadDefault, JsonElement element) {
+            public PlayerSelector readElement(ConfigKey key, PlayerSelector defaultValue, Side side, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
                         return PlayerSelector.read(TagParser.parseTag(element.getAsString()));
@@ -67,14 +68,14 @@ public abstract class PlayerSelector {
             }
             
             @Override
-            public JsonElement writeElement(PlayerSelector value, PlayerSelector defaultValue, boolean saveDefault) {
+            public JsonElement writeElement(PlayerSelector value, ConfigKey key, Side side) {
                 return new JsonPrimitive(value.writeToNBT(new CompoundTag()).toString());
             }
             
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, Class clazz) {
+            public void createControls(GuiParent parent, ConfigKey key) {
                 parent.add(new GuiPlayerSelectorButton("data", new PlayerSelectorLevel(0)));
             }
             
@@ -89,13 +90,13 @@ public abstract class PlayerSelector {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            protected PlayerSelector saveValue(GuiParent parent, Class clazz) {
+            protected PlayerSelector saveValue(GuiParent parent, ConfigKey key) {
                 GuiPlayerSelectorButton button = parent.get("data");
                 return button.get();
             }
             
             @Override
-            public PlayerSelector set(ConfigKeyField key, PlayerSelector value) {
+            public PlayerSelector set(ConfigKey key, PlayerSelector value) {
                 return value;
             }
             

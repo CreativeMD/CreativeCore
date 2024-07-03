@@ -308,7 +308,7 @@ public class CompiledText {
                 pose.pushPose();
                 pose.translate(xOffset, yOffset, 0);
                 if (text instanceof AdvancedFormattedText adv)
-                    adv.render(pose, defaultColor);
+                    adv.render(graphics, defaultColor);
                 else {
                     font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), bufferSource, DisplayMode.NORMAL, 0, 15728880);
                     bufferSource.endBatch();

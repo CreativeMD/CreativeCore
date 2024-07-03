@@ -31,7 +31,7 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 
@@ -159,7 +159,7 @@ public abstract class CreativeIngredient {
         ConfigTypeConveration.registerSpecialType(CreativeIngredient.class::isAssignableFrom, new ConfigTypeConveration<CreativeIngredient>() {
             
             @Override
-            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKeyField key) {
+            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
                         return CreativeIngredient.load(provider, TagParser.parseTag(element.getAsString()));
@@ -170,21 +170,21 @@ public abstract class CreativeIngredient {
             }
             
             @Override
-            public JsonElement writeElement(HolderLookup.Provider provider, CreativeIngredient value, CreativeIngredient defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKeyField key) {
+            public JsonElement writeElement(HolderLookup.Provider provider, CreativeIngredient value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
                 return new JsonPrimitive(value.save(provider).toString());
             }
             
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key, Class clazz) {
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
                 parent.add(new GuiInfoStackButton("data", temp).setExpandableX());
             }
             
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void loadValue(CreativeIngredient value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
+            public void loadValue(CreativeIngredient value, CreativeIngredient defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
                 GuiInfoStackButton button = parent.get("data");
                 button.set(value);
             }
@@ -192,13 +192,13 @@ public abstract class CreativeIngredient {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            protected CreativeIngredient saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, ConfigKeyField key) {
+            protected CreativeIngredient saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
                 GuiInfoStackButton button = parent.get("data");
                 return button.get();
             }
             
             @Override
-            public CreativeIngredient set(ConfigKeyField key, CreativeIngredient value) {
+            public CreativeIngredient set(ConfigKey key, CreativeIngredient value) {
                 return value;
             }
         });

@@ -66,7 +66,7 @@ public abstract class GuiSlotBase extends GuiControl {
         PoseStack pose = graphics.pose();
         pose.translate(1, 1, 10);
         ItemStack stack = getStackToRender();
-        GuiRenderHelper.drawItemStack(pose, stack, 1F);
+        GuiRenderHelper.drawItemStack(graphics, stack, 1F);
         graphics.renderItemDecorations(GuiRenderHelper.getFont(), stack, 0, 0);
         pose.translate(-1, -1, 10);
         if (rect.inside(mouseX, mouseY) && enabled) {

@@ -7,12 +7,11 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.util.type.list.PairList;
 
-public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConfigHolder {
+public abstract class ConfigHolder<T extends ConfigKeyField> implements ICreativeConfigHolder {
     
     public final ConfigSynchronization synchronization;
     public final ICreativeConfigHolder parent;
@@ -48,12 +47,12 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public ConfigKey getField(String key) {
+    public ConfigKeyField getField(String key) {
         return fields.getValue(key);
     }
     
     @Override
-    public Collection<? extends ConfigKey> fields() {
+    public Collection<? extends ConfigKeyField> fields() {
         return fields.values();
     }
     
@@ -74,8 +73,8 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     public boolean isEmpty(Side side) {
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
-            if (field.get() instanceof ICreativeConfigHolder) {
-                if (!((ICreativeConfigHolder) field.get()).isEmpty(side))
+            if (field.isFolder()) {
+                if (!field.holder().isEmpty(side))
                     return false;
             } else if (field.is(side))
                 return false;
@@ -87,8 +86,8 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     public boolean isEmptyWithoutForce(Side side) {
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
-            if (field.get() instanceof ICreativeConfigHolder) {
-                if (!((ICreativeConfigHolder) field.get()).isEmptyWithoutForce(side))
+            if (field.isFolder()) {
+                if (!field.holder().isEmptyWithoutForce(side))
                     return false;
             } else if (field.isWithoutForce(side))
                 return false;
@@ -108,7 +107,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     public void restoreDefault(Side side, boolean ignoreRestart) {
         for (int i = 0; i < fields.size(); i++) {
             T key = fields.get(i).value;
-            if (key.is(side) && (!ignoreRestart || !key.requiresRestart) && (!(key.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) key.get()).isEmpty(side)))
+            if (key.is(side) && (!ignoreRestart || !key.requiresRestart) && (!key.isFolder() || !key.holder().isEmpty(side)))
                 key.restoreDefault(side, ignoreRestart);
         }
     }
@@ -119,9 +118,8 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
             T field = fields.get(i).value;
             if (field.is(side) && (!ignoreRestart || !field.requiresRestart)) {
                 if (json.has(field.name))
-                    field.set(ConfigTypeConveration.read(provider, field.getType(), field.getDefault(), loadDefault, ignoreRestart, json.get(field.name), side,
-                        field instanceof ConfigKeyField ? (ConfigKeyField) field : null), side);
-                else if (loadDefault && (!(field.get() instanceof ICreativeConfigHolder) || !((ICreativeConfigHolder) field.get()).isEmpty(side)))
+                    field.read(provider, loadDefault, ignoreRestart, json.get(field.name), side);
+                else if (loadDefault && (!field.isFolder() || !field.holder().isEmpty(side)))
                     field.restoreDefault(side, ignoreRestart);
                 field.triggerConfigured(side);
             }
@@ -134,8 +132,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
         for (int i = 0; i < fields.size(); i++) {
             T field = fields.get(i).value;
             if (field.is(side) && (!ignoreRestart || !field.requiresRestart) && (saveDefault || !field.isDefault(side)))
-                object.add(field.name, ConfigTypeConveration.write(provider, field.getType(), field.get(), field.getDefault(), saveDefault, ignoreRestart, side,
-                    field instanceof ConfigKeyField ? (ConfigKeyField) field : null));
+                object.add(field.name, field.write(provider, saveDefault, ignoreRestart, side));
         }
         return object;
     }

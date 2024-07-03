@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.holder.ConfigKey;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKeyFieldType;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -82,30 +82,29 @@ public class ConfigGuiLayer extends GuiLayer {
         box.add(table);
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
-        for (ConfigKey key : holder.fields()) {
+        for (ConfigKeyField key : holder.fields()) {
             if (key.requiresRestart)
                 continue;
-            Object value = key.get();
             
             String path = "config." + String.join(".", holder.path());
             if (!path.endsWith("."))
                 path += ".";
             String caption = translateOrDefault(path + key.name + ".name", key.name);
             String comment = path + key.name + ".comment";
-            if (value instanceof ICreativeConfigHolder configHolder) {
-                if (!configHolder.isEmpty(side)) {
+            if (key.isFolder()) {
+                if (!key.holder().isEmpty(side)) {
                     GuiRow row = new GuiRow();
                     table.addRow(row);
                     GuiColumn col = new GuiColumn();
                     row.addColumn(col);
-                    col.add(new GuiButton(caption, x -> loadHolder((ICreativeConfigHolder) value)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(
-                        comment).build()));
+                    col.add(new GuiButton(caption, x -> loadHolder(key.holder())).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment)
+                            .build()));
                 }
             } else {
                 if (!key.is(side))
                     continue;
                 
-                GuiConfigControl control = new GuiConfigControl((ConfigKeyField) key, side, caption, comment);
+                GuiConfigControl control = new GuiConfigControl((ConfigKeyFieldType) key, side, caption, comment);
                 table.addRow(control);
                 control.init(json != null ? json.get(key.name) : null);
             }

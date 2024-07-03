@@ -64,7 +64,7 @@ public class GuiShowItem extends GuiControl {
         float scale = (float) Math.min(rect.getWidth() / 16, rect.getHeight() / 16);
         PoseStack pose = graphics.pose();
         pose.scale(scale, scale, 1);
-        GuiRenderHelper.drawItemStack(pose, stack, 1);
+        GuiRenderHelper.drawItemStack(graphics, stack, 1);
     }
     
 }

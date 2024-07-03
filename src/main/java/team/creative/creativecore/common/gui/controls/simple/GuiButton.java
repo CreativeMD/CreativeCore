@@ -28,4 +28,8 @@ public class GuiButton extends GuiLabel {
         return ControlFormatting.CLICKABLE;
     }
     
+    public void setPressed(Consumer<Integer> pressed) {
+        this.pressed = pressed;
+    }
+    
 }

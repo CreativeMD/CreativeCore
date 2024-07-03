@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKeyFieldType;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
@@ -17,21 +17,22 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     
-    public final ConfigKeyField field;
+    public final ConfigKeyFieldType field;
     public final Side side;
     private GuiButton resetButton;
     private final GuiColumn main;
     private Object extra;
+    private boolean loading = false;
     
-    public GuiConfigControl(ConfigKeyField field, Side side, int width, boolean showReset) {
+    public GuiConfigControl(ConfigKeyFieldType field, Side side, int width, boolean showReset) {
         this(field, side, null, null, width, showReset);
     }
     
-    public GuiConfigControl(ConfigKeyField field, Side side, String caption, String comment) {
+    public GuiConfigControl(ConfigKeyFieldType field, Side side, String caption, String comment) {
         this(field, side, caption, comment, 200, true);
     }
     
-    public GuiConfigControl(ConfigKeyField field, Side side, String caption, String comment, int width, boolean showReset) {
+    public GuiConfigControl(ConfigKeyFieldType field, Side side, String caption, String comment, int width, boolean showReset) {
         super();
         this.field = field;
         this.side = side;
@@ -53,7 +54,10 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
             end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
         }
         
-        registerEventChanged(x -> changed());
+        registerEventChanged(x -> {
+            if (!loading)
+                changed();
+        });
     }
     
     @Override
@@ -62,7 +66,7 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     }
     
     public boolean isDefault() {
-        return !field.isDefault(field.converation.save(main, this, field.getType(), field), side);
+        return !field.isDefault(field.converation.save(main, this, field), side);
     }
     
     public void updateButton() {
@@ -71,15 +75,17 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     }
     
     public void init(JsonElement initalValue) {
-        field.converation.createControls(main, this, field, field.getType());
-        field.converation.loadValue(initalValue != null ? field.converation.readElement(provider(), field.getDefault(), false, false, initalValue, side, field) : field.get(), main,
-            this, field);
+        loading = true;
+        field.converation.createControls(main, this, field);
+        field.converation.loadValue(initalValue != null ? field.converation.readElement(provider(), field.defaultValue, false, false, initalValue, side, field) : field.get(),
+            field.defaultValue, main, this, field);
+        loading = false;
         
         updateButton();
     }
     
     public void reset() {
-        field.converation.restoreDefault(field.getDefault(), main, this, field);
+        field.converation.restoreDefault(field.defaultValue, main, this, field);
         updateButton();
     }
     
@@ -89,9 +95,9 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     }
     
     public JsonElement save() {
-        Object value = field.converation.save(main, this, field.getType(), field);
+        Object value = field.converation.save(main, this, field);
         if (field.converation.shouldSave(value, main, this, field))
-            return field.converation.writeElement(provider(), value, field.getDefault(), true, false, side, field);
+            return field.converation.writeElement(provider(), value, true, false, side, field);
         return null;
     }
     

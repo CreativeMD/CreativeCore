@@ -14,9 +14,9 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.converation.ConfigTypePermission.GuiPermissionConfigButton;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
-import team.creative.creativecore.common.config.holder.ConfigKey;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
-import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.config.key.ConfigKeyCacheType;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKeyFieldType;
 import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -42,7 +42,7 @@ public class PermissionGuiLayer extends GuiLayer {
     protected GuiTableScrollable table;
     protected ConfigTypeConveration converation;
     private List<PermissionGuiGroup> groups;
-    private final HashMap<ConfigKey, GuiRow> rows = new HashMap<>();
+    private final HashMap<ConfigKeyFieldType, GuiRow> rows = new HashMap<>();
     
     public PermissionGuiLayer() {
         super("permission", 500, 260);
@@ -55,7 +55,7 @@ public class PermissionGuiLayer extends GuiLayer {
         
         flow = GuiFlow.STACK_Y;
         align = Align.STRETCH;
-        converation = ConfigTypeConveration.getUnsafe(button.clazz);
+        converation = button.key instanceof ConfigKeyCacheType t ? t.converation : null;
         groups = new ArrayList<>();
         
         GuiParent top = new GuiParent();
@@ -72,19 +72,19 @@ public class PermissionGuiLayer extends GuiLayer {
                 GuiColumn col = new GuiColumn();
                 ((PermissionGuiGroupSimple) group).control = col;
                 
-                converation.createControls(col, null, null, button.clazz);
+                converation.createControls(col, null, button.key);
                 
                 row.addColumn(col);
             } else {
-                Object newValue = ConfigTypeConveration.createObject(button.clazz);
+                Object newValue = ConfigTypeConveration.createObject(button.key);
                 ConfigHolderObject holder = ConfigHolderObject.createUnrelated(Side.SERVER, newValue, newValue);
                 group = new PermissionGuiGroupMulti(provider(), "", holder);
                 groups.add(group);
                 
-                for (Entry<ConfigKey, GuiRow> entry : rows.entrySet()) {
+                for (Entry<ConfigKeyFieldType, GuiRow> entry : rows.entrySet()) {
                     
                     GuiColumn col = new GuiColumn();
-                    GuiConfigControl config = new GuiConfigControl((ConfigKeyField) entry.getKey(), Side.SERVER, 100, false) {
+                    GuiConfigControl config = new GuiConfigControl(entry.getKey(), Side.SERVER, 100, false) {
                         
                         @Override
                         public void changed() {
@@ -119,14 +119,15 @@ public class PermissionGuiLayer extends GuiLayer {
             table.addRow(row);
             
             for (Entry<String, ?> entry : button.value.entrySet()) {
-                PermissionGuiGroupSimple group = new PermissionGuiGroupSimple(entry.getKey(), button.defaultValue.getDirect(entry.getKey()));
+                var defaultValue = button.defaultValue.getDirect(entry.getKey());
+                PermissionGuiGroupSimple group = new PermissionGuiGroupSimple(entry.getKey(), defaultValue);
                 groups.add(group);
                 
                 GuiColumn col = new GuiColumn();
                 group.control = col;
                 
-                converation.createControls(col, null, null, button.clazz);
-                converation.loadValue(entry.getValue(), col, null, null);
+                converation.createControls(col, null, button.key);
+                converation.loadValue(entry.getValue(), defaultValue, col, null, button.key);
                 
                 row.addColumn(col);
             }
@@ -134,7 +135,8 @@ public class PermissionGuiLayer extends GuiLayer {
             List<GuiRow> rows = new ArrayList<>();
             
             for (Entry<String, ?> entry : button.value.entrySet()) {
-                Object copiedEntry = ConfigTypeConveration.copy(provider(), Side.SERVER, entry.getValue(), button.clazz);
+                button.key.set(entry.getValue(), Side.SERVER);
+                Object copiedEntry = button.key.copy(provider(), Side.SERVER);
                 Object defaultReference = button.defaultValue.getDirect(entry.getKey());
                 if (defaultReference == null)
                     defaultReference = copiedEntry;
@@ -143,11 +145,8 @@ public class PermissionGuiLayer extends GuiLayer {
                 groups.add(group);
                 
                 int i = 0;
-                for (ConfigKey key : holder.fields()) {
-                    if (key.requiresRestart)
-                        continue;
-                    Object value = key.get();
-                    if (value instanceof ICreativeConfigHolder)
+                for (ConfigKeyField key : holder.fields()) {
+                    if (key.requiresRestart || key.isFolder())
                         continue;
                     
                     if (rows.size() <= i) {
@@ -163,11 +162,11 @@ public class PermissionGuiLayer extends GuiLayer {
                         row.addColumn(col);
                         table.addRow(row);
                         rows.add(row);
-                        this.rows.put(key, row);
+                        this.rows.put((ConfigKeyFieldType) key, row);
                     }
                     
                     GuiColumn col = new GuiColumn();
-                    GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, Side.SERVER, 100, false) {
+                    GuiConfigControl config = new GuiConfigControl((ConfigKeyFieldType) key, Side.SERVER, 100, false) {
                         
                         @Override
                         public void changed() {
@@ -230,7 +229,7 @@ public class PermissionGuiLayer extends GuiLayer {
     @Override
     public void closeTopLayer() {
         Permission newValue = save();
-        if (force || button.configTypePerm.areEqual(button.value, newValue, button.clazz))
+        if (force || button.configTypePerm.areEqual(button.value, newValue, button.key))
             super.closeTopLayer();
         else
             GuiDialogHandler.openDialog(getIntegratedParent(), "savechanges", (x, y) -> {
@@ -302,7 +301,7 @@ public class PermissionGuiLayer extends GuiLayer {
         
         @Override
         protected void resetInternal() {
-            converation.loadValue(defaultValue, control, null, null);
+            converation.loadValue(defaultValue, defaultValue, control, null, null);
         }
         
         @Override
@@ -314,7 +313,7 @@ public class PermissionGuiLayer extends GuiLayer {
         
         @Override
         public Object save() {
-            return converation.save(control, null, button.clazz, null);
+            return converation.save(control, null, button.key);
         }
         
     }

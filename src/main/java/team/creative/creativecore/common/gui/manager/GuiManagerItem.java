@@ -86,7 +86,7 @@ public class GuiManagerItem extends GuiManager {
             RenderSystem.disableScissor();
             
             pose.translate(mouseX - 8, mouseY - 8, 200);
-            GuiRenderHelper.drawItemStack(pose, stack, 1);
+            GuiRenderHelper.drawItemStack(graphics, stack, 1);
             graphics.renderItemDecorations(GuiRenderHelper.getFont(), stack, 0, 0, "" + count);
             pose.popPose();
         }

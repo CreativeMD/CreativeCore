@@ -4,9 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.holder.ConfigKey;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKeyFieldType;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
@@ -31,12 +31,10 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     }
     
     public void createControls() {
-        for (ConfigKey key : holder.fields()) {
+        for (ConfigKeyField key : holder.fields()) {
             if (key.requiresRestart)
                 continue;
-            Object value = key.get();
-            
-            if (value instanceof ICreativeConfigHolder)
+            if (key.isFolder())
                 continue;
             
             String path = "config." + String.join(".", holder.path());
@@ -44,7 +42,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                 path += ".";
             String caption = translateOrDefault(path + key.name + ".name", key.name);
             String comment = path + key.name + ".comment";
-            GuiConfigControl config = new GuiConfigControl((ConfigKeyField) key, Side.SERVER, caption, comment) {
+            GuiConfigControl config = new GuiConfigControl((ConfigKeyFieldType) key, Side.SERVER, caption, comment) {
                 
                 @Override
                 public void updateButton() {

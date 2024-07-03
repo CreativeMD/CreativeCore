@@ -2,9 +2,8 @@ package team.creative.creativecore.common.util.text.content;
 
 import java.util.Optional;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.StringSplitter.WidthProvider;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 
@@ -24,6 +23,6 @@ public interface AdvancedFormattedText extends FormattedText {
     
     public int height();
     
-    public void render(PoseStack pose, int defaultColor);
+    public void render(GuiGraphics graphics, int defaultColor);
     
 }
