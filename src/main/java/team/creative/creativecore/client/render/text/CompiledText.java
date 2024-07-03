@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -15,6 +13,7 @@ import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -74,7 +73,7 @@ public class CompiledText {
         @Override
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
-        public void render(PoseStack stack) {}
+        public void render(GuiGraphics graphics) {}
     };
     
     private int maxWidth;
@@ -215,7 +214,7 @@ public class CompiledText {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void render(PoseStack stack) {
+    public void render(GuiGraphics graphics) {
         if (lines == null)
             return;
         
@@ -223,6 +222,7 @@ public class CompiledText {
         usedHeight = -lineSpacing;
         
         int totalHeight = getTotalHeight();
+        var stack = graphics.pose();
         
         if (scale != 1) {
             stack.pushPose();
@@ -242,19 +242,19 @@ public class CompiledText {
                 case CENTER -> {
                     int x = maxWidthScaled / 2 - line.width / 2;
                     stack.translate(x, 0, 0);
-                    line.render(stack);
+                    line.render(graphics);
                     stack.translate(-x, 0, 0);
                     usedWidth = Math.max(usedWidth, maxWidthScaled);
                 }
                 case RIGHT -> {
                     int x = maxWidthScaled - line.width;
                     stack.translate(x, 0, 0);
-                    line.render(stack);
+                    line.render(graphics);
                     stack.translate(-x, 0, 0);
                     usedWidth = Math.max(usedWidth, maxWidthScaled);
                 }
                 default -> {
-                    line.render(stack);
+                    line.render(graphics);
                     usedWidth = Math.max(usedWidth, line.width);
                 }
             };
@@ -293,10 +293,11 @@ public class CompiledText {
         
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
-        public void render(PoseStack pose) {
+        public void render(GuiGraphics graphics) {
             Font font = Minecraft.getInstance().font;
             int xOffset = 0;
-            MultiBufferSource.BufferSource renderType = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            var pose = graphics.pose();
+            MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
             for (FormattedText text : components) {
                 int height = lineHeight(text);
                 int width = width(text);
@@ -307,10 +308,10 @@ public class CompiledText {
                 pose.pushPose();
                 pose.translate(xOffset, yOffset, 0);
                 if (text instanceof AdvancedFormattedText adv)
-                    adv.render(pose, defaultColor);
+                    adv.render(graphics, defaultColor);
                 else {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), renderType, DisplayMode.NORMAL, 0, 15728880);
-                    renderType.endBatch();
+                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), bufferSource, DisplayMode.NORMAL, 0, 15728880);
+                    bufferSource.endBatch();
                 }
                 pose.popPose();
                 xOffset += width;

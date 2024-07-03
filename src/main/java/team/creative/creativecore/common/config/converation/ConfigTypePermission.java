@@ -4,7 +4,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,7 +12,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.gui.PermissionGuiLayer;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
+import team.creative.creativecore.common.config.key.ConfigKeyCache;
+import team.creative.creativecore.common.config.key.ConfigKeyCacheType;
 import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
@@ -25,8 +26,8 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     public static final GuiSyncGlobalLayer<PermissionGuiLayer> PERMISSION_DIALOG = GuiSyncHolder.GLOBAL.layer("permission_dialog", (t) -> new PermissionGuiLayer());
     
     @Override
-    protected Permission create(Class clazz) {
-        return new Permission(ConfigTypeConveration.createObject(clazz));
+    protected Permission create(ConfigKey key) {
+        return new Permission(ConfigTypeConveration.createObject(key));
     }
     
     @Override
@@ -35,29 +36,27 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     }
     
     @Override
-    public boolean shouldSave(Permission value, GuiParent parent, IGuiConfigParent configParent, ConfigKeyField key) {
+    public boolean shouldSave(Permission value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
         return !areEqual(value, (Permission) key.get(), key);
     }
     
-    public boolean areEqual(Permission one, Permission two, Class clazz) {
-        ConfigTypeConveration conversation = getUnsafe(clazz);
-        
+    public boolean areEqual(Permission one, Permission two, ConfigTypeConveration converation) {
         if (one.size() != two.size())
             return false;
         
-        if (conversation != null && !conversation.areEqual(one.getDefault(), two.getDefault(), null))
+        if (converation != null && !converation.areEqual(one.getDefault(), two.getDefault(), null))
             return false;
         
-        if (conversation == null && !one.getDefault().equals(two.getDefault()) && !EqualsBuilder.reflectionEquals(one.getDefault(), two.getDefault(), false))
+        if (converation == null && !one.getDefault().equals(two.getDefault()) && !EqualsBuilder.reflectionEquals(one.getDefault(), two.getDefault(), false))
             return false;
         
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) one.entrySet()) {
             Object other = two.getDirect(entry.getKey());
             
-            if (conversation != null && !conversation.areEqual(entry.getValue(), other, null))
+            if (converation != null && !converation.areEqual(entry.getValue(), other, null))
                 return false;
             
-            if (conversation == null && !entry.getValue().equals(other) && !EqualsBuilder.reflectionEquals(entry.getValue(), other, false))
+            if (converation == null && !entry.getValue().equals(other) && !EqualsBuilder.reflectionEquals(entry.getValue(), other, false))
                 return false;
         }
         
@@ -65,30 +64,31 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     }
     
     @Override
-    public boolean areEqual(Permission one, Permission two, @Nullable ConfigKeyField key) {
-        return areEqual(one, two, getListType(key));
+    public boolean areEqual(Permission one, Permission two, ConfigKey key) {
+        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
+        return areEqual(one, two, listKey instanceof ConfigKeyCacheType t ? t.converation : null);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
-        parent.add(new GuiPermissionConfigButton("button", this, getListType(key), configParent));
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+        parent.add(new GuiPermissionConfigButton("button", this, ConfigKeyCache.ofGenericType(key), configParent));
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(Permission value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
+    public void loadValue(Permission value, Permission defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
         GuiPermissionConfigButton button = parent.get("button");
         button.value = value;
-        button.defaultValue = (Permission<?>) key.getDefault();
+        button.defaultValue = defaultValue;
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected Permission saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
+    protected Permission saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
         return parent.get("button", GuiPermissionConfigButton.class).value;
     }
     
@@ -96,13 +96,13 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
         
         public Permission<?> value;
         public Permission<?> defaultValue;
-        public Class clazz;
+        public ConfigKeyCache key;
         public ConfigTypePermission configTypePerm;
         public IGuiConfigParent configParent;
         
-        public GuiPermissionConfigButton(String name, ConfigTypePermission configTypePerm, Class clazz, IGuiConfigParent configParent) {
+        public GuiPermissionConfigButton(String name, ConfigTypePermission configTypePerm, ConfigKeyCache key, IGuiConfigParent configParent) {
             super(name, null);
-            this.clazz = clazz;
+            this.key = key;
             this.configTypePerm = configTypePerm;
             this.configParent = configParent;
             pressed = x -> {

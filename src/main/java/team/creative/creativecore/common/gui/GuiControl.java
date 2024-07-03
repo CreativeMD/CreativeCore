@@ -14,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvent;
@@ -52,6 +53,10 @@ public abstract class GuiControl {
     }
     
     // BASICS
+    
+    public HolderLookup.Provider provider() {
+        return getPlayer().level().registryAccess();
+    }
     
     public boolean isClient() {
         if (parent != null)

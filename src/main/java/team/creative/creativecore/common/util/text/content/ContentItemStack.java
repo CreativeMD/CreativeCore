@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.StringSplitter.WidthProvider;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
@@ -50,12 +51,13 @@ public record ContentItemStack(ItemStack stack) implements AdvancedContent {
         }
         
         @Override
-        public void render(PoseStack pose, int defaultColor) {
+        public void render(GuiGraphics graphics, int defaultColor) {
+            PoseStack pose = graphics.pose();
             pose.pushPose();
             
             pose.translate(0, -2, 10);
             pose.scale(0.8F, 0.8F, 0.8F);
-            GuiRenderHelper.drawItemStack(pose, content.stack, 1);
+            GuiRenderHelper.drawItemStack(graphics, content.stack, 1);
             pose.popPose();
         }
         

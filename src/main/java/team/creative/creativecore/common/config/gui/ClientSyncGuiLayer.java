@@ -10,8 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKeyFieldHolder;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -33,9 +34,9 @@ import team.creative.creativecore.common.util.type.tree.CheckTree;
 
 public class ClientSyncGuiLayer extends GuiLayer {
     
-    public final CheckTree<ConfigKey> tree;
+    public final CheckTree<ConfigKeyField> tree;
     public final ICreativeConfigHolder root;
-    public CheckTree<ConfigKey>.CheckTreeEntry currentView;
+    public CheckTree<ConfigKeyField>.CheckTreeEntry currentView;
     
     public boolean changed = false;
     
@@ -52,24 +53,23 @@ public class ClientSyncGuiLayer extends GuiLayer {
                 ((GuiTreeCheckBox) x.control).partial = ((GuiTreeCheckBox) x.control).entry.isChildEnabled();
         });
         
-        BiConsumer<ConfigKey, Boolean> setter = (x, y) -> x.forceSynchronization = y;
-        Function<ConfigKey, Boolean> getter = (x) -> x.forceSynchronization;
-        Function<ConfigKey, Collection<? extends ConfigKey>> getChildren = (x) -> {
-            if (x.getDefault() instanceof ICreativeConfigHolder configHolder) {
-                List<ConfigKey> keys = new ArrayList<>();
-                for (ConfigKey key : configHolder.fields())
-                    if (key.isWithoutForce(Side.CLIENT) && (!(key.get() instanceof ICreativeConfigHolder objectHolder) || !(objectHolder.isEmptyWithoutForce(Side.CLIENT))))
+        BiConsumer<ConfigKeyField, Boolean> setter = (x, y) -> x.forceSynchronization = y;
+        Function<ConfigKeyField, Boolean> getter = (x) -> x.forceSynchronization;
+        Function<ConfigKeyField, Collection<? extends ConfigKeyField>> getChildren = (x) -> {
+            if (x.isFolder() && x instanceof ConfigKeyFieldHolder h) {
+                List<ConfigKeyField> keys = new ArrayList<>();
+                for (ConfigKeyField key : h.holder.fields())
+                    if (key.isWithoutForce(Side.CLIENT) && (!key.isFolder() || !key.holder().isEmptyWithoutForce(Side.CLIENT)))
                         keys.add(key);
                 return keys;
             }
             return null;
         };
         
-        List<ConfigKey> keys = new ArrayList<>();
-        for (ConfigKey key : holder.fields())
+        List<ConfigKeyField> keys = new ArrayList<>();
+        for (ConfigKeyField key : holder.fields())
             if (key.isWithoutForce(Side.CLIENT)) {
-                Object object = key.get();
-                if (!(object instanceof ICreativeConfigHolder configHolder) || !configHolder.isEmptyWithoutForce(Side.CLIENT))
+                if (!key.isFolder() || !key.holder().isEmptyWithoutForce(Side.CLIENT))
                     keys.add(key);
             }
         this.tree = new CheckTree<>(keys, setter, getter, getChildren);
@@ -85,11 +85,11 @@ public class ClientSyncGuiLayer extends GuiLayer {
         getIntegratedParent().send(new ConfigurationClientPacket(root, tree));
     }
     
-    public void load(CheckTree<ConfigKey>.CheckTreeEntry entry) {
+    public void load(CheckTree<ConfigKeyField>.CheckTreeEntry entry) {
         if (!isEmpty())
             clear();
         
-        ICreativeConfigHolder holder = entry.content == null ? root : (ICreativeConfigHolder) entry.content.get();
+        ICreativeConfigHolder holder = entry.content == null ? root : entry.content.holder();
         
         add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(Component.literal("/" + String.join("/", holder.path())))).addRight(new GuiButton("back", x -> load(
             entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
@@ -98,7 +98,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         GuiScrollY box = new GuiScrollY("").setExpandable().setDim(100, 100);
         add(box);
         
-        for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
+        for (CheckTree<ConfigKeyField>.CheckTreeEntry key : currentView.children) {
             GuiRow row = new GuiRow();
             box.add(row);
             GuiColumn first = new GuiColumn(20);
@@ -111,7 +111,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
             row.addColumn(second);
             String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.content.name + ".name", key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
-            if (key.content.get() instanceof ICreativeConfigHolder)
+            if (key.content.isFolder())
                 second.add(new GuiButton(caption, x -> load(key)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
             else
                 second.add(new GuiLabel(caption).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
@@ -153,9 +153,9 @@ public class ClientSyncGuiLayer extends GuiLayer {
     
     public static class GuiTreeCheckBox extends GuiCheckBox {
         
-        public final CheckTree<ConfigKey>.CheckTreeEntry entry;
+        public final CheckTree<ConfigKeyField>.CheckTreeEntry entry;
         
-        public GuiTreeCheckBox(CheckTree<ConfigKey>.CheckTreeEntry entry) {
+        public GuiTreeCheckBox(CheckTree<ConfigKeyField>.CheckTreeEntry entry) {
             super(entry.content.name, entry.isEnabled());
             this.entry = entry;
             if (!value)

@@ -89,7 +89,7 @@ public class GuiCheckBox extends GuiLabel {
         
         pose.pushPose();
         pose.translate(CHECKBOX_WIDTH + 3, 0, 0);
-        text.render(pose);
+        text.render(graphics);
         pose.popPose();
     }
     

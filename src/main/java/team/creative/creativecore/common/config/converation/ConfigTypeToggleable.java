@@ -1,22 +1,18 @@
 package team.creative.creativecore.common.config.converation;
 
-import java.lang.reflect.ParameterizedType;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.HolderLookup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
-import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
-import team.creative.creativecore.common.config.holder.ConfigHolderObject;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
+import team.creative.creativecore.common.config.key.ConfigKeyCache;
+import team.creative.creativecore.common.config.key.ConfigKeyCacheType;
 import team.creative.creativecore.common.config.premade.ToggleableConfig;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiCheckBox;
@@ -24,115 +20,75 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig> {
     
-    public Class getConfigType(ConfigKeyField key) {
-        ParameterizedType type = (ParameterizedType) key.field.getGenericType();
-        return (Class) type.getActualTypeArguments()[0];
-    }
-    
     @Override
-    public ToggleableConfig readElement(ToggleableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, @Nullable ConfigKeyField key) {
-        Class clazz = getConfigType(key);
+    public ToggleableConfig readElement(HolderLookup.Provider provider, ToggleableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+        ConfigKeyCache configKey = ConfigKeyCache.ofGenericType(key);
+        
         if (element.isJsonObject()) {
-            Object value;
             JsonObject object = element.getAsJsonObject();
-            ConfigTypeConveration conversation = getUnsafe(clazz);
-            if (conversation != null)
-                value = conversation.readElement(ConfigTypeConveration.createObject(clazz), loadDefault, ignoreRestart, object.get("content"), side, null);
-            else {
-                value = ConfigTypeConveration.createObject(clazz);
-                holderConveration.readElement(ConfigHolderObject.createUnrelated(side, value, value), loadDefault, ignoreRestart, object.get("content"), side, null);
-            }
-            return new ToggleableConfig(value, object.get("enabled").getAsBoolean());
+            configKey.read(provider, loadDefault, ignoreRestart, object.get("content"), side);
+            return new ToggleableConfig(configKey.get(), object.get("enabled").getAsBoolean());
         }
-        return new ToggleableConfig(defaultValue.value, defaultValue.isEnabled());
+        configKey.set(defaultValue.value, side);
+        return new ToggleableConfig(configKey.copy(provider, side), defaultValue.isEnabled());
     }
     
     @Override
-    public JsonElement writeElement(ToggleableConfig value, ToggleableConfig defaultValue, boolean saveDefault, boolean ignoreRestart, Side side, @Nullable ConfigKeyField key) {
-        Class clazz = getConfigType(key);
-        ConfigTypeConveration conversation = getUnsafe(clazz);
+    public JsonElement writeElement(HolderLookup.Provider provider, ToggleableConfig value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
+        ConfigKeyCache configKey = ConfigKeyCache.ofGenericType(key);
         JsonObject object = new JsonObject();
         object.addProperty("enabled", value.isEnabled());
-        if (conversation != null)
-            object.add("content", conversation.writeElement(value.value, null, true, ignoreRestart, side, null));
-        else
-            object.add("content", holderConveration.writeElement(ConfigHolderObject.createUnrelated(side, value.value, value.value), null, true, ignoreRestart, side, null));
+        configKey.set(value.value, side);
+        object.add("content", configKey.write(provider, saveDefault, ignoreRestart, side));
         return object;
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key, Class clazz) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
         parent.flow = GuiFlow.STACK_Y;
         parent.add(new GuiCheckBox("enabled", true).setTranslate("gui.config.enabled"));
-        Class subClass = getConfigType(key);
-        ConfigTypeConveration converation = getUnsafe(subClass);
-        
-        GuiConfigSubControl control;
-        if (converation != null) {
-            control = new GuiConfigSubControl("content");
-            converation.createControls(control, null, null, subClass);
-        } else {
-            control = new GuiConfigSubControlHolder("content", null, null, configParent::changed);
-            ((GuiConfigSubControlHolder) control).createControls();
-        }
-        parent.add(control);
+        ConfigKeyCache configKey = ConfigKeyCache.ofGenericType(key);
+        parent.add(configKey.create(configParent, "content"));
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(ToggleableConfig value, GuiParent parent, IGuiConfigParent configParent, @Nullable ConfigKeyField key) {
+    public void loadValue(ToggleableConfig value, ToggleableConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
         parent.get("enabled", GuiCheckBox.class).value = value.isEnabled();
         
-        Class clazz = getConfigType(key);
-        ConfigTypeConveration converation = getUnsafe(clazz);
-        
-        GuiConfigSubControl control = parent.get("content");
-        if (converation != null)
-            converation.loadValue(value.value, control, null, null);
-        else {
-            Object entry = copy(Side.SERVER, value.value, clazz);
-            ((GuiConfigSubControlHolder) control).load(ConfigHolderObject.createUnrelated(Side.SERVER, entry, entry), entry);
-            ((GuiConfigSubControlHolder) control).createControls();
-        }
+        ConfigKeyCache configKey = ConfigKeyCache.ofGenericType(key);
+        configKey.set(value.value, Side.SERVER);
+        configKey.load(configParent, parent.get("content"));
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected ToggleableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, Class clazz, @Nullable ConfigKeyField key) {
-        Class subClass = getConfigType(key);
-        ConfigTypeConveration converation = getUnsafe(subClass);
-        
-        GuiConfigSubControl control = parent.get("content");
-        Object value;
-        if (converation != null)
-            value = converation.save(control, null, subClass, null);
-        else {
-            ((GuiConfigSubControlHolder) control).save();
-            value = ((GuiConfigSubControlHolder) control).value;
-        }
-        return new ToggleableConfig(value, parent.get("enabled", GuiCheckBox.class).value);
+    protected ToggleableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+        ConfigKeyCache configKey = ConfigKeyCache.ofGenericType(key);
+        configKey.save(parent.get("content"), configParent);
+        return new ToggleableConfig(configKey.get(), parent.get("enabled", GuiCheckBox.class).value);
     }
     
     @Override
-    public ToggleableConfig set(ConfigKeyField key, ToggleableConfig value) {
+    public ToggleableConfig set(ConfigKey key, ToggleableConfig value) {
         return value;
     }
     
     @Override
-    public boolean areEqual(ToggleableConfig one, ToggleableConfig two, @Nullable ConfigKeyField key) {
+    public boolean areEqual(ToggleableConfig one, ToggleableConfig two, ConfigKey key) {
         if (one.isEnabled() != two.isEnabled())
             return false;
         
-        Class clazz = getConfigType(key);
-        ConfigTypeConveration conversation = getUnsafe(clazz);
+        ConfigKeyCache configKey = ConfigKeyCache.ofGenericType(key);
+        ConfigTypeConveration converation = configKey instanceof ConfigKeyCacheType t ? t.converation : null;
         
-        if (conversation != null && !conversation.areEqual(one.value, two.value, null))
+        if (converation != null && !converation.areEqual(one.value, two.value, null))
             return false;
         
-        return conversation != null || one.value.equals(two.value);
+        return converation != null || one.value.equals(two.value);
     }
 }

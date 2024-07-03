@@ -111,7 +111,7 @@ public class GuiStateButton extends GuiButton {
         CompiledText text = states[index];
         PoseStack pose = graphics.pose();
         pose.translate(rect.getWidth() / 2f - text.getUsedWidth() / 2f, rect.getHeight() / 2f - text.getUsedHeight() / 2f, 0);
-        text.render(pose);
+        text.render(graphics);
     }
     
     @Override

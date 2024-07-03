@@ -17,6 +17,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,6 +41,16 @@ public class GuiRenderHelper {
     
     public static Font getFont() {
         return mc.font;
+    }
+    
+    public static void drawItemStack(GuiGraphics graphics, ItemStack stack, float alpha) {
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+        
+        graphics.renderItem(stack, 0, 0);
+        
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1F);
     }
     
     public static void drawItemStack(PoseStack mat, ItemStack stack, float alpha) {

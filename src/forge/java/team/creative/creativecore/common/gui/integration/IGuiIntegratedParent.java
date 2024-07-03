@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.HolderLookup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ContainerScreenEvent.Render.Background;
@@ -30,6 +31,8 @@ public interface IGuiIntegratedParent extends IGuiParent {
         @Override
         public void create() {}
     };
+    
+    public HolderLookup.Provider provider();
     
     public List<GuiLayer> getLayers();
     

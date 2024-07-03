@@ -1,7 +1,9 @@
 package team.creative.creativecore.common.config.holder;
 
+import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public class CreativeConfigRegistry extends ConfigHolderDynamic {
@@ -25,9 +27,9 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
     public ICreativeConfigHolder followPath(String... path) {
         ICreativeConfigHolder current = this;
         for (int i = 0; i < path.length; i++) {
-            Object object = current.get(path[i]);
-            if (object instanceof ICreativeConfigHolder)
-                current = (ICreativeConfigHolder) object;
+            var field = current.getField(path[i]);
+            if (field.isFolder())
+                current = field.holder();
             else
                 return null;
         }
@@ -35,14 +37,14 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
         return current;
     }
     
-    public ConfigKey findKey(String[] path) {
+    public ConfigKeyField findKey(String[] path) {
         ICreativeConfigHolder current = this;
         for (int i = 0; i < path.length; i++) {
             if (i + 1 == path.length)
                 return current.getField(path[i]);
-            Object object = current.get(path[i]);
-            if (object instanceof ICreativeConfigHolder)
-                current = (ICreativeConfigHolder) object;
+            var field = current.getField(path[i]);
+            if (field.isFolder())
+                current = field.holder();
             else
                 return null;
         }
@@ -53,8 +55,8 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
         return fields.removeKey(modid);
     }
     
-    public static void load(String modid, Side side) {
-        CreativeCore.CONFIG_HANDLER.load(modid, side);
+    public static void load(HolderLookup.Provider provider, String modid, Side side) {
+        CreativeCore.CONFIG_HANDLER.load(provider, modid, side);
     }
     
 }

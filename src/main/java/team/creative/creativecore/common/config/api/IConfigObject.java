@@ -2,7 +2,7 @@ package team.creative.creativecore.common.config.api;
 
 import team.creative.creativecore.Side;
 
-public interface IConfigObject {
+public interface IConfigObject extends ICreativeConfig {
     
     public boolean isDefault(Side side);
     

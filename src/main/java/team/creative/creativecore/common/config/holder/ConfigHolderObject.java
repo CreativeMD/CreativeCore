@@ -7,15 +7,19 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.holder.ConfigHolderObject.ConfigKeyFieldObject;
-import team.creative.creativecore.common.config.holder.ConfigKey.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
-public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
+public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
+    
+    public static ConfigHolderObject createUnrelated(Side side, Object value) {
+        return createUnrelated(side, value, value);
+    }
     
     public static ConfigHolderObject createUnrelated(Side side, Object value, Object defaultReference) {
         return new ConfigHolderObject(ConfigTypeConveration.FAKE_PARENT, side
@@ -54,9 +58,7 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
                     else
                         name = config.name();
                     ConfigSynchronization fieldSync = synchronization != ConfigSynchronization.UNIVERSAL ? synchronization : config.type();
-                    ConfigKeyFieldObject fieldKey = new ConfigKeyFieldObject(field, name, ConfigTypeConveration.parseObject(this, fieldSync, name, field.get(
-                        defaultReference)), fieldSync, config.requiresRestart());
-                    this.fields.add(name, fieldKey);
+                    this.fields.add(name, ConfigKeyField.of(this, field, name, field.get(defaultReference), fieldSync, config.requiresRestart(), object));
                 } catch (IllegalArgumentException | IllegalAccessException e) {}
         }
     }
@@ -68,8 +70,8 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
     }
     
     @Override
-    public void load(boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
-        super.load(loadDefault, ignoreRestart, json, side);
+    public void load(HolderLookup.Provider provider, boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side) {
+        super.load(provider, loadDefault, ignoreRestart, json, side);
         configured(side);
     }
     
@@ -77,22 +79,6 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyFieldObject> {
     public void configured(Side side) {
         if (object instanceof ICreativeConfig)
             ((ICreativeConfig) object).configured(side);
-    }
-    
-    public class ConfigKeyFieldObject extends ConfigKeyField {
-        
-        public ConfigKeyFieldObject(Field field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
-            super(field, name, defaultValue, synchronization, requiresRestart);
-        }
-        
-        @Override
-        public Object getParent() {
-            return getHolder().object;
-        }
-        
-        public ConfigHolderObject getHolder() {
-            return ConfigHolderObject.this;
-        }
     }
     
 }
