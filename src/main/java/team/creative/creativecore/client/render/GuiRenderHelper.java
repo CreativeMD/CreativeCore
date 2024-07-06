@@ -1,15 +1,10 @@
 package team.creative.creativecore.client.render;
 
-import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -18,16 +13,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -43,35 +31,14 @@ public class GuiRenderHelper {
         return mc.font;
     }
     
-    public static void drawItemStack(PoseStack mat, ItemStack stack, float alpha) {
-        ItemRenderer renderer = mc.getItemRenderer();
-        mc.getTextureManager().getTexture(InventoryMenu.BLOCK_ATLAS).setFilter(false, false);
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+    public static void drawItemStack(GuiGraphics graphics, ItemStack stack, float alpha) {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-        Matrix4fStack matrix = RenderSystem.getModelViewStack();
-        matrix.pushMatrix();
-        matrix.mul(mat.last().pose());
-        matrix.translate(0, 0, 100);
-        matrix.translate(8, 8, 8);
-        matrix.mul((new Matrix4f()).scaling(1, -1, 1));
-        matrix.scale(16, 16, 16);
         
-        RenderSystem.applyModelViewMatrix();
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        BakedModel bakedmodel = renderer.getModel(stack, null, null, 0);
-        boolean flag = !bakedmodel.usesBlockLight();
-        if (flag)
-            Lighting.setupForFlatItems();
-        renderer.render(stack, ItemDisplayContext.GUI, false, new PoseStack(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, bakedmodel);
-        multibuffersource$buffersource.endBatch();
-        RenderSystem.enableDepthTest();
-        if (flag)
-            Lighting.setupFor3DItems();
+        graphics.renderItem(stack, 0, 0);
         
-        matrix.popMatrix();
-        RenderSystem.applyModelViewMatrix();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1F);
     }
     
     public static void drawStringCentered(GuiGraphics graphics, String text, float width, float height, int color, boolean shadow) {
@@ -92,8 +59,7 @@ public class GuiRenderHelper {
                 text = builder + "...";
             }
         } ;
-        mc.font.drawInBatch(text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, ColorUtils.WHITE, shadow, graphics.pose().last().pose(), graphics
-                .bufferSource(), DisplayMode.NORMAL, 0, 15728880);
+        graphics.drawString(mc.font, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, ColorUtils.WHITE, shadow);
     }
     
     public static void horizontalGradientRect(GuiGraphics graphics, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
