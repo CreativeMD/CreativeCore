@@ -33,10 +33,7 @@ public class SortingBlockList {
         for (TagKey<Block> tag : tags)
             if (block.builtInRegistryHolder().is(tag))
                 return true;
-        for (Block b : blocks)
-            if (b == block)
-                return true;
-        return false;
+        return blocks.contains(block.builtInRegistryHolder().unwrapKey().get().location());
     }
     
 }
