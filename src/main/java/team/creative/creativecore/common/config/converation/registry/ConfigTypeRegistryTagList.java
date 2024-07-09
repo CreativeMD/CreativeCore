@@ -12,38 +12,39 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.config.premade.RegistryObjectListConfig;
+import team.creative.creativecore.common.config.premade.registry.RegistryTagListConfig;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
-public class ConfigTypeRegistryList extends ConfigTypeConveration<RegistryObjectListConfig> {
+public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTagListConfig> {
     
     @Override
-    public RegistryObjectListConfig readElement(HolderLookup.Provider provider, RegistryObjectListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+    public RegistryTagListConfig readElement(HolderLookup.Provider provider, RegistryTagListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
         if (element.isJsonArray()) {
-            RegistryObjectListConfig list = new RegistryObjectListConfig(defaultValue.registry);
+            RegistryTagListConfig list = new RegistryTagListConfig(defaultValue.registry);
             JsonArray array = element.getAsJsonArray();
             for (int i = 0; i < array.size(); i++)
-                list.add(ResourceLocation.parse(array.get(i).getAsString()));
+                list.add(TagKey.create(defaultValue.registry.key(), ResourceLocation.parse(array.get(i).getAsString())));
             return list;
         }
         return defaultValue;
     }
     
     @Override
-    public JsonElement writeElement(HolderLookup.Provider provider, RegistryObjectListConfig value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
+    public JsonElement writeElement(HolderLookup.Provider provider, RegistryTagListConfig value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
         JsonArray array = new JsonArray(value.size());
-        for (ResourceLocation location : (Iterable<ResourceLocation>) value.locations())
-            array.add(location.toString());
+        for (TagKey tag : (Iterable<TagKey>) value)
+            array.add(tag.location().toString());
         return array;
     }
     
@@ -62,7 +63,7 @@ public class ConfigTypeRegistryList extends ConfigTypeConveration<RegistryObject
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(RegistryObjectListConfig value, RegistryObjectListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(RegistryTagListConfig value, RegistryTagListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
         GuiListBoxBase listBox = parent.get("data");
         if (!listBox.isEmpty())
             listBox.clearItems();
@@ -72,14 +73,14 @@ public class ConfigTypeRegistryList extends ConfigTypeConveration<RegistryObject
         GuiButton add = parent.get("add");
         add.setPressed(x -> {
             GuiParent entry = new GuiParent().setAlign(Align.STRETCH);
-            GuiRegistryObjectHandler.REGISTRY.get(value.registry).createControls(entry, value.registry);
+            GuiRegistryTagHandler.REGISTRY.get(value.registry).createControls(entry, value.registry);
             listBox.addItem(entry.setExpandableX());
         });
         
-        for (ResourceLocation location : (Iterable<ResourceLocation>) value.locations()) {
+        for (TagKey tag : (Iterable<TagKey>) value) {
             GuiParent entry = new GuiParent().setAlign(Align.STRETCH);
-            GuiRegistryObjectHandler.REGISTRY.get(value.registry).createControls(entry, value.registry);
-            GuiRegistryObjectHandler.REGISTRY.get(value.registry).loadValue(entry, value.registry, location);
+            GuiRegistryTagHandler.REGISTRY.get(value.registry).createControls(entry, value.registry);
+            GuiRegistryTagHandler.REGISTRY.get(value.registry).loadValue(entry, value.registry, tag);
             listBox.addItem(entry.setExpandableX());
         }
         
@@ -88,34 +89,34 @@ public class ConfigTypeRegistryList extends ConfigTypeConveration<RegistryObject
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected RegistryObjectListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        RegistryObjectListConfig list = new RegistryObjectListConfig<>((Registry) configParent.getCustomData());
+    protected RegistryTagListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+        RegistryTagListConfig list = new RegistryTagListConfig<>((Registry) configParent.getCustomData());
         
         GuiListBoxBase<GuiParent> listBox = parent.get("data");
         for (int i = 0; i < listBox.size(); i++)
-            list.add(GuiRegistryObjectHandler.REGISTRY.get(list.registry).saveValue(listBox.get(i), list.registry));
+            list.add(GuiRegistryTagHandler.REGISTRY.get(list.registry).saveValue(listBox.get(i), list.registry));
         
         return list;
     }
     
     @Override
-    public RegistryObjectListConfig set(ConfigKey key, RegistryObjectListConfig value) {
+    public RegistryTagListConfig set(ConfigKey key, RegistryTagListConfig value) {
         return value;
     }
     
     @Override
-    public boolean areEqual(RegistryObjectListConfig one, RegistryObjectListConfig two, ConfigKey key) {
+    public boolean areEqual(RegistryTagListConfig one, RegistryTagListConfig two, ConfigKey key) {
         if (one.size() != two.size())
             return false;
         
         if (one.registry != two.registry)
             return false;
         
-        List<ResourceLocation> copy = new ArrayList<>();
-        for (ResourceLocation location : (Iterable<ResourceLocation>) two.locations())
-            copy.add(location);
+        List<TagKey> copy = new ArrayList<>();
+        for (TagKey tag : (Iterable<TagKey>) two)
+            copy.add(tag);
         for (int i = 0; i < one.size(); i++)
-            if (!copy.remove(one.getLocation(i)))
+            if (!copy.remove(one.get(i)))
                 return false;
         return copy.isEmpty();
     }

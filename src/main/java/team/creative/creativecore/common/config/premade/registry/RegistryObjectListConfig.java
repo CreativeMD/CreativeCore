@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.config.premade;
+package team.creative.creativecore.common.config.premade.registry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,27 +6,21 @@ import java.util.List;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
-public class RegistryObjectListConfig<T> implements ICreativeConfig, Iterable<T> {
+public class RegistryObjectListConfig<T> implements Iterable<T> {
     
     public final Registry<T> registry;
     private final List<RegistryHolder> content = new ArrayList<>();
     
     public RegistryObjectListConfig(Registry<T> registry) {
         this.registry = registry;
-        configured(null);
     }
     
     public void add(ResourceLocation location) {
         if (!contains(location))
             content.add(new RegistryHolder(location));
     }
-    
-    @Override
-    public void configured(Side side) {}
     
     @Override
     public Iterator<T> iterator() {

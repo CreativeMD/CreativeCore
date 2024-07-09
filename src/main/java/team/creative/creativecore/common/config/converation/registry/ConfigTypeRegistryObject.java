@@ -13,7 +13,7 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.config.premade.RegistryObjectConfig;
+import team.creative.creativecore.common.config.premade.registry.RegistryObjectConfig;
 import team.creative.creativecore.common.gui.GuiParent;
 
 public class ConfigTypeRegistryObject extends ConfigTypeConveration<RegistryObjectConfig> {

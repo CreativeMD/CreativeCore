@@ -29,8 +29,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
-import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryList;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObject;
+import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObjectList;
+import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTag;
+import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTagList;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
@@ -38,11 +40,13 @@ import team.creative.creativecore.common.config.key.ConfigKeyField;
 import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.config.premade.Permission;
-import team.creative.creativecore.common.config.premade.RegistryObjectConfig;
-import team.creative.creativecore.common.config.premade.RegistryObjectListConfig;
 import team.creative.creativecore.common.config.premade.SelectableConfig;
 import team.creative.creativecore.common.config.premade.SoundConfig;
 import team.creative.creativecore.common.config.premade.ToggleableConfig;
+import team.creative.creativecore.common.config.premade.registry.RegistryObjectConfig;
+import team.creative.creativecore.common.config.premade.registry.RegistryObjectListConfig;
+import team.creative.creativecore.common.config.premade.registry.RegistryTagConfig;
+import team.creative.creativecore.common.config.premade.registry.RegistryTagListConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -629,7 +633,10 @@ public abstract class ConfigTypeConveration<T> {
         registerTypeCreator(SoundConfig.class, () -> new SoundConfig(ResourceLocation.withDefaultNamespace("missing")));
         
         registerType(RegistryObjectConfig.class, new ConfigTypeRegistryObject());
-        registerType(RegistryObjectListConfig.class, new ConfigTypeRegistryList());
+        registerType(RegistryObjectListConfig.class, new ConfigTypeRegistryObjectList());
+        
+        registerType(RegistryTagConfig.class, new ConfigTypeRegistryTag());
+        registerType(RegistryTagListConfig.class, new ConfigTypeRegistryTagList());
         
         registerType(SelectableConfig.class, new ConfigTypeConveration<SelectableConfig>() {
             
