@@ -1,3 +1,8 @@
+2.12.1
+Fixed crash when reading enum config
+Added round to Maths
+Optimized performance when checking for block in SortingBlockList
+
 2.12.0
 Added SortingBlockList
 Added RegistryObjectListConfig
