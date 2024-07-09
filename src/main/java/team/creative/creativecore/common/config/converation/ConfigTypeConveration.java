@@ -730,7 +730,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             public Enum readElement(ConfigKey key, Enum defaultValue, Side side, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
-                    return Enum.valueOf(key.getType().getDeclaringClass(), element.getAsString());
+                    return Enum.valueOf(defaultValue.getDeclaringClass(), element.getAsString());
                 return defaultValue;
             }
             
