@@ -1,3 +1,6 @@
+2.11.31
+Added round to Maths
+
 2.11.30
 Fixed total width and height of compiled text sometimes being calculated too small when using scale
 
