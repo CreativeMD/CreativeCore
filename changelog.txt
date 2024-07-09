@@ -1,3 +1,12 @@
+2.12.0
+Added SortingBlockList
+Added RegistryObjectListConfig
+Added RegistryTagConfig, RegistryTagListConfig
+Rework ConfigKey structure to add support for nested generics
+Fixed combobox and stack selector incorrect calculations whether it should open downwards or upwards
+Fixed config layer not closing after prompt
+Fixed not rendering itemstack and text correctly
+
 2.11.34
 Added getHolder() to RegistryObjectConfig
 
