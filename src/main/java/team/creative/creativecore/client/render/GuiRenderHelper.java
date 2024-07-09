@@ -59,7 +59,7 @@ public class GuiRenderHelper {
                 text = builder + "...";
             }
         } ;
-        graphics.drawString(mc.font, text, width / 2 - mc.font.width(text) / 2, height / 2 - mc.font.lineHeight / 2, ColorUtils.WHITE, shadow);
+        graphics.drawString(mc.font, text, (int) (width / 2 - mc.font.width(text) / 2), (int) (height / 2 - mc.font.lineHeight / 2), ColorUtils.WHITE, shadow);
     }
     
     public static void horizontalGradientRect(GuiGraphics graphics, int x, int y, int x2, int y2, int colorFrom, int colorTo) {

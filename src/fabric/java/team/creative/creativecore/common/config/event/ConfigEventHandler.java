@@ -36,9 +36,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.holder.ConfigKey;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
+import team.creative.creativecore.common.config.key.ConfigKeyField;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.config.sync.ConfigurationPacket;
 import team.creative.creativecore.common.util.mc.JsonUtils;
@@ -67,35 +67,33 @@ public class ConfigEventHandler {
     
     public static List<String> loadClientFieldList(ICreativeConfigHolder holder) {
         List<String> enabled = new ArrayList<>();
-        for (ConfigKey key : holder.fields())
+        for (ConfigKeyField key : holder.fields())
             if (key.isWithoutForce(Side.CLIENT))
                 ConfigEventHandler.loadClientFieldList(holder, key, enabled);
         return enabled;
     }
     
-    private static List<String> loadClientFieldList(ICreativeConfigHolder parent, ConfigKey field, List<String> list) {
+    private static List<String> loadClientFieldList(ICreativeConfigHolder parent, ConfigKeyField field, List<String> list) {
         if (field.forceSynchronization) {
             list.add((parent.path().length > 0 ? String.join(".", parent.path()) + "." : "") + field.name);
             return list;
         }
         
-        if (field.get() instanceof ICreativeConfigHolder) {
-            ICreativeConfigHolder holder = (ICreativeConfigHolder) field.get();
-            for (ConfigKey key : holder.fields())
+        if (field.isFolder())
+            for (ConfigKeyField key : field.holder().fields())
                 if (key.isWithoutForce(Side.CLIENT))
-                    loadClientFieldList(holder, key, list);
-        }
-        
+                    loadClientFieldList(field.holder(), key, list);
+                
         return list;
     }
     
     public static void saveClientFieldList(ICreativeConfigHolder holder, List<String> enabled) {
-        for (ConfigKey key : holder.fields())
+        for (ConfigKeyField key : holder.fields())
             if (key.isWithoutForce(Side.CLIENT))
                 saveClientFieldList(String.join(".", holder.path()), key, enabled);
     }
     
-    private static void saveClientFieldList(String path, ConfigKey field, List<String> enabled) {
+    private static void saveClientFieldList(String path, ConfigKeyField field, List<String> enabled) {
         if (!path.isEmpty())
             path += ".";
         path += field.name;
@@ -103,19 +101,17 @@ public class ConfigEventHandler {
             enable(field);
         else {
             field.forceSynchronization = false;
-            Object object = field.get();
-            if (object instanceof ICreativeConfigHolder)
-                for (ConfigKey key : ((ICreativeConfigHolder) object).fields())
+            if (field.isFolder())
+                for (ConfigKeyField key : field.holder().fields())
                     if (key.isWithoutForce(Side.CLIENT))
                         saveClientFieldList(path, key, enabled);
         }
     }
     
-    private static void enable(ConfigKey field) {
+    private static void enable(ConfigKeyField field) {
         field.forceSynchronization = true;
-        Object object = field.get();
-        if (object instanceof ICreativeConfigHolder)
-            for (ConfigKey key : ((ICreativeConfigHolder) object).fields())
+        if (field.isFolder())
+            for (ConfigKeyField key : field.holder().fields())
                 if (key.isWithoutForce(Side.CLIENT))
                     enable(key);
     }
@@ -180,11 +176,10 @@ public class ConfigEventHandler {
     
     public void save(HolderLookup.Provider provider, String modid, Side side) {
         try {
-            Object object = CreativeConfigRegistry.ROOT.get(modid);
+            ConfigKeyField field = CreativeConfigRegistry.ROOT.getField(modid);
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
-            if (object instanceof ICreativeConfigHolder || object == null) {
-                ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
-                JsonObject json = holder.save(provider, true, false, side);
+            if (field.isFolder()) {
+                JsonObject json = field.holder().save(provider, true, false, side);
                 JsonUtils.cleanUp(json);
                 
                 if (json.size() > 0) {
@@ -258,9 +253,8 @@ public class ConfigEventHandler {
     }
     
     public void load(HolderLookup.Provider provider, String modid, Side side) {
-        Object object = CreativeConfigRegistry.ROOT.get(modid);
-        if (object instanceof ICreativeConfigHolder) {
-            ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
+        ConfigKeyField field = CreativeConfigRegistry.ROOT.getField(modid);
+        if (field.isFolder()) {
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
             if (config.exists()) {
                 try {
@@ -273,12 +267,12 @@ public class ConfigEventHandler {
                     }
                     if (json == null)
                         json = new JsonObject();
-                    holder.load(provider, true, false, json, side);
+                    field.holder().load(provider, true, false, json, side);
                 } catch (FileNotFoundException e) {
                     LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
                 }
             } else
-                holder.restoreDefault(side, false);
+                field.holder().restoreDefault(side, false);
         }
     }
     
@@ -293,7 +287,7 @@ public class ConfigEventHandler {
     
     public boolean isSynchronizedWithServer(String key) {
         String[] path = key.split(".");
-        ConfigKey config = CreativeConfigRegistry.ROOT.findKey(path);
+        ConfigKeyField config = CreativeConfigRegistry.ROOT.findKey(path);
         if (config != null) {
             return config.is(Side.SERVER);
         }
