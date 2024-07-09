@@ -130,7 +130,7 @@ public class GuiComboBox extends GuiLabel {
         child.setHeight(child.getPreferredHeight(height), height);
         child.flowY();
         
-        Rect absolute = toScreenRect(child.rect.copy());
+        Rect absolute = extension.getIntegratedParent().toScreenRect(extension.getLayer(), child.rect.copy());
         Rect screen = Rect.getScreenRect();
         
         if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
