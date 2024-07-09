@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.config.premade;
+package team.creative.creativecore.common.config.premade.registry;
 
 import java.util.Objects;
 

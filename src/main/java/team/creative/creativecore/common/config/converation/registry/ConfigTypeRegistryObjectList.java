@@ -18,14 +18,14 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.config.premade.RegistryObjectListConfig;
+import team.creative.creativecore.common.config.premade.registry.RegistryObjectListConfig;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
-public class ConfigTypeRegistryList extends ConfigTypeConveration<RegistryObjectListConfig> {
+public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<RegistryObjectListConfig> {
     
     @Override
     public RegistryObjectListConfig readElement(HolderLookup.Provider provider, RegistryObjectListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
