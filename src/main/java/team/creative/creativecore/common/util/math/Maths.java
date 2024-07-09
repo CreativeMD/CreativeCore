@@ -1,8 +1,13 @@
 package team.creative.creativecore.common.util.math;
 
+import net.minecraft.util.Mth;
+
 public class Maths {
     
     public static final float EPSILON = 0.001F;
+    public static final float EPSILON_UP = 1 / 0.001F;
+    public static final double EPSILON_DOUBLE = EPSILON;
+    public static final double EPSILON_UP_DOUBLE = 1 / EPSILON_DOUBLE;
     
     public static boolean smallerThanAndEquals(double a, double b) {
         return a < b || equals(a, b);
@@ -35,20 +40,27 @@ public class Maths {
     public static int msToTick(long ms) {
         return (int) (ms / 50);
     }
-
-
+    
+    public static double round(double value) {
+        return Mth.floor(EPSILON_UP_DOUBLE * value + 0.5) * EPSILON_DOUBLE;
+    }
+    
+    public static float round(float value) {
+        return Mth.floor(EPSILON_UP * value + 0.5F) * EPSILON;
+    }
+    
     public static double safeDivide(double v1, double v2) {
         if (v1 == 0 || v2 == 0)
             return 0;
         return v1 / v2;
     }
-
+    
     public static long safePercent(long v1, long v2) {
         if (v1 == 0 || v2 == 0)
             return 0;
         return v1 % v2;
     }
-
+    
     public static float safeRound(double value) {
         return value != 0 ? Math.round(value * 100F) / 100F : 0;
     }
