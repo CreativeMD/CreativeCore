@@ -132,11 +132,10 @@ public class ConfigEventHandler {
     
     public void save(HolderLookup.Provider provider, String modid, Side side) {
         try {
-            Object object = CreativeConfigRegistry.ROOT.get(modid);
+            ConfigKeyField field = CreativeConfigRegistry.ROOT.getField(modid);
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
-            if (object instanceof ICreativeConfigHolder || object == null) {
-                ICreativeConfigHolder holder = (ICreativeConfigHolder) object;
-                JsonObject json = holder.save(provider, true, false, side);
+            if (field.isFolder()) {
+                JsonObject json = field.holder().save(provider, true, false, side);
                 JsonUtils.cleanUp(json);
                 
                 if (json.size() > 0) {
@@ -216,8 +215,8 @@ public class ConfigEventHandler {
     }
     
     public void load(HolderLookup.Provider provider, String modid, Side side) {
-        Object object = CreativeConfigRegistry.ROOT.get(modid);
-        if (object instanceof ICreativeConfigHolder holder) {
+        ConfigKeyField field = CreativeConfigRegistry.ROOT.getField(modid);
+        if (field.isFolder()) {
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
             if (config.exists()) {
                 try {
@@ -230,12 +229,12 @@ public class ConfigEventHandler {
                     }
                     if (json == null)
                         json = new JsonObject();
-                    holder.load(provider, true, false, json, side);
+                    field.holder().load(provider, true, false, json, side);
                 } catch (IOException e) {
                     LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
                 }
             } else
-                holder.restoreDefault(side, false);
+                field.holder().restoreDefault(side, false);
         }
     }
     
