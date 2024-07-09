@@ -156,7 +156,8 @@ public class ConfigGuiLayer extends GuiLayer {
                 if (y == DialogButton.YES) {
                     savePage();
                     sendUpdate();
-                } else if (y != DialogButton.CANCEL) {
+                }
+                if (y != DialogButton.CANCEL) {
                     force = true;
                     closeTopLayer();
                 }
