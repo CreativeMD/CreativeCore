@@ -36,7 +36,7 @@ public class Pair<K, V> implements Entry<K, V> {
     public boolean is(K key) {
         if (this.key != null)
             return this.key.equals(key);
-        return key == null; // FIXME: uhhh
+        return false;
     }
     
     @Override
