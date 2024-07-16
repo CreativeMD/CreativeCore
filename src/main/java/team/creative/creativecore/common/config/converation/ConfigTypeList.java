@@ -16,8 +16,6 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.config.key.ConfigKeyCache;
-import team.creative.creativecore.common.config.key.ConfigKeyCacheType;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
@@ -27,19 +25,19 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
     public List readElement(HolderLookup.Provider provider, List defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
             List list = createList(key, array.size());
             for (int i = 0; i < array.size(); i++) {
                 listKey.read(provider, loadDefault, ignoreRestart, array.get(i), side);
-                list.add(listKey.get());
+                list.add(listKey.copy(provider, side));
             }
             return list;
         }
         List list = createList(key, defaultValue.size());
         for (int i = 0; i < defaultValue.size(); i++) {
-            listKey.set(defaultValue.get(i), side);
+            listKey.forceValue(defaultValue.get(i), side);
             list.add(listKey.copy(provider, side));
         }
         return list;
@@ -48,9 +46,9 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Override
     public JsonElement writeElement(HolderLookup.Provider provider, List value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
         JsonArray array = new JsonArray();
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         for (int i = 0; i < value.size(); i++) {
-            listKey.set(value.get(i), side);
+            listKey.forceValue(value.get(i), side);
             array.add(listKey.write(provider, saveDefault, ignoreRestart, side));
         }
         return array;
@@ -59,17 +57,17 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", true, createList(key, 0)).setDim(50, 130).setExpandable();
         parent.add(listBox);
         listBox.spacing = -1;
         
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         parent.add(new GuiButton("add", x -> {
-            listKey.set(ConfigTypeConveration.createObject(listKey), Side.SERVER);
-            var c = listKey.create(configParent, "");
-            listKey.load(configParent, c);
+            listKey.forceValue(ConfigTypeConveration.createObject(listKey.field()), side);
+            var c = listKey.create(configParent, "", side);
+            listKey.load(configParent, c, side);
             listBox.addItem(c);
         }).setTitle(Component.translatable("gui.add")));
         
@@ -78,26 +76,25 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void restoreDefault(List value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        loadValue(readElement(configParent.provider(), (List) key.get(), true, false, writeElement(configParent.provider(), value, true, false, Side.SERVER, key), Side.SERVER,
-            key), value, parent, configParent, key);
+    public void restoreDefault(List value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+        loadValue(readElement(configParent.provider(), (List) key.get(), true, false, writeElement(configParent.provider(), value, true, false, side, key), side, key), value,
+            parent, configParent, key, side);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(List value, List defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(List value, List defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         if (!box.isEmpty())
             box.clearItems();
         
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
-        
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         List<GuiConfigSubControl> controls = createList(key, value.size());
         for (int i = 0; i < value.size(); i++) {
-            listKey.set(value.get(i), Side.SERVER);
-            var c = listKey.create(configParent, "");
-            listKey.load(configParent, c);
+            listKey.forceValue(value.get(i), side);
+            var c = listKey.create(configParent, "", side);
+            listKey.load(configParent, c, side);
             controls.add(c);
         }
         
@@ -107,14 +104,14 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected List saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
+    protected List saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         List value = createList(key, box.size());
         for (int i = 0; i < box.size(); i++) {
-            listKey.save(box.get(i), configParent);
-            value.add(listKey.get());
+            listKey.save(box.get(i), configParent, side);
+            value.add(listKey.copy(configParent.provider(), side));
         }
         return value;
     }
@@ -132,9 +129,9 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     }
     
     @Override
-    public boolean areEqual(List one, List two, ConfigKey key) {
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
-        ConfigTypeConveration converation = listKey instanceof ConfigKeyCacheType t ? t.converation : null;
+    public boolean areEqual(List one, List two, ConfigKey key, Side side) {
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side);
+        ConfigTypeConveration converation = listKey.converation();
         
         if (one.size() != two.size())
             return false;
@@ -143,10 +140,12 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             Object entryOne = one.get(i);
             Object entryTwo = two.get(i);
             
-            if (converation != null && !converation.areEqual(entryOne, entryTwo, null))
-                return false;
-            
-            if (converation == null && !entryOne.equals(entryTwo))
+            if (converation != null) {
+                listKey.forceValue(entryOne, side);
+                if (!converation.areEqual(entryOne, entryTwo, listKey, side))
+                    return false;
+                
+            } else if (converation == null && !entryOne.equals(entryTwo))
                 return false;
         }
         

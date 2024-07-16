@@ -3,7 +3,7 @@ package team.creative.creativecore.common.config.holder;
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public class CreativeConfigRegistry extends ConfigHolderDynamic {
@@ -37,7 +37,7 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
         return current;
     }
     
-    public ConfigKeyField findKey(String[] path) {
+    public ConfigKey findKey(String[] path) {
         ICreativeConfigHolder current = this;
         for (int i = 0; i < path.length; i++) {
             if (i + 1 == path.length)

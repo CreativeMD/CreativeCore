@@ -3,18 +3,15 @@ package team.creative.creativecore.common.config.converation;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.gui.PermissionGuiLayer;
 import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.config.key.ConfigKeyCache;
-import team.creative.creativecore.common.config.key.ConfigKeyCacheType;
 import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
@@ -26,8 +23,9 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     public static final GuiSyncGlobalLayer<PermissionGuiLayer> PERMISSION_DIALOG = GuiSyncHolder.GLOBAL.layer("permission_dialog", (t) -> new PermissionGuiLayer());
     
     @Override
-    protected Permission create(ConfigKey key) {
-        return new Permission(ConfigTypeConveration.createObject(key));
+    protected Permission create(ConfigKey key, Side side) {
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side); // Will create a new default object right away
+        return new Permission(listKey.get());
     }
     
     @Override
@@ -36,27 +34,35 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     }
     
     @Override
-    public boolean shouldSave(Permission value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        return !areEqual(value, (Permission) key.get(), key);
+    public boolean shouldSave(Permission value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+        return !areEqual(value, (Permission) key.get(), key, side);
     }
     
-    public boolean areEqual(Permission one, Permission two, ConfigTypeConveration converation) {
+    @Override
+    public boolean areEqual(Permission one, Permission two, ConfigKey key, Side side) {
+        ConfigKey listKey = ConfigKey.ofGenericType(key, side);
+        ConfigTypeConveration converation = listKey.converation();
+        
         if (one.size() != two.size())
             return false;
         
-        if (converation != null && !converation.areEqual(one.getDefault(), two.getDefault(), null))
-            return false;
-        
-        if (converation == null && !one.getDefault().equals(two.getDefault()) && !EqualsBuilder.reflectionEquals(one.getDefault(), two.getDefault(), false))
+        if (converation != null) {
+            listKey.forceValue(one.getDefault(), side);
+            if (!converation.areEqual(one.getDefault(), two.getDefault(), listKey, side))
+                return false;
+            
+        } else if (converation == null && !one.getDefault().equals(two.getDefault()))
             return false;
         
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) one.entrySet()) {
             Object other = two.getDirect(entry.getKey());
             
-            if (converation != null && !converation.areEqual(entry.getValue(), other, null))
-                return false;
-            
-            if (converation == null && !entry.getValue().equals(other) && !EqualsBuilder.reflectionEquals(entry.getValue(), other, false))
+            if (converation != null) {
+                listKey.forceValue(entry.getValue(), side);
+                if (!converation.areEqual(entry.getValue(), other, listKey, side))
+                    return false;
+                
+            } else if (converation == null && !entry.getValue().equals(other))
                 return false;
         }
         
@@ -64,22 +70,16 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     }
     
     @Override
-    public boolean areEqual(Permission one, Permission two, ConfigKey key) {
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
-        return areEqual(one, two, listKey instanceof ConfigKeyCacheType t ? t.converation : null);
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+        parent.add(new GuiPermissionConfigButton("button", this, ConfigKey.ofGenericType(key, side), configParent, side));
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        parent.add(new GuiPermissionConfigButton("button", this, ConfigKeyCache.ofGenericType(key), configParent));
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public void loadValue(Permission value, Permission defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(Permission value, Permission defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiPermissionConfigButton button = parent.get("button");
         button.value = value;
         button.defaultValue = defaultValue;
@@ -88,7 +88,7 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected Permission saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    protected Permission saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         return parent.get("button", GuiPermissionConfigButton.class).value;
     }
     
@@ -96,11 +96,12 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
         
         public Permission<?> value;
         public Permission<?> defaultValue;
-        public ConfigKeyCache key;
+        public ConfigKey key;
         public ConfigTypePermission configTypePerm;
         public IGuiConfigParent configParent;
+        public final Side side;
         
-        public GuiPermissionConfigButton(String name, ConfigTypePermission configTypePerm, ConfigKeyCache key, IGuiConfigParent configParent) {
+        public GuiPermissionConfigButton(String name, ConfigTypePermission configTypePerm, ConfigKey key, IGuiConfigParent configParent, Side side) {
             super(name, null);
             this.key = key;
             this.configTypePerm = configTypePerm;
@@ -110,6 +111,7 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
                 layer.button = this;
                 layer.init();
             };
+            this.side = side;
             setTranslate("gui.perm.open");
         }
         

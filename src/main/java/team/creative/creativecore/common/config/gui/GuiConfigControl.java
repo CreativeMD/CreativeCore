@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.key.ConfigKeyFieldType;
+import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.controls.parent.GuiColumn;
@@ -17,22 +17,22 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     
-    public final ConfigKeyFieldType field;
+    public final ConfigKeyType field;
     public final Side side;
     private GuiButton resetButton;
     private final GuiColumn main;
     private Object extra;
     private boolean loading = false;
     
-    public GuiConfigControl(ConfigKeyFieldType field, Side side, int width, boolean showReset) {
+    public GuiConfigControl(ConfigKeyType field, Side side, int width, boolean showReset) {
         this(field, side, null, null, width, showReset);
     }
     
-    public GuiConfigControl(ConfigKeyFieldType field, Side side, String caption, String comment) {
+    public GuiConfigControl(ConfigKeyType field, Side side, String caption, String comment) {
         this(field, side, caption, comment, 200, true);
     }
     
-    public GuiConfigControl(ConfigKeyFieldType field, Side side, String caption, String comment, int width, boolean showReset) {
+    public GuiConfigControl(ConfigKeyType field, Side side, String caption, String comment, int width, boolean showReset) {
         super();
         this.field = field;
         this.side = side;
@@ -66,7 +66,7 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     }
     
     public boolean isDefault() {
-        return !field.isDefault(field.converation.save(main, this, field), side);
+        return !field.isDefault(field.converation.save(main, this, field, side), side);
     }
     
     public void updateButton() {
@@ -76,16 +76,16 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     
     public void init(JsonElement initalValue) {
         loading = true;
-        field.converation.createControls(main, this, field);
+        field.converation.createControls(main, this, field, side);
         field.converation.loadValue(initalValue != null ? field.converation.readElement(provider(), field.defaultValue, false, false, initalValue, side, field) : field.get(),
-            field.defaultValue, main, this, field);
+            field.defaultValue, main, this, field, side);
         loading = false;
         
         updateButton();
     }
     
     public void reset() {
-        field.converation.restoreDefault(field.defaultValue, main, this, field);
+        field.converation.restoreDefault(field.defaultValue, main, this, field, side);
         updateButton();
     }
     
@@ -95,8 +95,8 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     }
     
     public JsonElement save() {
-        Object value = field.converation.save(main, this, field);
-        if (field.converation.shouldSave(value, main, this, field))
+        Object value = field.converation.save(main, this, field, side);
+        if (field.converation.shouldSave(value, main, this, field, side))
             return field.converation.writeElement(provider(), value, true, false, side, field);
         return null;
     }

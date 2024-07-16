@@ -33,10 +33,10 @@ import team.creative.creativecore.common.config.converation.registry.ConfigTypeR
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObjectList;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTag;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTagList;
+import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
 import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.config.premade.Permission;
@@ -73,9 +73,9 @@ public abstract class ConfigTypeConveration<T> {
         return format;
     }
     
-    private static final HashMap<Class, Function<ConfigKey, ?>> TYPE_CREATORS = new HashMap<>();
-    private static final HashMap<Class, Function<ConfigKey, Type>> TYPE_GETTERS = new HashMap<>();
-    private static final HashMap<Class, Function<ConfigKey, ?>> COLLECTION_CREATORS = new HashMap<>();
+    private static final HashMap<Class, Function<ConfigField, ?>> TYPE_CREATORS = new HashMap<>();
+    private static final HashMap<Class, Function<ConfigField, Type>> TYPE_GETTERS = new HashMap<>();
+    private static final HashMap<Class, Function<ConfigField, ?>> COLLECTION_CREATORS = new HashMap<>();
     private static final HashMap<Class, ConfigTypeConveration> TYPES = new HashMap<>();
     private static final PairList<Predicate<Class>, ConfigTypeConveration> SPECIAL_TYPES = new PairList<>();
     
@@ -128,7 +128,7 @@ public abstract class ConfigTypeConveration<T> {
         }
         
         @Override
-        public ConfigKeyField getField(String key) {
+        public ConfigKey getField(String key) {
             return null;
         }
         
@@ -138,7 +138,7 @@ public abstract class ConfigTypeConveration<T> {
         }
         
         @Override
-        public Collection<? extends ConfigKeyField> fields() {
+        public Collection<? extends ConfigKey> fields() {
             return null;
         }
         
@@ -146,7 +146,7 @@ public abstract class ConfigTypeConveration<T> {
         public void configured(Side side) {}
     };
     
-    public static <T, U extends T> void registerTypeCreator(Class<U> clazz, Function<ConfigKey, T> type) {
+    public static <T, U extends T> void registerTypeCreator(Class<U> clazz, Function<ConfigField, T> type) {
         TYPE_CREATORS.put(clazz, type);
     }
     
@@ -154,11 +154,11 @@ public abstract class ConfigTypeConveration<T> {
         TYPE_CREATORS.put(clazz, x -> type.get());
     }
     
-    public static void registerTypeGetter(Class clazz, Function<ConfigKey, Type> getter) {
+    public static void registerTypeGetter(Class clazz, Function<ConfigField, Type> getter) {
         TYPE_GETTERS.put(clazz, getter);
     }
     
-    public static <T, U extends T> void registerCollectionCreator(Class<U> clazz, Function<ConfigKey, T> getter) {
+    public static <T, U extends T> void registerCollectionCreator(Class<U> clazz, Function<ConfigField, T> getter) {
         COLLECTION_CREATORS.put(clazz, getter);
     }
     
@@ -205,29 +205,37 @@ public abstract class ConfigTypeConveration<T> {
         return null;
     }
     
-    public static Object createObject(ConfigKey key) {
-        Function func = TYPE_CREATORS.get(key.getType());
+    public static Object createObject(ConfigField field) {
+        Function func = TYPE_CREATORS.get(field.getType());
         if (func != null)
-            return func.apply(key);
+            return func.apply(field);
         try {
-            return key.getType().getConstructor().newInstance();
+            return field.getType().getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {}
         return null;
     }
     
-    public static Type getGenericType(ConfigKey key) {
-        Function<ConfigKey, Type> func = TYPE_GETTERS.get(key.getType());
+    public static Type getGenericType(ConfigField field) {
+        Function<ConfigField, Type> func = TYPE_GETTERS.get(field.getType());
         if (func != null)
-            return func.apply(key);
-        ParameterizedType type = (ParameterizedType) key.getGenericType();
+            return func.apply(field);
+        ParameterizedType type = (ParameterizedType) field.getGenericType();
         return type.getActualTypeArguments()[0];
     }
     
-    public static Object createCollection(ConfigKey key) {
-        Function func = COLLECTION_CREATORS.get(key.getType());
+    public static Type getGenericType(ConfigKey key) {
+        return getGenericType(key.field());
+    }
+    
+    public static Object createCollection(ConfigField field) {
+        Function func = COLLECTION_CREATORS.get(field.getType());
         if (func != null)
-            return func.apply(key);
+            return func.apply(field);
         return null;
+    }
+    
+    public static Object createCollection(ConfigKey key) {
+        return createCollection(key.field());
     }
     
     static {
@@ -285,7 +293,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             public Number readElement(ConfigKey key, Number defaultValue, Side side, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isNumber()) {
-                    Class clazz = key.getType();
+                    Class clazz = key.field().getType();
                     if (clazz == Float.class || clazz == float.class)
                         return element.getAsFloat();
                     else if (clazz == Double.class || clazz == double.class)
@@ -320,17 +328,17 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-                boolean decimal = isDecimal(key.getType());
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+                boolean decimal = isDecimal(key.field().getType());
                 if (key != null) {
                     if (decimal) {
-                        CreativeConfig.DecimalRange decRange = key.getAnnotation(CreativeConfig.DecimalRange.class);
+                        CreativeConfig.DecimalRange decRange = key.field().getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null && decRange.slider()) {
                             parent.add(new GuiSlider("data", decRange.min(), decRange.min(), decRange.max()).setExpandableX());
                             return;
                         }
                     } else {
-                        CreativeConfig.IntRange intRange = key.getAnnotation(CreativeConfig.IntRange.class);
+                        CreativeConfig.IntRange intRange = key.field().getAnnotation(CreativeConfig.IntRange.class);
                         if (intRange != null && intRange.slider()) {
                             parent.add(new GuiSteppedSlider("data", intRange.min(), intRange.min(), intRange.max()).setExpandableX());
                             return;
@@ -429,19 +437,19 @@ public abstract class ConfigTypeConveration<T> {
                     text = "" + button.getValue();
                 } else
                     text = ((GuiTextfield) control).getText();
-                return parseNumber(key.getType(), text);
+                return parseNumber(key.field().getType(), text);
             }
             
             @Override
             public Number set(ConfigKey key, Number value) {
                 if (key != null) {
-                    Class clazz = key.getType();
+                    Class clazz = key.field().getType();
                     if (isDecimal(clazz)) {
-                        CreativeConfig.DecimalRange decRange = key.getAnnotation(CreativeConfig.DecimalRange.class);
+                        CreativeConfig.DecimalRange decRange = key.field().getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null)
                             return parseDecimal(clazz, Mth.clamp(value.doubleValue(), decRange.min(), decRange.max()));
                     } else {
-                        CreativeConfig.IntRange intRange = key.getAnnotation(CreativeConfig.IntRange.class);
+                        CreativeConfig.IntRange intRange = key.field().getAnnotation(CreativeConfig.IntRange.class);
                         if (intRange != null)
                             return parseInt(clazz, Mth.clamp(value.intValue(), intRange.min(), intRange.max()));
                     }
@@ -588,7 +596,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 parent.flow = GuiFlow.STACK_Y;
                 parent.add(new GuiComboBoxMapped<>("sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
                     if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
@@ -603,7 +611,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void loadValue(SoundConfig value, SoundConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public void loadValue(SoundConfig value, SoundConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiComboBoxMapped<ResourceLocation> box = parent.get("sound");
                 GuiSlider volume = parent.get("volume");
                 GuiSlider pitch = parent.get("pitch");
@@ -616,7 +624,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            protected SoundConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            protected SoundConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiComboBoxMapped<ResourceLocation> box = parent.get("sound");
                 GuiSlider volume = parent.get("volume");
                 GuiSlider pitch = parent.get("pitch");
@@ -657,7 +665,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 SelectableConfig value = (SelectableConfig) key.get();
                 configParent.setCustomData(value.getSelected());
                 parent.add(new GuiComboBox("data", new TextListBuilder().add(value.getArray(), Object::toString)).setExpandableX());
@@ -666,7 +674,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void loadValue(SelectableConfig value, SelectableConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public void loadValue(SelectableConfig value, SelectableConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiComboBox box = parent.get("data");
                 box.select(value.getSelected());
             }
@@ -674,15 +682,15 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void restoreDefault(SelectableConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public void restoreDefault(SelectableConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 value.reset();
-                loadValue(value, value, parent, configParent, key);
+                loadValue(value, value, parent, configParent, key, side);
             }
             
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            protected SelectableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            protected SelectableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 SelectableConfig config = (SelectableConfig) key.get();
                 GuiComboBox box = parent.get("data");
                 config.select(box.getIndex());
@@ -697,7 +705,7 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public boolean shouldSave(SelectableConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public boolean shouldSave(SelectableConfig value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 return value.getSelected() != (int) configParent.getCustomData();
             }
             
@@ -743,7 +751,7 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiComboBox("data", new TextListBuilder().add(getEnumClass(key.getType()).getEnumConstants(), (x) -> ((Enum) x).name())));
+                parent.add(new GuiComboBox("data", new TextListBuilder().add(getEnumClass(key.field().getType()).getEnumConstants(), (x) -> ((Enum) x).name())));
             }
             
             @Override
@@ -759,7 +767,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             protected Enum saveValue(GuiParent parent, ConfigKey key) {
                 GuiComboBox box = parent.get("data");
-                return (Enum) getEnumClass(key.getType()).getEnumConstants()[box.getIndex()];
+                return (Enum) getEnumClass(key.field().getType()).getEnumConstants()[box.getIndex()];
             }
             
             @Override
@@ -777,40 +785,40 @@ public abstract class ConfigTypeConveration<T> {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public abstract void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key);
+    public abstract void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side);
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public abstract void loadValue(T value, T defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key);
+    public abstract void loadValue(T value, T defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side);
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void restoreDefault(T value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        loadValue(value, value, parent, configParent, key);
+    public void restoreDefault(T value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+        loadValue(value, value, parent, configParent, key, side);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldSave(T value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public boolean shouldSave(T value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         return !key.get().equals(value);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected abstract T saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key);
+    protected abstract T saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side);
     
     public abstract T set(ConfigKey key, T value);
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public T save(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        T value = saveValue(parent, configParent, key);
+    public T save(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+        T value = saveValue(parent, configParent, key, side);
         if (value != null && key != null)
             return set(key, value);
         return value;
     }
     
-    public boolean areEqual(T one, T two, ConfigKey key) {
+    public boolean areEqual(T one, T two, ConfigKey key, Side side) {
         return one.equals(two);
     }
     
@@ -833,7 +841,7 @@ public abstract class ConfigTypeConveration<T> {
         @Override
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
-        public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+        public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
             createControls(parent, key);
         }
         
@@ -844,7 +852,7 @@ public abstract class ConfigTypeConveration<T> {
         @Override
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
-        public void loadValue(T value, T defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+        public void loadValue(T value, T defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
             loadValue(value, parent);
         }
         
@@ -855,7 +863,7 @@ public abstract class ConfigTypeConveration<T> {
         @Override
         @Environment(EnvType.CLIENT)
         @OnlyIn(Dist.CLIENT)
-        protected T saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+        protected T saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
             return saveValue(parent, key);
         }
         

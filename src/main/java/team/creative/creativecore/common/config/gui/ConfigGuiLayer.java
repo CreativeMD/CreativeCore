@@ -7,8 +7,8 @@ import net.minecraft.network.chat.Component;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
-import team.creative.creativecore.common.config.key.ConfigKeyFieldType;
+import team.creative.creativecore.common.config.key.ConfigKey;
+import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -82,7 +82,7 @@ public class ConfigGuiLayer extends GuiLayer {
         box.add(table);
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
-        for (ConfigKeyField key : holder.fields()) {
+        for (ConfigKey key : holder.fields()) {
             if (key.requiresRestart)
                 continue;
             
@@ -104,7 +104,7 @@ public class ConfigGuiLayer extends GuiLayer {
                 if (!key.is(side))
                     continue;
                 
-                GuiConfigControl control = new GuiConfigControl((ConfigKeyFieldType) key, side, caption, comment);
+                GuiConfigControl control = new GuiConfigControl((ConfigKeyType) key, side, caption, comment);
                 table.addRow(control);
                 control.init(json != null ? json.get(key.name) : null);
             }

@@ -7,11 +7,11 @@ import java.lang.reflect.Field;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.field.ConfigFieldDynamic;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
-import team.creative.creativecore.common.config.key.ConfigKeyFieldHolder;
+import team.creative.creativecore.common.config.key.ConfigKey;
+import team.creative.creativecore.common.config.key.ConfigKeyHolder;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
-public class ConfigHolderDynamic extends ConfigHolder<ConfigKeyField> {
+public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
     
     public ConfigHolderDynamic(ICreativeConfigHolder parent, String key, ConfigSynchronization synchronization) {
         super(parent, key, synchronization);
@@ -34,7 +34,7 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKeyField> {
         synchronization = this.synchronization != ConfigSynchronization.UNIVERSAL ? this.synchronization : synchronization;
         
         ConfigHolderDynamic holder = new ConfigHolderDynamic(this, key, synchronization);
-        fields.add(key, new ConfigKeyFieldHolder(holder, new ConfigFieldDynamic(holder), key, synchronization, false));
+        fields.add(key, new ConfigKeyHolder(holder, new ConfigFieldDynamic(holder), key, synchronization, false));
         return holder;
     }
     
@@ -51,7 +51,7 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKeyField> {
             throw new RuntimeException("Key already registered " + key);
         
         synchronization = this.synchronization != ConfigSynchronization.UNIVERSAL ? this.synchronization : synchronization;
-        fields.add(key, ConfigKeyField.of(this, new ConfigFieldDynamic(defaultValue), key, defaultValue, synchronization, requiresRestart));
+        fields.add(key, ConfigKey.of(this, new ConfigFieldDynamic(defaultValue), key, defaultValue, synchronization, requiresRestart));
         return this;
     }
     
@@ -66,7 +66,7 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKeyField> {
             throw new RuntimeException("Field cannot contain holder object, use register value instead");
         
         try {
-            fields.add(key, ConfigKeyField.of(this, field, key, field.get(object), synchronization, requiresRestart, object));
+            fields.add(key, ConfigKey.of(this, field, key, field.get(object), synchronization, requiresRestart, object));
         } catch (IllegalArgumentException | IllegalAccessException e) {
             LOGGER.error(e);
         }

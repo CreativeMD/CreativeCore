@@ -177,14 +177,14 @@ public abstract class CreativeIngredient {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 parent.add(new GuiInfoStackButton("data", temp).setExpandableX());
             }
             
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            public void loadValue(CreativeIngredient value, CreativeIngredient defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            public void loadValue(CreativeIngredient value, CreativeIngredient defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiInfoStackButton button = parent.get("data");
                 button.set(value);
             }
@@ -192,7 +192,7 @@ public abstract class CreativeIngredient {
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
-            protected CreativeIngredient saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+            protected CreativeIngredient saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiInfoStackButton button = parent.get("data");
                 return button.get();
             }

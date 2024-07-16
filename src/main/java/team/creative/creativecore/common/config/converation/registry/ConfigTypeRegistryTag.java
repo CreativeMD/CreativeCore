@@ -34,7 +34,7 @@ public class ConfigTypeRegistryTag extends ConfigTypeConveration<RegistryTagConf
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryTagConfig value = (RegistryTagConfig) key.get();
         GuiRegistryTagHandler.REGISTRY.get(value.registry).createControls(parent, value.registry);
     }
@@ -42,14 +42,14 @@ public class ConfigTypeRegistryTag extends ConfigTypeConveration<RegistryTagConf
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(RegistryTagConfig value, RegistryTagConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(RegistryTagConfig value, RegistryTagConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiRegistryTagHandler.REGISTRY.get(value.registry).loadValue(parent, value.registry, value.tag);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected RegistryTagConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    protected RegistryTagConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryTagConfig value = (RegistryTagConfig) key.get();
         return new RegistryTagConfig<>(value.registry, GuiRegistryTagHandler.REGISTRY.get(value.registry).saveValue(parent, value.registry));
     }

@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.IConfigObject;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public interface ICreativeConfigHolder extends IConfigObject {
@@ -32,13 +32,13 @@ public interface ICreativeConfigHolder extends IConfigObject {
     
     public String[] path();
     
-    public Collection<? extends ConfigKeyField> fields();
+    public Collection<? extends ConfigKey> fields();
     
     public Collection<String> names();
     
     public Object get(String key);
     
-    public ConfigKeyField getField(String key);
+    public ConfigKey getField(String key);
     
     public void load(HolderLookup.Provider provider, boolean loadDefault, boolean ignoreRestart, JsonObject json, Side side);
     

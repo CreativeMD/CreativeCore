@@ -50,7 +50,7 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase listBox = new GuiListBoxBase<>("data", true, new ArrayList<>());
         parent.add(listBox.setDim(50, 130).setExpandable());
@@ -62,7 +62,7 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(RegistryObjectListConfig value, RegistryObjectListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(RegistryObjectListConfig value, RegistryObjectListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiListBoxBase listBox = parent.get("data");
         if (!listBox.isEmpty())
             listBox.clearItems();
@@ -88,7 +88,7 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected RegistryObjectListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    protected RegistryObjectListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryObjectListConfig list = new RegistryObjectListConfig<>((Registry) configParent.getCustomData());
         
         GuiListBoxBase<GuiParent> listBox = parent.get("data");
@@ -104,7 +104,7 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     }
     
     @Override
-    public boolean areEqual(RegistryObjectListConfig one, RegistryObjectListConfig two, ConfigKey key) {
+    public boolean areEqual(RegistryObjectListConfig one, RegistryObjectListConfig two, ConfigKey key, Side side) {
         if (one.size() != two.size())
             return false;
         

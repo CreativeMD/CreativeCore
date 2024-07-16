@@ -16,8 +16,6 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.config.key.ConfigKeyCache;
-import team.creative.creativecore.common.config.key.ConfigKeyCacheType;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
 
@@ -26,7 +24,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     @Override
     public Object readElement(HolderLookup.Provider provider, Object defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
         Class clazz = defaultValue.getClass().getComponentType();
-        ConfigKeyCache arrayKey = ConfigKeyCache.of(clazz);
+        ConfigKey arrayKey = ConfigKey.ofArrayType(key, side);
         
         if (element.isJsonArray()) {
             JsonArray array = (JsonArray) element;
@@ -34,7 +32,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
             Object object = Array.newInstance(clazz, size);
             for (int i = 0; i < size; i++) {
                 arrayKey.read(provider, loadDefault, ignoreRestart, array.get(i), side);
-                Array.set(object, i, arrayKey.get());
+                Array.set(object, i, arrayKey.copy(provider, side));
             }
             return object;
         }
@@ -42,7 +40,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         int size = Array.getLength(defaultValue);
         Object object = Array.newInstance(clazz, size);
         for (int i = 0; i < size; i++) {
-            arrayKey.set(Array.get(object, i), side);
+            arrayKey.forceValue(Array.get(object, i), side);
             Array.set(object, i, arrayKey.copy(provider, side));
         }
         return object;
@@ -52,10 +50,9 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     public JsonElement writeElement(HolderLookup.Provider provider, Object value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
         int length = Array.getLength(value);
         JsonArray array = new JsonArray();
-        Class clazz = value.getClass().getComponentType();
-        ConfigKeyCache arrayKey = ConfigKeyCache.of(clazz);
+        ConfigKey arrayKey = ConfigKey.ofArrayType(key, side);
         for (int i = 0; i < length; i++) {
-            arrayKey.set(Array.get(value, i), side);
+            arrayKey.forceValue(Array.get(value, i), side);
             array.add(arrayKey.write(provider, saveDefault, ignoreRestart, side));
         }
         return array;
@@ -64,27 +61,26 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.add(new GuiListBoxBase<>("data", false, new ArrayList<>()).setDim(50, 150).setExpandable());
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(Object value, Object defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(Object value, Object defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         if (!box.isEmpty())
             box.clear();
         
-        Class clazz = value.getClass().getComponentType();
-        ConfigKeyCache arrayKey = ConfigKeyCache.of(clazz);
+        ConfigKey arrayKey = ConfigKey.ofArrayType(key, side);
         
         int length = Array.getLength(value);
         List<GuiConfigSubControl> controls = new ArrayList<>(length);
         for (int i = 0; i < length; i++) {
-            var c = arrayKey.create(configParent, "" + i);
-            arrayKey.set(Array.get(value, i), Side.SERVER);
-            arrayKey.load(configParent, c);
+            var c = arrayKey.create(configParent, "" + i, side);
+            arrayKey.forceValue(Array.get(value, i), side);
+            arrayKey.load(configParent, c, side);
             controls.add(c);
         }
         box.addAllItems(controls);
@@ -93,15 +89,14 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected Object saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
-        Class clazz = key.getType().getComponentType();
-        ConfigKeyCache arrayKey = ConfigKeyCache.of(clazz);
+    protected Object saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+        ConfigKey arrayKey = ConfigKey.ofArrayType(key, side);
         
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
-        Object value = Array.newInstance(clazz, box.size());
+        Object value = Array.newInstance(arrayKey.field().getType(), box.size());
         for (int i = 0; i < box.size(); i++) {
-            arrayKey.save(box.get(i), configParent);
-            Array.set(value, i, arrayKey.get());
+            arrayKey.save(box.get(i), configParent, side);
+            Array.set(value, i, arrayKey.copy(configParent.provider(), side));
         }
         return value;
     }
@@ -112,12 +107,12 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     }
     
     @Override
-    public boolean areEqual(Object one, Object two, ConfigKey key) {
+    public boolean areEqual(Object one, Object two, ConfigKey key, Side side) {
         int lengthOne = Array.getLength(one);
         int lengthTwo = Array.getLength(two);
         
-        ConfigKeyCache listKey = ConfigKeyCache.ofGenericType(key);
-        ConfigTypeConveration converation = listKey instanceof ConfigKeyCacheType t ? t.converation : null;
+        ConfigKey arrayKey = ConfigKey.ofArrayType(key, side);
+        ConfigTypeConveration converation = arrayKey.converation();
         
         if (lengthOne != lengthTwo)
             return false;
@@ -126,10 +121,12 @@ public class ConfigTypeArray extends ConfigTypeConveration {
             Object entryOne = Array.get(one, i);
             Object entryTwo = Array.get(two, i);
             
-            if (converation != null && !converation.areEqual(entryOne, entryTwo, null))
-                return false;
-            
-            if (converation == null && !entryOne.equals(entryTwo))
+            if (converation != null) {
+                arrayKey.forceValue(entryOne, side);
+                if (!converation.areEqual(entryOne, entryTwo, arrayKey, side))
+                    return false;
+                
+            } else if (converation == null && !entryOne.equals(entryTwo))
                 return false;
         }
         
