@@ -718,6 +718,23 @@ public class NetworkFieldTypes {
                         .decorator(buffer.registryAccess())).codec());
             }
         });
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<Class>() {
+            
+            @Override
+            protected void writeContent(Class content, RegistryFriendlyByteBuf buffer) {
+                buffer.writeUtf(content.getName());
+            }
+            
+            @Override
+            protected Class readContent(RegistryFriendlyByteBuf buffer) {
+                try {
+                    return Class.forName(buffer.readUtf(32767));
+                } catch (ClassNotFoundException e) {
+                    return null;
+                }
+            }
+        }, Class.class);
     }
     
 }
