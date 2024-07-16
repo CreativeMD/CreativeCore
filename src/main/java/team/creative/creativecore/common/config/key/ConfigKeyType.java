@@ -1,25 +1,28 @@
 package team.creative.creativecore.common.config.key;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
 import com.google.gson.JsonElement;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.IConfigObject;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.field.ConfigField;
+import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
+import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
-public class ConfigKeyFieldType extends ConfigKeyField {
+public class ConfigKeyType extends ConfigKey {
     
     public final ConfigTypeConveration converation;
     public final Object defaultValue;
     
-    public ConfigKeyFieldType(ConfigField field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
+    public ConfigKeyType(ConfigField field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
         super(field, name, synchronization, requiresRestart);
         this.converation = ConfigTypeConveration.get(field.getType());
         this.defaultValue = defaultValue;
@@ -31,37 +34,22 @@ public class ConfigKeyFieldType extends ConfigKeyField {
     }
     
     @Override
-    protected boolean checkEqual(Object one, Object two) {
-        return converation.areEqual(one, two, this);
-    }
-    
-    @Override
-    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-        return field.getAnnotation(annotationClass);
-    }
-    
-    @Override
-    public Type getGenericType() {
-        return field.getGenericType();
-    }
-    
-    @Override
-    public Class getType() {
-        return field.getType();
+    protected boolean checkEqual(Object one, Object two, Side side) {
+        return converation.areEqual(one, two, this, side);
     }
     
     @Override
     public boolean isDefault(Side side) {
         if (defaultValue instanceof IConfigObject c)
             return c.isDefault(side);
-        return checkEqual(defaultValue, get());
+        return checkEqual(defaultValue, get(), side);
     }
     
     @Override
     public boolean isDefault(Object value, Side side) {
         if (defaultValue instanceof IConfigObject c)
             return c.isDefault(side);
-        return checkEqual(defaultValue, value);
+        return checkEqual(defaultValue, value, side);
     }
     
     @Override
@@ -101,6 +89,39 @@ public class ConfigKeyFieldType extends ConfigKeyField {
     public void triggerConfigured(Side side) {
         if (get() instanceof ICreativeConfig c)
             c.configured(side);
+    }
+    
+    @Override
+    public void forceValue(Object object, Side side) {
+        field.set(object);
+    }
+    
+    @Override
+    public ConfigTypeConveration converation() {
+        return converation;
+    }
+    
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    public GuiConfigSubControl create(IGuiConfigParent configParent, String name, Side side) {
+        var control = new GuiConfigSubControl(name);
+        converation.createControls(control, configParent, this, side);
+        return control;
+    }
+    
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
+    public void load(IGuiConfigParent configParent, GuiConfigSubControl control, Side side) {
+        converation.loadValue(get(), defaultValue, control, configParent, this, side);
+    }
+    
+    @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void save(GuiConfigSubControl control, IGuiConfigParent configParent, Side side) {
+        set(converation.save(control, configParent, this, side), side);
     }
     
 }

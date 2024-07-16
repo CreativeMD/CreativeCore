@@ -10,7 +10,7 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.network.CreativePacket;
 import team.creative.creativecore.common.util.type.tree.CheckTree;
 
@@ -19,7 +19,7 @@ public class ConfigurationClientPacket extends CreativePacket {
     public String[] path;
     public List<String> enabled;
     
-    public ConfigurationClientPacket(ICreativeConfigHolder holder, CheckTree<ConfigKeyField> tree) {
+    public ConfigurationClientPacket(ICreativeConfigHolder holder, CheckTree<ConfigKey> tree) {
         this.path = holder.path();
         this.enabled = buildClientFieldList(tree.root, new ArrayList<>());
     }
@@ -29,7 +29,7 @@ public class ConfigurationClientPacket extends CreativePacket {
         this.enabled = ConfigEventHandler.loadClientFieldList(holder);
     }
     
-    public List<String> buildClientFieldList(CheckTree<ConfigKeyField>.CheckTreeEntry entry, List<String> list) {
+    public List<String> buildClientFieldList(CheckTree<ConfigKey>.CheckTreeEntry entry, List<String> list) {
         if (entry.isEnabled() && entry.content != null) {
             String path;
             
@@ -43,7 +43,7 @@ public class ConfigurationClientPacket extends CreativePacket {
         }
         
         if (entry.children != null)
-            for (CheckTree<ConfigKeyField>.CheckTreeEntry child : entry.children)
+            for (CheckTree<ConfigKey>.CheckTreeEntry child : entry.children)
                 buildClientFieldList(child, list);
             
         return list;

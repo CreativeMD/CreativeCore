@@ -7,11 +7,11 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.util.type.list.PairList;
 
-public abstract class ConfigHolder<T extends ConfigKeyField> implements ICreativeConfigHolder {
+public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConfigHolder {
     
     public final ConfigSynchronization synchronization;
     public final ICreativeConfigHolder parent;
@@ -47,12 +47,12 @@ public abstract class ConfigHolder<T extends ConfigKeyField> implements ICreativ
     }
     
     @Override
-    public ConfigKeyField getField(String key) {
+    public ConfigKey getField(String key) {
         return fields.getValue(key);
     }
     
     @Override
-    public Collection<? extends ConfigKeyField> fields() {
+    public Collection<? extends ConfigKey> fields() {
         return fields.values();
     }
     

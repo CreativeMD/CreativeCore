@@ -12,10 +12,10 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.key.ConfigKeyField;
+import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
-public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
+public class ConfigHolderObject extends ConfigHolder<ConfigKey> {
     
     public static ConfigHolderObject createUnrelated(Side side, Object value) {
         return createUnrelated(side, value, value);
@@ -58,7 +58,7 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
                     else
                         name = config.name();
                     ConfigSynchronization fieldSync = synchronization != ConfigSynchronization.UNIVERSAL ? synchronization : config.type();
-                    this.fields.add(name, ConfigKeyField.of(this, field, name, field.get(defaultReference), fieldSync, config.requiresRestart(), object));
+                    this.fields.add(name, ConfigKey.of(this, field, name, field.get(defaultReference), fieldSync, config.requiresRestart(), object));
                 } catch (IllegalArgumentException | IllegalAccessException e) {}
         }
     }
@@ -77,8 +77,8 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKeyField> {
     
     @Override
     public void configured(Side side) {
-        if (object instanceof ICreativeConfig)
-            ((ICreativeConfig) object).configured(side);
+        if (object instanceof ICreativeConfig c)
+            c.configured(side);
     }
     
 }

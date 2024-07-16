@@ -33,7 +33,7 @@ public class ConfigTypeRegistryObject extends ConfigTypeConveration<RegistryObje
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryObjectConfig value = (RegistryObjectConfig) key.get();
         GuiRegistryObjectHandler.REGISTRY.get(value.registry).createControls(parent, value.registry);
     }
@@ -41,14 +41,14 @@ public class ConfigTypeRegistryObject extends ConfigTypeConveration<RegistryObje
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(RegistryObjectConfig value, RegistryObjectConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(RegistryObjectConfig value, RegistryObjectConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiRegistryObjectHandler.REGISTRY.get(value.registry).loadValue(parent, value.registry, value.location);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected RegistryObjectConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    protected RegistryObjectConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryObjectConfig value = (RegistryObjectConfig) key.get();
         return new RegistryObjectConfig<>(value.registry, GuiRegistryObjectHandler.REGISTRY.get(value.registry).saveValue(parent, value.registry));
     }

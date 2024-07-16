@@ -51,7 +51,7 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase listBox = new GuiListBoxBase<>("data", true, new ArrayList<>());
         parent.add(listBox.setDim(50, 130).setExpandable());
@@ -63,7 +63,7 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void loadValue(RegistryTagListConfig value, RegistryTagListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    public void loadValue(RegistryTagListConfig value, RegistryTagListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiListBoxBase listBox = parent.get("data");
         if (!listBox.isEmpty())
             listBox.clearItems();
@@ -89,7 +89,7 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected RegistryTagListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key) {
+    protected RegistryTagListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryTagListConfig list = new RegistryTagListConfig<>((Registry) configParent.getCustomData());
         
         GuiListBoxBase<GuiParent> listBox = parent.get("data");
@@ -105,7 +105,7 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     }
     
     @Override
-    public boolean areEqual(RegistryTagListConfig one, RegistryTagListConfig two, ConfigKey key) {
+    public boolean areEqual(RegistryTagListConfig one, RegistryTagListConfig two, ConfigKey key, Side side) {
         if (one.size() != two.size())
             return false;
         
