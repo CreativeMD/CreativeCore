@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.network;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -27,6 +28,10 @@ public class CreativeNetwork {
     @OnlyIn(value = Dist.CLIENT)
     private static Player getClientPlayer() {
         return Minecraft.getInstance().player;
+    }
+    
+    public static boolean isSideOnlyPresent(Field field) {
+        return field.isAnnotationPresent(OnlyIn.class);
     }
     
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
@@ -102,4 +107,5 @@ public class CreativeNetwork {
     public void sendToClientAll(MinecraftServer server, CreativePacket message) {
         this.instance.send(PacketDistributor.ALL.noArg(), message);
     }
+    
 }

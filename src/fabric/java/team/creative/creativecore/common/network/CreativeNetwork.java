@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.network;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -23,6 +24,11 @@ import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
 
 public class CreativeNetwork {
+    
+    public static boolean isSideOnlyPresent(Field field) {
+        return field.isAnnotationPresent(Environment.class);
+    }
+    
     public final ResourceLocation CHANNEL;
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     private final HashMap<Class<? extends CreativePacket>, ResourceLocation> packetTypeChannels = new HashMap<>();
