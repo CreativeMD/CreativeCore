@@ -4,18 +4,21 @@ This is a common library which works for both forge and fabric but is incomplete
 ## Setup
 https://github.com/CreativeMD/ForgeMods
 
-## Forge Loader
-Created by @CreativeMD: https://github.com/FreezePhoenix/CreativeLoaderForge
+# Instructions
+- Clone Setup from above
+- Checkout the looked branch
+- Run in terminal `git submodule update --init`
+- Run `build`
 
-## Fabric Loader
-Created by @FreezePhoenix: https://github.com/FreezePhoenix/CreativeLoaderFabric
-
-## Dependants
-- AmbientSounds
-- LittleTiles (LittleFrames)
-- OpticManager
-- ItemPhysic
-- PlayerRevive
+## Dependents
+- [AmbientSounds](https://github.com/CreativeMD/AmbientSounds)
+- [EnhancedVisuals](https://github.com/CreativeMD/EnhancedVisuals)
+- [LittleTiles](https://github.com/CreativeMD/LittleTiles)
+- [LittleFrames](https://github.com/CreativeMD/LittleFrames)
+- [OpticManager](https://github.com/CreativeMD/OpticManager)
+- [ItemPhysic](https://github.com/CreativeMD/ItemPhysic)
+- [PlayerRevive](https://github.com/CreativeMD/PlayerRevive)
+- [WaterFrames](https://github.com/SrRapero720/waterframes)
 
 ## Formatting
 You can find the formatter I use for eclipse [here](https://www.dropbox.com/s/ikb4hvxnowt4ubj/CreativeFormater.xml?dl=1).
@@ -23,8 +26,8 @@ You can find the formatter I use for eclipse [here](https://www.dropbox.com/s/ik
 ## Features
 - Gui-Api
 - Packet system (supports splitted packets)
-- platform independent loader
-- CreatuveIngredients objects (a way to uniform itemstack groups)
+- Platform independent loader
+- CreativeIngredients objects (a way to uniform itemstack groups)
 - Fake level
 
 ## Terms of use
