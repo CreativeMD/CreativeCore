@@ -30,7 +30,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
             JsonArray array = (JsonArray) element;
             List list = createList(key, array.size());
             for (int i = 0; i < array.size(); i++) {
-                listKey.read(provider, loadDefault, ignoreRestart, array.get(i), side);
+                listKey.read(provider, true, ignoreRestart, array.get(i), side);
                 list.add(listKey.copy(provider, side));
             }
             return list;
@@ -49,7 +49,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         for (int i = 0; i < value.size(); i++) {
             listKey.forceValue(value.get(i), side);
-            array.add(listKey.write(provider, saveDefault, ignoreRestart, side));
+            array.add(listKey.write(provider, true, ignoreRestart, side));
         }
         return array;
     }
@@ -93,6 +93,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         List<GuiConfigSubControl> controls = createList(key, value.size());
         for (int i = 0; i < value.size(); i++) {
             listKey.forceValue(value.get(i), side);
+            listKey.forceValue(listKey.copy(configParent.provider(), side), side); // Make sure the object does not get modified by saving the control
             var c = listKey.create(configParent, "", side);
             listKey.load(configParent, c, side);
             controls.add(c);

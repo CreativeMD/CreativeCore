@@ -31,7 +31,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
             int size = Math.min(array.size(), Array.getLength(defaultValue));
             Object object = Array.newInstance(clazz, size);
             for (int i = 0; i < size; i++) {
-                arrayKey.read(provider, loadDefault, ignoreRestart, array.get(i), side);
+                arrayKey.read(provider, true, ignoreRestart, array.get(i), side);
                 Array.set(object, i, arrayKey.copy(provider, side));
             }
             return object;
@@ -53,7 +53,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         ConfigKey arrayKey = ConfigKey.ofArrayType(key, side);
         for (int i = 0; i < length; i++) {
             arrayKey.forceValue(Array.get(value, i), side);
-            array.add(arrayKey.write(provider, saveDefault, ignoreRestart, side));
+            array.add(arrayKey.write(provider, true, ignoreRestart, side));
         }
         return array;
     }
