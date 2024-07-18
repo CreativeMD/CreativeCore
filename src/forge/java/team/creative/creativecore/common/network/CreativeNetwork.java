@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.network;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -15,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -24,6 +26,10 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
+    
+    public static boolean isSideOnlyPresent(Field field) {
+        return field.isAnnotationPresent(OnlyIn.class);
+    }
     
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     
@@ -111,4 +117,5 @@ public class CreativeNetwork {
     public void sendToClientAll(MinecraftServer server, CreativePacket message) {
         PacketDistributor.sendToAllPlayers(prepare(message, PacketFlow.SERVERBOUND));
     }
+    
 }

@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import net.fabricmc.api.Environment;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class CreativeNetworkPacket<T extends CreativePacket> {
     
@@ -31,7 +29,7 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
         
         for (Field field : this.classType.getFields()) {
             
-            if (Modifier.isTransient(field.getModifiers()) || field.isAnnotationPresent(OnlyIn.class) || field.isAnnotationPresent(Environment.class))
+            if (Modifier.isTransient(field.getModifiers()) || CreativeNetwork.isSideOnlyPresent(field))
                 continue;
             
             CreativeNetworkField parser = CreativeNetworkField.create(field);

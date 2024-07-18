@@ -47,3 +47,7 @@ modProperties = [ '    displayTest="NONE"' ]
 modDependencies = []
 modMixins = [ "creativecore.mixins.json", "creativecore.forge.mixins.json" ]
 
+jar {
+    exclude('net/fabricmc/api/**')
+}
+

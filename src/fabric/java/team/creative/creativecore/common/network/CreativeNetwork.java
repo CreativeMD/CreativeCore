@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.network;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
@@ -26,6 +27,11 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
+    
+    public static boolean isSideOnlyPresent(Field field) {
+        return field.isAnnotationPresent(Environment.class);
+    }
+    
     public final ResourceLocation CHANNEL;
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     private final Logger logger;
