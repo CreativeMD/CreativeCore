@@ -43,7 +43,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
         if (element.isJsonObject()) {
             JsonObject object = (JsonObject) element;
             for (Entry<String, JsonElement> entry : object.entrySet()) {
-                listKey.read(provider, loadDefault, ignoreRestart, entry.getValue(), side);
+                listKey.read(provider, true, ignoreRestart, entry.getValue(), side);
                 addToList(list, entry.getKey(), listKey.copy(provider, side));
             }
             return list;
@@ -62,7 +62,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
         ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) value.entrySet()) {
             listKey.forceValue(entry.getValue(), side);
-            listKey.write(provider, saveDefault, ignoreRestart, side);
+            listKey.write(provider, true, ignoreRestart, side);
         }
         return array;
     }

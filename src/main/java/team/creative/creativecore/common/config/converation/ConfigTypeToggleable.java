@@ -24,7 +24,7 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
         
         if (element.isJsonObject()) {
             JsonObject object = element.getAsJsonObject();
-            configKey.read(provider, loadDefault, ignoreRestart, object.get("content"), side);
+            configKey.read(provider, true, ignoreRestart, object.get("content"), side);
             return new ToggleableConfig(configKey.copy(provider, side), object.get("enabled").getAsBoolean());
         }
         configKey.forceValue(defaultValue.value, side);
@@ -37,7 +37,7 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
         JsonObject object = new JsonObject();
         object.addProperty("enabled", value.isEnabled());
         configKey.forceValue(value.value, side);
-        object.add("content", configKey.write(provider, saveDefault, ignoreRestart, side));
+        object.add("content", configKey.write(provider, true, ignoreRestart, side));
         return object;
     }
     
