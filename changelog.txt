@@ -1,3 +1,6 @@
+2.12.5
+Excluded net.fabric package from forge file
+
 2.12.4
 Fixed not saving config entries inside array, list, toggelable correctly
 
