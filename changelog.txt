@@ -1,3 +1,6 @@
+2.12.4
+Fixed not saving config entries inside array, list, toggelable correctly
+
 2.12.3
 Reworked ConfigKey system (Removed ConfigKeyCache)
 Fixed not loading holder inside list, array, namedlist, permission, etc. properly
