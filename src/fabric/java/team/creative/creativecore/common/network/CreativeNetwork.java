@@ -59,7 +59,7 @@ public class CreativeNetwork {
         
         ServerPlayNetworking.registerGlobalReceiver(handler.sid, (payload, context) -> {
             try {
-                context.player().getServer().execute(() -> payload.executeServer(context.player()));
+                context.player().getServer().execute(() -> payload.execute(context.player()));
             } catch (Exception e) {
                 CreativeCore.LOGGER.error("Failed to handle packet " + handler.sid.id(), e);
             }

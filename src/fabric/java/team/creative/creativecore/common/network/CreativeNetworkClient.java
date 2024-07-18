@@ -11,7 +11,7 @@ public class CreativeNetworkClient {
     public static <T extends CreativePacket> void registerClientType(CreativeNetworkPacket<T> handler) {
         ClientPlayNetworking.registerGlobalReceiver(handler.sid, (payload, context) -> {
             try {
-                context.client().execute(() -> payload.executeClient(context.player()));
+                context.client().execute(() -> payload.execute(context.player()));
             } catch (Exception e) {
                 CreativeCore.LOGGER.error("Failed to handle packet " + handler.sid.id(), e);
             }
