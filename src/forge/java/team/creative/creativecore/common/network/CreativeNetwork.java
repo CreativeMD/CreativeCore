@@ -76,6 +76,10 @@ public class CreativeNetwork {
         id++;
     }
     
+    public CreativeNetworkPacket getType(Class<? extends CreativePacket> clazz) {
+        return packetTypes.get(clazz);
+    }
+    
     protected <T extends CreativePacket> T prepare(T packet, PacketFlow flow) {
         packet.setType(flow.isClientbound() ? packetTypes.get(packet.getClass()).cid : packetTypes.get(packet.getClass()).sid);
         return packet;
