@@ -55,13 +55,13 @@ public class NetworkFieldTypes {
     
     private static final Gson GSON = new Gson();
     private static final List<NetworkFieldTypeSpecial> specialParsers = new ArrayList<>();
-    private static final HashMap<Class, NetworkFieldTypeClass> parsers = new HashMap<>();
+    private static final HashMap<Class, NetworkFieldType> parsers = new HashMap<>();
     
-    public static <T> void register(NetworkFieldTypeClass<T> parser, Class<T> classType) {
+    public static <T> void register(NetworkFieldType<T> parser, Class<T> classType) {
         parsers.put(classType, parser);
     }
     
-    public static <T> void register(NetworkFieldTypeClass<T> parser, Class<? extends T>... classType) {
+    public static <T> void register(NetworkFieldType<T> parser, Class<? extends T>... classType) {
         for (Class<? extends T> clazz : classType)
             parsers.put(clazz, parser);
     }
