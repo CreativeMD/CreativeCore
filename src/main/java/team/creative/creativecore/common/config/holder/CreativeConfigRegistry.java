@@ -28,7 +28,7 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
         ICreativeConfigHolder current = this;
         for (int i = 0; i < path.length; i++) {
             var field = current.getField(path[i]);
-            if (field.isFolder())
+            if (field != null && field.isFolder())
                 current = field.holder();
             else
                 return null;
@@ -43,7 +43,7 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
             if (i + 1 == path.length)
                 return current.getField(path[i]);
             var field = current.getField(path[i]);
-            if (field.isFolder())
+            if (field != null && field.isFolder())
                 current = field.holder();
             else
                 return null;
