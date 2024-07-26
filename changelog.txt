@@ -1,3 +1,6 @@
+2.11.33
+Switched over to UTF_8 config file charset
+
 2.11.32
 Excluded net.fabric package from forge file
 
