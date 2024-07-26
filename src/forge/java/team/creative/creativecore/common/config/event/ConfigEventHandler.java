@@ -1,10 +1,10 @@
 package team.creative.creativecore.common.config.event;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -118,7 +118,7 @@ public class ConfigEventHandler {
         for (int i = 0; i < enabled.size(); i++)
             array.add(enabled.get(i));
         try {
-            FileWriter writer = new FileWriter(config);
+            FileWriter writer = new FileWriter(config, StandardCharsets.UTF_8);
             try {
                 GSON.toJson(array, writer);
             } finally {
@@ -139,7 +139,7 @@ public class ConfigEventHandler {
                 JsonUtils.cleanUp(json);
                 
                 if (json.size() > 0) {
-                    FileWriter writer = new FileWriter(config);
+                    FileWriter writer = new FileWriter(config, StandardCharsets.UTF_8);
                     
                     JsonWriter jsonWriter = getJsonWriter(writer);
                     
@@ -191,7 +191,7 @@ public class ConfigEventHandler {
         List<String> list;
         if (config.exists()) {
             try {
-                FileReader reader = new FileReader(config);
+                FileReader reader = new FileReader(config, StandardCharsets.UTF_8);
                 JsonArray array = GSON.fromJson(reader, JsonArray.class);
                 if (array != null) {
                     list = new ArrayList<>(array.size());
@@ -203,7 +203,7 @@ public class ConfigEventHandler {
                     
                 } else
                     list = Collections.EMPTY_LIST;
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 list = Collections.EMPTY_LIST;
                 LOGGER.error("Failed to load client fields config file, {0}", e);
             }
@@ -220,7 +220,7 @@ public class ConfigEventHandler {
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
             if (config.exists()) {
                 try {
-                    FileReader reader = new FileReader(config);
+                    FileReader reader = new FileReader(config, StandardCharsets.UTF_8);
                     JsonObject json = null;
                     try {
                         json = GSON.fromJson(reader, JsonObject.class);
@@ -230,7 +230,7 @@ public class ConfigEventHandler {
                     if (json == null)
                         json = new JsonObject();
                     holder.load(true, false, json, side);
-                } catch (FileNotFoundException e) {
+                } catch (IOException e) {
                     LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
                 }
             } else

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -166,7 +167,7 @@ public class ConfigEventHandler {
         for (int i = 0; i < enabled.size(); i++)
             array.add(enabled.get(i));
         try {
-            FileWriter writer = new FileWriter(config);
+            FileWriter writer = new FileWriter(config, StandardCharsets.UTF_8);
             try {
                 GSON.toJson(array, writer);
             } finally {
@@ -187,7 +188,7 @@ public class ConfigEventHandler {
                 JsonUtils.cleanUp(json);
                 
                 if (json.size() > 0) {
-                    FileWriter writer = new FileWriter(config);
+                    FileWriter writer = new FileWriter(config, StandardCharsets.UTF_8);
                     
                     JsonWriter jsonWriter = new JsonWriter(writer) {
                         
@@ -233,7 +234,7 @@ public class ConfigEventHandler {
         List<String> list;
         if (config.exists()) {
             try {
-                FileReader reader = new FileReader(config);
+                FileReader reader = new FileReader(config, StandardCharsets.UTF_8);
                 JsonArray array = GSON.fromJson(reader, JsonArray.class);
                 if (array != null) {
                     list = new ArrayList<>(array.size());
@@ -263,7 +264,7 @@ public class ConfigEventHandler {
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
             if (config.exists()) {
                 try {
-                    FileReader reader = new FileReader(config);
+                    FileReader reader = new FileReader(config, StandardCharsets.UTF_8);
                     JsonObject json = null;
                     try {
                         json = GSON.fromJson(reader, JsonObject.class);
