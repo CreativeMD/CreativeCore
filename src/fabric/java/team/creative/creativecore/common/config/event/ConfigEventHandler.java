@@ -267,7 +267,7 @@ public class ConfigEventHandler {
                     if (json == null)
                         json = new JsonObject();
                     field.holder().load(provider, true, false, json, side);
-                } catch (FileNotFoundException e) {
+                } catch (IOException e) {
                     LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
                 }
             } else
