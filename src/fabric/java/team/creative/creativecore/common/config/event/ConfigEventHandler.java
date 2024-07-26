@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.config.event;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -246,7 +245,7 @@ public class ConfigEventHandler {
                     
                 } else
                     list = Collections.EMPTY_LIST;
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 list = Collections.EMPTY_LIST;
                 LOGGER.error("Failed to load client fields config file, {0}", e);
             }
@@ -274,7 +273,7 @@ public class ConfigEventHandler {
                     if (json == null)
                         json = new JsonObject();
                     holder.load(true, false, json, side);
-                } catch (FileNotFoundException e) {
+                } catch (IOException e) {
                     LOGGER.error("Failed to load config file of '{0}', {1}", modid, e);
                 }
             } else
