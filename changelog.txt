@@ -1,3 +1,9 @@
+2.12.6
+Fixed error when searching for configuration
+Switched over to UTF_8 config file charset
+Added getType to CreativeNetwork
+Fixed NetworkTypes could only be a certain class
+
 2.12.5
 Excluded net.fabric package from forge file
 
