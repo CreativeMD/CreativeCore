@@ -2,8 +2,11 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'com.modrinth.minotaur' version '2.+'
-    id 'com.matthewprenger.cursegradle' version '1.4+'
 	id 'net.neoforged.gradle.userdev' version '7.0.+'
+}
+
+repositories {
+    maven { url = 'https://maven.fabricmc.net' }
 }
 
 group= "team.creative" + project.mod_id
@@ -40,14 +43,11 @@ runs {
 }
 
 dependencies {
-	implementation "net.neoforged:neoforge:${forge_version}"
+    implementation "net.neoforged:neoforge:${forge_version}"
+    
+    compileOnly "net.fabricmc:fabric-loader:${fabric_version}"
 }
 
 modProperties = [ '    displayTest="NONE"' ]
 modDependencies = []
 modMixins = [ "creativecore.mixins.json", "creativecore.forge.mixins.json" ]
-
-jar {
-    exclude('net/fabricmc/api/**')
-}
-
