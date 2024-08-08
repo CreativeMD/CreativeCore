@@ -18,7 +18,7 @@ public class VertexFormatUtils {
     public static void update() {
         VertexFormat format = DefaultVertexFormat.BLOCK;
         VERTEX_FORMAT_SIZE = format.getVertexSize();
-        VERTEX_FORMAT_INT_SIZE = VERTEX_FORMAT_SIZE * 4;
+        VERTEX_FORMAT_INT_SIZE = VERTEX_FORMAT_SIZE / 4;
         UV_OFFSET = -1;
         for (VertexFormatElement element : format.getElements())
             switch (element.usage()) {
