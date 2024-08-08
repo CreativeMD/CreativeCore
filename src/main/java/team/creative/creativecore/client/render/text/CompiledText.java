@@ -499,4 +499,8 @@ public class CompiledText {
         return usedHeight;
     }
     
+    public Iterable<Component> untrimmedContent() {
+        return original;
+    }
+    
 }
