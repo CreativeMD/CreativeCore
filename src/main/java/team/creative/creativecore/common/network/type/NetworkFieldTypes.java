@@ -708,13 +708,13 @@ public class NetworkFieldTypes {
             
             @Override
             public void write(Packet content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                buffer.writeNullable(content, (flow == PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(
+                buffer.writeNullable(content, (flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(
                     RegistryFriendlyByteBuf.decorator(buffer.registryAccess())).codec());
             }
             
             @Override
             public Packet read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                return buffer.readNullable((flow == PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(RegistryFriendlyByteBuf
+                return buffer.readNullable((flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(RegistryFriendlyByteBuf
                         .decorator(buffer.registryAccess())).codec());
             }
         });
