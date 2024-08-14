@@ -22,7 +22,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        stack.save(provider, nbt);
+        stack.saveOptional(provider);
         nbt.putBoolean("needNBT", needNBT);
     }
     

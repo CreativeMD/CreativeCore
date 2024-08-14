@@ -79,7 +79,7 @@ public interface IGuiInventory {
         for (int i = set.nextSetBit(0); i >= 0; i = set.nextSetBit(i + 1)) {
             GuiSlot slot = getSlot(i);
             slot.onSendUpdate();
-            nbt.put("" + i, slot.slot.getItem().save(provider, new CompoundTag()));
+            nbt.put("" + i, slot.slot.getItem().saveOptional(provider));
         }
         SYNC.send(control, nbt);
     }
@@ -91,7 +91,7 @@ public interface IGuiInventory {
         var provider = control.provider();
         ListTag list = new ListTag();
         for (int i = 0; i < inventorySize(); i++)
-            list.add(getSlot(i).slot.getItem().save(provider, new CompoundTag()));
+            list.add(getSlot(i).slot.getItem().saveOptional(provider));
         SYNC_ALL.send(control, list);
     }
 }
