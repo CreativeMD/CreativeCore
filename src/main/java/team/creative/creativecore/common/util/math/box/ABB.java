@@ -307,9 +307,9 @@ public class ABB {
         double d0 = (get(toClip) + blockPos.get(toClip.axis.toVanilla()) - pos.get(toClip.axis.toVanilla())) / toClip.axis.get(x, y, z);
         double d1 = pos.get(toClip.one().toVanilla()) + d0 * toClip.one().get(x, y, z);
         double d2 = pos.get(toClip.two().toVanilla()) + d0 * toClip.two().get(x, y, z);
-        if (0.0D < d0 && d0 < time[0] && min(toClip.one()) + blockPos.get(toClip.one().toVanilla()) - 1.0E-7D < d1 && d1 < max(toClip.one()) + blockPos
-                .get(toClip.one().toVanilla()) + 1.0E-7D && min(toClip.two()) + blockPos.get(toClip.two().toVanilla()) - 1.0E-7D < d2 && d2 < max(toClip.two()) + blockPos
-                        .get(toClip.two().toVanilla()) + 1.0E-7D) {
+        if (0.0D < d0 && d0 < time[0] && min(toClip.one()) + blockPos.get(toClip.one().toVanilla()) - 1.0E-7D < d1 && d1 < max(toClip.one()) + blockPos.get(toClip.one()
+                .toVanilla()) + 1.0E-7D && min(toClip.two()) + blockPos.get(toClip.two().toVanilla()) - 1.0E-7D < d2 && d2 < max(toClip.two()) + blockPos.get(toClip.two()
+                        .toVanilla()) + 1.0E-7D) {
             time[0] = d0;
             return toClip;
         }
@@ -394,8 +394,8 @@ public class ABB {
     }
     
     public boolean intersects(Vec3 vec1, Vec3 vec2) {
-        return this.intersects(Math.min(vec1.x, vec2.x), Math.min(vec1.y, vec2.y), Math.min(vec1.z, vec2.z), Math.max(vec1.x, vec2.x), Math.max(vec1.y, vec2.y), Math
-                .max(vec1.z, vec2.z));
+        return this.intersects(Math.min(vec1.x, vec2.x), Math.min(vec1.y, vec2.y), Math.min(vec1.z, vec2.z), Math.max(vec1.x, vec2.x), Math.max(vec1.y, vec2.y), Math.max(vec1.z,
+            vec2.z));
     }
     
     public boolean contains(double x, double y, double z) {
@@ -411,4 +411,43 @@ public class ABB {
         return "ABB[" + this.minX + ", " + this.minY + ", " + this.minZ + "] -> [" + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
     }
     
+    public boolean equals(AABB bb) {
+        return minX == bb.minX && minY == bb.minY && minZ == bb.minZ && maxX == bb.maxX && maxY == bb.maxY && maxZ == bb.maxZ;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ABB bb)
+            return minX == bb.minX && minY == bb.minY && minZ == bb.minZ && maxX == bb.maxX && maxY == bb.maxY && maxZ == bb.maxZ;
+        return false;
+    }
+    
+    protected ABB combine(ABB box) {
+        boolean x = this.minX == box.minX && this.maxX == box.maxX;
+        boolean y = this.minY == box.minY && this.maxY == box.maxY;
+        boolean z = this.minZ == box.minZ && this.maxZ == box.maxZ;
+        
+        if (x && y && z) {
+            return this;
+        }
+        if (x && y) {
+            if (this.minZ == box.maxZ)
+                return new ABB(minX, minY, box.minZ, maxX, maxY, maxZ);
+            else if (this.maxZ == box.minZ)
+                return new ABB(minX, minY, minZ, maxX, maxY, box.maxZ);
+        }
+        if (x && z) {
+            if (this.minY == box.maxY)
+                return new ABB(minX, box.minY, minZ, maxX, maxY, maxZ);
+            else if (this.maxY == box.minY)
+                return new ABB(minX, minY, minZ, maxX, box.maxY, maxZ);
+        }
+        if (y && z) {
+            if (this.minX == box.maxX)
+                return new ABB(box.minX, minY, minZ, maxX, maxY, maxZ);
+            else if (this.maxX == box.minX)
+                return new ABB(minX, minY, minZ, box.maxX, maxY, maxZ);
+        }
+        return null;
+    }
 }
