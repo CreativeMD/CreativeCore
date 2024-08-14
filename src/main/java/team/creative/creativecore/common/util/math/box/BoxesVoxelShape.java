@@ -253,24 +253,7 @@ public class BoxesVoxelShape extends SliceShape {
     
     @Override
     protected double collideX(AxisCycle cycle, AABB other, double distance) {
-        if (this.isEmpty())
-            return distance;
-        
-        if (Math.abs(distance) < 1.0E-7D)
-            return 0.0D;
-        
-        AxisCycle axiscycle = cycle.inverse();
-        team.creative.creativecore.common.util.math.base.Axis axis = team.creative.creativecore.common.util.math.base.Axis.get(axiscycle.cycle(Direction.Axis.X));
-        team.creative.creativecore.common.util.math.base.Axis one = team.creative.creativecore.common.util.math.base.Axis.get(axiscycle.cycle(Direction.Axis.Y));
-        team.creative.creativecore.common.util.math.base.Axis two = team.creative.creativecore.common.util.math.base.Axis.get(axiscycle.cycle(Direction.Axis.Z));
-        
-        for (ABB bb : boxes)
-            if (distance > 0)
-                distance = Math.min(distance, bb.calculateAxisOffset(axis, one, two, other, distance));
-            else
-                distance = Math.max(distance, bb.calculateAxisOffset(axis, one, two, other, distance));
-            
-        return distance;
+        throw new UnsupportedOperationException();
     }
     
     @Override
