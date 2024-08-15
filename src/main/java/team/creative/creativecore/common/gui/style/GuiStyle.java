@@ -51,7 +51,7 @@ public class GuiStyle {
         }
     }
     
-    public static GuiStyle getStyle(String name) {
+    public static synchronized GuiStyle getStyle(String name) {
         GuiStyle cached = REGISTRY.get(name);
         if (cached != null)
             return cached;
