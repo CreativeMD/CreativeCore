@@ -1,3 +1,13 @@
+2.12.7
+Potentially fixed occasional crash when loading GuiStyle at the same time from two different threads
+Fixed collision edge case where both boxes are exactly next to each other which cause the player to get stuck (Occured frequently to vanillas new and improved step up behavior)
+Fixed crash when using inventories in gui
+Fixed not displaying error when executing packet in log
+Significantly enhanced performance related to boxes-voxel-shapes when combining shapes
+Fixed not being able to send vanilla packets
+Added untrimmedContent to CompiledText
+Fixed VertexFormatUtils
+
 2.12.6
 Fixed error when searching for configuration
 Switched over to UTF_8 config file charset
