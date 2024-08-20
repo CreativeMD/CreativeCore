@@ -13,6 +13,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.SerializedName;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -31,6 +33,7 @@ public class GuiStyle {
     private static final Minecraft mc = Minecraft.getInstance();
     private static final Gson GSON = new GsonBuilder().create();
     public static final NamedHandlerRegistry<GuiStyle> REGISTRY = new NamedHandlerRegistry<GuiStyle>(null);
+    private static final Object2BooleanMap<String> LOADED = new Object2BooleanOpenHashMap<>();
     
     public static void reload() {
         try {
@@ -39,6 +42,7 @@ public class GuiStyle {
             try {
                 JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
                 
+                LOADED.clear();
                 NamedHandlerRegistry.clearRegistry(REGISTRY);
                 REGISTRY.registerDefault("default", GSON.fromJson(root, GuiStyle.class));
             } finally {
@@ -56,26 +60,31 @@ public class GuiStyle {
         if (cached != null)
             return cached;
         
-        try {
-            Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name)).orElseThrow();
-            InputStream input = resource.open();
+        if (!LOADED.getBoolean(name)) {
             try {
-                JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
-                
-                cached = GSON.fromJson(root, GuiStyle.class);
-                REGISTRY.register(name, cached);
-                return cached;
+                try {
+                    Resource resource = mc.getResourceManager().getResource(new ResourceLocation(name)).orElseThrow();
+                    InputStream input = resource.open();
+                    try {
+                        JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
+                        
+                        cached = GSON.fromJson(root, GuiStyle.class);
+                        REGISTRY.register(name, cached);
+                        return cached;
+                    } finally {
+                        input.close();
+                    }
+                } catch (Exception e) {
+                    if (!(e instanceof FileNotFoundException) && !(e instanceof NoSuchElementException)) {
+                        CreativeCore.LOGGER.error(e);
+                        CreativeCore.LOGGER.error("Found invalid style " + name);
+                    }
+                }
             } finally {
-                input.close();
+                LOADED.put(name, true);
             }
-        } catch (FileNotFoundException | NoSuchElementException e) {
-            REGISTRY.register(name, REGISTRY.getDefault());
-            return REGISTRY.getDefault();
-        } catch (Exception e) {
-            CreativeCore.LOGGER.error(e);
-            CreativeCore.LOGGER.error("Found invalid style " + name);
-            return REGISTRY.getDefault();
         }
+        return REGISTRY.getDefault();
     }
     
     @SerializedName("font-color")
