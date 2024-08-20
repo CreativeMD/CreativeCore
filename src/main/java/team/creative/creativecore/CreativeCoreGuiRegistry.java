@@ -63,14 +63,13 @@ public class CreativeCoreGuiRegistry {
         for (IGuiInventory inv : layer.inventoriesToInsert()) {
             if (inv == c.inventory())
                 continue;
-            
-            inv.insert(insert, false);
-            if (!insert.isEmpty())
-                inv.insert(insert, true);
-            
+            inv.insertClever(insert);
             if (insert.isEmpty())
                 break;
         }
+        
+        if (insert.getCount() == amount) // Nothing has happened try to move it around inside the inventory. Used by the player inventory
+            insert = c.inventory().moveInside(insert, slot.getSlotIndex());
         
         stack.grow(insert.getCount());
         c.changed();
