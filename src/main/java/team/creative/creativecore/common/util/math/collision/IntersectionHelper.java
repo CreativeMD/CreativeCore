@@ -202,8 +202,7 @@ public class IntersectionHelper {
         return Collections.EMPTY_LIST;
     }
     
-    private static Edge iterateLines(int offset, int count, boolean hasFoundInside, Edge edge, Ray2d ray, double minOne, double minTwo, double maxOne, double maxTwo,
-            boolean clockwise, InsideStatus[] status, Vec2d[] corners, List<Vec2d> result) {
+    private static Edge iterateLines(int offset, int count, boolean hasFoundInside, Edge edge, Ray2d ray, double minOne, double minTwo, double maxOne, double maxTwo, boolean clockwise, InsideStatus[] status, Vec2d[] corners, List<Vec2d> result) {
         double beforeOne = corners[offset].x;
         double beforeTwo = corners[offset].y;
         
@@ -337,8 +336,7 @@ public class IntersectionHelper {
         return edge;
     }
     
-    private static Edge findIntersection(Ray2d ray, boolean clockwise, double minOne, double minTwo, double maxOne, double maxTwo, InsideStatus status, double beforeOne,
-            double beforeTwo, double nowOne, double nowTwo, Edge before, List<Vec2d> result) {
+    private static Edge findIntersection(Ray2d ray, boolean clockwise, double minOne, double minTwo, double maxOne, double maxTwo, InsideStatus status, double beforeOne, double beforeTwo, double nowOne, double nowTwo, Edge before, List<Vec2d> result) {
         ray.originOne = beforeOne;
         ray.originTwo = beforeTwo;
         ray.directionOne = nowOne - beforeOne;
@@ -392,8 +390,7 @@ public class IntersectionHelper {
         }
     }
     
-    private static Edge iterateLines(int offset, int count, boolean hasFoundInside, Edge edge, Ray2d ray, Axis one, Axis two, float minOne, float minTwo, float maxOne,
-            float maxTwo, boolean clockwise, InsideStatus[] status, Vec3f[] corners, List<Vec2f> result) {
+    private static Edge iterateLines(int offset, int count, boolean hasFoundInside, Edge edge, Ray2d ray, Axis one, Axis two, float minOne, float minTwo, float maxOne, float maxTwo, boolean clockwise, InsideStatus[] status, Vec3f[] corners, List<Vec2f> result) {
         float beforeOne = corners[offset].get(one);
         float beforeTwo = corners[offset].get(two);
         
@@ -509,6 +506,10 @@ public class IntersectionHelper {
                         Vec2f inVec = ray.getFloat(inT);
                         add(outVec, result);
                         edge = iterateLines(currentIndex, status.length - 1, true, outEdge, ray, one, two, minOne, minTwo, maxOne, maxTwo, clockwise, status, corners, result);
+                        if (edge == null) {
+                            result.clear();
+                            return null;
+                        }
                         addCornersBetween(minOne, minTwo, maxOne, maxTwo, edge, inEdge, clockwise, result);
                         add(inVec, result);
                         return null;
@@ -523,8 +524,7 @@ public class IntersectionHelper {
         return edge;
     }
     
-    private static Edge findIntersection(Ray2d ray, boolean clockwise, float minOne, float minTwo, float maxOne, float maxTwo, InsideStatus status, float beforeOne,
-            float beforeTwo, float nowOne, float nowTwo, Edge before, List<Vec2f> result) {
+    private static Edge findIntersection(Ray2d ray, boolean clockwise, float minOne, float minTwo, float maxOne, float maxTwo, InsideStatus status, float beforeOne, float beforeTwo, float nowOne, float nowTwo, Edge before, List<Vec2f> result) {
         ray.originOne = beforeOne;
         ray.originTwo = beforeTwo;
         ray.directionOne = nowOne - beforeOne;
