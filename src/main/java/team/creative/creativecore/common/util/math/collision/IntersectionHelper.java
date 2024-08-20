@@ -496,6 +496,10 @@ public class IntersectionHelper {
                 if (inEdge != null && inEdge != outEdge) {
                     // went in and out
                     if (hasFoundInside) {
+                        if (edge == null) {
+                            result.clear();
+                            return null;
+                        }
                         addCornersBetween(minOne, minTwo, maxOne, maxTwo, edge, inEdge, clockwise, result);
                         add(ray.getFloat(inT), result);
                         add(ray.getFloat(outT), result);
