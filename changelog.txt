@@ -1,3 +1,6 @@
+2.11.36
+Fixed another intersection edge case
+
 2.11.35
 Fixed random crash when getting style
 Fixed missing collision edge case (got lost during port)
