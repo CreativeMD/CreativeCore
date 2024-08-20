@@ -70,7 +70,7 @@ public class CreativeCoreGuiRegistry {
         }
         
         if (insert.getCount() == amount) // Nothing has happened try to move it around inside the inventory. Used by the player inventory
-            insert = c.inventory().moveInside(insert, slot.getSlotIndex());
+            insert = c.inventory().moveInside(insert, slot.getContainerSlot());
         
         stack.grow(insert.getCount());
         c.changed();
