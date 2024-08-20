@@ -178,9 +178,56 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     public GuiChildControl addControl(GuiControl control) {
-        control.setParent(this);
-        GuiChildControl child = new GuiChildControl(control);
+        var child = createControl(control);
         controls.add(child);
+        return child;
+    }
+    
+    private GuiChildControl createControl(GuiControl control) {
+        control.setParent(this);
+        return new GuiChildControl(control);
+    }
+    
+    private int indexOf(GuiControl control) {
+        for (int i = 0; i < controls.size(); i++)
+            if (controls.get(i).control == control)
+                return i;
+        return -1;
+    }
+    
+    /** inserts the given the control before the parameter
+     *
+     * @param reference
+     *            the reference to search for the correct position
+     * @param toInsert
+     *            the control to be added
+     * @return null if the reference could not be found */
+    public GuiChildControl insertControlBefore(GuiControl reference, GuiControl toInsert) {
+        int index = indexOf(reference);
+        if (index == -1)
+            return null;
+        GuiChildControl child = createControl(toInsert);
+        controls.add(index, child);
+        return child;
+    }
+    
+    /** inserts the given the control after the parameter
+     *
+     * @param reference
+     *            the reference to search for the correct position
+     * @param toInsert
+     *            the control to be added
+     * @return null if the reference could not be found */
+    public GuiChildControl insertControlAfter(GuiControl reference, GuiControl toInsert) {
+        int index = indexOf(reference);
+        if (index == -1)
+            return null;
+        GuiChildControl child = createControl(toInsert);
+        index++;
+        if (index == controls.size())
+            controls.add(child);
+        else
+            controls.add(index, child);
         return child;
     }
     
@@ -190,9 +237,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     public GuiParent add(GuiControl... controls) {
-        for (GuiControl c : controls) {
+        for (GuiControl c : controls)
             this.addControl(c);
-        }
         return this;
     }
     
@@ -215,9 +261,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     public GuiParent addHover(GuiControl... controls) {
-        for (GuiControl c : controls) {
+        for (GuiControl c : controls)
             this.addHoverControl(c);
-        }
         return this;
     }
     
@@ -310,7 +355,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
+    protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale,
+            double xOffset, double yOffset, boolean hover) {
         PoseStack pose = graphics.pose();
         
         while (collection.hasPrevious()) {
@@ -338,7 +384,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControl(GuiGraphics graphics, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
+    protected void renderControl(GuiGraphics graphics, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY,
+            boolean hover) {
         control.render(graphics, child, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
     }
     
