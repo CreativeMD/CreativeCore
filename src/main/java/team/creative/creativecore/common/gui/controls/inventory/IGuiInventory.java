@@ -38,8 +38,26 @@ public interface IGuiInventory {
     
     public void setChanged(int slotIndex);
     
+    public default ItemStack moveInside(ItemStack toAdd, int slot) {
+        return toAdd;
+    }
+    
+    public default void insertClever(ItemStack toAdd) {
+        insertClever(toAdd, 0, inventorySize());
+    }
+    
+    public default void insertClever(ItemStack toAdd, int start, int endExclusive) {
+        insert(toAdd, false, start, endExclusive);
+        if (!toAdd.isEmpty())
+            insert(toAdd, true, start, endExclusive);
+    }
+    
     public default void insert(ItemStack toAdd, boolean useEmptySlot) {
-        for (int i = 0; i < inventorySize(); i++) {
+        insert(toAdd, useEmptySlot, 0, inventorySize());
+    }
+    
+    public default void insert(ItemStack toAdd, boolean useEmptySlot, int start, int endExclusive) {
+        for (int i = start; i < endExclusive; i++) {
             GuiSlot slot = getSlot(i);
             if (useEmptySlot || slot.slot.hasItem()) {
                 toAdd = slot.insert(toAdd);
