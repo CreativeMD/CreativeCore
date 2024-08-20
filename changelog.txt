@@ -1,3 +1,7 @@
+2.11.35
+Fixed random crash when getting style
+Fixed missing collision edge case (got lost during port)
+
 2.11.34
 Potentially fixed occasional crash when loading GuiStyle at the same time from two different threads
 Fixed collision edge case where both boxes are exactly next to each other which cause the player to get stuck (Occured frequently to vanillas new and improved step up behavior)
