@@ -1,3 +1,8 @@
+2.11.37
+Fixed rendering of GuiScrollX scroll bar
+Added insert control before and after methods to GuiParent
+Added vanilla behavior of moving shift clicking stack inside players inventory
+
 2.11.36
 Fixed another intersection edge case
 
