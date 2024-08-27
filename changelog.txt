@@ -1,3 +1,6 @@
+2.12.9
+Added CreativePlatformHooks
+
 2.12.8
 Fixed rendering of GuiScrollX scroll bar
 Added insert control before and after methods to GuiParent
