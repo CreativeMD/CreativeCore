@@ -1,3 +1,6 @@
+2.12.10
+Update es_es.json (Thanks to C4BR3R4)
+
 2.12.9
 Added CreativePlatformHooks
 
