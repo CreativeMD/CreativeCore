@@ -1,3 +1,6 @@
+2.12.11
+Fixed not being able to type in a minus when entering number into number textfield
+
 2.12.10
 Update es_es.json (Thanks to C4BR3R4)
 
