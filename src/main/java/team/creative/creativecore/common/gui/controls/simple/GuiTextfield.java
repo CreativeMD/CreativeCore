@@ -67,7 +67,7 @@ public class GuiTextfield extends GuiFocusControl {
     
     public GuiTextfield setFloatOnly() {
         validator = (x) -> {
-            if (x.isEmpty())
+            if (x.isEmpty() || x.equalsIgnoreCase("-"))
                 return true;
             try {
                 Float.parseFloat(x);
@@ -81,7 +81,7 @@ public class GuiTextfield extends GuiFocusControl {
     
     public GuiTextfield setNumbersIncludingNegativeOnly() {
         validator = (x) -> {
-            if (x.isEmpty())
+            if (x.isEmpty() || x.equalsIgnoreCase("-"))
                 return true;
             try {
                 Integer.parseInt(x);
