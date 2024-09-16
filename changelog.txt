@@ -1,3 +1,6 @@
+2.12.12
+Fixed intersect2d of VectorFan not working in all cases
+
 2.12.11
 Fixed not being able to type in a minus when entering number into number textfield
 
