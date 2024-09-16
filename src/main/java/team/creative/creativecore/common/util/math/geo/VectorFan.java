@@ -319,7 +319,8 @@ public class VectorFan {
         });
     }
     
-    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
+    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue,
+            int alpha) {
         Vec3f normal = new Vec3f();
         forAllEdges((x, y) -> {
             float x1 = x.x * scaleX + offX;
@@ -334,7 +335,8 @@ public class VectorFan {
         });
     }
     
-    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double dGrow) {
+    public void renderLines(Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue,
+            int alpha, Vec3d center, double dGrow) {
         float grow = (float) dGrow;
         Vec3f normal = new Vec3f();
         forAllEdges((x, y) -> {
@@ -783,8 +785,15 @@ public class VectorFan {
                     if (t > episilon && t < 1 - episilon && otherT > episilon && otherT < 1 - episilon)
                         return true;
                 } catch (ParallelException e) {
-                    double startT = ray1.getT(one, ray2.originOne);
-                    double endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
+                    double startT;
+                    double endT;
+                    if (ray1.directionOne == 0) {
+                        startT = ray1.getT(two, ray2.originTwo);
+                        endT = ray1.getT(two, ray2.originTwo + ray2.directionTwo);
+                    } else {
+                        startT = ray1.getT(one, ray2.originOne);
+                        endT = ray1.getT(one, ray2.originOne + ray2.directionOne);
+                    }
                     if ((startT > episilon && startT < 1 - episilon) || endT > episilon && endT < 1 - episilon) {
                         parrallel++;
                         if (parrallel > 1)
