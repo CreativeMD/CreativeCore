@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeMod;
 
 public class PlayerUtils {
     
@@ -33,8 +32,7 @@ public class PlayerUtils {
     }
     
     public static double getReach(Player player) {
-        double attrib = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
-        return player.isCreative() ? attrib : attrib - 0.5;
+        return player.getBlockReach();
     }
     
     public static void addOrDrop(Player player, ItemStack stack) {
