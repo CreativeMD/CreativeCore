@@ -1,3 +1,6 @@
+2.12.13
+Fixed values and keys iteration not working for TupleList
+
 2.12.12
 Fixed intersect2d of VectorFan not working in all cases
 
