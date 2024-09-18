@@ -1,3 +1,6 @@
+2.11.39
+Fixed values and keys iteration not working for TupleList
+
 2.11.38
 Fixed intersect2d of VectorFan not working in all cases
 Fixed block reach being incorrect (forge)
