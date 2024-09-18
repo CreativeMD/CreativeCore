@@ -9,9 +9,6 @@ import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
 public class TupleList<K, V> extends ArrayList<Tuple<K, V>> {
     
-    protected Iterable<K> keys = new FunctionIterator<K>(TupleList.this, x -> x.key);
-    protected Iterable<V> values = new FunctionIterator<V>(TupleList.this, x -> x.value);
-    
     public TupleList() {
         super();
     }
@@ -36,11 +33,11 @@ public class TupleList<K, V> extends ArrayList<Tuple<K, V>> {
     }
     
     public Iterable<V> values() {
-        return values;
+        return new FunctionIterator<V>(TupleList.this, x -> x.value);
     }
     
     public Iterable<K> keys() {
-        return keys;
+        return new FunctionIterator<K>(TupleList.this, x -> x.key);
     }
     
     public Tuple<K, V> getFirst() {
