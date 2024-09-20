@@ -219,8 +219,12 @@ public abstract class ConfigTypeConveration<T> {
         Function<ConfigField, Type> func = TYPE_GETTERS.get(field.getType());
         if (func != null)
             return func.apply(field);
-        ParameterizedType type = (ParameterizedType) field.getGenericType();
-        return type.getActualTypeArguments()[0];
+        Type type = field.getGenericType();
+        if (type instanceof Class)
+            return type;
+        if (type instanceof ParameterizedType p)
+            return p.getActualTypeArguments()[0];
+        throw new UnsupportedOperationException("This type is not supported " + type);
     }
     
     public static Type getGenericType(ConfigKey key) {
@@ -577,7 +581,8 @@ public abstract class ConfigTypeConveration<T> {
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override
-            public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+            public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side,
+                    ConfigKey key) {
                 if (element.isJsonObject())
                     return new SoundConfig(new ResourceLocation(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume").getAsFloat(), element
                             .getAsJsonObject().get("pitch").getAsFloat());
@@ -649,7 +654,8 @@ public abstract class ConfigTypeConveration<T> {
         registerType(SelectableConfig.class, new ConfigTypeConveration<SelectableConfig>() {
             
             @Override
-            public SelectableConfig readElement(HolderLookup.Provider provider, SelectableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+            public SelectableConfig readElement(HolderLookup.Provider provider, SelectableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
+                    Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isNumber())
                     defaultValue.select(element.getAsInt());
                 else
