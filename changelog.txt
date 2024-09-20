@@ -1,3 +1,21 @@
+2.12.14
+Fixed reset button translation not working correctly when using LittleTiles
+Fixed crash with certain types of generic configuration
+Added getHolder() to RegistryObjectConfig
+Fixed error when searching for configuration
+Switched over to UTF_8 config file charset
+Fixed not saving config entries inside array, list, toggelable correctly
+Reworked ConfigKey system (Removed ConfigKeyCache)
+Fixed not loading holder inside list, array, namedlist, permission, etc. properly
+Fixed crash when reading enum config
+Optimized performance when checking for block in SortingBlockList
+Fixed not loading & saving mod config
+Added RegistryTagConfig, RegistryTagListConfig
+Fixed config layer not closing after prompt
+Rework ConfigKey structure to add support for nested generics
+Added SortingBlockList
+Added RegistryObjectListConfig
+
 2.11.39
 Fixed values and keys iteration not working for TupleList
 
