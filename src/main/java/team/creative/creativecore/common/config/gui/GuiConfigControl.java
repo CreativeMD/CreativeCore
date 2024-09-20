@@ -50,7 +50,7 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
             GuiColumn end = new GuiColumn(20);
             end.align = Align.CENTER;
             addColumn(end);
-            this.resetButton = (GuiButton) new GuiButton("r", x -> GuiConfigControl.this.reset()).setTranslate("gui.reset").setAlign(Align.CENTER);
+            this.resetButton = (GuiButton) new GuiButton("r", x -> GuiConfigControl.this.reset()).setTranslate("gui.config.reset").setAlign(Align.CENTER);
             end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
         }
         

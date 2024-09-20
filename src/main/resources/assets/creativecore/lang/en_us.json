@@ -6,7 +6,7 @@
     "gui.minus": "-",
     "gui.plus": "+",
     "gui.del": "x",
-    "gui.reset": "r",
+    "gui.config.reset": "r",
     "gui.volume": "volume",
     "gui.pitch": "pitch",
     "gui.close": "Close",
