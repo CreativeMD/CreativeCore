@@ -212,7 +212,7 @@ public class PermissionGuiLayer extends GuiLayer {
             col.add(group.textfield = new GuiTextfield("name", name).setDim(100));
         
         if (!name.isEmpty() && button.defaultValue.containsKey(name))
-            col.add(group.resetButton = (GuiButton) new GuiButton("r", x -> group.reset()).setTranslate("gui.reset").setAlign(Align.CENTER));
+            col.add(group.resetButton = (GuiButton) new GuiButton("r", x -> group.reset()).setTranslate("gui.config.reset").setAlign(Align.CENTER));
         
         if (!defaultCol)
             col.add(new GuiButton("x", x -> {
