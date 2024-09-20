@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -46,7 +47,7 @@ public class ConfigEventHandler {
     
     @Environment(EnvType.CLIENT)
     private void client() {
-        ClientLifecycleEvents.CLIENT_STARTED.register(x -> load(Side.CLIENT));
+        ClientLifecycleEvents.CLIENT_STARTED.register(x -> load(x.level != null ? x.level.registryAccess() : null, Side.CLIENT));
     }
     
     private final DecimalFormat df = generateFormat();
@@ -58,7 +59,7 @@ public class ConfigEventHandler {
         this.CONFIG_DIRECTORY = CONFIG_DIRECTORY;
         this.LOGGER = LOGGER;
         ServerPlayConnectionEvents.JOIN.register(this::playerLoggedIn);
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> load(Side.SERVER));
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> load(server.registryAccess(), Side.SERVER));
         
         if (CreativeCore.loader().getOverallSide().isClient())
             client();
@@ -124,7 +125,7 @@ public class ConfigEventHandler {
     public void playerLoggedIn(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
         if (!server.isSingleplayer() || !isOwner(server)) {
             CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), handler.getPlayer());
-            CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(CreativeConfigRegistry.ROOT, false), handler.getPlayer());
+            CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(server.registryAccess(), CreativeConfigRegistry.ROOT, false), handler.getPlayer());
         }
     }
     
@@ -134,11 +135,11 @@ public class ConfigEventHandler {
     }
     
     public void sync(ICreativeConfigHolder holder, MinecraftServer server) {
-        CreativeCore.NETWORK.sendToClientAll(server, new ConfigurationPacket(holder, true));
+        CreativeCore.NETWORK.sendToClientAll(server, new ConfigurationPacket(server.registryAccess(), holder, true));
     }
     
     public void sync(ICreativeConfigHolder holder, ServerPlayer player) {
-        CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(holder, true), player);
+        CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(player.level().registryAccess(), holder, true), player);
     }
     
     public void syncAll(MinecraftServer server) {
@@ -173,7 +174,7 @@ public class ConfigEventHandler {
         }
     }
     
-    public void save(String modid, Side side) {
+    public void save(HolderLookup.Provider provider, String modid, Side side) {
         try {
             ConfigKey field = CreativeConfigRegistry.ROOT.getField(modid);
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
@@ -218,9 +219,9 @@ public class ConfigEventHandler {
         
     }
     
-    public void save(Side side) {
+    public void save(HolderLookup.Provider provider, Side side) {
         for (String modid : CreativeConfigRegistry.ROOT.names())
-            save(modid, side);
+            save(provider, modid, side);
     }
     
     public void loadClientFields() {
@@ -275,13 +276,13 @@ public class ConfigEventHandler {
         }
     }
     
-    public void load(Side side) {
+    public void load(HolderLookup.Provider provider, Side side) {
         loadClientFields();
         
         for (String modid : CreativeConfigRegistry.ROOT.names())
-            load(modid, side);
+            load(provider, modid, side);
         
-        save(side);
+        save(provider, side);
     }
     
     public boolean isSynchronizedWithServer(String key) {
