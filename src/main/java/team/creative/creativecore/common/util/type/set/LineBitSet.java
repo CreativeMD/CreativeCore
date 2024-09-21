@@ -171,7 +171,7 @@ public class LineBitSet implements Iterable<Integer> {
                         while (k < 64) {
                             long data = word & (1L << k);
                             if (data != 0) {
-                                int result = (minChunk + i) * CHUNK_SIZE + k / CHUNK_SIZE;
+                                int result = (minChunk + i) * CHUNK_SIZE + k;
                                 found++;
                                 k++;
                                 return result;
@@ -196,14 +196,14 @@ public class LineBitSet implements Iterable<Integer> {
                 long word = chunks[i];
                 if (word == 0)
                     continue;
-                if (first)
-                    first = false;
-                else
-                    result.append(", ");
                 for (int k = 0; k < 64; k++) {
                     long data = word & (1L << k);
                     if (data != 0) {
-                        float x = (minChunk + i) * CHUNK_SIZE + k / (float) CHUNK_SIZE;
+                        int x = (minChunk + i) * CHUNK_SIZE + k;
+                        if (first)
+                            first = false;
+                        else
+                            result.append(", ");
                         result.append(x);
                     }
                     
