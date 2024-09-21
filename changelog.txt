@@ -1,3 +1,8 @@
+2.12.15
+Fixed LineBitSet results not being correct
+Fixed reset button translation not working correctly when using LittleTiles
+Fixed crash with certain types of generic configuration
+
 2.12.13
 Fixed values and keys iteration not working for TupleList
 
