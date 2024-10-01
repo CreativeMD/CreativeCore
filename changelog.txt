@@ -1,3 +1,6 @@
+2.12.17
+Fixed a few more collision edge cases causing a crash
+
 2.12.15
 Fixed LineBitSet results not being correct
 Fixed reset button translation not working correctly when using LittleTiles
