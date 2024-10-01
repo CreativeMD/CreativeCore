@@ -305,7 +305,7 @@ public class IntersectionHelper {
                     }
                 }
                 
-                if (inEdge != null && inEdge != outEdge) {
+                if (inEdge != null && outEdge != null && inEdge != outEdge) {
                     // went in and out
                     if (hasFoundInside) {
                         addCornersBetween(minOne, minTwo, maxOne, maxTwo, edge, inEdge, clockwise, result);
