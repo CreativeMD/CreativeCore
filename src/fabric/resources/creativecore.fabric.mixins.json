@@ -4,13 +4,13 @@
     "compatibilityLevel": "JAVA_17",
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
-        "AbstractContainerScreenMixin",
         "ArgumentTypeInfosAccessor",
         "GroupResourcePackAccessor",
         "ModNioResourcePackAccessor"
     ],
     "client": [
-        "VertexFormatMixin"
+        "VertexFormatMixin",
+        "AbstractContainerScreenMixin"
     ],
     "minVersion": "0.8"
 }
