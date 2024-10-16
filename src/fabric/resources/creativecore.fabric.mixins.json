@@ -4,11 +4,11 @@
     "compatibilityLevel": "JAVA_21",
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
-        "AbstractContainerScreenMixin",
         "ArgumentTypeInfosAccessor",
         "ModNioResourcePackAccessor"
     ],
     "client": [
+        "AbstractContainerScreenMixin"
     ],
     "minVersion": "0.8"
 }
