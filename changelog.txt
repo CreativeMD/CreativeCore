@@ -1,3 +1,6 @@
+2.12.18
+Fixed crash when using CreativeCore on a fabric server
+
 2.12.17
 Fixed a few more collision edge cases causing a crash
 
