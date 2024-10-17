@@ -1,3 +1,6 @@
+2.12.19
+Fixed fabric fireItemPickupPre hook not returning correct result
+
 2.12.18
 Fixed crash when using CreativeCore on a fabric server
 
