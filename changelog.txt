@@ -1,3 +1,6 @@
+2.12.20
+Fixed crash when saving config in main menu
+
 2.12.18
 Fixed crash when using CreativeCore on a fabric server
 
