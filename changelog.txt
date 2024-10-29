@@ -1,3 +1,6 @@
+2.12.21
+Fixed crash when adding an item in the config to a list of CreativeIngredient
+
 2.12.20
 Fixed crash when saving config in main menu
 
