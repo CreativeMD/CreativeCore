@@ -159,7 +159,8 @@ public abstract class CreativeIngredient {
         ConfigTypeConveration.registerSpecialType(CreativeIngredient.class::isAssignableFrom, new ConfigTypeConveration<CreativeIngredient>() {
             
             @Override
-            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
+                    Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
                         return CreativeIngredient.load(provider, TagParser.parseTag(element.getAsString()));
@@ -202,11 +203,10 @@ public abstract class CreativeIngredient {
                 return value;
             }
         });
+        ConfigTypeConveration.registerTypeCreator(CreativeIngredient.class, () -> new CreativeIngredientBlock(Blocks.DIRT));
     }
     
-    public CreativeIngredient() {
-        
-    }
+    public CreativeIngredient() {}
     
     public CompoundTag save(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
