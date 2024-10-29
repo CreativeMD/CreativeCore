@@ -1,3 +1,6 @@
+2.12.21
+Fixed crash when adding an item in the config to a list of CreativeIngredient
+
 2.12.19
 Fixed fabric fireItemPickupPre hook not returning correct result
 
