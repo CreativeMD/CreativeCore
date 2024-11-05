@@ -229,7 +229,7 @@ public abstract class CreativeIngredient {
     
     @Override
     public boolean equals(Object object) {
-        return object instanceof CreativeIngredient && equals((CreativeIngredient) object);
+        return object instanceof CreativeIngredient c && equals(c);
     }
     
     public abstract boolean equals(CreativeIngredient object);

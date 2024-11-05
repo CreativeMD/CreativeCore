@@ -1,6 +1,8 @@
 package team.creative.creativecore.common.config.converation;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.NumberFormat;
@@ -9,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -27,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObject;
@@ -60,6 +64,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
+import team.creative.creativecore.common.util.type.TriPredicate;
 import team.creative.creativecore.common.util.type.list.PairList;
 
 public abstract class ConfigTypeConveration<T> {
@@ -74,6 +79,7 @@ public abstract class ConfigTypeConveration<T> {
     }
     
     private static final HashMap<Class, Function<ConfigField, ?>> TYPE_CREATORS = new HashMap<>();
+    private static final HashMap<Class, TriPredicate<Object, Object, Side>> TYPE_EQUALS_CHECKER = new HashMap<>();
     private static final HashMap<Class, Function<ConfigField, Type>> TYPE_GETTERS = new HashMap<>();
     private static final HashMap<Class, Function<ConfigField, ?>> COLLECTION_CREATORS = new HashMap<>();
     private static final HashMap<Class, ConfigTypeConveration> TYPES = new HashMap<>();
@@ -148,10 +154,52 @@ public abstract class ConfigTypeConveration<T> {
     
     public static <T, U extends T> void registerTypeCreator(Class<U> clazz, Function<ConfigField, T> type) {
         TYPE_CREATORS.put(clazz, type);
+        registerTypeEqualChecker(clazz);
     }
     
     public static <T, U extends T> void registerTypeCreator(Class<U> clazz, Supplier<T> type) {
         TYPE_CREATORS.put(clazz, x -> type.get());
+        registerTypeEqualChecker(clazz);
+    }
+    
+    /** Will be called automatically when calling registerTypeCreator */
+    public static void registerTypeEqualChecker(Class clazz) {
+        List<Field> fields = new ArrayList<>();
+        
+        collectFieldsToCheck(clazz, fields);
+        
+        if (fields.isEmpty())
+            return;
+        
+        TYPE_EQUALS_CHECKER.put(clazz, (x, y, side) -> {
+            
+            for (int i = 0; i < fields.size(); i++) {
+                var field = fields.get(i);
+                CreativeConfig config = field.getAnnotation(CreativeConfig.class);
+                if (!config.type().useValue(false, side))
+                    continue;
+                
+                try {
+                    if (!equals(field.get(x), field.get(y), side))
+                        return false;
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    CreativeCore.LOGGER.error("Could not check equals on object with class " + clazz, e);
+                    throw new RuntimeException(e);
+                }
+            }
+            
+            return true;
+        });
+    }
+    
+    private static void collectFieldsToCheck(Class clazz, List<Field> fields) {
+        if (clazz.getSuperclass() != Object.class && clazz.getSuperclass() != null)
+            collectFieldsToCheck(clazz.getSuperclass(), fields);
+        
+        Field[] declaredFields = clazz.getDeclaredFields();
+        for (int i = 0; i < declaredFields.length; i++)
+            if (Modifier.isPublic(declaredFields[i].getModifiers()) && declaredFields[i].isAnnotationPresent(CreativeConfig.class))
+                fields.add(declaredFields[i]);
     }
     
     public static void registerTypeGetter(Class clazz, Function<ConfigField, Type> getter) {
@@ -240,6 +288,22 @@ public abstract class ConfigTypeConveration<T> {
     
     public static Object createCollection(ConfigKey key) {
         return createCollection(key.field());
+    }
+    
+    public static boolean equals(Object one, Object two, Side side) {
+        if (Objects.equals(one, two))
+            return true;
+        
+        if (one == null || two == null)
+            return false;
+        
+        if (one.getClass() != two.getClass())
+            return false;
+        
+        var check = TYPE_EQUALS_CHECKER.get(one.getClass());
+        if (check != null)
+            return check.test(one, two, side);
+        return false;
     }
     
     static {
