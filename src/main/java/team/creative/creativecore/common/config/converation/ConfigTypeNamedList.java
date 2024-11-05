@@ -58,13 +58,13 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     
     @Override
     public JsonElement writeElement(HolderLookup.Provider provider, T value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
-        JsonObject array = new JsonObject();
+        JsonObject object = new JsonObject();
         ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) value.entrySet()) {
             listKey.forceValue(entry.getValue(), side);
-            listKey.write(provider, true, ignoreRestart, side);
+            object.add(entry.getKey(), listKey.write(provider, true, ignoreRestart, side));
         }
-        return array;
+        return object;
     }
     
     @Override
@@ -155,7 +155,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
                 if (!converation.areEqual(entry.getValue(), other, listKey, side))
                     return false;
                 
-            } else if (converation == null && !entry.getValue().equals(other))
+            } else if (converation == null && !ConfigTypeConveration.equals(entry.getValue(), other, side))
                 return false;
         }
         

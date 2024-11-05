@@ -126,7 +126,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
                 if (!converation.areEqual(entryOne, entryTwo, arrayKey, side))
                     return false;
                 
-            } else if (converation == null && !entryOne.equals(entryTwo))
+            } else if (converation == null && !ConfigTypeConveration.equals(entryOne, entryTwo, side))
                 return false;
         }
         
