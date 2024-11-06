@@ -69,7 +69,7 @@ public class RegistryObjectListConfig<T> implements Iterable<T> {
         
         public T get() {
             if (cache == null)
-                cache = registry.get(location);
+                cache = registry.getValue(location);
             return cache;
             
         }

@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 public class CreativeIngredientBlock extends CreativeIngredient {
@@ -40,7 +41,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     }
     
     @Override
-    public boolean is(ItemStack stack) {
+    public boolean is(Level level, ItemStack stack) {
         return Block.byItem(stack.getItem()) == this.block;
     }
     

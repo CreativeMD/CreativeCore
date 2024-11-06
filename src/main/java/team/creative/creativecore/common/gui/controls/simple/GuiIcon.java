@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
@@ -111,7 +111,7 @@ public class GuiIcon extends GuiControl {
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(RenderSystem.setShader(CoreShaders.POSITION_TEX));
         RenderSystem.setShaderTexture(0, this.icon.location());
         
         int x = 0, y = 0, width = control.getContentWidth(), height = control.getContentHeight();

@@ -11,6 +11,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 
 public class InventoryUtils {
@@ -112,16 +113,16 @@ public class InventoryUtils {
         }
     }
     
-    public static int consume(CreativeIngredient info, Container inventory) {
-        return consume(info, inventory, null);
+    public static int consume(Level level, CreativeIngredient info, Container inventory) {
+        return consume(level, info, inventory, null);
     }
     
-    public static int consume(CreativeIngredient info, Container inventory, ArrayList<ItemStack> consumed) {
+    public static int consume(Level level, CreativeIngredient info, Container inventory, ArrayList<ItemStack> consumed) {
         ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
         int stackSize = 1;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (!stack.isEmpty() && info.is(stack)) {
+            if (!stack.isEmpty() && info.is(level, stack)) {
                 
                 int used = Math.min(stackSize, stack.getCount());
                 stack.shrink(used);

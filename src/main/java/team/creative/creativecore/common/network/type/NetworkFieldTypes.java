@@ -361,7 +361,7 @@ public class NetworkFieldTypes {
             
             @Override
             protected Block readContent(RegistryFriendlyByteBuf buffer) {
-                return BuiltInRegistries.BLOCK.get(buffer.readResourceLocation());
+                return BuiltInRegistries.BLOCK.getValue(buffer.readResourceLocation());
             }
         }, Block.class);
         
@@ -374,7 +374,7 @@ public class NetworkFieldTypes {
             
             @Override
             protected Item readContent(RegistryFriendlyByteBuf buffer) {
-                return BuiltInRegistries.ITEM.get(buffer.readResourceLocation());
+                return BuiltInRegistries.ITEM.getValue(buffer.readResourceLocation());
             }
         }, Item.class);
         

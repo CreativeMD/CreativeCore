@@ -1,10 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.util.Optional;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -126,12 +123,12 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<TagKey<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Block>>().addComponents(BuiltInRegistries.BLOCK.getTagNames()
-                        .toList(), x -> {
+                GuiComboBoxMapped<TagKey<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Block>>().addComponents(BuiltInRegistries.BLOCK.getTags().map(x -> x
+                        .unwrapKey().get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
-                            Optional<Named<Block>> tag = BuiltInRegistries.BLOCK.getTag(x);
-                            if (tag.isPresent() && tag.get().size() > 0)
-                                builder.stack(new ItemStack(tag.get().get(0).value()));
+                            var itr = BuiltInRegistries.BLOCK.getTagOrEmpty(x).iterator();
+                            if (itr.hasNext())
+                                builder.stack(new ItemStack(itr.next().value()));
                             return builder.text(x.location().toString()).build();
                         }));
                 gui.add(box);
@@ -150,11 +147,11 @@ public abstract class GuiCreativeIngredientHandler {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<TagKey<Block>> box = gui.get("tag");
                     box.setLines(new TextMapBuilder<TagKey<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
-                        BuiltInRegistries.BLOCK.getTagNames().toList(), x -> {
+                        BuiltInRegistries.BLOCK.getTags().map(x -> x.unwrapKey().get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
-                            Optional<Named<Block>> tag = BuiltInRegistries.BLOCK.getTag(x);
-                            if (tag.isPresent() && tag.get().size() > 0)
-                                builder.stack(new ItemStack(tag.get().get(0).value()));
+                            var itr = BuiltInRegistries.BLOCK.getTagOrEmpty(x).iterator();
+                            if (itr.hasNext())
+                                builder.stack(new ItemStack(itr.next().value()));
                             return builder.text(x.location().toString()).build();
                         }));
                 }
@@ -176,14 +173,14 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<TagKey<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(BuiltInRegistries.ITEM.getTagNames().toList(),
-                    x -> {
-                        TextBuilder builder = new TextBuilder();
-                        Optional<Named<Item>> tag = BuiltInRegistries.ITEM.getTag(x);
-                        if (tag.isPresent() && tag.get().size() > 0)
-                            builder.stack(new ItemStack(tag.get().get(0).value()));
-                        return builder.text(x.location().toString()).build();
-                    }));
+                GuiComboBoxMapped<TagKey<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(BuiltInRegistries.ITEM.getTags().map(x -> x
+                        .unwrapKey().get()).toList(), x -> {
+                            TextBuilder builder = new TextBuilder();
+                            var itr = BuiltInRegistries.ITEM.getTagOrEmpty(x).iterator();
+                            if (itr.hasNext())
+                                builder.stack(new ItemStack(itr.next().value()));
+                            return builder.text(x.location().toString()).build();
+                        }));
                 gui.add(box);
                 gui.add(new GuiTextfield("search"));
                 if (info instanceof CreativeIngredientItemTag)
@@ -200,11 +197,11 @@ public abstract class GuiCreativeIngredientHandler {
                 if (event.control.is("search")) {
                     GuiComboBoxMapped<TagKey<Item>> box = gui.get("tag");
                     box.setLines(new TextMapBuilder<TagKey<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
-                        BuiltInRegistries.ITEM.getTagNames().toList(), x -> {
+                        BuiltInRegistries.ITEM.getTags().map(x -> x.unwrapKey().get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
-                            Optional<Named<Item>> tag = BuiltInRegistries.ITEM.getTag(x);
-                            if (tag.isPresent() && tag.get().size() > 0)
-                                builder.stack(new ItemStack(tag.get().get(0).value()));
+                            var itr = BuiltInRegistries.ITEM.getTagOrEmpty(x).iterator();
+                            if (itr.hasNext())
+                                builder.stack(new ItemStack(itr.next().value()));
                             return builder.text(x.location().toString()).build();
                         }));
                 }

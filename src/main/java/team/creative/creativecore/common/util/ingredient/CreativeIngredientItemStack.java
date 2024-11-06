@@ -5,6 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class CreativeIngredientItemStack extends CreativeIngredient {
     
@@ -47,7 +48,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     }
     
     @Override
-    public boolean is(ItemStack stack) {
+    public boolean is(Level level, ItemStack stack) {
         if (stack.getItem() != this.stack.getItem())
             return false;
         
@@ -64,7 +65,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     public boolean equals(CreativeIngredient object) {
-        return object instanceof CreativeIngredientItemStack && object.is(stack);
+        return object instanceof CreativeIngredientItemStack && object.is(null, stack);
     }
     
     @Override

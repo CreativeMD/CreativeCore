@@ -13,7 +13,7 @@ public class CreativeBakedQuad extends BakedQuad {
     }
     
     public CreativeBakedQuad(int[] vertices, BakedQuad quad, RenderBox cube, int tintedColor, boolean shouldOverrideColor, Direction facing) {
-        super(vertices, shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.isShade());
+        super(vertices, shouldOverrideColor ? tintedColor : quad.getTintIndex(), facing, quad.getSprite(), quad.isShade(), quad.getLightEmission());
         this.cube = cube;
     }
     

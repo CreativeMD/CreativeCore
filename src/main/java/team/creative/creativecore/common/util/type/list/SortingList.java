@@ -9,6 +9,7 @@ import java.util.ListIterator;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
@@ -136,9 +137,9 @@ public class SortingList implements List<CreativeIngredient> {
         return false;
     }
     
-    protected boolean canBeFoundInList(ItemStack stack) {
+    protected boolean canBeFoundInList(Level level, ItemStack stack) {
         for (CreativeIngredient ingredient : entries)
-            if (ingredient.is(stack))
+            if (ingredient.is(level, stack))
                 return true;
         return false;
     }
@@ -157,8 +158,8 @@ public class SortingList implements List<CreativeIngredient> {
      *
      * @param stack
      *            item stack */
-    public boolean canPass(ItemStack stack) {
-        return canBeFoundInList(stack) == isWhitelist;
+    public boolean canPass(Level level, ItemStack stack) {
+        return canBeFoundInList(level, stack) == isWhitelist;
     }
     
     @Override

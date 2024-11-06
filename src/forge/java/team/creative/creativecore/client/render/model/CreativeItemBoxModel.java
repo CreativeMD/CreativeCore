@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,7 +17,7 @@ public abstract class CreativeItemBoxModel extends CreativeItemModel {
     
     public static final Minecraft mc = Minecraft.getInstance();
     
-    public static final CreativeItemBoxModel EMPTY = new CreativeItemBoxModel(ModelResourceLocation.vanilla("stone", "inventory")) {
+    public static final CreativeItemBoxModel EMPTY = new CreativeItemBoxModel(new ModelResourceLocation(ResourceLocation.withDefaultNamespace("stone"), "inventory")) {
         
         @Override
         public List<? extends RenderBox> getBoxes(ItemStack stack, boolean translucent) {

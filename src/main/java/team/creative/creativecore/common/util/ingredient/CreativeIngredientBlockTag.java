@@ -1,10 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.util.Optional;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -12,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 
@@ -36,7 +34,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     }
     
     @Override
-    public boolean is(ItemStack stack) {
+    public boolean is(Level level, ItemStack stack) {
         Block block = Block.byItem(stack.getItem());
         if (!(Block.byItem(stack.getItem()) instanceof AirBlock))
             return block.builtInRegistryHolder().is(tag);
@@ -50,10 +48,10 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        Optional<Named<Block>> optional = BuiltInRegistries.BLOCK.getTag(tag);
-        if (optional.isEmpty() || optional.get().size() == 0)
+        var itr = BuiltInRegistries.BLOCK.getTagOrEmpty(tag).iterator();
+        if (!itr.hasNext())
             return ItemStack.EMPTY;
-        return new ItemStack(optional.get().get(0).value());
+        return new ItemStack(itr.next().value());
     }
     
     @Override

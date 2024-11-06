@@ -81,12 +81,12 @@ public class CreativeCoreClient {
     public static float getFrameTime() {
         if (mc.isPaused())
             return 1.0F;
-        return mc.getTimer().getGameTimeDeltaPartialTick(false);
+        return mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
     
     @SubscribeEvent
     public static void commands(RegisterClientCommandsEvent event) {
-        event.getDispatcher().register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
+        event.getDispatcher().register(LiteralArgumentBuilder.<CommandSourceStack>literal("cmdclientconfig").executes((x) -> {
             try {
                 GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
             } catch (Exception e) {

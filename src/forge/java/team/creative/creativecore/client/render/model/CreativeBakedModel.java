@@ -10,8 +10,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedOverrides;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -31,12 +31,12 @@ public class CreativeBakedModel implements BakedModel {
     protected ItemStack renderedStack = null;
     private BakedModel modelCache;
     
-    public ItemOverrides customOverride = new ItemOverrides() {
+    public BakedOverrides customOverride = new BakedOverrides() {
         
         @Override
-        public BakedModel resolve(BakedModel original, ItemStack stack, ClientLevel level, LivingEntity entity, int p_173469_) {
+        public BakedModel findOverride(ItemStack stack, ClientLevel level, LivingEntity entity, int p_371346_) {
             renderedStack = stack;
-            return super.resolve(original, stack, level, entity, p_173469_);
+            return super.findOverride(stack, level, entity, p_371346_);
         }
     };
     
@@ -52,7 +52,8 @@ public class CreativeBakedModel implements BakedModel {
     }
     
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data,
+            @Nullable RenderType renderType) {
         return get().getQuads(state, side, rand, data, renderType);
     }
     
@@ -82,7 +83,7 @@ public class CreativeBakedModel implements BakedModel {
     }
     
     @Override
-    public ItemOverrides getOverrides() {
+    public BakedOverrides overrides() {
         return customOverride;
     }
     

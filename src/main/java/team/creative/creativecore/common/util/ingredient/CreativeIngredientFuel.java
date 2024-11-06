@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.level.Level;
 
 public class CreativeIngredientFuel extends CreativeIngredient {
     
@@ -23,8 +23,8 @@ public class CreativeIngredientFuel extends CreativeIngredient {
     }
     
     @Override
-    public boolean is(ItemStack stack) {
-        return AbstractFurnaceBlockEntity.isFuel(stack);
+    public boolean is(Level level, ItemStack stack) {
+        return level.fuelValues().isFuel(stack);
     }
     
     @Override

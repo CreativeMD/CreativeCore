@@ -1,10 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
-import java.util.Optional;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class CreativeIngredientItemTag extends CreativeIngredient {
     
@@ -35,7 +33,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     }
     
     @Override
-    public boolean is(ItemStack stack) {
+    public boolean is(Level level, ItemStack stack) {
         return stack.getItem().builtInRegistryHolder().is(tag);
     }
     
@@ -46,10 +44,10 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     public ItemStack getExample() {
-        Optional<Named<Item>> optional = BuiltInRegistries.ITEM.getTag(tag);
-        if (optional.isEmpty() || optional.get().size() == 0)
+        var itr = BuiltInRegistries.ITEM.getTagOrEmpty(tag).iterator();
+        if (!itr.hasNext())
             return ItemStack.EMPTY;
-        return new ItemStack(optional.get().get(0).value());
+        return new ItemStack(itr.next().value());
     }
     
     @Override

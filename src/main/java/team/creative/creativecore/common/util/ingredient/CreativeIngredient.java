@@ -22,6 +22,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -53,7 +54,7 @@ public abstract class CreativeIngredient {
         }
         
         @Override
-        public boolean is(ItemStack stack) {
+        public boolean is(Level level, ItemStack stack) {
             return false;
         }
         
@@ -219,7 +220,7 @@ public abstract class CreativeIngredient {
     
     protected abstract void loadExtra(HolderLookup.Provider provider, CompoundTag nbt);
     
-    public abstract boolean is(ItemStack stack);
+    public abstract boolean is(Level level, ItemStack stack);
     
     public abstract boolean is(CreativeIngredient info);
     

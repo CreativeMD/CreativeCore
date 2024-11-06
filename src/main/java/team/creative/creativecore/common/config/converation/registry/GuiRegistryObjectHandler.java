@@ -56,7 +56,7 @@ public abstract class GuiRegistryObjectHandler {
             @Override
             public void loadValue(GuiParent parent, Registry registry, ResourceLocation location) {
                 GuiStackSelector selector = parent.get("content");
-                Block block = (Block) registry.get(location);
+                Block block = (Block) registry.getValue(location);
                 selector.setSelectedForce(new ItemStack(block));
             }
             

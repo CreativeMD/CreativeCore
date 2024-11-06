@@ -39,7 +39,7 @@ public abstract class GuiRegistryTagHandler {
         
         @Override
         public void createControls(GuiParent parent, Registry registry) {
-            parent.add(new GuiComboBoxMapped<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.getTagNames().iterator(), x -> {
+            parent.add(new GuiComboBoxMapped<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.getTags().iterator(), x -> {
                 if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                     return Component.literal(x.getPath());
                 return Component.literal(x.toString());

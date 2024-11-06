@@ -1,8 +1,9 @@
 package team.creative.creativecore.client.render.model;
 
+import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemOverride;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -16,7 +17,8 @@ import team.creative.creativecore.client.CreativeCoreClient;
 public record CreativeUnbakedModel(ResourceLocation item, ResourceLocation block) implements IUnbakedGeometry<CreativeUnbakedModel> {
     
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides) {
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
+            List<ItemOverride> overrides) {
         CreativeBlockModel renderBlock = CreativeCoreClient.BLOCK_MODEL_TYPES.get(block);
         CreativeItemModel renderItem = CreativeCoreClient.ITEM_MODEL_TYPES.get(item);
         if (renderBlock == null && renderItem == null)

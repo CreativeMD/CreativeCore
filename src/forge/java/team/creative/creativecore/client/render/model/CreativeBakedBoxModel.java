@@ -9,17 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Blocks;
@@ -89,22 +86,13 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
         }
     }
     
-    public ItemOverrides customOverride = new ItemOverrides() {
-        
-        @Override
-        public BakedModel resolve(BakedModel original, ItemStack stack, ClientLevel level, LivingEntity entity, int p_173469_) {
-            renderedStack = stack;
-            return super.resolve(original, stack, level, entity, p_173469_);
-        }
-    };
-    
     @Override
-    public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
+    public List<BakedModel> getRenderPasses(ItemStack itemStack) {
         if (((CreativeItemBoxModel) item).hasTranslucentLayer(itemStack)) {
             pairModel.renderedStack = renderedStack;
             return both;
         }
-        return super.getRenderPasses(itemStack, fabulous);
+        return super.getRenderPasses(itemStack);
     }
     
     @Override
@@ -115,7 +103,8 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
     }
     
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, @NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType layer) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, @NotNull RandomSource rand, @NotNull ModelData extraData,
+            @Nullable RenderType layer) {
         
         Facing facing = Facing.get(direction);
         if (state != null) {

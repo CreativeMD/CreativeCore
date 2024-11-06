@@ -418,7 +418,7 @@ public abstract class GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
         
         Rect rectCopy = null;
         if (!enabled)
@@ -461,7 +461,8 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale,
+            int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         controlRect.shrink(formatting.padding * scale);
         if (!enabled)

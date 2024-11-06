@@ -8,7 +8,6 @@ import com.mojang.math.Axis;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
@@ -121,7 +120,7 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
     public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
         
         PoseStack pose = graphics.pose();
         GuiStyle style = getStyle();

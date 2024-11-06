@@ -22,7 +22,7 @@ public class RegistryObjectConfig<T> implements ICreativeConfig {
     
     @Override
     public void configured(Side side) {
-        value = registry.get(location);
+        value = registry.getValue(location);
     }
     
     public Holder<T> getHolder() {

@@ -14,8 +14,8 @@ public class CreativeBakedBoxModelTranslucent extends CreativeBakedBoxModel {
     }
     
     @Override
-    public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous) {
-        return List.of(RenderTypeHelper.getEntityRenderType(RenderType.translucent(), fabulous));
+    public List<RenderType> getRenderTypes(ItemStack itemStack) {
+        return List.of(RenderTypeHelper.getEntityRenderType(RenderType.translucent()));
     }
     
     @Override

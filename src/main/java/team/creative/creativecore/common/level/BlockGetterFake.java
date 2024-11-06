@@ -47,8 +47,8 @@ public class BlockGetterFake implements BlockGetter {
     }
     
     @Override
-    public int getMinBuildHeight() {
-        return parent.getMinBuildHeight();
+    public int getMinY() {
+        return parent.getMinY();
     }
     
 }

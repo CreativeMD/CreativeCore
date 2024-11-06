@@ -64,7 +64,7 @@ public class BlockFilters {
         
         @SuppressWarnings("unused")
         public BlockFilter(CompoundTag nbt) {
-            this.block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(nbt.getString("b")));
+            this.block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(nbt.getString("b")));
         }
         
         @Override
@@ -94,7 +94,7 @@ public class BlockFilters {
             ListTag list = nbt.getList("b", Tag.TAG_STRING);
             this.blocks = new Block[list.size()];
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(list.getString(i)));
+                blocks[i] = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(list.getString(i)));
         }
         
         @Override

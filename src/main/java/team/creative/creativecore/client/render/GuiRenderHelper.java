@@ -14,7 +14,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -63,23 +63,27 @@ public class GuiRenderHelper {
     }
     
     public static void horizontalGradientRect(GuiGraphics graphics, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        VertexConsumer consumer = graphics.bufferSource().getBuffer(RenderType.gui());
-        var matrix = graphics.pose().last().pose();
-        int z = 0;
-        consumer.addVertex(matrix, x2, y, z).setColor(colorTo);
-        consumer.addVertex(matrix, x, y, z).setColor(colorFrom);
-        consumer.addVertex(matrix, x, y2, z).setColor(colorFrom);
-        consumer.addVertex(matrix, x2, y2, z).setColor(colorTo);
+        graphics.drawSpecial(buffer -> {
+            VertexConsumer consumer = buffer.getBuffer(RenderType.gui());
+            var matrix = graphics.pose().last().pose();
+            int z = 0;
+            consumer.addVertex(matrix, x2, y, z).setColor(colorTo);
+            consumer.addVertex(matrix, x, y, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x, y2, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x2, y2, z).setColor(colorTo);
+        });
     }
     
     public static void verticalGradientRect(GuiGraphics graphics, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        VertexConsumer consumer = graphics.bufferSource().getBuffer(RenderType.gui());
-        var matrix = graphics.pose().last().pose();
-        int z = 0;
-        consumer.addVertex(matrix, x2, y, z).setColor(colorFrom);
-        consumer.addVertex(matrix, x, y, z).setColor(colorFrom);
-        consumer.addVertex(matrix, x, y2, z).setColor(colorTo);
-        consumer.addVertex(matrix, x2, y2, z).setColor(colorTo);
+        graphics.drawSpecial(source -> {
+            VertexConsumer consumer = source.getBuffer(RenderType.gui());
+            var matrix = graphics.pose().last().pose();
+            int z = 0;
+            consumer.addVertex(matrix, x2, y, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x, y, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x, y2, z).setColor(colorTo);
+            consumer.addVertex(matrix, x2, y2, z).setColor(colorTo);
+        });
     }
     
     public static void horizontalGradientMaskRect(GuiGraphics graphics, int x, int y, int x2, int y2, int color, int mask) {
@@ -87,13 +91,15 @@ public class GuiRenderHelper {
     }
     
     public static void colorRect(GuiGraphics graphics, int x, int y, int width, int height, int color) {
-        VertexConsumer consumer = graphics.bufferSource().getBuffer(RenderType.gui());
-        var matrix = graphics.pose().last().pose();
-        int z = 0;
-        consumer.addVertex(matrix, x, y, z).setColor(color);
-        consumer.addVertex(matrix, x, y + height, z).setColor(color);
-        consumer.addVertex(matrix, x + width, y + height, z).setColor(color);
-        consumer.addVertex(matrix, x + width, y, z).setColor(color);
+        graphics.drawSpecial(source -> {
+            VertexConsumer consumer = source.getBuffer(RenderType.gui());
+            var matrix = graphics.pose().last().pose();
+            int z = 0;
+            consumer.addVertex(matrix, x, y, z).setColor(color);
+            consumer.addVertex(matrix, x, y + height, z).setColor(color);
+            consumer.addVertex(matrix, x + width, y + height, z).setColor(color);
+            consumer.addVertex(matrix, x + width, y, z).setColor(color);
+        });
     }
     
     private static void textureRect(GuiGraphics graphics, int x, int y, int z, int width, int height, float u, float v, int textureWidth, int textureHeight) {
@@ -118,7 +124,7 @@ public class GuiRenderHelper {
     
     private static void drawTextureRect(GuiGraphics graphics, int x, int x2, int y, int y2, int z, float u, float u2, float v, float v2) {
         var matrix = graphics.pose().last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
         BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferbuilder.addVertex(matrix, x, y2, z).setUv(u, v2);
         bufferbuilder.addVertex(matrix, x2, y2, z).setUv(u2, v2);

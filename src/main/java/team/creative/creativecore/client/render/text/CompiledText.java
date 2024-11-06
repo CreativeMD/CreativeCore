@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -295,27 +294,29 @@ public class CompiledText {
         @OnlyIn(Dist.CLIENT)
         public void render(GuiGraphics graphics) {
             Font font = Minecraft.getInstance().font;
-            int xOffset = 0;
+            
             var pose = graphics.pose();
-            MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
-            for (FormattedText text : components) {
-                int height = lineHeight(text);
-                int width = width(text);
-                
-                int yOffset = 0;
-                if (height < this.height)
-                    yOffset = (this.height - height) / 2;
-                pose.pushPose();
-                pose.translate(xOffset, yOffset, 0);
-                if (text instanceof AdvancedFormattedText adv)
-                    adv.render(graphics, defaultColor);
-                else {
-                    font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), bufferSource, DisplayMode.NORMAL, 0, 15728880);
-                    bufferSource.endBatch();
+            graphics.drawSpecial(bufferSource -> {
+                int xOffset = 0;
+                for (FormattedText text : components) {
+                    int height = lineHeight(text);
+                    int width = width(text);
+                    
+                    int yOffset = 0;
+                    if (height < this.height)
+                        yOffset = (this.height - height) / 2;
+                    pose.pushPose();
+                    pose.translate(xOffset, yOffset, 0);
+                    if (text instanceof AdvancedFormattedText adv)
+                        adv.render(graphics, defaultColor);
+                    else
+                        font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), bufferSource, DisplayMode.NORMAL, 0,
+                            15728880);
+                    pose.popPose();
+                    xOffset += width;
                 }
-                pose.popPose();
-                xOffset += width;
-            }
+            });
+            
         }
         
         @Environment(EnvType.CLIENT)

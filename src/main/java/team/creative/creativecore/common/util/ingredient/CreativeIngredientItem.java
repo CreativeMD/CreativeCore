@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class CreativeIngredientItem extends CreativeIngredient {
     
@@ -46,7 +47,7 @@ public class CreativeIngredientItem extends CreativeIngredient {
     }
     
     @Override
-    public boolean is(ItemStack stack) {
+    public boolean is(Level level, ItemStack stack) {
         return stack.getItem() == item;
     }
     
