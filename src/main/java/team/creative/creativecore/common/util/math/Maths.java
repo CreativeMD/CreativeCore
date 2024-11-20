@@ -18,7 +18,11 @@ public class Maths {
     }
     
     public static boolean equals(double a, double b) {
-        return a == b || Math.abs(a - b) < EPSILON;
+        return a == b || Math.abs(a - b) < EPSILON_DOUBLE;
+    }
+    
+    public static boolean equals(double a, double b, double epsilon) {
+        return a == b || Math.abs(a - b) < epsilon;
     }
     
     /** 1 seconds in Minecraft equals 20 ticks
