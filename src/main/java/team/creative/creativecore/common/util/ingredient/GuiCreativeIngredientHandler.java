@@ -1,12 +1,20 @@
 package team.creative.creativecore.common.util.ingredient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,16 +24,15 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.controls.collection.GuiCheckList;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
 import team.creative.creativecore.common.gui.controls.collection.GuiStackSelector;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
-import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 import team.creative.creativecore.common.util.text.TextBuilder;
-import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 @Environment(EnvType.CLIENT)
@@ -47,26 +54,14 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
-                GuiStackSelector selector = (GuiStackSelector) new GuiStackSelector("inv", null, new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector()))
-                        .setExpandableX();
+                GuiStackSelector selector = (GuiStackSelector) new GuiStackSelector("inv", gui
+                        .getPlayer(), new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector())).setExpandableX();
                 gui.add(selector);
                 
-                gui.add(new GuiLabel("guilabel1"));
-                gui.add(new GuiLabel("guilabel2"));
+                gui.add(new GuiDataCheckList("list", false, null, info instanceof CreativeIngredientItemStack s ? s.getIncluded() : new ArrayList<>()).setExpandable());
                 
-                GuiStateButton damage = new GuiStateButton("damage", 0, new TextListBuilder().add("Damage: Off", "Damage: On"));
-                gui.add(damage);
-                GuiStateButton nbt = new GuiStateButton("nbt", 0, new TextListBuilder().add("NBT: Off", "NBT: On"));
-                gui.add(nbt);
-                
-                if (info instanceof CreativeIngredientBlock || info instanceof CreativeIngredientItem || info instanceof CreativeIngredientItemStack) {
+                if (info instanceof CreativeIngredientBlock || info instanceof CreativeIngredientItem || info instanceof CreativeIngredientItemStack)
                     selector.setSelectedForce(info.getExample().copy());
-                    if (info instanceof CreativeIngredientItemStack) {
-                        damage.nextState();
-                        if (((CreativeIngredientItemStack) info).needNBT)
-                            nbt.nextState();
-                    }
-                }
                 
                 onChanged(gui, new GuiControlChangedEvent(selector));
             }
@@ -78,18 +73,17 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
-                ItemStack stack = ((GuiStackSelector) gui.get("inv")).getSelected();
+                ItemStack stack = gui.get("inv", GuiStackSelector.class).getSelected();
                 if (stack != null) {
-                    boolean damage = ((GuiStateButton) gui.get("damage")).getState() == 1;
-                    boolean nbt = ((GuiStateButton) gui.get("nbt")).getState() == 1;
-                    if (damage) {
-                        return new CreativeIngredientItemStack(stack.copy(), nbt);
-                    } else {
+                    GuiDataCheckList list = gui.get("list");
+                    var included = list.getConfiguredIncluded();
+                    if (included.isEmpty()) {
                         if (!(Block.byItem(stack.getItem()) instanceof AirBlock))
                             return new CreativeIngredientBlock(Block.byItem(stack.getItem()));
                         else
                             return new CreativeIngredientItem(stack.getItem());
                     }
+                    return new CreativeIngredientItemStack(stack, included);
                 }
                 return null;
             }
@@ -98,14 +92,23 @@ public abstract class GuiCreativeIngredientHandler {
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("inv")) {
                     if (event.control instanceof GuiStackSelector selector) {
+                        GuiDataCheckList list = gui.get("list");
                         ItemStack stack = selector.getSelected();
-                        if (!stack.isEmpty()) {
-                            ((GuiLabel) gui.get("guilabel1")).setTitle(Component.literal("damage: " + stack.getDamageValue()));
-                            ((GuiLabel) gui.get("guilabel2")).setTitle(Component.literal("nbt: " + stack.getComponents()));
-                        } else {
-                            ((GuiLabel) gui.get("guilabel1")).setTitle(Component.literal(""));
-                            ((GuiLabel) gui.get("guilabel2")).setTitle(Component.literal(""));
-                        }
+                        TextMapBuilder<DataComponentType<?>> map = new TextMapBuilder<>();
+                        Object2BooleanMap<DataComponentType<?>> selected = new Object2BooleanArrayMap<>();
+                        CompoundTag nbt = (CompoundTag) stack.saveOptional(gui.provider());
+                        nbt = nbt.getCompound("components");
+                        if (!nbt.isEmpty())
+                            for (String component : nbt.getAllKeys()) {
+                                var location = ResourceLocation.parse(component);
+                                var type = BuiltInRegistries.DATA_COMPONENT_TYPE.get(location);
+                                map.addComponent(type, Component.literal(component).append(": ").append(Component.literal(nbt.get(component).getAsString()).withStyle(
+                                    ChatFormatting.GRAY)));
+                                if (list.includes(type))
+                                    selected.put(type, true);
+                            }
+                        list.set(map, selected);
+                        gui.reflow();
                     }
                 }
             }
@@ -237,5 +240,28 @@ public abstract class GuiCreativeIngredientHandler {
     public abstract CreativeIngredient parseControls(GuiParent gui);
     
     public void onChanged(GuiParent gui, GuiControlChangedEvent event) {}
+    
+    public static class GuiDataCheckList extends GuiCheckList<DataComponentType<?>> {
+        
+        public List<ResourceLocation> included;
+        
+        public GuiDataCheckList(String name, boolean modifiable, TextMapBuilder<DataComponentType<?>> map, List<ResourceLocation> included) {
+            super(name, modifiable, map, null);
+            this.included = included;
+        }
+        
+        public boolean includes(DataComponentType<?> type) {
+            return included.contains(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(type));
+        }
+        
+        public List<ResourceLocation> getConfiguredIncluded() {
+            List<ResourceLocation> included = new ArrayList<>();
+            for (GuiCheckList<DataComponentType<?>>.GuiCheckListRow row : rows)
+                if (row.checkBox.value)
+                    included.add(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(row.value));
+            return included;
+        }
+        
+    }
     
 }
