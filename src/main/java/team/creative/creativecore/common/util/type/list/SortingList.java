@@ -108,7 +108,7 @@ public class SortingList implements List<CreativeIngredient> {
      * @param stack
      *            relates to all equal ItemStacks. */
     public void addSortingByItemStack(ItemStack stack) {
-        add(new CreativeIngredientItemStack(stack, false));
+        add(new CreativeIngredientItemStack(stack));
     }
     
     /** The given parameter will be added to the list.

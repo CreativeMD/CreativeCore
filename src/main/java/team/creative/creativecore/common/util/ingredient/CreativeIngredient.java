@@ -152,7 +152,7 @@ public abstract class CreativeIngredient {
             return null;
         });
         
-        registerType("itemstack", CreativeIngredientItemStack.class, (x) -> x instanceof ItemStack ? new CreativeIngredientItemStack((ItemStack) x, false) : null);
+        registerType("itemstack", CreativeIngredientItemStack.class, (x) -> x instanceof ItemStack s ? new CreativeIngredientItemStack(s) : null);
         registerType("fuel", CreativeIngredientFuel.class, null);
         
         final CreativeIngredient temp = new CreativeIngredientBlock(Blocks.DIRT);
