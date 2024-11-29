@@ -7,11 +7,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
 import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.controls.parent.GuiTopBottomBox;
 import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
@@ -58,7 +60,10 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         topBottom.addTop(box);
         
         handler.createControls(topBottom.top, info);
-        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest").setDim(100, 80).setExpandableX();
+        
+        topBottom.addBottom(new GuiParent("spacer").setDim(-1, 4));
+        topBottom.addBottom(new GuiLabel("latest").setTranslate("gui.ingredient.latest"));
+        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest").setDim(100, 40).setExpandableX();
         for (int i = 0; i < latest.size(); i++) {
             final int id = i;
             scroll.add(new GuiButton("" + i, x -> {
