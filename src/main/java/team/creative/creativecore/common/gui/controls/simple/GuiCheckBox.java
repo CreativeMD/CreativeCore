@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -8,6 +9,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,7 +32,6 @@ public class GuiCheckBox extends GuiLabel {
     public static final int CHECKBOX_WIDTH = 7;
     
     public boolean value;
-    public String title;
     public boolean partial = false;
     public Consumer<Boolean> changed;
     
@@ -47,6 +48,16 @@ public class GuiCheckBox extends GuiLabel {
     @Override
     public GuiCheckBox setTranslate(String translate) {
         return (GuiCheckBox) super.setTranslate(translate);
+    }
+    
+    @Override
+    public GuiCheckBox setTitle(Component component) {
+        return (GuiCheckBox) super.setTitle(component);
+    }
+    
+    @Override
+    public GuiCheckBox setTitle(List<Component> components) {
+        return (GuiCheckBox) super.setTitle(components);
     }
     
     @Override
