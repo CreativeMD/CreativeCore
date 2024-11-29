@@ -1,3 +1,10 @@
+2.12.23
+Reworked stack ingredient (allow to select data components to be checked for)
+Added GuiCheckList
+Added getInnerControl to GuiLabeledControl
+Enhanced ingredient selection layout
+Added equals to Maths with epsilon parameter
+
 2.12.22
 Added better way for automated config equals checking
 Fixed permissions not saving
