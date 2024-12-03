@@ -1,3 +1,6 @@
+2.12.24
+Fixed not being able to select stacks from inventory in ingredient configuration
+
 2.12.23
 Reworked stack ingredient (allow to select data components to be checked for)
 Added GuiCheckList
