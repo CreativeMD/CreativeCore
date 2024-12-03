@@ -47,8 +47,8 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
-                GuiStackSelector selector = (GuiStackSelector) new GuiStackSelector("inv", null, new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector()))
-                        .setExpandableX();
+                GuiStackSelector selector = (GuiStackSelector) new GuiStackSelector("inv", gui
+                        .getPlayer(), new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector())).setExpandableX();
                 gui.add(selector);
                 
                 gui.add(new GuiLabel("guilabel1"));
