@@ -1,11 +1,12 @@
 package team.creative.creativecore.client.render.model;
 
-import java.util.List;
-
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.RenderTypeHelper;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 public class CreativeBakedBoxModelTranslucent extends CreativeBakedBoxModel {
     
@@ -14,8 +15,8 @@ public class CreativeBakedBoxModelTranslucent extends CreativeBakedBoxModel {
     }
     
     @Override
-    public List<RenderType> getRenderTypes(ItemStack itemStack) {
-        return List.of(RenderTypeHelper.getEntityRenderType(RenderType.translucent()));
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+        return ChunkRenderTypeSet.of(RenderTypeHelper.getEntityRenderType(RenderType.translucent()));
     }
     
     @Override

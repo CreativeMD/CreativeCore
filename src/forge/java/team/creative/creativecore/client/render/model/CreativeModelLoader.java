@@ -5,9 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.UnbakedModelLoader;
 
-public class CreativeModelLoader implements IGeometryLoader<CreativeUnbakedModel> {
+public class CreativeModelLoader implements UnbakedModelLoader<CreativeUnbakedModel> {
     
     @Override
     public CreativeUnbakedModel read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException {

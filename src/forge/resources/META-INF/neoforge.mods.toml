@@ -16,14 +16,14 @@ license="LGPL-3.0-only"
 [[dependencies.creativecore]]
     modId="neoforge"
     type="required"
-    versionRange="[21.3,)"
+    versionRange="[21.4,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.creativecore]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21.3,1.22)"
+    versionRange="[1.21.4,1.22)"
     ordering="NONE"
     side="BOTH"
 

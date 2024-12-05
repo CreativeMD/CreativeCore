@@ -5,8 +5,6 @@ import static team.creative.creativecore.CreativeCore.LOGGER;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -16,13 +14,12 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
+import net.neoforged.neoforge.client.event.ModelEvent.RegisterLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -49,8 +46,6 @@ public class CreativeCoreClient {
     public static final LocatedHandlerRegistry<CreativeBlockModel> BLOCK_MODEL_TYPES = new LocatedHandlerRegistry<CreativeBlockModel>(null).allowOverwrite();
     public static final LocatedHandlerRegistry<CreativeItemModel> ITEM_MODEL_TYPES = new LocatedHandlerRegistry<CreativeItemModel>(null).allowOverwrite();
     
-    private static final ItemColor ITEM_COLOR = (stack, tint) -> tint;
-    
     public static void load(IEventBus bus) {
         bus.addListener(CreativeCoreClient::init);
         bus.addListener(CreativeCoreClient::modelEvent);
@@ -72,10 +67,6 @@ public class CreativeCoreClient {
     
     public static void registerItemModel(ResourceLocation location, CreativeItemModel renderer) {
         ITEM_MODEL_TYPES.register(location, renderer);
-    }
-    
-    public static void registerItemColor(ItemColors colors, Item item) {
-        colors.register(ITEM_COLOR, item);
     }
     
     public static float getFrameTime() {
@@ -118,7 +109,7 @@ public class CreativeCoreClient {
         
     }
     
-    public static void modelEvent(RegisterGeometryLoaders event) {
+    public static void modelEvent(RegisterLoaders event) {
         event.register(ResourceLocation.tryBuild(CreativeCore.MODID, "rendered"), new CreativeModelLoader());
     }
     

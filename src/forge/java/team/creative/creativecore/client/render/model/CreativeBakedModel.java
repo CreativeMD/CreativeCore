@@ -8,9 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedOverrides;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -18,7 +16,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,15 +27,6 @@ public class CreativeBakedModel implements BakedModel {
     public final CreativeItemModel item;
     protected ItemStack renderedStack = null;
     private BakedModel modelCache;
-    
-    public BakedOverrides customOverride = new BakedOverrides() {
-        
-        @Override
-        public BakedModel findOverride(ItemStack stack, ClientLevel level, LivingEntity entity, int p_371346_) {
-            renderedStack = stack;
-            return super.findOverride(stack, level, entity, p_371346_);
-        }
-    };
     
     public CreativeBakedModel(ModelResourceLocation location, CreativeItemModel item) {
         this.location = location;
@@ -73,18 +61,8 @@ public class CreativeBakedModel implements BakedModel {
     }
     
     @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-    
-    @Override
     public TextureAtlasSprite getParticleIcon() {
         return get().getParticleIcon();
-    }
-    
-    @Override
-    public BakedOverrides overrides() {
-        return customOverride;
     }
     
     @Override

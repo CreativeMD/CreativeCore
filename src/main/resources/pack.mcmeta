@@ -1,8 +1,8 @@
 {
     "pack": {
         "description": "CreativeCore resources",
-        "pack_format": 34,
-        "forge:resource_pack_format": 34,
-        "forge:data_pack_format": 48
+        "pack_format": 46,
+        "forge:resource_pack_format": 46,
+        "forge:data_pack_format": 61
     }
 }

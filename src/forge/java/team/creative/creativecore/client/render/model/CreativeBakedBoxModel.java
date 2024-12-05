@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -50,7 +51,7 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
             
             int defaultColor = ColorUtils.WHITE;
             if (item)
-                defaultColor = mc.getItemColors().getColor(new ItemStack(state.getBlock()), defaultColor);
+                defaultColor = mc.getBlockColors().getColor(state, (Level) null, BlockPos.ZERO);
             
             QuadGeneratorContext context = QUAD_CONTEXT.get();
             baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, side, layer, rand, true, defaultColor));
