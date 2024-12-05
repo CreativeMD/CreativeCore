@@ -1,3 +1,7 @@
+2.12.24
+Added NormalPlaneF isFacing check
+Added float variants of equals to Maths
+
 2.12.23
 Reworked stack ingredient (allow to select data components to be checked for)
 Added GuiCheckList
