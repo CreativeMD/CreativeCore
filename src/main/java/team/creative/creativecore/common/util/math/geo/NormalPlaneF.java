@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.math.geo;
 
+import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
@@ -111,6 +112,10 @@ public class NormalPlaneF {
     @Override
     public String toString() {
         return "PerpendicularPlane(" + origin + ",Vector(" + normal + "))";
+    }
+    
+    public boolean isFacing(Facing facing) {
+        return Maths.equals(normal.x, facing.normal.getX()) && Maths.equals(normal.y, facing.normal.getY()) && Maths.equals(normal.z, facing.normal.getZ());
     }
     
 }
