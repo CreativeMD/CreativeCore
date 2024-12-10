@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 public class CreativeIngredientBlock extends CreativeIngredient {
     
@@ -22,7 +23,8 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        block = provider.lookup(Registries.BLOCK).get().getOrThrow(ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getString("block")))).value();
+        block = provider.lookup(Registries.BLOCK).get().get(ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getString("block")))).orElse(Blocks.AIR
+                .builtInRegistryHolder()).value();
     }
     
     @Override
