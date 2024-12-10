@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class CreativeIngredientItem extends CreativeIngredient {
@@ -29,7 +30,8 @@ public class CreativeIngredientItem extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        item = provider.lookup(Registries.ITEM).get().getOrThrow(ResourceKey.create(Registries.ITEM, ResourceLocation.parse(nbt.getString("item")))).value();
+        item = provider.lookup(Registries.ITEM).get().get(ResourceKey.create(Registries.ITEM, ResourceLocation.parse(nbt.getString("item")))).orElse(Items.AIR
+                .builtInRegistryHolder()).value();
     }
     
     @Override
