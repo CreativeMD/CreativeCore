@@ -28,6 +28,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.StreamEncoder;
+import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.GameProtocols;
@@ -38,7 +40,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.bundle.BundlePacketUtils;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.common.network.BundlePacketWrapper;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.math.vec.Vec1d;
@@ -50,6 +54,7 @@ import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 import team.creative.creativecore.common.util.type.Bunch;
 import team.creative.creativecore.common.util.type.itr.IterableIterator;
+import team.creative.creativecore.common.util.type.itr.SingleIterator;
 
 public class NetworkFieldTypes {
     
@@ -708,14 +713,31 @@ public class NetworkFieldTypes {
             
             @Override
             public void write(Packet content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                buffer.writeNullable(content, (flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(
-                    RegistryFriendlyByteBuf.decorator(buffer.registryAccess())).codec());
+                var codec = (flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(RegistryFriendlyByteBuf.decorator(buffer
+                        .registryAccess(), buffer.getConnectionType())).codec();
+                boolean bundle = content instanceof BundlePacket;
+                if (bundle) {
+                    List<Packet> packets = BundlePacketUtils.flatten(new SingleIterator(content));
+                    buffer.writeInt(packets.size());
+                    for (Packet packet : packets)
+                        buffer.writeNullable(packet, (StreamEncoder) codec);
+                } else {
+                    buffer.writeInt(0);
+                    buffer.writeNullable(content, (StreamEncoder) codec);
+                }
             }
             
             @Override
             public Packet read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                return buffer.readNullable((flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(RegistryFriendlyByteBuf
-                        .decorator(buffer.registryAccess())).codec());
+                var codec = (flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(RegistryFriendlyByteBuf.decorator(buffer
+                        .registryAccess(), buffer.getConnectionType())).codec();
+                int size = buffer.readInt();
+                if (size == 0)
+                    return buffer.readNullable(codec);
+                List<Packet> packets = new ArrayList<>(size);
+                for (int i = 0; i < size; i++)
+                    packets.add(buffer.readNullable(codec));
+                return new BundlePacketWrapper(packets);
             }
         });
         
