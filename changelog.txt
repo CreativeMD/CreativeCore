@@ -1,3 +1,7 @@
+2.12.25
+Fixed not being able to send and receive bundle packets
+Fixed crash when attempting to load unavailable item or block
+
 2.12.24
 Added NormalPlaneF isFacing check
 Added float variants of equals to Maths
