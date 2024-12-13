@@ -1,3 +1,6 @@
+2.12.26
+Added better configuration for max string length for GuiTextfield
+
 2.12.25
 Fixed not being able to send and receive bundle packets
 Fixed crash when attempting to load unavailable item or block
