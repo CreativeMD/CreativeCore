@@ -56,6 +56,12 @@ public class GuiTextfield extends GuiFocusControl {
         this.setText(text);
     }
     
+    public GuiTextfield(String name, String text, int maxStringLength) {
+        super(name);
+        this.maxStringLength = maxStringLength;
+        this.setText(text);
+    }
+    
     @Override
     public GuiTextfield setDim(int width, int height) {
         return (GuiTextfield) super.setDim(width, height);
@@ -468,13 +474,13 @@ public class GuiTextfield extends GuiFocusControl {
         graphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
     }
     
-    public void setMaxStringLength(int length) {
+    public GuiTextfield setMaxStringLength(int length) {
         this.maxStringLength = length;
         if (this.text.length() > length) {
             this.text = this.text.substring(0, length);
             this.onTextChanged(this.text);
         }
-        
+        return this;
     }
     
     private int getMaxStringLength() {
