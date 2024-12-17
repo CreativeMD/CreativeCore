@@ -1,3 +1,6 @@
+2.12.27
+Added FunctionNonNullIterator
+
 2.12.26
 Added better configuration for max string length for GuiTextfield
 
