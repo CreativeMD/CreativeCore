@@ -34,9 +34,8 @@ public class FilterIterator<T> extends ComputeNextIterator<T> {
     protected T computeNext() {
         while (itr.hasNext()) {
             Object object = itr.next();
-            if (predicate.test(object)) {
+            if (predicate.test(object))
                 return (T) object;
-            }
         }
         return end();
     }
