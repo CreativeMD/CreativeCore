@@ -56,7 +56,7 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
                 defaultColor = mc.getItemColors().getColor(new ItemStack(state.getBlock()), defaultColor);
             
             QuadGeneratorContext context = QUAD_CONTEXT.get();
-            baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, side, layer, rand, true, defaultColor));
+            baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, ModelData.EMPTY, side, layer, rand, true, defaultColor));
             context.clear();
         }
         for (BakedQuad quad : baked)
@@ -115,7 +115,8 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
     }
     
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, @NotNull RandomSource rand, @NotNull ModelData extraData, @Nullable RenderType layer) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, @NotNull RandomSource rand, @NotNull ModelData extraData,
+            @Nullable RenderType layer) {
         
         Facing facing = Facing.get(direction);
         if (state != null) {
