@@ -54,7 +54,7 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
                 defaultColor = mc.getBlockColors().getColor(state, (Level) null, BlockPos.ZERO);
             
             QuadGeneratorContext context = QUAD_CONTEXT.get();
-            baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, side, layer, rand, true, defaultColor));
+            baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, ModelData.EMPTY, side, layer, rand, true, defaultColor));
             context.clear();
         }
         for (BakedQuad quad : baked)
