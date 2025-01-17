@@ -45,7 +45,7 @@ public class IndexedCollector<T> implements Iterable<T> {
     }
     
     public void endSection() {
-        while (!content.isEmpty() && content.get(content.size() - 1).getClass() == Integer.class)
+        while (!content.isEmpty() && content.get(content.size() - 1).getClass() == Integer.class) // Remove all sections with no entry
             content.remove(content.size() - 1);
         sectionStarted = false;
     }
@@ -59,6 +59,12 @@ public class IndexedCollector<T> implements Iterable<T> {
         if (sectionStarted)
             throw new UnsupportedOperationException("Cannot iterate while section has not ended");
         return new FilterIterator<>(content.iterator(), PREDICATE);
+    }
+    
+    public void clear() {
+        sectionStarted = false;
+        count = 0;
+        content.clear();
     }
     
     public Iterator<T> sectionIterator(IntConsumer consumer) {
