@@ -1,3 +1,9 @@
+2.12.29
+Added ChunkLayerMapList
+Removed unnecessary field from RenderBox
+Added clear to IndexedCollector
+Added requiresAdvancedEntityStep to BoxesVoxelShape
+
 2.12.28
 Added modelData as parameter for quad methods
 
