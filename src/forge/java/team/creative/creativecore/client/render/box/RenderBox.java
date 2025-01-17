@@ -51,7 +51,6 @@ public class RenderBox extends AlignedBox {
     public boolean keepVU = false;
     public boolean allowOverlap = false;
     public boolean doesNeedQuadUpdate = true;
-    public boolean needsResorting = false;
     public boolean emissive = false;
     
     private RenderBoxFace renderEast = RenderBoxFace.RENDER;
@@ -421,8 +420,6 @@ public class RenderBox extends AlignedBox {
         for (int i = 0; i < blockQuads.size(); i++) {
             
             holder.setQuad(blockQuads.get(i), overrideTint, defaultColor);
-            if (!needsResorting)
-                needsResorting = true;
             
             int[] data = holder.quad.getVertices();
             
