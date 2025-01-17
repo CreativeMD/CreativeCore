@@ -214,6 +214,13 @@ public class BoxesVoxelShape extends SliceShape {
         return this;
     }
     
+    public boolean requiresAdvancedEntityStep() {
+        for (ABB abb : boxes)
+            if (abb.getClass() != ABB.class)
+                return true;
+        return false;
+    }
+    
     public boolean intersectsWith(AABB bb) {
         for (ABB abb : boxes)
             if (abb.intersectsPrecise(bb))
