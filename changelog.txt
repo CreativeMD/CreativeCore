@@ -1,3 +1,6 @@
+2.12.30
+Fixed round precision causing troubles with LittleTiles placement
+
 2.12.29
 Added ChunkLayerMapList
 Removed unnecessary field from RenderBox
