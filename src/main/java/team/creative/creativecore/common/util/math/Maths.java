@@ -5,9 +5,14 @@ import net.minecraft.util.Mth;
 public class Maths {
     
     public static final float EPSILON = 0.001F;
-    public static final float EPSILON_UP = 1 / 0.001F;
-    public static final double EPSILON_DOUBLE = EPSILON;
+    public static final float EPSILON_UP = 1 / EPSILON;
+    public static final double EPSILON_DOUBLE = 0.001;
     public static final double EPSILON_UP_DOUBLE = 1 / EPSILON_DOUBLE;
+    
+    public static final float EPSILON_PRECISE = 0.00001F;
+    public static final float EPSILON_PRECISE_UP = 1 / EPSILON_PRECISE;
+    public static final double EPSILON_PRECISE_DOUBLE = 0.00001;
+    public static final double EPSILON_PRECISE_UP_DOUBLE = 1 / EPSILON_PRECISE_DOUBLE;
     
     public static boolean smallerThanAndEquals(double a, double b) {
         return a < b || equals(a, b);
@@ -54,11 +59,11 @@ public class Maths {
     }
     
     public static double round(double value) {
-        return Mth.floor(EPSILON_UP_DOUBLE * value + 0.5) * EPSILON_DOUBLE;
+        return Mth.floor(EPSILON_PRECISE_UP_DOUBLE * value + 0.5) * EPSILON_PRECISE_DOUBLE;
     }
     
     public static float round(float value) {
-        return Mth.floor(EPSILON_UP * value + 0.5F) * EPSILON;
+        return Mth.floor(EPSILON_PRECISE_UP * value + 0.5F) * EPSILON_PRECISE;
     }
     
     public static double safeDivide(double v1, double v2) {
