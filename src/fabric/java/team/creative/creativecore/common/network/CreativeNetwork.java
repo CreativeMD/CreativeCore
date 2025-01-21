@@ -71,6 +71,7 @@ public class CreativeNetwork {
                         message.execute(client.player);
                     } catch (Throwable e) {
                         CreativeCore.LOGGER.error("Executing a packet ran into an exception", e);
+                        CreativeCore.LOGGER.catching(e);
                         throw e;
                     }
                 });
