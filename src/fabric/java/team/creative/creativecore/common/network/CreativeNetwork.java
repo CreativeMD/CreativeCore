@@ -69,6 +69,7 @@ public class CreativeNetwork {
                 context.player().getServer().execute(() -> payload.execute(context.player()));
             } catch (Throwable e) {
                 CreativeCore.LOGGER.error("Executing a packet ran into an exception", e);
+                CreativeCore.LOGGER.catching(e);
                 throw e;
             }
         });
