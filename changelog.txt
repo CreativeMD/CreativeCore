@@ -1,3 +1,6 @@
+2.12.31
+Fixed not properly displaying error in packet
+
 2.12.30
 Fixed round precision causing troubles with LittleTiles placement
 
