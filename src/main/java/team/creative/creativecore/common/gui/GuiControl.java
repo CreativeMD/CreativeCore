@@ -448,6 +448,8 @@ public abstract class GuiControl {
         
         controlRect.shrink(borderSize * scale);
         
+        graphics.flush();
+        
         renderContent(graphics, control, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled) {
@@ -457,6 +459,8 @@ public abstract class GuiControl {
             style.disabled.render(graphics, null, rectCopy);
             RenderSystem.enableDepthTest();
         }
+        
+        graphics.flush();
     }
     
     @Environment(EnvType.CLIENT)
