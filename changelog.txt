@@ -1,3 +1,7 @@
+2.12.32
+Fixed gui not rendering correctly
+Updated to newer NeoForge version
+
 2.12.31
 Fixed not properly displaying error in packet
 
