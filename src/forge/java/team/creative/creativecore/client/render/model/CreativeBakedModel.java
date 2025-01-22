@@ -71,10 +71,10 @@ public class CreativeBakedModel implements BakedModel {
     }
     
     @Override
-    public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
+    public void applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
         if (renderedStack != null)
             item.applyCustomOpenGLHackery(poseStack, renderedStack, transformType);
-        return BakedModel.super.applyTransform(transformType, poseStack, applyLeftHandTransform);
+        BakedModel.super.applyTransform(transformType, poseStack, applyLeftHandTransform);
     }
     
     @Override
