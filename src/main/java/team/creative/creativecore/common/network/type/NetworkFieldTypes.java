@@ -32,7 +32,6 @@ import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.network.protocol.game.GameProtocols;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -40,9 +39,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.bundle.BundlePacketUtils;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.network.BundlePacketWrapper;
+import team.creative.creativecore.common.network.CreativeNetworkUtils;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.math.vec.Vec1d;
@@ -713,11 +712,10 @@ public class NetworkFieldTypes {
             
             @Override
             public void write(Packet content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                var codec = (flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(RegistryFriendlyByteBuf.decorator(buffer
-                        .registryAccess(), buffer.getConnectionType())).codec();
+                var codec = CreativeNetworkUtils.getPacketCodec(buffer, flow);
                 boolean bundle = content instanceof BundlePacket;
                 if (bundle) {
-                    List<Packet> packets = BundlePacketUtils.flatten(new SingleIterator(content));
+                    List<Packet> packets = CreativeNetworkUtils.flatten(new SingleIterator(content));
                     buffer.writeInt(packets.size());
                     for (Packet packet : packets)
                         buffer.writeNullable(packet, (StreamEncoder) codec);
@@ -729,8 +727,7 @@ public class NetworkFieldTypes {
             
             @Override
             public Packet read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                var codec = (flow != PacketFlow.CLIENTBOUND ? GameProtocols.CLIENTBOUND_TEMPLATE : GameProtocols.SERVERBOUND_TEMPLATE).bind(RegistryFriendlyByteBuf.decorator(buffer
-                        .registryAccess(), buffer.getConnectionType())).codec();
+                var codec = CreativeNetworkUtils.getPacketCodec(buffer, flow);
                 int size = buffer.readInt();
                 if (size == 0)
                     return buffer.readNullable(codec);
