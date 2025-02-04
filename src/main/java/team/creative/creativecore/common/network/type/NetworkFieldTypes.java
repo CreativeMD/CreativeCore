@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -33,6 +34,7 @@ import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.GameProtocols;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -538,6 +540,23 @@ public class NetworkFieldTypes {
             }
             
         }, JsonObject.class);
+        
+        register(new NetworkFieldTypeClass<Holder>() {
+            
+            @Override
+            protected void writeContent(Holder content, RegistryFriendlyByteBuf buffer) {
+                ResourceKey key = (ResourceKey) content.unwrapKey().get();
+                buffer.writeResourceLocation(key.registry());
+                buffer.writeResourceLocation(key.location());
+            }
+            
+            @Override
+            protected Holder readContent(RegistryFriendlyByteBuf buffer) {
+                ResourceKey<?> key = ResourceKey.create(buffer.readRegistryKey(), buffer.readResourceLocation());
+                RegistryLookup l = buffer.registryAccess().lookupOrThrow(key.registryKey());
+                return l.getOrThrow(key);
+            }
+        }, Holder.class);
         
         register(new NetworkFieldTypeSpecial<>((x, y) -> x.isArray()) {
             
