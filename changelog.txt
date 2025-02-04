@@ -1,3 +1,6 @@
+2.12.32
+Added Holder to network types
+
 2.12.31
 Fixed not properly displaying error in packet
 
