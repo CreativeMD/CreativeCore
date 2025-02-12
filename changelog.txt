@@ -1,3 +1,6 @@
+2.12.33
+Added registerReloadListener and fixed crash with newest NeoForge version
+
 2.12.32
 Fixed gui not rendering correctly
 Updated to newer NeoForge version
