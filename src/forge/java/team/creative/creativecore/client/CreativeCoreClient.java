@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -18,6 +17,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
@@ -50,6 +50,7 @@ public class CreativeCoreClient {
         bus.addListener(CreativeCoreClient::init);
         bus.addListener(CreativeCoreClient::modelEvent);
         bus.addListener(CreativeCoreClient::screenEvent);
+        bus.addListener(CreativeCoreClient::reloadListener);
     }
     
     public static void registerClientConfig(String modid) {
@@ -91,10 +92,10 @@ public class CreativeCoreClient {
         NeoForge.EVENT_BUS.register(CreativeCoreClient.class);
         NeoForge.EVENT_BUS.register(GuiEventHandler.class);
         GuiStyle.reload();
-        Minecraft minecraft = Minecraft.getInstance();
-        ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
-        
-        reloadableResourceManager.registerReloadListener(new SimplePreparableReloadListener() {
+    }
+    
+    public static void reloadListener(AddClientReloadListenersEvent event) {
+        event.addListener(ResourceLocation.tryBuild(CreativeCore.MODID, "gui"), new SimplePreparableReloadListener() {
             
             @Override
             protected Object prepare(ResourceManager p_10796_, ProfilerFiller p_10797_) {
@@ -106,7 +107,6 @@ public class CreativeCoreClient {
                 GuiStyle.reload();
             }
         });
-        
     }
     
     public static void modelEvent(RegisterLoaders event) {

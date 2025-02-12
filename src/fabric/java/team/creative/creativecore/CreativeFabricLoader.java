@@ -14,8 +14,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -48,6 +52,13 @@ public class CreativeFabricLoader implements ICreativeLoader {
     @Override
     public void registerClientRenderStart(Runnable run) {
         WorldRenderEvents.START.register(x -> run.run());
+    }
+    
+    @Override
+    public void registerReloadListener(ResourceLocation location, PreparableReloadListener listener) {
+        Minecraft minecraft = Minecraft.getInstance();
+        ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
+        reloadableResourceManager.registerReloadListener(listener);
     }
     
     @Override

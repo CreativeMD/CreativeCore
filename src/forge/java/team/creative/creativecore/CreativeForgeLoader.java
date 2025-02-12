@@ -8,7 +8,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -22,6 +24,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.util.thread.EffectiveSide;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
@@ -65,6 +68,11 @@ public class CreativeForgeLoader implements ICreativeLoader {
     @Override
     public void registerClientRenderStart(Runnable run) {
         NeoForge.EVENT_BUS.addListener((RenderFrameEvent.Pre x) -> run.run());
+    }
+    
+    @Override
+    public void registerReloadListener(ResourceLocation location, PreparableReloadListener listener) {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((AddClientReloadListenersEvent x) -> x.addListener(location, listener));
     }
     
     @Override

@@ -5,7 +5,9 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -37,6 +39,8 @@ public interface ICreativeLoader {
     public void registerClientRenderGui(Consumer run);
     
     public void registerClientStarted(Runnable run);
+    
+    public void registerReloadListener(ResourceLocation location, PreparableReloadListener listener);
     
     public void registerKeybind(Supplier<KeyMapping> supplier);
     
