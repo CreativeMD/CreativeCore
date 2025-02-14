@@ -56,9 +56,11 @@ public class CreativeFabricLoader implements ICreativeLoader {
     
     @Override
     public void registerReloadListener(ResourceLocation location, PreparableReloadListener listener) {
-        Minecraft minecraft = Minecraft.getInstance();
-        ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
-        reloadableResourceManager.registerReloadListener(listener);
+        registerClientStarted(() -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
+            reloadableResourceManager.registerReloadListener(listener);
+        });
     }
     
     @Override
