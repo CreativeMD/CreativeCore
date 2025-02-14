@@ -1,3 +1,6 @@
+2.12.35
+Added Holder to network types
+
 2.12.34
 Fixed crash with reload listener on fabric
 
