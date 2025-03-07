@@ -228,22 +228,19 @@ public class VectorFan {
         return false;
     }
     
-    /*public void renderPreview(Matrix4f matrix, int red, int green, int blue, int alpha) {
-        var builder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+    /*public void renderPreview(Matrix4f matrix, VertexConsumer consumer, int red, int green, int blue, int alpha) {
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            builder.addVertex(matrix, vec.x, vec.y, vec.z).setColor(red, green, blue, alpha);
+            consumer.addVertex(matrix, vec.x, vec.y, vec.z).setColor(red, green, blue, alpha);
         }
-        BufferUploader.drawWithShader(builder.buildOrThrow());
     }
     TODO 1.21.5 YET TO BE IMPLEMENTED
-    public void renderPreview(Matrix4f matrix, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
-        var builder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+    public void renderPreview(Matrix4f matrix, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue,
+            int alpha) {
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
-            builder.addVertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).setColor(red, green, blue, alpha);
+            consumer.addVertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).setColor(red, green, blue, alpha);
         }
-        BufferUploader.drawWithShader(builder.buildOrThrow());
     }*/
     
     public void forAllEdges(BiConsumer<Vec3f, Vec3f> consumer) {
