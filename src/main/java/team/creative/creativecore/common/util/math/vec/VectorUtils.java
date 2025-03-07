@@ -44,6 +44,14 @@ public class VectorUtils {
         throw new IllegalArgumentException();
     }
     
+    public static Vec3i set(Vec3i vec, int value, Axis axis) {
+        return switch (axis) {
+            case X -> new Vec3i(value, vec.getY(), vec.getZ());
+            case Y -> new Vec3i(vec.getX(), value, vec.getZ());
+            case Z -> new Vec3i(vec.getX(), vec.getY(), value);
+        };
+    }
+    
     public static BlockPos set(BlockPos vec, int value, Axis axis) {
         return switch (axis) {
             case X -> new BlockPos(value, vec.getY(), vec.getZ());
