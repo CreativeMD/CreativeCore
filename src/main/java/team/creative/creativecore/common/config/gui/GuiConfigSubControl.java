@@ -27,12 +27,12 @@ public class GuiConfigSubControl extends GuiParent {
     }
     
     public void addNameUnmodifieable(String name) {
-        nameLabel = new GuiLabel(name).setTitle(Component.literal(name));
+        nameLabel = new GuiLabel("title").setTitle(Component.literal(name));
         add(nameLabel);
     }
     
     public void addNameTextfield(String name) {
-        add(nameField = new GuiTextfield(name, name).setDim(50, 8));
+        add(nameField = new GuiTextfield("title", name).setDim(50, 8));
     }
     
     @Override

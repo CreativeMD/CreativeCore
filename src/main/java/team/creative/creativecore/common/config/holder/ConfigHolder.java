@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
+import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.util.type.list.PairList;
@@ -135,6 +136,11 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
                 object.add(field.name, field.write(provider, saveDefault, ignoreRestart, side));
         }
         return object;
+    }
+    
+    @Override
+    public ICreativeRegistry getRegistry() {
+        return parent.getRegistry();
     }
     
 }

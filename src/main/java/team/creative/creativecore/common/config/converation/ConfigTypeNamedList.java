@@ -155,7 +155,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
                 if (!converation.areEqual(entry.getValue(), other, listKey, side))
                     return false;
                 
-            } else if (converation == null && !ConfigTypeConveration.equals(entry.getValue(), other, side))
+            } else if (converation == null && !key.getRegistry().equals(entry.getValue(), other, side))
                 return false;
         }
         

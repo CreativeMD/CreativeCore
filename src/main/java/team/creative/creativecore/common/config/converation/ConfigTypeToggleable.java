@@ -88,6 +88,6 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
         if (converation != null && !converation.areEqual(one.value, two.value, configKey, side))
             return false;
         
-        return converation != null || ConfigTypeConveration.equals(one.value, two.value, side);
+        return converation != null || key.getRegistry().equals(one.value, two.value, side);
     }
 }

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.IConfigObject;
+import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
@@ -49,5 +50,7 @@ public interface ICreativeConfigHolder extends IConfigObject {
     public boolean isEmptyWithoutForce(Side side);
     
     public ConfigSynchronization synchronization();
+    
+    public ICreativeRegistry getRegistry();
     
 }

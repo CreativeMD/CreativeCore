@@ -19,8 +19,10 @@ public @interface CreativeConfig {
     
     boolean requiresRestart() default false;
     
+    boolean hideFromGUI() default false;
+    
     @Retention(RetentionPolicy.RUNTIME)
-    @Target(value = { ElementType.FIELD })
+    @Target(value = ElementType.FIELD)
     @interface IntRange {
         
         public int min();
@@ -32,12 +34,34 @@ public @interface CreativeConfig {
     }
     
     @Retention(RetentionPolicy.RUNTIME)
-    @Target(value = { ElementType.FIELD })
+    @Target(value = ElementType.FIELD)
+    @interface IntRangeSupplier {
+        
+        /** should implement IntRangeSupplier and have an empty constructor */
+        public Class<?> supplier();
+        
+        public boolean slider() default true;
+        
+    }
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(value = ElementType.FIELD)
     @interface DecimalRange {
         
         public double min();
         
         public double max();
+        
+        public boolean slider() default true;
+        
+    }
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(value = ElementType.FIELD)
+    @interface DecimalRangeSupplier {
+        
+        /** should implement DecimalRangeSupplier and have an empty constructor */
+        public Class<?> supplier();
         
         public boolean slider() default true;
         

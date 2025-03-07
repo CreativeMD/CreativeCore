@@ -1,18 +1,27 @@
 package team.creative.creativecore.common.config.holder;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.function.Predicate;
+
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
+import team.creative.creativecore.common.config.api.CreativeConfig;
+import team.creative.creativecore.common.config.core.ConfigEqualChecker;
+import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
-public class CreativeConfigRegistry extends ConfigHolderDynamic {
+public class CreativeConfigRegistry extends ConfigHolderDynamic implements ICreativeRegistry {
+    
+    public static final CreativeConfigRegistry ROOT = new CreativeConfigRegistry();
+    public static final Predicate<Field> FIELD_PREDICATE = x -> Modifier.isPublic(x.getModifiers()) && x.isAnnotationPresent(CreativeConfig.class);
+    public static final ConfigEqualChecker EQUAL_CHECKER = new ConfigEqualChecker();
     
     public CreativeConfigRegistry() {
         super();
     }
-    
-    public static final CreativeConfigRegistry ROOT = new CreativeConfigRegistry();
     
     @Override
     public ConfigHolderDynamic registerValue(String key, Object defaultValue) {
@@ -57,6 +66,21 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic {
     
     public static void load(HolderLookup.Provider provider, String modid, Side side) {
         CreativeCore.CONFIG_HANDLER.load(provider, modid, side);
+    }
+    
+    @Override
+    public ConfigEqualChecker getEqualChecker() {
+        return EQUAL_CHECKER;
+    }
+    
+    @Override
+    public boolean is(Field field) {
+        return FIELD_PREDICATE.test(field);
+    }
+    
+    @Override
+    public ICreativeRegistry getRegistry() {
+        return this;
     }
     
 }

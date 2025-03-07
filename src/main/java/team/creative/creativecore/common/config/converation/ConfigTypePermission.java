@@ -51,7 +51,7 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
             if (!converation.areEqual(one.getDefault(), two.getDefault(), listKey, side))
                 return false;
             
-        } else if (converation == null && !ConfigTypeConveration.equals(one.getDefault(), two.getDefault(), side))
+        } else if (converation == null && !key.getRegistry().equals(one.getDefault(), two.getDefault(), side))
             return false;
         
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) one.entrySet()) {
@@ -62,7 +62,7 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
                 if (!converation.areEqual(entry.getValue(), other, listKey, side))
                     return false;
                 
-            } else if (converation == null && !ConfigTypeConveration.equals(entry.getValue(), other, side))
+            } else if (converation == null && !key.getRegistry().equals(entry.getValue(), other, side))
                 return false;
         }
         

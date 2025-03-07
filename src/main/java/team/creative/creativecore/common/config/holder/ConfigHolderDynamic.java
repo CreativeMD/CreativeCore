@@ -34,7 +34,7 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
         synchronization = this.synchronization != ConfigSynchronization.UNIVERSAL ? this.synchronization : synchronization;
         
         ConfigHolderDynamic holder = new ConfigHolderDynamic(this, key, synchronization);
-        fields.add(key, new ConfigKeyHolder(holder, new ConfigFieldDynamic(holder), key, synchronization, false));
+        fields.add(key, new ConfigKeyHolder(holder, new ConfigFieldDynamic(holder), key, synchronization, false, false));
         return holder;
     }
     
@@ -43,6 +43,10 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
     }
     
     public ConfigHolderDynamic registerValue(String key, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart) {
+        return registerValue(key, defaultValue, synchronization, requiresRestart, false);
+    }
+    
+    public ConfigHolderDynamic registerValue(String key, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart, boolean hideFromGUI) {
         if (ConfigTypeConveration.has(defaultValue.getClass()))
             throw new IllegalArgumentException("Only holder objects are allowed");
         if (key.contains(".") || key.contains("/"))
@@ -51,7 +55,7 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
             throw new RuntimeException("Key already registered " + key);
         
         synchronization = this.synchronization != ConfigSynchronization.UNIVERSAL ? this.synchronization : synchronization;
-        fields.add(key, ConfigKey.of(this, new ConfigFieldDynamic(defaultValue), key, defaultValue, synchronization, requiresRestart));
+        fields.add(key, ConfigKey.of(this, new ConfigFieldDynamic(defaultValue), key, defaultValue, synchronization, requiresRestart, hideFromGUI));
         return this;
     }
     
@@ -60,13 +64,17 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
     }
     
     public void registerField(String key, Field field, Object object, ConfigSynchronization synchronization, boolean requiresRestart) {
+        registerField(key, field, object, synchronization, requiresRestart, false);
+    }
+    
+    public void registerField(String key, Field field, Object object, ConfigSynchronization synchronization, boolean requiresRestart, boolean hideFromGUI) {
         synchronization = this.synchronization != ConfigSynchronization.UNIVERSAL ? this.synchronization : synchronization;
         
         if (!ConfigTypeConveration.has(field.getType()))
             throw new RuntimeException("Field cannot contain holder object, use register value instead");
         
         try {
-            fields.add(key, ConfigKey.of(this, field, key, field.get(object), synchronization, requiresRestart, object));
+            fields.add(key, ConfigKey.of(this, field, key, field.get(object), synchronization, requiresRestart, hideFromGUI, object));
         } catch (IllegalArgumentException | IllegalAccessException e) {
             LOGGER.error(e);
         }
