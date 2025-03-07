@@ -20,10 +20,8 @@ public class TextBuilder {
     
     public TextBuilder() {}
     
-    public TextBuilder add(List<Component> components) {
-        for (Component component : components)
-            add(component);
-        return this;
+    public TextBuilder(List<Component> components) {
+        lines.addAll(components);
     }
     
     public TextBuilder add(Component component) {
@@ -95,6 +93,14 @@ public class TextBuilder {
     
     public TextBuilder newLine() {
         lines.add(Component.empty());
+        return this;
+    }
+    
+    public TextBuilder bool(boolean value) {
+        if (value)
+            color(ColorUtils.GREEN).translate("gui.true");
+        else
+            color(ColorUtils.RED).translate("gui.false");
         return this;
     }
     
