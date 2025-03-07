@@ -11,12 +11,14 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.phys.Vec3;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public enum Axis {
     
-    X {
+    X(new IntMatrix3(-1, 0, 0, 0, 1, 0, 0, 0, 1)) {
         @Override
         public double get(double x, double y, double z) {
             return x;
@@ -132,7 +134,7 @@ public enum Axis {
             return new BlockPos(-vec.getX(), vec.getY(), vec.getZ());
         }
     },
-    Y {
+    Y(new IntMatrix3(1, 0, 0, 0, -1, 0, 0, 0, 1)) {
         @Override
         public double get(double x, double y, double z) {
             return y;
@@ -248,7 +250,7 @@ public enum Axis {
             return new BlockPos(vec.getX(), -vec.getY(), vec.getZ());
         }
     },
-    Z {
+    Z(new IntMatrix3(1, 0, 0, 0, 1, 0, 0, 0, -1)) {
         @Override
         public double get(double x, double y, double z) {
             return z;
@@ -402,6 +404,16 @@ public enum Axis {
         };
     }
     
+    private final IntMatrix3c matrix;
+    
+    Axis(IntMatrix3c matrix) {
+        this.matrix = matrix;
+    }
+    
+    public IntMatrix3c getMatrix() {
+        return matrix;
+    }
+    
     public abstract Axis one();
     
     public abstract Axis two();
@@ -466,6 +478,10 @@ public enum Axis {
     
     public void mirror(Vec3f vec) {
         vec.set(this, -vec.get(this));
+    }
+    
+    public Axis transform(IntMatrix3c matrix) {
+        return facing(true).transform(matrix).axis;
     }
     
 }

@@ -30,6 +30,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
@@ -47,6 +48,8 @@ import team.creative.creativecore.common.network.BundlePacketWrapper;
 import team.creative.creativecore.common.network.CreativeNetworkUtils;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
 import team.creative.creativecore.common.util.math.vec.Vec1d;
 import team.creative.creativecore.common.util.math.vec.Vec1f;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
@@ -61,20 +64,25 @@ import team.creative.creativecore.common.util.type.itr.SingleIterator;
 public class NetworkFieldTypes {
     
     private static final Gson GSON = new Gson();
-    private static final List<NetworkFieldTypeSpecial> specialParsers = new ArrayList<>();
-    private static final HashMap<Class, NetworkFieldType> parsers = new HashMap<>();
+    private static final List<NetworkFieldTypeSpecial> SPECIAL_PARSERS = new ArrayList<>();
+    private static final HashMap<Class, NetworkFieldType> PARSERS = new HashMap<>();
     
     public static <T> void register(NetworkFieldType<T> parser, Class<T> classType) {
-        parsers.put(classType, parser);
+        PARSERS.put(classType, parser);
+    }
+    
+    public static <T> StreamCodec<RegistryFriendlyByteBuf, T> registerAndCodec(NetworkFieldTypeClass<T> parser, Class<T> classType) {
+        register(parser, classType);
+        return StreamCodec.<RegistryFriendlyByteBuf, T>of((x, y) -> parser.writeContent(y, x), parser::readContent);
     }
     
     public static <T> void register(NetworkFieldType<T> parser, Class<? extends T>... classType) {
         for (Class<? extends T> clazz : classType)
-            parsers.put(clazz, parser);
+            PARSERS.put(clazz, parser);
     }
     
     public static <T> void register(NetworkFieldTypeSpecial parser) {
-        specialParsers.add(parser);
+        SPECIAL_PARSERS.add(parser);
     }
     
     public static NetworkFieldType get(Field field) {
@@ -83,7 +91,7 @@ public class NetworkFieldTypes {
     
     public static <T> NetworkFieldType<T> get(Class<T> classType) {
         try {
-            NetworkFieldType parser = parsers.get(classType);
+            NetworkFieldType parser = PARSERS.get(classType);
             if (parser != null)
                 return parser;
             
@@ -96,13 +104,13 @@ public class NetworkFieldTypes {
     
     public static NetworkFieldType get(Class classType, Type genericType) {
         try {
-            NetworkFieldType parser = parsers.get(classType);
+            NetworkFieldType parser = PARSERS.get(classType);
             if (parser != null)
                 return parser;
             
-            for (int i = 0; i < specialParsers.size(); i++)
-                if (specialParsers.get(i).predicate.test(classType, genericType))
-                    return specialParsers.get(i);
+            for (int i = 0; i < SPECIAL_PARSERS.size(); i++)
+                if (SPECIAL_PARSERS.get(i).predicate.test(classType, genericType))
+                    return SPECIAL_PARSERS.get(i);
                 
         } catch (Exception e1) {
             CreativeCore.LOGGER.error(e1);
@@ -774,6 +782,28 @@ public class NetworkFieldTypes {
                 }
             }
         }, Class.class);
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<IntMatrix3c>() {
+            
+            @Override
+            protected void writeContent(IntMatrix3c content, RegistryFriendlyByteBuf buffer) {
+                buffer.writeInt(content.m00());
+                buffer.writeInt(content.m01());
+                buffer.writeInt(content.m02());
+                buffer.writeInt(content.m10());
+                buffer.writeInt(content.m11());
+                buffer.writeInt(content.m12());
+                buffer.writeInt(content.m20());
+                buffer.writeInt(content.m21());
+                buffer.writeInt(content.m22());
+            }
+            
+            @Override
+            protected IntMatrix3c readContent(RegistryFriendlyByteBuf buffer) {
+                return new IntMatrix3(buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer.readInt(), buffer
+                        .readInt(), buffer.readInt());
+            }
+        }, IntMatrix3c.class, IntMatrix3.class);
     }
     
 }

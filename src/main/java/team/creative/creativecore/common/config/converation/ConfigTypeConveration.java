@@ -483,6 +483,84 @@ public abstract class ConfigTypeConveration<T> {
         
         registerType(ToggleableConfig.class, new ConfigTypeToggleable());
         
+        registerTypes(new SimpleConfigTypeConveration<IntMatrix3c>() {
+            
+            @Override
+            public IntMatrix3c readElement(ConfigKey key, IntMatrix3c defaultValue, Side side, JsonElement element) {
+                if (element instanceof JsonArray a && a.size() == 9) {
+                    int[] array = new int[9];
+                    for (int i = 0; i < array.length; i++)
+                        array[i] = a.get(i).getAsInt();
+                    return new IntMatrix3(array);
+                }
+                return new IntMatrix3(defaultValue);
+            }
+            
+            @Override
+            public JsonElement writeElement(IntMatrix3c value, ConfigKey key, Side side) {
+                JsonArray json = new JsonArray(9);
+                int[] array = value.getAsArray();
+                for (int i = 0; i < array.length; i++)
+                    json.add(array[i]);
+                return json;
+            }
+            
+            @Override
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
+            public void createControls(GuiParent parent, ConfigKey key) {
+                parent.flow = GuiFlow.STACK_Y;
+                GuiParent r = new GuiParent();
+                parent.add(r);
+                r.add(new GuiTextfield("m00").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield("m01").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield("m02").setNumbersIncludingNegativeOnly());
+                r = new GuiParent();
+                parent.add(r);
+                r.add(new GuiTextfield("m10").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield("m11").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield("m12").setNumbersIncludingNegativeOnly());
+                r = new GuiParent();
+                parent.add(r);
+                r.add(new GuiTextfield("m20").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield("m21").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield("m22").setNumbersIncludingNegativeOnly());
+            }
+            
+            @Override
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
+            public void loadValue(IntMatrix3c value, GuiParent parent) {
+                parent.get("m00", GuiTextfield.class).setText("" + value.m00());
+                parent.get("m01", GuiTextfield.class).setText("" + value.m01());
+                parent.get("m02", GuiTextfield.class).setText("" + value.m02());
+                
+                parent.get("m10", GuiTextfield.class).setText("" + value.m10());
+                parent.get("m11", GuiTextfield.class).setText("" + value.m11());
+                parent.get("m12", GuiTextfield.class).setText("" + value.m12());
+                
+                parent.get("m20", GuiTextfield.class).setText("" + value.m20());
+                parent.get("m21", GuiTextfield.class).setText("" + value.m21());
+                parent.get("m22", GuiTextfield.class).setText("" + value.m22());
+            }
+            
+            @Override
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
+            protected IntMatrix3c saveValue(GuiParent parent, ConfigKey key) {
+                return new IntMatrix3(parent.get("m00", GuiTextfield.class).parseInteger(), parent.get("m01", GuiTextfield.class).parseInteger(), parent.get("m02",
+                    GuiTextfield.class).parseInteger(), parent.get("m10", GuiTextfield.class).parseInteger(), parent.get("m11", GuiTextfield.class).parseInteger(), parent.get(
+                        "m12", GuiTextfield.class).parseInteger(), parent.get("m20", GuiTextfield.class).parseInteger(), parent.get("m21", GuiTextfield.class)
+                                .parseInteger(), parent.get("m22", GuiTextfield.class).parseInteger());
+            }
+            
+            @Override
+            public IntMatrix3c set(ConfigKey key, IntMatrix3c value) {
+                return value;
+            }
+            
+        }, IntMatrix3c.class, IntMatrix3.class);
+        
         registerSpecialType((x) -> {
             if (x.isArray()) {
                 if (has(x.getComponentType()))

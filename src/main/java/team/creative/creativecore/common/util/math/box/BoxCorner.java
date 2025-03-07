@@ -3,7 +3,9 @@ package team.creative.creativecore.common.util.math.box;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
 import team.creative.creativecore.common.util.math.transformation.Rotation;
+import team.creative.creativecore.common.util.math.utils.BooleanUtils;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public enum BoxCorner {
@@ -16,6 +18,28 @@ public enum BoxCorner {
     WUS(Facing.WEST, Facing.UP, Facing.SOUTH),
     WDN(Facing.WEST, Facing.DOWN, Facing.NORTH),
     WDS(Facing.WEST, Facing.DOWN, Facing.SOUTH);
+    
+    public static BoxCorner getCornerUnsorted(Facing facing, Facing facing2, Facing facing3) {
+        return getCorner(facing.axis != Axis.X ? facing2.axis != Axis.X ? facing3 : facing2 : facing, facing.axis != Axis.Y ? facing2.axis != Axis.Y ? facing3 : facing2 : facing,
+            facing.axis != Axis.Z ? facing2.axis != Axis.Z ? facing3 : facing2 : facing);
+    }
+    
+    public static BoxCorner getCorner(Facing x, Facing y, Facing z) {
+        for (BoxCorner corner : BoxCorner.values()) {
+            if (corner.x == x && corner.y == y && corner.z == z)
+                return corner;
+        }
+        return null;
+    }
+    
+    public static BoxCorner[] faceCorners(Facing facing) {
+        return FACING_CORNERS[facing.ordinal()];
+    }
+    
+    static {
+        for (BoxCorner corner : BoxCorner.values())
+            corner.init();
+    }
     
     public final Facing x;
     public final Facing y;
@@ -55,6 +79,14 @@ public enum BoxCorner {
         };
     }
     
+    public BoxCorner transform(IntMatrix3c matrix) {
+        int offsetX = x.offset();
+        int offsetY = y.offset();
+        int offsetZ = z.offset();
+        return getCorner(Facing.get(Axis.X, matrix.getX(offsetX, offsetY, offsetZ) > 0), Facing.get(Axis.Y, matrix.getY(offsetX, offsetY, offsetZ) > 0), Facing.get(Axis.Z, matrix
+                .getZ(offsetX, offsetY, offsetZ) > 0));
+    }
+    
     public BoxCorner mirror(Axis axis) {
         return switch (axis) {
             case X -> getCorner(x.opposite(), y, z);
@@ -64,11 +96,11 @@ public enum BoxCorner {
     }
     
     public BoxCorner rotate(Rotation rotation) {
-        int normalX = x.offset();
-        int normalY = y.offset();
-        int normalZ = z.offset();
-        return getCorner(Facing.get(Axis.X, rotation.getMatrix().getX(normalX, normalY, normalZ) > 0), Facing.get(Axis.Y, rotation.getMatrix().getY(normalX, normalY, normalZ) > 0),
-            Facing.get(Axis.Z, rotation.getMatrix().getZ(normalX, normalY, normalZ) > 0));
+        int offsetX = x.offset();
+        int offsetY = y.offset();
+        int offsetZ = z.offset();
+        return getCorner(Facing.get(Axis.X, rotation.getMatrix().getX(offsetX, offsetY, offsetZ) > 0), Facing.get(Axis.Y, rotation.getMatrix().getY(offsetX, offsetY, offsetZ) > 0),
+            Facing.get(Axis.Z, rotation.getMatrix().getZ(offsetX, offsetY, offsetZ) > 0));
     }
     
     public Vec3d get(ABB bb) {
@@ -91,25 +123,17 @@ public enum BoxCorner {
         vec.z = BoxUtils.get(bb, z);
     }
     
-    public static BoxCorner getCornerUnsorted(Facing facing, Facing facing2, Facing facing3) {
-        return getCorner(facing.axis != Axis.X ? facing2.axis != Axis.X ? facing3 : facing2 : facing, facing.axis != Axis.Y ? facing2.axis != Axis.Y ? facing3 : facing2 : facing,
-            facing.axis != Axis.Z ? facing2.axis != Axis.Z ? facing3 : facing2 : facing);
+    public Facing facingTo(BoxCorner corner) {
+        boolean x = this.x == corner.x;
+        boolean y = this.y == corner.y;
+        boolean z = this.z == corner.z;
+        if (!BooleanUtils.explicitOneTrue(x, y, z))
+            return null;
+        if (!x)
+            return corner.x;
+        if (!y)
+            return corner.y;
+        return corner.z;
     }
     
-    public static BoxCorner getCorner(Facing x, Facing y, Facing z) {
-        for (BoxCorner corner : BoxCorner.values()) {
-            if (corner.x == x && corner.y == y && corner.z == z)
-                return corner;
-        }
-        return null;
-    }
-    
-    public static BoxCorner[] faceCorners(Facing facing) {
-        return FACING_CORNERS[facing.ordinal()];
-    }
-    
-    static {
-        for (BoxCorner corner : BoxCorner.values())
-            corner.init();
-    }
 }
