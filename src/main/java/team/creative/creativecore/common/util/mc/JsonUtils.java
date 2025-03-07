@@ -4,8 +4,25 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
+import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.EndTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongArrayTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.ShortTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 
 public class JsonUtils {
     
@@ -53,6 +70,60 @@ public class JsonUtils {
                 iterator.remove();
         }
         return json.size() == 0;
+    }
+    
+    public static JsonObject of(CompoundTag compound) {
+        JsonObject o = new JsonObject();
+        for (String id : compound.getAllKeys())
+            o.add(id, of(compound.get(id)));
+        return o;
+    }
+    
+    public static JsonElement of(Tag tag) {
+        if (tag instanceof DoubleTag d)
+            return new JsonPrimitive(d.getAsDouble());
+        if (tag instanceof FloatTag f)
+            return new JsonPrimitive(f.getAsFloat());
+        if (tag instanceof LongTag l)
+            return new JsonPrimitive(l.getAsLong());
+        if (tag instanceof ShortTag s)
+            return new JsonPrimitive(s.getAsShort());
+        if (tag instanceof IntTag i)
+            return new JsonPrimitive(i.getAsInt());
+        if (tag instanceof StringTag s)
+            return new JsonPrimitive(s.getAsString());
+        if (tag instanceof ByteTag b)
+            if (b.getAsByte() == 0 || b.getAsByte() == 1)
+                return new JsonPrimitive(b.getAsByte() != 0);
+            else
+                return new JsonPrimitive(b.getAsByte());
+        if (tag instanceof EndTag)
+            throw new IllegalArgumentException("End tag is not supported in JSON");
+        if (tag instanceof ByteArrayTag bArray) {
+            JsonArray array = new JsonArray(bArray.size());
+            for (int i = 0; i < bArray.size(); i++)
+                array.add(bArray.get(i).getAsByte());
+            return array;
+        }
+        if (tag instanceof IntArrayTag iArray) {
+            JsonArray array = new JsonArray(iArray.size());
+            for (int i = 0; i < iArray.size(); i++)
+                array.add(iArray.get(i).getAsInt());
+            return array;
+        }
+        if (tag instanceof LongArrayTag lArray) {
+            JsonArray array = new JsonArray(lArray.size());
+            for (int i = 0; i < lArray.size(); i++)
+                array.add(lArray.get(i).getAsLong());
+            return array;
+        }
+        if (tag instanceof ListTag l) {
+            JsonArray array = new JsonArray(l.size());
+            for (int i = 0; i < l.size(); i++)
+                array.add(of(l.get(i)));
+            return array;
+        }
+        return of((CompoundTag) tag);
     }
     
 }
