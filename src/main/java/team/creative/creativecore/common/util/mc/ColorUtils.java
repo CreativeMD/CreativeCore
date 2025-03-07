@@ -73,6 +73,8 @@ public class ColorUtils {
     public static final int CYAN = 16711681;
     public static final int MAGENTA = -65281;
     public static final int BLACK = -16777216;
+    public static final int GRAY = -5592406;
+    public static final int DARK_GRAY = -11184811;
     
     public static int alpha(int color) {
         return color >> 24 & 255;
