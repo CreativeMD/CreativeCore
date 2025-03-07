@@ -19,7 +19,6 @@ import team.creative.creativecore.common.util.ingredient.CreativeIngredientItem;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientItemStack;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredientItemTag;
 
-@CreativeConfig
 public class SortingList implements List<CreativeIngredient> {
     
     @CreativeConfig
