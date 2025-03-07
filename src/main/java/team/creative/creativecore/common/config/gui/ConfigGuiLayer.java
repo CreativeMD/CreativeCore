@@ -83,7 +83,7 @@ public class ConfigGuiLayer extends GuiLayer {
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
         for (ConfigKey key : holder.fields()) {
-            if (key.requiresRestart)
+            if (key.requiresRestart || key.hideFromGUI)
                 continue;
             
             String path = "config." + String.join(".", holder.path());

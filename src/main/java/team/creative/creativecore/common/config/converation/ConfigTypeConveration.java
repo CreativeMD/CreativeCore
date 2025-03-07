@@ -1,42 +1,36 @@
 package team.creative.creativecore.common.config.converation;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObject;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObjectList;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTag;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTagList;
+import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -52,34 +46,22 @@ import team.creative.creativecore.common.config.premade.registry.RegistryObjectL
 import team.creative.creativecore.common.config.premade.registry.RegistryTagConfig;
 import team.creative.creativecore.common.config.premade.registry.RegistryTagListConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
-import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
 import team.creative.creativecore.common.gui.controls.simple.GuiSlider;
-import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiSteppedSlider;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
-import team.creative.creativecore.common.util.type.TriPredicate;
 import team.creative.creativecore.common.util.type.list.PairList;
 
 public abstract class ConfigTypeConveration<T> {
     
-    private static final NumberFormat NUMBER_FORMAT = createFormat();
-    
-    private static NumberFormat createFormat() {
-        NumberFormat format = NumberFormat.getInstance(Locale.ENGLISH);
-        format.setMaximumFractionDigits(Integer.MAX_VALUE);
-        format.setGroupingUsed(false);
-        return format;
-    }
-    
     private static final HashMap<Class, Function<ConfigField, ?>> TYPE_CREATORS = new HashMap<>();
-    private static final HashMap<Class, TriPredicate<Object, Object, Side>> TYPE_EQUALS_CHECKER = new HashMap<>();
     private static final HashMap<Class, Function<ConfigField, Type>> TYPE_GETTERS = new HashMap<>();
     private static final HashMap<Class, Function<ConfigField, ?>> COLLECTION_CREATORS = new HashMap<>();
     private static final HashMap<Class, ConfigTypeConveration> TYPES = new HashMap<>();
@@ -150,56 +132,24 @@ public abstract class ConfigTypeConveration<T> {
         
         @Override
         public void configured(Side side) {}
+        
+        @Override
+        public ICreativeRegistry getRegistry() {
+            throw new UnsupportedOperationException("This fake parent should never be used to get the registry");
+        }
+        
     };
+    
+    public static boolean isTypeCreator(Class clazz) {
+        return TYPE_CREATORS.containsKey(clazz);
+    }
     
     public static <T, U extends T> void registerTypeCreator(Class<U> clazz, Function<ConfigField, T> type) {
         TYPE_CREATORS.put(clazz, type);
-        registerTypeEqualChecker(clazz);
     }
     
     public static <T, U extends T> void registerTypeCreator(Class<U> clazz, Supplier<T> type) {
         TYPE_CREATORS.put(clazz, x -> type.get());
-        registerTypeEqualChecker(clazz);
-    }
-    
-    /** Will be called automatically when calling registerTypeCreator */
-    public static void registerTypeEqualChecker(Class clazz) {
-        List<Field> fields = new ArrayList<>();
-        
-        collectFieldsToCheck(clazz, fields);
-        
-        if (fields.isEmpty())
-            return;
-        
-        TYPE_EQUALS_CHECKER.put(clazz, (x, y, side) -> {
-            
-            for (int i = 0; i < fields.size(); i++) {
-                var field = fields.get(i);
-                CreativeConfig config = field.getAnnotation(CreativeConfig.class);
-                if (!config.type().useValue(false, side))
-                    continue;
-                
-                try {
-                    if (!equals(field.get(x), field.get(y), side))
-                        return false;
-                } catch (IllegalArgumentException | IllegalAccessException e) {
-                    CreativeCore.LOGGER.error("Could not check equals on object with class " + clazz, e);
-                    throw new RuntimeException(e);
-                }
-            }
-            
-            return true;
-        });
-    }
-    
-    private static void collectFieldsToCheck(Class clazz, List<Field> fields) {
-        if (clazz.getSuperclass() != Object.class && clazz.getSuperclass() != null)
-            collectFieldsToCheck(clazz.getSuperclass(), fields);
-        
-        Field[] declaredFields = clazz.getDeclaredFields();
-        for (int i = 0; i < declaredFields.length; i++)
-            if (Modifier.isPublic(declaredFields[i].getModifiers()) && declaredFields[i].isAnnotationPresent(CreativeConfig.class))
-                fields.add(declaredFields[i]);
     }
     
     public static void registerTypeGetter(Class clazz, Function<ConfigField, Type> getter) {
@@ -213,6 +163,11 @@ public abstract class ConfigTypeConveration<T> {
     public static <T, U extends T> ConfigTypeConveration<T> registerType(Class<U> clazz, ConfigTypeConveration<T> type) {
         TYPES.put(clazz, type);
         return type;
+    }
+    
+    public static <T> void registerTypes(ConfigTypeConveration<T> type, Class<? extends T>... classes) {
+        for (int i = 0; i < classes.length; i++)
+            TYPES.put(classes[i], type);
     }
     
     public static void registerSpecialType(Predicate<Class> predicate, ConfigTypeConveration type) {
@@ -290,268 +245,8 @@ public abstract class ConfigTypeConveration<T> {
         return createCollection(key.field());
     }
     
-    public static boolean equals(Object one, Object two, Side side) {
-        if (Objects.equals(one, two))
-            return true;
-        
-        if (one == null || two == null)
-            return false;
-        
-        if (one.getClass() != two.getClass())
-            return false;
-        
-        var check = TYPE_EQUALS_CHECKER.get(one.getClass());
-        if (check != null)
-            return check.test(one, two, side);
-        return false;
-    }
-    
     static {
-        ConfigTypeConveration<Boolean> booleanType = new SimpleConfigTypeConveration<Boolean>() {
-            
-            @Override
-            public Boolean readElement(ConfigKey key, Boolean defaultValue, Side side, JsonElement element) {
-                if (element.isJsonPrimitive() && ((JsonPrimitive) element).isBoolean())
-                    return element.getAsBoolean();
-                return defaultValue;
-            }
-            
-            @Override
-            public JsonElement writeElement(Boolean value, ConfigKey key, Side side) {
-                return new JsonPrimitive(value);
-            }
-            
-            @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiStateButton("data", 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true").setExpandableX());
-            }
-            
-            @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
-            public void loadValue(Boolean value, GuiParent parent) {
-                GuiStateButton button = parent.get("data");
-                button.setState(value ? 1 : 0);
-            }
-            
-            @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
-            protected Boolean saveValue(GuiParent parent, ConfigKey key) {
-                GuiStateButton button = parent.get("data");
-                return button.getState() == 1;
-            }
-            
-            @Override
-            public Boolean set(ConfigKey key, Boolean value) {
-                return value;
-            }
-            
-        };
-        registerType(boolean.class, booleanType);
-        registerType(Boolean.class, booleanType);
-        
-        registerTypeCreator(boolean.class, () -> false);
-        registerTypeCreator(Boolean.class, () -> Boolean.FALSE);
-        
-        ConfigTypeConveration<Number> numberType = new SimpleConfigTypeConveration<Number>() {
-            
-            @Override
-            public Number readElement(ConfigKey key, Number defaultValue, Side side, JsonElement element) {
-                if (element.isJsonPrimitive() && ((JsonPrimitive) element).isNumber()) {
-                    Class clazz = key.field().getType();
-                    if (clazz == Float.class || clazz == float.class)
-                        return element.getAsFloat();
-                    else if (clazz == Double.class || clazz == double.class)
-                        return element.getAsDouble();
-                    else if (clazz == Byte.class || clazz == byte.class)
-                        return element.getAsByte();
-                    else if (clazz == Short.class || clazz == short.class)
-                        return element.getAsShort();
-                    else if (clazz == Integer.class || clazz == int.class)
-                        return element.getAsInt();
-                    else if (clazz == Long.class || clazz == long.class)
-                        return element.getAsLong();
-                    return element.getAsNumber();
-                }
-                return defaultValue;
-            }
-            
-            @Override
-            public JsonElement writeElement(Number value, ConfigKey key, Side side) {
-                return new JsonPrimitive(value);
-            }
-            
-            public boolean isDecimal(Class clazz) {
-                return clazz == Float.class || clazz == float.class || clazz == Double.class || clazz == double.class;
-            }
-            
-            @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, ConfigKey key) {}
-            
-            @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                boolean decimal = isDecimal(key.field().getType());
-                if (key != null) {
-                    if (decimal) {
-                        CreativeConfig.DecimalRange decRange = key.field().getAnnotation(CreativeConfig.DecimalRange.class);
-                        if (decRange != null && decRange.slider()) {
-                            parent.add(new GuiSlider("data", decRange.min(), decRange.min(), decRange.max()).setExpandableX());
-                            return;
-                        }
-                    } else {
-                        CreativeConfig.IntRange intRange = key.field().getAnnotation(CreativeConfig.IntRange.class);
-                        if (intRange != null && intRange.slider()) {
-                            parent.add(new GuiSteppedSlider("data", intRange.min(), intRange.min(), intRange.max()).setExpandableX());
-                            return;
-                        }
-                    }
-                }
-                
-                GuiTextfield textfield = (GuiTextfield) new GuiTextfield("data").setDim(30, 8).setExpandableX();
-                if (decimal)
-                    textfield.setFloatOnly();
-                else
-                    textfield.setNumbersIncludingNegativeOnly();
-                parent.add(textfield);
-            }
-            
-            @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
-            public void loadValue(Number value, GuiParent parent) {
-                GuiControl control = parent.get("data");
-                if (control instanceof GuiSteppedSlider button)
-                    button.setValue(value.intValue());
-                else if (control instanceof GuiSlider button)
-                    button.setValue(value.doubleValue());
-                else
-                    ((GuiTextfield) control).setText(NUMBER_FORMAT.format(value));
-            }
-            
-            public Number parseDecimal(Class clazz, double decimal) {
-                if (clazz == Float.class || clazz == float.class)
-                    return (float) decimal;
-                return decimal;
-            }
-            
-            public Number parseInt(Class clazz, int number) {
-                if (clazz == Byte.class || clazz == byte.class)
-                    return (byte) number;
-                if (clazz == Short.class || clazz == short.class)
-                    return (short) number;
-                if (clazz == Long.class || clazz == long.class)
-                    return (long) number;
-                return number;
-            }
-            
-            public Number parseNumber(Class clazz, String text) {
-                if (clazz == Float.class || clazz == float.class)
-                    try {
-                        return Float.parseFloat(text);
-                    } catch (NumberFormatException e) {
-                        return (float) 0;
-                    }
-                else if (clazz == Double.class || clazz == double.class)
-                    try {
-                        return Double.parseDouble(text);
-                    } catch (NumberFormatException e) {
-                        return (double) 0;
-                    }
-                else if (clazz == Byte.class || clazz == byte.class)
-                    try {
-                        return Byte.parseByte(text);
-                    } catch (NumberFormatException e) {
-                        return (byte) 0;
-                    }
-                else if (clazz == Short.class || clazz == short.class)
-                    try {
-                        return Short.parseShort(text);
-                    } catch (NumberFormatException e) {
-                        return (short) 0;
-                    }
-                else if (clazz == Integer.class || clazz == int.class)
-                    try {
-                        return Integer.parseInt(text);
-                    } catch (NumberFormatException e) {
-                        return 0;
-                    }
-                else if (clazz == Long.class || clazz == long.class)
-                    try {
-                        return Long.parseLong(text);
-                    } catch (NumberFormatException e) {
-                        return (long) 0;
-                    }
-                else
-                    return 0;
-                
-            }
-            
-            @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
-            protected Number saveValue(GuiParent parent, ConfigKey key) {
-                GuiControl control = parent.get("data");
-                String text;
-                if (control instanceof GuiSteppedSlider button) {
-                    text = "" + button.getIntValue();
-                } else if (control instanceof GuiSlider button) {
-                    text = "" + button.getValue();
-                } else
-                    text = ((GuiTextfield) control).getText();
-                return parseNumber(key.field().getType(), text);
-            }
-            
-            @Override
-            public Number set(ConfigKey key, Number value) {
-                if (key != null) {
-                    Class clazz = key.field().getType();
-                    if (isDecimal(clazz)) {
-                        CreativeConfig.DecimalRange decRange = key.field().getAnnotation(CreativeConfig.DecimalRange.class);
-                        if (decRange != null)
-                            return parseDecimal(clazz, Mth.clamp(value.doubleValue(), decRange.min(), decRange.max()));
-                    } else {
-                        CreativeConfig.IntRange intRange = key.field().getAnnotation(CreativeConfig.IntRange.class);
-                        if (intRange != null)
-                            return parseInt(clazz, Mth.clamp(value.intValue(), intRange.min(), intRange.max()));
-                    }
-                }
-                return value;
-            }
-            
-        };
-        registerType(byte.class, numberType);
-        registerType(Byte.class, numberType);
-        registerType(short.class, numberType);
-        registerType(Short.class, numberType);
-        registerType(int.class, numberType);
-        registerType(Integer.class, numberType);
-        registerType(long.class, numberType);
-        registerType(Long.class, numberType);
-        registerType(float.class, numberType);
-        registerType(Float.class, numberType);
-        registerType(double.class, numberType);
-        registerType(Double.class, numberType);
-        
-        registerTypeCreator(byte.class, () -> (byte) 0);
-        registerTypeCreator(Byte.class, () -> Byte.valueOf((byte) 0));
-        registerTypeCreator(short.class, () -> (short) 0);
-        registerTypeCreator(Short.class, () -> Short.valueOf((short) 0));
-        registerTypeCreator(int.class, () -> 0);
-        registerTypeCreator(Integer.class, () -> Integer.valueOf(0));
-        registerTypeCreator(long.class, () -> (long) 0);
-        registerTypeCreator(Long.class, () -> Long.valueOf(0));
-        registerTypeCreator(float.class, () -> 0F);
-        registerTypeCreator(Float.class, () -> Float.valueOf(0));
-        registerTypeCreator(double.class, () -> 0D);
-        registerTypeCreator(Double.class, () -> Double.valueOf(0));
-        
+        ConfigTypeNumber.init();
         registerType(String.class, new SimpleConfigTypeConveration<String>() {
             
             @Override

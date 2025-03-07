@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.config.gui;
 
+import javax.annotation.Nullable;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -17,7 +19,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     private final Runnable updateListener;
     private final Side side;
     
-    public GuiConfigSubControlHolder(String name, ICreativeConfigHolder holder, Object value, Side side, Runnable updateListener) {
+    public GuiConfigSubControlHolder(String name, ICreativeConfigHolder holder, Object value, Side side, @Nullable Runnable updateListener) {
         super(name);
         setExpandable();
         this.holder = holder;
@@ -34,9 +36,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     
     public void createControls() {
         for (ConfigKey key : holder.fields()) {
-            if (key.requiresRestart)
-                continue;
-            if (key.isFolder())
+            if (key.requiresRestart || key.isFolder() || key.hideFromGUI)
                 continue;
             
             String path = "config." + String.join(".", holder.path());
@@ -49,7 +49,8 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                 @Override
                 public void updateButton() {
                     super.updateButton();
-                    updateListener.run();
+                    if (updateListener != null)
+                        updateListener.run();
                 }
                 
             };
@@ -62,10 +63,10 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     public void save() {
         JsonObject json = new JsonObject();
         for (GuiChildControl child : this.controls)
-            if (child.control instanceof GuiConfigControl) {
-                JsonElement element = ((GuiConfigControl) child.control).save();
+            if (child.control instanceof GuiConfigControl c) {
+                JsonElement element = c.save();
                 if (element != null)
-                    json.add(((GuiConfigControl) child.control).field.name, element);
+                    json.add(c.field.name, element);
             }
         
         holder.load(provider(), false, true, json, side);

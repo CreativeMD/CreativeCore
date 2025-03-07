@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
+import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.field.ConfigFieldTyped;
 import team.creative.creativecore.common.config.field.ConfigFieldWrapper;
@@ -24,14 +25,16 @@ import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public abstract class ConfigKey {
     
-    public static ConfigKey of(ICreativeConfigHolder parentHolder, Field field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart, Object parent) {
-        return of(parentHolder, new ConfigFieldWrapper(parent, field), name, defaultValue, sync, requiresRestart);
+    public static ConfigKey of(ICreativeConfigHolder parentHolder, Field field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart,
+            boolean hideFromGUI, Object parent) {
+        return of(parentHolder, new ConfigFieldWrapper(parent, field), name, defaultValue, sync, requiresRestart, hideFromGUI);
     }
     
-    public static ConfigKey of(ICreativeConfigHolder parent, ConfigField field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart) {
+    public static ConfigKey of(ICreativeConfigHolder parent, ConfigField field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart,
+            boolean hideFromGUI) {
         if (ConfigTypeConveration.has(field.getType()))
-            return new ConfigKeyType(field, name, defaultValue, sync, requiresRestart);
-        return new ConfigKeyHolder(new ConfigHolderObject(parent, sync, name, defaultValue), field, name, sync, requiresRestart);
+            return new ConfigKeyType(field, name, defaultValue, sync, requiresRestart, hideFromGUI, parent.getRegistry());
+        return new ConfigKeyHolder(new ConfigHolderObject(parent, sync, name, defaultValue), field, name, sync, requiresRestart, hideFromGUI);
     }
     
     public static ConfigKey ofGenericType(ConfigKey key, Side side) {
@@ -51,20 +54,22 @@ public abstract class ConfigKey {
     public static ConfigKey ofType(ConfigKey key, ConfigField field, Side side) {
         field.set(ConfigTypeConveration.createObject(field));
         if (ConfigTypeConveration.has(field.getType()))
-            return new ConfigKeyType(field, "", ConfigTypeConveration.createObject(field), ConfigSynchronization.UNIVERSAL, false);
-        return new ConfigKeyHolder(ConfigHolderObject.createUnrelated(side, field.get()), field, "", ConfigSynchronization.UNIVERSAL, false);
+            return new ConfigKeyType(field, "", ConfigTypeConveration.createObject(field), ConfigSynchronization.UNIVERSAL, false, false, key.getRegistry());
+        return new ConfigKeyHolder(ConfigHolderObject.createUnrelated(key.getRegistry(), side, field.get()), field, "", ConfigSynchronization.UNIVERSAL, false, false);
     }
     
     public final String name;
     public final ConfigSynchronization synchronization;
     public final boolean requiresRestart;
+    public final boolean hideFromGUI;
     
     public boolean forceSynchronization;
     protected final ConfigField field;
     
-    public ConfigKey(ConfigField field, String name, ConfigSynchronization synchronization, boolean requiresRestart) {
+    public ConfigKey(ConfigField field, String name, ConfigSynchronization synchronization, boolean requiresRestart, boolean hideFromGUI) {
         this.synchronization = synchronization;
         this.requiresRestart = requiresRestart;
+        this.hideFromGUI = hideFromGUI;
         this.name = name;
         this.field = field;
     }
@@ -143,5 +148,7 @@ public abstract class ConfigKey {
     public ConfigField field() {
         return field;
     }
+    
+    public abstract ICreativeRegistry getRegistry();
     
 }

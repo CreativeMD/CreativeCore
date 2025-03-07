@@ -146,7 +146,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
                 if (!converation.areEqual(entryOne, entryTwo, listKey, side))
                     return false;
                 
-            } else if (converation == null && !ConfigTypeConveration.equals(entryOne, entryTwo, side))
+            } else if (converation == null && !key.getRegistry().equals(entryOne, entryTwo, side))
                 return false;
         }
         

@@ -76,7 +76,7 @@ public class PermissionGuiLayer extends GuiLayer {
                 row.addColumn(col);
             } else {
                 Object newValue = ConfigTypeConveration.createObject(button.key.field());
-                ConfigHolderObject holder = ConfigHolderObject.createUnrelated(button.side, newValue, newValue);
+                ConfigHolderObject holder = ConfigHolderObject.createUnrelated(button.key.getRegistry(), button.side, newValue, newValue);
                 group = new PermissionGuiGroupMulti(provider(), "", holder);
                 groups.add(group);
                 
@@ -139,13 +139,13 @@ public class PermissionGuiLayer extends GuiLayer {
                 Object defaultReference = button.defaultValue.getDirect(entry.getKey());
                 if (defaultReference == null)
                     defaultReference = copiedEntry;
-                ConfigHolderObject holder = ConfigHolderObject.createUnrelated(button.side, copiedEntry, defaultReference);
+                ConfigHolderObject holder = ConfigHolderObject.createUnrelated(button.key.getRegistry(), button.side, copiedEntry, defaultReference);
                 PermissionGuiGroupMulti group = new PermissionGuiGroupMulti(provider(), entry.getKey(), holder);
                 groups.add(group);
                 
                 int i = 0;
                 for (ConfigKey key : holder.fields()) {
-                    if (key.requiresRestart || key.isFolder())
+                    if (key.requiresRestart || key.isFolder() || key.hideFromGUI)
                         continue;
                     
                     if (rows.size() <= i) {

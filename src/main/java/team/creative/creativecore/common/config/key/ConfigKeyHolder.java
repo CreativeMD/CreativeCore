@@ -9,6 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
+import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
@@ -21,8 +22,8 @@ public class ConfigKeyHolder extends ConfigKey {
     
     private ICreativeConfigHolder holder;
     
-    public ConfigKeyHolder(ICreativeConfigHolder holder, ConfigField field, String name, ConfigSynchronization synchronization, boolean requiresRestart) {
-        super(field, name, synchronization, requiresRestart);
+    public ConfigKeyHolder(ICreativeConfigHolder holder, ConfigField field, String name, ConfigSynchronization synchronization, boolean requiresRestart, boolean hideFromGUI) {
+        super(field, name, synchronization, requiresRestart, hideFromGUI);
         this.holder = holder;
     }
     
@@ -60,7 +61,7 @@ public class ConfigKeyHolder extends ConfigKey {
     public Object copy(Provider provider, Side side) {
         Object value = ConfigTypeConveration.createObject(this.field);
         JsonElement element = write(provider, false, true, side);
-        ICreativeConfigHolder.read(provider, ConfigHolderObject.createUnrelated(side, value, get()), true, true, element, side);
+        ICreativeConfigHolder.read(provider, ConfigHolderObject.createUnrelated(holder.getRegistry(), side, value, get()), true, true, element, side);
         return value;
     }
     
@@ -76,7 +77,7 @@ public class ConfigKeyHolder extends ConfigKey {
     
     @Override
     public void forceValue(Object object, Side side) {
-        holder = ConfigHolderObject.createUnrelated(side, object);
+        holder = ConfigHolderObject.createUnrelated(holder.getRegistry(), side, object);
         field.set(object);
     }
     
@@ -110,4 +111,8 @@ public class ConfigKeyHolder extends ConfigKey {
         field.set(c.value);
     }
     
+    @Override
+    public ICreativeRegistry getRegistry() {
+        return holder.getRegistry();
+    }
 }
