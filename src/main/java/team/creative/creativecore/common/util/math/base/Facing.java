@@ -3,8 +3,10 @@ package team.creative.creativecore.common.util.math.base;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.geo.NormalPlaneF;
+import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 
 public enum Facing {
@@ -303,6 +305,31 @@ public enum Facing {
         return HORIZONTA_VALUES[index];
     }
     
+    public static Facing of(Player player) {
+        Facing facing = get(player.getDirection());
+        if (player.getXRot() > 45)
+            facing = Facing.DOWN;
+        if (player.getXRot() < -45)
+            facing = Facing.UP;
+        return facing;
+    }
+    
+    public static Facing ofNormal(Vec3i vec) {
+        if (vec.getX() > 0)
+            return EAST;
+        if (vec.getX() < 0)
+            return WEST;
+        if (vec.getY() > 0)
+            return UP;
+        if (vec.getY() < 0)
+            return DOWN;
+        if (vec.getZ() > 0)
+            return SOUTH;
+        if (vec.getZ() < 0)
+            return NORTH;
+        throw new IllegalArgumentException();
+    }
+    
     /** gets the direction from the first position to the second. It assumes the positions are next to each other.
      * 
      * @param pos
@@ -436,5 +463,9 @@ public enum Facing {
     public abstract double get(double minX, double minY, double minZ, double maxX, double maxY, double maxZ);
     
     public abstract int get(int minX, int minY, int minZ, int maxX, int maxY, int maxZ);
+    
+    public Facing transform(IntMatrix3c matrix) {
+        return ofNormal(matrix.transform(normal));
+    }
     
 }
