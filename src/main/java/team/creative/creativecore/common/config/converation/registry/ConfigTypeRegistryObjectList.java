@@ -21,8 +21,8 @@ import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.premade.registry.RegistryObjectListConfig;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.collection.GuiListBoxBase;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<RegistryObjectListConfig> {

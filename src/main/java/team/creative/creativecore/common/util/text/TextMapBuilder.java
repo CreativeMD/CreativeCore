@@ -12,8 +12,9 @@ import java.util.function.Predicate;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.client.render.text.CompiledText;
+import team.creative.creativecore.common.util.type.list.TupleList;
 
-public class TextMapBuilder<K> implements ITextCollection {
+public class TextMapBuilder<K> implements IComponentMap<K> {
     
     private final LinkedHashMap<K, List<Component>> lines = new LinkedHashMap<>();
     private Predicate<String> filter;
@@ -88,25 +89,27 @@ public class TextMapBuilder<K> implements ITextCollection {
     }
     
     @Override
-    public CompiledText[] build() {
-        CompiledText[] lines = new CompiledText[this.lines.size()];
-        int i = 0;
-        for (List<Component> text : this.lines.values()) {
-            lines[i] = CompiledText.createAnySize();
-            lines[i].setText(text);
-            i++;
+    public TupleList<K, CompiledText> build() {
+        TupleList<K, CompiledText> list = new TupleList<>(this.lines.size());
+        for (Entry<K, List<Component>> entry : this.lines.entrySet()) {
+            var text = CompiledText.createAnySize();
+            text.setText(entry.getValue());
+            list.add(entry.getKey(), text);
         }
-        return lines;
+        return list;
     }
     
+    @Override
     public Set<Entry<K, List<Component>>> entrySet() {
         return lines.entrySet();
     }
     
+    @Override
     public Collection<List<Component>> values() {
         return lines.values();
     }
     
+    @Override
     public List<K> keys() {
         return new ArrayList<>(lines.keySet());
     }

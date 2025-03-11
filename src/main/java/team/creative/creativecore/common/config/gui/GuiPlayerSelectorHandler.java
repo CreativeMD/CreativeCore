@@ -8,10 +8,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.control.collection.GuiListBoxBase;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.simple.GuiStateButton;
+import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.util.player.PlayerSelector;
 import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorAnd;
@@ -21,6 +21,7 @@ import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelect
 import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorNot;
 import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelectorOr;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
+import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 @Environment(EnvType.CLIENT)
 @OnlyIn(Dist.CLIENT)
@@ -81,14 +82,14 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.add(new GuiStateButton("mode", selector instanceof PlayerSelectorGamemode select ? select.type
-                        .getId() : 0, "survival", "creative", "adventure", "spectator"));
+                gui.add(new GuiStateButton<GameType>("mode", selector instanceof PlayerSelectorGamemode select ? select.type : GameType.SURVIVAL, new TextMapBuilder<GameType>()
+                        .addComponent(GameType.values(), x -> x.getShortDisplayName())));
             }
             
             @Override
             public PlayerSelectorGamemode parseSelector(PlayerSelectorDialog gui) {
-                GuiStateButton mode = gui.get("mode");
-                return new PlayerSelectorGamemode(GameType.byId(mode.getState()));
+                GuiStateButton<GameType> mode = gui.get("mode");
+                return new PlayerSelectorGamemode(mode.selected());
             }
             
         });

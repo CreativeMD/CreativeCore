@@ -13,7 +13,7 @@ import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.premade.ToggleableConfig;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.simple.GuiCheckBox;
+import team.creative.creativecore.common.gui.control.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig> {

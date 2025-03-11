@@ -2,7 +2,7 @@ package team.creative.creativecore.common.config.gui;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.sync.GuiSyncGlobalLayer;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder;

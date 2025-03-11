@@ -47,15 +47,13 @@ import team.creative.creativecore.common.config.premade.registry.RegistryTagConf
 import team.creative.creativecore.common.config.premade.registry.RegistryTagListConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBox;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
-import team.creative.creativecore.common.gui.controls.simple.GuiSlider;
-import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.simple.GuiLabel;
+import team.creative.creativecore.common.gui.control.simple.GuiSlider;
+import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3;
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
-import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.list.PairList;
 
@@ -362,7 +360,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 parent.flow = GuiFlow.STACK_Y;
-                parent.add(new GuiComboBoxMapped<>("sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
+                parent.add(new GuiComboBox<>("sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
                     if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
@@ -376,7 +374,7 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(SoundConfig value, SoundConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiComboBoxMapped<ResourceLocation> box = parent.get("sound");
+                GuiComboBox<ResourceLocation> box = parent.get("sound");
                 GuiSlider volume = parent.get("volume");
                 GuiSlider pitch = parent.get("pitch");
                 
@@ -389,11 +387,11 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected SoundConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiComboBoxMapped<ResourceLocation> box = parent.get("sound");
+                GuiComboBox<ResourceLocation> box = parent.get("sound");
                 GuiSlider volume = parent.get("volume");
                 GuiSlider pitch = parent.get("pitch");
                 
-                return new SoundConfig(box.getSelected(), (float) volume.getValue(), (float) pitch.getValue());
+                return new SoundConfig(box.selected(), (float) volume.getValue(), (float) pitch.getValue());
             }
             
             @Override
@@ -433,7 +431,7 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 SelectableConfig value = (SelectableConfig) key.get();
                 configParent.setCustomData(value.getSelected());
-                parent.add(new GuiComboBox("data", new TextListBuilder().add(value.getArray(), Object::toString)).setExpandableX());
+                parent.add(new GuiComboBox("data", new TextMapBuilder().addComponent(value.getArray(), x -> Component.literal(x.toString()))).setExpandableX());
             }
             
             @Override
@@ -458,7 +456,7 @@ public abstract class ConfigTypeConveration<T> {
             protected SelectableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 SelectableConfig config = (SelectableConfig) key.get();
                 GuiComboBox box = parent.get("data");
-                config.select(box.getIndex());
+                config.select(box.selectedIndex());
                 return config;
             }
             
@@ -594,7 +592,8 @@ public abstract class ConfigTypeConveration<T> {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiComboBox("data", new TextListBuilder().add(getEnumClass(key.field().getType()).getEnumConstants(), (x) -> ((Enum) x).name())));
+                parent.add(new GuiComboBox<>("data", new TextMapBuilder<>().addComponent(getEnumClass(key.field().getType()).getEnumConstants(), (x) -> Component.literal(((Enum) x)
+                        .name()))));
             }
             
             @Override
@@ -610,7 +609,7 @@ public abstract class ConfigTypeConveration<T> {
             @OnlyIn(Dist.CLIENT)
             protected Enum saveValue(GuiParent parent, ConfigKey key) {
                 GuiComboBox box = parent.get("data");
-                return (Enum) getEnumClass(key.field().getType()).getEnumConstants()[box.getIndex()];
+                return (Enum) box.selected();
             }
             
             @Override

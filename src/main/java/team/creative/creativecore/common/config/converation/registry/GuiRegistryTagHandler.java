@@ -25,8 +25,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.collection.GuiStackSelector;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.collection.GuiStackSelector;
 import team.creative.creativecore.common.util.registry.FilteredHandlerRegistry;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
@@ -39,7 +39,7 @@ public abstract class GuiRegistryTagHandler {
         
         @Override
         public void createControls(GuiParent parent, Registry registry) {
-            parent.add(new GuiComboBoxMapped<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.getTags().iterator(), x -> {
+            parent.add(new GuiComboBox<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.getTags().iterator(), x -> {
                 if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                     return Component.literal(x.getPath());
                 return Component.literal(x.toString());
@@ -48,14 +48,14 @@ public abstract class GuiRegistryTagHandler {
         
         @Override
         public void loadValue(GuiParent parent, Registry registry, TagKey tag) {
-            GuiComboBoxMapped<ResourceLocation> box = parent.get("elements");
+            GuiComboBox<ResourceLocation> box = parent.get("elements");
             box.select(tag.location());
         }
         
         @Override
         public TagKey saveValue(GuiParent parent, Registry registry) {
-            GuiComboBoxMapped<ResourceLocation> box = parent.get("elements");
-            return TagKey.create(registry.key(), box.getSelected());
+            GuiComboBox<ResourceLocation> box = parent.get("elements");
+            return TagKey.create(registry.key(), box.selected());
         }
         
     });

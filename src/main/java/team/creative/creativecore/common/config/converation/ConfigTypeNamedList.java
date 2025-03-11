@@ -19,8 +19,8 @@ import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.collection.GuiListBoxBase;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.collection.GuiListBoxBase;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
 
 public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConveration<T> {
     

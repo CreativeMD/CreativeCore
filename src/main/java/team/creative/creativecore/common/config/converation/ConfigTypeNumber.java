@@ -11,6 +11,8 @@ import com.google.gson.JsonPrimitive;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -23,10 +25,11 @@ import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.simple.GuiSlider;
-import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiSteppedSlider;
-import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.control.simple.GuiSlider;
+import team.creative.creativecore.common.gui.control.simple.GuiStateButton;
+import team.creative.creativecore.common.gui.control.simple.GuiSteppedSlider;
+import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
+import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class ConfigTypeNumber {
     
@@ -84,23 +87,25 @@ public class ConfigTypeNumber {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiStateButton("data", 0, ChatFormatting.RED + "false", ChatFormatting.GREEN + "true").setExpandableX());
+                parent.add(new GuiStateButton<Boolean>("data", 0, new TextMapBuilder<Boolean>().addComponent(false, Component.translatable("gui.false").setStyle(Style.EMPTY
+                        .withColor(ChatFormatting.RED))).addComponent(true, Component.translatable("gui.true").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))))
+                        .setExpandableX());
             }
             
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void loadValue(Boolean value, GuiParent parent) {
-                GuiStateButton button = parent.get("data");
-                button.setState(value ? 1 : 0);
+                GuiStateButton<Boolean> button = parent.get("data");
+                button.select(value);
             }
             
             @Override
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             protected Boolean saveValue(GuiParent parent, ConfigKey key) {
-                GuiStateButton button = parent.get("data");
-                return button.getState() == 1;
+                GuiStateButton<Boolean> button = parent.get("data");
+                return button.selected();
             }
             
             @Override

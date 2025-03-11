@@ -8,12 +8,12 @@ import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.parent.GuiLeftRightBox;
-import team.creative.creativecore.common.gui.controls.parent.GuiScrollY;
-import team.creative.creativecore.common.gui.controls.parent.GuiTopBottomBox;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
-import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.parent.GuiLeftRightBox;
+import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
+import team.creative.creativecore.common.gui.control.parent.GuiTopBottomBox;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.ingredient.GuiCreativeIngredientHandler;
@@ -45,16 +45,16 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         CreativeIngredient info = button.get();
         handler = GuiCreativeIngredientHandler.find(info);
         
-        GuiComboBoxMapped<GuiCreativeIngredientHandler> box = get("type");
+        GuiComboBox<GuiCreativeIngredientHandler> box = get("type");
         if (box != null)
-            handler = box.getSelected();
+            handler = box.selected();
         
         clear();
         
         GuiTopBottomBox topBottom = new GuiTopBottomBox();
         add(topBottom);
-        box = new GuiComboBoxMapped<GuiCreativeIngredientHandler>("type", new TextMapBuilder<GuiCreativeIngredientHandler>().addEntrySet(GuiCreativeIngredientHandler.REGISTRY
-                .entrySet(), x -> Component.literal(x.getKey())));
+        box = new GuiComboBox<GuiCreativeIngredientHandler>("type", new TextMapBuilder<GuiCreativeIngredientHandler>().addEntrySet(GuiCreativeIngredientHandler.REGISTRY.entrySet(),
+            x -> Component.literal(x.getKey())));
         box.setExpandableX();
         box.select(handler);
         topBottom.addTop(box);

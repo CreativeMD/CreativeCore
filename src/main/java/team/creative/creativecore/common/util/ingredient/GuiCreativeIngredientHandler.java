@@ -22,11 +22,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.collection.GuiCheckList;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.collection.GuiStackSelector;
-import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
-import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.control.collection.GuiCheckList;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.collection.GuiStackSelector;
+import team.creative.creativecore.common.gui.control.simple.GuiLabel;
+import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
@@ -116,8 +116,8 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
-                GuiComboBoxMapped<TagKey<Block>> box = gui.get("tag");
-                TagKey<Block> tag = box.getSelected();
+                GuiComboBox<TagKey<Block>> box = gui.get("tag");
+                TagKey<Block> tag = box.selected();
                 if (tag != null)
                     return new CreativeIngredientBlockTag(tag);
                 return null;
@@ -127,8 +127,8 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<TagKey<Block>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Block>>().addComponents(BuiltInRegistries.BLOCK.getTags().map(x -> x
-                        .unwrapKey().get()).toList(), x -> {
+                GuiComboBox<TagKey<Block>> box = new GuiComboBox<>("tag", new TextMapBuilder<TagKey<Block>>().addComponents(BuiltInRegistries.BLOCK.getTags().map(x -> x.unwrapKey()
+                        .get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
                             var itr = BuiltInRegistries.BLOCK.getTagOrEmpty(x).iterator();
                             if (itr.hasNext())
@@ -149,8 +149,8 @@ public abstract class GuiCreativeIngredientHandler {
             @Override
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
-                    GuiComboBoxMapped<TagKey<Block>> box = gui.get("tag");
-                    box.setLines(new TextMapBuilder<TagKey<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
+                    GuiComboBox<TagKey<Block>> box = gui.get("tag");
+                    box.set(new TextMapBuilder<TagKey<Block>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
                         BuiltInRegistries.BLOCK.getTags().map(x -> x.unwrapKey().get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
                             var itr = BuiltInRegistries.BLOCK.getTagOrEmpty(x).iterator();
@@ -166,8 +166,8 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public CreativeIngredient parseControls(GuiParent gui) {
-                GuiComboBoxMapped<TagKey<Item>> box = gui.get("tag");
-                TagKey<Item> tag = box.getSelected();
+                GuiComboBox<TagKey<Item>> box = gui.get("tag");
+                TagKey<Item> tag = box.selected();
                 if (tag != null)
                     return new CreativeIngredientItemTag(tag);
                 return null;
@@ -177,8 +177,8 @@ public abstract class GuiCreativeIngredientHandler {
             public void createControls(GuiParent gui, CreativeIngredient info) {
                 gui.flow = GuiFlow.STACK_Y;
                 gui.align = Align.STRETCH;
-                GuiComboBoxMapped<TagKey<Item>> box = new GuiComboBoxMapped<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(BuiltInRegistries.ITEM.getTags().map(x -> x
-                        .unwrapKey().get()).toList(), x -> {
+                GuiComboBox<TagKey<Item>> box = new GuiComboBox<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(BuiltInRegistries.ITEM.getTags().map(x -> x.unwrapKey()
+                        .get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
                             var itr = BuiltInRegistries.ITEM.getTagOrEmpty(x).iterator();
                             if (itr.hasNext())
@@ -199,8 +199,8 @@ public abstract class GuiCreativeIngredientHandler {
             @Override
             public void onChanged(GuiParent gui, GuiControlChangedEvent event) {
                 if (event.control.is("search")) {
-                    GuiComboBoxMapped<TagKey<Item>> box = gui.get("tag");
-                    box.setLines(new TextMapBuilder<TagKey<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
+                    GuiComboBox<TagKey<Item>> box = gui.get("tag");
+                    box.set(new TextMapBuilder<TagKey<Item>>().setFilter(x -> x.toLowerCase().contains(((GuiTextfield) event.control).getText())).addComponents(
                         BuiltInRegistries.ITEM.getTags().map(x -> x.unwrapKey().get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
                             var itr = BuiltInRegistries.ITEM.getTagOrEmpty(x).iterator();
