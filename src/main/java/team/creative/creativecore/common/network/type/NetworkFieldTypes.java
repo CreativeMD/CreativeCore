@@ -21,6 +21,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -806,6 +807,19 @@ public class NetworkFieldTypes {
                         .readInt(), buffer.readInt());
             }
         }, IntMatrix3c.class, IntMatrix3.class);
+        
+        register(new NetworkFieldTypeClass<DataComponentPatch>() {
+            
+            @Override
+            protected void writeContent(DataComponentPatch content, RegistryFriendlyByteBuf buffer) {
+                DataComponentPatch.STREAM_CODEC.encode(buffer, content);
+            }
+            
+            @Override
+            protected DataComponentPatch readContent(RegistryFriendlyByteBuf buffer) {
+                return DataComponentPatch.STREAM_CODEC.decode(buffer);
+            }
+        }, DataComponentPatch.class);
     }
     
 }
