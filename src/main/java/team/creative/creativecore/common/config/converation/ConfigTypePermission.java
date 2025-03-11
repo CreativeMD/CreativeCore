@@ -14,7 +14,7 @@ import team.creative.creativecore.common.config.gui.PermissionGuiLayer;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.sync.GuiSyncGlobalLayer;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 

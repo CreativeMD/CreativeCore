@@ -15,8 +15,8 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.inventory.GuiSlot;
-import team.creative.creativecore.common.gui.controls.inventory.IGuiInventory;
+import team.creative.creativecore.common.gui.control.inventory.GuiSlot;
+import team.creative.creativecore.common.gui.control.inventory.IGuiInventory;
 import team.creative.creativecore.common.gui.sync.GuiSyncGlobal;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 

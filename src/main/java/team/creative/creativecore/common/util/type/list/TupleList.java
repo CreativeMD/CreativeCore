@@ -13,6 +13,10 @@ public class TupleList<K, V> extends ArrayList<Tuple<K, V>> {
         super();
     }
     
+    public TupleList(int capacity) {
+        super(capacity);
+    }
+    
     public TupleList(List<Tuple<K, V>> list) {
         super(list);
     }
@@ -38,20 +42,6 @@ public class TupleList<K, V> extends ArrayList<Tuple<K, V>> {
     
     public Iterable<K> keys() {
         return new FunctionIterator<K>(TupleList.this, x -> x.key);
-    }
-    
-    @Override
-    public Tuple<K, V> getFirst() {
-        if (isEmpty())
-            return null;
-        return get(0);
-    }
-    
-    @Override
-    public Tuple<K, V> getLast() {
-        if (isEmpty())
-            return null;
-        return get(size() - 1);
     }
     
     @Nullable

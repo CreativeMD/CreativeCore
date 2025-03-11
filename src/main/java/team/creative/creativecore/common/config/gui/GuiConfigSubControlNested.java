@@ -11,9 +11,9 @@ import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.gui.GuiChildControl;
-import team.creative.creativecore.common.gui.controls.parent.GuiPanel;
-import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
-import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.control.parent.GuiPanel;
+import team.creative.creativecore.common.gui.control.simple.GuiLabel;
+import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiConfigSubControlNested extends GuiConfigSubControl {

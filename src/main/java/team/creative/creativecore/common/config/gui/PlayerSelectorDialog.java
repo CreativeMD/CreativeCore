@@ -2,8 +2,8 @@ package team.creative.creativecore.common.config.gui;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.controls.collection.GuiComboBoxMapped;
-import team.creative.creativecore.common.gui.controls.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.util.player.PlayerSelector;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 
@@ -27,13 +27,13 @@ public class PlayerSelectorDialog extends GuiLayer {
         PlayerSelector selector = button.get();
         handler = GuiPlayerSelectorHandler.get(selector);
         
-        GuiComboBoxMapped<String> box = get("type");
+        GuiComboBox<String> box = get("type");
         if (box != null)
-            handler = GuiPlayerSelectorHandler.REGISTRY.get(box.getSelected());
+            handler = GuiPlayerSelectorHandler.REGISTRY.get(box.selected());
         
         clear();
         
-        box = new GuiComboBoxMapped<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), Component::literal));
+        box = new GuiComboBox<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), Component::literal));
         box.select(handler.getName());
         add(box);
         

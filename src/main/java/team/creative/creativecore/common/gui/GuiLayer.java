@@ -13,7 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
-import team.creative.creativecore.common.gui.controls.inventory.IGuiInventory;
+import team.creative.creativecore.common.gui.control.inventory.IGuiInventory;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManager.GuiManagerType;
