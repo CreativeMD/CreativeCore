@@ -93,7 +93,7 @@ public class NamedTree<T> implements Iterable<T> {
         index++;
         if (end <= index)
             return folder;
-        return folder.folder(path, index);
+        return folder.folderForce(path, index);
     }
     
     public String path() {
