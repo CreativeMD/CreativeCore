@@ -3,6 +3,8 @@ package team.creative.creativecore.common.util.type.tree;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
 import team.creative.creativecore.common.util.type.itr.NestedIterator;
@@ -37,6 +39,10 @@ public class NamedTree<T> implements Iterable<T> {
     
     public Collection<String> folders() {
         return children.keySet();
+    }
+    
+    public Set<Entry<String, T>> valueEntries() {
+        return values.entrySet();
     }
     
     public Collection<T> values() {
@@ -108,5 +114,18 @@ public class NamedTree<T> implements Iterable<T> {
     @Override
     public Iterator<T> iterator() {
         return new ConsecutiveIterator<>(values.values().iterator(), new NestedIterator<>(children.values()));
+    }
+    
+    /** First considered is the first value value from the first child, the last is the last value of the current node */
+    public T first() {
+        for (Entry<String, NamedTree<T>> entry : children.entrySet()) {
+            var selected = entry.getValue().first();
+            if (selected != null)
+                return selected;
+        }
+        
+        if (values.isEmpty())
+            return null;
+        return values.firstEntry().getValue();
     }
 }
