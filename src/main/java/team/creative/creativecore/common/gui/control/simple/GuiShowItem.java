@@ -11,7 +11,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiShowItem extends GuiControl {
     
@@ -59,8 +58,8 @@ public class GuiShowItem extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
-        float scale = (float) Math.min(rect.getWidth() / 16, rect.getHeight() / 16);
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+        float scale = Math.min(rect.getContentWidth() / 16, rect.getContentHeight() / 16);
         PoseStack pose = graphics.pose();
         pose.scale(scale, scale, 1);
         GuiRenderHelper.drawItemStack(graphics, stack, 1);

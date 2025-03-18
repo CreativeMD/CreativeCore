@@ -8,7 +8,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiColorPlate extends GuiControl {
@@ -42,10 +41,10 @@ public class GuiColorPlate extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
-        getStyle().transparencyBackground.render(graphics, rect.getWidth(), rect.getHeight());
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+        getStyle().transparencyBackground.render(graphics, rect.getContentWidth(), rect.getContentHeight());
         colorPlate.set(color);
-        colorPlate.render(graphics, rect.getWidth(), rect.getHeight());
+        colorPlate.render(graphics, rect.getContentWidth(), rect.getContentHeight());
     }
     
     @Override

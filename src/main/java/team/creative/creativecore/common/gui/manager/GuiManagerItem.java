@@ -25,7 +25,6 @@ import team.creative.creativecore.CreativeCoreGuiRegistry;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.control.inventory.GuiSlot;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiManagerItem extends GuiManager {
     
@@ -65,7 +64,7 @@ public class GuiManagerItem extends GuiManager {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
+    public void renderOverlay(GuiGraphics graphics, GuiLayer layer, int mouseX, int mouseY) {
         ItemStack stack = hand;
         int count = stack.getCount();
         if (drag) {

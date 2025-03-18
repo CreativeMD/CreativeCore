@@ -152,5 +152,5 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
 }

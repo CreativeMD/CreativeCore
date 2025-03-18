@@ -320,8 +320,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
             if (!control.visible)
                 continue;
             
-            Rect controlRect = control.createChildRect(contentRect, scale, xOffset, yOffset);
-            Rect realRect = realContentRect.intersection(controlRect);
+            Rect controlContentRect = control.createChildRect(contentRect, scale, xOffset, yOffset);
+            Rect realRect = realContentRect.intersection(controlContentRect);
             if (realRect != null || hover) {
                 if (hover)
                     RenderSystem.disableScissor();
@@ -330,7 +330,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
                 
                 pose.pushPose();
                 pose.translate(control.rect.getX() + xOffset, control.rect.getY() + yOffset, 10);
-                renderControl(graphics, control, controlRect, realRect, scale, mouseX, mouseY, hover);
+                renderControl(graphics, control, controlContentRect, realRect, scale, mouseX, mouseY, hover);
                 pose.popPose();
             }
         }
@@ -338,8 +338,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControl(GuiGraphics graphics, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
-        control.render(graphics, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
+    protected void renderControl(GuiGraphics graphics, GuiControl control, Rect controlContentRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
+        control.render(graphics, controlContentRect, hover ? controlContentRect : realRect, scale, mouseX, mouseY);
     }
     
     @Override
@@ -366,7 +366,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
     
     @Override
     public boolean isContainer() {
