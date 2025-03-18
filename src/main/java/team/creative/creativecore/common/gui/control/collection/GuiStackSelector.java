@@ -126,7 +126,7 @@ public class GuiStackSelector extends GuiLabel {
     
     @Override
     public void looseFocus() {
-        if (ex.shouldClose())
+        if (ex.checkShouldClose())
             ex.close();
     }
     
