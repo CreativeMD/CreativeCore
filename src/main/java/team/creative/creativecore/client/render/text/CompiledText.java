@@ -35,6 +35,10 @@ import team.creative.creativecore.common.util.type.list.SingletonList;
 
 public class CompiledText {
     
+    public static CompiledText createAnySize() {
+        return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+    
     private static int width(FormattedText text) {
         if (text instanceof AdvancedFormattedText adv)
             return adv.width(AdvancedComponentHelper.SPLITTER.width, Style.EMPTY);
@@ -464,6 +468,17 @@ public class CompiledText {
         return width;
     }
     
+    public CompiledText sameDimensions() {
+        CompiledText copy = new CompiledText(maxWidth, maxHeight);
+        copy.align = align;
+        copy.valign = valign;
+        copy.lineSpacing = lineSpacing;
+        copy.scale = scale;
+        copy.maxWidthScaled = maxWidthScaled;
+        copy.maxHeightScaled = maxHeightScaled;
+        return copy;
+    }
+    
     public CompiledText copy() {
         CompiledText copy = new CompiledText(maxWidth, maxHeight);
         copy.align = align;
@@ -479,10 +494,6 @@ public class CompiledText {
             components.add(component.copy());
         copy.setText(components);
         return copy;
-    }
-    
-    public static CompiledText createAnySize() {
-        return new CompiledText(Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
     
     public boolean contains(String search) {
