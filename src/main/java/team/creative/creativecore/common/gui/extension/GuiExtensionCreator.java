@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
@@ -24,31 +25,27 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
     }
     
     public void open(T extension, Rect rect) {
+        open(extension, rect, ExtensionDirection.BELOW_OR_ABOVE);
+    }
+    
+    public void open(T extension, Rect rect, ExtensionDirection direction) {
         this.extension = extension;
         var layer = parent.getLayer();
-        int offset = parent.getContentOffset();
         GuiChildControl child = layer.addHoverControl(extension);
         
         rect = parent.toLayerRect(new Rect(0, 0, rect.getWidth(), rect.getHeight()));
         extension.init();
-        child.setX((int) rect.minX);
-        child.setY((int) rect.maxY);
         
-        child.setWidth((int) rect.getWidth(), (int) layer.rect.getWidth() - offset * 2);
-        child.flowX();
-        int height = (int) layer.rect.getHeight() - offset * 2;
-        child.setHeight(child.getPreferredHeight(height), height);
-        child.flowY();
-        
-        Rect absolute = extension.getIntegratedParent().toScreenRect(layer, child.rect.copy());
-        Rect screen = Rect.getScreenRect();
-        
-        if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
-            child.setY(child.getY() - ((int) rect.getHeight() + child.getHeight()));
+        direction.apply(layer, child, rect, layer.getContentOffset());
+    }
+    
+    public T get() {
+        return extension;
     }
     
     public void close() {
         if (extension != null) {
+            extension.closed();
             parent.getLayer().remove(extension);
             extension = null;
         }
@@ -62,8 +59,10 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         return extension != null;
     }
     
-    public boolean shouldClose() {
-        return extension != null && lostFocus;
+    public boolean checkShouldClose() {
+        boolean result = extension != null && lostFocus;
+        markLostFocus();
+        return result;
     }
     
     public void markLostFocus() {
@@ -72,6 +71,51 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
     
     public void markKeptFocus() {
         lostFocus = false;
+    }
+    
+    public static enum ExtensionDirection {
+        
+        BELOW_OR_ABOVE {
+            @Override
+            public void apply(GuiLayer layer, GuiChildControl child, Rect rect, int layerOffset) {
+                child.setX((int) rect.minX);
+                child.setY((int) rect.maxY);
+                
+                child.setWidth((int) rect.getWidth(), (int) layer.rect.getWidth() - layerOffset * 2);
+                child.flowX();
+                int layerHeight = (int) layer.rect.getHeight() - layerOffset * 2;
+                child.setHeight(child.getPreferredHeight(layerHeight), layerHeight);
+                child.flowY();
+                
+                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, child.rect.copy());
+                Rect screen = Rect.getScreenRect();
+                
+                if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
+                    child.setY(child.getY() - ((int) rect.getHeight() + child.getHeight()));
+            }
+        },
+        RIGHT {
+            @Override
+            public void apply(GuiLayer layer, GuiChildControl child, Rect rect, int layerOffset) {
+                child.setX((int) rect.maxX);
+                child.setY((int) rect.minY);
+                
+                int layerWidth = (int) layer.rect.getWidth() - layerOffset * 2;
+                child.setWidth(child.getPreferredWidth(layerWidth), layerWidth);
+                child.flowX();
+                int layerHeight = (int) layer.rect.getHeight() - layerOffset * 2;
+                child.setHeight(child.getPreferredHeight(layerHeight), layerHeight);
+                child.flowY();
+                
+                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, child.rect.copy());
+                Rect screen = Rect.getScreenRect();
+                
+                if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
+                    child.setY((int) rect.maxY - child.getHeight());
+            }
+        };
+        
+        public abstract void apply(GuiLayer layer, GuiChildControl child, Rect rect, int layerOffset);
     }
     
 }
