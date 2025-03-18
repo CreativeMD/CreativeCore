@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
@@ -38,10 +38,9 @@ public class GuiTable extends GuiParent {
     @Override
     public void flowX(int width, int preferred) {
         List<GuiTableGroup> cols = new ArrayList<>();
-        for (GuiChildControl child : controls) {
-            GuiRow row = (GuiRow) child.control;
+        for (GuiControl control : controls) {
             int i = 0;
-            for (GuiChildControl cell : row) {
+            for (GuiControl cell : (GuiRow) control) {
                 if (cols.size() <= i)
                     cols.add(new GuiTableGroup());
                 cols.get(i).controls.add(cell);
@@ -56,23 +55,23 @@ public class GuiTable extends GuiParent {
             return;
         
         int startX = cols.get(0).getX();
-        GuiChildControl lastCol = cols.get(cols.size() - 1);
+        GuiControlRect lastCol = cols.get(cols.size() - 1);
         int combinedWidth = lastCol.getWidth() + lastCol.getX() - startX;
-        for (GuiChildControl row : controls) {
-            row.setX(startX);
-            row.setWidth(combinedWidth, width);
+        for (GuiControl row : controls) {
+            row.rect.setX(startX);
+            row.rect.setWidth(combinedWidth, width);
         }
     }
     
     @Override
     @Deprecated
-    public GuiChildControl addControl(GuiControl control) {
+    public GuiControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
-    public static class GuiTableGroup extends GuiChildControl {
+    public static class GuiTableGroup extends GuiControlRect {
         
-        public final List<GuiChildControl> controls = new ArrayList<>();
+        public final List<GuiControl> controls = new ArrayList<>();
         
         public GuiTableGroup() {
             super(null);
@@ -81,8 +80,8 @@ public class GuiTable extends GuiParent {
         @Override
         public int getMinWidth(int availableWidth) {
             int min = -1;
-            for (GuiChildControl child : controls) {
-                int minWidth = child.getMinWidth(availableWidth);
+            for (GuiControl control : controls) {
+                int minWidth = control.rect.getMinWidth(availableWidth);
                 if (minWidth != -1)
                     min = Math.max(min, minWidth);
             }
@@ -92,8 +91,8 @@ public class GuiTable extends GuiParent {
         @Override
         public int getMaxWidth(int availableWidth) {
             int max = -1;
-            for (GuiChildControl child : controls) {
-                int maxWidth = child.getMaxWidth(availableWidth);
+            for (GuiControl control : controls) {
+                int maxWidth = control.rect.getMaxWidth(availableWidth);
                 if (maxWidth != -1)
                     max = max == -1 ? maxWidth : Math.min(max, maxWidth);
             }
@@ -103,16 +102,16 @@ public class GuiTable extends GuiParent {
         @Override
         public int getPreferredWidth(int availableWidth) {
             int pref = -1;
-            for (GuiChildControl child : controls)
-                pref = Math.max(pref, child.getPreferredWidth(availableWidth));
+            for (GuiControl control : controls)
+                pref = Math.max(pref, control.getPreferredWidth(availableWidth));
             return pref;
         }
         
         @Override
         public int getMinHeight(int availableHeight) {
             int min = -1;
-            for (GuiChildControl child : controls) {
-                int minHeight = child.getMinHeight(availableHeight);
+            for (GuiControl control : controls) {
+                int minHeight = control.rect.getMinHeight(availableHeight);
                 if (minHeight != -1)
                     min = Math.max(min, minHeight);
             }
@@ -122,8 +121,8 @@ public class GuiTable extends GuiParent {
         @Override
         public int getMaxHeight(int availableHeight) {
             int max = -1;
-            for (GuiChildControl child : controls) {
-                int maxHeight = child.getMaxHeight(availableHeight);
+            for (GuiControl control : controls) {
+                int maxHeight = control.rect.getMaxHeight(availableHeight);
                 if (maxHeight != -1)
                     max = max == -1 ? maxHeight : Math.min(max, maxHeight);
             }
@@ -133,57 +132,57 @@ public class GuiTable extends GuiParent {
         @Override
         public int getPreferredHeight(int availableHeight) {
             int pref = -1;
-            for (GuiChildControl child : controls)
-                pref = Math.max(pref, child.getPreferredHeight(availableHeight));
+            for (GuiControl control : controls)
+                pref = Math.max(pref, control.rect.getPreferredHeight(availableHeight));
             return pref;
         }
         
         @Override
         public int setWidth(int width, int availableWidth) {
             width = super.setWidth(width, availableWidth);
-            for (GuiChildControl child : controls)
-                child.setWidth(width, availableWidth);
+            for (GuiControl control : controls)
+                control.rect.setWidth(width, availableWidth);
             return width;
         }
         
         @Override
         public int setHeight(int height, int availableHeight) {
             height = super.setHeight(height, height);
-            for (GuiChildControl child : controls)
-                child.setHeight(height, height);
+            for (GuiControl control : controls)
+                control.rect.setHeight(height, height);
             return height;
         }
         
         @Override
         public void setX(int x) {
             super.setX(x);
-            for (GuiChildControl child : controls)
-                child.setX(x);
+            for (GuiControl control : controls)
+                control.rect.setX(x);
         }
         
         @Override
         public void setY(int y) {
             super.setY(y);
-            for (GuiChildControl child : controls)
-                child.setY(y);
+            for (GuiControl control : controls)
+                control.rect.setY(y);
         }
         
         @Override
         public void flowX() {
-            for (GuiChildControl child : controls)
-                child.flowX();
+            for (GuiControl control : controls)
+                control.rect.flowX();
         }
         
         @Override
         public void flowY() {
-            for (GuiChildControl child : controls)
-                child.flowY();
+            for (GuiControl control : controls)
+                control.rect.flowY();
         }
         
         @Override
         public boolean isExpandableX() {
-            for (GuiChildControl child : controls)
-                if (child.isExpandableX())
+            for (GuiControl control : controls)
+                if (control.isExpandableX())
                     return true;
             return false;
         }

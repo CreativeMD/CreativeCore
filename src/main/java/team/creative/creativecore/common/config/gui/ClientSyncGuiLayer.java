@@ -27,7 +27,6 @@ import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.tree.CheckTree;
 
@@ -162,7 +161,7 @@ public class ClientSyncGuiLayer extends GuiLayer {
         }
         
         @Override
-        public boolean mouseClicked(Rect rect, double x, double y, int button) {
+        public boolean mouseClicked(double x, double y, int button) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             this.value = !value;
             

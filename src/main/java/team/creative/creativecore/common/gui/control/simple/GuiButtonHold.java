@@ -2,8 +2,6 @@ package team.creative.creativecore.common.gui.control.simple;
 
 import java.util.function.Consumer;
 
-import team.creative.creativecore.common.util.math.geo.Rect;
-
 public class GuiButtonHold extends GuiButton {
     
     public static final int INITIAL_WAIT = 250;
@@ -18,17 +16,17 @@ public class GuiButtonHold extends GuiButton {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         wait = System.currentTimeMillis();
         clicked = button;
         inital = true;
-        return super.mouseClicked(rect, x, y, button);
+        return super.mouseClicked(x, y, button);
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
+    public void mouseReleased(double x, double y, int button) {
         clicked = -1;
-        super.mouseReleased(rect, x, y, button);
+        super.mouseReleased(x, y, button);
     }
     
     @Override
@@ -47,9 +45,9 @@ public class GuiButtonHold extends GuiButton {
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
+    public void mouseMoved(double x, double y) {
         if (clicked != -1 && !rect.inside(x, y))
             wait = System.currentTimeMillis();
-        super.mouseMoved(rect, x, y);
+        super.mouseMoved(x, y);
     }
 }

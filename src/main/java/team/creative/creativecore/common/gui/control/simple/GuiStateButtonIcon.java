@@ -3,7 +3,6 @@ package team.creative.creativecore.common.gui.control.simple;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.Icon;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiStateButtonIcon extends GuiButtonIcon {
@@ -75,8 +74,8 @@ public class GuiStateButtonIcon extends GuiButtonIcon {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         this.nextState();
-        return super.mouseClicked(rect, x, y, button);
+        return super.mouseClicked(x, y, button);
     }
 }

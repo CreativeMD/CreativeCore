@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.gui.control.parent;
 
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
@@ -36,7 +35,7 @@ public class GuiTopBottomBox extends GuiParent {
     
     @Override
     @Deprecated
-    public GuiChildControl addControl(GuiControl control) {
+    public GuiControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

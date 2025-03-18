@@ -2,12 +2,12 @@ package team.creative.creativecore.common.gui;
 
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public class GuiChildControl {
+public class GuiControlRect {
     
-    public final GuiControl control;
-    public Rect rect;
+    protected final GuiControl control;
+    private Rect rect;
     
-    public GuiChildControl(GuiControl control) {
+    public GuiControlRect(GuiControl control) {
         this.control = control;
         this.rect = new Rect(0, 0, 0, 0);
     }
@@ -155,7 +155,11 @@ public class GuiChildControl {
         return (int) rect.maxY;
     }
     
-    public boolean isMouseOver(double x, double y) {
+    public int getRight() {
+        return (int) rect.maxX;
+    }
+    
+    public boolean inside(double x, double y) {
         return rect.inside(x, y);
     }
     
@@ -167,4 +171,20 @@ public class GuiChildControl {
         return control.isExpandableY();
     }
     
+    public Rect rectCopy() {
+        return rect.copy();
+    }
+    
+    @Override
+    public String toString() {
+        return rect.toString();
+    }
+    
+    public void setRight(int x) {
+        rect.maxX = x;
+    }
+    
+    public void setBottom(int y) {
+        rect.maxY = y;
+    }
 }

@@ -9,7 +9,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
@@ -59,30 +58,30 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         if (button == 0) {
             if (textfield != null)
-                return textfield.mouseClicked(rect, x, y, button);
+                return textfield.mouseClicked(x, y, button);
             playSound(SoundEvents.UI_BUTTON_CLICK);
             grabbedSlider = true;
-            mouseMoved(rect, x, y);
+            mouseMoved(x, y);
             return true;
         } else if (button == 1) {
             grabbedSlider = false;
-            textfield = createTextfield(rect);
+            textfield = createTextfield();
             textfield.focus();
             textfield.setText(getTextfieldValue());
             textfield.setCursorPositionEnd();
             textfield.setParent(this);
-            int width = (int) rect.getWidth();
+            int width = rect.getWidth();
             textfield.flowX(width, width);
             return true;
         }
         return false;
     }
     
-    protected GuiTextfield createTextfield(Rect rect) {
-        return new GuiTextfield(getNestedName() + ".text").setFloatOnly().setDim((int) rect.getWidth() - getContentOffset() * 2, (int) rect.getHeight() - getContentOffset() * 2);
+    protected GuiTextfield createTextfield() {
+        return new GuiTextfield(getNestedName() + ".text").setFloatOnly().setDim(rect.getContentWidth(), rect.getContentHeight());
     }
     
     public void closeTextField() {
@@ -175,9 +174,9 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
+    public void mouseMoved(double x, double y) {
         if (grabbedSlider) {
-            int width = (int) rect.getWidth() - getContentOffset() * 2 - sliderSize;
+            int width = rect.getContentWidth() - sliderSize;
             
             if (x < getContentOffset())
                 this.value = this.minValue;
@@ -199,7 +198,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
+    public void mouseReleased(double x, double y, int button) {
         if (this.grabbedSlider)
             this.grabbedSlider = false;
     }
@@ -241,17 +240,17 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect controlRect, int mouseX, int mouseY) {
         double percent = getPercentage();
         
-        int posX = (int) ((control.getContentWidth() - sliderSize) * percent);
+        int posX = (int) ((rect.getContentWidth() - sliderSize) * percent);
         GuiStyle style = getStyle();
-        style.get(ControlStyleFace.CLICKABLE, false).render(graphics, posX, 0, sliderSize, control.getContentHeight());
+        style.get(ControlStyleFace.CLICKABLE, false).render(graphics, posX, 0, sliderSize, rect.getContentHeight());
         
         if (textfield != null)
-            textfield.render(graphics, control, rect, rect, 1, mouseX, mouseY);
+            textfield.render(graphics, controlRect, controlRect, 1, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(graphics, getTextByValue(), control.getContentWidth(), control.getContentHeight(), ColorUtils.WHITE, true);
+            GuiRenderHelper.drawStringCentered(graphics, getTextByValue(), rect.getContentWidth(), rect.getContentHeight(), ColorUtils.WHITE, true);
     }
     
     @Override

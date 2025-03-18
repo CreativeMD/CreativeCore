@@ -2,13 +2,12 @@ package team.creative.creativecore.common.gui.control.tree;
 
 import org.jetbrains.annotations.Nullable;
 
-import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 
-public record GuiTreeDragPosition(team.creative.creativecore.common.gui.control.tree.GuiTreeDragPosition.ItemPosition position, GuiChildControl child, GuiTreeItem item, GuiChildControl above) {
+public record GuiTreeDragPosition(team.creative.creativecore.common.gui.control.tree.GuiTreeDragPosition.ItemPosition position, GuiTreeItem item, GuiControl above) {
     
-    public GuiTreeDragPosition(ItemPosition position, GuiChildControl child, GuiTreeItem item, @Nullable GuiChildControl above) {
+    public GuiTreeDragPosition(ItemPosition position, GuiTreeItem item, @Nullable GuiControl above) {
         this.position = position;
-        this.child = child;
         this.item = item;
         this.above = above;
     }
@@ -19,7 +18,7 @@ public record GuiTreeDragPosition(team.creative.creativecore.common.gui.control.
     
     @Override
     public String toString() {
-        return position.name() + "," + child;
+        return position.name() + "," + item.rect;
     }
     
     public enum ItemPosition {

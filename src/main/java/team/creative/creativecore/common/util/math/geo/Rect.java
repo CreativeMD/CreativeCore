@@ -8,6 +8,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.util.math.base.Axis;
 
 public class Rect {
@@ -105,6 +106,11 @@ public class Rect {
     
     public Rect child(Rect rect, double scale, double xOffset, double yOffset) {
         return new Rect(minX + (rect.minX + xOffset) * scale, minY + (rect.minY + yOffset) * scale, minX + (rect.maxX + xOffset) * scale, minY + (rect.maxY + yOffset) * scale);
+    }
+    
+    public Rect child(GuiControlRect rect, double scale, double xOffset, double yOffset) {
+        return new Rect(minX + (rect.getX() + xOffset) * scale, minY + (rect.getY() + yOffset) * scale, minX + (rect.getRight() + xOffset) * scale, minY + (rect
+                .getBottom() + yOffset) * scale);
     }
     
     public boolean inside(double x, double y) {

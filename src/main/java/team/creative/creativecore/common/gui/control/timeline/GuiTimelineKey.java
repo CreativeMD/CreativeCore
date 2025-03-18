@@ -11,7 +11,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
@@ -37,7 +36,7 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         if (button == 0) {
             channel.select(this);
             playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -52,16 +51,16 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     }
     
     @Override
-    public void mouseDragged(Rect rect, double x, double y, int button, double dragX, double dragY, double time) {
+    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
         if (clicked && time > DRAG_TIME) {
             channel.dragKey(this);
             clicked = false;
         }
-        super.mouseDragged(rect, x, y, button, dragX, dragY, time);
+        super.mouseDragged(x, y, button, dragX, dragY, time);
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
+    public void mouseReleased(double x, double y, int button) {
         clicked = false;
     }
     
@@ -109,8 +108,8 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     }
     
     @Override
-    public Rect createChildRect(GuiChildControl child, Rect contentRect, double scale, double xOffset, double yOffset) {
-        Rect temp = child.rect.copy();
+    public Rect createChildRect(Rect contentRect, double scale, double xOffset, double yOffset) {
+        Rect temp = rect.rectCopy();
         temp.grow(Math.max(temp.getWidth() / 4, temp.getHeight() / 4));
         return contentRect.child(temp, scale, xOffset, yOffset);
     }
@@ -118,15 +117,15 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
-    public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
         
         PoseStack pose = graphics.pose();
         GuiStyle style = getStyle();
         
         pose.pushPose();
-        double width = control.getWidth();
-        double height = control.getHeight();
+        int width = rect.getWidth();
+        int height = rect.getHeight();
         
         pose.translate(width * 0.5, height * 0.5, 0);
         pose.mulPose(Axis.ZP.rotationDegrees(45));
@@ -151,5 +150,5 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {}
 }

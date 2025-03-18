@@ -9,7 +9,7 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
-import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiConfigSubControlHolder extends GuiConfigSubControl {
@@ -62,8 +62,8 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     
     public void save() {
         JsonObject json = new JsonObject();
-        for (GuiChildControl child : this.controls)
-            if (child.control instanceof GuiConfigControl c) {
+        for (GuiControl control : this.controls)
+            if (control instanceof GuiConfigControl c) {
                 JsonElement element = c.save();
                 if (element != null)
                     json.add(c.field.name, element);

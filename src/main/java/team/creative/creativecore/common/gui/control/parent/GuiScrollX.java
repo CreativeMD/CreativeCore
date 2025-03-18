@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
@@ -79,8 +78,8 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
-    public boolean mouseScrolled(Rect rect, double x, double y, double scrolled) {
-        if (super.mouseScrolled(rect, x, y, scrolled))
+    public boolean mouseScrolled(double x, double y, double scrolled) {
+        if (super.mouseScrolled(x, y, scrolled))
             return true;
         scroll(scrolled);
         return true;
@@ -92,21 +91,21 @@ public class GuiScrollX extends GuiParent {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (button == 0 && rect.getHeight() - y <= scrollbarHeight && needsScrollbar(rect)) {
+    public boolean mouseClicked(double x, double y, int button) {
+        if (button == 0 && rect.getHeight() - y <= scrollbarHeight && needsScrollbar()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             dragged = true;
             return true;
         }
-        return super.mouseClicked(rect, x, y, button);
+        return super.mouseClicked(x, y, button);
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
+    public void mouseMoved(double x, double y) {
         if (dragged) {
             GuiStyle style = getStyle();
             ControlFormatting formatting = getControlFormatting();
-            int completeWidth = (int) (rect.getWidth() - style.getBorder(formatting.border) * 2);
+            int completeWidth = rect.getWidth() - style.getBorder(formatting.border) * 2;
             
             int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
             if (cachedWidth < completeWidth)
@@ -116,30 +115,29 @@ public class GuiScrollX extends GuiParent {
             this.scrolled.set((int) (percent * maxScroll));
             onScrolled();
         }
-        super.mouseMoved(rect, x, y);
+        super.mouseMoved(x, y);
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
-        super.mouseReleased(rect, x, y, button);
+    public void mouseReleased(double x, double y, int button) {
+        super.mouseReleased(x, y, button);
         dragged = false;
     }
     
-    public boolean needsScrollbar(Rect rect) {
-        return cachedWidth > rect.getWidth() - getContentOffset() * 2;
+    public boolean needsScrollbar() {
+        return cachedWidth > rect.getContentWidth();
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale,
-            int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
-        super.renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        super.renderContent(graphics, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         pose.popPose();
         
-        if (!needsScrollbar(controlRect) && hoveredScroll)
+        if (!needsScrollbar() && hoveredScroll)
             return;
         
         //if (hoveredScroll)
@@ -154,7 +152,7 @@ public class GuiScrollX extends GuiParent {
         
         scrolled.tick();
         
-        int completeWidth = control.getWidth() - borderWidth * 2;
+        int completeWidth = rect.getWidth() - borderWidth * 2;
         
         int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
         if (scrollThingWidth > completeWidth)
@@ -162,7 +160,7 @@ public class GuiScrollX extends GuiParent {
         double percent = scrolled.current() / maxScroll;
         
         StyleDisplay display = hoveredScroll ? style.disabled : style.get(ControlStyleFace.CLICKABLE, false);
-        display.render(graphics, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, (control.getHeight() - borderWidth * scrollbarHeight) - borderWidth,
+        display.render(graphics, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, (rect.getHeight() - borderWidth * scrollbarHeight) - borderWidth,
             scrollThingWidth, scrollbarHeight);
         
         maxScroll = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);

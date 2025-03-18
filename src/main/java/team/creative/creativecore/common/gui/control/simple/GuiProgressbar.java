@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -62,14 +61,14 @@ public class GuiProgressbar extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
-        this.renderProgress(graphics, control, rect, this.getPercentage());
+    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
+        this.renderProgress(graphics, rect, this.getPercentage());
         GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderProgress(GuiGraphics graphics, GuiChildControl control, Rect rect, double percent) {
+    protected void renderProgress(GuiGraphics graphics, Rect rect, double percent) {
         getStyle().clickable.render(graphics, 0, 0, (int) (rect.getWidth() * percent), rect.getHeight());
     }
     

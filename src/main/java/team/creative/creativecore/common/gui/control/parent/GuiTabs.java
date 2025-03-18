@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.control.simple.GuiTabButton.GuiBorderlessButton;
@@ -58,16 +57,15 @@ public class GuiTabs extends GuiParent {
         index = select;
         selected = tabs.get(select);
         bar.highlight(select);
-        GuiChildControl control = addControl(selected);
         if (lastHeight == -1 && getParent() != null)
             reflow();
         else {
-            control.setX(0);
-            control.setWidth(lastWidth, lastWidth);
-            control.flowX();
-            control.setY(lastY);
-            control.setHeight(lastHeight, lastHeight);
-            control.flowY();
+            selected.rect.setX(0);
+            selected.rect.setWidth(lastWidth, lastWidth);
+            selected.rect.flowX();
+            selected.rect.setY(lastY);
+            selected.rect.setHeight(lastHeight, lastHeight);
+            selected.rect.flowY();
         }
         raiseEvent(new GuiControlChangedEvent(this));
     }
@@ -85,10 +83,9 @@ public class GuiTabs extends GuiParent {
     @Override
     public void flowY(int width, int height, int preferred) {
         super.flowY(width, height, preferred);
-        GuiChildControl control;
-        if (selected != null && (control = find(selected)) != null) {
-            lastHeight = control.getHeight();
-            lastY = control.getY();
+        if (selected != null) {
+            lastHeight = selected.rect.getHeight();
+            lastY = selected.rect.getY();
         } else
             lastHeight = -1;
     }
@@ -104,7 +101,7 @@ public class GuiTabs extends GuiParent {
         }
         
         public void highlight(int index) {
-            GuiBorderlessButton newSelected = (GuiBorderlessButton) controls.get(index).control;
+            GuiBorderlessButton newSelected = (GuiBorderlessButton) controls.get(index);
             if (newSelected != highlighted && highlighted != null)
                 highlighted.active = false;
             newSelected.active = true;
@@ -117,7 +114,7 @@ public class GuiTabs extends GuiParent {
         }
         
         public GuiBorderlessButton getTab(int index) {
-            return (GuiBorderlessButton) controls.get(index).control;
+            return (GuiBorderlessButton) controls.get(index);
         }
         
         public void removeTab(int index) {

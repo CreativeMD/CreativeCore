@@ -34,6 +34,7 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 
 public abstract class GuiControl {
     
+    public final GuiControlRect rect = new GuiControlRect(this);
     private IGuiParent parent;
     public final String name;
     public boolean enabled = true;
@@ -222,8 +223,8 @@ public abstract class GuiControl {
     
     // SIZE
     
-    public Rect createChildRect(GuiChildControl child, Rect contentRect, double scale, double xOffset, double yOffset) {
-        return contentRect.child(child.rect, scale, xOffset, yOffset);
+    public Rect createChildRect(Rect contentRect, double scale, double xOffset, double yOffset) {
+        return contentRect.child(rect, scale, xOffset, yOffset);
     }
     
     public abstract void flowX(int width, int preferred);
@@ -319,7 +320,7 @@ public abstract class GuiControl {
     
     // INTERACTION
     
-    public boolean testForDoubleClick(Rect rect, double x, double y, int button) {
+    public boolean testForDoubleClick(double x, double y, int button) {
         return false;
     }
     
@@ -327,21 +328,21 @@ public abstract class GuiControl {
         return enabled && visible;
     }
     
-    public void mouseMoved(Rect rect, double x, double y) {}
+    public void mouseMoved(double x, double y) {}
     
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         return false;
     }
     
-    public boolean mouseDoubleClicked(Rect rect, double x, double y, int button) {
-        return mouseClicked(rect, x, y, button);
+    public boolean mouseDoubleClicked(double x, double y, int button) {
+        return mouseClicked(x, y, button);
     }
     
-    public void mouseReleased(Rect rect, double x, double y, int button) {}
+    public void mouseReleased(double x, double y, int button) {}
     
-    public void mouseDragged(Rect rect, double x, double y, int button, double dragX, double dragY, double time) {}
+    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {}
     
-    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
+    public boolean mouseScrolled(double x, double y, double delta) {
         return false;
     }
     
@@ -374,7 +375,7 @@ public abstract class GuiControl {
         return getStyle().getContentOffset(getControlFormatting());
     }
     
-    public GuiTooltipEvent getTooltipEvent(Rect rect, double x, double y) {
+    public GuiTooltipEvent getTooltipEvent(double x, double y) {
         List<Component> toolTip = getTooltip();
         
         if (customTooltip != null) {
@@ -415,22 +416,15 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
         
         Rect rectCopy = null;
         if (!enabled)
             rectCopy = controlRect.copy();
         
-        int width;
-        int height;
-        if (control == null) {
-            width = (int) controlRect.getWidth();
-            height = (int) controlRect.getHeight();
-        } else {
-            width = control.getWidth();
-            height = control.getHeight();
-        }
+        int width = rect.getWidth();
+        int height = rect.getHeight();
         
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
@@ -445,10 +439,10 @@ public abstract class GuiControl {
         getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(graphics, borderSize, borderSize, width, height);
         
         controlRect.shrink(borderSize * scale);
-        
+
         graphics.flush();
         
-        renderContent(graphics, control, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
+        renderContent(graphics, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled) {
             realRect.scissor();
@@ -464,27 +458,26 @@ public abstract class GuiControl {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale,
-            int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         controlRect.shrink(formatting.padding * scale);
         if (!enabled)
             pose.pushPose();
         pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(graphics, control, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
+        renderContent(graphics, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
         if (!enabled)
             pose.popPose();
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        renderContent(graphics, control, controlRect, mouseX, mouseY);
+    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        renderContent(graphics, controlRect, mouseX, mouseY);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected abstract void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY);
+    protected abstract void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY);
     
     // MINECRAFT
     

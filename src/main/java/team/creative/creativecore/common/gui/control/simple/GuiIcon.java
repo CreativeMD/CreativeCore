@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -103,13 +102,13 @@ public class GuiIcon extends GuiControl {
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect renderRect, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
         
         var location = this.icon.location();
         
-        int x = 0, y = 0, width = control.getContentWidth(), height = control.getContentHeight();
+        int x = 0, y = 0, width = rect.getContentWidth(), height = rect.getContentHeight();
         if (squared) {
             int size = Math.min(width, height);
             int diff = Math.abs(width - height);

@@ -10,7 +10,7 @@ import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.config.sync.ConfigurationChangePacket;
-import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiLeftRightBox;
@@ -52,13 +52,13 @@ public class ConfigGuiLayer extends GuiLayer {
     public void savePage() {
         GuiTable table = get("box.table");
         JsonObject parent = null;
-        for (GuiChildControl child : table)
-            if (child.control instanceof GuiConfigControl control) {
-                JsonElement element = ((GuiConfigControl) child.control).save();
+        for (GuiControl control : table)
+            if (control instanceof GuiConfigControl c) {
+                JsonElement element = c.save();
                 if (element != null) {
                     if (parent == null)
                         parent = JsonUtils.get(ROOT, holder.path());
-                    parent.add(control.field.name, element);
+                    parent.add(c.field.name, element);
                 }
             }
     }

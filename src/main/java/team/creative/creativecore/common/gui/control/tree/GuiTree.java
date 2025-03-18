@@ -10,7 +10,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollXY;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.control.tree.GuiTreeDragPosition.ItemPosition;
@@ -183,20 +183,20 @@ public class GuiTree extends GuiScrollXY {
     @Override
     protected int preferredWidth(int availableWidth) {
         int width = 0;
-        for (GuiChildControl child : controls)
-            if (child.control instanceof GuiTreeItem item)
-                width = Math.max(width, offsetByLevel(item.getLevel()) + 1 + child.getPreferredWidth(availableWidth));
+        for (GuiControl control : controls)
+            if (control instanceof GuiTreeItem item)
+                width = Math.max(width, offsetByLevel(item.getLevel()) + 1 + control.rect.getPreferredWidth(availableWidth));
             else
-                width = Math.max(width, child.getPreferredWidth(availableWidth));
+                width = Math.max(width, control.rect.getPreferredWidth(availableWidth));
         return width;
     }
     
     @Override
     public void flowX(int width, int preferred) {
         super.flowX(width, preferred);
-        for (GuiChildControl child : controls)
-            if (child.control instanceof GuiTreeItem item)
-                child.setX(offsetByLevel(item.getLevel()) + 1);
+        for (GuiControl control : controls)
+            if (control instanceof GuiTreeItem item)
+                control.rect.setX(offsetByLevel(item.getLevel()) + 1);
         updateWidth();
         lastWidth = width;
     }
@@ -210,7 +210,7 @@ public class GuiTree extends GuiScrollXY {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         if (isDragged()) {
             pose.pushPose();
@@ -218,47 +218,46 @@ public class GuiTree extends GuiScrollXY {
             lastDragPosition = calculatePosition((int) (mouseX - realRect.minX - getContentOffset()), (int) (mouseY - realRect.minY - getContentOffset()));
             if (lastDragPosition != null) {
                 if (lastDragPosition.position() == ItemPosition.IN)
-                    dragHover.render(graphics, lastDragPosition.child().rect.minX, lastDragPosition.child().rect.minY, lastDragPosition.child().rect.getWidth(), lastDragPosition
-                            .child().rect.getHeight());
+                    dragHover.render(graphics, lastDragPosition.item().rect);
                 else {
                     int thickness = 1;
                     int minY;
-                    int width = (int) lastDragPosition.child().rect.getWidth();
+                    int width = lastDragPosition.item().rect.getWidth();
                     if (lastDragPosition.position() == ItemPosition.ABOVE) {
-                        minY = (int) (lastDragPosition.child().rect.minY - thickness) - 1;
+                        minY = lastDragPosition.item().rect.getY() - thickness - 1;
                         if (lastDragPosition.above() != null)
-                            width = Math.max(width, (int) lastDragPosition.above().rect.getWidth());
+                            width = Math.max(width, lastDragPosition.above().rect.getWidth());
                     } else
-                        minY = (int) lastDragPosition.child().rect.maxY + 1;
+                        minY = lastDragPosition.item().rect.getBottom() + 1;
                     
                     if (lastDragPosition.above() != null) {
-                        dragLine.render(graphics, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 3);
-                        dragLine.render(graphics, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 3);
+                        dragLine.render(graphics, lastDragPosition.item().rect.getX() - thickness, minY - thickness, thickness, thickness * 3);
+                        dragLine.render(graphics, lastDragPosition.item().rect.getX() + width, minY - thickness, thickness, thickness * 3);
                     } else if (lastDragPosition.position() == ItemPosition.ABOVE) {
-                        dragLine.render(graphics, lastDragPosition.child().rect.minX - thickness, minY, thickness, thickness * 2);
-                        dragLine.render(graphics, lastDragPosition.child().rect.minX + width, minY, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.item().rect.getX() - thickness, minY, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.item().rect.getX() + width, minY, thickness, thickness * 2);
                     } else {
-                        dragLine.render(graphics, lastDragPosition.child().rect.minX - thickness, minY - thickness, thickness, thickness * 2);
-                        dragLine.render(graphics, lastDragPosition.child().rect.minX + width, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.item().rect.getX() - thickness, minY - thickness, thickness, thickness * 2);
+                        dragLine.render(graphics, lastDragPosition.item().rect.getX() + width, minY - thickness, thickness, thickness * 2);
                     }
                     
-                    dragLine.render(graphics, lastDragPosition.child().rect.minX, minY, width, thickness);
+                    dragLine.render(graphics, lastDragPosition.item().rect.getX(), minY, width, thickness);
                 }
             }
             pose.popPose();
         } else
             lastDragPosition = null;
         
-        super.renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        super.renderContent(graphics, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         
         pose.pushPose();
         pose.translate(getOffsetX(), getContentOffset() + getOffsetY(), 0);
         List<GuiTreeLine> lines = new ArrayList<>();
         int size = -1;
-        for (GuiChildControl child : controls) {
-            if (!(child.control instanceof GuiTreeItem item))
+        for (GuiControl control : controls) {
+            if (!(control instanceof GuiTreeItem item))
                 continue;
-            int lineY = (int) ((child.rect.minY + child.rect.maxY) / 2) + halfLineThickness;
+            int lineY = (control.rect.getY() + control.rect.getBottom()) / 2 + halfLineThickness;
             int level = item.getLevel() - (visibleRoot ? 1 : 2);
             
             if (level <= size) {
@@ -278,9 +277,9 @@ public class GuiTree extends GuiScrollXY {
                 
                 while (level > size) {
                     if (lines.size() > size + 1)
-                        lines.get(level).set((int) child.rect.minY - 2, lineY);
+                        lines.get(level).set(control.rect.getY() - 2, lineY);
                     else
-                        lines.add(new GuiTreeLine(size + 1, (int) child.rect.minY - 2, lineY));
+                        lines.add(new GuiTreeLine(size + 1, control.rect.getY() - 2, lineY));
                     size++;
                 }
             }
@@ -303,37 +302,37 @@ public class GuiTree extends GuiScrollXY {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (super.mouseClicked(rect, x, y, button))
+    public boolean mouseClicked(double x, double y, int button) {
+        if (super.mouseClicked(x, y, button))
             return true;
         if (canDeselect)
             select(null);
         return true;
     }
     
-    private GuiTreeDragPosition createPosition(ItemPosition position, GuiChildControl child, GuiTreeItem item, GuiChildControl before) {
+    private GuiTreeDragPosition createPosition(ItemPosition position, GuiTreeItem item, GuiControl before) {
         if (item == root && position != ItemPosition.IN)
             return null;
-        return new GuiTreeDragPosition(position, child, item, before != null && before.control instanceof GuiTreeItem item2 && item2.getLevel() == item.getLevel() ? before : null);
+        return new GuiTreeDragPosition(position, item, before != null && before instanceof GuiTreeItem item2 && item2.getLevel() == item.getLevel() ? before : null);
     }
     
     protected GuiTreeDragPosition calculatePosition(int mouseX, int mouseY) {
-        GuiChildControl last = null;
-        GuiChildControl before = null;
-        for (GuiChildControl child : controls) {
-            if (child.control == dragged)
+        GuiControl last = null;
+        GuiControl before = null;
+        for (GuiControl control : controls) {
+            if (control == dragged)
                 continue;
-            if (child.control instanceof GuiTreeItem item)
-                if (child.rect.minY > mouseY)
-                    return createPosition(ItemPosition.ABOVE, child, item, before);
-                else if (child.rect.inside(mouseX, mouseY))
-                    return createPosition(ItemPosition.IN, child, item, before);
+            if (control instanceof GuiTreeItem item)
+                if (control.rect.getY() > mouseY)
+                    return createPosition(ItemPosition.ABOVE, item, before);
+                else if (control.rect.inside(mouseX, mouseY))
+                    return createPosition(ItemPosition.IN, item, before);
                 else
-                    last = child;
-            before = child;
+                    last = control;
+            before = control;
         }
         if (last != null)
-            return createPosition(ItemPosition.BELOW, last, (GuiTreeItem) last.control, null);
+            return createPosition(ItemPosition.BELOW, (GuiTreeItem) last, null);
         return null;
     }
     
@@ -362,7 +361,7 @@ public class GuiTree extends GuiScrollXY {
         int index = parent.indexOf(selected);
         if (index <= 0)
             return false;
-        return performModication(selected, new GuiTreeDragPosition(ItemPosition.ABOVE, null, parent.getItem(index - 1), null));
+        return performModication(selected, new GuiTreeDragPosition(ItemPosition.ABOVE, parent.getItem(index - 1), null));
     }
     
     public boolean moveDown() {
@@ -374,7 +373,7 @@ public class GuiTree extends GuiScrollXY {
         int index = parent.indexOf(selected);
         if (index >= parent.itemsCount() - 1)
             return false;
-        return performModication(selected, new GuiTreeDragPosition(ItemPosition.BELOW, null, parent.getItem(index + 1), null));
+        return performModication(selected, new GuiTreeDragPosition(ItemPosition.BELOW, parent.getItem(index + 1), null));
     }
     
     public boolean isDragged() {

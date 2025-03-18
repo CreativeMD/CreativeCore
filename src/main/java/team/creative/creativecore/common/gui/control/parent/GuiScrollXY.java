@@ -9,7 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -78,18 +78,18 @@ public class GuiScrollXY extends GuiParent {
     }
     
     @Override
-    public boolean mouseScrolled(Rect rect, double x, double y, double scrolled) {
-        if (super.mouseScrolled(rect, x, y, scrolled))
+    public boolean mouseScrolled(double x, double y, double scrolled) {
+        if (super.mouseScrolled(x, y, scrolled))
             return true;
         
-        scroll(rect, scrolled);
+        scroll(scrolled);
         return true;
     }
     
-    public void scroll(Rect rect, double scrolled) {
+    public void scroll(double scrolled) {
         if (alternativeScrolling) {
             if (Screen.hasShiftDown()) {
-                if (needsScrollbarX(rect)) {
+                if (needsScrollbarX()) {
                     this.scrolledX.set(this.scrolledX.aimed() - scrolled * 10);
                     onScrolledX();
                 }
@@ -101,7 +101,7 @@ public class GuiScrollXY extends GuiParent {
             return;
         }
         
-        boolean shouldScrollY = needsScrollbarY(rect);
+        boolean shouldScrollY = needsScrollbarY();
         if (shouldScrollY)
             if (scrolled > 0 && this.scrolledY.aimed() == 0)
                 shouldScrollY = false;
@@ -119,26 +119,26 @@ public class GuiScrollXY extends GuiParent {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (button == 0 && rect.getHeight() - y <= scrollbarThickness && needsScrollbarX(rect)) {
+    public boolean mouseClicked(double x, double y, int button) {
+        if (button == 0 && rect.getHeight() - y <= scrollbarThickness && needsScrollbarX()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             draggedX = true;
             return true;
         }
-        if (button == 0 && rect.getWidth() - x <= scrollbarThickness && needsScrollbarY(rect)) {
+        if (button == 0 && rect.getWidth() - x <= scrollbarThickness && needsScrollbarY()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             draggedY = true;
             return true;
         }
-        return super.mouseClicked(rect, x, y, button);
+        return super.mouseClicked(x, y, button);
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
+    public void mouseMoved(double x, double y) {
         if (draggedX) {
             GuiStyle style = getStyle();
             ControlFormatting formatting = getControlFormatting();
-            int completeWidth = (int) (rect.getWidth() - style.getBorder(formatting.border) * 2);
+            int completeWidth = rect.getWidth() - style.getBorder(formatting.border) * 2;
             
             int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
             if (cachedWidth < completeWidth)
@@ -151,7 +151,7 @@ public class GuiScrollXY extends GuiParent {
         if (draggedY) {
             GuiStyle style = getStyle();
             ControlFormatting formatting = getControlFormatting();
-            int completeHeight = (int) (rect.getHeight() - style.getBorder(formatting.border) * 2);
+            int completeHeight = rect.getHeight() - style.getBorder(formatting.border) * 2;
             
             int scrollThingHeight = Math.max(10, Math.min(completeHeight, (int) ((float) completeHeight / cachedHeight * completeHeight)));
             if (cachedHeight < completeHeight)
@@ -161,31 +161,30 @@ public class GuiScrollXY extends GuiParent {
             this.scrolledY.set((int) (percent * maxScrollY));
             onScrolledY();
         }
-        super.mouseMoved(rect, x, y);
+        super.mouseMoved(x, y);
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
-        super.mouseReleased(rect, x, y, button);
+    public void mouseReleased(double x, double y, int button) {
+        super.mouseReleased(x, y, button);
         draggedX = draggedY = false;
     }
     
-    public boolean needsScrollbarX(Rect rect) {
-        return cachedWidth > rect.getWidth() - getContentOffset() * 2;
+    public boolean needsScrollbarX() {
+        return cachedWidth > rect.getContentWidth();
     }
     
-    public boolean needsScrollbarY(Rect rect) {
-        return cachedHeight > rect.getHeight() - getContentOffset() * 2;
+    public boolean needsScrollbarY() {
+        return cachedHeight > rect.getContentHeight();
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale,
-            int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
-        super.renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
+        super.renderContent(graphics, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         pose.popPose();
         
         float controlInvScale = (float) scaleFactorInv();
@@ -199,15 +198,15 @@ public class GuiScrollXY extends GuiParent {
         
         scrolledX.tick();
         
-        if (needsScrollbarX(control.rect)) {
-            int completeWidth = control.getWidth() - borderWidth * 2;
+        if (needsScrollbarX()) {
+            int completeWidth = rect.getWidth() - borderWidth * 2;
             
             int scrollThingWidth = Math.max(10, Math.min(completeWidth, (int) ((float) completeWidth / cachedWidth * completeWidth)));
             if (cachedWidth < completeWidth)
                 scrollThingWidth = completeWidth;
             double percent = scrolledX.current() / maxScrollX;
             
-            style.get(scrollbarFace, false).render(graphics, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, control
+            style.get(scrollbarFace, false).render(graphics, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, rect
                     .getHeight() - scrollbarThickness - borderWidth, scrollThingWidth, scrollbarThickness);
             
             maxScrollX = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
@@ -215,15 +214,15 @@ public class GuiScrollXY extends GuiParent {
         
         scrolledY.tick();
         
-        if (needsScrollbarY(control.rect)) {
-            int completeHeight = control.getHeight() - borderWidth * 2;
+        if (needsScrollbarY()) {
+            int completeHeight = rect.getHeight() - borderWidth * 2;
             
             int scrollThingHeight = Math.max(10, Math.min(completeHeight, (int) ((float) completeHeight / cachedHeight * completeHeight)));
             if (cachedHeight < completeHeight)
                 scrollThingHeight = completeHeight;
             double percent = scrolledY.current() / maxScrollY;
             
-            style.get(scrollbarFace, false).render(graphics, control.getWidth() - scrollbarThickness - borderWidth,
+            style.get(scrollbarFace, false).render(graphics, rect.getWidth() - scrollbarThickness - borderWidth,
                 (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarThickness, scrollThingHeight);
             
             maxScrollY = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
@@ -253,8 +252,8 @@ public class GuiScrollXY extends GuiParent {
     
     protected void updateWidth() {
         int maxX = 0;
-        for (GuiChildControl child : controls)
-            maxX = Math.max((int) child.rect.maxX, maxX);
+        for (GuiControl control : controls)
+            maxX = Math.max(control.rect.getRight(), maxX);
         cachedWidth = maxX;
     }
     
@@ -266,8 +265,8 @@ public class GuiScrollXY extends GuiParent {
     
     protected void updateHeight() {
         int maxY = 0;
-        for (GuiChildControl child : controls)
-            maxY = Math.max((int) child.rect.maxY, maxY);
+        for (GuiControl control : controls)
+            maxY = Math.max(control.rect.getBottom(), maxY);
         cachedHeight = maxY;
     }
 }

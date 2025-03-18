@@ -24,7 +24,6 @@ import net.minecraft.util.StringUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.control.GuiFocusControl;
 import team.creative.creativecore.common.gui.event.GuiTextUpdateEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -155,14 +154,14 @@ public class GuiTextfield extends GuiFocusControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect contentRect, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         Font font = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();
         int color = enabled ? style.fontColor.toInt() : style.fontColorDisabled.toInt();
-        String s = font.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
+        String s = font.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) contentRect.getWidth());
         boolean flag = j >= 0 && j <= s.length();
         boolean flag1 = this.isFocused() && this.frame / 6 % 2 == 0 && flag;
         int yOffset = 0;
@@ -178,7 +177,7 @@ public class GuiTextfield extends GuiFocusControl {
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
         int k1 = xOffset;
         if (!flag)
-            k1 = j > 0 ? control.getWidth() : 0;
+            k1 = j > 0 ? rect.getWidth() : 0;
         else if (flag2) {
             k1 = xOffset - 1;
             --xOffset;
@@ -198,7 +197,7 @@ public class GuiTextfield extends GuiFocusControl {
             
         if (k != j) {
             int l1 = font.width(s.substring(0, k));
-            this.drawSelectionBox(graphics, control, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
+            this.drawSelectionBox(graphics, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
     }
     
@@ -438,13 +437,13 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double mouseX, double mouseY, int button) {
-        super.mouseClicked(rect, mouseX, mouseY, button);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
         
         if (button == 0) {
             int i = Mth.floor(mouseX);
             Font fontRenderer = GuiRenderHelper.getFont();
-            String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) rect.getWidth());
+            String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), rect.getContentWidth());
             this.shift = Screen.hasShiftDown();
             this.setCursorPosition(fontRenderer.plainSubstrByWidth(s, i).length() + this.lineScrollOffset);
             return true;
@@ -452,7 +451,7 @@ public class GuiTextfield extends GuiFocusControl {
         return false;
     }
     
-    private void drawSelectionBox(GuiGraphics graphics, GuiChildControl control, Matrix4f matrix, int startX, int startY, int endX, int endY) {
+    private void drawSelectionBox(GuiGraphics graphics, Matrix4f matrix, int startX, int startY, int endX, int endY) {
         if (startX < endX) {
             int i = startX;
             startX = endX;
@@ -465,11 +464,11 @@ public class GuiTextfield extends GuiFocusControl {
             endY = j;
         }
         
-        if (endX > control.rect.maxX)
-            endX = (int) control.rect.maxX;
+        if (endX > rect.getRight())
+            endX = rect.getRight();
         
-        if (startX > control.rect.maxX)
-            startX = (int) control.rect.maxX;
+        if (startX > rect.getRight())
+            startX = rect.getRight();
         
         graphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
     }

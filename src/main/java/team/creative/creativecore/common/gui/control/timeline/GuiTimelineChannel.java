@@ -8,13 +8,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiTimelineChannel<T> extends GuiParent {
     
@@ -45,13 +43,12 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     
     public GuiTimelineKey<T> addKey(int tick, T value) {
         GuiTimelineKey<T> key = new GuiTimelineKey<T>(this, tick, value);
-        GuiChildControl child = addControl(key);
         if (hasLayer()) {
-            child.setWidth(child.getPreferredWidth(0), 0);
-            child.flowX();
-            child.setHeight(child.getPreferredHeight(0), 0);
-            child.flowY();
-            child.setY((int) Math.ceil(cachedHeight / 2D - child.getHeight() / 2D));
+            key.rect.setWidth(key.rect.getPreferredWidth(0), 0);
+            key.rect.flowX();
+            key.rect.setHeight(key.rect.getPreferredHeight(0), 0);
+            key.rect.flowY();
+            key.rect.setY((int) Math.ceil(cachedHeight / 2D - key.rect.getHeight() / 2D));
         }
         timeline.adjustKeyPositionX(key);
         for (int i = 0; i < keys.size(); i++) {
@@ -72,9 +69,9 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     
     @Override
     public void flowX(int width, int preferred) {
-        for (GuiChildControl child : controls) {
-            child.setWidth(child.getPreferredWidth(0), 0);
-            child.flowX();
+        for (GuiControl control : controls) {
+            control.rect.setWidth(control.rect.getPreferredWidth(0), 0);
+            control.rect.flowX();
         }
         timeline.adjustKeysPositionX();
     }
@@ -124,7 +121,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
+    public void mouseMoved(double x, double y) {
         if (dragged != null) {
             int tick = Math.max(0, timeline.getTimeAt(x));
             if (dragged.channel.isSpaceFor(dragged, tick)) {
@@ -132,22 +129,22 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
                 timeline.adjustKeyPositionX(dragged);
             }
         }
-        super.mouseMoved(rect, x, y);
+        super.mouseMoved(x, y);
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
+    public void mouseReleased(double x, double y, int button) {
         if (dragged != null) {
             this.dragged.channel.movedKey(dragged);
             this.dragged = null;
         }
         
-        super.mouseReleased(rect, x, y, button);
+        super.mouseReleased(x, y, button);
     }
     
     @Override
-    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
-        timeline.scrolled((int) rect.getWidth(), x, delta);
+    public boolean mouseScrolled(double x, double y, double delta) {
+        timeline.scrolled(rect.getWidth(), x, delta);
         return true;
     }
     
@@ -167,8 +164,8 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     protected abstract T getValueAt(int time);
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        boolean result = super.mouseClicked(rect, x, y, button);
+    public boolean mouseClicked(double x, double y, int button) {
+        boolean result = super.mouseClicked(x, y, button);
         if (!result && button == 1) {
             int time = timeline.getTimeAt(x);
             if (isSpaceFor(null, time)) {

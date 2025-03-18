@@ -23,7 +23,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCoreGuiRegistry;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.control.inventory.GuiSlot;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -66,7 +65,7 @@ public class GuiManagerItem extends GuiManager {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    public void renderOverlay(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
         ItemStack stack = hand;
         int count = stack.getCount();
         if (drag) {

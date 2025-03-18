@@ -28,11 +28,28 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
 
-public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChildControl> {
+public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
+    
+    private static GuiControl get(String name, List<GuiControl> collection) {
+        for (int i = 0; i < collection.size(); i++) {
+            GuiControl control = collection.get(i);
+            if (control.name.equalsIgnoreCase(name))
+                return control;
+            else if (control instanceof GuiParent parent) {
+                if (control.name.isBlank()) {
+                    GuiControl result = parent.get(name);
+                    if (result != null)
+                        return result;
+                } else if (name.startsWith(control.name + "."))
+                    return parent.get(name.substring(control.name.length() + 1));
+            }
+        }
+        return null;
+    }
     
     private GuiEventManager eventManager;
-    protected List<GuiChildControl> controls = new CopyOnWriteArrayList<>();
-    protected List<GuiChildControl> hoverControls = new CopyOnWriteArrayList<>();
+    protected List<GuiControl> controls = new CopyOnWriteArrayList<>();
+    protected List<GuiControl> hoverControls = new CopyOnWriteArrayList<>();
     
     public GuiFlow flow;
     public Align align = Align.LEFT;
@@ -124,8 +141,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     public boolean isExpandableX() {
         if (super.isExpandableX())
             return true;
-        for (GuiChildControl child : controls)
-            if (child.control.isExpandableX())
+        for (GuiControl control : controls)
+            if (control.isExpandableX())
                 return true;
         return false;
     }
@@ -134,27 +151,10 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     public boolean isExpandableY() {
         if (super.isExpandableY())
             return true;
-        for (GuiChildControl child : controls)
-            if (child.control.isExpandableY())
+        for (GuiControl control : controls)
+            if (control.isExpandableY())
                 return true;
         return false;
-    }
-    
-    private static GuiControl get(String name, List<GuiChildControl> collection) {
-        for (int i = 0; i < collection.size(); i++) {
-            GuiControl control = collection.get(i).control;
-            if (control.name.equalsIgnoreCase(name))
-                return control;
-            else if (control instanceof GuiParent parent) {
-                if (control.name.isBlank()) {
-                    GuiControl result = parent.get(name);
-                    if (result != null)
-                        return result;
-                } else if (name.startsWith(control.name + "."))
-                    return parent.get(name.substring(control.name.length() + 1));
-            }
-        }
-        return null;
     }
     
     public <T extends GuiControl> T get(String name) {
@@ -177,22 +177,10 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return get(name) != null;
     }
     
-    public GuiChildControl addControl(GuiControl control) {
-        var child = createControl(control);
-        controls.add(child);
-        return child;
-    }
-    
-    private GuiChildControl createControl(GuiControl control) {
+    public <T extends GuiControl> T addControl(T control) {
         control.setParent(this);
-        return new GuiChildControl(control);
-    }
-    
-    private int indexOf(GuiControl control) {
-        for (int i = 0; i < controls.size(); i++)
-            if (controls.get(i).control == control)
-                return i;
-        return -1;
+        controls.add(control);
+        return control;
     }
     
     /** inserts the given the control before the parameter
@@ -202,13 +190,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
      * @param toInsert
      *            the control to be added
      * @return null if the reference could not be found */
-    public GuiChildControl insertControlBefore(GuiControl reference, GuiControl toInsert) {
-        int index = indexOf(reference);
+    public <T extends GuiControl> T insertControlBefore(GuiControl reference, T toInsert) {
+        int index = controls.indexOf(reference);
         if (index == -1)
             return null;
-        GuiChildControl child = createControl(toInsert);
-        controls.add(index, child);
-        return child;
+        toInsert.setParent(this);
+        controls.add(index, toInsert);
+        return toInsert;
     }
     
     /** inserts the given the control after the parameter
@@ -218,17 +206,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
      * @param toInsert
      *            the control to be added
      * @return null if the reference could not be found */
-    public GuiChildControl insertControlAfter(GuiControl reference, GuiControl toInsert) {
-        int index = indexOf(reference);
+    public <T extends GuiControl> T insertControlAfter(GuiControl reference, T toInsert) {
+        int index = controls.indexOf(reference);
         if (index == -1)
             return null;
-        GuiChildControl child = createControl(toInsert);
+        toInsert.setParent(this);
         index++;
         if (index == controls.size())
-            controls.add(child);
+            controls.add(toInsert);
         else
-            controls.add(index, child);
-        return child;
+            controls.add(index, toInsert);
+        return toInsert;
     }
     
     public GuiParent add(GuiControl control) {
@@ -248,11 +236,10 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return this;
     }
     
-    public GuiChildControl addHoverControl(GuiControl control) {
+    public <T extends GuiControl> T addHoverControl(T control) {
         control.setParent(this);
-        GuiChildControl child = new GuiChildControl(control);
-        hoverControls.add(child);
-        return child;
+        hoverControls.add(control);
+        return control;
     }
     
     public GuiParent addHover(GuiControl control) {
@@ -272,65 +259,33 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         return this;
     }
     
-    public boolean remove(GuiChildControl control) {
+    public boolean remove(GuiControl control) {
         return controls.remove(control) || hoverControls.remove(control);
     }
     
-    public GuiChildControl find(GuiControl control) {
-        for (GuiChildControl child : controls)
-            if (child.control == control)
-                return child;
-            
-        for (GuiChildControl child : hoverControls)
-            if (child.control == control)
-                return child;
-        return null;
-    }
-    
-    public GuiChildControl replace(GuiControl oldControl, GuiControl newControl) {
-        GuiChildControl child;
-        
-        for (int i = 0; i < controls.size(); i++) {
-            if (controls.get(i).control == oldControl) {
-                controls.set(i, child = new GuiChildControl(newControl));
-                return child;
+    public boolean replace(GuiControl oldControl, GuiControl newControl) {
+        for (int i = 0; i < controls.size(); i++)
+            if (controls.get(i) == oldControl) {
+                newControl.setParent(this);
+                controls.set(i, newControl);
+                return true;
             }
-        }
-        for (int i = 0; i < hoverControls.size(); i++) {
-            if (hoverControls.get(i).control == oldControl) {
-                hoverControls.set(i, child = new GuiChildControl(newControl));
-                return child;
+        for (int i = 0; i < hoverControls.size(); i++)
+            if (hoverControls.get(i) == oldControl) {
+                hoverControls.set(i, newControl);
+                return true;
             }
-        }
-        return null;
-    }
-    
-    public GuiChildControl remove(GuiControl control) {
-        for (int i = 0; i < controls.size(); i++) {
-            GuiChildControl child = controls.get(i);
-            if (child.control == control) {
-                controls.remove(i);
-                return child;
-            }
-        }
-        for (int i = 0; i < hoverControls.size(); i++) {
-            GuiChildControl child = hoverControls.get(i);
-            if (child.control == control) {
-                hoverControls.remove(i);
-                return child;
-            }
-        }
-        return null;
+        return false;
     }
     
     public void remove(String... include) {
-        controls.removeIf((x) -> ArrayUtils.contains(include, x.control.name));
-        hoverControls.removeIf((x) -> ArrayUtils.contains(include, x.control.name));
+        controls.removeIf((x) -> ArrayUtils.contains(include, x.name));
+        hoverControls.removeIf((x) -> ArrayUtils.contains(include, x.name));
     }
     
     public void removeExclude(String... exclude) {
-        controls.removeIf((x) -> !ArrayUtils.contains(exclude, x.control.name));
-        hoverControls.removeIf((x) -> !ArrayUtils.contains(exclude, x.control.name));
+        controls.removeIf((x) -> !ArrayUtils.contains(exclude, x.name));
+        hoverControls.removeIf((x) -> !ArrayUtils.contains(exclude, x.name));
     }
     
     public boolean isEmpty() {
@@ -347,7 +302,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
-    public Iterator<GuiChildControl> iterator() {
+    public Iterator<GuiControl> iterator() {
         if (hoverControls.isEmpty()) // Performance optimisation
             return controls.iterator();
         return new ConsecutiveIterator<>(hoverControls, controls);
@@ -355,18 +310,17 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiChildControl> collection, double scale,
+    protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiControl> collection, double scale,
             double xOffset, double yOffset, boolean hover) {
         PoseStack pose = graphics.pose();
         
         while (collection.hasPrevious()) {
-            GuiChildControl child = collection.previous();
-            GuiControl control = child.control;
+            GuiControl control = collection.previous();
             
             if (!control.visible)
                 continue;
             
-            Rect controlRect = control.createChildRect(child, contentRect, scale, xOffset, yOffset);
+            Rect controlRect = control.createChildRect(contentRect, scale, xOffset, yOffset);
             Rect realRect = realContentRect.intersection(controlRect);
             if (realRect != null || hover) {
                 if (hover)
@@ -375,8 +329,8 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
                     realRect.scissor();
                 
                 pose.pushPose();
-                pose.translate(child.getX() + xOffset, child.getY() + yOffset, 10);
-                renderControl(graphics, child, control, controlRect, realRect, scale, mouseX, mouseY, hover);
+                pose.translate(control.rect.getX() + xOffset, control.rect.getY() + yOffset, 10);
+                renderControl(graphics, control, controlRect, realRect, scale, mouseX, mouseY, hover);
                 pose.popPose();
             }
         }
@@ -384,15 +338,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderControl(GuiGraphics graphics, GuiChildControl child, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY,
-            boolean hover) {
-        control.render(graphics, child, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
+    protected void renderControl(GuiGraphics graphics, GuiControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
+        control.render(graphics, controlRect, hover ? controlRect : realRect, scale, mouseX, mouseY);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
         if (realContentRect == null)
             return;
         
@@ -407,13 +360,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
         renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);
         
-        super.renderContent(graphics, control, contentRect, realContentRect, scale, mouseX, mouseY);
+        super.renderContent(graphics, contentRect, realContentRect, scale, mouseX, mouseY);
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {}
     
     @Override
     public boolean isContainer() {
@@ -422,20 +375,20 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public void init() {
-        for (GuiChildControl child : this)
-            child.control.init();
+        for (GuiControl control : this)
+            control.init();
     }
     
     @Override
     public void closed() {
-        for (GuiChildControl child : this)
-            child.control.closed();
+        for (GuiControl control : this)
+            control.closed();
     }
     
     @Override
     public void tick() {
-        for (GuiChildControl child : this)
-            child.control.tick();
+        for (GuiControl control : this)
+            control.tick();
     }
     
     @Override
@@ -458,35 +411,29 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
-        for (GuiChildControl child : hoverControls)
-            if (child.isMouseOver(x, y))
+        for (GuiControl control : hoverControls)
+            if (control.rect.inside(x, y))
                 return true;
         return false;
     }
     
     @Override
     public Rect toLayerRect(GuiControl control, Rect rect) {
-        GuiChildControl child = find(control);
-        if (child == null)
-            return rect;
-        rect.move(child.rect.minX + getOffsetX() + getContentOffset(), child.rect.minY + getOffsetY() + getContentOffset());
+        rect.move(control.rect.getX() + getOffsetX() + getContentOffset(), control.rect.getY() + getOffsetY() + getContentOffset());
         rect.scale(scaleFactor());
         return getParent().toLayerRect(this, rect);
     }
     
     @Override
     public Rect toScreenRect(GuiControl control, Rect rect) {
-        GuiChildControl child = find(control);
-        if (child == null)
-            return rect;
-        rect.move(child.rect.minX + getOffsetX() + getContentOffset(), child.rect.minY + getOffsetY() + getContentOffset());
+        rect.move(control.rect.getX() + getOffsetX() + getContentOffset(), control.rect.getY() + getOffsetY() + getContentOffset());
         rect.scale(scaleFactor());
         return getParent().toScreenRect(this, rect);
     }
     
     @Override
-    public GuiTooltipEvent getTooltipEvent(Rect rect, double x, double y) {
-        GuiTooltipEvent event = super.getTooltipEvent(rect, x, y);
+    public GuiTooltipEvent getTooltipEvent(double x, double y) {
+        GuiTooltipEvent event = super.getTooltipEvent(x, y);
         if (event != null)
             return event;
         
@@ -495,9 +442,9 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.isMouseOver(x, y)) {
-                event = child.control.getTooltipEvent(child.rect, x - child.getX(), y - child.getY());
+        for (GuiControl control : this)
+            if (control.isInteractable() && control.rect.inside(x, y)) {
+                event = control.getTooltipEvent(x - control.rect.getX(), y - control.rect.getY());
                 if (event != null)
                     return event;
             }
@@ -505,131 +452,131 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     }
     
     @Override
-    public boolean testForDoubleClick(Rect rect, double x, double y, int button) {
+    public boolean testForDoubleClick(double x, double y, int button) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.rect.inside(x, y) && child.control.testForDoubleClick(child.rect, x - child.getX(), y - child.getY(), button))
+        for (GuiControl control : this)
+            if (control.isInteractable() && control.rect.inside(x, y) && control.testForDoubleClick(x - control.rect.getX(), y - control.rect.getY(), button))
                 return true;
         return false;
         
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
+    public void mouseMoved(double x, double y) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable())
-                child.control.mouseMoved(child.rect, x - child.getX(), y - child.getY());
+        for (GuiControl control : this)
+            if (control.isInteractable())
+                control.mouseMoved(x - control.rect.getX(), y - control.rect.getY());
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
         boolean result = false;
-        for (GuiChildControl child : this)
-            if (!result && child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseClicked(child.rect, x - child.getX(), y - child.getY(), button)) {
-                raiseEvent(new GuiControlClickEvent(child.control, button, false));
+        for (GuiControl control : this)
+            if (!result && control.isInteractable() && control.rect.inside(x, y) && control.mouseClicked(x - control.rect.getX(), y - control.rect.getY(), button)) {
+                raiseEvent(new GuiControlClickEvent(control, button, false));
                 result = true;
             } else
-                child.control.looseFocus();
+                control.looseFocus();
         return result;
     }
     
     @Override
-    public boolean mouseDoubleClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseDoubleClicked(double x, double y, int button) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
         boolean result = false;
-        for (GuiChildControl child : this)
-            if (!result && child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseDoubleClicked(child.rect, x - child.getX(), y - child.getY(), button)) {
-                raiseEvent(new GuiControlClickEvent(child.control, button, false));
+        for (GuiControl control : this)
+            if (!result && control.isInteractable() && control.rect.inside(x, y) && control.mouseDoubleClicked(x - control.rect.getX(), y - control.rect.getY(), button)) {
+                raiseEvent(new GuiControlClickEvent(control, button, false));
                 result = true;
             } else
-                child.control.looseFocus();
+                control.looseFocus();
         return result;
         
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
+    public void mouseReleased(double x, double y, int button) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable())
-                child.control.mouseReleased(child.rect, x - child.getX(), y - child.getY(), button);
+        for (GuiControl control : this)
+            if (control.isInteractable())
+                control.mouseReleased(x - control.rect.getX(), y - control.rect.getY(), button);
     }
     
     @Override
-    public void mouseDragged(Rect rect, double x, double y, int button, double dragX, double dragY, double time) {
+    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable())
-                child.control.mouseDragged(child.rect, x - child.getX(), y - child.getY(), button, dragX, dragY, time);
+        for (GuiControl control : this)
+            if (control.isInteractable())
+                control.mouseDragged(x - control.rect.getX(), y - control.rect.getY(), button, dragX, dragY, time);
     }
     
     @Override
-    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
+    public boolean mouseScrolled(double x, double y, double delta) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.isMouseOver(x, y) && child.control.mouseScrolled(child.rect, x - child.getX(), y - child.getY(), delta))
+        for (GuiControl control : this)
+            if (control.isInteractable() && control.rect.inside(x, y) && control.mouseScrolled(x - control.rect.getX(), y - control.rect.getY(), delta))
                 return true;
         return false;
     }
     
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.control.keyPressed(keyCode, scanCode, modifiers))
+        for (GuiControl control : this)
+            if (control.isInteractable() && control.keyPressed(keyCode, scanCode, modifiers))
                 return true;
         return false;
     }
     
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.control.keyReleased(keyCode, scanCode, modifiers))
+        for (GuiControl control : this)
+            if (control.isInteractable() && control.keyReleased(keyCode, scanCode, modifiers))
                 return true;
         return false;
     }
     
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        for (GuiChildControl child : this)
-            if (child.control.isInteractable() && child.control.charTyped(codePoint, modifiers))
+        for (GuiControl control : this)
+            if (control.isInteractable() && control.charTyped(codePoint, modifiers))
                 return true;
         return false;
     }
     
     @Override
     public void looseFocus() {
-        for (GuiChildControl child : this)
-            child.control.looseFocus();
+        for (GuiControl control : this)
+            control.looseFocus();
     }
     
     @Override
@@ -673,12 +620,12 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     public void flowX(int width, int preferred) {
-        flow.flowX(controls, spacing, align, width, preferred, endlessX());
+        flow.flowX(controls.stream().map(x -> x.rect).toList(), spacing, align, width, preferred, endlessX());
     }
     
     @Override
     public void flowY(int width, int height, int preferred) {
-        flow.flowY(controls, spacing, valign, width, height, preferred, endlessY());
+        flow.flowY(controls.stream().map(x -> x.rect).toList(), spacing, valign, width, height, preferred, endlessY());
     }
     
     protected boolean endlessX() {
@@ -691,22 +638,22 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiChi
     
     @Override
     protected int minWidth(int availableWidth) {
-        return Mth.ceil(flow.minWidth(controls, spacing, availableWidth) * scale);
+        return Mth.ceil(flow.minWidth(controls.stream().map(x -> x.rect).toList(), spacing, availableWidth) * scale);
     }
     
     @Override
     protected int preferredWidth(int availableWidth) {
-        return Mth.ceil(flow.preferredWidth(controls, spacing, availableWidth) * scale);
+        return Mth.ceil(flow.preferredWidth(controls.stream().map(x -> x.rect).toList(), spacing, availableWidth) * scale);
     }
     
     @Override
     protected int minHeight(int width, int availableHeight) {
-        return Mth.ceil(flow.minHeight(controls, spacing, width, availableHeight) * scale);
+        return Mth.ceil(flow.minHeight(controls.stream().map(x -> x.rect).toList(), spacing, width, availableHeight) * scale);
     }
     
     @Override
     protected int preferredHeight(int width, int availableHeight) {
-        return Mth.ceil(flow.preferredHeight(controls, spacing, width, availableHeight) * scale);
+        return Mth.ceil(flow.preferredHeight(controls.stream().map(x -> x.rect).toList(), spacing, width, availableHeight) * scale);
     }
     
     @Override

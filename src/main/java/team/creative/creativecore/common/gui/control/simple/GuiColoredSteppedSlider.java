@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils.ColorPart;
 import team.creative.creativecore.common.util.type.Color;
@@ -34,7 +33,7 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
         if (part == ColorPart.ALPHA) {
             Color startColor = new Color(picker.color);
             startColor.setAlpha(0);
@@ -43,6 +42,6 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
             GuiRenderHelper.horizontalGradientRect(graphics, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), startColor.toInt(), endColor.toInt());
         } else
             GuiRenderHelper.horizontalGradientMaskRect(graphics, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), picker.color.toInt(), part.code);
-        super.renderContent(graphics, control, rect, mouseX, mouseY);
+        super.renderContent(graphics, rect, mouseX, mouseY);
     }
 }

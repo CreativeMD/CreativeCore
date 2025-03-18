@@ -4,7 +4,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiButton extends GuiLabel {
     
@@ -16,7 +15,7 @@ public class GuiButton extends GuiLabel {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         playSound(SoundEvents.UI_BUTTON_CLICK);
         if (pressed != null)
             pressed.accept(button);
