@@ -20,7 +20,6 @@ import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyl
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiCheckBox extends GuiLabel {
@@ -77,7 +76,7 @@ public class GuiCheckBox extends GuiLabel {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         int yoffset = 0;
         
         PoseStack pose = graphics.pose();

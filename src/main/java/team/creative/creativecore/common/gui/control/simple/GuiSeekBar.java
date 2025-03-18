@@ -16,7 +16,6 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.parser.LongValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiSeekBar extends GuiControl {
     
@@ -71,16 +70,16 @@ public class GuiSeekBar extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         final double percent = this.max > 0 ? pos / (double) max : 0;
-        this.renderProgress(graphics, rect, percent);
-        GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
+        this.renderProgress(graphics, percent);
+        GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), rect.getContentWidth(), rect.getContentHeight(), this.getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderProgress(GuiGraphics graphics, Rect rect, double percent) {
-        this.getStyle().clickable.render(graphics, 0, 0, (rect.getWidth() * Math.min(percent, 1.0d)), rect.getHeight());
+    protected void renderProgress(GuiGraphics graphics, double percent) {
+        this.getStyle().clickable.render(graphics, 0, 0, (rect.getContentWidth() * Math.min(percent, 1.0d)), rect.getContentHeight());
     }
     
     @Override

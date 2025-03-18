@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
 public abstract class GuiManager {
@@ -33,7 +32,7 @@ public abstract class GuiManager {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {}
+    public void renderOverlay(GuiGraphics graphics, GuiLayer layer, int mouseX, int mouseY) {}
     
     public void mouseReleased(double x, double y, int button) {}
     

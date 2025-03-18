@@ -28,7 +28,6 @@ import team.creative.creativecore.common.gui.control.GuiFocusControl;
 import team.creative.creativecore.common.gui.event.GuiTextUpdateEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiTextfield extends GuiFocusControl {
     
@@ -154,14 +153,14 @@ public class GuiTextfield extends GuiFocusControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect contentRect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         Font font = GuiRenderHelper.getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();
         int color = enabled ? style.fontColor.toInt() : style.fontColorDisabled.toInt();
-        String s = font.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), (int) contentRect.getWidth());
+        String s = font.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), rect.getContentWidth());
         boolean flag = j >= 0 && j <= s.length();
         boolean flag1 = this.isFocused() && this.frame / 6 % 2 == 0 && flag;
         int yOffset = 0;
@@ -177,7 +176,7 @@ public class GuiTextfield extends GuiFocusControl {
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
         int k1 = xOffset;
         if (!flag)
-            k1 = j > 0 ? rect.getWidth() : 0;
+            k1 = j > 0 ? rect.getContentWidth() : 0;
         else if (flag2) {
             k1 = xOffset - 1;
             --xOffset;

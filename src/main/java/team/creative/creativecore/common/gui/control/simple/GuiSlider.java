@@ -240,7 +240,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect controlRect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         double percent = getPercentage();
         
         int posX = (int) ((rect.getContentWidth() - sliderSize) * percent);
@@ -252,6 +252,11 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         else
             GuiRenderHelper.drawStringCentered(graphics, getTextByValue(), rect.getContentWidth(), rect.getContentHeight(), ColorUtils.WHITE, true);
     }
+    
+    @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
     
     @Override
     public void flowX(int width, int preferred) {

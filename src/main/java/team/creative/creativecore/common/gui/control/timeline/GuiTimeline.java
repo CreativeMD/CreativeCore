@@ -290,7 +290,7 @@ public class GuiTimeline extends GuiParent {
         @Override
         @OnlyIn(Dist.CLIENT)
         @Environment(EnvType.CLIENT)
-        protected void renderContent(GuiGraphics graphics, Rect controlRect, int mouseX, int mouseY) {
+        protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
             
             if (lastZoom != zoom.current()) {
                 lastZoom = zoom.current();

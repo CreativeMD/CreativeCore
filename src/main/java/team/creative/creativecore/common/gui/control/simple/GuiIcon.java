@@ -12,7 +12,6 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiIcon extends GuiControl {
@@ -102,7 +101,7 @@ public class GuiIcon extends GuiControl {
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, Rect renderRect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
         

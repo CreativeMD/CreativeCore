@@ -9,7 +9,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiRowLabel extends GuiLabel {
@@ -34,14 +33,14 @@ public class GuiRowLabel extends GuiLabel {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         if (selected)
             text.setDefaultColor(rect.inside(mouseX, mouseY) ? ColorUtils.rgba(230, 230, 0, 255) : ColorUtils.rgba(200, 200, 0, 255));
         else if (rect.inside(mouseX, mouseY))
             text.setDefaultColor(ColorUtils.YELLOW);
         else
             text.setDefaultColor(ColorUtils.WHITE);
-        super.renderContent(graphics, rect, mouseX, mouseY);
+        super.renderContent(graphics, mouseX, mouseY);
         text.setDefaultColor(ColorUtils.WHITE);
     }
     

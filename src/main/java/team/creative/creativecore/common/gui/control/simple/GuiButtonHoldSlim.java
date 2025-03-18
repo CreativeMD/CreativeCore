@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiButtonHoldSlim extends GuiButtonHold {
     
@@ -19,12 +18,12 @@ public class GuiButtonHoldSlim extends GuiButtonHold {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         if (rect.inside(mouseX, mouseY))
             text.setDefaultColor(getStyle().fontColorHighlight.toInt());
         else
             text.setDefaultColor(getStyle().fontColor.toInt());
-        super.renderContent(graphics, rect, mouseX, mouseY);
+        super.renderContent(graphics, mouseX, mouseY);
     }
     
     @Override

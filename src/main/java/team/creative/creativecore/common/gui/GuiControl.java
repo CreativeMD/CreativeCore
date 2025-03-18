@@ -472,12 +472,12 @@ public abstract class GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        renderContent(graphics, controlRect, mouseX, mouseY);
+        renderContent(graphics, mouseX, mouseY);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected abstract void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY);
+    protected abstract void renderContent(GuiGraphics graphics, int mouseX, int mouseY);
     
     // MINECRAFT
     
