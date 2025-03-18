@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
@@ -56,7 +55,7 @@ public class GuiCheckList<T> extends GuiScrollY {
         rows.remove(index);
     }
     
-    protected GuiChildControl addCustomControl(GuiControl control) {
+    protected GuiControl addCustomControl(GuiControl control) {
         return super.addControl(control);
     }
     
@@ -67,13 +66,13 @@ public class GuiCheckList<T> extends GuiScrollY {
     
     @Override
     @Deprecated
-    public GuiChildControl addControl(GuiControl control) {
+    public GuiControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
     @Override
     @Deprecated
-    public GuiChildControl addHoverControl(GuiControl control) {
+    public GuiControl addHoverControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

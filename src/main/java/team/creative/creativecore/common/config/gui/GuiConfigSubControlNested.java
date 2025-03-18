@@ -10,7 +10,7 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
-import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.control.parent.GuiPanel;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
@@ -87,12 +87,12 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
     
     public JsonObject save() {
         JsonObject json = new JsonObject();
-        for (GuiChildControl child : this.controls)
-            if (child.control instanceof GuiConfigControl c) {
+        for (GuiControl control : this.controls)
+            if (control instanceof GuiConfigControl c) {
                 JsonElement element = c.save();
                 if (element != null)
                     json.add(c.field.name, element);
-            } else if (child.control instanceof GuiConfigSubControlNested n)
+            } else if (control instanceof GuiConfigSubControlNested n)
                 json.add(n.name, n.save());
             
         holder.load(provider(), false, true, json, side);

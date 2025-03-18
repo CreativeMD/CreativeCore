@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -69,7 +68,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
         return this;
     }
     
-    protected GuiChildControl addSlot(GuiSlot slot) {
+    protected GuiControl addSlot(GuiSlot slot) {
         while (slot.slot.getContainerSlot() >= slots.size())
             slots.add(null);
         slots.set(slot.slot.getContainerSlot(), slot);
@@ -78,7 +77,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     @Override
     @Deprecated
-    public GuiChildControl addControl(GuiControl control) {
+    public GuiControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
@@ -99,10 +98,10 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
             cachedCols = Math.min(cachedCols, this.cols);
         int offset = (width - cachedCols * GuiSlotBase.SLOT_SIZE) / 2;
         int i = 0;
-        for (GuiChildControl control : controls) {
-            control.setX(offset + (i % cachedCols) * GuiSlotBase.SLOT_SIZE);
-            control.setWidth(GuiSlotBase.SLOT_SIZE, width);
-            control.flowX();
+        for (GuiControl control : controls) {
+            control.rect.setX(offset + (i % cachedCols) * GuiSlotBase.SLOT_SIZE);
+            control.rect.setWidth(GuiSlotBase.SLOT_SIZE, width);
+            control.rect.flowX();
             i++;
         }
     }
@@ -114,12 +113,12 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
             cachedRows = Math.min(cachedRows, this.rows);
         int offset = (height - cachedRows * GuiSlotBase.SLOT_SIZE) / 2;
         int i = reverse ? controls.size() - 1 : 0;
-        for (GuiChildControl control : controls) {
+        for (GuiControl control : controls) {
             int row = i / cachedCols;
-            control.setY(offset + row * GuiSlotBase.SLOT_SIZE);
-            control.setHeight(GuiSlotBase.SLOT_SIZE, height);
-            control.flowY();
-            control.control.visible = row <= cachedRows;
+            control.rect.setY(offset + row * GuiSlotBase.SLOT_SIZE);
+            control.rect.setHeight(GuiSlotBase.SLOT_SIZE, height);
+            control.rect.flowY();
+            control.visible = row <= cachedRows;
             if (reverse)
                 i--;
             else

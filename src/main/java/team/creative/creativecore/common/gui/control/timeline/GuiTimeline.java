@@ -19,13 +19,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiChildControl;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
+import team.creative.creativecore.common.gui.control.parent.GuiColumn.GuiColumnHeader;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
-import team.creative.creativecore.common.gui.control.parent.GuiColumn.GuiColumnHeader;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiControlEvent;
@@ -146,8 +146,8 @@ public class GuiTimeline extends GuiParent {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        boolean result = super.mouseClicked(rect, x, y, button);
+    public boolean mouseClicked(double x, double y, int button) {
+        boolean result = super.mouseClicked(x, y, button);
         if (!result && button == 0) {
             deselect();
             return false;
@@ -160,15 +160,14 @@ public class GuiTimeline extends GuiParent {
     }
     
     public void adjustKeyPositionX(GuiTimelineKey key) {
-        GuiChildControl child = key.channel.find(key);
-        child.setX(timelineOffset + (int) (((GuiTimelineKey) child.control).tick * getTickWidth()) - (child.getWidth() / 2));
+        key.rect.setX(timelineOffset + (int) (key.tick * getTickWidth()) - (key.rect.getWidth() / 2));
     }
     
     public void adjustKeysPositionX() {
         double tickWidth = getTickWidth();
         for (GuiTimelineChannel<?> channel : channels)
-            for (GuiChildControl key : channel)
-                key.setX(timelineOffset + (int) (((GuiTimelineKey) key.control).tick * tickWidth) - (key.getWidth() / 2));
+            for (GuiControl key : channel)
+                key.rect.setX(timelineOffset + (int) (((GuiTimelineKey) key).tick * tickWidth) - (key.rect.getWidth() / 2));
     }
     
     public void setSidebarWidth(int sidebarWidth) {
@@ -219,14 +218,14 @@ public class GuiTimeline extends GuiParent {
     @Override
     @OnlyIn(Dist.CLIENT)
     @Environment(EnvType.CLIENT)
-    public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         zoom.tick();
         scrollX.tick();
-        super.render(graphics, control, controlRect, realRect, scale, mouseX, mouseY);
+        super.render(graphics, controlRect, realRect, scale, mouseX, mouseY);
     }
     
     @Override
-    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
+    public boolean mouseScrolled(double x, double y, double delta) {
         if (Screen.hasShiftDown()) {
             scrollX.set(Mth.clamp(scrollX.aimed() - delta * 10, 0, maxScrollX));
             return true;
@@ -235,7 +234,7 @@ public class GuiTimeline extends GuiParent {
             channelParent.scroll(delta);
             return true;
         }
-        return super.mouseScrolled(rect, x, y, delta);
+        return super.mouseScrolled(x, y, delta);
     }
     
     public void scrolled(int width, double x, double delta) {
@@ -259,7 +258,7 @@ public class GuiTimeline extends GuiParent {
         }
         
         @Override
-        public boolean mouseClicked(Rect rect, double x, double y, int button) {
+        public boolean mouseClicked(double x, double y, int button) {
             dragged = true;
             handler.set(getTimeAt(x));
             playSound(SoundEvents.GLOW_ITEM_FRAME_ROTATE_ITEM);
@@ -267,7 +266,7 @@ public class GuiTimeline extends GuiParent {
         }
         
         @Override
-        public void mouseMoved(Rect rect, double x, double y) {
+        public void mouseMoved(double x, double y) {
             if (dragged) {
                 int tick = getTimeAt(x);
                 if (tick != handler.get()) {
@@ -278,20 +277,20 @@ public class GuiTimeline extends GuiParent {
         }
         
         @Override
-        public void mouseReleased(Rect rect, double x, double y, int button) {
+        public void mouseReleased(double x, double y, int button) {
             dragged = false;
         }
         
         @Override
-        public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
-            scrolled((int) rect.getWidth(), x, delta);
+        public boolean mouseScrolled(double x, double y, double delta) {
+            scrolled(rect.getWidth(), x, delta);
             return true;
         }
         
         @Override
         @OnlyIn(Dist.CLIENT)
         @Environment(EnvType.CLIENT)
-        protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+        protected void renderContent(GuiGraphics graphics, Rect controlRect, int mouseX, int mouseY) {
             
             if (lastZoom != zoom.current()) {
                 lastZoom = zoom.current();
@@ -305,8 +304,8 @@ public class GuiTimeline extends GuiParent {
             if (cursorHighlight == null)
                 cursorHighlight = new DisplayColor(0.78F, 0.78F, 0, 0.59F);
             
-            int width = (int) rect.getWidth();
-            int height = control.getHeight();
+            int width = rect.getContentWidth();
+            int height = rect.getContentHeight();
             int contentOffset = getContentOffset() - 1;
             pose.translate(timelineOffset - 1, -contentOffset, 0);
             

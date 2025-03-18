@@ -27,32 +27,28 @@ public abstract class GuiLayer extends GuiParent {
     
     public static final int MINIMUM_LAYER_SPACING = 10;
     
-    protected static void collectInventories(Iterable<GuiChildControl> parent, List<IGuiInventory> inventories) {
-        for (GuiChildControl child : parent) {
-            if (child.control instanceof IGuiInventory)
-                inventories.add((IGuiInventory) child.control);
-            else if (child.control instanceof GuiParent)
-                collectInventories((GuiParent) child.control, inventories);
-        }
+    protected static void collectInventories(Iterable<GuiControl> parent, List<IGuiInventory> inventories) {
+        for (GuiControl control : parent)
+            if (control instanceof IGuiInventory i)
+                inventories.add(i);
+            else if (control instanceof GuiParent p)
+                collectInventories(p, inventories);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public GuiStyle style;
-    public final Rect rect;
     private final GuiSyncHolderLayer sync = new GuiSyncHolderLayer(this);
     private HashMap<GuiManagerType, GuiManager> managers;
     
     public GuiLayer(String name) {
         super(name, GuiFlow.STACK_X);
-        this.rect = new Rect(0, 0, 0, 0);
         if (CreativeCore.loader().getOverallSide().isClient())
             this.style = GuiStyle.getStyle(name);
     }
     
     public GuiLayer(String name, int width, int height) {
         super(name, GuiFlow.STACK_X);
-        this.rect = new Rect(0, 0, 0, 0);
         setDim(width, height);
         if (CreativeCore.loader().getOverallSide().isClient())
             this.style = GuiStyle.getStyle(name);
@@ -60,8 +56,8 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public GuiControl setDim(int width, int height) {
-        rect.maxX = width;
-        rect.maxY = height;
+        rect.setWidth(width, width);
+        rect.setHeight(height, height);
         return super.setDim(width, height);
     }
     
@@ -108,11 +104,11 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     public int getWidth() {
-        return (int) rect.getWidth();
+        return rect.getWidth();
     }
     
     public int getHeight() {
-        return (int) rect.getHeight();
+        return rect.getHeight();
     }
     
     @Override
@@ -152,7 +148,7 @@ public abstract class GuiLayer extends GuiParent {
             if (maxWidth != -1)
                 width = Math.min(width, maxWidth);
         }
-        rect.maxX = width + getContentOffset() * 2;
+        rect.setRight(width + getContentOffset() * 2);
         flowX(width, preferredWidth(fixedWidth != -1 ? fixedWidth : screenWidth));
         
         int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
@@ -173,7 +169,7 @@ public abstract class GuiLayer extends GuiParent {
             if (maxHeight != -1)
                 height = Math.min(height, maxHeight);
         }
-        rect.maxY = height + getContentOffset() * 2;
+        rect.setBottom(height + getContentOffset() * 2);
         flowY(width, height, preferredHeight(width, fixedHeight != -1 ? fixedHeight : screenHeight));
     }
     
@@ -202,9 +198,9 @@ public abstract class GuiLayer extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
         for (GuiManager manager : managers())
-            manager.renderOverlay(graphics, control, rect, mouseX - (int) rect.minX, mouseY - (int) rect.minY);
+            manager.renderOverlay(graphics, rect, mouseX - (int) rect.minX, mouseY - (int) rect.minY);
     }
     
     public boolean closeLayerUsingEscape() {
@@ -224,19 +220,19 @@ public abstract class GuiLayer extends GuiParent {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         if (!this.rect.inside(x, y) && !isMouseOverHovered(x, y)) {
             looseFocus();
             for (GuiManager manager : managers())
                 manager.mouseClickedOutside(x, y);
             return false;
         }
-        return super.mouseClicked(rect, x, y, button);
+        return super.mouseClicked(x, y, button);
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
-        super.mouseReleased(rect, x, y, button);
+    public void mouseReleased(double x, double y, int button) {
+        super.mouseReleased(x, y, button);
         
         for (GuiManager manager : managers())
             manager.mouseReleased(x, y, button);
@@ -279,10 +275,7 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public Rect toLayerRect(GuiControl control, Rect rect) {
-        GuiChildControl child = find(control);
-        if (child == null)
-            return rect;
-        rect.move(child.rect.minX + getOffsetX(), child.rect.minY + getOffsetY());
+        rect.move(control.rect.getX() + getOffsetX(), control.rect.getY() + getOffsetY());
         rect.scale(scaleFactor());
         return rect;
     }

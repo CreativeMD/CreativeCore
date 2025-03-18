@@ -77,7 +77,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
-            layer.render(graphics, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
+            layer.render(graphics, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
             pose.popPose();
             
             RenderSystem.disableScissor();
@@ -87,7 +87,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             return;
         
         GuiLayer layer = getTopLayer();
-        GuiTooltipEvent event = layer.getTooltipEvent(null, mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
+        GuiTooltipEvent event = layer.getTooltipEvent(mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())

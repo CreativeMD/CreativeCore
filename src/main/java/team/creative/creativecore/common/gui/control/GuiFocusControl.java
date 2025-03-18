@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.gui.control;
 
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiFocusControl extends GuiControl {
     
@@ -27,7 +26,7 @@ public abstract class GuiFocusControl extends GuiControl {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         focus();
         return true;
     }

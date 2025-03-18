@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.gui.control.inventory;
 
 import net.minecraft.world.item.ItemStack;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiSlotViewer extends GuiSlotBase {
     
@@ -18,7 +17,7 @@ public class GuiSlotViewer extends GuiSlotBase {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         return true;
     }
     

@@ -13,7 +13,6 @@ import team.creative.creativecore.CreativeCoreGuiRegistry;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiSlot extends GuiSlotBase {
     
@@ -79,7 +78,7 @@ public class GuiSlot extends GuiSlotBase {
     }
     
     @Override
-    public boolean mouseScrolled(Rect rect, double x, double y, double delta) {
+    public boolean mouseScrolled(double x, double y, double delta) {
         if (!Screen.hasShiftDown())
             return false;
         
@@ -91,7 +90,7 @@ public class GuiSlot extends GuiSlotBase {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         if (itemManager().isDragged())
             return true;
         
@@ -118,8 +117,8 @@ public class GuiSlot extends GuiSlotBase {
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
-        if (draggedIndex == -1 && itemManager().isDragged() && rect.inside(x + rect.minX, y + rect.minY))
+    public void mouseMoved(double x, double y) {
+        if (draggedIndex == -1 && itemManager().isDragged() && rect.inside(x + rect.getX(), y + rect.getY()))
             itemManager().addToDrag(this);
     }
     

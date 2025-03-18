@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.control.parent.GuiTable.GuiTableGroup;
@@ -66,7 +66,7 @@ public class GuiTableScrollable extends GuiParent {
     
     @Override
     @Deprecated
-    public GuiChildControl addControl(GuiControl control) {
+    public GuiControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
@@ -101,7 +101,7 @@ public class GuiTableScrollable extends GuiParent {
         List<GuiTableGroup> cols = new ArrayList<>();
         
         int i = 0;
-        for (GuiChildControl cell : topRow) {
+        for (GuiControl cell : topRow) {
             if (cols.size() <= i)
                 cols.add(new GuiTableGroup());
             cols.get(i).controls.add(cell);
@@ -109,13 +109,12 @@ public class GuiTableScrollable extends GuiParent {
         }
         
         GuiTableGroup first = cols.get(0);
-        for (GuiChildControl child : firstCol)
-            first.controls.add(child);
+        for (GuiControl control : firstCol)
+            first.controls.add(control);
         
-        for (GuiChildControl child : scrollableTable) {
-            GuiRow row = (GuiRow) child.control;
+        for (GuiControl control : scrollableTable) {
             i = 1;
-            for (GuiChildControl cell : row) {
+            for (GuiControl cell : (GuiRow) control) {
                 if (cols.size() <= i)
                     cols.add(new GuiTableGroup());
                 cols.get(i).controls.add(cell);
@@ -135,50 +134,50 @@ public class GuiTableScrollable extends GuiParent {
         var cols = createCols();
         GuiFlow.STACK_X.flowX(cols, spacing, Align.LEFT, width, preferred, endlessX());
         
-        GuiChildControl startCol = cols.get(0);
+        GuiControlRect startCol = cols.get(0);
         int startX = startCol.getX();
         
-        GuiChildControl lastCol = cols.get(cols.size() - 1);
+        GuiControlRect lastCol = cols.get(cols.size() - 1);
         int combinedWidth = Math.min(width, lastCol.getWidth() + lastCol.getX() - startX);
         
-        GuiChildControl bottomChild = find(bottom);
+        GuiControlRect bottomChild = bottom.rect;
         bottomChild.setX(0);
         bottomChild.setWidth(combinedWidth + startX, width);
         
-        GuiChildControl firstColChild = bottom.find(firstCol);
+        GuiControlRect firstColChild = firstCol.rect;
         firstColChild.setX(startX);
         firstColChild.setWidth(startCol.getWidth(), width);
         
-        GuiChildControl topRowChild = find(topRow);
+        GuiControlRect topRowChild = topRow.rect;
         topRowChild.setX(startX);
         topRowChild.setWidth(combinedWidth, width);
         
         combinedWidth -= startCol.getWidth();
         
-        GuiChildControl scrollableChild = bottom.find(scrollableTable);
+        GuiControlRect scrollableChild = scrollableTable.rect;
         scrollableChild.setX(startX + startCol.getWidth());
         scrollableChild.setWidth(combinedWidth, width);
         
         combinedWidth = lastCol.getWidth() + lastCol.getX() - startX - startCol.getWidth(); // Total might be bigger than width
         startX += startCol.getWidth();
         
-        for (GuiChildControl row : scrollableTable) {
-            row.setX(0);
-            row.setWidth(combinedWidth, width);
-            for (GuiChildControl col : ((GuiRow) row.control))
-                col.setX(col.getX() - startX);
+        for (GuiControl row : scrollableTable) {
+            row.rect.setX(0);
+            row.rect.setWidth(combinedWidth, width);
+            for (GuiControl col : (GuiRow) row)
+                col.rect.setX(col.rect.getX() - startX);
         }
         
         scrollableChild.flowX();
         
     }
     
-    protected List<GuiChildControl> createRows() {
-        List<GuiChildControl> rows = new ArrayList<>();
-        rows.add(find(topRow));
+    protected List<GuiControlRect> createRows() {
+        List<GuiControlRect> rows = new ArrayList<>();
+        rows.add(topRow.rect);
         
         int i = 1;
-        for (GuiChildControl row : firstCol) {
+        for (GuiControl row : firstCol) {
             if (rows.size() <= i)
                 rows.add(new GuiTableGroup());
             ((GuiTableGroup) rows.get(i)).controls.add(row);
@@ -186,7 +185,7 @@ public class GuiTableScrollable extends GuiParent {
         }
         
         i = 1;
-        for (GuiChildControl row : scrollableTable) {
+        for (GuiControl row : scrollableTable) {
             if (rows.size() <= i)
                 rows.add(new GuiTableGroup());
             ((GuiTableGroup) rows.get(i)).controls.add(row);
@@ -207,23 +206,23 @@ public class GuiTableScrollable extends GuiParent {
         GuiFlow.STACK_Y.flowY(rows, spacing, VAlign.TOP, width, height, preferred, endlessY());
         
         int startY = rows.size() > 1 ? rows.get(1).getY() : rows.get(0).getHeight() + rows.get(0).getY();
-        GuiChildControl lastRow = rows.get(rows.size() - 1);
+        GuiControlRect lastRow = rows.get(rows.size() - 1);
         
         for (int j = 1; j < rows.size(); j++)
-            for (GuiChildControl child : ((GuiTableGroup) rows.get(j)).controls)
-                child.setY(child.getY() - startY);
+            for (GuiControl child : ((GuiTableGroup) rows.get(j)).controls)
+                child.rect.setY(child.rect.getY() - startY);
             
         int combinedHeight = Math.min(height - startY, lastRow.getHeight() + lastRow.getY() - startY);
         
-        GuiChildControl bottomChild = find(bottom);
+        GuiControlRect bottomChild = bottom.rect;
         bottomChild.setY(startY);
         bottomChild.setHeight(combinedHeight, height);
         
-        GuiChildControl firstColChild = bottom.find(firstCol);
+        GuiControlRect firstColChild = firstCol.rect;
         firstColChild.setY(0);
         firstColChild.setHeight(combinedHeight, height);
         
-        GuiChildControl scrollableChild = bottom.find(scrollableTable);
+        GuiControlRect scrollableChild = scrollableTable.rect;
         scrollableChild.setY(0);
         scrollableChild.setHeight(combinedHeight, height);
         
@@ -243,12 +242,12 @@ public class GuiTableScrollable extends GuiParent {
     
     public void removeContentCol(int index) {
         topRow.removeCol(index + 1);
-        for (GuiChildControl child : scrollableTable)
-            ((GuiRow) child.control).removeCol(index);
+        for (GuiControl control : scrollableTable)
+            ((GuiRow) control).removeCol(index);
     }
     
     public Iterable<GuiRow> contentRows() {
-        return new FunctionIterator<>(scrollableTable, x -> (GuiRow) x.control);
+        return new FunctionIterator<>(scrollableTable, x -> (GuiRow) x);
     }
     
 }

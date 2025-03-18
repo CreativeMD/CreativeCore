@@ -32,7 +32,7 @@ public class GuiLabeledControl extends GuiParent {
     }
     
     public <C extends GuiControl> C getInnerControl() {
-        return (C) controls.get(1).control;
+        return (C) controls.get(1);
     }
     
     public GuiLabeledControl setTranslate(String translate) {

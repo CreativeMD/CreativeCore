@@ -12,7 +12,6 @@ import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.IComponentMap;
 import team.creative.creativecore.common.util.type.list.TupleList;
 
@@ -143,8 +142,8 @@ public class GuiComboBox<K> extends GuiLabel {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        ex.toggle(this::createBox, rect);
+    public boolean mouseClicked(double x, double y, int button) {
+        ex.toggle(this::createBox);
         playSound(SoundEvents.UI_BUTTON_CLICK);
         return true;
     }

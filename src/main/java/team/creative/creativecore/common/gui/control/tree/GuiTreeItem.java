@@ -12,7 +12,6 @@ import team.creative.creativecore.common.gui.control.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.type.itr.FilterIterator;
 
@@ -248,8 +247,8 @@ public class GuiTreeItem extends GuiParent {
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
-        super.mouseMoved(rect, x, y);
+    public void mouseMoved(double x, double y) {
+        super.mouseMoved(x, y);
         if (state == ItemClickState.CLICKED && !tree.isDragged() && !rect.inside(x, y)) {
             tree.startDrag(this);
             state = ItemClickState.DRAGGED;
@@ -257,8 +256,8 @@ public class GuiTreeItem extends GuiParent {
     }
     
     @Override
-    public void mouseReleased(Rect rect, double x, double y, int button) {
-        super.mouseReleased(rect, x, y, button);
+    public void mouseReleased(double x, double y, int button) {
+        super.mouseReleased(x, y, button);
         
         if (state == ItemClickState.CLICKED) {
             tree.select(this);
@@ -274,15 +273,15 @@ public class GuiTreeItem extends GuiParent {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (super.mouseClicked(rect, x, y, button))
+    public boolean mouseClicked(double x, double y, int button) {
+        if (super.mouseClicked(x, y, button))
             return true;
         state = ItemClickState.CLICKED;
         return true;
     }
     
     @Override
-    public boolean mouseDoubleClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseDoubleClicked(double x, double y, int button) {
         toggle();
         tree.select(this);
         playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -290,7 +289,7 @@ public class GuiTreeItem extends GuiParent {
     }
     
     @Override
-    public boolean testForDoubleClick(Rect rect, double x, double y, int button) {
+    public boolean testForDoubleClick(double x, double y, int button) {
         return button == 0;
     }
     

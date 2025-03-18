@@ -12,7 +12,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.parser.LongValueParser;
@@ -72,26 +71,26 @@ public class GuiSeekBar extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
         final double percent = this.max > 0 ? pos / (double) max : 0;
-        this.renderProgress(graphics, control, rect, percent);
+        this.renderProgress(graphics, rect, percent);
         GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), (float) rect.getWidth(), (float) rect.getHeight(), this.getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderProgress(GuiGraphics graphics, GuiChildControl control, Rect rect, double percent) {
+    protected void renderProgress(GuiGraphics graphics, Rect rect, double percent) {
         this.getStyle().clickable.render(graphics, 0, 0, (rect.getWidth() * Math.min(percent, 1.0d)), rect.getHeight());
     }
     
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         if (button == 0) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             grabbedSlider = this.max > 0; // validates maxTime is not a custom state
-            this.mouseMoved(rect, x, y);
+            this.mouseMoved(x, y);
             return true;
         }
         return false;
@@ -100,9 +99,9 @@ public class GuiSeekBar extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void mouseMoved(Rect rect, double x, double y) {
+    public void mouseMoved(double x, double y) {
         if (grabbedSlider) {
-            int width = (int) rect.getWidth() - getContentOffset() * 2;
+            int width = rect.getWidth() - getContentOffset() * 2;
             
             final long value;
             if (x < getContentOffset())
@@ -120,7 +119,7 @@ public class GuiSeekBar extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public void mouseReleased(Rect rect, double x, double y, int button) {
+    public void mouseReleased(double x, double y, int button) {
         if (this.grabbedSlider) {
             this.lastTimeUpdate.accept(pos);
             this.grabbedSlider = false;

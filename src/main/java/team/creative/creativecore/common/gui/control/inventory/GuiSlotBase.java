@@ -15,7 +15,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
@@ -60,7 +59,7 @@ public abstract class GuiSlotBase extends GuiControl {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect rect, int mouseX, int mouseY) {
         if (HOVER == null)
             HOVER = new DisplayColor(1, 1, 1, 0.3F);
         PoseStack pose = graphics.pose();
@@ -77,7 +76,7 @@ public abstract class GuiSlotBase extends GuiControl {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, int button) {
         return true;
     }
     

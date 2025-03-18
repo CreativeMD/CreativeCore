@@ -2,8 +2,8 @@ package team.creative.creativecore.common.gui.extension;
 
 import java.util.function.Function;
 
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
@@ -17,26 +17,26 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         this.parent = parent;
     }
     
-    public void toggle(Function<? extends GuiExtensionCreator, T> factory, Rect rect) {
+    public void toggle(Function<? extends GuiExtensionCreator, T> factory) {
         if (extension == null)
-            open((T) ((Function) factory).apply(this), rect);
+            open((T) ((Function) factory).apply(this));
         else
             close();
     }
     
-    public void open(T extension, Rect rect) {
-        open(extension, rect, ExtensionDirection.BELOW_OR_ABOVE);
+    public void open(T extension) {
+        open(extension, ExtensionDirection.BELOW_OR_ABOVE);
     }
     
-    public void open(T extension, Rect rect, ExtensionDirection direction) {
+    public void open(T extension, ExtensionDirection direction) {
         this.extension = extension;
         var layer = parent.getLayer();
-        GuiChildControl child = layer.addHoverControl(extension);
+        layer.addHoverControl(extension);
         
-        rect = parent.toLayerRect(new Rect(0, 0, rect.getWidth(), rect.getHeight()));
+        var rect = parent.toLayerRect(new Rect(0, 0, parent.rect.getContentWidth(), parent.rect.getContentHeight()));
         extension.init();
         
-        direction.apply(layer, child, rect, layer.getContentOffset());
+        direction.apply(layer, extension.rect, rect, layer.getContentOffset());
     }
     
     public T get() {
@@ -77,45 +77,45 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         
         BELOW_OR_ABOVE {
             @Override
-            public void apply(GuiLayer layer, GuiChildControl child, Rect rect, int layerOffset) {
-                child.setX((int) rect.minX);
-                child.setY((int) rect.maxY);
+            public void apply(GuiLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
+                extension.setX((int) creatorRect.minX);
+                extension.setY((int) creatorRect.maxY);
                 
-                child.setWidth((int) rect.getWidth(), (int) layer.rect.getWidth() - layerOffset * 2);
-                child.flowX();
+                extension.setWidth((int) creatorRect.getWidth(), (int) layer.rect.getWidth() - layerOffset * 2);
+                extension.flowX();
                 int layerHeight = (int) layer.rect.getHeight() - layerOffset * 2;
-                child.setHeight(child.getPreferredHeight(layerHeight), layerHeight);
-                child.flowY();
+                extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
+                extension.flowY();
                 
-                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, child.rect.copy());
+                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, extension.rectCopy());
                 Rect screen = Rect.getScreenRect();
                 
                 if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
-                    child.setY(child.getY() - ((int) rect.getHeight() + child.getHeight()));
+                    extension.setY(extension.getY() - ((int) creatorRect.getHeight() + extension.getHeight()));
             }
         },
         RIGHT {
             @Override
-            public void apply(GuiLayer layer, GuiChildControl child, Rect rect, int layerOffset) {
-                child.setX((int) rect.maxX);
-                child.setY((int) rect.minY);
+            public void apply(GuiLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
+                extension.setX((int) creatorRect.maxX);
+                extension.setY((int) creatorRect.minY);
                 
                 int layerWidth = (int) layer.rect.getWidth() - layerOffset * 2;
-                child.setWidth(child.getPreferredWidth(layerWidth), layerWidth);
-                child.flowX();
+                extension.setWidth(extension.getPreferredWidth(layerWidth), layerWidth);
+                extension.flowX();
                 int layerHeight = (int) layer.rect.getHeight() - layerOffset * 2;
-                child.setHeight(child.getPreferredHeight(layerHeight), layerHeight);
-                child.flowY();
+                extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
+                extension.flowY();
                 
-                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, child.rect.copy());
+                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, extension.rectCopy());
                 Rect screen = Rect.getScreenRect();
                 
                 if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
-                    child.setY((int) rect.maxY - child.getHeight());
+                    extension.setY((int) creatorRect.maxY - extension.getHeight());
             }
         };
         
-        public abstract void apply(GuiLayer layer, GuiChildControl child, Rect rect, int layerOffset);
+        public abstract void apply(GuiLayer layer, GuiControlRect extension, Rect rect, int layerOffset);
     }
     
 }

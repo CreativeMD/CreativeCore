@@ -10,7 +10,6 @@ import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class GuiButtonContext extends GuiButton {
@@ -25,18 +24,18 @@ public class GuiButtonContext extends GuiButton {
     }
     
     @Override
-    public void mouseMoved(Rect rect, double x, double y) {
-        super.mouseMoved(rect, x, y);
-        if (isHovered = rect.inside(x + rect.minX, y + rect.minY) && !ex.hasExtension())
-            ex.open(createBox(ex), rect);
+    public void mouseMoved(double x, double y) {
+        super.mouseMoved(x, y);
+        if (isHovered = rect.inside(x + rect.getX(), y + rect.getY()) && !ex.hasExtension())
+            ex.open(createBox(ex));
     }
     
     protected GuiParent createBox(GuiExtensionCreator<GuiButtonContext, GuiParent> creator) {
         GuiParent parent = new GuiParent() {
             @Override
-            public void mouseMoved(Rect rect, double x, double y) {
-                super.mouseMoved(rect, x, y);
-                if (!isHovered && !find(this).rect.inside(x + rect.minX, y + rect.minY))
+            public void mouseMoved(double x, double y) {
+                super.mouseMoved(x, y);
+                if (!isHovered && !rect.inside(x + rect.getX(), y + rect.getY()))
                     ex.close();
             }
             

@@ -14,6 +14,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
@@ -42,6 +43,10 @@ public abstract class StyleDisplay {
     
     public void render(GuiGraphics graphics, Rect origin, Rect rect) {
         render(graphics, rect.getWidth(), rect.getHeight());
+    }
+    
+    public void render(GuiGraphics graphics, GuiControlRect rect) {
+        render(graphics, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
     
     public abstract void render(GuiGraphics graphics, double x, double y, double width, double height);

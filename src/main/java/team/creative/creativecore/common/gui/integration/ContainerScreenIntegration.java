@@ -45,10 +45,10 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
         for (GuiLayer layer : getMenu().getLayers()) {
             int offsetX = (width - layer.getWidth()) / 2;
             int offsetY = (height - layer.getHeight()) / 2;
-            minX = Math.min(minX, offsetX + (int) layer.rect.minX);
-            minY = Math.min(minY, offsetY + (int) layer.rect.minY);
-            maxX = Math.max(maxX, offsetX + (int) layer.rect.maxX);
-            maxY = Math.max(maxY, offsetY + (int) layer.rect.maxY);
+            minX = Math.min(minX, offsetX + layer.rect.getX());
+            minY = Math.min(minY, offsetY + layer.rect.getY());
+            maxX = Math.max(maxX, offsetX + layer.rect.getRight());
+            maxY = Math.max(maxY, offsetY + layer.rect.getBottom());
         }
         
         leftPos = minX;

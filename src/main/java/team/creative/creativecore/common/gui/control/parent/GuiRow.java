@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.gui.control.parent;
 
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
@@ -29,11 +28,11 @@ public class GuiRow extends GuiParent {
     }
     
     public GuiColumn removeCol(int index) {
-        return (GuiColumn) controls.remove(index).control;
+        return (GuiColumn) controls.remove(index);
     }
     
     public GuiColumn getCol(int index) {
-        return (GuiColumn) controls.get(index).control;
+        return (GuiColumn) controls.get(index);
     }
     
     public int colCount() {
@@ -42,7 +41,7 @@ public class GuiRow extends GuiParent {
     
     @Override
     @Deprecated
-    public GuiChildControl addControl(GuiControl control) {
+    public GuiControl addControl(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

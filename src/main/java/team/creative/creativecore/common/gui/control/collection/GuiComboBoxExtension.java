@@ -7,7 +7,6 @@ import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.control.simple.GuiRowLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
-import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiComboBoxExtension extends GuiListBoxBase<GuiRowLabel> {
     
@@ -72,8 +71,8 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiRowLabel> {
     }
     
     @Override
-    public boolean mouseClicked(Rect rect, double x, double y, int button) {
-        if (super.mouseClicked(rect, x, y, button)) {
+    public boolean mouseClicked(double x, double y, int button) {
+        if (super.mouseClicked(x, y, button)) {
             creator.markKeptFocus();
             return true;
         }
