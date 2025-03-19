@@ -227,9 +227,9 @@ public abstract class GuiControl {
         return contentRect.child(rect, scale, xOffset, yOffset);
     }
     
-    public abstract void flowX(int width, int preferred);
+    protected abstract void flowX(int width, int preferred);
     
-    public abstract void flowY(int width, int height, int preferred);
+    protected abstract void flowY(int width, int height, int preferred);
     
     public void reflow() {
         if (parent != null)
@@ -240,74 +240,20 @@ public abstract class GuiControl {
         return -1;
     }
     
-    public final int getMinWidth(int availableWidth) {
-        if (preferred != null) {
-            int minWidth = preferred.minWidth(this, availableWidth);
-            if (minWidth != -1)
-                return minWidth;
-        }
-        return minWidth(availableWidth);
-    }
-    
     protected abstract int preferredWidth(int availableWidth);
-    
-    public final int getPreferredWidth(int availableWidth) {
-        if (preferred != null) {
-            int prefWidth = preferred.preferredWidth(this, availableWidth);
-            if (prefWidth != -1)
-                return prefWidth;
-        }
-        return preferredWidth(availableWidth);
-    }
     
     protected int maxWidth(int availableWidth) {
         return -1;
-    }
-    
-    public final int getMaxWidth(int availableWidth) {
-        if (preferred != null) {
-            int maxWidth = preferred.maxWidth(this, availableWidth);
-            if (maxWidth != -1)
-                return maxWidth;
-        }
-        return maxWidth(availableWidth);
     }
     
     protected int minHeight(int width, int availableHeight) {
         return -1;
     }
     
-    public final int getMinHeight(int width, int availableHeight) {
-        if (preferred != null) {
-            int minHeight = preferred.minHeight(this, width, availableHeight);
-            if (minHeight != -1)
-                return minHeight;
-        }
-        return minHeight(width, availableHeight);
-    }
-    
     protected abstract int preferredHeight(int width, int availableHeight);
-    
-    public final int getPreferredHeight(int width, int availableHeight) {
-        if (preferred != null) {
-            int prefHeight = preferred.preferredHeight(this, width, availableHeight);
-            if (prefHeight != -1)
-                return prefHeight;
-        }
-        return preferredHeight(width, availableHeight);
-    }
     
     protected int maxHeight(int width, int availableHeight) {
         return -1;
-    }
-    
-    public final int getMaxHeight(int width, int availableHeight) {
-        if (preferred != null) {
-            int maxHeight = preferred.maxHeight(this, width, availableHeight);
-            if (maxHeight != -1)
-                return maxHeight;
-        }
-        return maxHeight(width, availableHeight);
     }
     
     public Rect toLayerRect(Rect rect) {
