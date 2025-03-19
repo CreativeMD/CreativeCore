@@ -103,7 +103,7 @@ public class GuiTable extends GuiParent {
         public int getPreferredWidth(int availableWidth) {
             int pref = -1;
             for (GuiControl control : controls)
-                pref = Math.max(pref, control.getPreferredWidth(availableWidth));
+                pref = Math.max(pref, GuiControlRect.getPreferredWidth(control, availableWidth));
             return pref;
         }
         
