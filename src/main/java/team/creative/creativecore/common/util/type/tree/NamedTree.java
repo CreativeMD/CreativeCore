@@ -6,15 +6,19 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
-import team.creative.creativecore.common.util.type.itr.NestedIterator;
+import com.google.common.base.Objects;
 
-public class NamedTree<T> implements Iterable<T> {
+import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
+import team.creative.creativecore.common.util.type.itr.FilterIterator;
+import team.creative.creativecore.common.util.type.itr.NestedFunctionIterator;
+import team.creative.creativecore.common.util.type.itr.SingleIterator;
+
+public class NamedTree<T> {
     
     private final NamedTree<T> parent;
     private final String name;
     private final LinkedHashMap<String, NamedTree<T>> children = new LinkedHashMap<>();
-    private final LinkedHashMap<String, T> values = new LinkedHashMap<>();
+    public T value;
     
     public NamedTree() {
         parent = null;
@@ -28,44 +32,23 @@ public class NamedTree<T> implements Iterable<T> {
     
     public T add(String path, T value) {
         String[] parts = path.split("\\.");
-        folderForce(parts, 0, parts.length - 1).values.put(parts[parts.length - 1], value);
+        folderForce(parts, 0).value = value;
         return value;
     }
     
-    public T add(String path, String id, T value) {
-        folderForce(path).values.put(id, value);
-        return value;
+    public Collection<NamedTree<T>> children() {
+        return children.values();
     }
     
-    public Collection<String> folders() {
-        return children.keySet();
-    }
-    
-    public Set<Entry<String, T>> valueEntries() {
-        return values.entrySet();
-    }
-    
-    public Collection<T> values() {
-        return values.values();
-    }
-    
-    public T get(String path, String id) {
-        NamedTree<T> folder = children.get(path);
-        if (folder != null)
-            return folder.values.get(id);
-        return null;
+    public Set<Entry<String, NamedTree<T>>> entries() {
+        return children.entrySet();
     }
     
     public T get(String path) {
-        String[] parts = path.split("\\.");
-        
-        if (parts.length == 1)
-            return values.get(path);
-        
-        if (parts.length != 2)
-            return null;
-        
-        return get(parts[0], parts[1]);
+        var result = folder(path);
+        if (result != null)
+            return result.value;
+        return null;
     }
     
     public NamedTree<T> folder(String path) {
@@ -103,29 +86,51 @@ public class NamedTree<T> implements Iterable<T> {
     }
     
     public String path() {
-        return parent != null ? parent.path() + name + "." : "";
+        var path = "";
+        if (parent != null) {
+            path = parent.path();
+            if (!path.isBlank() && name != null)
+                path += ".";
+        }
+        return path + (name != null ? name : "");
+    }
+    
+    public String findPath(T value) {
+        if (Objects.equal(this.value, value))
+            return name;
+        for (NamedTree<T> child : children.values()) {
+            String path = child.findPath(value);
+            if (path != null)
+                return (name != null ? name + "." : "") + path;
+        }
+        return null;
     }
     
     @Override
     public String toString() {
-        return "[" + children + "|" + values + "]";
+        return "[" + value + "|" + children + "]";
     }
     
-    @Override
-    public Iterator<T> iterator() {
-        return new ConsecutiveIterator<>(values.values().iterator(), new NestedIterator<>(children.values()));
+    public Iterable<T> values() {
+        return FilterIterator.<T>skipNull(new ConsecutiveIterator<T>((Iterator<T>) new SingleIterator<T>(value), (Iterator<T>) new NestedFunctionIterator<T>(children
+                .values(), x -> x.values())));
     }
     
     /** First considered is the first value value from the first child, the last is the last value of the current node */
     public T first() {
+        if (value != null)
+            return value;
+        
         for (Entry<String, NamedTree<T>> entry : children.entrySet()) {
             var selected = entry.getValue().first();
             if (selected != null)
                 return selected;
         }
         
-        if (values.isEmpty())
-            return null;
-        return values.firstEntry().getValue();
+        return null;
+    }
+    
+    public boolean hasChildren() {
+        return !children.isEmpty();
     }
 }

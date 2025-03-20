@@ -54,13 +54,6 @@ public abstract class GuiLayer extends GuiParent {
             this.style = GuiStyle.getStyle(name);
     }
     
-    @Override
-    public GuiControl setDim(int width, int height) {
-        rect.setWidth(width, width);
-        rect.setHeight(height, height);
-        return super.setDim(width, height);
-    }
-    
     public Iterable<IGuiInventory> inventoriesToInsert() {
         List<IGuiInventory> inventories = new ArrayList<>();
         collectInventories(this, inventories);
