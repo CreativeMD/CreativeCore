@@ -33,11 +33,8 @@ public class GuiInventoryGridPreview extends GuiParent {
         this.rows = rows;
         this.container = container;
         this.fixedSize = Math.min(container.getContainerSize(), cols * rows);
-        for (int i = 0; i < fixedSize; i++) {
-            GuiControl control = super.addControl(new GuiSlotViewer(container.getItem(i)));
-            control.rect.setWidth(GuiSlotBase.SLOT_SIZE, GuiSlotBase.SLOT_SIZE);
-            control.rect.setHeight(GuiSlotBase.SLOT_SIZE, GuiSlotBase.SLOT_SIZE);
-        }
+        for (int i = 0; i < fixedSize; i++)
+            super.addControl(new GuiSlotViewer(container.getItem(i)));
     }
     
     @Override
@@ -65,6 +62,7 @@ public class GuiInventoryGridPreview extends GuiParent {
         int i = 0;
         for (GuiControl control : controls) {
             control.rect.setX(offset + (i % cachedCols) * GuiSlotBase.SLOT_SIZE);
+            control.rect.setWidth(GuiSlotBase.SLOT_SIZE, GuiSlotBase.SLOT_SIZE);
             control.rect.flowX();
             i++;
         }
@@ -80,6 +78,7 @@ public class GuiInventoryGridPreview extends GuiParent {
         for (GuiControl control : controls) {
             int row = i / cachedCols;
             control.rect.setY(offset + row * GuiSlotBase.SLOT_SIZE);
+            control.rect.setHeight(GuiSlotBase.SLOT_SIZE, GuiSlotBase.SLOT_SIZE);
             control.rect.flowY();
             control.visible = row <= cachedRows;
             if (reverse)

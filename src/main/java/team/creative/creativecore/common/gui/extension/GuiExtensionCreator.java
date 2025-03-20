@@ -33,7 +33,7 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         var layer = parent.getLayer();
         layer.addHoverControl(extension);
         
-        var rect = parent.toLayerRect(new Rect(0, 0, parent.rect.getContentWidth(), parent.rect.getContentHeight()));
+        var rect = parent.toLayerRect(new Rect(0, 0, parent.rect.getWidth(), parent.rect.getHeight()));
         extension.init();
         
         direction.apply(layer, extension.rect, rect, layer.getContentOffset());
@@ -81,9 +81,9 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
                 extension.setX((int) creatorRect.minX);
                 extension.setY((int) creatorRect.maxY);
                 
-                extension.setWidth((int) creatorRect.getWidth(), (int) layer.rect.getWidth() - layerOffset * 2);
+                extension.setWidth((int) creatorRect.getWidth(), layer.rect.getWidth() - layerOffset * 2);
                 extension.flowX();
-                int layerHeight = (int) layer.rect.getHeight() - layerOffset * 2;
+                int layerHeight = layer.rect.getHeight() - layerOffset * 2;
                 extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
                 extension.flowY();
                 
@@ -100,10 +100,10 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
                 extension.setX((int) creatorRect.maxX);
                 extension.setY((int) creatorRect.minY);
                 
-                int layerWidth = (int) layer.rect.getWidth() - layerOffset * 2;
+                int layerWidth = layer.rect.getWidth() - layerOffset * 2;
                 extension.setWidth(extension.getPreferredWidth(layerWidth), layerWidth);
                 extension.flowX();
-                int layerHeight = (int) layer.rect.getHeight() - layerOffset * 2;
+                int layerHeight = layer.rect.getHeight() - layerOffset * 2;
                 extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
                 extension.flowY();
                 

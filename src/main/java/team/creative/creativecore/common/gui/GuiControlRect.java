@@ -229,6 +229,10 @@ public class GuiControlRect {
         return x >= left && x < right && y >= top && y < bottom;
     }
     
+    public boolean insideLocalPos(double x, double y) {
+        return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+    }
+    
     public boolean isExpandableX() {
         return control.isExpandableX();
     }

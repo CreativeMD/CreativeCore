@@ -17,21 +17,20 @@ import team.creative.creativecore.common.util.type.tree.NamedTree;
 public class GuiComboBoxTree<K> extends GuiLabel {
     
     protected final GuiExtensionCreator<GuiComboBoxTree<K>, GuiMenuRoot<K>> ex = new GuiExtensionCreator<GuiComboBoxTree<K>, GuiMenuRoot<K>>(this);
-    protected final Function<String, Component> folderTitle;
-    protected final Function<K, Component> valueTitle;
+    protected final Function<String, Component> title;
     protected NamedTree<K> data;
+    private String selectedPath;
     private K selected;
     private boolean searchbar;
     
-    public GuiComboBoxTree(String name, K selected, NamedTree<K> data, Function<String, Component> folderTitle, Function<K, Component> valueTitle) {
-        this(name, data, folderTitle, valueTitle);
+    public GuiComboBoxTree(String name, K selected, NamedTree<K> data, Function<String, Component> title) {
+        this(name, data, title);
         select(selected);
     }
     
-    public GuiComboBoxTree(String name, NamedTree<K> data, Function<String, Component> folderTitle, Function<K, Component> valueTitle) {
+    public GuiComboBoxTree(String name, NamedTree<K> data, Function<String, Component> title) {
         super(name);
-        this.folderTitle = folderTitle;
-        this.valueTitle = valueTitle;
+        this.title = title;
         set(data);
     }
     
@@ -62,18 +61,27 @@ public class GuiComboBoxTree<K> extends GuiLabel {
         return defaultValue;
     }
     
-    public void select(K key) {
+    public void select(String path, K key) {
+        this.selectedPath = path;
         this.selected = key;
         
         updateDisplay();
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
+    public void select(K key) {
+        String path = data.findPath(key);
+        if (path == null)
+            select(null, null);
+        else
+            select(path, key);
+    }
+    
     protected void updateDisplay() {
         text = text.sameDimensions();
         if (selected != null) {
             text.setAlign(Align.CENTER);
-            text.setText(valueTitle.apply(selected));
+            text.setText(title.apply(selectedPath));
         }
     }
     
@@ -90,7 +98,7 @@ public class GuiComboBoxTree<K> extends GuiLabel {
     }
     
     protected GuiMenuRoot<K> createBox(GuiExtensionCreator<GuiComboBoxTree<K>, GuiMenuRoot<K>> creator) {
-        return new GuiMenuRoot<K>(data, creator, folderTitle, valueTitle, this::select);
+        return new GuiMenuRoot<K>(data, creator, title, this::select);
     }
     
     @Override
