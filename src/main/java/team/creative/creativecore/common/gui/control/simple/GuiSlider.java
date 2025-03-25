@@ -285,4 +285,11 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         this.getParent().closeLayer(layer);;
     }
     
+    @Override
+    public GuiControl setEnabled(boolean enabled) {
+        if (!enabled)
+            grabbedSlider = false;
+        return super.setEnabled(enabled);
+    }
+    
 }
