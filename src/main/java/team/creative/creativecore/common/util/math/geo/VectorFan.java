@@ -235,6 +235,12 @@ public class VectorFan {
             Vec3f vec = coords[i];
             consumer.addVertex(matrix, vec.x, vec.y, vec.z).setColor(red, green, blue, alpha);
         }
+        int remain = 4 - coords.length % 4;
+        if (remain > 0) {
+            Vec3f vec = coords[coords.length - 1];
+            for (int i = 0; i < remain; i++)
+                consumer.addVertex(matrix, vec.x, vec.y, vec.z).setColor(red, green, blue, alpha);
+        }
     }
     
     public void renderPreview(Matrix4f matrix, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue,
@@ -242,6 +248,12 @@ public class VectorFan {
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
             consumer.addVertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).setColor(red, green, blue, alpha);
+        }
+        int remain = 4 - coords.length % 4;
+        if (remain > 0) {
+            Vec3f vec = coords[coords.length - 1];
+            for (int i = 0; i < remain; i++)
+                consumer.addVertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).setColor(red, green, blue, alpha);
         }
     }
     
