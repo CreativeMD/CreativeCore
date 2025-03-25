@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
+import team.creative.creativecore.common.gui.extension.GuiExtensionCreator.ExtensionDirection;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
@@ -27,7 +28,7 @@ public class GuiButtonContext extends GuiButton {
     public void mouseMoved(double x, double y) {
         super.mouseMoved(x, y);
         if (isHovered = rect.inside(x + rect.getX(), y + rect.getY()) && !ex.hasExtension())
-            ex.open(createBox(ex));
+            ex.open(createBox(ex), ExtensionDirection.BELOW_OR_ABOVE_ANY_SIZE);
     }
     
     protected GuiParent createBox(GuiExtensionCreator<GuiButtonContext, GuiParent> creator) {

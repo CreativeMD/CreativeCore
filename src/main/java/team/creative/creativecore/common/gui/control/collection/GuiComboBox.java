@@ -11,6 +11,7 @@ import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
+import team.creative.creativecore.common.gui.extension.GuiExtensionCreator.ExtensionDirection;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.IComponentMap;
 import team.creative.creativecore.common.util.type.list.TupleList;
@@ -22,6 +23,7 @@ public class GuiComboBox<K> extends GuiLabel {
     private int index;
     private K selected;
     private boolean searchbar;
+    private ExtensionDirection direction = ExtensionDirection.BELOW_OR_ABOVE;
     
     public GuiComboBox(String name, K selected, IComponentMap<K> builder) {
         this(name, builder);
@@ -39,6 +41,11 @@ public class GuiComboBox<K> extends GuiLabel {
     
     public GuiComboBox setSearchbar(boolean searchbar) {
         this.searchbar = searchbar;
+        return this;
+    }
+    
+    public GuiComboBox setDirection(ExtensionDirection direction) {
+        this.direction = direction;
         return this;
     }
     
@@ -143,7 +150,7 @@ public class GuiComboBox<K> extends GuiLabel {
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        ex.toggle(this::createBox);
+        ex.toggle(this::createBox, direction);
         playSound(SoundEvents.UI_BUTTON_CLICK);
         return true;
     }

@@ -18,8 +18,12 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
     }
     
     public void toggle(Function<? extends GuiExtensionCreator, T> factory) {
+        toggle(factory, ExtensionDirection.BELOW_OR_ABOVE);
+    }
+    
+    public void toggle(Function<? extends GuiExtensionCreator, T> factory, ExtensionDirection direction) {
         if (extension == null)
-            open((T) ((Function) factory).apply(this));
+            open((T) ((Function) factory).apply(this), direction);
         else
             close();
     }
@@ -29,11 +33,15 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
     }
     
     public void open(T extension, ExtensionDirection direction) {
+        open(extension, parent, direction);
+    }
+    
+    public void open(T extension, GuiControl reference, ExtensionDirection direction) {
         this.extension = extension;
-        var layer = parent.getLayer();
+        var layer = reference.getLayer();
         layer.addHoverControl(extension);
         
-        var rect = parent.toLayerRect(new Rect(0, 0, parent.rect.getWidth(), parent.rect.getHeight()));
+        var rect = reference.toLayerRect(new Rect(0, 0, reference.rect.getWidth(), reference.rect.getHeight()));
         extension.init();
         
         direction.apply(layer, extension.rect, rect, layer.getContentOffset());
@@ -82,6 +90,26 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
                 extension.setY((int) creatorRect.maxY);
                 
                 extension.setWidth((int) creatorRect.getWidth(), layer.rect.getWidth() - layerOffset * 2);
+                extension.flowX();
+                int layerHeight = layer.rect.getHeight() - layerOffset * 2;
+                extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
+                extension.flowY();
+                
+                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, extension.rectCopy());
+                Rect screen = Rect.getScreenRect();
+                
+                if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
+                    extension.setY(extension.getY() - ((int) creatorRect.getHeight() + extension.getHeight()));
+            }
+        },
+        BELOW_OR_ABOVE_ANY_SIZE {
+            @Override
+            public void apply(GuiLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
+                extension.setX((int) creatorRect.minX);
+                extension.setY((int) creatorRect.maxY);
+                
+                int layerWidth = layer.rect.getWidth() - layerOffset * 2;
+                extension.setWidth(extension.getPreferredWidth(layerWidth), layerWidth);
                 extension.flowX();
                 int layerHeight = layer.rect.getHeight() - layerOffset * 2;
                 extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);

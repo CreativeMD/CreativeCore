@@ -17,8 +17,6 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     protected List<GuiRow> rows = new ArrayList<>();
     protected List<T> content;
-    protected int cachedWidth;
-    protected int cachedHeight;
     
     public final boolean modifiable;
     
@@ -80,12 +78,6 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     @Override
-    public void flowX(int width, int preferred) {
-        this.cachedWidth = width;
-        super.flowX(width, preferred);
-    }
-    
-    @Override
     public void flowY(int width, int height, int preferred) {
         this.cachedHeight = height;
         super.flowY(width, height, preferred);
@@ -93,8 +85,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public void reflowInternal() {
         if (hasGui()) {
-            super.flowX(cachedWidth, preferredWidth(cachedWidth));
-            super.flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth, cachedHeight));
+            super.flowX(rect.getContentWidth(), preferredWidth(rect.getContentWidth()));
+            super.flowY(rect.getContentWidth(), cachedHeight, preferredHeight(rect.getContentWidth(), cachedHeight));
         }
     }
     
