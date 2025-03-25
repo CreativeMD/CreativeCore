@@ -11,6 +11,7 @@ import team.creative.creativecore.common.gui.control.menu.GuiMenuRoot;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
+import team.creative.creativecore.common.gui.extension.GuiExtensionCreator.ExtensionDirection;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.type.tree.NamedTree;
 
@@ -22,6 +23,7 @@ public class GuiComboBoxTree<K> extends GuiLabel {
     private String selectedPath;
     private K selected;
     private boolean searchbar;
+    private ExtensionDirection direction = ExtensionDirection.BELOW_OR_ABOVE;
     
     public GuiComboBoxTree(String name, K selected, NamedTree<K> data, Function<String, Component> title) {
         this(name, data, title);
@@ -40,6 +42,11 @@ public class GuiComboBoxTree<K> extends GuiLabel {
     
     public GuiComboBoxTree setSearchbar(boolean searchbar) {
         this.searchbar = searchbar;
+        return this;
+    }
+    
+    public GuiComboBoxTree setDirection(ExtensionDirection direction) {
+        this.direction = direction;
         return this;
     }
     
@@ -87,7 +94,7 @@ public class GuiComboBoxTree<K> extends GuiLabel {
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        ex.toggle(this::createBox);
+        ex.toggle(this::createBox, direction);
         playSound(SoundEvents.UI_BUTTON_CLICK);
         return true;
     }

@@ -80,7 +80,7 @@ public abstract class GuiMenu<T> extends GuiScrollY {
             if (rect.insideLocalPos(x, y) && folder.hasChildren()) {
                 if (submenu.hasExtension())
                     submenu.close();
-                submenu.open(new GuiMenuSub<T>(root(), folder, submenu), ExtensionDirection.RIGHT);
+                submenu.open(new GuiMenuSub<T>(root(), folder, submenu), this, ExtensionDirection.RIGHT);
                 
             }
         }

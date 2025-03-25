@@ -11,10 +11,12 @@ import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.parent.GuiPanel;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiConfigSubControlNested extends GuiConfigSubControl {
     
@@ -22,18 +24,19 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
     public Object value;
     private final Runnable updateListener;
     private final Side side;
-    private final GuiPanel panel;
+    private final GuiParent panel;
     
-    public GuiConfigSubControlNested(String name, ICreativeConfigHolder holder, Object value, Side side, @Nullable Runnable updateListener) {
+    public GuiConfigSubControlNested(String name, ICreativeConfigHolder holder, Object value, Side side, @Nullable Runnable updateListener, boolean invisiblePanel) {
         super(name);
         setExpandable();
-        this.panel = new GuiPanel(GuiFlow.STACK_Y);
+        this.panel = invisiblePanel ? new GuiParent(GuiFlow.STACK_Y) : new GuiPanel(GuiFlow.STACK_Y);
         add(panel);
         this.holder = holder;
         this.value = value;
         this.side = side;
         this.updateListener = updateListener;
         flow = GuiFlow.STACK_Y;
+        createControls();
     }
     
     public void load(ICreativeConfigHolder holder, Object value) {
@@ -52,6 +55,11 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
         panel.add(nameField = new GuiTextfield("title", name).setDim(50, 8));
     }
     
+    @Override
+    public ControlFormatting getControlFormatting() {
+        return ControlFormatting.TRANSPARENT;
+    }
+    
     public void createControls() {
         for (ConfigKey key : holder.fields()) {
             if (key.hideFromGUI)
@@ -63,7 +71,7 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
             String comment = path + key.name + ".comment";
             
             if (key.isFolder()) {
-                GuiConfigSubControlNested config = new GuiConfigSubControlNested(key.name, key.holder(), key.field().get(), side, updateListener);
+                GuiConfigSubControlNested config = new GuiConfigSubControlNested(key.name, key.holder(), key.field().get(), side, updateListener, false);
                 panel.add(config);
                 config.addNameUnmodifieable(caption);
                 config.createControls();
@@ -87,7 +95,7 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
     
     public JsonObject save() {
         JsonObject json = new JsonObject();
-        for (GuiControl control : this.controls)
+        for (GuiControl control : panel)
             if (control instanceof GuiConfigControl c) {
                 JsonElement element = c.save();
                 if (element != null)

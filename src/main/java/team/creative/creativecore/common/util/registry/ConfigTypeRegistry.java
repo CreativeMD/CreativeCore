@@ -19,7 +19,8 @@ import team.creative.creativecore.common.util.mc.NBTUtils;
 
 public class ConfigTypeRegistry<T> implements ICreativeRegistry {
     
-    public static final Predicate<Field> DEFAULT_FIELD_PREDICATE = x -> Modifier.isPublic(x.getModifiers()) && !Modifier.isTransient(x.getModifiers());
+    public static final Predicate<Field> DEFAULT_FIELD_PREDICATE = x -> Modifier.isPublic(x.getModifiers()) && !Modifier.isTransient(x.getModifiers()) && !Modifier.isStatic(x
+            .getModifiers());
     private final HashMap<Class<? extends T>, ConfigurationType> types = new LinkedHashMap<>();
     private final HashMap<String, ConfigurationType> loaders = new LinkedHashMap<>();
     private final ConfigEqualChecker equalChecker = new ConfigEqualChecker();
@@ -59,12 +60,12 @@ public class ConfigTypeRegistry<T> implements ICreativeRegistry {
     }
     
     public T load(HolderLookup.Provider provider, CompoundTag nbt, Side side) {
-        ConfigurationType type = loaders.getOrDefault(nbt.getString("type"), defaultType);
+        ConfigurationType type = loaders.getOrDefault(nbt.getString("t"), defaultType);
         return type.load(provider, nbt, side);
     }
     
     public T loadOrCreateDefault(HolderLookup.Provider provider, CompoundTag nbt, String id, Side side) {
-        if (nbt.getString("type").equals(id))
+        if (nbt.getString("t").equals(id))
             return load(provider, nbt, side);
         return createDefault(id);
     }
@@ -74,9 +75,9 @@ public class ConfigTypeRegistry<T> implements ICreativeRegistry {
         return type.save(provider, data, nbt, side);
     }
     
-    public GuiConfigSubControlNested create(T data, Side side) {
+    public GuiConfigSubControlNested create(String name, T data, Side side) {
         var type = get(data);
-        return new GuiConfigSubControlNested("", type.create(side, data), data, side, null);
+        return new GuiConfigSubControlNested(name, type.create(side, data), data, side, null, true);
     }
     
     public T createDefault(String id) {
@@ -110,14 +111,14 @@ public class ConfigTypeRegistry<T> implements ICreativeRegistry {
         }
         
         public CompoundTag save(HolderLookup.Provider provider, T data, CompoundTag nbt, Side side) {
-            nbt = NBTUtils.of(create(side, data).save(provider, false, true, side), keepUnrelatedData ? nbt : new CompoundTag());
+            nbt = NBTUtils.of(create(side, data).save(provider, true, true, side), keepUnrelatedData ? nbt : new CompoundTag());
             nbt.putString("t", id);
             return nbt;
         }
         
         public T load(HolderLookup.Provider provider, CompoundTag nbt, Side side) {
             T data = factory.get();
-            create(side, data).load(provider, false, true, JsonUtils.of(nbt), side);
+            create(side, data).load(provider, true, true, JsonUtils.of(nbt), side);
             return data;
         }
         

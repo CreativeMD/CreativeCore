@@ -16,7 +16,8 @@ import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 public class CreativeConfigRegistry extends ConfigHolderDynamic implements ICreativeRegistry {
     
     public static final CreativeConfigRegistry ROOT = new CreativeConfigRegistry();
-    public static final Predicate<Field> FIELD_PREDICATE = x -> Modifier.isPublic(x.getModifiers()) && x.isAnnotationPresent(CreativeConfig.class);
+    public static final Predicate<Field> FIELD_PREDICATE = x -> Modifier.isPublic(x.getModifiers()) && !Modifier.isStatic(x.getModifiers()) && x.isAnnotationPresent(
+        CreativeConfig.class);
     public static final ConfigEqualChecker EQUAL_CHECKER = new ConfigEqualChecker();
     
     public CreativeConfigRegistry() {
