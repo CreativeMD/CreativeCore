@@ -34,6 +34,10 @@ public class DisplayColor extends StyleDisplay {
         set(ColorUtils.redF(color), ColorUtils.greenF(color), ColorUtils.blueF(color), ColorUtils.alphaF(color));
     }
     
+    public DisplayColor(int red, int green, int blue, int alpha) {
+        this.color = ColorUtils.rgba(red, green, blue, alpha);
+    }
+    
     public void set(float r, float g, float b, float a) {
         this.color = ColorUtils.rgba(r, g, b, a);
     }
