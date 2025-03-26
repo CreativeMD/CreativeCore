@@ -1,6 +1,8 @@
 {
     "gui.client-config": "Client Config",
     "gui.config": "Config",
+    "gui.true": "true",
+    "gui.false": "false",
     "gui.save": "Save",
     "gui.add": "Add",
     "gui.minus": "-",
