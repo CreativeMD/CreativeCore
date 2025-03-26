@@ -69,7 +69,31 @@ public class GuiRenderHelper {
         });
     }
     
+    public static void horizontalGradientRect(GuiGraphics graphics, float x, float y, float x2, float y2, int colorFrom, int colorTo) {
+        graphics.drawSpecial(buffer -> {
+            VertexConsumer consumer = buffer.getBuffer(RenderType.gui());
+            var matrix = graphics.pose().last().pose();
+            int z = 0;
+            consumer.addVertex(matrix, x2, y, z).setColor(colorTo);
+            consumer.addVertex(matrix, x, y, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x, y2, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x2, y2, z).setColor(colorTo);
+        });
+    }
+    
     public static void verticalGradientRect(GuiGraphics graphics, int x, int y, int x2, int y2, int colorFrom, int colorTo) {
+        graphics.drawSpecial(source -> {
+            VertexConsumer consumer = source.getBuffer(RenderType.gui());
+            var matrix = graphics.pose().last().pose();
+            int z = 0;
+            consumer.addVertex(matrix, x2, y, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x, y, z).setColor(colorFrom);
+            consumer.addVertex(matrix, x, y2, z).setColor(colorTo);
+            consumer.addVertex(matrix, x2, y2, z).setColor(colorTo);
+        });
+    }
+    
+    public static void verticalGradientRect(GuiGraphics graphics, float x, float y, float x2, float y2, int colorFrom, int colorTo) {
         graphics.drawSpecial(source -> {
             VertexConsumer consumer = source.getBuffer(RenderType.gui());
             var matrix = graphics.pose().last().pose();
@@ -85,6 +109,10 @@ public class GuiRenderHelper {
         horizontalGradientRect(graphics, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
     }
     
+    public static void horizontalGradientMaskRect(GuiGraphics graphics, float x, float y, float x2, float y2, int color, int mask) {
+        horizontalGradientRect(graphics, x, y, x2, y2, (color & ~mask) | 0xFF000000, color | 0xFF000000 | mask);
+    }
+    
     public static void colorRect(GuiGraphics graphics, int x, int y, int width, int height, int color) {
         graphics.drawSpecial(source -> {
             VertexConsumer consumer = source.getBuffer(RenderType.gui());
@@ -97,30 +125,55 @@ public class GuiRenderHelper {
         });
     }
     
-    private static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int y, int z, int width, int height, float u, float v, int textureWidth,
-            int textureHeight) {
-        textureRect(graphics, location, x, x + width, y, y + height, z, u, v, width, height, textureWidth, textureHeight);
+    public static void colorRect(GuiGraphics graphics, float x, float y, float width, float height, int color) {
+        graphics.drawSpecial(source -> {
+            VertexConsumer consumer = source.getBuffer(RenderType.gui());
+            var matrix = graphics.pose().last().pose();
+            int z = 0;
+            consumer.addVertex(matrix, x, y, z).setColor(color);
+            consumer.addVertex(matrix, x, y + height, z).setColor(color);
+            consumer.addVertex(matrix, x + width, y + height, z).setColor(color);
+            consumer.addVertex(matrix, x + width, y, z).setColor(color);
+        });
     }
     
     public static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int y, int width, int height, float u, float v) {
-        textureRect(graphics, location, x, y, 0, width, height, u, v, 256, 256);
+        int textureWidth = 256;
+        int textureHeight = 256;
+        drawTextureRect(graphics, location, x, x + width, y, y + height, 0, u / textureWidth, (u + width) / textureWidth, v / textureHeight, (v + height) / textureHeight);
+    }
+    
+    public static void textureRect(GuiGraphics graphics, ResourceLocation location, float x, float y, float width, float height, float u, float v) {
+        int textureWidth = 256;
+        int textureHeight = 256;
+        drawTextureRect(graphics, location, x, x + width, y, y + height, 0, u / textureWidth, (u + width) / textureWidth, v / textureHeight, (v + height) / textureHeight);
     }
     
     public static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int y, int width, int height, float u, float v, float u2, float v2) {
-        textureRect(graphics, location, x, x + width, y, y + height, 0, u, v, u2, v2, 256, 256);
+        int textureWidth = 256;
+        int textureHeight = 256;
+        drawTextureRect(graphics, location, x, x + width, y, y + height, 0, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight);
     }
     
-    private static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth,
-            int textureHeight) {
-        drawTextureRect(graphics, location, x, x2, y, y2, z, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight);
-    }
-    
-    private static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int x2, int y, int y2, int z, float u, float v, int uWidth, int vHeight,
-            int textureWidth, int textureHeight) {
-        drawTextureRect(graphics, location, x, x2, y, y2, z, u / textureWidth, (u + uWidth) / textureWidth, v / textureHeight, (v + vHeight) / textureHeight);
+    public static void textureRect(GuiGraphics graphics, ResourceLocation location, float x, float y, float width, float height, float u, float v, float u2, float v2) {
+        int textureWidth = 256;
+        int textureHeight = 256;
+        drawTextureRect(graphics, location, x, x + width, y, y + height, 0, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight);
     }
     
     private static void drawTextureRect(GuiGraphics graphics, ResourceLocation location, int x, int x2, int y, int y2, int z, float u, float u2, float v, float v2) {
+        RenderType rendertype = RenderType.guiTextured(location);
+        graphics.drawSpecial(consumer -> {
+            var matrix = graphics.pose().last().pose();
+            VertexConsumer vertexconsumer = consumer.getBuffer(rendertype);
+            vertexconsumer.addVertex(matrix, x, y2, z).setUv(u, v2);
+            vertexconsumer.addVertex(matrix, x2, y2, z).setUv(u2, v2);
+            vertexconsumer.addVertex(matrix, x2, y, z).setUv(u2, v);
+            vertexconsumer.addVertex(matrix, x, y, z).setUv(u, v);
+        });
+    }
+    
+    private static void drawTextureRect(GuiGraphics graphics, ResourceLocation location, float x, float x2, float y, float y2, float z, float u, float u2, float v, float v2) {
         RenderType rendertype = RenderType.guiTextured(location);
         graphics.drawSpecial(consumer -> {
             var matrix = graphics.pose().last().pose();
