@@ -109,7 +109,7 @@ public class GuiTabs extends GuiParent {
         }
         
         public void addTab(Component component, int index) {
-            addControl(new GuiBorderlessButton("b" + count, x -> select(index), null).setTitle(component));
+            add(new GuiBorderlessButton("b" + count, x -> select(index), null).setTitle(component));
             count++;
         }
         

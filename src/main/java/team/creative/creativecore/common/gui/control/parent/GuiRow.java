@@ -23,7 +23,7 @@ public class GuiRow extends GuiParent {
     }
     
     public GuiRow addColumn(GuiColumn col) {
-        super.addControl(col);
+        super.add(col);
         return this;
     }
     
@@ -41,7 +41,13 @@ public class GuiRow extends GuiParent {
     
     @Override
     @Deprecated
-    public GuiControl addControl(GuiControl control) {
+    public GuiParent add(GuiControl control) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    @Deprecated
+    public GuiParent addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

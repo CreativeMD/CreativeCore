@@ -72,12 +72,18 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
         while (slot.slot.getContainerSlot() >= slots.size())
             slots.add(null);
         slots.set(slot.slot.getContainerSlot(), slot);
-        return super.addControl(slot);
+        return super.add(slot);
     }
     
     @Override
     @Deprecated
-    public GuiControl addControl(GuiControl control) {
+    public GuiParent add(GuiControl control) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    @Deprecated
+    public GuiParent addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

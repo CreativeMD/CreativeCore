@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
@@ -36,7 +37,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     protected void createControl(int index) {
         GuiRow row = new GuiRow();
-        super.addControl(row);
+        super.add(row);
         GuiColumn content = (GuiColumn) new GuiColumn().setExpandableX();
         content.align = Align.CENTER;
         content.add(this.content.get(index));
@@ -57,23 +58,23 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     protected GuiControl addCustomControl(GuiControl control) {
-        return super.addControl(control);
+        return super.add(control);
     }
     
     protected GuiListBoxBase addCustom(GuiControl control) {
-        super.addControl(control);
+        super.add(control);
         return this;
     }
     
     @Override
     @Deprecated
-    public GuiControl addControl(GuiControl control) {
+    public GuiParent add(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
     @Override
     @Deprecated
-    public GuiControl addHoverControl(GuiControl control) {
+    public GuiParent addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

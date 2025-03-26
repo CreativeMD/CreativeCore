@@ -23,7 +23,7 @@ public class GuiCounter extends GuiParent {
     public GuiCounter(String name, int value, int min, int max) {
         this(name, value, min, max, ControlFormatting.TRANSPARENT);
     }
-
+    
     public GuiCounter(String name, int value, int min, int max, ControlFormatting buttonsFormatting) {
         super(name);
         this.min = min;
@@ -37,7 +37,7 @@ public class GuiCounter extends GuiParent {
         this.add(textfield.setExpandableX());
         this.add(buttons);
     }
-
+    
     protected void createButtons() {
         this.buttons.add(new GuiButtonHoldSlim("+", x -> {
             this.textfield.setText("" + stepUp(this.textfield.parseInteger()));
@@ -48,31 +48,31 @@ public class GuiCounter extends GuiParent {
             this.raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
         }).setTranslate("gui.minus").setDim(6, 4));
     }
-
+    
+    @Override
     public GuiCounter setSpacing(int spacing) {
         this.spacing = spacing;
         return this;
     }
-
+    
     @Override
     public GuiCounter add(GuiControl control) {
-        this.addControl(control);
-        return this;
+        return (GuiCounter) super.add(control);
     }
-
+    
     public GuiButtonHoldSlim getPlusButton() {
         return this.buttons.get("+");
     }
-
+    
     public GuiButtonHoldSlim getMinusButton() {
         return this.buttons.get("-");
     }
-
+    
     @Override
     public boolean isExpandableX() {
         return expandableX;
     }
-
+    
     public void resetTextfield() {
         textfield.setCursorPositionZero();
     }
