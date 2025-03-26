@@ -101,9 +101,9 @@ public class GuiStyle {
     
     public StyleDisplay disabled = new DisplayColor(0, 0, 0, 0.4F);
     
-    public StyleDisplay border = new DisplayColor(0, 0, 0, 1);
+    public StyleDisplay border = new DisplayColor(0F, 0F, 0F, 1F);
     @SerializedName("border-thick")
-    public StyleDisplay borderThick = new DisplayColor(0, 0, 0, 1);
+    public StyleDisplay borderThick = new DisplayColor(0F, 0F, 0F, 1F);
     
     public StyleDisplay background = new DisplayColor(0.6F, 0.6F, 0.6F, 1);
     @SerializedName("secondary-background")
