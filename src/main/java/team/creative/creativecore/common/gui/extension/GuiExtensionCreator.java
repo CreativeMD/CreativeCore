@@ -39,7 +39,7 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
     public void open(T extension, GuiControl reference, ExtensionDirection direction) {
         this.extension = extension;
         var layer = reference.getLayer();
-        layer.addHoverControl(extension);
+        layer.addHover(extension);
         
         var rect = reference.toLayerRect(new Rect(0, 0, reference.rect.getWidth(), reference.rect.getHeight()));
         extension.init();

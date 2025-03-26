@@ -34,12 +34,18 @@ public class GuiInventoryGridPreview extends GuiParent {
         this.container = container;
         this.fixedSize = Math.min(container.getContainerSize(), cols * rows);
         for (int i = 0; i < fixedSize; i++)
-            super.addControl(new GuiSlotViewer(container.getItem(i)));
+            super.add(new GuiSlotViewer(container.getItem(i)));
     }
     
     @Override
     @Deprecated
-    public GuiControl addControl(GuiControl control) {
+    public GuiParent add(GuiControl control) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    @Deprecated
+    public GuiParent addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

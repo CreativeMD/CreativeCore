@@ -18,9 +18,9 @@ public class GuiTopBottomBox extends GuiParent {
         align = Align.STRETCH;
         valign = VAlign.STRETCH;
         this.top = (GuiParent) new GuiParent(GuiFlow.STACK_Y).setExpandableY();
-        super.addControl(top);
+        super.add(top);
         this.bottom = new GuiParent(GuiFlow.STACK_Y);
-        super.addControl(bottom);
+        super.add(bottom);
     }
     
     public GuiTopBottomBox addTop(GuiControl control) {
@@ -35,7 +35,13 @@ public class GuiTopBottomBox extends GuiParent {
     
     @Override
     @Deprecated
-    public GuiControl addControl(GuiControl control) {
+    public GuiParent add(GuiControl control) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    @Deprecated
+    public GuiParent addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

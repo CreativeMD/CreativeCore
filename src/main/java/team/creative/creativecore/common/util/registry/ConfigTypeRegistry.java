@@ -65,7 +65,7 @@ public class ConfigTypeRegistry<T> implements ICreativeRegistry {
     }
     
     public T loadOrCreateDefault(HolderLookup.Provider provider, CompoundTag nbt, String id, Side side) {
-        if (nbt.getStringOr("t").equals(id))
+        if (nbt.getStringOr("t", "").equals(id))
             return load(provider, nbt, side);
         return createDefault(id);
     }

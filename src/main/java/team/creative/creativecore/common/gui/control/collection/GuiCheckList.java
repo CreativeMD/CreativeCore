@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
@@ -46,7 +47,7 @@ public class GuiCheckList<T> extends GuiScrollY {
     
     protected void createControl(T key, List<Component> components, boolean selected) {
         GuiCheckListRow row = new GuiCheckListRow(key, components, selected);
-        super.addControl(row);
+        super.add(row);
         rows.add(row);
     }
     
@@ -56,23 +57,23 @@ public class GuiCheckList<T> extends GuiScrollY {
     }
     
     protected GuiControl addCustomControl(GuiControl control) {
-        return super.addControl(control);
+        return super.add(control);
     }
     
     protected GuiCheckList<T> addCustom(GuiControl control) {
-        super.addControl(control);
+        super.add(control);
         return this;
     }
     
     @Override
     @Deprecated
-    public GuiControl addControl(GuiControl control) {
+    public GuiParent add(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     
     @Override
     @Deprecated
-    public GuiControl addHoverControl(GuiControl control) {
+    public GuiParent addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

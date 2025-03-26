@@ -141,8 +141,8 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
                 for (int i = 0; i < selectors.length; i++)
                     buttons.add(new GuiPlayerSelectorButton("" + i, selectors[i]));
             GuiListBoxBase<GuiPlayerSelectorButton> list = new GuiListBoxBase<>("list", true, buttons);
-            gui.addControl(list);
-            gui.addControl(new GuiButton("add", x -> list.addItem(new GuiPlayerSelectorButton("new", new PlayerSelectorLevel(0)))));
+            gui.add(list);
+            gui.add(new GuiButton("add", x -> list.addItem(new GuiPlayerSelectorButton("new", new PlayerSelectorLevel(0)))));
         }
         
         @Override

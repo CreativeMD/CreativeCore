@@ -177,12 +177,6 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
         return get(name) != null;
     }
     
-    public <T extends GuiControl> T addControl(T control) {
-        control.setParent(this);
-        controls.add(control);
-        return control;
-    }
-    
     /** inserts the given the control before the parameter
      *
      * @param reference
@@ -220,13 +214,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     }
     
     public GuiParent add(GuiControl control) {
-        this.addControl(control);
+        control.setParent(this);
+        controls.add(control);
         return this;
     }
     
     public GuiParent add(GuiControl... controls) {
         for (GuiControl c : controls)
-            this.addControl(c);
+            add(c);
         return this;
     }
     
@@ -236,20 +231,15 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
         return this;
     }
     
-    public <T extends GuiControl> T addHoverControl(T control) {
+    public GuiParent addHover(GuiControl control) {
         control.setParent(this);
         hoverControls.add(control);
-        return control;
-    }
-    
-    public GuiParent addHover(GuiControl control) {
-        this.addHoverControl(control);
         return this;
     }
     
     public GuiParent addHover(GuiControl... controls) {
         for (GuiControl c : controls)
-            this.addHoverControl(c);
+            addHover(c);
         return this;
     }
     

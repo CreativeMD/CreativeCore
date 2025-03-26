@@ -26,7 +26,7 @@ public class GuiTable extends GuiParent {
     }
     
     public GuiTable addRow(GuiRow row) {
-        super.addControl(row);
+        super.add(row);
         return this;
     }
     
@@ -65,7 +65,13 @@ public class GuiTable extends GuiParent {
     
     @Override
     @Deprecated
-    public GuiControl addControl(GuiControl control) {
+    public GuiParent add(GuiControl control) {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
+    @Deprecated
+    public GuiParent addHover(GuiControl control) {
         throw new UnsupportedOperationException();
     }
     

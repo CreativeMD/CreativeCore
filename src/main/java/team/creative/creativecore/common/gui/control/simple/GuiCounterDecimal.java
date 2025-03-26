@@ -25,7 +25,7 @@ public class GuiCounterDecimal extends GuiParent {
     public GuiTextfield textfield;
     public double stepAmount;
     public final ControlFormatting buttonsFormatting;
-
+    
     public GuiCounterDecimal(String name, double value) {
         this(name, value, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
@@ -33,7 +33,7 @@ public class GuiCounterDecimal extends GuiParent {
     public GuiCounterDecimal(String name, double value, double min, double max) {
         this(name, value, min, max, ControlFormatting.TRANSPARENT);
     }
-
+    
     public GuiCounterDecimal(String name, double value, double min, double max, ControlFormatting buttonsFormatting) {
         super(name);
         this.min = min;
@@ -48,7 +48,7 @@ public class GuiCounterDecimal extends GuiParent {
         this.add(textfield.setExpandableX());
         this.add(buttons);
     }
-
+    
     protected void createButtons() {
         this.buttons.add(new GuiButtonHoldSlim("+", x -> stepUp()) {
             @Override
@@ -63,22 +63,22 @@ public class GuiCounterDecimal extends GuiParent {
             }
         }.setTranslate("gui.minus").setDim(6, 3));
     }
-
+    
+    @Override
     public GuiCounterDecimal setSpacing(int spacing) {
         this.spacing = spacing;
         return this;
     }
-
+    
     @Override
     public GuiCounterDecimal add(GuiControl control) {
-        this.addControl(control);
-        return this;
+        return (GuiCounterDecimal) super.add(control);
     }
-
+    
     public GuiButtonHoldSlim getPlusButton() {
         return this.buttons.get("+");
     }
-
+    
     public GuiButtonHoldSlim getMinusButton() {
         return this.buttons.get("-");
     }
