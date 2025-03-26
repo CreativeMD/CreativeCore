@@ -24,12 +24,10 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -68,15 +66,14 @@ public class ConfigEventHandler {
     
     @SubscribeEvent
     public void playerLoggedIn(OnDatapackSyncEvent event) {
-        if (event.getPlayer() != null && (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer().getServer()))) {
+        if (event.getPlayer() != null && (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer()))) {
             CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), event.getPlayer());
             CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(event.getPlayer().registryAccess(), CreativeConfigRegistry.ROOT, false), event.getPlayer());
         }
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    public boolean isOwner(MinecraftServer server) {
-        return server.getSingleplayerProfile().getName().equals(Minecraft.getInstance().getUser().getName());
+    public boolean isOwner(ServerPlayer player) {
+        return player.getServer().isSingleplayerOwner(player.getGameProfile());
     }
     
     @SubscribeEvent
