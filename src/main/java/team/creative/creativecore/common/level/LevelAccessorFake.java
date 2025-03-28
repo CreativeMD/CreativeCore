@@ -40,7 +40,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.ticks.LevelTickAccess;
 
-public class LevelAccesorFake implements LevelAccessor {
+public class LevelAccessorFake implements LevelAccessor {
     
     protected Level level;
     protected BlockPos pos;
