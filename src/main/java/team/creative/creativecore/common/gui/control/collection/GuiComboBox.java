@@ -76,7 +76,7 @@ public class GuiComboBox<K> extends GuiLabel {
         this.index = Mth.clamp(index, 0, this.data.size() - 1);
         
         if (!data.isEmpty())
-            selected = data.get(index).key;
+            selected = data.get(this.index).key;
         else
             selected = null;
         
