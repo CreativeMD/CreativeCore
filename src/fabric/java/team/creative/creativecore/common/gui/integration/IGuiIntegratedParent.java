@@ -43,11 +43,10 @@ public interface IGuiIntegratedParent extends IGuiParent {
     }
     
     @Environment(EnvType.CLIENT)
-    default void render(GuiGraphics graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
+    public default void render(GuiGraphics graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
+        PoseStack pose = graphics.pose();
         int width = screen.width;
         int height = screen.height;
-        
-        PoseStack pose = graphics.pose();
         
         listener.tick();
         Rect screenRect = Rect.getScreenRect();
@@ -60,9 +59,10 @@ public interface IGuiIntegratedParent extends IGuiParent {
         for (int i = 0; i < layers.size(); i++) {
             GuiLayer layer = layers.get(i);
             
-            if (i == layers.size() - 1 && layer.hasGrayBackground()) {
+            if (i == layers.size() - 1) {
                 //RenderSystem.disableDepthTest();
-                GuiRenderHelper.verticalGradientRect(graphics, 0, 0, width, height, -1072689136, -804253680);
+                if (layer.hasGrayBackground())
+                    GuiRenderHelper.verticalGradientRect(graphics, 0, 0, width, height, -1072689136, -804253680);
             }
             
             pose.pushPose();
@@ -72,7 +72,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
-            layer.render(graphics, null, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
+            layer.render(graphics, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
             pose.popPose();
             
             RenderSystem.disableScissor();
@@ -82,7 +82,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
             return;
         
         GuiLayer layer = getTopLayer();
-        GuiTooltipEvent event = layer.getTooltipEvent(null, mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
+        GuiTooltipEvent event = layer.getTooltipEvent(mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
         if (event != null) {
             layer.raiseEvent(event);
             if (!event.isCanceled())
