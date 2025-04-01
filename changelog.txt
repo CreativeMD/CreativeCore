@@ -1,3 +1,44 @@
+2.13.0
+Reworked GuiControl
+- Made Rect part of GuiControl
+- Removed GuiChildControl
+- Removed rect as parameter
+- Removed addControl and addHoverControl from GuiParent
+- Moved min, preferred and max methods for width and height from control to rect
+- Removed rect from standard renderContent function in GuiControl
+- Renamed package controls to control
+- Removed non generic variant of combobox, state button, tab
+Reworked NamedTree
+- Added first and valueEntries to NamedTree
+- Fixed folder force not working properly for nested paths in NamedTree
+Changed Config System
+- Added ConfigTypeRegistry which allows for type saving & loading with an automatically generated gui configuration (based on the config system)
+- Added ICreativeRegistry to allow for multiple config systems to have independent field predicates
+- Added hideFromGUI to CreativeConfig annotation
+- Added Int and Decimal Supplier annotation and classes to enable on the fly min and max configuration
+- Enabled custom type equals checker by default (for config systems)
+- Removed CreativeConfig annotation being available for classes
+Update `ru_ru.json` (thanks to mpustovoi)
+Added GuiExtensionCreator (reworked combobox, stack selector etc.)
+Added missing translation for true and false
+Added GuiComboBoxFlexible
+Added DataComponentPatch network field type
+Added float parameter variants to GuiRenderHelper
+Added new constructor to DisplayColor
+Added copy method sameDimensions to CompiledText
+Added different extension directions for GuiExtensionCreator
+Added CLICKABLE_NO_BORDER ControlFormatting
+Added new constructor for TextBuilder and an easy way to display a boolean
+Added set Vec3i to VectorUtils
+Added way to convert NBT to JSON back and forth
+Added gray and dark gray to ColorUtils
+Added VertexConsumer parameter for RenderBox and VectorFan
+Added IntMatrix3c and transform methods for Axis, Facing, BoxCorner, Rotation
+Fixed not syncing configuration when open to lan in singleplayer
+Fixed slider not loosing it's grabbed state when being disabled
+Fixed VectorFan white preview
+Renamed LevelAccesorFake to LevelAccessorFake
+
 2.12.36
 Fixed item pickup event not getting fired for ItemPhysic
 
