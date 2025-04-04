@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "creativecore",
-    "version": "2.13.0",
+    "version": "2.13.1",
     "name": "CreativeCore",
     "description": "A simple but powerful coremod.",
     "authors": [
