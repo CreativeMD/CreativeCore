@@ -1,3 +1,6 @@
+2.12.32
+Fixed not syncing configuration when open to lan in singleplayer
+
 2.12.31
 Fixed not properly displaying error in packet
 
