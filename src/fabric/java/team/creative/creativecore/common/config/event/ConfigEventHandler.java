@@ -29,7 +29,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -123,15 +122,14 @@ public class ConfigEventHandler {
     }
     
     public void playerLoggedIn(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
-        if (!server.isSingleplayer() || !isOwner(server)) {
+        if (!server.isSingleplayer() || !isOwner(handler.getPlayer())) {
             CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), handler.getPlayer());
             CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(server.registryAccess(), CreativeConfigRegistry.ROOT, false), handler.getPlayer());
         }
     }
     
-    @Environment(EnvType.CLIENT)
-    public boolean isOwner(MinecraftServer server) {
-        return server.getSingleplayerProfile().getName().equals(Minecraft.getInstance().getUser().getName());
+    public boolean isOwner(ServerPlayer player) {
+        return player.getServer().isSingleplayerOwner(player.getGameProfile());
     }
     
     public void sync(ICreativeConfigHolder holder, MinecraftServer server) {
