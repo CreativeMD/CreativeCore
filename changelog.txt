@@ -1,3 +1,6 @@
+2.13.1
+Fixed not syncing configuration when open to lan in singleplayer (fabric)
+
 2.13.0
 Reworked GuiControl
 - Made Rect part of GuiControl
