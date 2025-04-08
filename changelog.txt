@@ -1,3 +1,6 @@
+2.12.33
+Removed all unnecessary forge classes
+
 2.12.32
 Fixed not syncing configuration when open to lan in singleplayer
 
