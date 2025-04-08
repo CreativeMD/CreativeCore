@@ -57,6 +57,7 @@ public class GuiTabs extends GuiParent {
         index = select;
         selected = tabs.get(select);
         bar.highlight(select);
+        add(selected);
         if (lastHeight == -1 && getParent() != null)
             reflow();
         else {
