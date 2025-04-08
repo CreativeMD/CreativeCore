@@ -12,8 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiChildControl;
 import team.creative.creativecore.common.gui.controls.simple.GuiLabel;
@@ -186,31 +184,13 @@ public class GuiStackSelector extends GuiLabel {
                 for (ItemStack stack : player.inventoryMenu.getItems())
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
-                    else {
-                        LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
-                        if (result.isPresent())
-                            collect(result.orElseThrow(RuntimeException::new), tempStacks);
-                    }
-                
+                    else
+                        StackUtils.collect(stack, selector::allow, tempStacks);
+                    
                 stacks.add("collector.inventory", tempStacks);
             }
             
             return stacks;
-        }
-        
-        protected void collect(IItemHandler inventory, List<ItemStack> stacks) {
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                ItemStack stack = inventory.getStackInSlot(i);
-                if (!stack.isEmpty() && selector.allow(stack))
-                    stacks.add(stack.copy());
-                else {
-                    LazyOptional<IItemHandler> result = StackUtils.getStackInventory(stack);
-                    if (result.isPresent())
-                        collect(result.orElseThrow(RuntimeException::new), stacks);
-                }
-                
-            }
-            
         }
     }
     
