@@ -1,12 +1,14 @@
 package team.creative.creativecore.common.util.mc;
 
+import java.util.List;
+import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
 
 public class StackUtils {
     
-    public static IItemHandler getStackInventory(ItemStack stack) {
-        return null;
-    }
+    public static void collect(ItemStack stack, @Nullable Predicate<ItemStack> predicate, List<ItemStack> stacks) {}
     
 }
