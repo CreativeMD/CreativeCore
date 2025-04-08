@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.items.IItemHandler;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -157,31 +156,13 @@ public class GuiStackSelector extends GuiLabel {
                 for (ItemStack stack : player.inventoryMenu.getItems())
                     if (!stack.isEmpty() && selector.allow(stack))
                         tempStacks.add(stack.copy());
-                    else {
-                        IItemHandler result = StackUtils.getStackInventory(stack);
-                        if (result != null)
-                            collect(result, tempStacks);
-                    }
-                
+                    else
+                        StackUtils.collect(stack, selector::allow, tempStacks);
+                    
                 stacks.add("collector.inventory", tempStacks);
             }
             
             return stacks;
-        }
-        
-        protected void collect(IItemHandler inventory, List<ItemStack> stacks) {
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                ItemStack stack = inventory.getStackInSlot(i);
-                if (!stack.isEmpty() && selector.allow(stack))
-                    stacks.add(stack.copy());
-                else {
-                    IItemHandler result = StackUtils.getStackInventory(stack);
-                    if (result != null)
-                        collect(result, stacks);
-                }
-                
-            }
-            
         }
     }
     
