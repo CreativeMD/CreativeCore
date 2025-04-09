@@ -25,7 +25,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiLayer extends GuiParent {
     
-    public static final int MINIMUM_LAYER_SPACING = 10;
+    public static final int MINIMUM_OUTER_SPACING = 10;
     
     protected static void collectInventories(Iterable<GuiControl> parent, List<IGuiInventory> inventories) {
         for (GuiControl control : parent)
@@ -122,7 +122,7 @@ public abstract class GuiLayer extends GuiParent {
             return;
         
         Rect screen = Rect.getScreenRect();
-        int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
+        int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_OUTER_SPACING;
         int fixedWidth = -1;
         int width = 0;
         
@@ -144,7 +144,7 @@ public abstract class GuiLayer extends GuiParent {
         rect.setRight(width + getContentOffset() * 2);
         flowX(width, preferredWidth(fixedWidth != -1 ? fixedWidth : screenWidth));
         
-        int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_LAYER_SPACING;
+        int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_OUTER_SPACING;
         int fixedHeight = -1;
         int height = 0;
         if (preferred != null)
