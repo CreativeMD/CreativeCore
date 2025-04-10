@@ -390,7 +390,7 @@ public abstract class GuiControl {
         
         renderContent(graphics, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
-        if (!enabled) {
+        if (!enabled && formatting.hasDisabledEffect) {
             realRect.scissor();
             //RenderSystem.disableDepthTest();
             // TODO 1.21.5 YET TO BE TESTED

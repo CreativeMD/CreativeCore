@@ -82,7 +82,7 @@ public class GuiCheckBox extends GuiLabel {
         PoseStack pose = graphics.pose();
         GuiStyle style = getStyle();
         
-        if (!enabled)
+        if (!enabled && getControlFormatting().hasDisabledEffect)
             style.disabled.render(graphics, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
         
         style.get(ControlStyleBorder.SMALL).render(graphics, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
