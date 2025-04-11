@@ -6,7 +6,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import team.creative.creativecore.common.util.CompoundSerializer;
@@ -54,7 +53,7 @@ public class ItemFilters {
         
         @SuppressWarnings("unused")
         public ItemFilter(CompoundTag nbt) {
-            this.item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(nbt.getString("i")));
+            this.item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(nbt.getStringOr("i", "")));
         }
         
         @Override
@@ -81,10 +80,10 @@ public class ItemFilters {
         
         @SuppressWarnings("unused")
         public ItemsFilter(CompoundTag nbt) {
-            ListTag list = nbt.getList("i", Tag.TAG_STRING);
+            ListTag list = nbt.getListOrEmpty("i");
             this.items = new Item[list.size()];
             for (int i = 0; i < items.length; i++)
-                items[i] = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(list.getString(i)));
+                items[i] = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(list.getStringOr(i, "")));
         }
         
         @Override
@@ -116,7 +115,7 @@ public class ItemFilters {
         public ItemClassFilter(CompoundTag nbt) {
             Class temp = null;
             try {
-                temp = Class.forName(nbt.getString("c"));
+                temp = Class.forName(nbt.getStringOr("c", ""));
             } catch (Exception e) {}
             clazz = temp;
         }

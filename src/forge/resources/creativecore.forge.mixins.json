@@ -4,10 +4,11 @@
     "compatibilityLevel": "JAVA_21",
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
+        "PlayerListMixin",
+        "ServerConfigurationPacketListenerImplMixin"
     ],
     "client": [
-        "ForgeModelBlockRendererAccessor",
-        "QuadLighterMixin"
+        "ClientConfigurationPacketListenerImplMixin"
     ],
     "minVersion": "0.8"
 }

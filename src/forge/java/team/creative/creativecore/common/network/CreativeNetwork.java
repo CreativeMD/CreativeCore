@@ -65,8 +65,10 @@ public class CreativeNetwork {
                 throw e;
             }
         };
-        registrar.playToServer(handler.cid, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.CLIENTBOUND), x -> handler.read(x, PacketFlow.CLIENTBOUND)), executor);
-        registrar.playToClient(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.SERVERBOUND), x -> handler.read(x, PacketFlow.SERVERBOUND)), executor);
+        registrar.playToServer(handler.cid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.CLIENTBOUND), x -> handler.read((CreativeByteBuf) x,
+            PacketFlow.CLIENTBOUND)), executor);
+        registrar.playToClient(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.SERVERBOUND), x -> handler.read((CreativeByteBuf) x,
+            PacketFlow.SERVERBOUND)), executor);
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {

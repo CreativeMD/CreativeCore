@@ -1,10 +1,8 @@
 package team.creative.creativecore.common.gui.controls.simple;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.CoreShaders;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
@@ -108,11 +106,8 @@ public class GuiIcon extends GuiControl {
     protected void renderContent(GuiGraphics graphics, GuiChildControl control, Rect rect, int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(RenderSystem.setShader(CoreShaders.POSITION_TEX));
-        RenderSystem.setShaderTexture(0, this.icon.location());
+        
+        var location = this.icon.location();
         
         int x = 0, y = 0, width = control.getContentWidth(), height = control.getContentHeight();
         if (squared) {
@@ -127,13 +122,13 @@ public class GuiIcon extends GuiControl {
         
         if (this.shadow != Color.NONE) {
             this.shadow.glColor();
-            GuiRenderHelper.textureRect(graphics, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
+            GuiRenderHelper.textureRect(graphics, location, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
                     .minY() + this.icon.height());
         }
         
         this.color.glColor();
-        GuiRenderHelper.textureRect(graphics, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon.minY() + this.icon.height());
-        RenderSystem.disableBlend();
+        GuiRenderHelper.textureRect(graphics, location, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon.minY() + this.icon
+                .height());
         pose.popPose();
     }
     

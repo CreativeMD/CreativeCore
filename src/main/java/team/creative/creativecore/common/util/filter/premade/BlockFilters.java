@@ -6,7 +6,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -64,7 +63,7 @@ public class BlockFilters {
         
         @SuppressWarnings("unused")
         public BlockFilter(CompoundTag nbt) {
-            this.block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(nbt.getString("b")));
+            this.block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(nbt.getStringOr("b", "")));
         }
         
         @Override
@@ -91,10 +90,10 @@ public class BlockFilters {
         
         @SuppressWarnings("unused")
         public BlocksFilter(CompoundTag nbt) {
-            ListTag list = nbt.getList("b", Tag.TAG_STRING);
+            ListTag list = nbt.getListOrEmpty("b");
             this.blocks = new Block[list.size()];
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(list.getString(i)));
+                blocks[i] = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(list.getStringOr(i, "")));
         }
         
         @Override
@@ -126,7 +125,7 @@ public class BlockFilters {
         public BlockClassFilter(CompoundTag nbt) {
             Class temp = null;
             try {
-                temp = Class.forName(nbt.getString("c"));
+                temp = Class.forName(nbt.getStringOr("c", ""));
             } catch (Exception e) {}
             clazz = temp;
         }

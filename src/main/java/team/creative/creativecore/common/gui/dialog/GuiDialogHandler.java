@@ -13,11 +13,11 @@ import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 public class GuiDialogHandler {
     
     public static final GuiSyncGlobalLayer<DialogGuiLayer> DIALOG_HANDLER = GuiSyncHolder.GLOBAL.layer("dialog", (p, nbt) -> {
-        int[] array = nbt.getIntArray("buttons");
+        int[] array = nbt.getIntArray("buttons").orElseGet(() -> new int[0]);
         DialogButton[] buttons = new DialogButton[array.length];
         for (int i = 0; i < array.length; i++)
             buttons[i] = DialogButton.values()[array[i]];
-        return new DialogGuiLayer(nbt.getString("name"), Component.Serializer.fromJson(nbt.getString("title"), p), null, buttons);
+        return new DialogGuiLayer(nbt.getStringOr("name", ""), Component.Serializer.fromJson(nbt.getStringOr("title", ""), p), null, buttons);
     });
     
     public static void init() {}

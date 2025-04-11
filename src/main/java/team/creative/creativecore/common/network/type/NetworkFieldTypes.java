@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.network.BundlePacketWrapper;
+import team.creative.creativecore.common.network.CreativeByteBuf;
 import team.creative.creativecore.common.network.CreativeNetworkUtils;
 import team.creative.creativecore.common.util.filter.BiFilter;
 import team.creative.creativecore.common.util.filter.Filter;
@@ -53,6 +54,7 @@ import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
+import team.creative.creativecore.common.util.mc.ConnectionUtils;
 import team.creative.creativecore.common.util.registry.exception.RegistryException;
 import team.creative.creativecore.common.util.type.Bunch;
 import team.creative.creativecore.common.util.type.itr.IterableIterator;
@@ -111,36 +113,36 @@ public class NetworkFieldTypes {
         throw new RuntimeException("No field type found for " + classType.getSimpleName());
     }
     
-    public static <T> void write(Class<T> clazz, T object, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public static <T> void write(Class<T> clazz, T object, CreativeByteBuf buffer, PacketFlow flow) {
         get(clazz).write(object, clazz, null, buffer, flow);
     }
     
-    public static <T> void writeMany(Class<T> clazz, Bunch<T> bunch, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public static <T> void writeMany(Class<T> clazz, Bunch<T> bunch, CreativeByteBuf buffer, PacketFlow flow) {
         buffer.writeInt(bunch.size());
         NetworkFieldType<T> type = get(clazz);
         for (T t : bunch)
             type.write(t, clazz, null, buffer, flow);
     }
     
-    public static <T> void writeMany(Class<T> clazz, Collection<T> collection, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public static <T> void writeMany(Class<T> clazz, Collection<T> collection, CreativeByteBuf buffer, PacketFlow flow) {
         buffer.writeInt(collection.size());
         NetworkFieldType<T> type = get(clazz);
         for (T t : collection)
             type.write(t, clazz, null, buffer, flow);
     }
     
-    public static <T> void writeMany(Class<T> clazz, T[] collection, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public static <T> void writeMany(Class<T> clazz, T[] collection, CreativeByteBuf buffer, PacketFlow flow) {
         buffer.writeInt(collection.length);
         NetworkFieldType<T> type = get(clazz);
         for (T t : collection)
             type.write(t, clazz, null, buffer, flow);
     }
     
-    public static <T> T read(Class<T> clazz, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public static <T> T read(Class<T> clazz, CreativeByteBuf buffer, PacketFlow flow) {
         return get(clazz).read(clazz, null, buffer, flow);
     }
     
-    public static <T> Iterable<T> readMany(Class<T> clazz, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public static <T> Iterable<T> readMany(Class<T> clazz, CreativeByteBuf buffer, PacketFlow flow) {
         int length = buffer.readInt();
         NetworkFieldType<T> type = get(clazz);
         
@@ -561,7 +563,7 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeSpecial<>((x, y) -> x.isArray()) {
             
             @Override
-            public void write(Object content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public void write(Object content, Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 Class subClass = classType.getComponentType();
                 NetworkFieldType subParser = get(subClass, null);
                 int length = Array.getLength(content);
@@ -571,7 +573,7 @@ public class NetworkFieldTypes {
             }
             
             @Override
-            public Object read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public Object read(Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 int length = buffer.readInt();
                 Class subClass = classType.getComponentType();
                 NetworkFieldType subParser = get(subClass, null);
@@ -585,7 +587,7 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeSpecial((x, y) -> x.equals(ArrayList.class) || x.equals(List.class)) {
             
             @Override
-            public void write(Object content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public void write(Object content, Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
@@ -608,7 +610,7 @@ public class NetworkFieldTypes {
             }
             
             @Override
-            public Object read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public Object read(Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
@@ -636,12 +638,12 @@ public class NetworkFieldTypes {
         register(new NetworkFieldTypeSpecial<>((x, y) -> x.isEnum()) {
             
             @Override
-            public void write(Object content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public void write(Object content, Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 buffer.writeEnum((Enum<?>) content);
             }
             
             @Override
-            public Object read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public Object read(Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 return buffer.readEnum(classType);
             }
         });
@@ -718,12 +720,12 @@ public class NetworkFieldTypes {
         NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Tag>((x, y) -> Tag.class.isAssignableFrom(x)) {
             
             @Override
-            public void write(Tag content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public void write(Tag content, Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 buffer.writeNbt(content);
             }
             
             @Override
-            public Tag read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+            public Tag read(Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
                 return buffer.readNbt(NbtAccounter.unlimitedHeap());
             }
         });
@@ -731,8 +733,8 @@ public class NetworkFieldTypes {
         NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Packet>((x, y) -> Packet.class.isAssignableFrom(x)) {
             
             @Override
-            public void write(Packet content, Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                var codec = CreativeNetworkUtils.getPacketCodec(buffer, flow);
+            public void write(Packet content, Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
+                var codec = ConnectionUtils.getProtocolInfo(buffer.connection).codec();
                 boolean bundle = content instanceof BundlePacket;
                 if (bundle) {
                     List<Packet> packets = CreativeNetworkUtils.flatten(new SingleIterator(content));
@@ -746,8 +748,8 @@ public class NetworkFieldTypes {
             }
             
             @Override
-            public Packet read(Class classType, Type genericType, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
-                var codec = CreativeNetworkUtils.getPacketCodec(buffer, flow);
+            public Packet read(Class classType, Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
+                var codec = ConnectionUtils.getProtocolInfo(buffer.connection).codec();
                 int size = buffer.readInt();
                 if (size == 0)
                     return buffer.readNullable(codec);

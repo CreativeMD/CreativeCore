@@ -1,30 +1,19 @@
 package team.creative.creativecore.client.render.box;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.jetbrains.annotations.Nullable;
-
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
-import team.creative.creativecore.client.render.model.CreativeBakedQuad;
-import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
@@ -325,7 +314,7 @@ public class RenderBox extends AlignedBox {
         return maxZ - minZ;
     }
     
-    public void renderPreview(PoseStack pose, int alpha) {
+    /*public void renderPreview(PoseStack pose, int alpha) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
@@ -351,7 +340,7 @@ public class RenderBox extends AlignedBox {
                     fan.renderPreview(pose.last().pose(), red, green, blue, alpha);
             }
         }
-    }
+    }*/
     
     public void renderLines(PoseStack pose, VertexConsumer consumer, int alpha) {
         int red = ColorUtils.red(color);
@@ -421,7 +410,7 @@ public class RenderBox extends AlignedBox {
         return !state.isSolid();
     }
     
-    public List<BakedQuad> getBakedQuad(QuadGeneratorContext holder, LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
+    /*public List<BakedQuad> getBakedQuad(QuadGeneratorContext holder, LevelAccessor level, @Nullable BlockPos pos, BlockPos offset, BlockState state, BakedModel blockModel, Facing facing, RenderType layer, RandomSource rand, boolean overrideTint, int defaultColor) {
         if (pos != null)
             rand.setSeed(state.getSeed(pos));
         
@@ -509,7 +498,7 @@ public class RenderBox extends AlignedBox {
                 c.updateAlpha();
         return quads;
         
-    }
+    }*/
     
     private static class VectorFanSimple extends VectorFan {
         

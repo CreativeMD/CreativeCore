@@ -29,7 +29,7 @@ public class CreativeIngredientItemTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(nbt.getString("tag")));
+        tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(nbt.getStringOr("tag", "")));
     }
     
     @Override

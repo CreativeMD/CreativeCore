@@ -19,16 +19,12 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ModelEvent.RegisterLoaders;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.client.render.model.CreativeBlockModel;
-import team.creative.creativecore.client.render.model.CreativeItemModel;
-import team.creative.creativecore.client.render.model.CreativeModelLoader;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -38,19 +34,17 @@ import team.creative.creativecore.common.gui.integration.ContainerScreenIntegrat
 import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.util.registry.LocatedHandlerRegistry;
 
 public class CreativeCoreClient {
     
-    private static final Minecraft mc = Minecraft.getInstance();
-    public static final LocatedHandlerRegistry<CreativeBlockModel> BLOCK_MODEL_TYPES = new LocatedHandlerRegistry<CreativeBlockModel>(null).allowOverwrite();
-    public static final LocatedHandlerRegistry<CreativeItemModel> ITEM_MODEL_TYPES = new LocatedHandlerRegistry<CreativeItemModel>(null).allowOverwrite();
-    
     public static void load(IEventBus bus) {
         bus.addListener(CreativeCoreClient::init);
-        bus.addListener(CreativeCoreClient::modelEvent);
         bus.addListener(CreativeCoreClient::screenEvent);
         bus.addListener(CreativeCoreClient::reloadListener);
+        
+        // TODO READD QuadLighterMixin, CreativeUnbakedModel, CreativeQuadLighter, CreativePlatformHooks, CreativeModelLoader, CreativeItemModel, CreativeItemBoxModel, CreativeBlockModel
+        // TODO READD CreativeBakedQuad, CreativeBakedModel, CreativeBakedBoxModelTranslucent, CreativeBakedBoxModel
+        
     }
     
     public static void registerClientConfig(String modid) {
@@ -62,15 +56,8 @@ public class CreativeCoreClient {
         }));
     }
     
-    public static void registerBlockModel(ResourceLocation location, CreativeBlockModel renderer) {
-        BLOCK_MODEL_TYPES.register(location, renderer);
-    }
-    
-    public static void registerItemModel(ResourceLocation location, CreativeItemModel renderer) {
-        ITEM_MODEL_TYPES.register(location, renderer);
-    }
-    
     public static float getFrameTime() {
+        var mc = Minecraft.getInstance();
         if (mc.isPaused())
             return 1.0F;
         return mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
@@ -107,10 +94,6 @@ public class CreativeCoreClient {
                 GuiStyle.reload();
             }
         });
-    }
-    
-    public static void modelEvent(RegisterLoaders event) {
-        event.register(ResourceLocation.tryBuild(CreativeCore.MODID, "rendered"), new CreativeModelLoader());
     }
     
     public static void screenEvent(RegisterMenuScreensEvent event) {

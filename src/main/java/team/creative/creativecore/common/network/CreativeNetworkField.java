@@ -4,7 +4,6 @@ import static team.creative.creativecore.CreativeCore.LOGGER;
 
 import java.lang.reflect.Field;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import team.creative.creativecore.common.network.type.NetworkFieldType;
 import team.creative.creativecore.common.network.type.NetworkFieldTypes;
@@ -21,7 +20,7 @@ public class CreativeNetworkField {
         this.type = type;
     }
     
-    public void write(CreativePacket packet, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public void write(CreativePacket packet, CreativeByteBuf buffer, PacketFlow flow) {
         try {
             Object content = field.get(packet);
             if (nullable)
@@ -33,7 +32,7 @@ public class CreativeNetworkField {
         }
     }
     
-    public void read(CreativePacket packet, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public void read(CreativePacket packet, CreativeByteBuf buffer, PacketFlow flow) {
         try {
             Object content;
             if (nullable && !buffer.readBoolean())

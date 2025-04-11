@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -40,12 +39,12 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
         }
     }
     
-    public void write(T packet, RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public void write(T packet, CreativeByteBuf buffer, PacketFlow flow) {
         for (CreativeNetworkField parser : parsers)
             parser.write(packet, buffer, flow);
     }
     
-    public T read(RegistryFriendlyByteBuf buffer, PacketFlow flow) {
+    public T read(CreativeByteBuf buffer, PacketFlow flow) {
         T message = supplier.get();
         
         for (CreativeNetworkField parser : parsers)

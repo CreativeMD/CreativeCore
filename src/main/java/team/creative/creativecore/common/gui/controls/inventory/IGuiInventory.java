@@ -14,9 +14,9 @@ public interface IGuiInventory {
     
     public static final GuiSyncGlobal<GuiControl, CompoundTag> SYNC = GuiSyncHolder.GLOBAL.register("inv_one", (control, nbt) -> {
         IGuiInventory inventory = (IGuiInventory) control;
-        for (String name : nbt.getAllKeys()) {
+        for (String name : nbt.keySet()) {
             int id = Integer.parseInt(name);
-            inventory.getSlot(id).slot.set(ItemStack.parseOptional(control.provider(), nbt.getCompound(name)));
+            inventory.getSlot(id).slot.set(ItemStack.parse(control.provider(), nbt.getCompoundOrEmpty(name)).orElse(ItemStack.EMPTY));
             inventory.setChanged(id);
         }
     });
@@ -24,7 +24,7 @@ public interface IGuiInventory {
     public static final GuiSyncGlobal<GuiControl, ListTag> SYNC_ALL = GuiSyncHolder.GLOBAL.register("inv_all", (control, list) -> {
         IGuiInventory inventory = (IGuiInventory) control;
         for (int i = 0; i < inventory.inventorySize(); i++)
-            inventory.getSlot(i).slot.set(ItemStack.parseOptional(control.provider(), list.getCompound(i)));
+            inventory.getSlot(i).slot.set(ItemStack.parse(control.provider(), list.getCompoundOrEmpty(i)).orElse(ItemStack.EMPTY));
         inventory.setChanged();
     });
     
@@ -97,7 +97,7 @@ public interface IGuiInventory {
         for (int i = set.nextSetBit(0); i >= 0; i = set.nextSetBit(i + 1)) {
             GuiSlot slot = getSlot(i);
             slot.onSendUpdate();
-            nbt.put("" + i, slot.slot.getItem().saveOptional(provider));
+            nbt.put("" + i, slot.slot.getItem().save(provider));
         }
         SYNC.send(control, nbt);
     }
@@ -109,7 +109,7 @@ public interface IGuiInventory {
         var provider = control.provider();
         ListTag list = new ListTag();
         for (int i = 0; i < inventorySize(); i++)
-            list.add(getSlot(i).slot.getItem().saveOptional(provider));
+            list.add(getSlot(i).slot.getItem().save(provider));
         SYNC_ALL.send(control, list);
     }
 }

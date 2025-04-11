@@ -30,7 +30,7 @@ public class CreativeIngredientItem extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        item = provider.lookup(Registries.ITEM).get().get(ResourceKey.create(Registries.ITEM, ResourceLocation.parse(nbt.getString("item")))).orElse(Items.AIR
+        item = provider.lookup(Registries.ITEM).get().get(ResourceKey.create(Registries.ITEM, ResourceLocation.parse(nbt.getStringOr("item", "")))).orElse(Items.AIR
                 .builtInRegistryHolder()).value();
     }
     

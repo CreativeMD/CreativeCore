@@ -29,14 +29,14 @@ public class InventoryUtils {
     }
     
     public static SimpleContainer load(HolderLookup.Provider provider, CompoundTag nbt) {
-        return load(provider, nbt, nbt.getInt("size"));
+        return load(provider, nbt, nbt.getIntOr("size", 0));
     }
     
     public static SimpleContainer load(HolderLookup.Provider provider, CompoundTag nbt, int length) {
         SimpleContainer basic = new SimpleContainer(length);
         for (int i = 0; i < length; i++) {
             if (nbt.contains("s" + i))
-                basic.setItem(i, ItemStack.parseOptional(provider, nbt.getCompound("s" + i)));
+                basic.setItem(i, ItemStack.parse(provider, nbt.getCompoundOrEmpty("s" + i)).orElse(ItemStack.EMPTY));
             else
                 basic.setItem(i, ItemStack.EMPTY);
         }

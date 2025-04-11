@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -22,11 +21,11 @@ import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 
 public class CreativeCoreGuiRegistry {
     
-    public static final GuiSyncGlobal<GuiLayer, CompoundTag> HAND = GuiSyncHolder.GLOBAL.register("hand", (c, t) -> c.itemManager().setHand(ItemStack.parseOptional(c.provider(),
-        t)));
+    public static final GuiSyncGlobal<GuiLayer, CompoundTag> HAND = GuiSyncHolder.GLOBAL.register("hand", (c, t) -> c.itemManager().setHand(ItemStack.parse(c.provider(), t).orElse(
+        ItemStack.EMPTY)));
     
     public static final GuiSyncGlobal<GuiSlot, ByteTag> DROP = GuiSyncHolder.GLOBAL.register("drop", (c, t) -> {
-        boolean ctrl = t.getAsByte() == 1;
+        boolean ctrl = t.asBoolean().get();
         Slot slot = c.slot;
         Player player = c.getPlayer();
         if (slot.hasItem() && slot.mayPickup(player)) {
@@ -58,7 +57,7 @@ public class CreativeCoreGuiRegistry {
         GuiLayer layer = c.getLayer();
         
         ItemStack stack = slot.getItem();
-        int amount = Math.min(t.getAsInt(), stack.getCount());
+        int amount = Math.min(t.asInt().get(), stack.getCount());
         ItemStack insert = slot.remove(amount);
         
         for (IGuiInventory inv : layer.inventoriesToInsert()) {
@@ -85,7 +84,7 @@ public class CreativeCoreGuiRegistry {
         if (stack.isEmpty() || !slot.mayPlace(stack))
             return;
         
-        int amount = Math.min(t.getAsInt(), slot.getMaxStackSize(stack) - stack.getCount());
+        int amount = Math.min(t.asInt().get(), slot.getMaxStackSize(stack) - stack.getCount());
         ItemStack extract = stack.copy();
         extract.setCount(amount);
         
@@ -114,7 +113,7 @@ public class CreativeCoreGuiRegistry {
     });
     
     public static final GuiSyncGlobal<GuiSlot, ByteTag> SWAP = GuiSyncHolder.GLOBAL.register("swap", (c, t) -> {
-        boolean rightClick = t.getAsByte() == 1;
+        boolean rightClick = t.asBoolean().get();
         Slot slot = c.slot;
         Player player = c.getPlayer();
         ItemStack hand = c.itemManager().getHand();
@@ -141,17 +140,17 @@ public class CreativeCoreGuiRegistry {
             return;
         
         List<IGuiInventory> inventories = new ArrayList<>();
-        ListTag names = t.getList("names", Tag.TAG_STRING);
+        ListTag names = t.getListOrEmpty("names");
         for (int i = 0; i < names.size(); i++)
-            inventories.add(c.get(names.getString(i)));
+            inventories.add(c.get(names.getStringOr(i, "")));
         
         List<GuiSlot> slots = new ArrayList<>();
-        int[] ids = t.getIntArray("ids");
+        int[] ids = t.getIntArray("ids").orElseGet(() -> new int[0]);
         for (int i = 0; i < ids.length; i += 2)
             slots.add(inventories.get(ids[i]).getSlot(ids[i + 1]));
         
         int countPerSlot = Math.max(1, Mth.floor((float) hand.getCount() / (float) slots.size()));
-        boolean rightClick = t.getBoolean("rightClick");
+        boolean rightClick = t.getBooleanOr("rightClick", false);
         if (rightClick)
             countPerSlot = 1;
         for (GuiSlot slot : slots) {

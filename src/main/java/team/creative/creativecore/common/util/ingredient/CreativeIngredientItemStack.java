@@ -41,17 +41,17 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
     
     @Override
     protected void saveExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        nbt.put("stack", stack.saveOptional(provider));
+        nbt.put("stack", stack.save(provider));
         if (!included.isEmpty())
             nbt.putString("included", String.join(";", new FunctionIterator<String>(included, x -> x.toString())));
     }
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        stack = ItemStack.parseOptional(provider, nbt.getCompound("stack"));
+        stack = ItemStack.parse(provider, nbt.getCompoundOrEmpty("stack")).orElse(ItemStack.EMPTY);
         if (nbt.contains("included")) {
             included = new ArrayList<>();
-            var array = nbt.getString("included").split(";");
+            var array = nbt.getStringOr("included", "").split(";");
             for (int i = 0; i < array.length; i++)
                 included.add(ResourceLocation.parse(array[i]));
         }

@@ -30,7 +30,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        tag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getString("tag")));
+        tag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getStringOr("tag", "")));
     }
     
     @Override

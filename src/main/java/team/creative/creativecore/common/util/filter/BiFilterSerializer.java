@@ -2,7 +2,6 @@ package team.creative.creativecore.common.util.filter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import team.creative.creativecore.common.util.CompoundSerializer;
 import team.creative.creativecore.common.util.filter.BiFilter.BiFilterAnd;
 import team.creative.creativecore.common.util.filter.BiFilter.BiFilterNot;
@@ -53,24 +52,24 @@ public class BiFilterSerializer {
     }
     
     public BiFilter read(CompoundTag tag) throws RegistryException {
-        String type = tag.getString("t");
+        String type = tag.getStringOr("t", "");
         switch (type) {
             case "&" -> {
-                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                ListTag list = tag.getListOrEmpty(type);
                 BiFilter[] filters = new BiFilter[list.size()];
                 for (int i = 0; i < list.size(); i++)
-                    filters[i] = read(list.getCompound(i));
+                    filters[i] = read(list.getCompoundOrEmpty(i));
                 return new BiFilterAnd<>(filters);
             }
             case "+" -> {
-                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                ListTag list = tag.getListOrEmpty(type);
                 BiFilter[] filters = new BiFilter[list.size()];
                 for (int i = 0; i < list.size(); i++)
-                    filters[i] = read(list.getCompound(i));
+                    filters[i] = read(list.getCompoundOrEmpty(i));
                 return new BiFilterOr<>(filters);
             }
             case "!" -> {
-                return new BiFilterNot<>(read(tag.getCompound("c")));
+                return new BiFilterNot<>(read(tag.getCompoundOrEmpty("c")));
             }
         }
         return REGISTRY.create(type, tag);

@@ -4,8 +4,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -55,7 +53,6 @@ public class DebugTextRenderer {
     }
     
     public void render(Font font, GuiGraphics graphics) {
-        RenderSystem.defaultBlendFunc();
         int top = 2;
         for (String msg : lines) {
             if (msg != null && !msg.isEmpty()) {

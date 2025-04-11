@@ -23,9 +23,8 @@ public class DisplayTextureStretch extends DisplayTexture {
     
     @Override
     public void render(GuiGraphics graphics, double x, double y, double width, double height) {
-        RenderSystem.setShaderTexture(0, location);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        GuiRenderHelper.textureRect(graphics, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
+        GuiRenderHelper.textureRect(graphics, location, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
     }
     
 }

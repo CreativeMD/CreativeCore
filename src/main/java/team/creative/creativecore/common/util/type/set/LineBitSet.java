@@ -29,12 +29,12 @@ public class LineBitSet implements Iterable<Integer> {
             return;
         }
         
-        int[] info = nbt.getIntArray("info");
+        int[] info = nbt.getIntArray("info").get();
         if (info.length != 2)
             throw new IllegalArgumentException("Data is not valid " + nbt);
         this.count = info[0];
         this.minChunk = info[1];
-        this.chunks = nbt.getLongArray("data");
+        this.chunks = nbt.getLongArray("data").get();
     }
     
     public CompoundTag save() {

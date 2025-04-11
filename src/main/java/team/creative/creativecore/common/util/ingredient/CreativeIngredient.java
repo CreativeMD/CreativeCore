@@ -107,7 +107,7 @@ public abstract class CreativeIngredient {
     }
     
     public static CreativeIngredient load(HolderLookup.Provider provider, CompoundTag nbt) {
-        Class<? extends CreativeIngredient> classType = REGISTRY.get(nbt.getString("id"));
+        Class<? extends CreativeIngredient> classType = REGISTRY.get(nbt.getStringOr("id", ""));
         if (classType == null) {
             LOGGER.error(new IllegalArgumentException("'" + nbt.getString("id") + "' is an invalid type"));
             return EMPTY;
@@ -164,7 +164,7 @@ public abstract class CreativeIngredient {
                     Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
-                        return CreativeIngredient.load(provider, TagParser.parseTag(element.getAsString()));
+                        return CreativeIngredient.load(provider, TagParser.parseCompoundFully(element.getAsString()));
                     } catch (CommandSyntaxException e) {
                         LOGGER.error(e);
                     }

@@ -52,16 +52,16 @@ public interface IGuiIntegratedParent extends IGuiParent {
         listener.tick();
         Rect screenRect = Rect.getScreenRect();
         
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        //RenderSystem.enableDepthTest();
+        //RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
         
         List<GuiLayer> layers = getLayers();
         for (int i = 0; i < layers.size(); i++) {
             GuiLayer layer = layers.get(i);
             
             if (i == layers.size() - 1 && layer.hasGrayBackground()) {
-                RenderSystem.disableDepthTest();
+                //RenderSystem.disableDepthTest();
                 GuiRenderHelper.verticalGradientRect(graphics, 0, 0, width, height, -1072689136, -804253680);
             }
             

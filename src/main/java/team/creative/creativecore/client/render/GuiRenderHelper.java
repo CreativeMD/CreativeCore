@@ -1,21 +1,15 @@
 package team.creative.creativecore.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -32,8 +26,9 @@ public class GuiRenderHelper {
     }
     
     public static void drawItemStack(GuiGraphics graphics, ItemStack stack, float alpha) {
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        //RenderSystem.enableBlend();
+        //RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        //TODO 1.21.5 YET TO BE TESTED
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
         
         graphics.renderItem(stack, 0, 0);
@@ -102,35 +97,39 @@ public class GuiRenderHelper {
         });
     }
     
-    private static void textureRect(GuiGraphics graphics, int x, int y, int z, int width, int height, float u, float v, int textureWidth, int textureHeight) {
-        textureRect(graphics, x, x + width, y, y + height, z, u, v, width, height, textureWidth, textureHeight);
+    private static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int y, int z, int width, int height, float u, float v, int textureWidth,
+            int textureHeight) {
+        textureRect(graphics, location, x, x + width, y, y + height, z, u, v, width, height, textureWidth, textureHeight);
     }
     
-    public static void textureRect(GuiGraphics graphics, int x, int y, int width, int height, float u, float v) {
-        textureRect(graphics, x, y, 0, width, height, u, v, 256, 256);
+    public static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int y, int width, int height, float u, float v) {
+        textureRect(graphics, location, x, y, 0, width, height, u, v, 256, 256);
     }
     
-    public static void textureRect(GuiGraphics graphics, int x, int y, int width, int height, float u, float v, float u2, float v2) {
-        textureRect(graphics, x, x + width, y, y + height, 0, u, v, u2, v2, 256, 256);
+    public static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int y, int width, int height, float u, float v, float u2, float v2) {
+        textureRect(graphics, location, x, x + width, y, y + height, 0, u, v, u2, v2, 256, 256);
     }
     
-    private static void textureRect(GuiGraphics graphics, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth, int textureHeight) {
-        drawTextureRect(graphics, x, x2, y, y2, z, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight);
+    private static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int x2, int y, int y2, int z, float u, float v, float u2, float v2, int textureWidth,
+            int textureHeight) {
+        drawTextureRect(graphics, location, x, x2, y, y2, z, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight);
     }
     
-    private static void textureRect(GuiGraphics graphics, int x, int x2, int y, int y2, int z, float u, float v, int uWidth, int vHeight, int textureWidth, int textureHeight) {
-        drawTextureRect(graphics, x, x2, y, y2, z, u / textureWidth, (u + uWidth) / textureWidth, v / textureHeight, (v + vHeight) / textureHeight);
+    private static void textureRect(GuiGraphics graphics, ResourceLocation location, int x, int x2, int y, int y2, int z, float u, float v, int uWidth, int vHeight,
+            int textureWidth, int textureHeight) {
+        drawTextureRect(graphics, location, x, x2, y, y2, z, u / textureWidth, (u + uWidth) / textureWidth, v / textureHeight, (v + vHeight) / textureHeight);
     }
     
-    private static void drawTextureRect(GuiGraphics graphics, int x, int x2, int y, int y2, int z, float u, float u2, float v, float v2) {
-        var matrix = graphics.pose().last().pose();
-        RenderSystem.setShader(CoreShaders.POSITION_TEX);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.addVertex(matrix, x, y2, z).setUv(u, v2);
-        bufferbuilder.addVertex(matrix, x2, y2, z).setUv(u2, v2);
-        bufferbuilder.addVertex(matrix, x2, y, z).setUv(u2, v);
-        bufferbuilder.addVertex(matrix, x, y, z).setUv(u, v);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+    private static void drawTextureRect(GuiGraphics graphics, ResourceLocation location, int x, int x2, int y, int y2, int z, float u, float u2, float v, float v2) {
+        RenderType rendertype = RenderType.guiTextured(location);
+        graphics.drawSpecial(consumer -> {
+            var matrix = graphics.pose().last().pose();
+            VertexConsumer vertexconsumer = consumer.getBuffer(rendertype);
+            vertexconsumer.addVertex(matrix, x, y2, z).setUv(u, v2);
+            vertexconsumer.addVertex(matrix, x2, y2, z).setUv(u2, v2);
+            vertexconsumer.addVertex(matrix, x2, y, z).setUv(u2, v);
+            vertexconsumer.addVertex(matrix, x, y, z).setUv(u, v);
+        });
     }
     
 }

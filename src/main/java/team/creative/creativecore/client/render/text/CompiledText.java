@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.ComponentCollector;
@@ -269,7 +267,6 @@ public class CompiledText {
         stack.popPose();
         if (scale != 1)
             stack.popPose();
-        RenderSystem.enableBlend();
         
         usedWidth *= scale;
         usedHeight *= scale;

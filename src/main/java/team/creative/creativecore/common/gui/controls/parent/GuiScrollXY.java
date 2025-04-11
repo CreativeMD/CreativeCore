@@ -1,6 +1,5 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
@@ -182,7 +181,8 @@ public class GuiScrollXY extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale,
+            int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
         super.renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
@@ -194,7 +194,8 @@ public class GuiScrollXY extends GuiParent {
         realRect.scissor();
         GuiStyle style = getStyle();
         
-        RenderSystem.disableDepthTest();
+        //RenderSystem.disableDepthTest();
+        // TODO 1.21.5 YET TO BE TESTED
         
         scrolledX.tick();
         
@@ -231,7 +232,7 @@ public class GuiScrollXY extends GuiParent {
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale, controlScale);
         
-        RenderSystem.enableDepthTest();
+        //RenderSystem.enableDepthTest();
     }
     
     @Override

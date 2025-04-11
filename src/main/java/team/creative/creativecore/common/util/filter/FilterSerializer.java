@@ -2,7 +2,6 @@ package team.creative.creativecore.common.util.filter;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import team.creative.creativecore.common.util.CompoundSerializer;
 import team.creative.creativecore.common.util.filter.Filter.FilterAnd;
 import team.creative.creativecore.common.util.filter.Filter.FilterNot;
@@ -53,24 +52,24 @@ public class FilterSerializer {
     }
     
     public Filter read(CompoundTag tag) throws RegistryException {
-        String type = tag.getString("t");
+        String type = tag.getStringOr("t", "");
         switch (type) {
             case "&" -> {
-                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                ListTag list = tag.getListOrEmpty(type);
                 Filter[] filters = new Filter[list.size()];
                 for (int i = 0; i < list.size(); i++)
-                    filters[i] = read(list.getCompound(i));
+                    filters[i] = read(list.getCompoundOrEmpty(i));
                 return new FilterAnd<>(filters);
             }
             case "+" -> {
-                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                ListTag list = tag.getListOrEmpty(type);
                 Filter[] filters = new Filter[list.size()];
                 for (int i = 0; i < list.size(); i++)
-                    filters[i] = read(list.getCompound(i));
+                    filters[i] = read(list.getCompoundOrEmpty(i));
                 return new FilterOr<>(filters);
             }
             case "!" -> {
-                return new FilterNot<>(read(tag.getCompound("c")));
+                return new FilterNot<>(read(tag.getCompoundOrEmpty("c")));
             }
         }
         return REGISTRY.create(type, tag);

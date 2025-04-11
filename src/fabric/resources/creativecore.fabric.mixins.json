@@ -5,9 +5,14 @@
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
         "ArgumentTypeInfosAccessor",
-        "ModNioResourcePackAccessor"
+        "ConnectionMixin",
+        "ModNioResourcePackAccessor",
+        "PlayerListMixin",
+        "ServerConfigurationPacketListenerImplMixin",
+        "ServerCommonPacketListenerImplAccessor"
     ],
     "client": [
+        "ClientConfigurationPacketListenerImplMixin",
         "AbstractContainerScreenMixin"
     ],
     "minVersion": "0.8"

@@ -26,7 +26,7 @@ public class ContainerSlotView {
     };
     
     public static ContainerSlotView mainHand(Player player) {
-        return new ContainerSlotView(player, player.getInventory(), player.getInventory().selected);
+        return new ContainerSlotView(player, player.getInventory(), player.getInventory().getSelectedSlot());
     }
     
     public static ContainerSlotView offHand(Player player) {

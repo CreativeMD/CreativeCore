@@ -214,7 +214,7 @@ public class LevelAccesorFake implements LevelAccessor {
     }
     
     @Override
-    public void playSound(Player p_46775_, BlockPos p_46776_, SoundEvent p_46777_, SoundSource p_46778_, float p_46779_, float p_46780_) {
+    public void playSound(Entity p_46775_, BlockPos p_46776_, SoundEvent p_46777_, SoundSource p_46778_, float p_46779_, float p_46780_) {
         level.playSound(p_46775_, p_46776_, p_46777_, p_46778_, p_46779_, p_46780_);
     }
     
@@ -224,7 +224,7 @@ public class LevelAccesorFake implements LevelAccessor {
     }
     
     @Override
-    public void levelEvent(Player p_46771_, int p_46772_, BlockPos p_46773_, int p_46774_) {
+    public void levelEvent(Entity p_46771_, int p_46772_, BlockPos p_46773_, int p_46774_) {
         level.levelEvent(p_46771_, p_46772_, p_46773_, p_46774_);
     }
     

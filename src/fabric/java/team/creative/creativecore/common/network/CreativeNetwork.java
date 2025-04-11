@@ -50,13 +50,13 @@ public class CreativeNetwork {
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
         CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(ResourceLocation.tryBuild(modid, "" + id), classType, supplier, true);
         
-        PayloadTypeRegistry.playC2S().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.CLIENTBOUND), x -> {
-            T packet = handler.read(x, PacketFlow.CLIENTBOUND);
+        PayloadTypeRegistry.playC2S().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.CLIENTBOUND), x -> {
+            T packet = handler.read((CreativeByteBuf) x, PacketFlow.CLIENTBOUND);
             packet.setType(handler.sid);
             return packet;
         }));
-        PayloadTypeRegistry.playS2C().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, y, PacketFlow.SERVERBOUND), x -> {
-            T packet = handler.read(x, PacketFlow.SERVERBOUND);
+        PayloadTypeRegistry.playS2C().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.SERVERBOUND), x -> {
+            T packet = handler.read((CreativeByteBuf) x, PacketFlow.SERVERBOUND);
             packet.setType(handler.sid);
             return packet;
         }));

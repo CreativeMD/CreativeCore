@@ -94,13 +94,13 @@ public abstract class GuiCreativeIngredientHandler {
                         ItemStack stack = selector.getSelected();
                         TextMapBuilder<DataComponentType<?>> map = new TextMapBuilder<>();
                         Object2BooleanMap<DataComponentType<?>> selected = new Object2BooleanArrayMap<>();
-                        CompoundTag nbt = (CompoundTag) stack.saveOptional(gui.provider());
-                        nbt = nbt.getCompound("components");
+                        CompoundTag nbt = (CompoundTag) stack.save(gui.provider());
+                        nbt = nbt.getCompoundOrEmpty("components");
                         if (!nbt.isEmpty())
-                            for (String component : nbt.getAllKeys()) {
+                            for (String component : nbt.keySet()) {
                                 var location = ResourceLocation.parse(component);
                                 var type = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(location);
-                                map.addComponent(type, Component.literal(component).append(": ").append(Component.literal(nbt.get(component).getAsString()).withStyle(
+                                map.addComponent(type, Component.literal(component).append(": ").append(Component.literal(nbt.get(component).asString().get()).withStyle(
                                     ChatFormatting.GRAY)));
                                 if (list.includes(type))
                                     selected.put(type, true);

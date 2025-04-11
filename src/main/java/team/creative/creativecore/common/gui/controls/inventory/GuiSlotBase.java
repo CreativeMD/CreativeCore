@@ -2,7 +2,6 @@ package team.creative.creativecore.common.gui.controls.inventory;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
@@ -70,7 +69,8 @@ public abstract class GuiSlotBase extends GuiControl {
         graphics.renderItemDecorations(GuiRenderHelper.getFont(), stack, 0, 0);
         pose.translate(-1, -1, 10);
         if (rect.inside(mouseX, mouseY) && enabled) {
-            RenderSystem.enableBlend();
+            //RenderSystem.enableBlend();
+            //TODO 1.21.5 YET TO BE TESTED
             HOVER.render(graphics, rect.getWidth(), rect.getHeight());
         }
         

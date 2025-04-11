@@ -1,6 +1,5 @@
 package team.creative.creativecore.common.gui.controls.parent;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
@@ -133,7 +132,8 @@ public class GuiScrollX extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, GuiChildControl control, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale,
+            int mouseX, int mouseY) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
         super.renderContent(graphics, control, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
@@ -142,8 +142,9 @@ public class GuiScrollX extends GuiParent {
         if (!needsScrollbar(controlRect) && hoveredScroll)
             return;
         
-        if (hoveredScroll)
-            RenderSystem.disableDepthTest();
+        //if (hoveredScroll)
+        //    RenderSystem.disableDepthTest();
+        // TODO 1.21.5 YET TO BE TESTED
         
         float controlInvScale = (float) scaleFactorInv();
         pose.scale(controlInvScale, controlInvScale, controlInvScale);
@@ -161,16 +162,16 @@ public class GuiScrollX extends GuiParent {
         double percent = scrolled.current() / maxScroll;
         
         StyleDisplay display = hoveredScroll ? style.disabled : style.get(ControlStyleFace.CLICKABLE, false);
-        display.render(graphics, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, (control
-                .getHeight() - borderWidth * scrollbarHeight) - borderWidth, scrollThingWidth, scrollbarHeight);
+        display.render(graphics, (int) (percent * (completeWidth - scrollThingWidth)) + borderWidth, (control.getHeight() - borderWidth * scrollbarHeight) - borderWidth,
+            scrollThingWidth, scrollbarHeight);
         
         maxScroll = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
         
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale, controlScale);
         
-        if (hoveredScroll)
-            RenderSystem.enableDepthTest();
+        //if (hoveredScroll)
+        //    RenderSystem.enableDepthTest();
     }
     
     @Override

@@ -33,7 +33,7 @@ public abstract class PlayerSelector {
     public static final NamedTypeRegistry<PlayerSelector> REGISTRY = new NamedTypeRegistry<PlayerSelector>().addConstructorPattern();
     
     public static PlayerSelector read(CompoundTag nbt) {
-        Class<? extends PlayerSelector> clazz = REGISTRY.get(nbt.getString("id"));
+        Class<? extends PlayerSelector> clazz = REGISTRY.get(nbt.getStringOr("id", ""));
         if (clazz == null)
             throw new RuntimeException("Could not find player selector for " + nbt.getString("id"));
         
@@ -60,7 +60,7 @@ public abstract class PlayerSelector {
             public PlayerSelector readElement(ConfigKey key, PlayerSelector defaultValue, Side side, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
-                        return PlayerSelector.read(TagParser.parseTag(element.getAsString()));
+                        return PlayerSelector.read(TagParser.parseCompoundFully(element.getAsString()));
                     } catch (CommandSyntaxException e) {
                         CreativeCore.LOGGER.error(e);
                     }
@@ -139,10 +139,10 @@ public abstract class PlayerSelector {
         
         @Override
         public void readFromNBT(CompoundTag nbt) {
-            ListTag list = nbt.getList("selectors", 10);
+            ListTag list = nbt.getListOrEmpty("selectors");
             selectors = new PlayerSelector[list.size()];
             for (int i = 0; i < selectors.length; i++)
-                selectors[i] = PlayerSelector.read(list.getCompound(i));
+                selectors[i] = PlayerSelector.read(list.getCompoundOrEmpty(i));
         }
         
         @Override
@@ -188,10 +188,10 @@ public abstract class PlayerSelector {
         
         @Override
         public void readFromNBT(CompoundTag nbt) {
-            ListTag list = nbt.getList("selectors", 10);
+            ListTag list = nbt.getListOrEmpty("selectors");
             selectors = new PlayerSelector[list.size()];
             for (int i = 0; i < selectors.length; i++)
-                selectors[i] = PlayerSelector.read(list.getCompound(i));
+                selectors[i] = PlayerSelector.read(list.getCompoundOrEmpty(i));
         }
         
         @Override
@@ -234,7 +234,7 @@ public abstract class PlayerSelector {
         
         @Override
         public void readFromNBT(CompoundTag nbt) {
-            selector = PlayerSelector.read(nbt.getCompound("child"));
+            selector = PlayerSelector.read(nbt.getCompoundOrEmpty("child"));
         }
         
         @Override
@@ -268,7 +268,7 @@ public abstract class PlayerSelector {
         
         @Override
         public void readFromNBT(CompoundTag nbt) {
-            type = GameType.byId(nbt.getInt("mode"));
+            type = GameType.byId(nbt.getIntOr("mode", 0));
         }
         
         @Override
@@ -308,7 +308,7 @@ public abstract class PlayerSelector {
         
         @Override
         public void readFromNBT(CompoundTag nbt) {
-            this.permissionLevel = nbt.getInt("level");
+            this.permissionLevel = nbt.getIntOr("level", 0);
         }
         
         @Override
@@ -347,7 +347,7 @@ public abstract class PlayerSelector {
         
         @Override
         public void readFromNBT(CompoundTag nbt) {
-            this.pattern = nbt.getString("pattern");
+            this.pattern = nbt.getStringOr("pattern", "");
         }
         
         @Override

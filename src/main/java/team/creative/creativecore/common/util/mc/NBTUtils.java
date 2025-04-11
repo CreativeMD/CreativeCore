@@ -6,7 +6,7 @@ import net.minecraft.nbt.Tag;
 public class NBTUtils {
     
     public static CompoundTag mergeNotOverwrite(CompoundTag base, CompoundTag toInsert) {
-        for (String id : toInsert.getAllKeys()) {
+        for (String id : toInsert.keySet()) {
             Tag toInsertEntry = toInsert.get(id);
             if (toInsertEntry == null)
                 continue;

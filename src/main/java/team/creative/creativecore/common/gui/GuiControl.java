@@ -2,8 +2,6 @@ package team.creative.creativecore.common.gui;
 
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -418,7 +416,7 @@ public abstract class GuiControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public void render(GuiGraphics graphics, GuiChildControl control, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
         
         Rect rectCopy = null;
         if (!enabled)
@@ -454,10 +452,11 @@ public abstract class GuiControl {
         
         if (!enabled) {
             realRect.scissor();
-            RenderSystem.disableDepthTest();
-            RenderSystem.enableBlend();
+            //RenderSystem.disableDepthTest();
+            // TODO 1.21.5 YET TO BE TESTED
+            //RenderSystem.enableBlend();
             style.disabled.render(graphics, null, rectCopy);
-            RenderSystem.enableDepthTest();
+            //RenderSystem.enableDepthTest();
         }
         
         graphics.flush();

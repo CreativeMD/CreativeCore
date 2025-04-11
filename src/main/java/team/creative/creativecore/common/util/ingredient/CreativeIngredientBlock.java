@@ -24,7 +24,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        block = provider.lookup(Registries.BLOCK).get().get(ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getString("block")))).orElse(Blocks.AIR
+        block = provider.lookup(Registries.BLOCK).get().get(ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getStringOr("block", "")))).orElse(Blocks.AIR
                 .builtInRegistryHolder()).value();
     }
     

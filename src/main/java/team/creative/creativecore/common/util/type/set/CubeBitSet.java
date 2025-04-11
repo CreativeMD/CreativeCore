@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongArrayTag;
-import net.minecraft.nbt.Tag;
 import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 
 public class CubeBitSet implements Iterable<MutableBlockPos> {
@@ -40,19 +39,19 @@ public class CubeBitSet implements Iterable<MutableBlockPos> {
             return;
         }
         
-        int[] info = nbt.getIntArray("info");
+        int[] info = nbt.getIntArray("info").get();
         if (info.length != 3)
             throw new IllegalArgumentException("Data is not valid " + nbt);
         this.count = info[0];
         this.minChunkX = info[1];
         this.minChunkY = info[2];
         this.minChunkZ = info[3];
-        ListTag list = nbt.getList("data", Tag.TAG_LONG_ARRAY);
+        ListTag list = nbt.getListOrEmpty("data");
         this.chunks = new long[list.size()][][];
         for (int i = 0; i < list.size(); i++) {
-            ListTag nested = list.getList(i);
+            ListTag nested = list.getListOrEmpty(i);
             for (int j = 0; j < nested.size(); j++)
-                this.chunks[i][j] = nested.getLongArray(j);
+                this.chunks[i][j] = nested.getLongArray(j).get();
         }
     }
     

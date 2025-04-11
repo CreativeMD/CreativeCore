@@ -5,14 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,7 +17,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
-import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
@@ -161,7 +154,7 @@ public class VectorFan {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void generate(QuadGeneratorContext holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
-        int[] vertices = holder.quad.getVertices().clone();
+        int[] vertices = holder.quad.vertices().clone();
         RenderBox box = holder.box;
         
         for (int k = 0; k < 4; k++) {
@@ -226,15 +219,16 @@ public class VectorFan {
             vertices[uvIndex + 1] = Float.floatToIntBits(Float.intBitsToFloat(vertices[uvIndex + 1]) - vOffset);
         }
         
-        BakedQuad quad = new CreativeBakedQuad(vertices, holder.quad, holder.box, holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
-        quads.add(quad);
+        //BakedQuad quad = new CreativeBakedQuad(vertices, holder.quad, holder.box, holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
+        //TODO 1.21.5 YET TO BE IMPLEMENTED
+        //quads.add(quad);
     }
     
     protected boolean doMinMaxLate() {
         return false;
     }
     
-    public void renderPreview(Matrix4f matrix, int red, int green, int blue, int alpha) {
+    /*public void renderPreview(Matrix4f matrix, int red, int green, int blue, int alpha) {
         var builder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
             Vec3f vec = coords[i];
@@ -242,7 +236,7 @@ public class VectorFan {
         }
         BufferUploader.drawWithShader(builder.buildOrThrow());
     }
-    
+    TODO 1.21.5 YET TO BE IMPLEMENTED
     public void renderPreview(Matrix4f matrix, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
         var builder = Tesselator.getInstance().begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
         for (int i = 0; i < coords.length; i++) {
@@ -250,7 +244,7 @@ public class VectorFan {
             builder.addVertex(matrix, vec.x * scaleX + offX, vec.y * scaleY + offY, vec.z * scaleZ + offZ).setColor(red, green, blue, alpha);
         }
         BufferUploader.drawWithShader(builder.buildOrThrow());
-    }
+    }*/
     
     public void forAllEdges(BiConsumer<Vec3f, Vec3f> consumer) {
         int index = 0;

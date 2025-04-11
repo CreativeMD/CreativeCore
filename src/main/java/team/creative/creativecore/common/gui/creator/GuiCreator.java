@@ -78,7 +78,7 @@ public abstract class GuiCreator {
         
         public GuiCreatorItem() {
             super((nbt, player) -> {
-                InteractionHand hand = nbt.getBoolean("main_hand") ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+                InteractionHand hand = nbt.getBooleanOr("main_hand", false) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
                 ItemStack stack = player.getItemInHand(hand);
                 if (stack.getItem() instanceof ItemGuiCreator item)
                     return item.create(nbt, player);
@@ -100,7 +100,7 @@ public abstract class GuiCreator {
         
         public GuiCreatorBlock() {
             super((nbt, player) -> {
-                BlockPos pos = new BlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
+                BlockPos pos = nbt.read("pos", BlockPos.CODEC).get();
                 Level level = player.level();
                 BlockState state = level.getBlockState(pos);
                 if (state.getBlock() instanceof BlockGuiCreator block)
@@ -114,9 +114,7 @@ public abstract class GuiCreator {
         }
         
         public void open(CompoundTag nbt, Player player, BlockPos pos) {
-            nbt.putInt("x", pos.getX());
-            nbt.putInt("y", pos.getY());
-            nbt.putInt("z", pos.getZ());
+            nbt.store("pos", BlockPos.CODEC, pos);
             openGui(nbt, player);
         }
     }
