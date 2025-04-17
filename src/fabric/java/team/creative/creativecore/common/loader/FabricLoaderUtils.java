@@ -13,7 +13,7 @@ public class FabricLoaderUtils implements ILoaderUtils {
     
     @Override
     public int fireItemPickupPre(ItemEntity item, Player player) {
-        return 1;
+        return 0;
     }
     
     @Override
