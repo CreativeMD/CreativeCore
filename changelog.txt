@@ -1,3 +1,10 @@
+2.13.3
+Fixed holding item rendering offset
+Fixed rendering count of one when holding an item stack
+Fixes mod not being required on client side when it is installed on server side
+Refactor BoxCorner for constant-time lookup (Thanks to zmr-233)
+Added Argentine Spanish localization (Thanks to Texaliuz)
+
 2.13.2
 Fixed control formatting has disabled effect not being used
 Renamed MINIMUM_LAYER_SPACING to MINIMUM_OUTER_SPACING
