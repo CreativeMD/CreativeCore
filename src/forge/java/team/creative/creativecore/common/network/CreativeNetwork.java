@@ -50,7 +50,7 @@ public class CreativeNetwork {
     }
     
     public void register(final RegisterPayloadHandlersEvent event) {
-        registrar = event.registrar(modid).versioned(version).optional();
+        registrar = event.registrar(modid).versioned(version);
         for (CreativeNetworkPacket packet : packetTypes.values())
             registerType(packet);
     }
