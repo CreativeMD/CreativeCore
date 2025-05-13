@@ -191,10 +191,17 @@ public abstract class GuiLayer extends GuiParent {
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        super.renderContent(graphics, controlRect, realRect, scale, mouseX, mouseY);
+        
         for (GuiManager manager : managers())
-            manager.renderOverlay(graphics, this, mouseX - rect.getX(), mouseY - rect.getY());
+            manager.renderOverlay(graphics, this, mouseX - (int) controlRect.minX, mouseY - (int) controlRect.minY);
     }
+    
+    @Override
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
     
     public boolean closeLayerUsingEscape() {
         return true;
