@@ -241,6 +241,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+        super.renderContent(graphics, controlRect, realRect, scale, mouseX, mouseY);
         double percent = getPercentage();
         
         int posX = (int) ((rect.getContentWidth() - sliderSize) * percent);
