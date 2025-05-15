@@ -4,12 +4,6 @@ This is a common library which works for both forge and fabric but is incomplete
 ## Setup
 https://github.com/CreativeMD/ForgeMods
 
-# Instructions
-- Clone Setup from above
-- Checkout the looked branch
-- Run in terminal `git submodule update --init`
-- Run `build`
-
 ## Dependents
 - [AmbientSounds](https://github.com/CreativeMD/AmbientSounds)
 - [EnhancedVisuals](https://github.com/CreativeMD/EnhancedVisuals)
