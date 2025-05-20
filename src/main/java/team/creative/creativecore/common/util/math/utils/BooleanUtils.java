@@ -33,6 +33,17 @@ public class BooleanUtils {
         return wasTrue;
     }
     
+    public static boolean explicitOneFalse(boolean... array) {
+        boolean wasFalse = false;
+        for (int i = 0; i < array.length; i++)
+            if (!array[i])
+                if (wasFalse)
+                    return false;
+                else
+                    wasFalse = true;
+        return wasFalse;
+    }
+    
     public static int countTrue(boolean... array) {
         int count = 0;
         for (int i = 0; i < array.length; i++)
