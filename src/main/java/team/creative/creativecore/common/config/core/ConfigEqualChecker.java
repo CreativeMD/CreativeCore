@@ -3,6 +3,7 @@ package team.creative.creativecore.common.config.core;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,9 +15,18 @@ import team.creative.creativecore.common.util.type.TriPredicate;
 public class ConfigEqualChecker {
     
     private final HashMap<Class, TriPredicate<Object, Object, Side>> checkers = new HashMap<>();
+    private final HashSet<Class> toIgnore = new HashSet<>();
     
     /** Will be called automatically when calling registerTypeCreator */
     public TriPredicate<Object, Object, Side> register(Class clazz, ICreativeRegistry registry) {
+        try {
+            var method = clazz.getDeclaredMethod("equals", Object.class);
+            if (method != null) {
+                toIgnore.add(clazz);
+                return null;
+            }
+        } catch (NoSuchMethodException | SecurityException e) {}
+        
         List<Field> fields = new ArrayList<>();
         ConfigHolderObject.collectFields(clazz, fields, registry);
         TriPredicate<Object, Object, Side> result = (x, y, side) -> {
@@ -52,6 +62,9 @@ public class ConfigEqualChecker {
             return false;
         
         if (one.getClass() != two.getClass())
+            return false;
+        
+        if (toIgnore.contains(one.getClass()))
             return false;
         
         var check = checkers.get(one.getClass());
