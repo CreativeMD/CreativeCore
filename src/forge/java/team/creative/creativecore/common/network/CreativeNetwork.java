@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
@@ -50,7 +51,10 @@ public class CreativeNetwork {
     }
     
     public void register(final RegisterPayloadHandlersEvent event) {
+        
         registrar = event.registrar(modid).versioned(version);
+        if (FMLLoader.getDist().isClient())
+            registrar = registrar.optional();
         for (CreativeNetworkPacket packet : packetTypes.values())
             registerType(packet);
     }
