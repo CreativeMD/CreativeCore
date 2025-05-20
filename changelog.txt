@@ -1,3 +1,8 @@
+2.13.4
+Fixed BoxCorner.facingTo method causing troubles with slope shapes of littletiles
+Fixed color picker not displaying color in sliders
+Fixed incorrect equal check for classes that have implemented equals method
+
 2.13.3
 Fixed holding item rendering offset
 Fixed rendering count of one when holding an item stack
