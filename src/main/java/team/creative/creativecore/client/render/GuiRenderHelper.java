@@ -166,10 +166,10 @@ public class GuiRenderHelper {
         graphics.drawSpecial(consumer -> {
             var matrix = graphics.pose().last().pose();
             VertexConsumer vertexconsumer = consumer.getBuffer(rendertype);
-            vertexconsumer.addVertex(matrix, x, y2, z).setUv(u, v2);
-            vertexconsumer.addVertex(matrix, x2, y2, z).setUv(u2, v2);
-            vertexconsumer.addVertex(matrix, x2, y, z).setUv(u2, v);
-            vertexconsumer.addVertex(matrix, x, y, z).setUv(u, v);
+            vertexconsumer.addVertex(matrix, x, y2, z).setUv(u, v2).setColor(-1);
+            vertexconsumer.addVertex(matrix, x2, y2, z).setUv(u2, v2).setColor(-1);
+            vertexconsumer.addVertex(matrix, x2, y, z).setUv(u2, v).setColor(-1);
+            vertexconsumer.addVertex(matrix, x, y, z).setUv(u, v).setColor(-1);
         });
     }
     
@@ -178,10 +178,10 @@ public class GuiRenderHelper {
         graphics.drawSpecial(consumer -> {
             var matrix = graphics.pose().last().pose();
             VertexConsumer vertexconsumer = consumer.getBuffer(rendertype);
-            vertexconsumer.addVertex(matrix, x, y2, z).setUv(u, v2);
-            vertexconsumer.addVertex(matrix, x2, y2, z).setUv(u2, v2);
-            vertexconsumer.addVertex(matrix, x2, y, z).setUv(u2, v);
-            vertexconsumer.addVertex(matrix, x, y, z).setUv(u, v);
+            vertexconsumer.addVertex(matrix, x, y2, z).setUv(u, v2).setColor(-1);
+            vertexconsumer.addVertex(matrix, x2, y2, z).setUv(u2, v2).setColor(-1);
+            vertexconsumer.addVertex(matrix, x2, y, z).setUv(u2, v).setColor(-1);
+            vertexconsumer.addVertex(matrix, x, y, z).setUv(u, v).setColor(-1);
         });
     }
     
