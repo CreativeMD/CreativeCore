@@ -41,9 +41,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
         return this;
     }
     
-    public GuiTimelineKey<T> addKey(int tick, T value) {
-        GuiTimelineKey<T> key = new GuiTimelineKey<T>(this, tick, value);
-        add(key);
+    protected void adjustPosition(GuiTimelineKey<T> key) {
         if (hasLayer()) {
             key.rect.setWidth(key.rect.getPreferredWidth(0), 0);
             key.rect.flowX();
@@ -52,6 +50,12 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
             key.rect.setY((int) Math.ceil(cachedHeight / 2D - key.rect.getHeight() / 2D));
         }
         timeline.adjustKeyPositionX(key);
+    }
+    
+    public GuiTimelineKey<T> addKey(int tick, T value) {
+        GuiTimelineKey<T> key = new GuiTimelineKey<T>(this, tick, value);
+        add(key);
+        adjustPosition(key);
         for (int i = 0; i < keys.size(); i++) {
             GuiTimelineKey<T> other = keys.get(i);
             
@@ -192,13 +196,13 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     public GuiTimelineKey<T> getFirst() {
         if (keys.isEmpty())
             return null;
-        return keys.get(0);
+        return keys.getFirst();
     }
     
     public GuiTimelineKey<T> getLast() {
         if (keys.isEmpty())
             return null;
-        return keys.get(keys.size() - 1);
+        return keys.getLast();
     }
     
 }

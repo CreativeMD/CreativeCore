@@ -39,6 +39,8 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
+        if (!modifiable)
+            return false;
         if (button == 0) {
             channel.select(this);
             playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -54,6 +56,8 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     
     @Override
     public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
+        if (!modifiable)
+            return;
         if (clicked && time > DRAG_TIME) {
             channel.dragKey(this);
             clicked = false;
