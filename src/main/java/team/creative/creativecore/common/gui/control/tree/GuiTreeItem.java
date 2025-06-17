@@ -10,6 +10,7 @@ import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.control.simple.GuiButtonHoldSlim;
 import team.creative.creativecore.common.gui.control.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
+import team.creative.creativecore.common.gui.control.simple.GuiLabelHover;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.mc.ColorUtils;
@@ -34,7 +35,7 @@ public class GuiTreeItem extends GuiParent {
         this.tree = tree;
         if (tree.hasCheckboxes())
             add(getOrCreateCheckbox());
-        add(label = new GuiLabel("title"));
+        add(label = new GuiLabelHover("title"));
         flow = GuiFlow.STACK_X;
         spacing = 5;
     }

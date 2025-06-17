@@ -2,6 +2,7 @@ package team.creative.creativecore.common.util.mc;
 
 import org.joml.Vector3d;
 
+import net.minecraft.util.Mth;
 import team.creative.creativecore.common.util.type.Color;
 
 public class ColorUtils {
@@ -145,6 +146,19 @@ public class ColorUtils {
     
     public static boolean isInvisible(int color) {
         return (color >> 24 & 255) == 0;
+    }
+    
+    public static int substract(int source, int value) {
+        int a1 = (source >> 24 & 0xff);
+        int r1 = ((source & 0xff0000) >> 16);
+        int g1 = ((source & 0xff00) >> 8);
+        int b1 = (source & 0xff);
+        
+        int a2 = (value >> 24 & 0xff);
+        int r2 = ((value & 0xff0000) >> 16);
+        int g2 = ((value & 0xff00) >> 8);
+        int b2 = (value & 0xff);
+        return ColorUtils.rgba(Mth.clamp(r1 - r2, 0, 255), Mth.clamp(g1 - g2, 0, 255), Mth.clamp(b1 - b2, 0, 255), Mth.clamp(a1 - a2, 0, 255));
     }
     
     public static int blend(int i1, int i2) {
