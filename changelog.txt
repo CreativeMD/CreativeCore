@@ -1,3 +1,9 @@
+2.13.6
+Added GuiLabelHover
+Added subtract to ColorUtils
+Fixed selecting combobox flexible after forced value not setting value before raising changed event
+Added better timeline channel unmodifiable key support
+
 2.13.5
 Fixed packets being required on server side
 
