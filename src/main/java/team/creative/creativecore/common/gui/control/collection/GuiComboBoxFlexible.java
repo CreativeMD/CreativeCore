@@ -38,9 +38,8 @@ public class GuiComboBoxFlexible<K> extends GuiComboBox<K> {
     
     @Override
     public void select(int index) {
+        forced = null;
         super.select(index);
-        if (selected() != null)
-            forced = null;
     }
     
     @Override
