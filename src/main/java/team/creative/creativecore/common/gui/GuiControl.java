@@ -407,7 +407,9 @@ public abstract class GuiControl {
         if (!enabled)
             pose.pushPose();
         pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
-        renderContent(graphics, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
+        var r = controlRect.intersection(realRect);
+        if (r != null)
+            renderContent(graphics, controlRect, r, scale, mouseX, mouseY);
         if (!enabled)
             pose.popPose();
     }
