@@ -1,3 +1,6 @@
+2.13.7
+Fixed rendering controls which have no visible rect on screen
+
 2.13.6
 Added GuiLabelHover
 Added subtract to ColorUtils
