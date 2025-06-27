@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
@@ -250,7 +250,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         if (textfield != null)
             textfield.render(graphics, controlRect, controlRect, 1, mouseX, mouseY);
         else
-            GuiRenderHelper.drawStringCentered(graphics, getTextByValue(), rect.getContentWidth(), rect.getContentHeight(), ColorUtils.WHITE, true);
+            ((CreativeGuiGraphics) graphics).drawStringCentered(getTextByValue(), rect.getContentWidth(), rect.getContentHeight(), ColorUtils.WHITE, true);
     }
     
     @Override

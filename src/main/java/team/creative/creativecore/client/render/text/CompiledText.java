@@ -10,7 +10,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -226,32 +225,32 @@ public class CompiledText {
         var stack = graphics.pose();
         
         if (scale != 1) {
-            stack.pushPose();
-            stack.scale((float) scale, (float) scale, 1);
+            stack.pushMatrix();
+            stack.scale((float) scale, (float) scale);
         }
-        stack.pushPose();
+        stack.pushMatrix();
         float y = Math.max(0, switch (valign) {
             case CENTER -> maxHeightScaled / 2 - totalHeight / 2;
             case BOTTOM -> maxHeightScaled - totalHeight;
             default -> 0;
         });
-        stack.translate(0, y, 0);
+        stack.translate(0, y);
         usedHeight += (int) y;
         
         for (CompiledLine line : lines) {
             switch (align) {
                 case CENTER -> {
                     int x = maxWidthScaled / 2 - line.width / 2;
-                    stack.translate(x, 0, 0);
+                    stack.translate(x, 0);
                     line.render(graphics);
-                    stack.translate(-x, 0, 0);
+                    stack.translate(-x, 0);
                     usedWidth = Math.max(usedWidth, maxWidthScaled);
                 }
                 case RIGHT -> {
                     int x = maxWidthScaled - line.width;
-                    stack.translate(x, 0, 0);
+                    stack.translate(x, 0);
                     line.render(graphics);
-                    stack.translate(-x, 0, 0);
+                    stack.translate(-x, 0);
                     usedWidth = Math.max(usedWidth, maxWidthScaled);
                 }
                 default -> {
@@ -261,16 +260,16 @@ public class CompiledText {
             };
             
             int height = line.height + lineSpacing;
-            stack.translate(0, height, 0);
+            stack.translate(0, height);
             usedHeight += height;
             
             if (usedHeight > maxHeightScaled)
                 break;
         }
         
-        stack.popPose();
+        stack.popMatrix();
         if (scale != 1)
-            stack.popPose();
+            stack.popMatrix();
         
         usedWidth *= scale;
         usedHeight *= scale;
@@ -295,28 +294,25 @@ public class CompiledText {
         @OnlyIn(Dist.CLIENT)
         public void render(GuiGraphics graphics) {
             Font font = Minecraft.getInstance().font;
-            
             var pose = graphics.pose();
-            graphics.drawSpecial(bufferSource -> {
-                int xOffset = 0;
-                for (FormattedText text : components) {
-                    int height = lineHeight(text);
-                    int width = width(text);
-                    
-                    int yOffset = 0;
-                    if (height < this.height)
-                        yOffset = (this.height - height) / 2;
-                    pose.pushPose();
-                    pose.translate(xOffset, yOffset, 0);
-                    if (text instanceof AdvancedFormattedText adv)
-                        adv.render(graphics, defaultColor);
-                    else
-                        font.drawInBatch(Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow, pose.last().pose(), bufferSource, DisplayMode.NORMAL, 0,
-                            15728880);
-                    pose.popPose();
-                    xOffset += width;
-                }
-            });
+            
+            int xOffset = 0;
+            for (FormattedText text : components) {
+                int height = lineHeight(text);
+                int width = width(text);
+                
+                int yOffset = 0;
+                if (height < this.height)
+                    yOffset = (this.height - height) / 2;
+                pose.pushMatrix();
+                pose.translate(xOffset, yOffset);
+                if (text instanceof AdvancedFormattedText adv)
+                    adv.render(graphics, defaultColor);
+                else
+                    graphics.drawString(font, Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow);
+                pose.popMatrix();
+                xOffset += width;
+            }
             
         }
         

@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.parser.DoubleValueParser;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -62,7 +62,7 @@ public class GuiProgressbar extends GuiControl {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         this.renderProgress(graphics, this.getPercentage());
-        GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), rect.getContentWidth(), rect.getContentHeight(), getStyle().fontColor.toInt(), true);
+        ((CreativeGuiGraphics) graphics).drawStringCentered(parser.parse(pos, max), rect.getContentWidth(), rect.getContentHeight(), getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)

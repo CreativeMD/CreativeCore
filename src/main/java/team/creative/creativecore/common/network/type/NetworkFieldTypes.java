@@ -14,10 +14,8 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -30,7 +28,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.network.protocol.BundlePacket;
@@ -38,7 +35,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -702,29 +698,6 @@ public class NetworkFieldTypes {
             }
             
         }, BiFilter.class);
-        
-        NetworkFieldTypes.register(new NetworkFieldTypeClass<Component>() {
-            
-            private static final Gson GSON = Util.make(() -> {
-                GsonBuilder gsonbuilder = new GsonBuilder();
-                gsonbuilder.disableHtmlEscaping();
-                //gsonbuilder.registerTypeHierarchyAdapter(Component.class, new AdvancedComponentHelper.Serializer());
-                //gsonbuilder.registerTypeHierarchyAdapter(Style.class, new Style.Serializer());
-                //gsonbuilder.registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory());
-                return gsonbuilder.create();
-            });
-            
-            @Override
-            protected void writeContent(Component content, RegistryFriendlyByteBuf buffer) {
-                buffer.writeUtf(GSON.toJson(content));
-            }
-            
-            @Override
-            protected Component readContent(RegistryFriendlyByteBuf buffer) {
-                return GsonHelper.fromJson(GSON, buffer.readUtf(), MutableComponent.class, false);
-            }
-            
-        }, Component.class);
         
         NetworkFieldTypes.register(new NetworkFieldTypeSpecial<Tag>((x, y) -> Tag.class.isAssignableFrom(x)) {
             

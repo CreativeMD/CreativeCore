@@ -2,22 +2,13 @@ package team.creative.creativecore.common.util.type;
 
 import org.joml.Vector3d;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Vec3i;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class Color {
-
-    public static final Color NONE = new Color(0) {
-        @Override
-        public void glColor() {}
-    };
+    
+    public static final Color NONE = new Color(0);
     public static final Color WHITE = new Color(ColorUtils.WHITE);
     public static final Color RED = new Color(ColorUtils.RED);
     public static final Color GREEN = new Color(ColorUtils.GREEN);
@@ -232,12 +223,6 @@ public class Color {
         this.red = (short) ((red * iRatio) + (color.red * ratio));
         this.green = (short) ((green * iRatio) + (color.green * ratio));
         this.blue = (short) ((blue * iRatio) + (color.blue * ratio));
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public void glColor() {
-        RenderSystem.setShaderColor(red / 255F, green / 255F, blue / 255F, alpha / 255F);
     }
     
     public Vec3d toVec() {

@@ -2,14 +2,13 @@ package team.creative.creativecore.common.util.text.content;
 
 import java.util.Optional;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.StringSplitter.WidthProvider;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
-import team.creative.creativecore.client.render.GuiRenderHelper;
 
 public record ContentItemStack(ItemStack stack) implements AdvancedContent {
     
@@ -52,13 +51,13 @@ public record ContentItemStack(ItemStack stack) implements AdvancedContent {
         
         @Override
         public void render(GuiGraphics graphics, int defaultColor) {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
+            Matrix3x2fStack pose = graphics.pose();
+            pose.pushMatrix();
             
-            pose.translate(0, -2, 10);
-            pose.scale(0.8F, 0.8F, 0.8F);
-            GuiRenderHelper.drawItemStack(graphics, content.stack, 1);
-            pose.popPose();
+            pose.translate(0, -2);
+            pose.scale(0.8F, 0.8F);
+            graphics.renderItem(content.stack, 0, 0);
+            pose.popMatrix();
         }
         
     }

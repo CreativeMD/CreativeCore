@@ -5,9 +5,6 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,14 +13,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.control.GuiFocusControl;
 import team.creative.creativecore.common.gui.event.GuiTextUpdateEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -154,8 +151,7 @@ public class GuiTextfield extends GuiFocusControl {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
-        Font font = GuiRenderHelper.getFont();
+        var font = ((CreativeGuiGraphics) graphics).getFont();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();
@@ -170,7 +166,9 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
-            xOffset = graphics.drawString(font, this.textFormatter.apply(s1, this.lineScrollOffset), xOffset, yOffset, color, false) + 1;
+            var text = this.textFormatter.apply(s1, this.lineScrollOffset);
+            graphics.drawString(font, text, xOffset, yOffset, color, false);
+            xOffset = font.width(text) + 1;
         }
         
         boolean flag2 = this.cursorPosition < this.text.length() || this.text.length() >= this.getMaxStringLength();
@@ -196,7 +194,7 @@ public class GuiTextfield extends GuiFocusControl {
             
         if (k != j) {
             int l1 = font.width(s.substring(0, k));
-            this.drawSelectionBox(graphics, pose.last().pose(), k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
+            this.drawSelectionBox(graphics, k1, yOffset - 1, l1 - 1, yOffset + 1 + 9);
         }
     }
     
@@ -441,7 +439,7 @@ public class GuiTextfield extends GuiFocusControl {
         
         if (button == 0) {
             int i = Mth.floor(mouseX);
-            Font fontRenderer = GuiRenderHelper.getFont();
+            Font fontRenderer = Minecraft.getInstance().font;
             String s = fontRenderer.plainSubstrByWidth(this.text.substring(this.lineScrollOffset), rect.getContentWidth());
             this.shift = Screen.hasShiftDown();
             this.setCursorPosition(fontRenderer.plainSubstrByWidth(s, i).length() + this.lineScrollOffset);
@@ -450,7 +448,7 @@ public class GuiTextfield extends GuiFocusControl {
         return false;
     }
     
-    private void drawSelectionBox(GuiGraphics graphics, Matrix4f matrix, int startX, int startY, int endX, int endY) {
+    private void drawSelectionBox(GuiGraphics graphics, int startX, int startY, int endX, int endY) {
         if (startX < endX) {
             int i = startX;
             startX = endX;
@@ -469,7 +467,7 @@ public class GuiTextfield extends GuiFocusControl {
         if (startX > rect.getRight())
             startX = rect.getRight();
         
-        graphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, -16776961);
+        graphics.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, startX, startY, endX, endY, -16776961);
     }
     
     public GuiTextfield setMaxStringLength(int length) {
@@ -513,12 +511,14 @@ public class GuiTextfield extends GuiFocusControl {
         return 40;
     }
     
+    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void setSelectionPos(int position) {
         int textLength = this.text.length();
         this.selectionEnd = Mth.clamp(position, 0, textLength);
         if (getParent() == null || !hasLayer() || !isClient())
             return;
-        Font fontRenderer = GuiRenderHelper.getFont();
+        Font fontRenderer = Minecraft.getInstance().font;
         if (fontRenderer != null) {
             if (this.lineScrollOffset > textLength)
                 this.lineScrollOffset = textLength;

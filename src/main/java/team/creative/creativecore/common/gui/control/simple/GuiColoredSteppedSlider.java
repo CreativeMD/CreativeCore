@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.util.mc.ColorUtils.ColorPart;
 import team.creative.creativecore.common.util.type.Color;
 
@@ -38,9 +38,9 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
             startColor.setAlpha(0);
             Color endColor = new Color(picker.color);
             endColor.setAlpha(255);
-            GuiRenderHelper.horizontalGradientRect(graphics, 0, 0, rect.getContentWidth(), rect.getContentHeight(), startColor.toInt(), endColor.toInt());
+            ((CreativeGuiGraphics) graphics).horizontalGradientRect(0, 0, rect.getContentWidth(), rect.getContentHeight(), startColor.toInt(), endColor.toInt());
         } else
-            GuiRenderHelper.horizontalGradientMaskRect(graphics, 0, 0, rect.getContentWidth(), rect.getContentHeight(), picker.color.toInt(), part.code);
+            ((CreativeGuiGraphics) graphics).horizontalGradientMaskRect(0, 0, rect.getContentWidth(), rect.getContentHeight(), picker.color.toInt(), part.code);
         super.renderContent(graphics, mouseX, mouseY);
     }
 }

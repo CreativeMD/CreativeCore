@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui.style.display;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 
 public class DisplayTextureRepeat extends DisplayTexture {
     
@@ -27,7 +27,7 @@ public class DisplayTextureRepeat extends DisplayTexture {
             int renderedWidth = Math.min(w, (int) width - renderedX);
             while (renderedY < (int) height) {
                 int renderedHeight = Math.min(h, (int) height - renderedY);
-                GuiRenderHelper.textureRect(graphics, location, (int) x + renderedX, renderedY, (int) y + renderedWidth, renderedHeight, u, v, u + renderedWidth,
+                ((CreativeGuiGraphics) graphics).textureRect(location, (int) x + renderedX, renderedY, (int) y + renderedWidth, renderedHeight, u, v, u + renderedWidth,
                     v + renderedHeight);
                 renderedY += renderedHeight;
             }

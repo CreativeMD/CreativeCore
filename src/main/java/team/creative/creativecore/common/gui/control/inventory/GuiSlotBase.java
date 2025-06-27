@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui.control.inventory;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
@@ -60,12 +60,12 @@ public abstract class GuiSlotBase extends GuiControl {
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         if (HOVER == null)
             HOVER = new DisplayColor(1, 1, 1, 0.3F);
-        PoseStack pose = graphics.pose();
-        pose.translate(1, 1, 10);
+        Matrix3x2fStack pose = graphics.pose();
+        pose.translate(1, 1);
         ItemStack stack = getStackToRender();
-        GuiRenderHelper.drawItemStack(graphics, stack, 1F);
-        graphics.renderItemDecorations(GuiRenderHelper.getFont(), stack, 0, 0);
-        pose.translate(-1, -1, 10);
+        graphics.renderItem(stack, 0, 0);
+        ((CreativeGuiGraphics) graphics).renderItemDecorations(stack, 0, 0);
+        pose.translate(-1, -1);
         if (rect.inside(mouseX, mouseY) && enabled) {
             //RenderSystem.enableBlend();
             //TODO 1.21.5 YET TO BE TESTED

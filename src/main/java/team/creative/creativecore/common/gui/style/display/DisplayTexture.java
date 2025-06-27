@@ -2,7 +2,7 @@ package team.creative.creativecore.common.gui.style.display;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 
 public class DisplayTexture extends StyleDisplay {
     
@@ -22,7 +22,7 @@ public class DisplayTexture extends StyleDisplay {
     
     @Override
     public void render(GuiGraphics graphics, double x, double y, double width, double height) {
-        GuiRenderHelper.textureRect(graphics, location, (int) x, (int) y, (int) width, (int) height, u, v);
+        ((CreativeGuiGraphics) graphics).textureRect(location, (int) x, (int) y, (int) width, (int) height, u, v);
     }
     
 }

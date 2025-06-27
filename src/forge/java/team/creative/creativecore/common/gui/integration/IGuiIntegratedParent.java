@@ -3,19 +3,23 @@ package team.creative.creativecore.common.gui.integration;
 import java.util.List;
 import java.util.Optional;
 
+import org.joml.Matrix3x2fStack;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.core.HolderLookup;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.ContainerScreenEvent.Render.Background;
 import net.neoforged.neoforge.common.NeoForge;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IGuiParent;
@@ -47,7 +51,7 @@ public interface IGuiIntegratedParent extends IGuiParent {
     
     @OnlyIn(value = Dist.CLIENT)
     public default void render(GuiGraphics graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         int width = screen.width;
         int height = screen.height;
         
@@ -60,22 +64,21 @@ public interface IGuiIntegratedParent extends IGuiParent {
             
             if (i == layers.size() - 1) {
                 if (layer.hasGrayBackground())
-                    GuiRenderHelper.verticalGradientRect(graphics, 0, 0, width, height, -1072689136, -804253680);
+                    ((CreativeGuiGraphics) graphics).verticalGradientRect(0, 0, width, height, -1072689136, -804253680);
                 if (screen instanceof AbstractContainerScreen)
                     NeoForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, graphics, mouseX, mouseY));
             }
             
-            pose.pushPose();
+            pose.pushMatrix();
             int offX = (width - layer.getWidth()) / 2;
             int offY = (height - layer.getHeight()) / 2;
-            pose.translate(offX, offY, 0);
+            pose.translate(offX, offY);
             
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             Rect controlRect = new Rect(offX, offY, offX + layer.getWidth(), offY + layer.getHeight());
             layer.render(graphics, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
-            pose.popPose();
+            pose.popMatrix();
             
-            RenderSystem.disableScissor();
+            RenderSystem.disableScissorForRenderTypeDraws();
         }
         
         if (layers.isEmpty())
@@ -85,8 +88,12 @@ public interface IGuiIntegratedParent extends IGuiParent {
         GuiTooltipEvent event = layer.getTooltipEvent(mouseX - listener.getOffsetX(), mouseY - listener.getOffsetY());
         if (event != null) {
             layer.raiseEvent(event);
-            if (!event.isCanceled())
-                graphics.renderTooltip(Minecraft.getInstance().font, event.tooltip, Optional.empty(), mouseX, mouseY);
+            if (!event.isCanceled()) {
+                var font = Minecraft.getInstance().font;
+                List<ClientTooltipComponent> list = ClientHooks.gatherTooltipComponents(null, event.tooltip, Optional.empty(), mouseX, graphics.guiWidth(), graphics.guiHeight(),
+                    font);
+                graphics.renderTooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            }
         }
     }
     

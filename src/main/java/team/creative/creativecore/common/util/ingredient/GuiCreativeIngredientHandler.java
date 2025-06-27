@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -94,7 +95,7 @@ public abstract class GuiCreativeIngredientHandler {
                         ItemStack stack = selector.getSelected();
                         TextMapBuilder<DataComponentType<?>> map = new TextMapBuilder<>();
                         Object2BooleanMap<DataComponentType<?>> selected = new Object2BooleanArrayMap<>();
-                        CompoundTag nbt = (CompoundTag) stack.save(gui.provider());
+                        CompoundTag nbt = (CompoundTag) ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, stack).getOrThrow();
                         nbt = nbt.getCompoundOrEmpty("components");
                         if (!nbt.isEmpty())
                             for (String component : nbt.keySet()) {

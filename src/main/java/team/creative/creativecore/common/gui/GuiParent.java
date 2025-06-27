@@ -8,9 +8,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.joml.Matrix3x2fStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -302,7 +302,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     @OnlyIn(Dist.CLIENT)
     protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiControl> collection, double scale,
             double xOffset, double yOffset, boolean hover) {
-        PoseStack pose = graphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         
         while (collection.hasPrevious()) {
             GuiControl control = collection.previous();
@@ -314,14 +314,14 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
             Rect realRect = realContentRect.intersection(controlContentRect);
             if (realRect != null || hover) {
                 if (hover)
-                    RenderSystem.disableScissor();
+                    RenderSystem.disableScissorForRenderTypeDraws();
                 else
                     realRect.scissor();
                 
-                pose.pushPose();
-                pose.translate(control.rect.getX() + xOffset, control.rect.getY() + yOffset, 10);
+                pose.pushMatrix();
+                pose.translate((float) (control.rect.getX() + xOffset), (float) (control.rect.getY() + yOffset));
                 renderControl(graphics, control, controlContentRect, realRect, scale, mouseX, mouseY, hover);
-                pose.popPose();
+                pose.popMatrix();
             }
         }
     }
@@ -339,13 +339,13 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
         if (realContentRect == null)
             return;
         
-        PoseStack pose = graphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         float controlScale = (float) scaleFactor();
         scale *= scaleFactor();
         double xOffset = getOffsetX();
         double yOffset = getOffsetY();
         
-        pose.scale(controlScale, controlScale, 1);
+        pose.scale(controlScale, controlScale);
         
         renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, controls.listIterator(controls.size()), scale, xOffset, yOffset, false);
         renderControls(graphics, contentRect, realContentRect, mouseX, mouseY, hoverControls.listIterator(hoverControls.size()), scale, xOffset, yOffset, true);

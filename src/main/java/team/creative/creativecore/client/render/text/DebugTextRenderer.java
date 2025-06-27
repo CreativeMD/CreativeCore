@@ -57,7 +57,7 @@ public class DebugTextRenderer {
         for (String msg : lines) {
             if (msg != null && !msg.isEmpty()) {
                 graphics.fill(1, top - 1, 2 + font.width(msg) + 1, top + font.lineHeight - 1, -1873784752);
-                graphics.drawString(font, msg, 2, top, 14737632, false);
+                graphics.drawString(font, msg, 2, top, -2039584, false);
             }
             top += font.lineHeight;
         }

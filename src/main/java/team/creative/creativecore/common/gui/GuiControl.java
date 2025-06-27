@@ -2,8 +2,9 @@ package team.creative.creativecore.common.gui;
 
 import java.util.List;
 
+import org.joml.Matrix3x2fStack;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -385,8 +386,8 @@ public abstract class GuiControl {
         getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(graphics, borderSize, borderSize, width, height);
         
         controlRect.shrink(borderSize * scale);
-
-        graphics.flush();
+        
+        //graphics.flush();
         
         renderContent(graphics, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
@@ -399,20 +400,20 @@ public abstract class GuiControl {
             //RenderSystem.enableDepthTest();
         }
         
-        graphics.flush();
+        //graphics.flush();
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         controlRect.shrink(formatting.padding * scale);
         if (!enabled)
-            pose.pushPose();
-        pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding, 0);
+            pose.pushMatrix();
+        pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding);
         renderContent(graphics, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
         if (!enabled)
-            pose.popPose();
+            pose.popMatrix();
     }
     
     @Environment(EnvType.CLIENT)

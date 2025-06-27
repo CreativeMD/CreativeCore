@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.gui.control.timeline;
 
+import org.joml.Matrix3x2fStack;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -120,16 +120,16 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
         
-        PoseStack pose = graphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         GuiStyle style = getStyle();
         
-        pose.pushPose();
+        pose.pushMatrix();
         int width = rect.getWidth();
         int height = rect.getHeight();
         
-        pose.translate(width * 0.5, height * 0.5, 0);
-        pose.mulPose(Axis.ZP.rotationDegrees(45));
-        pose.translate(width * -0.5, height * -0.5, 0);
+        pose.translate(width * 0.5F, height * 0.5F);
+        pose.rotate(45);
+        pose.translate(width * -0.5F, height * -0.5F);
         
         int borderWidth = style.getBorder(ControlStyleBorder.SMALL);
         
@@ -144,7 +144,7 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
             foreground = style.clickableHighlight;
         
         foreground.render(graphics, borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2);
-        pose.popPose();
+        pose.popMatrix();
     }
     
     @Override

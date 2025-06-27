@@ -12,6 +12,7 @@
         "VoxelShapeAccessor"
     ],
     "client": [
+        "GuiGraphicsMixin",
         "MouseHandlerAccessor",
         "StringSplitterAccessor"
     ],

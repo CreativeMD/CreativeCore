@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.control.simple;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -79,7 +79,7 @@ public class GuiCheckBox extends GuiLabel {
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         int yoffset = 0;
         
-        PoseStack pose = graphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         GuiStyle style = getStyle();
         
         if (!enabled && getControlFormatting().hasDisabledEffect)
@@ -96,10 +96,10 @@ public class GuiCheckBox extends GuiLabel {
             PARTIAL_STYLE.render(graphics, 2, yoffset + 2, CHECKBOX_WIDTH - 4, CHECKBOX_WIDTH - 4);
         }
         
-        pose.pushPose();
-        pose.translate(CHECKBOX_WIDTH + 3, 0, 0);
+        pose.pushMatrix();
+        pose.translate(CHECKBOX_WIDTH + 3, 0);
         text.render(graphics);
-        pose.popPose();
+        pose.popMatrix();
     }
     
     public void set(boolean value) {

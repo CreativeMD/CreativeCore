@@ -6,22 +6,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 import team.creative.creativecore.common.util.type.list.Tuple;
 
 public class ChunkLayerMapList<T> implements Iterable<T> {
     
-    private static final int LAYERS_COUNT = RenderType.chunkBufferLayers().size();
-    private static final Object2IntMap<RenderType> LAYERS_INDEX_MAP;
+    private static final int LAYERS_COUNT = ChunkSectionLayer.values().length;
+    private static final Object2IntMap<RenderPipeline> LAYERS_INDEX_MAP;
     
     static {
         LAYERS_INDEX_MAP = new Object2IntArrayMap<>();
         int i = 0;
-        for (RenderType layer : RenderType.chunkBufferLayers()) {
-            LAYERS_INDEX_MAP.put(layer, i);
+        for (ChunkSectionLayer layer : ChunkSectionLayer.values()) {
+            LAYERS_INDEX_MAP.put(layer.pipeline(), i);
             i++;
         }
     }
@@ -36,22 +38,22 @@ public class ChunkLayerMapList<T> implements Iterable<T> {
         content = new List[LAYERS_COUNT];
     }
     
-    private int index(RenderType layer) {
+    private int index(RenderPipeline layer) {
         return LAYERS_INDEX_MAP.getInt(layer);
     }
     
-    public List<T> getOrCreate(RenderType layer) {
+    public List<T> getOrCreate(RenderPipeline layer) {
         var result = content[index(layer)];
         if (result == null)
             content[index(layer)] = result = new ArrayList<>();
         return result;
     }
     
-    public void add(RenderType layer, T element) {
+    public void add(RenderPipeline layer, T element) {
         getOrCreate(layer).add(element);
     }
     
-    public List<T> remove(RenderType layer) {
+    public List<T> remove(RenderPipeline layer) {
         int index = index(layer);
         var result = content[index];
         content[index] = null;
@@ -62,30 +64,30 @@ public class ChunkLayerMapList<T> implements Iterable<T> {
         Arrays.fill(content, null);
     }
     
-    public void consumeEachLayer(BiConsumer<RenderType, List> consumer) {
+    public void consumeEachLayer(BiConsumer<RenderPipeline, List> consumer) {
         var tempList = new ArrayList<T>();
-        for (RenderType layer : RenderType.chunkBufferLayers()) {
-            consumer.accept(layer, tempList);
+        for (ChunkSectionLayer layer : ChunkSectionLayer.values()) {
+            consumer.accept(layer.pipeline(), tempList);
             if (!tempList.isEmpty()) { // Only create new list when necessary
-                content[index(layer)] = tempList;
+                content[index(layer.pipeline())] = tempList;
                 tempList = new ArrayList<>();
             }
         }
     }
     
-    public Iterable<Tuple<RenderType, List<T>>> tuples() {
+    public Iterable<Tuple<RenderPipeline, List<T>>> tuples() {
         return new ComputeNextIterator<>() {
             
             private int index;
-            private final Tuple<RenderType, List<T>> pair = new Tuple<>(null, null);
+            private final Tuple<RenderPipeline, List<T>> pair = new Tuple<>(null, null);
             
             @Override
-            protected Tuple<RenderType, List<T>> computeNext() {
+            protected Tuple<RenderPipeline, List<T>> computeNext() {
                 while (index < content.length && content[index] == null)
                     index++;
                 if (index >= content.length)
                     return end();
-                pair.key = RenderType.chunkBufferLayers().get(index);
+                pair.key = ChunkSectionLayer.values()[index].pipeline();
                 pair.value = content[index];
                 index++;
                 return pair;
@@ -115,7 +117,7 @@ public class ChunkLayerMapList<T> implements Iterable<T> {
         };
     }
     
-    public boolean containsKey(RenderType layer) {
+    public boolean containsKey(RenderPipeline layer) {
         return content[index(layer)] != null;
     }
     

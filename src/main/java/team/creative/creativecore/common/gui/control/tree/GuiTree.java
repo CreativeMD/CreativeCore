@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.control.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -211,10 +211,10 @@ public class GuiTree extends GuiScrollXY {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
+        Matrix3x2fStack pose = graphics.pose();
         if (isDragged()) {
-            pose.pushPose();
-            pose.translate(getContentOffset() + getOffsetX(), getContentOffset() + getOffsetY(), 0);
+            pose.pushMatrix();
+            pose.translate((float) (getContentOffset() + getOffsetX()), (float) (getContentOffset() + getOffsetY()));
             lastDragPosition = calculatePosition((int) (mouseX - realRect.minX - getContentOffset()), (int) (mouseY - realRect.minY - getContentOffset()));
             if (lastDragPosition != null) {
                 if (lastDragPosition.position() == ItemPosition.IN)
@@ -244,14 +244,14 @@ public class GuiTree extends GuiScrollXY {
                     dragLine.render(graphics, lastDragPosition.item().rect.getX(), minY, width, thickness);
                 }
             }
-            pose.popPose();
+            pose.popMatrix();
         } else
             lastDragPosition = null;
         
         super.renderContent(graphics, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
         
-        pose.pushPose();
-        pose.translate(getOffsetX(), getContentOffset() + getOffsetY(), 0);
+        pose.pushMatrix();
+        pose.translate((float) getOffsetX(), (float) (getContentOffset() + getOffsetY()));
         List<GuiTreeLine> lines = new ArrayList<>();
         int size = -1;
         for (GuiControl control : controls) {
@@ -267,7 +267,7 @@ public class GuiTree extends GuiScrollXY {
                     if (lines.get(i).invalid)
                         continue;
                     
-                    lines.get(i).render(graphics, pose);
+                    lines.get(i).render(graphics);
                     lines.get(i).invalid = false;
                 }
                 size = level;
@@ -293,12 +293,12 @@ public class GuiTree extends GuiScrollXY {
                 if (lines.get(i).invalid)
                     continue;
                 
-                lines.get(i).render(graphics, pose);
+                lines.get(i).render(graphics);
                 lines.get(i).invalid = false;
             }
         }
         
-        pose.popPose();
+        pose.popMatrix();
     }
     
     @Override
@@ -422,7 +422,7 @@ public class GuiTree extends GuiScrollXY {
             invalid = false;
         }
         
-        public void render(GuiGraphics graphics, PoseStack pose) {
+        public void render(GuiGraphics graphics) {
             line.render(graphics, x, y, lineThickness, y2 - y);
         }
     }

@@ -1,10 +1,8 @@
 package team.creative.creativecore.common.gui.style.display;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 
 public class DisplayTextureStretch extends DisplayTexture {
     
@@ -23,8 +21,7 @@ public class DisplayTextureStretch extends DisplayTexture {
     
     @Override
     public void render(GuiGraphics graphics, double x, double y, double width, double height) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        GuiRenderHelper.textureRect(graphics, location, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
+        ((CreativeGuiGraphics) graphics).textureRect(location, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
     }
     
 }

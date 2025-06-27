@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.parser.LongValueParser;
@@ -73,7 +73,7 @@ public class GuiSeekBar extends GuiControl {
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         final double percent = this.max > 0 ? pos / (double) max : 0;
         this.renderProgress(graphics, percent);
-        GuiRenderHelper.drawStringCentered(graphics, parser.parse(pos, max), rect.getContentWidth(), rect.getContentHeight(), this.getStyle().fontColor.toInt(), true);
+        ((CreativeGuiGraphics) graphics).drawStringCentered(parser.parse(pos, max), rect.getContentWidth(), rect.getContentHeight(), this.getStyle().fontColor.toInt(), true);
     }
     
     @Environment(EnvType.CLIENT)

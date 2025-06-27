@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.joml.Matrix3x2fStack;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.SlotAccess;
@@ -22,7 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCoreGuiRegistry;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.control.inventory.GuiSlot;
 
@@ -79,14 +81,14 @@ public class GuiManagerItem extends GuiManager {
         }
         
         if (!stack.isEmpty() && (!drag || rightClick || dragged.size() > 1)) {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
-            RenderSystem.disableScissor();
+            Matrix3x2fStack pose = graphics.pose();
+            pose.pushMatrix();
+            RenderSystem.disableScissorForRenderTypeDraws();
             
-            pose.translate(mouseX - 8, mouseY - 8, 200);
-            GuiRenderHelper.drawItemStack(graphics, stack, 1);
-            graphics.renderItemDecorations(GuiRenderHelper.getFont(), stack, 0, 0, count == 1 ? null : "" + count);
-            pose.popPose();
+            pose.translate(mouseX - 8, mouseY - 8);
+            graphics.renderItem(stack, 0, 0);
+            ((CreativeGuiGraphics) graphics).renderItemDecorations(stack, 0, 0, count == 1 ? null : "" + count);
+            pose.popMatrix();
         }
     }
     
@@ -95,7 +97,7 @@ public class GuiManagerItem extends GuiManager {
         if (handChanged) {
             handChanged = false;
             if (!layer.isClient())
-                CreativeCoreGuiRegistry.HAND.send(layer, (CompoundTag) hand.save(layer.provider()));
+                CreativeCoreGuiRegistry.HAND.send(layer, (CompoundTag) ItemStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, hand).getOrThrow());
         }
         super.tick();
     }

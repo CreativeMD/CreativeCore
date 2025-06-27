@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.control.parent;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -132,10 +132,10 @@ public class GuiScrollY extends GuiParent {
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
+        Matrix3x2fStack pose = graphics.pose();
+        pose.pushMatrix();
         super.renderContent(graphics, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);
-        pose.popPose();
+        pose.popMatrix();
         
         if (!needsScrollbar() && hoveredScroll)
             return;
@@ -145,7 +145,7 @@ public class GuiScrollY extends GuiParent {
         // TODO 1.21.5 YET TO BE TESTED
         
         float controlInvScale = (float) scaleFactorInv();
-        pose.scale(controlInvScale, controlInvScale, controlInvScale);
+        pose.scale(controlInvScale, controlInvScale);
         
         realRect.scissor();
         GuiStyle style = getStyle();
@@ -166,7 +166,7 @@ public class GuiScrollY extends GuiParent {
         maxScroll = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
         
         float controlScale = (float) scaleFactor();
-        pose.scale(controlScale, controlScale, controlScale);
+        pose.scale(controlScale, controlScale);
         
         //if (hoveredScroll)
         //    RenderSystem.enableDepthTest();

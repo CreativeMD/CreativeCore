@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.dialog.DialogGuiLayer.DialogButton;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
@@ -17,7 +18,7 @@ public class GuiDialogHandler {
         DialogButton[] buttons = new DialogButton[array.length];
         for (int i = 0; i < array.length; i++)
             buttons[i] = DialogButton.values()[array[i]];
-        return new DialogGuiLayer(nbt.getStringOr("name", ""), Component.Serializer.fromJson(nbt.getStringOr("title", ""), p), null, buttons);
+        return new DialogGuiLayer(nbt.getStringOr("name", ""), nbt.read("title", ComponentSerialization.CODEC).get(), null, buttons);
     });
     
     public static void init() {}
@@ -29,7 +30,7 @@ public class GuiDialogHandler {
     public static GuiLayer openDialog(IGuiIntegratedParent parent, String name, Component title, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("name", name);
-        nbt.putString("title", Component.Serializer.toJson(title, parent.provider()));
+        nbt.store("title", ComponentSerialization.CODEC, title);
         int[] array = new int[buttons.length];
         for (int i = 0; i < array.length; i++)
             array[i] = buttons[i].ordinal();

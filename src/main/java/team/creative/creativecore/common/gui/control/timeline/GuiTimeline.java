@@ -3,7 +3,7 @@ package team.creative.creativecore.common.gui.control.timeline;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -297,7 +297,7 @@ public class GuiTimeline extends GuiParent {
                 adjustKeysPositionX();
             }
             
-            PoseStack pose = graphics.pose();
+            Matrix3x2fStack pose = graphics.pose();
             
             double tickWidth = getTickWidth();
             
@@ -307,7 +307,7 @@ public class GuiTimeline extends GuiParent {
             int width = rect.getContentWidth();
             int height = rect.getContentHeight();
             int contentOffset = getContentOffset() - 1;
-            pose.translate(timelineOffset - 1, -contentOffset, 0);
+            pose.translate(timelineOffset - 1, -contentOffset);
             
             int ticks = (int) (width / tickWidth);
             int area = 5;
@@ -328,10 +328,10 @@ public class GuiTimeline extends GuiParent {
             
             GuiStyle style = getStyle();
             StyleDisplay border = style.get(ControlStyleBorder.SMALL);
-            Font font = GuiRenderHelper.getFont();
+            Font font = ((CreativeGuiGraphics) graphics).getFont();
             
-            pose.pushPose();
-            pose.translate(-scrollX.current() + begin * stepWidth, 0, 0);
+            pose.pushMatrix();
+            pose.translate((float) (-scrollX.current() + begin * stepWidth), 0);
             for (int i = begin; i < end; i++) {
                 if (i % halfArea == 0) {
                     border.render(graphics, 1, 4);
@@ -340,9 +340,9 @@ public class GuiTimeline extends GuiParent {
                 } else
                     border.render(graphics, 1, 2);
                 
-                pose.translate(stepWidth, 0, 0);
+                pose.translate((float) stepWidth, 0);
             }
-            pose.popPose();
+            pose.popMatrix();
         }
         
         @Override

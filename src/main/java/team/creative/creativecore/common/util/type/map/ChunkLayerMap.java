@@ -4,23 +4,25 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.Function;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 import team.creative.creativecore.common.util.type.list.Tuple;
 
 public class ChunkLayerMap<T> implements Iterable<T> {
     
-    private static final int LAYERS_COUNT = RenderType.chunkBufferLayers().size();
-    private static final Object2IntMap<RenderType> LAYERS_INDEX_MAP;
+    private static final int LAYERS_COUNT = ChunkSectionLayer.values().length;
+    private static final Object2IntMap<RenderPipeline> LAYERS_INDEX_MAP;
     
     static {
         LAYERS_INDEX_MAP = new Object2IntArrayMap<>();
         int i = 0;
-        for (RenderType layer : RenderType.chunkBufferLayers()) {
-            LAYERS_INDEX_MAP.put(layer, i);
+        for (ChunkSectionLayer layer : ChunkSectionLayer.values()) {
+            LAYERS_INDEX_MAP.put(layer.pipeline(), i);
             i++;
         }
     }
@@ -31,32 +33,32 @@ public class ChunkLayerMap<T> implements Iterable<T> {
         content = Arrays.copyOf(map.content, LAYERS_COUNT);
     }
     
-    public ChunkLayerMap(Function<RenderType, T> factory) {
+    public ChunkLayerMap(Function<RenderPipeline, T> factory) {
         content = (T[]) new Object[LAYERS_COUNT];
         for (int i = 0; i < content.length; i++)
-            content[i] = factory.apply(RenderType.chunkBufferLayers().get(i));
+            content[i] = factory.apply(ChunkSectionLayer.values()[i].pipeline());
     }
     
     public ChunkLayerMap() {
         content = (T[]) new Object[LAYERS_COUNT];
     }
     
-    private int index(RenderType layer) {
+    private int index(RenderPipeline layer) {
         return LAYERS_INDEX_MAP.getInt(layer);
     }
     
-    public T get(RenderType layer) {
+    public T get(RenderPipeline layer) {
         return content[index(layer)];
     }
     
-    public T put(RenderType layer, T element) {
+    public T put(RenderPipeline layer, T element) {
         int index = index(layer);
         T result = content[index];
         content[index] = element;
         return result;
     }
     
-    public T remove(RenderType layer) {
+    public T remove(RenderPipeline layer) {
         int index = index(layer);
         T result = content[index];
         content[index] = null;
@@ -67,19 +69,19 @@ public class ChunkLayerMap<T> implements Iterable<T> {
         Arrays.fill(content, null);
     }
     
-    public Iterable<Tuple<RenderType, T>> tuples() {
+    public Iterable<Tuple<RenderPipeline, T>> tuples() {
         return new ComputeNextIterator<>() {
             
             private int index;
-            private final Tuple<RenderType, T> pair = new Tuple<>(null, null);
+            private final Tuple<RenderPipeline, T> pair = new Tuple<>(null, null);
             
             @Override
-            protected Tuple<RenderType, T> computeNext() {
+            protected Tuple<RenderPipeline, T> computeNext() {
                 while (index < content.length && content[index] == null)
                     index++;
                 if (index >= content.length)
                     return end();
-                pair.key = RenderType.chunkBufferLayers().get(index);
+                pair.key = ChunkSectionLayer.values()[index].pipeline();
                 pair.value = content[index];
                 index++;
                 return pair;
@@ -87,7 +89,7 @@ public class ChunkLayerMap<T> implements Iterable<T> {
         };
     }
     
-    public boolean containsKey(RenderType layer) {
+    public boolean containsKey(RenderPipeline layer) {
         return get(layer) != null;
     }
     

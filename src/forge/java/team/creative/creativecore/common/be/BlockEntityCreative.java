@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.fml.util.thread.EffectiveSide;
 
 public abstract class BlockEntityCreative extends BlockEntity {
@@ -30,16 +31,16 @@ public abstract class BlockEntityCreative extends BlockEntity {
     }
     
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        handleUpdate(pkt.getTag(), false);
+    public void onDataPacket(Connection net, ValueInput input) {
+        handleUpdate(input, false);
     }
     
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        handleUpdate(tag, true);
+    public void handleUpdateTag(ValueInput input) {
+        handleUpdate(input, true);
     }
     
-    public abstract void handleUpdate(CompoundTag nbt, boolean chunkUpdate);
+    public abstract void handleUpdate(ValueInput nbt, boolean chunkUpdate);
     
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {

@@ -93,7 +93,7 @@ public class Rect {
         double realMaxX = getWidth() * window.getGuiScale();
         double realMaxY = getHeight() * window.getGuiScale();
         
-        RenderSystem.enableScissor((int) Math.floor(realMinX), (int) Math.floor(realMinY), (int) Math.ceil(realMaxX), (int) Math.ceil(realMaxY) + 1);
+        RenderSystem.enableScissorForRenderTypeDraws((int) Math.floor(realMinX), (int) Math.floor(realMinY), (int) Math.ceil(realMaxX), (int) Math.ceil(realMaxY) + 1);
     }
     
     public Rect copy() {

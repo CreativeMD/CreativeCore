@@ -1,11 +1,11 @@
 package team.creative.creativecore.common.gui.control.simple;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -102,8 +102,8 @@ public class GuiIcon extends GuiControl {
     
     @Override
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
+        Matrix3x2fStack pose = graphics.pose();
+        pose.pushMatrix();
         
         var location = this.icon.location();
         
@@ -119,15 +119,13 @@ public class GuiIcon extends GuiControl {
         }
         
         if (this.shadow != Color.NONE) {
-            this.shadow.glColor();
-            GuiRenderHelper.textureRect(graphics, location, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
-                    .minY() + this.icon.height());
+            ((CreativeGuiGraphics) graphics).textureRectColor(location, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(),
+                this.icon.minY() + this.icon.height(), shadow.toInt());
         }
         
-        this.color.glColor();
-        GuiRenderHelper.textureRect(graphics, location, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon.minY() + this.icon
-                .height());
-        pose.popPose();
+        ((CreativeGuiGraphics) graphics).textureRectColor(location, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
+                .minY() + this.icon.height(), color.toInt());
+        pose.popMatrix();
     }
     
     @Override

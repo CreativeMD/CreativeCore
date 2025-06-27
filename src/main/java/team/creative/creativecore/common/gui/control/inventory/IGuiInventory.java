@@ -4,6 +4,7 @@ import java.util.BitSet;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -16,7 +17,7 @@ public interface IGuiInventory {
         IGuiInventory inventory = (IGuiInventory) control;
         for (String name : nbt.keySet()) {
             int id = Integer.parseInt(name);
-            inventory.getSlot(id).slot.set(ItemStack.parse(control.provider(), nbt.getCompoundOrEmpty(name)).orElse(ItemStack.EMPTY));
+            inventory.getSlot(id).slot.set(nbt.read(name, ItemStack.OPTIONAL_CODEC).get());
             inventory.setChanged(id);
         }
     });
@@ -24,7 +25,7 @@ public interface IGuiInventory {
     public static final GuiSyncGlobal<GuiControl, ListTag> SYNC_ALL = GuiSyncHolder.GLOBAL.register("inv_all", (control, list) -> {
         IGuiInventory inventory = (IGuiInventory) control;
         for (int i = 0; i < inventory.inventorySize(); i++)
-            inventory.getSlot(i).slot.set(ItemStack.parse(control.provider(), list.getCompoundOrEmpty(i)).orElse(ItemStack.EMPTY));
+            inventory.getSlot(i).slot.set(ItemStack.OPTIONAL_CODEC.parse(NbtOps.INSTANCE, list.getCompoundOrEmpty(i)).getOrThrow());
         inventory.setChanged();
     });
     
@@ -92,12 +93,11 @@ public interface IGuiInventory {
         
         if (control.isClient())
             return;
-        var provider = control.provider();
         CompoundTag nbt = new CompoundTag();
         for (int i = set.nextSetBit(0); i >= 0; i = set.nextSetBit(i + 1)) {
             GuiSlot slot = getSlot(i);
             slot.onSendUpdate();
-            nbt.put("" + i, slot.slot.getItem().save(provider));
+            nbt.store("" + i, ItemStack.OPTIONAL_CODEC, slot.slot.getItem());
         }
         SYNC.send(control, nbt);
     }
@@ -106,10 +106,9 @@ public interface IGuiInventory {
         GuiControl control = (GuiControl) this;
         if (control.isClient())
             return;
-        var provider = control.provider();
         ListTag list = new ListTag();
         for (int i = 0; i < inventorySize(); i++)
-            list.add(getSlot(i).slot.getItem().save(provider));
+            list.add(ItemStack.OPTIONAL_CODEC.encodeStart(NbtOps.INSTANCE, getSlot(i).slot.getItem()).getOrThrow());
         SYNC_ALL.send(control, list);
     }
 }

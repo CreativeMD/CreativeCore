@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.control.simple;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Matrix3x2fStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.GuiRenderHelper;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
@@ -60,9 +59,9 @@ public class GuiShowItem extends GuiControl {
     @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         float scale = Math.min(rect.getContentWidth() / 16, rect.getContentHeight() / 16);
-        PoseStack pose = graphics.pose();
-        pose.scale(scale, scale, 1);
-        GuiRenderHelper.drawItemStack(graphics, stack, 1);
+        Matrix3x2fStack pose = graphics.pose();
+        pose.scale(scale, scale);
+        graphics.renderItem(stack, 0, 0);
     }
     
 }
