@@ -22,7 +22,7 @@ public class InventoryUtils {
         for (int i = 0; i < basic.getContainerSize(); i++) {
             if (basic.getItem(i).isEmpty())
                 continue;
-            nbt.put("s" + i, basic.getItem(i).save(provider, new CompoundTag()));
+            nbt.store("s" + i, ItemStack.OPTIONAL_CODEC, basic.getItem(i));
         }
         nbt.putInt("size", basic.getContainerSize());
         return nbt;
@@ -36,7 +36,7 @@ public class InventoryUtils {
         SimpleContainer basic = new SimpleContainer(length);
         for (int i = 0; i < length; i++) {
             if (nbt.contains("s" + i))
-                basic.setItem(i, ItemStack.parse(provider, nbt.getCompoundOrEmpty("s" + i)).orElse(ItemStack.EMPTY));
+                basic.setItem(i, nbt.read("s" + i, ItemStack.OPTIONAL_CODEC).get());
             else
                 basic.setItem(i, ItemStack.EMPTY);
         }

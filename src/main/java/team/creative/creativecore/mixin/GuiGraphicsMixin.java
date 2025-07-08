@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.gui.render.state.GuiTextRenderState;
@@ -50,11 +49,6 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
         return (GuiGraphics) (Object) this;
     }
     
-    @Shadow
-    public ScreenRectangle peekScissorStack() {
-        throw new UnsupportedOperationException();
-    }
-    
     @Override
     public void drawStringCentered(String text, float width, float height, int color, boolean shadow) {
         int textWidth = minecraft.font.width(text);
@@ -80,27 +74,29 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
     @Override
     public void drawString(FormattedCharSequence text, int x, int y, int color, int shadowColor, boolean shadow) {
         if (ARGB.alpha(color) != 0)
-            this.guiRenderState.submitText(new GuiTextRenderState(minecraft.font, text, new Matrix3x2f(this.pose), x, y, color, shadowColor, shadow, peekScissorStack()));
+            this.guiRenderState.submitText(new GuiTextRenderState(minecraft.font, text, new Matrix3x2f(this.pose), x, y, color, shadowColor, shadow, as().scissorStack.peek()));
     }
     
     @Override
     public void horizontalGradientRect(int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        guiRenderState.submitGuiElement(new HorizontalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, peekScissorStack()));
+        guiRenderState.submitGuiElement(new HorizontalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, as().scissorStack
+                .peek()));
     }
     
     @Override
     public void horizontalGradientRect(float x, float y, float x2, float y2, int colorFrom, int colorTo) {
-        guiRenderState.submitGuiElement(new HorizontalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, peekScissorStack()));
+        guiRenderState.submitGuiElement(new HorizontalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, as().scissorStack
+                .peek()));
     }
     
     @Override
     public void verticalGradientRect(int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        guiRenderState.submitGuiElement(new VerticalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, peekScissorStack()));
+        guiRenderState.submitGuiElement(new VerticalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, as().scissorStack.peek()));
     }
     
     @Override
     public void verticalGradientRect(float x, float y, float x2, float y2, int colorFrom, int colorTo) {
-        guiRenderState.submitGuiElement(new VerticalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, peekScissorStack()));
+        guiRenderState.submitGuiElement(new VerticalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x2, y2, colorFrom, colorTo, as().scissorStack.peek()));
     }
     
     @Override
@@ -115,12 +111,12 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
     
     @Override
     public void colorRect(int x, int y, int width, int height, int color) {
-        guiRenderState.submitGuiElement(new ColorRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x + width, y + height, color, peekScissorStack()));
+        guiRenderState.submitGuiElement(new ColorRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x + width, y + height, color, as().scissorStack.peek()));
     }
     
     @Override
     public void colorRect(float x, float y, float width, float height, int color) {
-        guiRenderState.submitGuiElement(new ColorRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x + width, y + height, color, peekScissorStack()));
+        guiRenderState.submitGuiElement(new ColorRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose, x, y, x + width, y + height, color, as().scissorStack.peek()));
     }
     
     @Override
