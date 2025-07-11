@@ -6,15 +6,11 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -29,7 +25,8 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTagListConfig> {
     
     @Override
-    public RegistryTagListConfig readElement(HolderLookup.Provider provider, RegistryTagListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+    public RegistryTagListConfig readElement(HolderLookup.Provider provider, RegistryTagListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
+            Side side, ConfigKey key) {
         if (element.isJsonArray()) {
             RegistryTagListConfig list = new RegistryTagListConfig(defaultValue.registry);
             JsonArray array = element.getAsJsonArray();
@@ -49,8 +46,6 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase listBox = new GuiListBoxBase<>("data", true, new ArrayList<>());
@@ -61,8 +56,6 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void loadValue(RegistryTagListConfig value, RegistryTagListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiListBoxBase listBox = parent.get("data");
         if (!listBox.isEmpty())
@@ -87,8 +80,6 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     protected RegistryTagListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryTagListConfig list = new RegistryTagListConfig<>((Registry) configParent.getCustomData());
         

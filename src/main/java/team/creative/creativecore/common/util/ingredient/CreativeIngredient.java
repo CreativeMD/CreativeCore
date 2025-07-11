@@ -11,8 +11,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -26,8 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
@@ -177,23 +173,17 @@ public abstract class CreativeIngredient {
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 parent.add(new GuiInfoStackButton("data", temp).setExpandableX());
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void loadValue(CreativeIngredient value, CreativeIngredient defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiInfoStackButton button = parent.get("data");
                 button.set(value);
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             protected CreativeIngredient saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 GuiInfoStackButton button = parent.get("data");
                 return button.get();

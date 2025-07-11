@@ -6,11 +6,7 @@ import java.lang.reflect.Type;
 
 import com.google.gson.JsonElement;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.core.ICreativeRegistry;
@@ -133,16 +129,10 @@ public abstract class ConfigKey {
     
     public abstract Object copy(HolderLookup.Provider provider, Side side);
     
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
     public abstract GuiConfigSubControl create(IGuiConfigParent configParent, String name, Side side);
     
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
     public abstract void load(IGuiConfigParent configParent, GuiConfigSubControl control, Side side);
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public abstract void save(GuiConfigSubControl control, IGuiConfigParent configParent, Side side);
     
     public ConfigField field() {

@@ -5,15 +5,12 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
+import team.creative.creativecore.client.render.face.VectorFanClient;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
@@ -21,7 +18,6 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderBox extends AlignedBox {
     
     private static final VectorFan DOWN = new VectorFanSimple(new Vec3f[] { new Vec3f(0, 0, 1), new Vec3f(0, 0, 0), new Vec3f(1, 0, 0), new Vec3f(1, 0, 1) });
@@ -335,20 +331,20 @@ public class RenderBox extends AlignedBox {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List list)
                     for (int j = 0; j < list.size(); j++)
-                        ((List<VectorFan>) list).get(j).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
-                            getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
+                        VectorFanClient.renderLines(((List<VectorFan>) list).get(j), pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(),
+                            getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red,
-                        green, blue, alpha);
+                    VectorFanClient.renderLines(fan, pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(),
+                        getPreviewScaleZ(), red, green, blue, alpha);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List)
                     for (int j = 0; j < ((List<VectorFan>) renderQuads).size(); j++)
-                        ((List<VectorFan>) renderQuads).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha);
+                        VectorFanClient.renderLines(((List<VectorFan>) renderQuads).get(j), pose.last(), consumer, red, green, blue, alpha);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderLines(pose.last(), consumer, red, green, blue, alpha);
+                    VectorFanClient.renderLines(fan, pose.last(), consumer, red, green, blue, alpha);
             }
         }
     }
@@ -366,20 +362,20 @@ public class RenderBox extends AlignedBox {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List list)
                     for (int j = 0; j < list.size(); j++)
-                        ((List<VectorFan>) list).get(j).renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(),
-                            getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
+                        VectorFanClient.renderLines(((List<VectorFan>) list).get(j), pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(),
+                            getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red, green, blue, alpha, center, grow);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderLines(pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(), getPreviewScaleZ(), red,
-                        green, blue, alpha, center, grow);
+                    VectorFanClient.renderLines(fan, pose.last(), consumer, getPreviewOffX(), getPreviewOffY(), getPreviewOffZ(), getPreviewScaleX(), getPreviewScaleY(),
+                        getPreviewScaleZ(), red, green, blue, alpha, center, grow);
             }
         } else {
             for (int i = 0; i < Facing.values().length; i++) {
                 Object renderQuads = getRenderQuads(Facing.values()[i]);
                 if (renderQuads instanceof List list)
                     for (int j = 0; j < list.size(); j++)
-                        ((List<VectorFan>) list).get(j).renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
+                        VectorFanClient.renderLines(((List<VectorFan>) list).get(j), pose.last(), consumer, red, green, blue, alpha, center, grow);
                 else if (renderQuads instanceof VectorFan fan)
-                    fan.renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
+                    VectorFanClient.renderLines(fan, pose.last(), consumer, red, green, blue, alpha, center, grow);
             }
         }
     }
@@ -508,20 +504,12 @@ public class RenderBox extends AlignedBox {
         }
         
         @Override
-        @Environment(EnvType.CLIENT)
-        @OnlyIn(Dist.CLIENT)
-        public void generate(QuadGeneratorContext holder, List<BakedQuad> quads) {
-            int index = 0;
-            while (index < coords.length - 3) {
-                generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 3], quads);
-                index += 2;
-            }
-            if (index < coords.length - 2)
-                generate(holder, coords[0], coords[index + 1], coords[index + 2], coords[index + 2], quads);
+        public boolean doMinMaxLate() {
+            return true;
         }
         
         @Override
-        protected boolean doMinMaxLate() {
+        public boolean doSimpleRendering() {
             return true;
         }
         

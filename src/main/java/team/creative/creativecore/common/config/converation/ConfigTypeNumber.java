@@ -8,14 +8,10 @@ import java.util.Locale;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.DecimalRangeSupplier;
@@ -84,8 +80,6 @@ public class ConfigTypeNumber {
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {
                 parent.add(new GuiStateButton<Boolean>("data", 0, new TextMapBuilder<Boolean>().addComponent(false, Component.translatable("gui.false").setStyle(Style.EMPTY
                         .withColor(ChatFormatting.RED))).addComponent(true, Component.translatable("gui.true").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))))
@@ -93,16 +87,12 @@ public class ConfigTypeNumber {
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void loadValue(Boolean value, GuiParent parent) {
                 GuiStateButton<Boolean> button = parent.get("data");
                 button.select(value);
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             protected Boolean saveValue(GuiParent parent, ConfigKey key) {
                 GuiStateButton<Boolean> button = parent.get("data");
                 return button.selected();
@@ -151,13 +141,9 @@ public class ConfigTypeNumber {
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {}
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 boolean decimal = isDecimal(key.field().getType());
                 if (key != null) {
@@ -197,8 +183,6 @@ public class ConfigTypeNumber {
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void loadValue(Number value, GuiParent parent) {
                 GuiControl control = parent.get("data");
                 if (control instanceof GuiSteppedSlider button)
@@ -268,8 +252,6 @@ public class ConfigTypeNumber {
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             protected Number saveValue(GuiParent parent, ConfigKey key) {
                 GuiControl control = parent.get("data");
                 String text;

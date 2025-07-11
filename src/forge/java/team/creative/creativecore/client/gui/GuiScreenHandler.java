@@ -1,16 +1,13 @@
-package team.creative.creativecore.common.gui.integration;
+package team.creative.creativecore.client.gui;
 
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 
-public class GuiEventHandler {
+public class GuiScreenHandler {
     
     private static int displayWidth;
     private static int displayHeight;
@@ -19,11 +16,9 @@ public class GuiEventHandler {
     private static Screen displayScreen;
     
     public static void queueScreen(Screen displayScreen) {
-        GuiEventHandler.displayScreen = displayScreen;
+        GuiScreenHandler.displayScreen = displayScreen;
     }
     
-    @OnlyIn(value = Dist.CLIENT)
-    @SubscribeEvent
     public static void onTick(RenderFrameEvent.Pre tick) {
         Minecraft mc = Minecraft.getInstance();
         if (displayScreen != null) {

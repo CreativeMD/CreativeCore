@@ -2,11 +2,7 @@ package team.creative.creativecore.common.config.key;
 
 import com.google.gson.JsonElement;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup.Provider;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.core.ICreativeRegistry;
@@ -87,15 +83,11 @@ public class ConfigKeyHolder extends ConfigKey {
     }
     
     @Override
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
     public GuiConfigSubControl create(IGuiConfigParent configParent, String name, Side side) {
         return new GuiConfigSubControlHolder(name, null, null, side, configParent::changed);
     }
     
     @Override
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
     public void load(IGuiConfigParent configParent, GuiConfigSubControl control, Side side) {
         GuiConfigSubControlHolder c = (GuiConfigSubControlHolder) control;
         c.load(holder, field.get());
@@ -103,8 +95,6 @@ public class ConfigKeyHolder extends ConfigKey {
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void save(GuiConfigSubControl control, IGuiConfigParent configParent, Side side) {
         GuiConfigSubControlHolder c = (GuiConfigSubControlHolder) control;
         c.save();

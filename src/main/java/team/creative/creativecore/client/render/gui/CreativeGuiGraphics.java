@@ -12,11 +12,8 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 @Environment(EnvType.CLIENT)
-@OnlyIn(Dist.CLIENT)
 public interface CreativeGuiGraphics {
     
     public static CreativeGuiGraphics as(GuiGraphics graphics) {

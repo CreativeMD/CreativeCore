@@ -6,12 +6,8 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -55,8 +51,6 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", true, createList(key, 0)).setDim(50, 130).setExpandable();
@@ -74,16 +68,12 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void restoreDefault(List value, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         loadValue(readElement(configParent.provider(), (List) key.get(), true, false, writeElement(configParent.provider(), value, true, false, side, key), side, key), value,
             parent, configParent, key, side);
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void loadValue(List value, List defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         if (!box.isEmpty())
@@ -103,8 +93,6 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     protected List saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         

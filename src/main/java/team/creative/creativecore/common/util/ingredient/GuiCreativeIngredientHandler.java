@@ -19,8 +19,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.collection.GuiCheckList;
@@ -35,7 +33,6 @@ import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 @Environment(EnvType.CLIENT)
-@OnlyIn(Dist.CLIENT)
 public abstract class GuiCreativeIngredientHandler {
     
     public static final NamedHandlerRegistry<GuiCreativeIngredientHandler> REGISTRY = new NamedHandlerRegistry<>(null);

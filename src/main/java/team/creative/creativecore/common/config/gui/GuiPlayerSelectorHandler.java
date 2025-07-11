@@ -6,8 +6,6 @@ import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.level.GameType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.control.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.control.simple.GuiStateButton;
@@ -24,7 +22,6 @@ import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 @Environment(EnvType.CLIENT)
-@OnlyIn(Dist.CLIENT)
 public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
     
     public static final NamedHandlerRegistry<GuiPlayerSelectorHandler> REGISTRY = new NamedHandlerRegistry<>(null);

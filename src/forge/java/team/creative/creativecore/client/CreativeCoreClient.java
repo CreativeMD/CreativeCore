@@ -25,13 +25,13 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
+import team.creative.creativecore.client.gui.GuiScreenHandler;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 import team.creative.creativecore.common.gui.integration.ContainerScreenIntegration;
-import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 
@@ -67,7 +67,7 @@ public class CreativeCoreClient {
     public static void commands(RegisterClientCommandsEvent event) {
         event.getDispatcher().register(LiteralArgumentBuilder.<CommandSourceStack>literal("cmdclientconfig").executes((x) -> {
             try {
-                GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
+                GuiScreenHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
             } catch (Exception e) {
                 LOGGER.error(e);
             }
@@ -77,7 +77,7 @@ public class CreativeCoreClient {
     
     public static void init(FMLClientSetupEvent event) {
         NeoForge.EVENT_BUS.register(CreativeCoreClient.class);
-        NeoForge.EVENT_BUS.register(GuiEventHandler.class);
+        NeoForge.EVENT_BUS.register(GuiScreenHandler.class);
         GuiStyle.reload();
     }
     

@@ -25,7 +25,6 @@ import team.creative.creativecore.common.config.converation.ConfigTypeConveratio
 import team.creative.creativecore.common.config.gui.GuiPlayerSelectorButton;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.gui.GuiParent;
-import team.creative.creativecore.common.util.mc.PlayerUtils;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 
 public abstract class PlayerSelector {
@@ -263,7 +262,7 @@ public abstract class PlayerSelector {
         
         @Override
         public boolean is(Player player) {
-            return PlayerUtils.getGameType(player) == type;
+            return player.gameMode() == type;
         }
         
         @Override

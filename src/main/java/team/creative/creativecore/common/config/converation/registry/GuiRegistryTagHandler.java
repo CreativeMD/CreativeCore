@@ -5,8 +5,6 @@ import java.util.Iterator;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -22,8 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.control.collection.GuiStackSelector;
@@ -31,8 +27,6 @@ import team.creative.creativecore.common.util.registry.FilteredHandlerRegistry;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
 
-@Environment(EnvType.CLIENT)
-@OnlyIn(Dist.CLIENT)
 public abstract class GuiRegistryTagHandler {
     
     public static final FilteredHandlerRegistry<Registry, GuiRegistryTagHandler> REGISTRY = new FilteredHandlerRegistry<Registry, GuiRegistryTagHandler>(new GuiRegistryTagHandler() {

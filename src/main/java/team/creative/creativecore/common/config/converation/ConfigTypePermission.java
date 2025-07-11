@@ -3,11 +3,7 @@ package team.creative.creativecore.common.config.converation;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.gui.PermissionGuiLayer;
@@ -70,15 +66,11 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.add(new GuiPermissionConfigButton("button", this, ConfigKey.ofGenericType(key, side), configParent, side));
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void loadValue(Permission value, Permission defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiPermissionConfigButton button = parent.get("button");
         button.value = value;
@@ -86,8 +78,6 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     protected Permission saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         return parent.get("button", GuiPermissionConfigButton.class).value;
     }

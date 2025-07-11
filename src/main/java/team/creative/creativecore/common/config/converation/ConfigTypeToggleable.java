@@ -3,11 +3,7 @@ package team.creative.creativecore.common.config.converation;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.key.ConfigKey;
@@ -43,8 +39,6 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.flow = GuiFlow.STACK_Y;
         parent.add(new GuiCheckBox("enabled", true).setTranslate("gui.config.enabled"));
@@ -53,8 +47,6 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void loadValue(ToggleableConfig value, ToggleableConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.get("enabled", GuiCheckBox.class).value = value.isEnabled();
         
@@ -64,8 +56,6 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     protected ToggleableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         ConfigKey configKey = ConfigKey.ofGenericType(key, side);
         configKey.save(parent.get("content"), configParent, side);

@@ -6,14 +6,10 @@ import java.util.List;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -28,7 +24,8 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<RegistryObjectListConfig> {
     
     @Override
-    public RegistryObjectListConfig readElement(HolderLookup.Provider provider, RegistryObjectListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+    public RegistryObjectListConfig readElement(HolderLookup.Provider provider, RegistryObjectListConfig defaultValue, boolean loadDefault, boolean ignoreRestart,
+            JsonElement element, Side side, ConfigKey key) {
         if (element.isJsonArray()) {
             RegistryObjectListConfig list = new RegistryObjectListConfig(defaultValue.registry);
             JsonArray array = element.getAsJsonArray();
@@ -48,8 +45,6 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.flow = GuiFlow.STACK_Y;
         GuiListBoxBase listBox = new GuiListBoxBase<>("data", true, new ArrayList<>());
@@ -60,8 +55,6 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void loadValue(RegistryObjectListConfig value, RegistryObjectListConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         GuiListBoxBase listBox = parent.get("data");
         if (!listBox.isEmpty())
@@ -86,8 +79,6 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     protected RegistryObjectListConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         RegistryObjectListConfig list = new RegistryObjectListConfig<>((Registry) configParent.getCustomData());
         
