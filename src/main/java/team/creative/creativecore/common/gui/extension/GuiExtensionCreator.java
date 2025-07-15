@@ -2,8 +2,8 @@ package team.creative.creativecore.common.gui.extension;
 
 import java.util.function.Function;
 
+import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 

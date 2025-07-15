@@ -1,20 +1,20 @@
 package team.creative.creativecore.common.gui.flow;
 
-import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.client.gui.GuiClientControl;
 
 public abstract class GuiSizeRule {
     
-    public abstract int minWidth(GuiControl control, int availableWidth);
+    public abstract int minWidth(GuiClientControl control, int availableWidth);
     
-    public abstract int preferredWidth(GuiControl control, int availableWidth);
+    public abstract int preferredWidth(GuiClientControl control, int availableWidth);
     
-    public abstract int maxWidth(GuiControl control, int availableWidth);
+    public abstract int maxWidth(GuiClientControl control, int availableWidth);
     
-    public abstract int minHeight(GuiControl control, int width, int availableHeight);
+    public abstract int minHeight(GuiClientControl control, int width, int availableHeight);
     
-    public abstract int preferredHeight(GuiControl control, int width, int availableHeight);
+    public abstract int preferredHeight(GuiClientControl control, int width, int availableHeight);
     
-    public abstract int maxHeight(GuiControl control, int width, int availableHeight);
+    public abstract int maxHeight(GuiClientControl control, int width, int availableHeight);
     
     public static class GuiFixedDimension extends GuiSizeRule {
         
@@ -31,32 +31,32 @@ public abstract class GuiSizeRule {
         }
         
         @Override
-        public int minWidth(GuiControl control, int availableWidth) {
+        public int minWidth(GuiClientControl control, int availableWidth) {
             return -1;
         }
         
         @Override
-        public int preferredWidth(GuiControl control, int availableWidth) {
+        public int preferredWidth(GuiClientControl control, int availableWidth) {
             return width;
         }
         
         @Override
-        public int maxWidth(GuiControl control, int availableWidth) {
+        public int maxWidth(GuiClientControl control, int availableWidth) {
             return -1;
         }
         
         @Override
-        public int minHeight(GuiControl control, int width, int availableHeight) {
+        public int minHeight(GuiClientControl control, int width, int availableHeight) {
             return -1;
         }
         
         @Override
-        public int preferredHeight(GuiControl control, int width, int availableHeight) {
+        public int preferredHeight(GuiClientControl control, int width, int availableHeight) {
             return height;
         }
         
         @Override
-        public int maxHeight(GuiControl control, int width, int availableHeight) {
+        public int maxHeight(GuiClientControl control, int width, int availableHeight) {
             return -1;
         }
     }
@@ -72,32 +72,32 @@ public abstract class GuiSizeRule {
         }
         
         @Override
-        public int minWidth(GuiControl control, int availableWidth) {
+        public int minWidth(GuiClientControl control, int availableWidth) {
             return -1;
         }
         
         @Override
-        public int preferredWidth(GuiControl control, int availableWidth) {
+        public int preferredWidth(GuiClientControl control, int availableWidth) {
             return (int) (width * availableWidth);
         }
         
         @Override
-        public int maxWidth(GuiControl control, int availableWidth) {
+        public int maxWidth(GuiClientControl control, int availableWidth) {
             return -1;
         }
         
         @Override
-        public int minHeight(GuiControl control, int width, int availableHeight) {
+        public int minHeight(GuiClientControl control, int width, int availableHeight) {
             return -1;
         }
         
         @Override
-        public int preferredHeight(GuiControl control, int width, int availableHeight) {
+        public int preferredHeight(GuiClientControl control, int width, int availableHeight) {
             return (int) (height * availableHeight);
         }
         
         @Override
-        public int maxHeight(GuiControl control, int width, int availableHeight) {
+        public int maxHeight(GuiClientControl control, int width, int availableHeight) {
             return -1;
         }
     }
@@ -145,32 +145,32 @@ public abstract class GuiSizeRule {
         }
         
         @Override
-        public int minWidth(GuiControl control, int availableWidth) {
+        public int minWidth(GuiClientControl control, int availableWidth) {
             return minWidth;
         }
         
         @Override
-        public int preferredWidth(GuiControl control, int availableWidth) {
+        public int preferredWidth(GuiClientControl control, int availableWidth) {
             return prefWidth;
         }
         
         @Override
-        public int maxWidth(GuiControl control, int availableWidth) {
+        public int maxWidth(GuiClientControl control, int availableWidth) {
             return maxWidth;
         }
         
         @Override
-        public int minHeight(GuiControl control, int width, int availableHeight) {
+        public int minHeight(GuiClientControl control, int width, int availableHeight) {
             return minHeight;
         }
         
         @Override
-        public int preferredHeight(GuiControl control, int width, int availableHeight) {
+        public int preferredHeight(GuiClientControl control, int width, int availableHeight) {
             return prefHeight;
         }
         
         @Override
-        public int maxHeight(GuiControl control, int width, int availableHeight) {
+        public int maxHeight(GuiClientControl control, int width, int availableHeight) {
             return maxHeight;
         }
         
@@ -224,36 +224,36 @@ public abstract class GuiSizeRule {
         }
         
         @Override
-        public int minWidth(GuiControl control, int availableWidth) {
+        public int minWidth(GuiClientControl control, int availableWidth) {
             return minWidth;
         }
         
         @Override
-        public int preferredWidth(GuiControl control, int availableWidth) {
+        public int preferredWidth(GuiClientControl control, int availableWidth) {
             if (width == -1)
                 return -1;
             return (int) (width * availableWidth);
         }
         
         @Override
-        public int maxWidth(GuiControl control, int availableWidth) {
+        public int maxWidth(GuiClientControl control, int availableWidth) {
             return maxWidth;
         }
         
         @Override
-        public int minHeight(GuiControl control, int width, int availableHeight) {
+        public int minHeight(GuiClientControl control, int width, int availableHeight) {
             return minHeight;
         }
         
         @Override
-        public int preferredHeight(GuiControl control, int width, int availableHeight) {
+        public int preferredHeight(GuiClientControl control, int width, int availableHeight) {
             if (height == -1)
                 return -1;
             return (int) (height * availableHeight);
         }
         
         @Override
-        public int maxHeight(GuiControl control, int width, int availableHeight) {
+        public int maxHeight(GuiClientControl control, int width, int availableHeight) {
             return maxHeight;
         }
         

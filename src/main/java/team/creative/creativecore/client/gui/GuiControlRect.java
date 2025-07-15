@@ -1,10 +1,10 @@
-package team.creative.creativecore.common.gui;
+package team.creative.creativecore.client.gui;
 
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class GuiControlRect {
     
-    public static int getMinWidth(GuiControl control, int availableWidth) {
+    public static int getMinWidth(GuiClientControl control, int availableWidth) {
         if (control.preferred != null) {
             int minWidth = control.preferred.minWidth(control, availableWidth);
             if (minWidth != -1)
@@ -13,7 +13,7 @@ public class GuiControlRect {
         return control.minWidth(availableWidth);
     }
     
-    public static int getPreferredWidth(GuiControl control, int availableWidth) {
+    public static int getPreferredWidth(GuiClientControl control, int availableWidth) {
         if (control.preferred != null) {
             int prefWidth = control.preferred.preferredWidth(control, availableWidth);
             if (prefWidth != -1)
@@ -22,7 +22,7 @@ public class GuiControlRect {
         return control.preferredWidth(availableWidth);
     }
     
-    public static int getMaxWidth(GuiControl control, int availableWidth) {
+    public static int getMaxWidth(GuiClientControl control, int availableWidth) {
         if (control.preferred != null) {
             int maxWidth = control.preferred.maxWidth(control, availableWidth);
             if (maxWidth != -1)
@@ -31,7 +31,7 @@ public class GuiControlRect {
         return control.maxWidth(availableWidth);
     }
     
-    public static int getMinHeight(GuiControl control, int width, int availableHeight) {
+    public static int getMinHeight(GuiClientControl control, int width, int availableHeight) {
         if (control.preferred != null) {
             int minHeight = control.preferred.minHeight(control, width, availableHeight);
             if (minHeight != -1)
@@ -40,7 +40,7 @@ public class GuiControlRect {
         return control.minHeight(width, availableHeight);
     }
     
-    public static int getPreferredHeight(GuiControl control, int width, int availableHeight) {
+    public static int getPreferredHeight(GuiClientControl control, int width, int availableHeight) {
         if (control.preferred != null) {
             int prefHeight = control.preferred.preferredHeight(control, width, availableHeight);
             if (prefHeight != -1)
@@ -49,7 +49,7 @@ public class GuiControlRect {
         return control.preferredHeight(width, availableHeight);
     }
     
-    public static int getMaxHeight(GuiControl control, int width, int availableHeight) {
+    public static int getMaxHeight(GuiClientControl control, int width, int availableHeight) {
         if (control.preferred != null) {
             int maxHeight = control.preferred.maxHeight(control, width, availableHeight);
             if (maxHeight != -1)
@@ -58,14 +58,14 @@ public class GuiControlRect {
         return control.maxHeight(width, availableHeight);
     }
     
-    protected final GuiControl control;
+    protected final GuiClientControl control;
     
     private int left;
     private int top;
     private int right;
     private int bottom;
     
-    public GuiControlRect(GuiControl control) {
+    public GuiControlRect(GuiClientControl control) {
         this.control = control;
     }
     

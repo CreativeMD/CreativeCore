@@ -3,6 +3,8 @@ package team.creative.creativecore.common.gui;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
+import team.creative.creativecore.common.gui.manager.GuiManager;
+import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
 public interface IGuiParent {
@@ -30,5 +32,9 @@ public interface IGuiParent {
     public Rect toLayerRect(GuiControl control, Rect rect);
     
     public IGuiIntegratedParent getIntegratedParent();
+    
+    public <T extends GuiControlDistHandler> T createDist(GuiControl<T> control);
+    
+    public <T extends GuiManagerDist> T createDist(GuiManager<T> manager);
     
 }

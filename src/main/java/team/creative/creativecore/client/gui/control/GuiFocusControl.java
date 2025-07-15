@@ -1,11 +1,12 @@
-package team.creative.creativecore.common.gui.control;
+package team.creative.creativecore.client.gui.control;
 
+import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.common.gui.GuiControl;
 
-public abstract class GuiFocusControl extends GuiControl {
+public abstract class GuiFocusControl<T extends GuiControl> extends GuiClientControl<T> {
     
-    public GuiFocusControl(String name) {
-        super(name);
+    public GuiFocusControl(T control) {
+        super(control);
     }
     
     private boolean focused = false;

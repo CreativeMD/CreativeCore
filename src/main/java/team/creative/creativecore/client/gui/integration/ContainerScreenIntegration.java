@@ -1,11 +1,13 @@
-package team.creative.creativecore.common.gui.integration;
+package team.creative.creativecore.client.gui.integration;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
+import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 
 public class ContainerScreenIntegration extends AbstractContainerScreen<ContainerIntegration> implements IScaleableGuiScreen {
     
@@ -43,12 +45,13 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
         for (GuiLayer layer : getMenu().getLayers()) {
-            int offsetX = (width - layer.getWidth()) / 2;
-            int offsetY = (height - layer.getHeight()) / 2;
-            minX = Math.min(minX, offsetX + layer.rect.getX());
-            minY = Math.min(minY, offsetY + layer.rect.getY());
-            maxX = Math.max(maxX, offsetX + layer.rect.getRight());
-            maxY = Math.max(maxY, offsetY + layer.rect.getBottom());
+            GuiClientLayer c = (GuiClientLayer) layer.dist;
+            int offsetX = (width - c.getWidth()) / 2;
+            int offsetY = (height - c.getHeight()) / 2;
+            minX = Math.min(minX, offsetX + c.rect.getX());
+            minY = Math.min(minY, offsetY + c.rect.getY());
+            maxX = Math.max(maxX, offsetX + c.rect.getRight());
+            maxY = Math.max(maxY, offsetY + c.rect.getBottom());
         }
         
         leftPos = minX;
@@ -67,7 +70,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     public int getWidth() {
         int width = 0;
         for (GuiLayer layer : getMenu().getLayers())
-            width = Math.max(width, layer.getWidth());
+            width = Math.max(width, ((GuiClientLayer) layer.dist).getWidth());
         return width;
     }
     
@@ -75,7 +78,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     public int getHeight() {
         int height = 0;
         for (GuiLayer layer : getMenu().getLayers())
-            height = Math.max(height, layer.getHeight());
+            height = Math.max(height, ((GuiClientLayer) layer.dist).getHeight());
         return height;
     }
     

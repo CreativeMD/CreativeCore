@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.integration;
+package team.creative.creativecore.client.gui.integration;
 
 import com.mojang.blaze3d.Blaze3D;
 
@@ -7,6 +7,8 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import team.creative.creativecore.client.gui.GuiClientLayer;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.mixin.MouseHandlerAccessor;
 
 public class ScreenEventListener implements GuiEventListener, NarratableEntry {
@@ -27,12 +29,16 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
         this.screen = screen;
     }
     
+    public GuiClientLayer getTopLayer() {
+        return (GuiClientLayer) gui.getTopLayer().dist;
+    }
+    
     public int getOffsetX() {
-        return (screen.width - gui.getTopLayer().getWidth()) / 2;
+        return (screen.width - getTopLayer().getWidth()) / 2;
     }
     
     public int getOffsetY() {
-        return (screen.height - gui.getTopLayer().getHeight()) / 2;
+        return (screen.height - getTopLayer().getHeight()) / 2;
     }
     
     public void tick() {
@@ -46,9 +52,9 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
     protected void fireRemaingEvents() {
         if (doubleClickButton != -1) {
-            gui.getTopLayer().mouseClicked(x, y, doubleClickButton);
+            getTopLayer().mouseClicked(x, y, doubleClickButton);
             if (released)
-                gui.getTopLayer().mouseReleased(x, y, doubleClickButton);
+                getTopLayer().mouseReleased(x, y, doubleClickButton);
             doubleClickButton = -1;
             released = false;
         }
@@ -56,17 +62,17 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
     @Override
     public void mouseMoved(double x, double y) {
-        gui.getTopLayer().mouseMoved(x - getOffsetX(), y - getOffsetY());
+        getTopLayer().mouseMoved(x - getOffsetX(), y - getOffsetY());
     }
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (gui.getTopLayer().testForDoubleClick(x - getOffsetX(), y - getOffsetY(), button)) {
+        if (getTopLayer().testForDoubleClick(x - getOffsetX(), y - getOffsetY(), button)) {
             
             if (doubleClickButton == button) {
                 released = false;
                 doubleClickButton = -1;
-                return gui.getTopLayer().mouseDoubleClicked(x - getOffsetX(), y - getOffsetY(), button);
+                return getTopLayer().mouseDoubleClicked(x - getOffsetX(), y - getOffsetY(), button);
             }
             fireRemaingEvents();
             doubleClickButton = button;
@@ -76,7 +82,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
             return true;
         }
         fireRemaingEvents();
-        return gui.getTopLayer().mouseClicked(x - getOffsetX(), y - getOffsetY(), button);
+        return getTopLayer().mouseClicked(x - getOffsetX(), y - getOffsetY(), button);
     }
     
     @Override
@@ -86,35 +92,35 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
             return true;
         }
         fireRemaingEvents();
-        gui.getTopLayer().mouseReleased(x - getOffsetX(), y - getOffsetY(), button);
+        getTopLayer().mouseReleased(x - getOffsetX(), y - getOffsetY(), button);
         return true;
     }
     
     @Override
     public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
         if (doubleClickButton == -1)
-            gui.getTopLayer().mouseDragged(x - getOffsetX(), y - getOffsetY(), button, dragX, dragY, Blaze3D.getTime() - time);
+            getTopLayer().mouseDragged(x - getOffsetX(), y - getOffsetY(), button, dragX, dragY, Blaze3D.getTime() - time);
         return true;
     }
     
     @Override
     public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
-        return gui.getTopLayer().mouseScrolled(x - getOffsetX(), y - getOffsetY(), deltaY);
+        return getTopLayer().mouseScrolled(x - getOffsetX(), y - getOffsetY(), deltaY);
     }
     
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return gui.getTopLayer().keyPressed(keyCode, scanCode, modifiers);
+        return getTopLayer().keyPressed(keyCode, scanCode, modifiers);
     }
     
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return gui.getTopLayer().keyReleased(keyCode, scanCode, modifiers);
+        return getTopLayer().keyReleased(keyCode, scanCode, modifiers);
     }
     
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        return gui.getTopLayer().charTyped(codePoint, modifiers);
+        return getTopLayer().charTyped(codePoint, modifiers);
     }
     
     @Override

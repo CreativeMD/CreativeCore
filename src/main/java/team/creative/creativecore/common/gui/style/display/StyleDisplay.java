@@ -14,7 +14,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.GuiControlRect;
+import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 

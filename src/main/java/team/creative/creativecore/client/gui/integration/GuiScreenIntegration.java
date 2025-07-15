@@ -1,4 +1,4 @@
-package team.creative.creativecore.common.gui.integration;
+package team.creative.creativecore.client.gui.integration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,15 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import team.creative.creativecore.client.gui.GuiClientLayer;
+import team.creative.creativecore.client.gui.registry.GuiClientRegistry;
+import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
+import team.creative.creativecore.common.gui.manager.GuiManager;
+import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.network.CreativePacket;
 
 public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {
@@ -44,7 +51,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     public int getWidth() {
         int width = 0;
         for (GuiLayer layer : layers)
-            width = Math.max(width, layer.getWidth());
+            width = Math.max(width, ((GuiClientLayer) layer.dist).getWidth());
         return width;
     }
     
@@ -52,7 +59,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     public int getHeight() {
         int height = 0;
         for (GuiLayer layer : layers)
-            height = Math.max(height, layer.getHeight());
+            height = Math.max(height, ((GuiClientLayer) layer.dist).getHeight());
         return height;
     }
     
@@ -164,6 +171,16 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
         if (mc.player != null)
             return mc.player.registryAccess();
         return null;
+    }
+    
+    @Override
+    public <T extends GuiControlDistHandler> T createDist(GuiControl<T> control) {
+        return (T) GuiClientRegistry.create(control);
+    }
+    
+    @Override
+    public <T extends GuiManagerDist> T createDist(GuiManager<T> manager) {
+        return (T) GuiClientRegistry.create(manager);
     }
     
 }

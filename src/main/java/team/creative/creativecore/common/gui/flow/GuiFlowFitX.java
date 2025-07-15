@@ -3,8 +3,8 @@ package team.creative.creativecore.common.gui.flow;
 import java.util.ArrayList;
 import java.util.List;
 
+import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.VAlign;
 
 public class GuiFlowFitX extends GuiStackX {

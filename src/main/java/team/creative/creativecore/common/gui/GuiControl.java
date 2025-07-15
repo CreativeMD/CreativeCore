@@ -2,57 +2,87 @@ package team.creative.creativecore.common.gui;
 
 import java.util.List;
 
-import org.joml.Matrix3x2fStack;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.event.GuiEvent;
-import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
-import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiFixedDimension;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
-import team.creative.creativecore.common.util.text.TextBuilder;
 
-public abstract class GuiControl {
+public abstract class GuiControl<T extends GuiControlDistHandler> {
     
-    public final GuiControlRect rect = new GuiControlRect(this);
-    private IGuiParent parent;
+    private final IGuiParent parent;
+    public final T dist;
     public final String name;
-    public boolean enabled = true;
     
-    public GuiSizeRule preferred;
-    public boolean expandableX = false;
-    public boolean expandableY = false;
-    
-    public boolean visible = true;
-    
-    private List<Component> customTooltip;
-    
-    public GuiControl(String name) {
+    public GuiControl(IGuiParent parent, String name) {
+        this.parent = parent;
+        this.dist = parent.createDist(this);
         this.name = name;
     }
     
+    // CONSTRUCTION
+    
+    public GuiControl setVisible(boolean visible) {
+        dist.setVisible(visible);
+        return this;
+    }
+    
+    public GuiControl setFixed() {
+        dist.setFixed();
+        return this;
+    }
+    
+    public GuiControl setFixedX() {
+        dist.setFixedX();
+        return this;
+    }
+    
+    public GuiControl setFixedY() {
+        dist.setFixedY();
+        return this;
+    }
+    
+    public GuiControl setExpandable() {
+        dist.setExpandable();
+        return this;
+    }
+    
+    public GuiControl setExpandableX() {
+        dist.setExpandableX();
+        return this;
+    }
+    
+    public GuiControl setExpandableY() {
+        dist.setExpandableY();
+        return this;
+    }
+    
+    public GuiControl setDim(int width, int height) {
+        dist.setDim(width, height);
+        return this;
+    }
+    
+    public GuiControl setDim(GuiSizeRule dim) {
+        dist.setDim(dim);
+        return this;
+    }
+    
+    public GuiControl setEnabled(boolean enabled) {
+        dist.setEnabled(enabled);
+        return this;
+    }
+    
     // BASICS
+    
+    public void reflow() {
+        if (getParent() != null)
+            getParent().reflow();
+    }
     
     public HolderLookup.Provider provider() {
         var player = getPlayer();
@@ -66,83 +96,12 @@ public abstract class GuiControl {
     }
     
     public GuiControl setTooltip(List<Component> tooltip) {
-        if (tooltip != null && tooltip.isEmpty())
-            this.customTooltip = null;
-        else
-            this.customTooltip = tooltip;
+        dist.setTooltip(tooltip);
         return this;
     }
     
     public GuiControl setTooltip(String translate) {
-        setTooltip(new TextBuilder().translate(translate).build());
-        return this;
-    }
-    
-    public GuiControl setVisible(boolean visible) {
-        this.visible = visible;
-        return this;
-    }
-    
-    public GuiControl setFixed() {
-        this.expandableX = false;
-        this.expandableY = false;
-        return this;
-    }
-    
-    public GuiControl setFixedX() {
-        this.expandableX = false;
-        return this;
-    }
-    
-    public GuiControl setFixedY() {
-        this.expandableY = false;
-        return this;
-    }
-    
-    public GuiControl setExpandable() {
-        this.expandableX = true;
-        this.expandableY = true;
-        return this;
-    }
-    
-    public GuiControl setUnexpandable() {
-        this.expandableX = false;
-        this.expandableY = false;
-        return this;
-    }
-    
-    public GuiControl setExpandableX() {
-        this.expandableX = true;
-        return this;
-    }
-    
-    public GuiControl setUnexpandableX() {
-        this.expandableX = false;
-        return this;
-    }
-    
-    public GuiControl setExpandableY() {
-        this.expandableY = true;
-        return this;
-    }
-    
-    public GuiControl setUnexpandableY() {
-        this.expandableY = false;
-        return this;
-    }
-    
-    public GuiControl setDim(int width, int height) {
-        this.preferred = new GuiFixedDimension(width, height);
-        return this;
-    }
-    
-    public GuiControl setDim(GuiSizeRule dim) {
-        this.preferred = dim;
-        return this;
-    }
-    
-    public GuiControl setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        dist.setTooltip(translate);
         return this;
     }
     
@@ -150,10 +109,6 @@ public abstract class GuiControl {
         if (parent != null)
             return parent.hasGui();
         return false;
-    }
-    
-    public void setParent(IGuiParent parent) {
-        this.parent = parent;
     }
     
     public boolean isParent(IGuiParent parent) {
@@ -168,14 +123,6 @@ public abstract class GuiControl {
     
     public IGuiIntegratedParent getIntegratedParent() {
         return parent.getIntegratedParent();
-    }
-    
-    public boolean isExpandableX() {
-        return expandableX;
-    }
-    
-    public boolean isExpandableY() {
-        return expandableY;
     }
     
     public String getNestedName() {
@@ -196,19 +143,17 @@ public abstract class GuiControl {
         throw new RuntimeException("Invalid layer control");
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public GuiStyle getStyle() {
-        if (parent instanceof GuiControl control)
-            return control.getStyle();
-        throw new RuntimeException("Invalid layer control");
+    public void init() {
+        dist.init();
     }
     
-    public abstract void init();
+    public void closed() {
+        dist.closed();
+    }
     
-    public abstract void closed();
-    
-    public abstract void tick();
+    public void tick() {
+        dist.tick();
+    }
     
     public boolean is(String name) {
         return this.name.equalsIgnoreCase(name);
@@ -222,209 +167,10 @@ public abstract class GuiControl {
         return false;
     }
     
-    // SIZE
-    
-    public Rect createChildRect(Rect contentRect, double scale, double xOffset, double yOffset) {
-        return contentRect.child(rect, scale, xOffset, yOffset);
-    }
-    
-    protected abstract void flowX(int width, int preferred);
-    
-    protected abstract void flowY(int width, int height, int preferred);
-    
-    public void reflow() {
-        if (parent != null)
-            parent.reflow();
-    }
-    
-    protected int minWidth(int availableWidth) {
-        return -1;
-    }
-    
-    protected abstract int preferredWidth(int availableWidth);
-    
-    protected int maxWidth(int availableWidth) {
-        return -1;
-    }
-    
-    protected int minHeight(int width, int availableHeight) {
-        return -1;
-    }
-    
-    protected abstract int preferredHeight(int width, int availableHeight);
-    
-    protected int maxHeight(int width, int availableHeight) {
-        return -1;
-    }
-    
-    public Rect toLayerRect(Rect rect) {
-        return getParent().toLayerRect(this, rect);
-    }
-    
-    public Rect toScreenRect(Rect rect) {
-        return getParent().toScreenRect(this, rect);
-    }
-    
-    // INTERACTION
-    
-    public boolean testForDoubleClick(double x, double y, int button) {
-        return false;
-    }
-    
-    public boolean isInteractable() {
-        return enabled && visible;
-    }
-    
-    public void mouseMoved(double x, double y) {}
-    
-    public boolean mouseClicked(double x, double y, int button) {
-        return false;
-    }
-    
-    public boolean mouseDoubleClicked(double x, double y, int button) {
-        return mouseClicked(x, y, button);
-    }
-    
-    public void mouseReleased(double x, double y, int button) {}
-    
-    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {}
-    
-    public boolean mouseScrolled(double x, double y, double delta) {
-        return false;
-    }
-    
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return false;
-    }
-    
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        return false;
-    }
-    
-    public boolean charTyped(char codePoint, int modifiers) {
-        return false;
-    }
-    
-    public void looseFocus() {}
-    
     public void raiseEvent(GuiEvent event) {
         if (parent != null)
             parent.raiseEvent(event);
     }
-    
-    // APPERANCE
-    
-    public abstract ControlFormatting getControlFormatting();
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public int getContentOffset() {
-        return getStyle().getContentOffset(getControlFormatting());
-    }
-    
-    public GuiTooltipEvent getTooltipEvent(double x, double y) {
-        List<Component> toolTip = getTooltip();
-        
-        if (customTooltip != null) {
-            if (toolTip == null)
-                toolTip = customTooltip;
-            else if (toolTip != customTooltip)
-                toolTip.addAll(customTooltip);
-        }
-        
-        if (toolTip == null) {
-            String langTooltip = translateOrDefault(getNestedName() + ".tooltip", null);
-            if (langTooltip != null)
-                toolTip = new TextBuilder(langTooltip).build();
-        }
-        
-        if (toolTip != null)
-            return new GuiTooltipEvent(this, toolTip);
-        return null;
-    }
-    
-    public List<Component> getTooltip() {
-        return customTooltip;
-    }
-    
-    // RENDERING
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public StyleDisplay getBorder(GuiStyle style, StyleDisplay display) {
-        return display;
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public StyleDisplay getBackground(GuiStyle style, StyleDisplay display) {
-        return display;
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
-        
-        Rect rectCopy = null;
-        if (!enabled)
-            rectCopy = controlRect.copy();
-        
-        int width = rect.getWidth();
-        int height = rect.getHeight();
-        
-        GuiStyle style = getStyle();
-        ControlFormatting formatting = getControlFormatting();
-        
-        getBorder(style, style.get(formatting.border)).render(graphics, 0, 0, width, height);
-        
-        int borderSize = style.getBorder(formatting.border);
-        
-        width -= borderSize * 2;
-        height -= borderSize * 2;
-        
-        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(graphics, borderSize, borderSize, width, height);
-        
-        controlRect.shrink(borderSize * scale);
-        
-        //graphics.flush();
-        
-        renderContent(graphics, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
-        
-        if (!enabled && formatting.hasDisabledEffect) {
-            realRect.scissor();
-            //RenderSystem.disableDepthTest();
-            // TODO 1.21.5 YET TO BE TESTED
-            //RenderSystem.enableBlend();
-            style.disabled.render(graphics, null, rectCopy);
-            //RenderSystem.enableDepthTest();
-        }
-        
-        //graphics.flush();
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        Matrix3x2fStack pose = graphics.pose();
-        controlRect.shrink(formatting.padding * scale);
-        if (!enabled)
-            pose.pushMatrix();
-        pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding);
-        renderContent(graphics, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
-        if (!enabled)
-            pose.popMatrix();
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        renderContent(graphics, mouseX, mouseY);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected abstract void renderContent(GuiGraphics graphics, int mouseX, int mouseY);
     
     // MINECRAFT
     
@@ -433,6 +179,14 @@ public abstract class GuiControl {
     }
     
     // UTILS
+    
+    public Rect toLayerRect(Rect rect) {
+        return getParent().toLayerRect(this, rect);
+    }
+    
+    public Rect toScreenRect(Rect rect) {
+        return getParent().toScreenRect(this, rect);
+    }
     
     public static MutableComponent translatable(String text) {
         return Component.literal(translate(text));
@@ -454,33 +208,4 @@ public abstract class GuiControl {
         return LanguageUtils.translateOr(text, defaultText);
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public static void playSound(SoundInstance sound) {
-        Minecraft.getInstance().getSoundManager().play(sound);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public static void playSound(Holder.Reference<SoundEvent> sound) {
-        playSound(sound.value());
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public static void playSound(SoundEvent event) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F));
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public static void playSound(SoundEvent event, float volume, float pitch) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public static void playSound(Holder.Reference<SoundEvent> event, float volume, float pitch) {
-        playSound(event.value(), volume, pitch);
-    }
 }

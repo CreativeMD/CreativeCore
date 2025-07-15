@@ -26,13 +26,13 @@ import net.neoforged.neoforge.common.NeoForge;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.client.gui.GuiScreenHandler;
+import team.creative.creativecore.client.gui.integration.ContainerScreenIntegration;
+import team.creative.creativecore.client.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
-import team.creative.creativecore.common.gui.integration.ContainerScreenIntegration;
-import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 
 public class CreativeCoreClient {

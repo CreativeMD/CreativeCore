@@ -16,8 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.client.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.GuiLayer;
-import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 

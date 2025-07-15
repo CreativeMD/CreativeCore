@@ -1,14 +1,6 @@
 package team.creative.creativecore.common.util.math.geo;
 
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.common.gui.GuiControlRect;
+import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.util.math.base.Axis;
 
 public class Rect {
@@ -23,13 +15,6 @@ public class Rect {
         this.minY = y;
         this.maxX = x2;
         this.maxY = y2;
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public static Rect getScreenRect() {
-        Minecraft mc = Minecraft.getInstance();
-        return new Rect(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
     }
     
     public boolean intersects(Rect other) {
@@ -82,18 +67,6 @@ public class Rect {
             case Y -> getHeight();
             default -> 0;
         };
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public void scissor() {
-        Window window = Minecraft.getInstance().getWindow();
-        double realMinX = minX * window.getGuiScale();
-        double realMinY = window.getHeight() - (minY + getHeight()) * window.getGuiScale();
-        double realMaxX = getWidth() * window.getGuiScale();
-        double realMaxY = getHeight() * window.getGuiScale();
-        
-        RenderSystem.enableScissorForRenderTypeDraws((int) Math.floor(realMinX), (int) Math.floor(realMinY), (int) Math.ceil(realMaxX), (int) Math.ceil(realMaxY) + 1);
     }
     
     public Rect copy() {

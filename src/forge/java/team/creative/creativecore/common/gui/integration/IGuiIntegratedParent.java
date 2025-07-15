@@ -19,6 +19,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.ContainerScreenEvent.Render.Background;
 import net.neoforged.neoforge.common.NeoForge;
+import team.creative.creativecore.client.gui.integration.ScreenEventListener;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;

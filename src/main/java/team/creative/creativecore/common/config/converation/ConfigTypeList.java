@@ -52,10 +52,10 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     
     @Override
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        parent.flow = GuiFlow.STACK_Y;
+        parent.setFlow(GuiFlow.STACK_Y);
         GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", true, createList(key, 0)).setDim(50, 130).setExpandable();
         parent.add(listBox);
-        listBox.spacing = -1;
+        listBox.setSpacing(-1);
         
         ConfigKey listKey = ConfigKey.ofGenericType(key, side);
         parent.add(new GuiButton("add", x -> {

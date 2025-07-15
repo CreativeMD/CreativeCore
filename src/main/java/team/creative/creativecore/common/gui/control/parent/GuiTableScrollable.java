@@ -3,9 +3,9 @@ package team.creative.creativecore.common.gui.control.parent;
 import java.util.ArrayList;
 import java.util.List;
 
+import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.control.parent.GuiTable.GuiTableGroup;

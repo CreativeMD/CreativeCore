@@ -2,15 +2,10 @@ package team.creative.creativecore.common.gui.manager;
 
 import java.util.function.Function;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
-public abstract class GuiManager {
+public abstract class GuiManager<T extends GuiManagerDist> {
     
     public static final NamedHandlerRegistry<GuiManagerType> REGISTRY = new NamedHandlerRegistry<>(null);
     
@@ -25,18 +20,12 @@ public abstract class GuiManager {
     public static record GuiManagerType<T extends GuiManager>(String name, Class<T> managerClass, Function<GuiLayer, T> factory) {}
     
     public final GuiLayer layer;
+    public final T dist;
     
     public GuiManager(GuiLayer layer) {
         this.layer = layer;
+        this.dist = (T) layer.createDist(this);
     }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public void renderOverlay(GuiGraphics graphics, GuiLayer layer, int mouseX, int mouseY) {}
-    
-    public void mouseReleased(double x, double y, int button) {}
-    
-    public void mouseClickedOutside(double x, double y) {}
     
     public void tick() {}
     
