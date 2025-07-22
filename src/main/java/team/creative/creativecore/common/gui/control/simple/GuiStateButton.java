@@ -1,149 +1,88 @@
 package team.creative.creativecore.common.gui.control.simple;
 
-import java.util.Objects;
-
 import javax.annotation.Nullable;
 
-import net.minecraft.util.Mth;
-import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.util.text.IComponentMap;
-import team.creative.creativecore.common.util.type.list.TupleList;
 
 public class GuiStateButton<K> extends GuiButton {
     
-    protected TupleList<K, CompiledText> data;
-    private int index;
-    private K selected;
-    
-    public GuiStateButton(String name, IComponentMap<K> map) {
-        this(name, 0, map);
+    public GuiStateButton(IGuiParent parent, String name, IComponentMap<K> map) {
+        this(parent, name, 0, map);
     }
     
-    public GuiStateButton(String name, int index, IComponentMap<K> map) {
-        super(name, null);
-        this.pressed = button -> {
+    public GuiStateButton(IGuiParent parent, String name, int index, IComponentMap<K> map) {
+        super(parent, name, null);
+        setPressed(button -> {
             if (button == 1)
                 previous();
             else
                 next();
-        };
-        this.index = index;
+        });
         set(map);
         select(index);
     }
     
-    public GuiStateButton(String name, K value, IComponentMap<K> map) {
-        this(name, map);
+    public GuiStateButton(IGuiParent parent, String name, K value, IComponentMap<K> map) {
+        this(parent, name, map);
         select(value);
     }
     
+    @Override
+    public GuiStateButtonDist<K> dist() {
+        return (GuiStateButtonDist) super.dist();
+    }
+    
     public void set(IComponentMap<K> builder) {
-        this.data = builder.build();
-        
-        select(index);
-        
-        for (CompiledText text : data.values())
-            text.setAlign(Align.CENTER);
-        
-        updateDisplay();
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {
-        for (CompiledText text : data.values())
-            text.setDimension(width, Integer.MAX_VALUE);
-    }
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        for (CompiledText text : data.values())
-            text.setMaxHeight(height);
-    }
-    
-    @Override
-    public int preferredWidth(int availableWidth) {
-        int width = 0;
-        for (CompiledText text : data.values())
-            width = Math.max(width, text.getTotalWidth());
-        return width;
-    }
-    
-    @Override
-    public int preferredHeight(int width, int availableHeight) {
-        int height = 0;
-        for (CompiledText text : data.values())
-            height = Math.max(height, text.getTotalHeight());
-        return height;
+        dist().set(builder);
     }
     
     @Nullable
     public K selected() {
-        return selected;
+        return dist().selected();
     }
     
     public K selected(K defaultValue) {
-        var s = selected();
-        if (s != null)
-            return s;
-        return defaultValue;
+        return dist().selected(defaultValue);
     }
     
     public void select(int index) {
-        this.index = Mth.clamp(index, 0, this.data.size() - 1);
-        
-        if (!data.isEmpty())
-            selected = data.get(index).key;
-        else
-            selected = null;
-        
-        updateDisplay();
-        raiseEvent(new GuiControlChangedEvent(this));
+        dist().select(index);
     }
     
     public void select(K key) {
-        select(indexOf(key));
+        dist().select(key);
     }
     
     public int indexOf(K key) {
-        for (int i = 0; i < data.size(); i++)
-            if (Objects.equals(data.get(i).key, key))
-                return i;
-        return -1;
+        return dist().indexOf(key);
     }
     
     public void next() {
-        int index = this.index + 1;
-        if (index >= data.size())
-            index = 0;
-        select(index);
+        dist().next();
     }
     
     public void previous() {
-        int index = this.index - 1;
-        if (index < 0)
-            index = data.size() - 1;
-        select(index);
+        dist().previous();
     }
     
-    protected void updateDisplay() {
-        if (index >= 0 && index < data.size())
-            text = data.get(index).value;
-        else
-            text = CompiledText.EMPTY;
-    }
-    
-    @Override
-    public void closed() {}
-    
-    @Override
-    public void tick() {}
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.CLICKABLE;
+    public static interface GuiStateButtonDist<K> extends GuiButtonDist {
+        
+        public void set(IComponentMap<K> builder);
+        
+        public K selected();
+        
+        public K selected(K defaultValue);
+        
+        public void select(int index);
+        
+        public void select(K key);
+        
+        public int indexOf(K key);
+        
+        public void next();
+        
+        public void previous();
     }
     
 }

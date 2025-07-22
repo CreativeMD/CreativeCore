@@ -17,22 +17,22 @@ public class DialogGuiLayer extends GuiLayer {
     public BiConsumer<DialogGuiLayer, DialogButton> onClicked;
     public Component title;
     
-    public DialogGuiLayer(String name, Component title, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
-        super(name);
+    public DialogGuiLayer(boolean client, String name, Component title, BiConsumer<DialogGuiLayer, DialogButton> onClicked, DialogButton... buttons) {
+        super(client, name);
         this.title = title;
         this.buttons = buttons;
         this.onClicked = onClicked;
-        this.align = Align.CENTER;
-        this.valign = VAlign.CENTER;
-        this.flow = GuiFlow.STACK_Y;
+        setAlign(Align.CENTER);
+        setVAlign(VAlign.CENTER);
+        setFlow(GuiFlow.STACK_Y);
     }
     
     @Override
     public void create() {
-        add(new GuiLabel("text").setTitle(title));
-        GuiParent hBox = new GuiParent(GuiFlow.STACK_X);
+        add(new GuiLabel(getParent(), "text").setTitle(title));
+        GuiParent hBox = new GuiParent(getParent(), GuiFlow.STACK_X);
         for (DialogButton button : buttons)
-            hBox.add(new GuiButton(button.name(), x -> closeDialog(button)).setTitle(Component.translatable("dialog.button." + button.name())));
+            hBox.add(new GuiButton(getParent(), button.name(), x -> closeDialog(button)).setTitle(Component.translatable("dialog.button." + button.name())));
         add(hBox);
     }
     

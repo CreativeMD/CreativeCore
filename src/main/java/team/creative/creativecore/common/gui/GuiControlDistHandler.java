@@ -4,14 +4,9 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public interface GuiControlDistHandler {
-    
-    public void init();
-    
-    public void closed();
-    
-    public void tick();
     
     public void setVisible(boolean visible);
     
@@ -27,6 +22,10 @@ public interface GuiControlDistHandler {
     
     public void setExpandableY();
     
+    public boolean isExpandableX();
+    
+    public boolean isExpandableY();
+    
     public void setDim(int width, int height);
     
     public void setDim(GuiSizeRule dim);
@@ -36,5 +35,9 @@ public interface GuiControlDistHandler {
     public void setTooltip(List<Component> tooltip);
     
     public void setTooltip(String translate);
+    
+    public void removeFormatting();
+    
+    public void setFormatting(ControlFormatting formatting);
     
 }

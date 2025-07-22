@@ -7,16 +7,26 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 
-public abstract class GuiControl<T extends GuiControlDistHandler> {
+public abstract class GuiControl {
     
-    private final IGuiParent parent;
-    public final T dist;
+    public static void setParent(GuiLayer layer, IGuiIntegratedParent parent) {
+        layer.parent = parent;
+    }
+    
+    public static void setParent(GuiTextfield layer, IGuiParent parent) {
+        ((GuiControl) layer).parent = parent;
+    }
+    
+    IGuiParent parent;
+    private final GuiControlDistHandler dist;
     public final String name;
     
     public GuiControl(IGuiParent parent, String name) {
@@ -26,6 +36,10 @@ public abstract class GuiControl<T extends GuiControlDistHandler> {
     }
     
     // CONSTRUCTION
+    
+    public GuiControlDistHandler dist() {
+        return dist;
+    }
     
     public GuiControl setVisible(boolean visible) {
         dist.setVisible(visible);
@@ -62,6 +76,14 @@ public abstract class GuiControl<T extends GuiControlDistHandler> {
         return this;
     }
     
+    public boolean isExpandableX() {
+        return dist.isExpandableX();
+    }
+    
+    public boolean isExpandableY() {
+        return dist.isExpandableY();
+    }
+    
     public GuiControl setDim(int width, int height) {
         dist.setDim(width, height);
         return this;
@@ -74,6 +96,16 @@ public abstract class GuiControl<T extends GuiControlDistHandler> {
     
     public GuiControl setEnabled(boolean enabled) {
         dist.setEnabled(enabled);
+        return this;
+    }
+    
+    public GuiControl removeFormatting() {
+        dist.removeFormatting();
+        return this;
+    }
+    
+    public GuiControl setFormatting(ControlFormatting formatting) {
+        dist.setFormatting(formatting);
         return this;
     }
     
@@ -143,17 +175,11 @@ public abstract class GuiControl<T extends GuiControlDistHandler> {
         throw new RuntimeException("Invalid layer control");
     }
     
-    public void init() {
-        dist.init();
-    }
+    public abstract void init();
     
-    public void closed() {
-        dist.closed();
-    }
+    public abstract void closed();
     
-    public void tick() {
-        dist.tick();
-    }
+    public abstract void tick();
     
     public boolean is(String name) {
         return this.name.equalsIgnoreCase(name);

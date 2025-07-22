@@ -3,12 +3,12 @@ package team.creative.creativecore.common.gui.control.collection;
 import java.util.ArrayList;
 import java.util.List;
 
+import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.gui.control.simple.GuiRowLabel;
+import team.creative.creativecore.common.gui.control.simple.GuiListEntry;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
-import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
 
-public class GuiComboBoxExtension extends GuiListBoxBase<GuiRowLabel> {
+public class GuiComboBoxExtension extends GuiListBoxBase<GuiListEntry> {
     
     public GuiExtensionCreator<? extends GuiComboBox<?>, ? extends GuiComboBoxExtension> creator;
     public String search = "";
@@ -52,12 +52,12 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiRowLabel> {
             textfield.focus();
         }
         
-        List<GuiRowLabel> entries = new ArrayList<>();
+        List<GuiListEntry> entries = new ArrayList<>();
         int i = 0;
         for (CompiledText text : box.lines()) {
             if (search == null || text.contains(search)) {
                 final int index = i;
-                entries.add(new GuiRowLabel("" + i, i, i == box.selectedIndex(), x -> {
+                entries.add(new GuiListEntry("" + i, i, i == box.selectedIndex(), x -> {
                     creator.parent.select(index);
                     creator.close();
                 }).set(text.copy()));

@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiServerControl<T extends GuiControl> implements GuiControlDistHandler {
     
@@ -40,18 +41,25 @@ public class GuiServerControl<T extends GuiControl> implements GuiControlDistHan
     public void setEnabled(boolean enabled) {}
     
     @Override
-    public void init() {}
-    
-    @Override
-    public void closed() {}
-    
-    @Override
-    public void tick() {}
-    
-    @Override
     public void setTooltip(List<Component> tooltip) {}
     
     @Override
     public void setTooltip(String translate) {}
+    
+    @Override
+    public boolean isExpandableX() {
+        return false;
+    }
+    
+    @Override
+    public boolean isExpandableY() {
+        return false;
+    }
+    
+    @Override
+    public void removeFormatting() {}
+    
+    @Override
+    public void setFormatting(ControlFormatting formatting) {}
     
 }

@@ -2,44 +2,41 @@ package team.creative.creativecore.common.gui.control.simple;
 
 import java.util.List;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.VAlign;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiLabel extends GuiControl {
     
-    protected CompiledText text = CompiledText.createAnySize();
+    public GuiLabel(IGuiParent parent, String name) {
+        super(parent, name);
+    }
     
-    public GuiLabel(String name) {
-        super(name);
+    @Override
+    public GuiLabelDist dist() {
+        return (GuiLabelDist) super.dist();
     }
     
     public GuiLabel setDefaultColor(int color) {
-        text.setDefaultColor(color);
+        dist().setDefaultColor(color);
         return this;
     }
     
     public GuiLabel setDropShadow(boolean shadow) {
-        text.setShadow(shadow);
+        dist().setDropShadow(shadow);
         return this;
     }
     
     public GuiLabel setAlign(Align align) {
-        text.setAlign(align);
+        dist().setAlign(align);
         return this;
     }
     
     public GuiLabel setVAlign(VAlign valgin) {
-        text.setVAlign(valgin);
+        dist().setVAlign(valgin);
         return this;
     }
     
@@ -52,28 +49,21 @@ public class GuiLabel extends GuiControl {
     }
     
     public GuiLabel setTitle(Component component) {
-        text.setText(component);
+        dist().setTitle(component);
         if (hasGui())
             reflow();
         return this;
     }
     
     public GuiLabel setTitle(List<Component> components) {
-        text.setText(components);
-        if (hasGui())
-            reflow();
-        return this;
-    }
-    
-    public GuiLabel setText(CompiledText text) {
-        this.text = text;
+        dist().setTitle(components);
         if (hasGui())
             reflow();
         return this;
     }
     
     public GuiLabel setScale(double scale) {
-        this.text.setScale(scale);
+        dist().setScale(scale);
         return this;
     }
     
@@ -86,46 +76,22 @@ public class GuiLabel extends GuiControl {
     @Override
     public void tick() {}
     
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        text.render(graphics);
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {
-        text.setDimension(width, Integer.MAX_VALUE);
-    }
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        text.setMaxHeight(height);
-    }
-    
-    @Override
-    protected int minWidth(int availableWidth) {
-        return 0;
-    }
-    
-    @Override
-    protected int preferredWidth(int availableWidth) {
-        return text.getTotalWidth();
-    }
-    
-    @Override
-    protected int minHeight(int width, int availableHeight) {
-        return Minecraft.getInstance().font.lineHeight;
-    }
-    
-    @Override
-    protected int preferredHeight(int width, int availableHeight) {
-        return text.getTotalHeight();
+    public static interface GuiLabelDist extends GuiControlDistHandler {
+        
+        public void setDefaultColor(int color);
+        
+        public void setDropShadow(boolean shadow);
+        
+        public void setAlign(Align align);
+        
+        public void setVAlign(VAlign valgin);
+        
+        public void setTitle(Component component);
+        
+        public void setTitle(List<Component> components);
+        
+        public void setScale(double scale);
+        
     }
     
 }

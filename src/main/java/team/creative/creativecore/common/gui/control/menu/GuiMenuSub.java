@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.gui.control.menu;
 
+import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.util.type.tree.NamedTree;
 
 public class GuiMenuSub<T> extends GuiMenu<T> {

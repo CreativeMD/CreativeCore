@@ -5,8 +5,8 @@ import java.util.function.Function;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.util.type.tree.NamedTree;
 
 public class GuiMenuRoot<T> extends GuiMenu<T> {

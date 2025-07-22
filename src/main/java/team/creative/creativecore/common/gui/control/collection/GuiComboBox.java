@@ -6,12 +6,12 @@ import javax.annotation.Nullable;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
+import team.creative.creativecore.client.gui.extension.GuiExtensionCreator.ExtensionDirection;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
-import team.creative.creativecore.common.gui.extension.GuiExtensionCreator.ExtensionDirection;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.IComponentMap;
 import team.creative.creativecore.common.util.type.list.TupleList;

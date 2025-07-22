@@ -46,7 +46,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     }
     
     public final GuiControlRect rect = new GuiControlRect(this);
-    protected T control;
+    public final T control;
     public boolean enabled = true;
     
     public boolean visible = true;
@@ -56,6 +56,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     public boolean expandableY = false;
     
     private List<Component> customTooltip;
+    private ControlFormatting customFormatting;
     
     public GuiClientControl(T control) {
         this.control = control;
@@ -66,7 +67,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     @Nullable
     public GuiClientControl getParent() {
         if (control.getParent() instanceof GuiControl c)
-            return (GuiClientControl) c.dist;
+            return (GuiClientControl) c.dist();
         return null;
     }
     
@@ -122,6 +123,16 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         this.enabled = enabled;
     }
     
+    @Override
+    public void removeFormatting() {
+        customFormatting = null;
+    }
+    
+    @Override
+    public void setFormatting(ControlFormatting formatting) {
+        customFormatting = formatting;
+    }
+    
     public boolean isExpandableX() {
         return expandableX;
     }
@@ -130,18 +141,9 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         return expandableY;
     }
     
-    @Override
-    public abstract void init();
-    
-    @Override
-    public abstract void closed();
-    
-    @Override
-    public abstract void tick();
-    
     public GuiStyle getStyle() {
         if (control.getParent() instanceof GuiControl control)
-            return ((GuiClientControl) control.dist).getStyle();
+            return ((GuiClientControl) control.dist()).getStyle();
         throw new RuntimeException("Invalid layer control");
     }
     
@@ -223,7 +225,13 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     
     // APPERANCE
     
-    public abstract ControlFormatting getControlFormatting();
+    protected abstract ControlFormatting defaultFormatting();
+    
+    public ControlFormatting getControlFormatting() {
+        if (customFormatting != null)
+            return customFormatting;
+        return defaultFormatting();
+    }
     
     public int getContentOffset() {
         return getStyle().getContentOffset(getControlFormatting());

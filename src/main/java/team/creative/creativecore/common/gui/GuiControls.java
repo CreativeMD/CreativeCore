@@ -19,6 +19,15 @@ public class GuiControls implements Iterable<GuiControl> {
     protected final List<GuiControl> hoverControls = new CopyOnWriteArrayList<>();
     protected final List<GuiControlDistHandler> distHoverControls = new CopyOnWriteArrayList<>();
     
+    public GuiControl get(int index) {
+        return controls.get(index);
+    }
+    
+    public GuiControl remove(int index) {
+        distControls.remove(index);
+        return controls.remove(index);
+    }
+    
     public <T extends GuiControl> T get(String name) {
         GuiControl result = get(name, controls);
         if (result != null)
@@ -55,7 +64,7 @@ public class GuiControls implements Iterable<GuiControl> {
         if (index == -1)
             return null;
         controls.add(index, toInsert);
-        distControls.add(index, toInsert.dist);
+        distControls.add(index, toInsert.dist());
         return toInsert;
     }
     
@@ -73,22 +82,22 @@ public class GuiControls implements Iterable<GuiControl> {
         index++;
         if (index == controls.size()) {
             controls.add(toInsert);
-            distControls.add(toInsert.dist);
+            distControls.add(toInsert.dist());
         } else {
             controls.add(index, toInsert);
-            distControls.add(index, toInsert.dist);
+            distControls.add(index, toInsert.dist());
         }
         return toInsert;
     }
     
     public void add(GuiControl control) {
         controls.add(control);
-        distControls.add(control.dist);
+        distControls.add(control.dist());
     }
     
     public void addHover(GuiControl control) {
         hoverControls.add(control);
-        distHoverControls.add(control.dist);
+        distHoverControls.add(control.dist());
     }
     
     public boolean remove(GuiControl control) {
@@ -111,13 +120,13 @@ public class GuiControls implements Iterable<GuiControl> {
         for (int i = 0; i < controls.size(); i++)
             if (controls.get(i) == oldControl) {
                 controls.set(i, newControl);
-                distControls.set(i, newControl.dist);
+                distControls.set(i, newControl.dist());
                 return true;
             }
         for (int i = 0; i < hoverControls.size(); i++)
             if (hoverControls.get(i) == oldControl) {
                 hoverControls.set(i, newControl);
-                distHoverControls.set(i, newControl.dist);
+                distHoverControls.set(i, newControl.dist());
                 return true;
             }
         return false;

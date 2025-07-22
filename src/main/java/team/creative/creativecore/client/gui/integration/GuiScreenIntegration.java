@@ -51,7 +51,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     public int getWidth() {
         int width = 0;
         for (GuiLayer layer : layers)
-            width = Math.max(width, ((GuiClientLayer) layer.dist).getWidth());
+            width = Math.max(width, ((GuiClientLayer) layer.dist()).getWidth());
         return width;
     }
     
@@ -59,7 +59,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     public int getHeight() {
         int height = 0;
         for (GuiLayer layer : layers)
-            height = Math.max(height, ((GuiClientLayer) layer.dist).getHeight());
+            height = Math.max(height, ((GuiClientLayer) layer.dist()).getHeight());
         return height;
     }
     
@@ -174,8 +174,8 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     }
     
     @Override
-    public <T extends GuiControlDistHandler> T createDist(GuiControl<T> control) {
-        return (T) GuiClientRegistry.create(control);
+    public GuiControlDistHandler createDist(GuiControl control) {
+        return GuiClientRegistry.create(control);
     }
     
     @Override

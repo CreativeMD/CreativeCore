@@ -2,39 +2,20 @@ package team.creative.creativecore.common.gui.control.simple;
 
 import java.util.function.Consumer;
 
-import net.minecraft.sounds.SoundEvents;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.style.Icon;
-import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiButtonIcon extends GuiIcon {
     
-    protected Consumer<Integer> pressed;
-    private ControlFormatting formatting;
-    
-    public GuiButtonIcon(String name, Icon icon, Consumer<Integer> pressed) {
-        super(name, icon);
-        this.pressed = pressed;
-        this.formatting = ControlFormatting.CLICKABLE;
-        this.color = Color.WHITE;
-        this.shadow = Color.BLACK;
-    }
-    
-    public GuiButtonIcon setControlFormatting(ControlFormatting formatting) {
-        this.formatting = formatting;
-        return this;
+    public GuiButtonIcon(IGuiParent parent, String name, Icon icon, Consumer<Integer> pressed) {
+        super(parent, name, icon);
+        dist().setPressed(pressed);
     }
     
     @Override
-    public ControlFormatting getControlFormatting() {
-        return formatting;
-    }
-    
-    @Override
-    public StyleDisplay getBackground(GuiStyle style, StyleDisplay display) {
-        return display;
+    public GuiButtonIconDist dist() {
+        return (GuiButtonIconDist) super.dist();
     }
     
     @Override
@@ -61,21 +42,10 @@ public class GuiButtonIcon extends GuiIcon {
         return this;
     }
     
-    @Override
-    protected int preferredWidth(int availableWidth) {
-        return 20;
+    public static interface GuiButtonIconDist extends GuiIconDist {
+        
+        public void setPressed(Consumer<Integer> pressed);
+        
     }
     
-    @Override
-    protected int preferredHeight(int width, int availableHeight) {
-        return 20;
-    }
-    
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        playSound(SoundEvents.UI_BUTTON_CLICK);
-        if (pressed != null)
-            pressed.accept(button);
-        return true;
-    }
 }

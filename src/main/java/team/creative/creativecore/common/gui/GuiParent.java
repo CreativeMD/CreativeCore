@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import team.creative.creativecore.common.gui.GuiParent.GuiParentDistHandler;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -14,15 +13,15 @@ import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> implements IGuiParent, Iterable<GuiControl> {
+public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
     
     private GuiEventManager eventManager;
     private final GuiControls controls;
     
     public GuiParent(IGuiParent parent, String name, GuiFlow flow) {
         super(parent, name);
-        dist.setFlow(flow);
-        dist.initControlList(controls = new GuiControls());
+        dist().setFlow(flow);
+        dist().initControlList(controls = new GuiControls());
     }
     
     public GuiParent(IGuiParent parent, String name, GuiFlow flow, VAlign valign) {
@@ -35,8 +34,8 @@ public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> imp
     
     public GuiParent(IGuiParent parent, String name, GuiFlow flow, Align align, VAlign valign) {
         this(parent, name, flow);
-        dist.setAlign(align);
-        dist.setVAlign(valign);
+        dist().setAlign(align);
+        dist().setVAlign(valign);
     }
     
     public GuiParent(IGuiParent parent, String name) {
@@ -52,12 +51,17 @@ public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> imp
     }
     
     @Override
+    public GuiParentDistHandler dist() {
+        return (GuiParentDistHandler) super.dist();
+    }
+    
+    @Override
     public boolean isClient() {
         return this.getParent().isClient();
     }
     
     public GuiParent setScale(double scale) {
-        dist.setScale(scale);
+        dist().setScale(scale);
         return this;
     }
     
@@ -70,23 +74,43 @@ public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> imp
     }
     
     public GuiParent setAlign(Align align) {
-        dist.setAlign(align);
+        dist().setAlign(align);
         return this;
     }
     
     public GuiParent setVAlign(VAlign valign) {
-        dist.setVAlign(valign);
+        dist().setVAlign(valign);
         return this;
     }
     
     public GuiParent setSpacing(int spacing) {
-        dist.setSpacing(spacing);
+        dist().setSpacing(spacing);
         return this;
     }
     
     public GuiParent setFlow(GuiFlow flow) {
-        dist.setFlow(flow);
+        dist().setFlow(flow);
         return this;
+    }
+    
+    @Override
+    public boolean isExpandableX() {
+        if (super.isExpandableX())
+            return true;
+        for (GuiControl control : controls)
+            if (control.isExpandableX())
+                return true;
+        return false;
+    }
+    
+    @Override
+    public boolean isExpandableY() {
+        if (super.isExpandableY())
+            return true;
+        for (GuiControl control : controls)
+            if (control.isExpandableY())
+                return true;
+        return false;
     }
     
     public <T extends GuiControl> T get(String name) {
@@ -166,6 +190,10 @@ public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> imp
         return controls.remove(control);
     }
     
+    public GuiControl remove(int index) {
+        return controls.remove(index);
+    }
+    
     public boolean replace(GuiControl oldControl, GuiControl newControl) {
         return controls.replace(oldControl, newControl);
     }
@@ -186,8 +214,16 @@ public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> imp
         controls.clear();
     }
     
-    public int size() {
+    public GuiControl get(int index) {
+        return controls.get(index);
+    }
+    
+    public int totalSize() {
         return controls.totalSize();
+    }
+    
+    public int size() {
+        return controls.hoverSize();
     }
     
     @Override
@@ -202,21 +238,18 @@ public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> imp
     
     @Override
     public void init() {
-        super.init();
         for (GuiControl control : this)
             control.init();
     }
     
     @Override
     public void closed() {
-        super.closed();
         for (GuiControl control : this)
             control.closed();
     }
     
     @Override
     public void tick() {
-        super.tick();
         for (GuiControl control : this)
             control.tick();
     }
@@ -276,18 +309,18 @@ public class GuiParent<D extends GuiParentDistHandler> extends GuiControl<D> imp
     
     @Override
     public Rect toLayerRect(GuiControl control, Rect rect) {
-        dist.applyOffset(control, rect);
+        dist().applyOffset(control, rect);
         return getParent().toLayerRect(this, rect);
     }
     
     @Override
     public Rect toScreenRect(GuiControl control, Rect rect) {
-        dist.applyOffset(control, rect);
+        dist().applyOffset(control, rect);
         return getParent().toScreenRect(this, rect);
     }
     
     @Override
-    public <T extends GuiControlDistHandler> T createDist(GuiControl<T> control) {
+    public GuiControlDistHandler createDist(GuiControl control) {
         return getParent().createDist(control);
     }
     

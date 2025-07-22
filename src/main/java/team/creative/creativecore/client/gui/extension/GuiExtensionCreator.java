@@ -1,13 +1,14 @@
-package team.creative.creativecore.common.gui.extension;
+package team.creative.creativecore.client.gui.extension;
 
 import java.util.function.Function;
 
+import team.creative.creativecore.client.gui.GuiClientControl;
+import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
+public class GuiExtensionCreator<P extends GuiClientControl, T extends GuiControl> {
     
     public final P parent;
     private T extension;
@@ -36,15 +37,15 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         open(extension, parent, direction);
     }
     
-    public void open(T extension, GuiControl reference, ExtensionDirection direction) {
+    public void open(T extension, GuiClientControl reference, ExtensionDirection direction) {
         this.extension = extension;
-        var layer = reference.getLayer();
+        var layer = reference.control.getLayer();
         layer.addHover(extension);
         
-        var rect = reference.toLayerRect(new Rect(0, 0, reference.rect.getWidth(), reference.rect.getHeight()));
+        var rect = reference.control.toLayerRect(new Rect(0, 0, reference.rect.getWidth(), reference.rect.getHeight()));
         extension.init();
         
-        direction.apply(layer, extension.rect, rect, layer.getContentOffset());
+        direction.apply((GuiClientLayer) layer.dist(), ((GuiClientControl) extension.dist()).rect, rect, ((GuiClientControl) layer.dist()).getContentOffset());
     }
     
     public T get() {
@@ -54,7 +55,7 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
     public void close() {
         if (extension != null) {
             extension.closed();
-            parent.getLayer().remove(extension);
+            parent.control.getLayer().remove(extension);
             extension = null;
         }
     }
@@ -85,7 +86,7 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         
         BELOW_OR_ABOVE {
             @Override
-            public void apply(GuiLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
+            public void apply(GuiClientLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
                 extension.setX((int) creatorRect.minX);
                 extension.setY((int) creatorRect.maxY);
                 
@@ -95,8 +96,8 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
                 extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
                 extension.flowY();
                 
-                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, extension.rectCopy());
-                Rect screen = Rect.getScreenRect();
+                Rect absolute = layer.control.getIntegratedParent().toScreenRect(layer.control, extension.rectCopy());
+                Rect screen = GuiClientControl.getScreenRect();;
                 
                 if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
                     extension.setY(extension.getY() - ((int) creatorRect.getHeight() + extension.getHeight()));
@@ -104,7 +105,7 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         },
         BELOW_OR_ABOVE_ANY_SIZE {
             @Override
-            public void apply(GuiLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
+            public void apply(GuiClientLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
                 extension.setX((int) creatorRect.minX);
                 extension.setY((int) creatorRect.maxY);
                 
@@ -115,8 +116,8 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
                 extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
                 extension.flowY();
                 
-                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, extension.rectCopy());
-                Rect screen = Rect.getScreenRect();
+                Rect absolute = layer.control.getIntegratedParent().toScreenRect(layer.control, extension.rectCopy());
+                Rect screen = GuiClientControl.getScreenRect();
                 
                 if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
                     extension.setY(extension.getY() - ((int) creatorRect.getHeight() + extension.getHeight()));
@@ -124,7 +125,7 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
         },
         RIGHT {
             @Override
-            public void apply(GuiLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
+            public void apply(GuiClientLayer layer, GuiControlRect extension, Rect creatorRect, int layerOffset) {
                 extension.setX((int) creatorRect.maxX);
                 extension.setY((int) creatorRect.minY);
                 
@@ -135,15 +136,15 @@ public class GuiExtensionCreator<P extends GuiControl, T extends GuiControl> {
                 extension.setHeight(extension.getPreferredHeight(layerHeight), layerHeight);
                 extension.flowY();
                 
-                Rect absolute = layer.getIntegratedParent().toScreenRect(layer, extension.rectCopy());
-                Rect screen = Rect.getScreenRect();
+                Rect absolute = layer.control.getIntegratedParent().toScreenRect(layer.control, extension.rectCopy());
+                Rect screen = GuiClientControl.getScreenRect();
                 
                 if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
                     extension.setY((int) creatorRect.maxY - extension.getHeight());
             }
         };
         
-        public abstract void apply(GuiLayer layer, GuiControlRect extension, Rect rect, int layerOffset);
+        public abstract void apply(GuiClientLayer layer, GuiControlRect extension, Rect rect, int layerOffset);
     }
     
 }

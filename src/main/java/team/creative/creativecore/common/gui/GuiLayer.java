@@ -5,15 +5,57 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import team.creative.creativecore.common.gui.GuiLayer.GuiLayerDistHandler;
+import net.minecraft.world.entity.player.Player;
+import team.creative.creativecore.client.gui.registry.GuiClientRegistry;
 import team.creative.creativecore.common.gui.control.inventory.IGuiInventory;
+import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManager.GuiManagerType;
+import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder.GuiSyncHolderLayer;
+import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.server.gui.registry.GuiServerRegistry;
 
-public abstract class GuiLayer<D extends GuiLayerDistHandler> extends GuiParent<D> {
+public abstract class GuiLayer extends GuiParent {
+    
+    public static final GuiLayerDistination CLIENT = new GuiLayerDistination() {
+        
+        @Override
+        public boolean isClient() {
+            return true;
+        }
+        
+        @Override
+        public <T extends GuiManagerDist> T createDist(GuiManager<T> manager) {
+            return (T) GuiClientRegistry.create(manager);
+        }
+        
+        @Override
+        public GuiControlDistHandler createDist(GuiControl control) {
+            return GuiClientRegistry.create(control);
+        }
+    };
+    
+    public static final GuiLayerDistination SERVER = new GuiLayerDistination() {
+        
+        @Override
+        public boolean isClient() {
+            return false;
+        }
+        
+        @Override
+        public <T extends GuiManagerDist> T createDist(GuiManager<T> manager) {
+            return (T) GuiServerRegistry.create(manager);
+        }
+        
+        @Override
+        public GuiControlDistHandler createDist(GuiControl control) {
+            return GuiServerRegistry.create(control);
+        }
+    };
     
     protected static void collectInventories(Iterable<GuiControl> parent, List<IGuiInventory> inventories) {
         for (GuiControl control : parent)
@@ -26,13 +68,22 @@ public abstract class GuiLayer<D extends GuiLayerDistHandler> extends GuiParent<
     private final GuiSyncHolderLayer sync = new GuiSyncHolderLayer(this);
     private HashMap<GuiManagerType, GuiManager> managers;
     
-    public GuiLayer(IGuiParent parent, String name) {
-        super(parent, name, GuiFlow.STACK_X);
+    public GuiLayer(boolean client, String name) {
+        super(client ? CLIENT : SERVER, name, GuiFlow.STACK_X);
     }
     
-    public GuiLayer(IGuiParent parent, String name, int width, int height) {
-        super(parent, name, GuiFlow.STACK_X);
+    public GuiLayer(boolean client, String name, int width, int height) {
+        super(client ? CLIENT : SERVER, name, GuiFlow.STACK_X);
         setDim(width, height);
+    }
+    
+    @Override
+    public GuiLayerDistHandler dist() {
+        return (GuiLayerDistHandler) super.dist();
+    }
+    
+    public void setParent(IGuiIntegratedParent parent) {
+        setParent(this, parent);
     }
     
     public Iterable<IGuiInventory> inventoriesToInsert() {
@@ -124,12 +175,63 @@ public abstract class GuiLayer<D extends GuiLayerDistHandler> extends GuiParent<
     
     @Override
     public void reflow() {
-        dist.reflow();
+        dist().reflow();
     }
     
     public static interface GuiLayerDistHandler extends GuiParent.GuiParentDistHandler {
         
         public void reflow();
+        
+    }
+    
+    public static abstract class GuiLayerDistination implements IGuiParent {
+        
+        @Override
+        public boolean isContainer() {
+            return false;
+        }
+        
+        @Override
+        public Player getPlayer() {
+            return null;
+        }
+        
+        @Override
+        public void closeTopLayer() {}
+        
+        @Override
+        public void closeLayer(GuiLayer layer) {}
+        
+        @Override
+        public void raiseEvent(GuiEvent event) {}
+        
+        @Override
+        public void reflow() {}
+        
+        @Override
+        public boolean hasGui() {
+            return false;
+        }
+        
+        @Override
+        public boolean isParent(IGuiParent parent) {
+            return false;
+        }
+        
+        @Override
+        public Rect toScreenRect(GuiControl control, Rect rect) {
+            return null;
+        }
+        
+        @Override
+        public Rect toLayerRect(GuiControl control, Rect rect) {
+            return null;
+        }
+        
+        @Override
+        public IGuiIntegratedParent getIntegratedParent() {
+            return null;
+        }
         
     }
     

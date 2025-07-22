@@ -8,13 +8,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.control.inventory.GuiInventoryGridPreview;
 import team.creative.creativecore.common.gui.control.inventory.GuiSlotViewer;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
-import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.util.type.map.HashMapList;
 

@@ -1,50 +1,28 @@
 package team.creative.creativecore.common.gui.control.simple;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.display.DisplayColor;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiColorPlate extends GuiControl {
     
-    private Color color;
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    private DisplayColor colorPlate;
+    public GuiColorPlate(IGuiParent parent, String name, Color color) {
+        super(parent, name);
+        setColor(color);
+    }
     
-    public GuiColorPlate(String name, Color color) {
-        super(name);
-        
-        if (isClient())
-            setColor(color);
+    @Override
+    public GuiColorPlateDist dist() {
+        return (GuiColorPlateDist) super.dist();
     }
     
     public void setColor(Color color) {
-        this.color = color;
-        this.colorPlate = new DisplayColor(color);
+        dist().setColor(color);
     }
     
     public Color getColor() {
-        return color;
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.NESTED_NO_PADDING;
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        getStyle().transparencyBackground.render(graphics, rect.getContentWidth(), rect.getContentHeight());
-        colorPlate.set(color);
-        colorPlate.render(graphics, rect.getContentWidth(), rect.getContentHeight());
+        return dist().getColor();
     }
     
     @Override
@@ -56,20 +34,11 @@ public class GuiColorPlate extends GuiControl {
     @Override
     public void tick() {}
     
-    @Override
-    public void flowX(int width, int preferred) {}
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {}
-    
-    @Override
-    protected int preferredWidth(int availableWidth) {
-        return 20;
+    public static interface GuiColorPlateDist extends GuiControlDistHandler {
+        
+        public void setColor(Color color);
+        
+        public Color getColor();
+        
     }
-    
-    @Override
-    protected int preferredHeight(int width, int availableHeight) {
-        return 20;
-    }
-    
 }

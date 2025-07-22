@@ -40,15 +40,15 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
     
     @Override
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        parent.flow = GuiFlow.STACK_Y;
-        parent.add(new GuiCheckBox("enabled", true).setTranslate("gui.config.enabled"));
+        parent.setFlow(GuiFlow.STACK_Y);
+        parent.add(new GuiCheckBox(parent, "enabled", true).setTranslate("gui.config.enabled"));
         ConfigKey configKey = ConfigKey.ofGenericType(key, side);
         parent.add(configKey.create(configParent, "content", side));
     }
     
     @Override
     public void loadValue(ToggleableConfig value, ToggleableConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        parent.get("enabled", GuiCheckBox.class).value = value.isEnabled();
+        parent.get("enabled", GuiCheckBox.class).set(value.isEnabled());
         
         ConfigKey configKey = ConfigKey.ofGenericType(key, side);
         configKey.forceValue(value.value, side);
@@ -59,7 +59,7 @@ public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig
     protected ToggleableConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         ConfigKey configKey = ConfigKey.ofGenericType(key, side);
         configKey.save(parent.get("content"), configParent, side);
-        return new ToggleableConfig(configKey.copy(configParent.provider(), side), parent.get("enabled", GuiCheckBox.class).value);
+        return new ToggleableConfig(configKey.copy(configParent.provider(), side), parent.get("enabled", GuiCheckBox.class).get());
     }
     
     @Override

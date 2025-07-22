@@ -1,49 +1,41 @@
 package team.creative.creativecore.common.gui.control.simple;
 
-import org.joml.Matrix3x2fStack;
-
-import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.Icon;
-import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.type.Color;
 
 public class GuiIcon extends GuiControl {
-    protected Icon icon;
-    protected Color shadow;
-    protected Color color;
-    protected boolean squared;
     
-    public GuiIcon(String name, Icon icon) {
-        super(name);
-        this.icon = icon;
-        this.shadow = Color.NONE;
-        this.color = Color.WHITE;
+    @Override
+    public GuiIconDist dist() {
+        return (GuiIconDist) super.dist();
+    }
+    
+    public GuiIcon(IGuiParent parent, String name, Icon icon) {
+        super(parent, name);
+        dist().setIcon(icon);
     }
     
     public GuiIcon setIcon(Icon icon) {
-        this.icon = icon;
+        dist().setIcon(icon);
         return this;
     }
     
     public GuiIcon setColor(Color color) {
-        this.color = color;
+        dist().setColor(color);
         return this;
     }
     
     public GuiIcon setShadow(Color shadowColor) {
-        this.shadow = shadowColor;
+        dist().setShadow(shadowColor);
         return this;
     }
     
     public GuiIcon setSquared(boolean squared) {
-        this.squared = squared;
+        dist().setSquared(squared);
         return this;
     }
     
@@ -60,76 +52,24 @@ public class GuiIcon extends GuiControl {
     }
     
     @Override
-    public void init() {
+    public void init() {}
+    
+    @Override
+    public void closed() {}
+    
+    @Override
+    public void tick() {}
+    
+    public static interface GuiIconDist extends GuiControlDistHandler {
+        
+        public void setIcon(Icon icon);
+        
+        public void setColor(Color color);
+        
+        public void setShadow(Color shadowColor);
+        
+        public void setSquared(boolean squared);
         
     }
     
-    @Override
-    public void closed() {
-        
-    }
-    
-    @Override
-    public void tick() {
-        
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {
-        
-    }
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        
-    }
-    
-    @Override
-    protected int preferredWidth(int availableWidth) {
-        return 12;
-    }
-    
-    @Override
-    protected int preferredHeight(int width, int availableHeight) {
-        return 12;
-    }
-    
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public StyleDisplay getBackground(GuiStyle style, StyleDisplay display) {
-        return StyleDisplay.NONE;
-    }
-    
-    @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        Matrix3x2fStack pose = graphics.pose();
-        pose.pushMatrix();
-        
-        var location = this.icon.location();
-        
-        int x = 0, y = 0, width = rect.getContentWidth(), height = rect.getContentHeight();
-        if (squared) {
-            int size = Math.min(width, height);
-            int diff = Math.abs(width - height);
-            if (width == size)
-                y += diff / 2;
-            else
-                x += diff / 2;
-            width = height = size;
-        }
-        
-        if (this.shadow != Color.NONE) {
-            ((CreativeGuiGraphics) graphics).textureRectColor(location, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(),
-                this.icon.minY() + this.icon.height(), shadow.toInt());
-        }
-        
-        ((CreativeGuiGraphics) graphics).textureRectColor(location, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
-                .minY() + this.icon.height(), color.toInt());
-        pose.popMatrix();
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT_NO_DISABLE;
-    }
 }

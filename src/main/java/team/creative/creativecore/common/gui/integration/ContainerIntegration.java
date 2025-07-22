@@ -11,7 +11,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.manager.GuiManager;
+import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.gui.packet.LayerClosePacket;
 import team.creative.creativecore.common.network.CreativePacket;
 
@@ -134,6 +138,16 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     @Override
     public Provider provider() {
         return player.registryAccess();
+    }
+    
+    @Override
+    public GuiControlDistHandler createDist(GuiControl control) {
+        return (isClient() ? GuiLayer.CLIENT : GuiLayer.SERVER).createDist(control);
+    }
+    
+    @Override
+    public <T extends GuiManagerDist> T createDist(GuiManager<T> manager) {
+        return (isClient() ? GuiLayer.CLIENT : GuiLayer.SERVER).createDist(manager);
     }
     
 }

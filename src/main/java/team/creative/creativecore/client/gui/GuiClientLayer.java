@@ -11,7 +11,7 @@ import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
-public class GuiClientLayer extends GuiClientParent<GuiLayer<?>> implements GuiLayerDistHandler {
+public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLayerDistHandler {
     
     public static final int MINIMUM_OUTER_SPACING = 10;
     

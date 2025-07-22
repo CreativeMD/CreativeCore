@@ -6,12 +6,8 @@ import org.joml.Matrix3x2fStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiControls;
@@ -99,26 +95,6 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         this.flow = flow;
     }
     
-    @Override
-    public boolean isExpandableX() {
-        if (super.isExpandableX())
-            return true;
-        for (GuiClientControl control : controls())
-            if (control.isExpandableX())
-                return true;
-        return false;
-    }
-    
-    @Override
-    public boolean isExpandableY() {
-        if (super.isExpandableY())
-            return true;
-        for (GuiClientControl control : controls())
-            if (control.isExpandableY())
-                return true;
-        return false;
-    }
-    
     protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiClientControl> collection, double scale,
             double xOffset, double yOffset, boolean hover) {
         Matrix3x2fStack pose = graphics.pose();
@@ -171,8 +147,6 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
     
     public boolean isMouseOverHovered(double x, double y) {
@@ -374,24 +348,15 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    public ControlFormatting getControlFormatting() {
+    protected ControlFormatting defaultFormatting() {
         return ControlFormatting.TRANSPARENT;
     }
     
     @Override
     public void applyOffset(GuiControl control, Rect rect) {
-        rect.move(((GuiClientControl) control.dist).rect.getX() + getOffsetX() + getContentOffset(), ((GuiClientControl) control.dist).rect
+        rect.move(((GuiClientControl) control.dist()).rect.getX() + getOffsetX() + getContentOffset(), ((GuiClientControl) control.dist()).rect
                 .getY() + getOffsetY() + getContentOffset());
         rect.scale(scaleFactor());
     }
-    
-    @Override
-    public void init() {}
-    
-    @Override
-    public void closed() {}
-    
-    @Override
-    public void tick() {}
     
 }

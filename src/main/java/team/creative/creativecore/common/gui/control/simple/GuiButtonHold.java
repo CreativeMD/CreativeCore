@@ -2,52 +2,28 @@ package team.creative.creativecore.common.gui.control.simple;
 
 import java.util.function.Consumer;
 
-public class GuiButtonHold extends GuiButton {
+import team.creative.creativecore.common.gui.IGuiParent;
+import team.creative.creativecore.common.gui.control.simple.GuiButtonHold.GuiButtonHoldDist;
+
+public class GuiButtonHold<T extends GuiButtonHoldDist> extends GuiButton {
     
-    public static final int INITIAL_WAIT = 250;
-    public static final int CONTINOUS_WAIT = 100;
-    
-    public int clicked = -1;
-    public boolean inital = false;
-    public long wait = 0;
-    
-    public GuiButtonHold(String name, Consumer<Integer> pressed) {
-        super(name, pressed);
+    public GuiButtonHold(IGuiParent parent, String name, Consumer<Integer> pressed) {
+        super(parent, name, pressed);
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        wait = System.currentTimeMillis();
-        clicked = button;
-        inital = true;
-        return super.mouseClicked(x, y, button);
-    }
-    
-    @Override
-    public void mouseReleased(double x, double y, int button) {
-        clicked = -1;
-        super.mouseReleased(x, y, button);
+    public GuiButtonHoldDist dist() {
+        return (GuiButtonHoldDist) super.dist();
     }
     
     @Override
     public void tick() {
-        if (clicked != -1)
-            if (inital) {
-                if (System.currentTimeMillis() - wait >= INITIAL_WAIT) {
-                    pressed.accept(clicked);
-                    wait = System.currentTimeMillis();
-                    inital = false;
-                }
-            } else if (System.currentTimeMillis() - wait >= CONTINOUS_WAIT) {
-                pressed.accept(clicked);
-                wait = System.currentTimeMillis();
-            }
+        dist().tick();
     }
     
-    @Override
-    public void mouseMoved(double x, double y) {
-        if (clicked != -1 && !rect.inside(x, y))
-            wait = System.currentTimeMillis();
-        super.mouseMoved(x, y);
+    public static interface GuiButtonHoldDist extends GuiButtonDist {
+        
+        public void tick();
+        
     }
 }

@@ -4,125 +4,47 @@ import java.util.List;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.parser.LongValueParser;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiSeekBar extends GuiControl {
     
-    private final LongSupplier posSupplier;
-    private final LongSupplier maxSupplier;
-    public LongConsumer timeUpdate;
-    public LongConsumer lastTimeUpdate;
-    
-    private long pos;
-    private long max;
-    
-    public final LongValueParser parser;
-    public boolean grabbedSlider;
-    
-    public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier) {
-        this(name, posSupplier, maxSupplier, LongValueParser.TIME_DURATION);
+    public GuiSeekBar(IGuiParent parent, String name, LongSupplier posSupplier, LongSupplier maxSupplier) {
+        this(parent, name, posSupplier, maxSupplier, LongValueParser.TIME_DURATION);
     }
     
-    public GuiSeekBar(String name, LongSupplier posSupplier, LongSupplier maxSupplier, LongValueParser parser) {
-        super(name);
-        this.posSupplier = posSupplier;
-        this.maxSupplier = maxSupplier;
-        this.parser = parser;
+    public GuiSeekBar(IGuiParent parent, String name, LongSupplier posSupplier, LongSupplier maxSupplier, LongValueParser parser) {
+        super(parent, name);
+        dist().init(posSupplier, maxSupplier, parser);
         this.tick();
     }
     
+    @Override
+    public GuiSeekBarDist dist() {
+        return (GuiSeekBarDist) super.dist();
+    }
+    
     public GuiSeekBar setOnTimeUpdate(LongConsumer consumer) {
-        this.timeUpdate = consumer;
+        dist().setOnTimeUpdate(consumer);
         return this;
     }
     
     public GuiSeekBar setOnLastTimeUpdate(LongConsumer consumer) {
-        this.lastTimeUpdate = consumer;
+        dist().setOnLastTimeUpdate(consumer);
         return this;
     }
     
     public void setPosition(long value) {
-        if (this.pos >= this.max)
-            value = this.max;
-        this.timeUpdate.accept(value);
-        this.pos = value;
-        if (this.getParent() != null)
-            this.raiseEvent(new GuiControlChangedEvent(this));
+        dist().setPosition(value);
     }
     
     @Override
     public GuiSeekBar setTooltip(List<Component> tooltip) {
         super.setTooltip(tooltip);
         return this;
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        final double percent = this.max > 0 ? pos / (double) max : 0;
-        this.renderProgress(graphics, percent);
-        ((CreativeGuiGraphics) graphics).drawStringCentered(parser.parse(pos, max), rect.getContentWidth(), rect.getContentHeight(), this.getStyle().fontColor.toInt(), true);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected void renderProgress(GuiGraphics graphics, double percent) {
-        this.getStyle().clickable.render(graphics, 0, 0, (rect.getContentWidth() * Math.min(percent, 1.0d)), rect.getContentHeight());
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == 0) {
-            playSound(SoundEvents.UI_BUTTON_CLICK);
-            grabbedSlider = this.max > 0; // validates maxTime is not a custom state
-            this.mouseMoved(x, y);
-            return true;
-        }
-        return false;
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public void mouseMoved(double x, double y) {
-        if (grabbedSlider) {
-            int width = rect.getWidth() - getContentOffset() * 2;
-            
-            final long value;
-            if (x < getContentOffset())
-                value = 0;
-            else if (x > getContentOffset() + width)
-                value = maxSupplier.getAsLong();
-            else {
-                int mouseOffsetX = (int) (x - getContentOffset());
-                value = (long) ((this.maxSupplier.getAsLong()) * ((float) mouseOffsetX / (float) width));
-            }
-            this.setPosition(value);
-        }
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public void mouseReleased(double x, double y, int button) {
-        if (this.grabbedSlider) {
-            this.lastTimeUpdate.accept(pos);
-            this.grabbedSlider = false;
-        }
     }
     
     @Override
@@ -133,30 +55,19 @@ public class GuiSeekBar extends GuiControl {
     
     @Override
     public void tick() {
-        if (!grabbedSlider) {
-            this.pos = posSupplier.getAsLong();
-            this.max = maxSupplier.getAsLong();
-        }
+        dist().tick();
     }
     
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.PROGRESSBAR;
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {}
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {}
-    
-    @Override
-    protected int preferredWidth(int availableWidth) {
-        return 40;
-    }
-    
-    @Override
-    protected int preferredHeight(int width, int availableHeight) {
-        return 14;
+    public static interface GuiSeekBarDist extends GuiControlDistHandler {
+        
+        public void init(LongSupplier posSupplier, LongSupplier maxSupplier, LongValueParser parser);
+        
+        public void setOnTimeUpdate(LongConsumer consumer);
+        
+        public void setOnLastTimeUpdate(LongConsumer consumer);
+        
+        public void setPosition(long value);
+        
+        public void tick();
     }
 }

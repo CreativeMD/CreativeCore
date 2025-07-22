@@ -3,21 +3,22 @@ package team.creative.creativecore.common.gui.control.parent;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiRow extends GuiParent {
     
-    public GuiRow() {
-        super(GuiFlow.STACK_X);
-        this.spacing = 0;
+    public GuiRow(IGuiParent parent) {
+        super(parent, GuiFlow.STACK_X);
+        setSpacing(0);
         setExpandableX();
-        align = Align.STRETCH;
-        valign = VAlign.STRETCH;
+        setAlign(Align.STRETCH);
+        setVAlign(VAlign.STRETCH);
     }
     
-    public GuiRow(GuiColumn... cols) {
-        this();
+    public GuiRow(IGuiParent parent, GuiColumn... cols) {
+        this(parent);
         for (int i = 0; i < cols.length; i++)
             addColumn(cols[i]);
     }
@@ -28,15 +29,15 @@ public class GuiRow extends GuiParent {
     }
     
     public GuiColumn removeCol(int index) {
-        return (GuiColumn) controls.remove(index);
+        return (GuiColumn) remove(index);
     }
     
     public GuiColumn getCol(int index) {
-        return (GuiColumn) controls.get(index);
+        return (GuiColumn) get(index);
     }
     
     public int colCount() {
-        return controls.size();
+        return size();
     }
     
     @Override

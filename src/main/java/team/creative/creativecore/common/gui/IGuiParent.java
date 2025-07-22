@@ -33,7 +33,7 @@ public interface IGuiParent {
     
     public IGuiIntegratedParent getIntegratedParent();
     
-    public <T extends GuiControlDistHandler> T createDist(GuiControl<T> control);
+    public GuiControlDistHandler createDist(GuiControl control);
     
     public <T extends GuiManagerDist> T createDist(GuiManager<T> manager);
     

@@ -30,7 +30,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     }
     
     public GuiClientLayer getTopLayer() {
-        return (GuiClientLayer) gui.getTopLayer().dist;
+        return (GuiClientLayer) gui.getTopLayer().dist();
     }
     
     public int getOffsetX() {

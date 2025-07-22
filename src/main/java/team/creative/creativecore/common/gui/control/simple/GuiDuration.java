@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.gui.control.simple;
 
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 
 public class GuiDuration extends GuiParent {
@@ -15,24 +16,24 @@ public class GuiDuration extends GuiParent {
     private GuiCounter m;
     private GuiCounter s;
     
-    public GuiDuration(String name, int ticks, boolean showDays, boolean showHours, boolean showMinutes, boolean showSeconds) {
-        super(name);
+    public GuiDuration(IGuiParent parent, String name, int ticks, boolean showDays, boolean showHours, boolean showMinutes, boolean showSeconds) {
+        super(parent, name);
         setVAlign(VAlign.CENTER);
         if (showDays) {
-            add(d = new GuiCounter("d", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel("dLabel").setTranslate("gui.day"));
+            add(d = new GuiCounter(parent, "d", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(parent, "dLabel").setTranslate("gui.day"));
         }
         if (showHours) {
-            add(h = new GuiCounter("h", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel("hLabel").setTranslate("gui.hour"));
+            add(h = new GuiCounter(parent, "h", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(parent, "hLabel").setTranslate("gui.hour"));
         }
         if (showMinutes) {
-            add(m = new GuiCounter("m", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel("mLabel").setTranslate("gui.minute"));
+            add(m = new GuiCounter(parent, "m", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(parent, "mLabel").setTranslate("gui.minute"));
         }
         if (showSeconds) {
-            add(s = new GuiCounter("s", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel("sLabel").setTranslate("gui.second"));
+            add(s = new GuiCounter(parent, "s", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(parent, "sLabel").setTranslate("gui.second"));
         }
         setDuration(ticks);
     }

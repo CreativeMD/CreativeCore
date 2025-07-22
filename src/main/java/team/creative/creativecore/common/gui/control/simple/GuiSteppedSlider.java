@@ -1,29 +1,22 @@
 package team.creative.creativecore.common.gui.control.simple;
 
-import net.minecraft.client.gui.screens.Screen;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.parser.IntValueParser;
 
 public class GuiSteppedSlider extends GuiSlider {
     
-    private final IntValueParser steppedParser;
-    
-    public GuiSteppedSlider(String name, int value, int min, int max) {
-        this(name, value, min, max, IntValueParser.NONE);
+    public GuiSteppedSlider(IGuiParent parent, String name, int value, int min, int max) {
+        this(parent, name, value, min, max, IntValueParser.NONE);
     }
     
-    public GuiSteppedSlider(String name, int value, int min, int max, IntValueParser parser) {
-        super(name, value, min, max);
-        this.steppedParser = parser;
-    }
-    
-    @Override
-    public String getTextByValue() {
-        return steppedParser.parse(this.getIntValue(), this.getIntMaxValue());
+    public GuiSteppedSlider(IGuiParent parent, String name, int value, int min, int max, IntValueParser parser) {
+        super(parent, name, value, min, max);
+        dist().setSteppedParser(parser);
     }
     
     @Override
-    public String getTextfieldValue() {
-        return this.getTextByValue();
+    public GuiSteppedSliderDist dist() {
+        return (GuiSteppedSliderDist) super.dist();
     }
     
     public void stepUp() {
@@ -32,18 +25,6 @@ public class GuiSteppedSlider extends GuiSlider {
     
     public void stepDown() {
         setValue(getValue() - 1);
-    }
-    
-    @Override
-    public boolean mouseScrolled(double x, double y, double scrolled) {
-        this.setValue(getIntValue() + (Screen.hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1));
-        return true;
-    }
-    
-    @Override
-    public void mouseMoved(double x, double y) {
-        super.mouseMoved(x, y);
-        value = (int) value;
     }
     
     @Override
@@ -77,20 +58,26 @@ public class GuiSteppedSlider extends GuiSlider {
     }
     
     public int getIntValue() {
-        return (int) value;
+        return dist().getIntValue();
     }
     
     public int getIntMaxValue() {
-        return (int) maxValue;
+        return dist().getIntMaxValue();
     }
     
     public int getIntMinValue() {
-        return (int) minValue;
+        return dist().getIntMinValue();
     }
     
-    @Override
-    protected GuiTextfield createTextfield() {
-        return super.createTextfield().setNumbersIncludingNegativeOnly();
+    public static interface GuiSteppedSliderDist extends GuiSliderDist {
+        
+        public void setSteppedParser(IntValueParser steppedParser);
+        
+        public int getIntValue();
+        
+        public int getIntMaxValue();
+        
+        public int getIntMinValue();
     }
     
 }

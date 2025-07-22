@@ -45,7 +45,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
         int maxX = Integer.MIN_VALUE;
         int maxY = Integer.MIN_VALUE;
         for (GuiLayer layer : getMenu().getLayers()) {
-            GuiClientLayer c = (GuiClientLayer) layer.dist;
+            GuiClientLayer c = (GuiClientLayer) layer.dist();
             int offsetX = (width - c.getWidth()) / 2;
             int offsetY = (height - c.getHeight()) / 2;
             minX = Math.min(minX, offsetX + c.rect.getX());
@@ -70,7 +70,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     public int getWidth() {
         int width = 0;
         for (GuiLayer layer : getMenu().getLayers())
-            width = Math.max(width, ((GuiClientLayer) layer.dist).getWidth());
+            width = Math.max(width, ((GuiClientLayer) layer.dist()).getWidth());
         return width;
     }
     
@@ -78,7 +78,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     public int getHeight() {
         int height = 0;
         for (GuiLayer layer : getMenu().getLayers())
-            height = Math.max(height, ((GuiClientLayer) layer.dist).getHeight());
+            height = Math.max(height, ((GuiClientLayer) layer.dist()).getHeight());
         return height;
     }
     

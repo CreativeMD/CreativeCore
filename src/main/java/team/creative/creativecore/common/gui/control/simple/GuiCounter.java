@@ -3,6 +3,7 @@ package team.creative.creativecore.common.gui.control.simple;
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
@@ -12,26 +13,27 @@ public class GuiCounter extends GuiParent {
     
     public int min;
     public int max;
-    public final GuiParent buttons = new GuiParent(GuiFlow.STACK_Y);
+    public final GuiParent buttons;
     public GuiTextfield textfield;
     public final ControlFormatting buttonsFormatting;
     
-    public GuiCounter(String name, int value) {
-        this(name, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public GuiCounter(IGuiParent parent, String name, int value) {
+        this(parent, name, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
     
-    public GuiCounter(String name, int value, int min, int max) {
-        this(name, value, min, max, ControlFormatting.TRANSPARENT);
+    public GuiCounter(IGuiParent parent, String name, int value, int min, int max) {
+        this(parent, name, value, min, max, ControlFormatting.TRANSPARENT);
     }
     
-    public GuiCounter(String name, int value, int min, int max, ControlFormatting buttonsFormatting) {
-        super(name);
+    public GuiCounter(IGuiParent parent, String name, int value, int min, int max, ControlFormatting buttonsFormatting) {
+        super(parent, name);
         this.min = min;
         this.max = max;
-        this.flow = GuiFlow.STACK_X;
+        dist().setFlow(GuiFlow.STACK_X);
         this.setSpacing(1);
-        this.textfield = new GuiTextfield("value", "" + Mth.clamp(value, min, max)).setDim(20, 10).setNumbersIncludingNegativeOnly();
-        this.buttons.spacing = 0;
+        this.textfield = new GuiTextfield(parent, "value", "" + Mth.clamp(value, min, max)).setDim(20, 10).setNumbersIncludingNegativeOnly();
+        this.buttons = new GuiParent(parent, GuiFlow.STACK_Y);
+        this.buttons.setSpacing(0);
         this.buttonsFormatting = buttonsFormatting;
         this.createButtons();
         this.add(textfield.setExpandableX());
@@ -39,20 +41,19 @@ public class GuiCounter extends GuiParent {
     }
     
     protected void createButtons() {
-        this.buttons.add(new GuiButtonHoldSlim("+", x -> {
+        this.buttons.add(new GuiButtonHold(getParent(), "+", x -> {
             this.textfield.setText("" + stepUp(this.textfield.parseInteger()));
             this.raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
-        }).setTranslate("gui.plus").setDim(6, 3));
-        this.buttons.add(new GuiButtonHoldSlim("-", x -> {
+        }).setHoverEffect(true).setTranslate("gui.plus").setDim(6, 3).setFormatting(buttonsFormatting));
+        this.buttons.add(new GuiButtonHold(getParent(), "-", x -> {
             this.textfield.setText("" + stepDown(this.textfield.parseInteger()));
             this.raiseEvent(new GuiControlChangedEvent(GuiCounter.this));
-        }).setTranslate("gui.minus").setDim(6, 4));
+        }).setHoverEffect(true).setTranslate("gui.minus").setDim(6, 4).setFormatting(buttonsFormatting));
     }
     
     @Override
     public GuiCounter setSpacing(int spacing) {
-        this.spacing = spacing;
-        return this;
+        return (GuiCounter) super.setSpacing(spacing);
     }
     
     @Override
@@ -60,17 +61,17 @@ public class GuiCounter extends GuiParent {
         return (GuiCounter) super.add(control);
     }
     
-    public GuiButtonHoldSlim getPlusButton() {
+    @Override
+    public boolean isExpandableX() {
+        return dist().isExpandableX();
+    }
+    
+    public GuiButtonHold getPlusButton() {
         return this.buttons.get("+");
     }
     
-    public GuiButtonHoldSlim getMinusButton() {
+    public GuiButtonHold getMinusButton() {
         return this.buttons.get("-");
-    }
-    
-    @Override
-    public boolean isExpandableX() {
-        return expandableX;
     }
     
     public void resetTextfield() {
