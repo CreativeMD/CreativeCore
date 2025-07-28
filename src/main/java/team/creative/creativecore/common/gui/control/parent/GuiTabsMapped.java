@@ -5,13 +5,14 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 
 public class GuiTabsMapped<K> extends GuiTabs {
     
     private List<K> keys = new ArrayList<>();
     
-    public GuiTabsMapped(String name) {
-        super(name);
+    public GuiTabsMapped(IGuiParent parent, String name) {
+        super(parent, name);
     }
     
     @Override

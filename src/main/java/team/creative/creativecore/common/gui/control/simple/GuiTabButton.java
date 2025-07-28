@@ -6,14 +6,15 @@ import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.style.ControlFormatting.ControlFormattingStatic;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleFace;
 import team.creative.creativecore.common.util.text.IComponentMap;
 
 public class GuiTabButton<K> extends GuiParent {
     
-    public static final ControlFormatting BUTTON_ACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
-    public static final ControlFormatting BUTTON_INACTIVE = new ControlFormatting(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE_INACTIVE);
+    public static final ControlFormatting BUTTON_ACTIVE = new ControlFormattingStatic(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
+    public static final ControlFormatting BUTTON_INACTIVE = new ControlFormattingStatic(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE_INACTIVE);
     
     public GuiTabButton(IGuiParent parent, String name, IComponentMap states) {
         this(parent, name, 0, states);

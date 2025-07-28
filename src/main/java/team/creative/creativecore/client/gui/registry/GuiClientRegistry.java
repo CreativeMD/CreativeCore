@@ -10,6 +10,12 @@ import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.client.gui.GuiClientParent;
 import team.creative.creativecore.client.gui.control.parent.GuiClientPanel;
+import team.creative.creativecore.client.gui.control.parent.GuiClientScrollX;
+import team.creative.creativecore.client.gui.control.parent.GuiClientScrollXY;
+import team.creative.creativecore.client.gui.control.parent.GuiClientScrollY;
+import team.creative.creativecore.client.gui.control.parent.GuiClientTable;
+import team.creative.creativecore.client.gui.control.parent.GuiClientTableScrollable;
+import team.creative.creativecore.client.gui.control.parent.GuiClientTabs;
 import team.creative.creativecore.client.gui.control.simple.GuiClientArraySlider;
 import team.creative.creativecore.client.gui.control.simple.GuiClientButton;
 import team.creative.creativecore.client.gui.control.simple.GuiClientButtonContext;
@@ -39,6 +45,12 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.parent.GuiPanel;
+import team.creative.creativecore.common.gui.control.parent.GuiScrollX;
+import team.creative.creativecore.common.gui.control.parent.GuiScrollXY;
+import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
+import team.creative.creativecore.common.gui.control.parent.GuiTable;
+import team.creative.creativecore.common.gui.control.parent.GuiTableScrollable;
+import team.creative.creativecore.common.gui.control.parent.GuiTabs;
 import team.creative.creativecore.common.gui.control.simple.GuiArraySlider;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.control.simple.GuiButtonContext;
@@ -128,6 +140,12 @@ public class GuiClientRegistry {
         register(GuiStateButtonIcon.class, GuiClientStateButtonIcon::new);
         
         register(GuiPanel.class, GuiClientPanel::new);
+        register(GuiScrollX.class, GuiClientScrollX::new);
+        register(GuiScrollXY.class, GuiClientScrollXY::new);
+        register(GuiScrollY.class, GuiClientScrollY::new);
+        register(GuiTable.class, GuiClientTable::new);
+        register(GuiTableScrollable.class, GuiClientTableScrollable::new);
+        register(GuiTabs.class, GuiClientTabs::new);
         
         registerManager(GuiManagerItem.class, GuiClientManagerItem::new);
     }

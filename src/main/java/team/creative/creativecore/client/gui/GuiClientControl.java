@@ -23,6 +23,7 @@ import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiFixedDimension;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -35,7 +36,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         return new Rect(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
     }
     
-    public void scissor(Rect rect) {
+    public static void scissor(Rect rect) {
         Window window = Minecraft.getInstance().getWindow();
         double realMinX = rect.minX * window.getGuiScale();
         double realMinY = window.getHeight() - (rect.minY + rect.getHeight()) * window.getGuiScale();
@@ -133,10 +134,17 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         customFormatting = formatting;
     }
     
+    @Override
+    public ControlFormattingCustom setCustomFormatting() {
+        return (ControlFormattingCustom) (customFormatting = new ControlFormattingCustom(getControlFormatting()));
+    }
+    
+    @Override
     public boolean isExpandableX() {
         return expandableX;
     }
     
+    @Override
     public boolean isExpandableY() {
         return expandableY;
     }
@@ -260,14 +268,14 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         GuiStyle style = getStyle();
         ControlFormatting formatting = getControlFormatting();
         
-        getBorder(style, style.get(formatting.border)).render(graphics, 0, 0, width, height);
+        getBorder(style, style.get(formatting.border())).render(graphics, 0, 0, width, height);
         
-        int borderSize = style.getBorder(formatting.border);
+        int borderSize = style.getBorder(formatting.border());
         
         width -= borderSize * 2;
         height -= borderSize * 2;
         
-        getBackground(style, style.get(formatting.face, enabled && realRect.inside(mouseX, mouseY))).render(graphics, borderSize, borderSize, width, height);
+        getBackground(style, style.get(formatting.face(), enabled && realRect.inside(mouseX, mouseY))).render(graphics, borderSize, borderSize, width, height);
         
         controlRect.shrink(borderSize * scale);
         
@@ -275,7 +283,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         
         renderContent(graphics, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
-        if (!enabled && formatting.hasDisabledEffect) {
+        if (!enabled && formatting.hasDisabledEffect()) {
             scissor(realRect);
             //RenderSystem.disableDepthTest();
             // TODO 1.21.5 YET TO BE TESTED
@@ -289,10 +297,10 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     
     protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
-        controlRect.shrink(formatting.padding * scale);
+        controlRect.shrink(formatting.padding() * scale);
         if (!enabled)
             pose.pushMatrix();
-        pose.translate(borderWidth + formatting.padding, borderWidth + formatting.padding);
+        pose.translate(borderWidth + formatting.padding(), borderWidth + formatting.padding());
         renderContent(graphics, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
         if (!enabled)
             pose.popMatrix();

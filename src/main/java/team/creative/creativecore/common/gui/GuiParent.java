@@ -65,14 +65,6 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
         return this;
     }
     
-    public double getOffsetY() {
-        return 0;
-    }
-    
-    public double getOffsetX() {
-        return 0;
-    }
-    
     public GuiParent setAlign(Align align) {
         dist().setAlign(align);
         return this;
@@ -344,6 +336,12 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
         public void initControlList(GuiControls controls);
         
         public void applyOffset(GuiControl control, Rect rect);
+        
+        public Iterable<? extends GuiControlDistHandler> controls();
+        
+        public Iterable<? extends GuiControlDistHandler> hoverControls();
+        
+        public Iterable<? extends GuiControlDistHandler> all();
     }
     
 }

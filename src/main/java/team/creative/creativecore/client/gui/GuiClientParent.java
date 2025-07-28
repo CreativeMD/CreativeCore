@@ -41,14 +41,17 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         this.controls = controls;
     }
     
+    @Override
     public Iterable<GuiClientControl> controls() {
         return (Iterable<GuiClientControl>) (Object) controls.distControls();
     }
     
+    @Override
     public Iterable<GuiClientControl> hoverControls() {
         return (Iterable<GuiClientControl>) (Object) controls.distHoverControls();
     }
     
+    @Override
     public Iterable<GuiClientControl> all() {
         return (Iterable<GuiClientControl>) (Object) controls.distAll();
     }

@@ -103,7 +103,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     @Override
     public GuiLayer getTopLayer() {
         if (layers.isEmpty())
-            return EMPTY;
+            return EMPTY_CLIENT;
         return layers.get(layers.size() - 1);
     }
     

@@ -5,40 +5,50 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.VAlign;
-import team.creative.creativecore.common.gui.control.simple.GuiTabButton.GuiBorderlessButton;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.simple.GuiTabButton;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiTabs extends GuiParent {
     
-    private final List<SpecialParent> tabs = new ArrayList<>();
-    private int index = -1;
-    private GuiParent selected;
-    private int lastWidth;
-    private int lastHeight = -1;
-    private int lastY;
+    private final List<GuiTabSpecialParent> tabs = new ArrayList<>();
+    
     private GuiTabBar bar;
     
-    public GuiTabs(String name) {
-        super(name);
-        flow = GuiFlow.STACK_Y;
-        align = Align.STRETCH;
-        valign = VAlign.STRETCH;
-        add(bar = new GuiTabBar("bar"));
+    public GuiTabs(IGuiParent parent, String name) {
+        super(parent, name);
+        setFlow(GuiFlow.STACK_Y);
+        setAlign(Align.STRETCH);
+        setVAlign(VAlign.STRETCH);
+        add(bar = new GuiTabBar(parent, "bar"));
+        dist().init(tabs, bar);
+    }
+    
+    @Override
+    public GuiTabsDist dist() {
+        return (GuiTabsDist) super.dist();
+    }
+    
+    @Override
+    public GuiControlDistHandler createDist(GuiControl control) {
+        if (control instanceof GuiTabSpecialParent special)
+            return dist().createSpecialParent(special);
+        return super.createDist(control);
     }
     
     public GuiParent createTab(Component component) {
         bar.addTab(component, tabs.size());
-        SpecialParent tab = new SpecialParent();
-        tab.setParent(this);
+        GuiTabSpecialParent tab = new GuiTabSpecialParent(this);
         tabs.add(tab);
         return tab;
     }
     
-    public GuiBorderlessButton getTabButton(int index) {
+    public GuiButton getTabButton(int index) {
         return bar.getTab(index);
     }
     
@@ -46,120 +56,63 @@ public class GuiTabs extends GuiParent {
         return tabs.get(index);
     }
     
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
-    }
-    
     public void select(int select) {
-        if (selected != null)
-            remove(selected);
-        index = select;
-        selected = tabs.get(select);
-        bar.highlight(select);
-        add(selected);
-        if (lastHeight == -1 && getParent() != null)
-            reflow();
-        else {
-            selected.rect.setX(0);
-            selected.rect.setWidth(lastWidth, lastWidth);
-            selected.rect.flowX();
-            selected.rect.setY(lastY);
-            selected.rect.setHeight(lastHeight, lastHeight);
-            selected.rect.flowY();
-        }
-        raiseEvent(new GuiControlChangedEvent(this));
+        dist().select(select);
     }
     
     public int index() {
-        return index;
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {
-        super.flowX(width, preferred);
-        lastWidth = width;
-    }
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        super.flowY(width, height, preferred);
-        if (selected != null) {
-            lastHeight = selected.rect.getHeight();
-            lastY = selected.rect.getY();
-        } else
-            lastHeight = -1;
+        return dist().index();
     }
     
     public class GuiTabBar extends GuiParent {
         
-        private GuiBorderlessButton highlighted;
+        private GuiButton highlighted;
         private int count;
         
-        public GuiTabBar(String name) {
-            super(name);
-            flow = GuiFlow.STACK_X;
+        public GuiTabBar(IGuiParent parent, String name) {
+            super(parent, name);
+            setFlow(GuiFlow.STACK_X);
         }
         
         public void highlight(int index) {
-            GuiBorderlessButton newSelected = (GuiBorderlessButton) controls.get(index);
+            GuiButton newSelected = (GuiButton) get(index);
             if (newSelected != highlighted && highlighted != null)
-                highlighted.active = false;
-            newSelected.active = true;
+                highlighted.setFormatting(GuiTabButton.BUTTON_INACTIVE);
+            newSelected.setFormatting(GuiTabButton.BUTTON_ACTIVE);
             highlighted = newSelected;
         }
         
         public void addTab(Component component, int index) {
-            add(new GuiBorderlessButton("b" + count, x -> select(index), null).setTitle(component));
+            add(new GuiButton(getParent(), "b" + count, x -> select(index)).setTitle(component));
             count++;
         }
         
-        public GuiBorderlessButton getTab(int index) {
-            return (GuiBorderlessButton) controls.get(index);
+        public GuiButton getTab(int index) {
+            return (GuiButton) get(index);
         }
         
         public void removeTab(int index) {
-            controls.remove(index);
-        }
-        
-        @Override
-        public ControlFormatting getControlFormatting() {
-            return ControlFormatting.TRANSPARENT;
+            remove(index);
         }
     }
     
-    private class SpecialParent extends GuiParent {
+    public class GuiTabSpecialParent extends GuiParent {
         
-        public SpecialParent() {}
-        
-        @Override
-        public ControlFormatting getControlFormatting() {
-            return ControlFormatting.NESTED;
+        public GuiTabSpecialParent(IGuiParent parent) {
+            super(parent);
         }
         
-        @Override
-        protected int preferredWidth(int availableWidth) {
-            int pref = 0;
-            for (SpecialParent p : GuiTabs.this.tabs)
-                pref = Math.max(pref, p.preferredWidthOriginal(availableWidth));
-            return pref;
-        }
+    }
+    
+    public static interface GuiTabsDist extends GuiParentDistHandler {
         
-        protected int preferredWidthOriginal(int availableWidth) {
-            return super.preferredWidth(availableWidth);
-        }
+        public void init(List<GuiTabSpecialParent> tabs, GuiTabBar bar);
         
-        @Override
-        protected int preferredHeight(int width, int availableHeight) {
-            int pref = 0;
-            for (SpecialParent p : GuiTabs.this.tabs)
-                pref = Math.max(pref, p.preferredHeightOriginal(width, availableHeight));
-            return pref;
-        }
+        public int index();
         
-        protected int preferredHeightOriginal(int width, int availableHeight) {
-            return super.preferredHeight(width, availableHeight);
-        }
+        public void select(int index);
+        
+        public GuiParentDistHandler createSpecialParent(GuiTabSpecialParent parent);
         
     }
 }

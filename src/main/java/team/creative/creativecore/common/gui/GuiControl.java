@@ -12,6 +12,7 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 
@@ -107,6 +108,10 @@ public abstract class GuiControl {
     public GuiControl setFormatting(ControlFormatting formatting) {
         dist.setFormatting(formatting);
         return this;
+    }
+    
+    public ControlFormattingCustom setCustomFormatting() {
+        return dist.setCustomFormatting();
     }
     
     // BASICS

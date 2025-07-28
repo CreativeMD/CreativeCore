@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
 
 public interface GuiControlDistHandler {
     
@@ -39,5 +40,7 @@ public interface GuiControlDistHandler {
     public void removeFormatting();
     
     public void setFormatting(ControlFormatting formatting);
+    
+    public ControlFormattingCustom setCustomFormatting();
     
 }

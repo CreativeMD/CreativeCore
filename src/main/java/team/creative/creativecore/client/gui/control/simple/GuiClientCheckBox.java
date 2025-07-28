@@ -53,7 +53,7 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
         Matrix3x2fStack pose = graphics.pose();
         GuiStyle style = getStyle();
         
-        if (!enabled && getControlFormatting().hasDisabledEffect)
+        if (!enabled && getControlFormatting().hasDisabledEffect())
             style.disabled.render(graphics, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
         
         style.get(ControlStyleBorder.SMALL).render(graphics, 0, yoffset, CHECKBOX_WIDTH, CHECKBOX_WIDTH);
