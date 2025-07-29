@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
@@ -23,11 +24,16 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     
     public Predicate<T> canBeModified = x -> true;
     
-    public GuiListBoxBase(String name, boolean modifiable, List<T> entries) {
-        super(name);
+    public GuiListBoxBase(IGuiParent parent, String name, boolean modifiable, List<T> entries) {
+        super(parent, name);
         this.content = entries;
         this.modifiable = modifiable;
         createItems();
+    }
+    
+    @Override
+    public GuiListBoxBaseDist dist() {
+        return (GuiListBoxBaseDist) super.dist();
     }
     
     protected void createItems() {
@@ -36,16 +42,16 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     protected void createControl(int index) {
-        GuiRow row = new GuiRow();
+        GuiRow row = new GuiRow(getParent());
         super.add(row);
-        GuiColumn content = (GuiColumn) new GuiColumn().setExpandableX();
-        content.align = Align.CENTER;
+        GuiColumn content = (GuiColumn) new GuiColumn(getParent()).setExpandableX();
+        content.setAlign(Align.CENTER);
         content.add(this.content.get(index));
         row.addColumn(content);
         if (modifiable && canBeModified.test(this.content.get(index))) {
-            GuiColumn remove = new GuiColumn(20);
-            remove.align = Align.CENTER;
-            remove.add(new GuiButtonRemove(index));
+            GuiColumn remove = new GuiColumn(getParent(), 20);
+            remove.setAlign(Align.CENTER);
+            remove.add(new GuiButtonRemove(getParent(), index));
             row.addColumn(remove);
         }
         rows.add(row);
@@ -57,13 +63,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         content.remove(index);
     }
     
-    protected GuiControl addCustomControl(GuiControl control) {
+    public GuiControl addCustomControl(GuiControl control) {
         return super.add(control);
-    }
-    
-    protected GuiListBoxBase addCustom(GuiControl control) {
-        super.add(control);
-        return this;
     }
     
     @Override
@@ -78,19 +79,6 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         throw new UnsupportedOperationException();
     }
     
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        this.cachedHeight = height;
-        super.flowY(width, height, preferred);
-    }
-    
-    public void reflowInternal() {
-        if (hasGui()) {
-            super.flowX(rect.getContentWidth(), preferredWidth(rect.getContentWidth()));
-            super.flowY(rect.getContentWidth(), cachedHeight, preferredHeight(rect.getContentWidth(), cachedHeight));
-        }
-    }
-    
     public void removeItem(int index) {
         removeControl(index);
         
@@ -98,7 +86,7 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
             for (int i = 0; i < rows.size(); i++)
                 if (canBeModified.test(this.content.get(i)))
                     ((GuiButtonRemove) rows.get(i).getCol(1).get("x")).index = i;
-        reflowInternal();
+        dist().reflowInternal();
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
@@ -113,29 +101,27 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
             createControl(content.size() - 1);
         }
         
-        reflowInternal();
+        dist().reflowInternal();
     }
     
     public void addItem(T entry) {
         content.add(entry);
         createControl(content.size() - 1);
         
-        reflowInternal();
+        dist().reflowInternal();
         
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
-    @Override
-    public boolean isEmpty() {
+    public boolean isListEmpty() {
         return content.isEmpty();
     }
     
-    @Override
-    public int size() {
+    public int itemSize() {
         return content.size();
     }
     
-    public T get(int index) {
+    public T getItem(int index) {
         return content.get(index);
     }
     
@@ -147,14 +133,20 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
         
         public int index;
         
-        public GuiButtonRemove(int index) {
-            super("x", null);
+        public GuiButtonRemove(IGuiParent parent, int index) {
+            super(parent, "x", null);
             setDim(6, 8);
             setAlign(Align.CENTER);
             setTitle(Component.literal("x"));
-            pressed = (x) -> GuiListBoxBase.this.removeItem(this.index);
+            setPressed((x) -> GuiListBoxBase.this.removeItem(this.index));
             this.index = index;
         }
+        
+    }
+    
+    public static interface GuiListBoxBaseDist extends GuiScrollYDist {
+        
+        public void reflowInternal();
         
     }
     

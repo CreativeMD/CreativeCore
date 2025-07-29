@@ -239,4 +239,12 @@ public abstract class GuiControl {
         return LanguageUtils.translateOr(text, defaultText);
     }
     
+    public static interface GuiFocusControlDist extends GuiControlDistHandler {
+        
+        public boolean isFocused();
+        
+        public void focus();
+        
+    }
+    
 }

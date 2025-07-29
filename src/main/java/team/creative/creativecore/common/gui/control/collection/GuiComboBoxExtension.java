@@ -1,87 +1,26 @@
 package team.creative.creativecore.common.gui.control.collection;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
-import team.creative.creativecore.client.render.text.CompiledText;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.simple.GuiListEntry;
-import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 
 public class GuiComboBoxExtension extends GuiListBoxBase<GuiListEntry> {
     
-    public GuiExtensionCreator<? extends GuiComboBox<?>, ? extends GuiComboBoxExtension> creator;
-    public String search = "";
-    
-    public GuiComboBoxExtension(String name, GuiExtensionCreator<? extends GuiComboBox<?>, ? extends GuiComboBoxExtension> creator) {
-        super(name, false, new ArrayList<>());
-        this.creator = creator;
-        
-        registerEventChanged((event) -> {
-            if (event.control.is("searchBar")) {
-                search = ((GuiTextfield) event.control).getText();
-                reloadControls();
-            }
-        });
-        reloadControls();
+    public GuiComboBoxExtension(IGuiParent parent, String name) {
+        super(parent, name, false, new ArrayList<>());
+        dist().init();
     }
     
     @Override
-    public void looseFocus() {
-        creator.markLostFocus();
+    public GuiComboBoxExtensionDist dist() {
+        return (GuiComboBoxExtensionDist) super.dist();
     }
     
-    public void reloadControls() {
-        if (creator == null)
-            return;
+    public static interface GuiComboBoxExtensionDist extends GuiListBoxBaseDist {
         
-        GuiTextfield textfield = get("searchBar");
+        public void init();
         
-        clearItems();
-        
-        if (search != null && search.isBlank())
-            search = null;
-        
-        var box = creator.parent;
-        
-        if (box.hasSearchbar()) {
-            if (textfield == null) {
-                textfield = new GuiTextfield("searchBar", search == null ? "" : search);
-                addCustomControl(textfield.setExpandableX());
-            }
-            textfield.focus();
-        }
-        
-        List<GuiListEntry> entries = new ArrayList<>();
-        int i = 0;
-        for (CompiledText text : box.lines()) {
-            if (search == null || text.contains(search)) {
-                final int index = i;
-                entries.add(new GuiListEntry("" + i, i, i == box.selectedIndex(), x -> {
-                    creator.parent.select(index);
-                    creator.close();
-                }).set(text.copy()));
-            }
-            i++;
-        }
-        addAllItems(entries);
-        
-        if (hasGui())
-            reflowInternal();
-    }
-    
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (super.mouseClicked(x, y, button)) {
-            creator.markKeptFocus();
-            return true;
-        }
-        return false;
-    }
-    
-    @Override
-    protected int maxHeight(int width, int availableWidth) {
-        return 100;
     }
     
 }

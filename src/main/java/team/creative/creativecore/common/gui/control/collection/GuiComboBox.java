@@ -1,176 +1,107 @@
 package team.creative.creativecore.common.gui.control.collection;
 
-import java.util.Objects;
-
 import javax.annotation.Nullable;
 
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.client.gui.extension.GuiExtensionCreator.ExtensionDirection;
-import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.IComponentMap;
-import team.creative.creativecore.common.util.type.list.TupleList;
 
 public class GuiComboBox<K> extends GuiLabel {
     
-    protected GuiExtensionCreator<GuiComboBox<K>, GuiComboBoxExtension> ex = new GuiExtensionCreator<GuiComboBox<K>, GuiComboBoxExtension>(this);
-    protected TupleList<K, CompiledText> data;
-    private int index;
-    private K selected;
-    private boolean searchbar;
-    private ExtensionDirection direction = ExtensionDirection.BELOW_OR_ABOVE;
-    
-    public GuiComboBox(String name, K selected, IComponentMap<K> builder) {
-        this(name, builder);
+    public GuiComboBox(IGuiParent parent, String name, K selected, IComponentMap<K> builder) {
+        this(parent, name, builder);
         select(selected);
     }
     
-    public GuiComboBox(String name, IComponentMap<K> builder) {
-        super(name);
+    public GuiComboBox(IGuiParent parent, String name, IComponentMap<K> builder) {
+        super(parent, name);
         set(builder);
     }
     
+    @Override
+    public GuiComboBoxDist<K> dist() {
+        return (GuiComboBoxDist<K>) super.dist();
+    }
+    
     public boolean hasSearchbar() {
-        return searchbar;
+        return dist().hasSearchbar();
     }
     
     public GuiComboBox setSearchbar(boolean searchbar) {
-        this.searchbar = searchbar;
+        dist().setSearchbar(searchbar);
         return this;
     }
     
     public GuiComboBox setDirection(ExtensionDirection direction) {
-        this.direction = direction;
+        dist().setDirection(direction);
         return this;
     }
     
     public void set(IComponentMap<K> builder) {
-        this.data = builder.build();
-        
-        select(index);
-        
-        for (CompiledText text : data.values())
-            text.setAlign(Align.CENTER);
-        
-        updateDisplay();
+        dist().set(builder);
     }
     
     @Nullable
     public K selected() {
-        return selected;
+        return dist().selected();
     }
     
     public K selected(K defaultValue) {
-        var s = selected();
-        if (s != null)
-            return s;
-        return defaultValue;
+        return dist().selected(defaultValue);
     }
     
     public void select(int index) {
-        this.index = Mth.clamp(index, 0, this.data.size() - 1);
-        
-        if (!data.isEmpty())
-            selected = data.get(this.index).key;
-        else
-            selected = null;
-        
-        updateDisplay();
-        raiseEvent(new GuiControlChangedEvent(this));
+        dist().select(index);
     }
     
     public void select(K key) {
-        select(indexOf(key));
+        dist().select(key);
     }
     
     public int indexOf(K key) {
-        for (int i = 0; i < data.size(); i++)
-            if (Objects.equals(data.get(i).key, key))
-                return i;
-        return -1;
+        return dist().indexOf(key);
     }
     
     public void next() {
-        int index = this.index + 1;
-        if (index >= data.size())
-            index = 0;
-        select(index);
+        dist().next();
     }
     
     public void previous() {
-        int index = this.index - 1;
-        if (index < 0)
-            index = data.size() - 1;
-        select(index);
-    }
-    
-    protected void updateDisplay() {
-        if (index >= 0 && index < data.size())
-            text = data.get(index).value;
-        else
-            text = CompiledText.EMPTY;
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {
-        for (CompiledText text : data.values())
-            text.setDimension(width, Integer.MAX_VALUE);
-    }
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        for (CompiledText text : data.values())
-            text.setMaxHeight(height);
-    }
-    
-    @Override
-    public int preferredWidth(int availableWidth) {
-        int width = 0;
-        for (CompiledText text : data.values())
-            width = Math.max(width, text.getTotalWidth() + 3); // +3 due to scroll bar width
-        return width;
-    }
-    
-    @Override
-    public int preferredHeight(int width, int availableHeight) {
-        int height = 0;
-        for (CompiledText text : data.values())
-            height = Math.max(height, text.getTotalHeight());
-        return height;
+        dist().previous();
     }
     
     public int selectedIndex() {
-        return index;
+        return dist().selectedIndex();
     }
     
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        ex.toggle(this::createBox, direction);
-        playSound(SoundEvents.UI_BUTTON_CLICK);
-        return true;
+    public static interface GuiComboBoxDist<K> extends GuiLabelDist {
+        
+        public boolean hasSearchbar();
+        
+        public void setSearchbar(boolean searchbar);
+        
+        public void setDirection(ExtensionDirection direction);
+        
+        public void set(IComponentMap<K> builder);
+        
+        @Nullable
+        public K selected();
+        
+        public K selected(K defaultValue);
+        
+        public void select(int index);
+        
+        public void select(K key);
+        
+        public int indexOf(K key);
+        
+        public void next();
+        
+        public void previous();
+        
+        public int selectedIndex();
+        
     }
     
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.CLICKABLE;
-    }
-    
-    protected GuiComboBoxExtension createBox(GuiExtensionCreator<GuiComboBox<K>, GuiComboBoxExtension> creator) {
-        return new GuiComboBoxExtension(name + "extension", creator);
-    }
-    
-    @Override
-    public void looseFocus() {
-        if (ex.checkShouldClose())
-            ex.close();
-    }
-    
-    public Iterable<CompiledText> lines() {
-        return data.values();
-    }
 }

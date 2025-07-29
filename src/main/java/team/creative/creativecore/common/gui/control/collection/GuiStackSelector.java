@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -13,38 +12,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.mc.StackUtils;
-import team.creative.creativecore.common.util.text.TextBuilder;
 import team.creative.creativecore.common.util.type.map.HashMapList;
 
 public class GuiStackSelector extends GuiLabel {
     
-    public final Player player;
-    
-    protected GuiExtensionCreator<GuiStackSelector, GuiStackSelectorExtension> ex = new GuiExtensionCreator<>(this);
-    protected StackCollector collector;
-    protected HashMapList<String, ItemStack> stacks;
-    protected ItemStack selected = ItemStack.EMPTY;
-    
-    private boolean searchbar;
-    
-    public GuiStackSelector(String name, Player player, StackCollector collector, boolean searchbar) {
-        super(name);
-        this.player = player;
-        this.searchbar = searchbar;
-        this.collector = collector;
+    public GuiStackSelector(IGuiParent parent, String name, StackCollector collector, boolean searchbar) {
+        super(parent, name);
+        dist().setSearchbar(searchbar);
+        dist().setCollector(collector);
         updateCollectedStacks();
         selectFirst();
         setAlign(Align.CENTER);
     }
     
-    public GuiStackSelector(String name, Player player, StackCollector collector) {
-        this(name, player, collector, true);
+    public GuiStackSelector(IGuiParent parent, String name, StackCollector collector) {
+        this(parent, name, collector, true);
+    }
+    
+    @Override
+    public GuiStackSelectorDist dist() {
+        return (GuiStackSelectorDist) super.dist();
     }
     
     public GuiStackSelector setWidth(int width) {
@@ -53,79 +44,36 @@ public class GuiStackSelector extends GuiLabel {
     }
     
     public boolean hasSearchbar() {
-        return searchbar;
+        return dist().hasSearchbar();
     }
     
     public GuiStackSelector setSearchbar(boolean searchbar) {
-        this.searchbar = searchbar;
+        dist().setSearchbar(searchbar);
         return this;
     }
     
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        ex.toggle(this::createBox);
-        playSound(SoundEvents.UI_BUTTON_CLICK);
-        return true;
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.CLICKABLE;
-    }
-    
     public boolean selectFirst() {
-        if (stacks != null) {
-            ItemStack first = stacks.getFirst();
-            if (first != null) {
-                setSelected(first);
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    @Override
-    public Player getPlayer() {
-        return player;
+        return dist().selectFirst();
     }
     
     public void updateCollectedStacks() {
-        stacks = collector.collect(player);
+        dist().updateCollectedStacks();
     }
     
     public boolean setSelectedForce(ItemStack stack) {
-        setTitle(new TextBuilder().stack(stack).add(stack.getHoverName()).build());
-        this.selected = stack;
-        raiseEvent(new GuiControlChangedEvent(this));
-        return true;
+        return dist().setSelectedForce(stack);
     }
     
     public boolean setSelected(ItemStack stack) {
-        if (stacks.contains(stack)) {
-            setTitle(new TextBuilder().stack(stack).add(stack.getHoverName()).build());
-            this.selected = stack;
-            raiseEvent(new GuiControlChangedEvent(this));
-            return true;
-        }
-        return false;
+        return dist().setSelected(stack);
     }
     
     public HashMapList<String, ItemStack> getStacks() {
-        return stacks;
+        return dist().getStacks();
     }
     
     public ItemStack getSelected() {
-        return selected;
-    }
-    
-    protected GuiStackSelectorExtension createBox(GuiExtensionCreator<GuiStackSelector, GuiStackSelectorExtension> creator) {
-        return new GuiStackSelectorExtension(name + "extension", getPlayer(), creator);
-    }
-    
-    @Override
-    public void looseFocus() {
-        if (ex.checkShouldClose())
-            ex.close();
+        return dist().getSelected();
     }
     
     public static abstract class StackCollector {
@@ -238,6 +186,28 @@ public class GuiStackSelector extends GuiLabel {
             itemName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
         }
         return itemName;
+    }
+    
+    public static interface GuiStackSelectorDist extends GuiLabelDist {
+        
+        public void setCollector(StackCollector collector);
+        
+        public boolean hasSearchbar();
+        
+        public void setSearchbar(boolean searchbar);
+        
+        public boolean selectFirst();
+        
+        public void updateCollectedStacks();
+        
+        public boolean setSelectedForce(ItemStack stack);
+        
+        public boolean setSelected(ItemStack stack);
+        
+        public HashMapList<String, ItemStack> getStacks();
+        
+        public ItemStack getSelected();
+        
     }
     
 }

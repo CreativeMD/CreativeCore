@@ -9,6 +9,17 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.client.gui.GuiClientParent;
+import team.creative.creativecore.client.gui.control.collection.GuiClientCheckList;
+import team.creative.creativecore.client.gui.control.collection.GuiClientComboBox;
+import team.creative.creativecore.client.gui.control.collection.GuiClientComboBoxExtension;
+import team.creative.creativecore.client.gui.control.collection.GuiClientComboBoxFlexible;
+import team.creative.creativecore.client.gui.control.collection.GuiClientComboBoxTree;
+import team.creative.creativecore.client.gui.control.collection.GuiClientListBoxBase;
+import team.creative.creativecore.client.gui.control.collection.GuiClientStackSelector;
+import team.creative.creativecore.client.gui.control.collection.GuiClientStackSelectorExtension;
+import team.creative.creativecore.client.gui.control.menu.GuiClientMenu.GuiClientMenuEntry;
+import team.creative.creativecore.client.gui.control.menu.GuiClientMenuRoot;
+import team.creative.creativecore.client.gui.control.menu.GuiClientMenuSub;
 import team.creative.creativecore.client.gui.control.parent.GuiClientPanel;
 import team.creative.creativecore.client.gui.control.parent.GuiClientScrollX;
 import team.creative.creativecore.client.gui.control.parent.GuiClientScrollXY;
@@ -44,6 +55,17 @@ import team.creative.creativecore.client.gui.manager.GuiClientManagerItem;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.control.collection.GuiCheckList;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBoxExtension;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBoxFlexible;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBoxTree;
+import team.creative.creativecore.common.gui.control.collection.GuiListBoxBase;
+import team.creative.creativecore.common.gui.control.collection.GuiStackSelector;
+import team.creative.creativecore.common.gui.control.collection.GuiStackSelectorExtension;
+import team.creative.creativecore.common.gui.control.menu.GuiMenu.GuiMenuEntry;
+import team.creative.creativecore.common.gui.control.menu.GuiMenuRoot;
+import team.creative.creativecore.common.gui.control.menu.GuiMenuSub;
 import team.creative.creativecore.common.gui.control.parent.GuiPanel;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollX;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollXY;
@@ -74,16 +96,18 @@ import team.creative.creativecore.common.gui.control.simple.GuiTabButton;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
+import team.creative.creativecore.common.util.type.list.PairList;
 
 public class GuiClientRegistry {
     
-    private static final Object2ObjectMap<Class<? extends GuiControl>, Function<GuiControl, GuiClientControl>> CONTROL_FACTORY = new Object2ObjectArrayMap<>();
+    private static final PairList<Class<? extends GuiControl>, Function<GuiControl, GuiClientControl>> CONTROL_FACTORY = new PairList<>();
+    private static final Object2ObjectMap<Class<? extends GuiControl>, Function<GuiControl, GuiClientControl>> BACKUP_CONTROL_FACTORY = new Object2ObjectArrayMap<>();
     private static final List<Function<GuiControl, GuiClientControl>> CONTROL_SPECIAL_FACTORY = new ArrayList<>();
     
     private static final Object2ObjectMap<Class<? extends GuiManager>, Function<GuiManager, GuiClientManager>> MANAGER_FACTORY = new Object2ObjectArrayMap<>();
     
     public static GuiClientControl create(GuiControl control) {
-        var function = CONTROL_FACTORY.get(control.getClass());
+        var function = CONTROL_FACTORY.getValue(control.getClass());
         if (function != null)
             return function.apply(control);
         for (int i = 0; i < CONTROL_SPECIAL_FACTORY.size(); i++) {
@@ -91,7 +115,20 @@ public class GuiClientRegistry {
             if (result != null)
                 return result;
         }
-        return null;
+        function = BACKUP_CONTROL_FACTORY.get(control.getClass());
+        if (function == null) {
+            for (int i = CONTROL_FACTORY.size(); --i >= 0;) { // Go in reverse order as this will most likely get a better dist handler from a "higher" superclass. Otherwise all would default to the standard GuiClientControl
+                var pair = CONTROL_FACTORY.get(i);
+                if (pair.key.isInstance(control)) {
+                    BACKUP_CONTROL_FACTORY.put(pair.key, function = pair.value);
+                    break;
+                }
+            }
+            if (function == null)
+                throw new IllegalArgumentException("No dist handler found for control " + control);
+        }
+        return function.apply(control);
+        
     }
     
     public static GuiClientManager create(GuiManager manager) {
@@ -102,7 +139,7 @@ public class GuiClientRegistry {
     }
     
     public static <T extends GuiControl> void register(Class<T> clazz, Function<T, GuiClientControl> factory) {
-        CONTROL_FACTORY.put(clazz, (Function<GuiControl, GuiClientControl>) factory);
+        CONTROL_FACTORY.add(clazz, (Function<GuiControl, GuiClientControl>) factory);
     }
     
     public static <T extends GuiManager> void registerManager(Class<T> clazz, Function<T, GuiClientManager> factory) {
@@ -146,6 +183,19 @@ public class GuiClientRegistry {
         register(GuiTable.class, GuiClientTable::new);
         register(GuiTableScrollable.class, GuiClientTableScrollable::new);
         register(GuiTabs.class, GuiClientTabs::new);
+        
+        register(GuiCheckList.class, GuiClientCheckList::new);
+        register(GuiListBoxBase.class, GuiClientListBoxBase::new);
+        register(GuiComboBox.class, GuiClientComboBox::new);
+        register(GuiComboBoxExtension.class, GuiClientComboBoxExtension::new);
+        register(GuiComboBoxFlexible.class, GuiClientComboBoxFlexible::new);
+        register(GuiComboBoxTree.class, GuiClientComboBoxTree::new);
+        register(GuiStackSelector.class, GuiClientStackSelector::new);
+        register(GuiStackSelectorExtension.class, GuiClientStackSelectorExtension::new);
+        
+        register(GuiMenuEntry.class, GuiClientMenuEntry::new);
+        register(GuiMenuRoot.class, GuiClientMenuRoot::new);
+        register(GuiMenuSub.class, GuiClientMenuSub::new);
         
         registerManager(GuiManagerItem.class, GuiClientManagerItem::new);
     }

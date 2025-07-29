@@ -3,50 +3,31 @@ package team.creative.creativecore.common.gui.control.collection;
 import java.util.function.Function;
 
 import net.minecraft.network.chat.Component;
-import team.creative.creativecore.client.render.text.CompiledText;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class GuiComboBoxFlexible<K> extends GuiComboBox<K> {
     
-    protected K forced;
-    protected Function<K, Component> function;
-    
-    public GuiComboBoxFlexible(String name, TextMapBuilder<K> lines, Function<K, Component> function) {
-        super(name, lines);
-        this.function = function;
+    public GuiComboBoxFlexible(IGuiParent parent, String name, TextMapBuilder<K> lines, Function<K, Component> function) {
+        super(parent, name, lines);
+        dist().init(function);
     }
     
     @Override
-    protected void updateDisplay() {
-        if (forced != null) {
-            text = CompiledText.createAnySize();
-            text.setText(function.apply(forced));
-        } else
-            super.updateDisplay();
+    public GuiComboBoxFlexibleDist<K> dist() {
+        return (GuiComboBoxFlexibleDist<K>) super.dist();
     }
     
     public void forceSelect(K key) {
-        int index = indexOf(key);
-        if (index == -1) {
-            forced = key;
-            updateDisplay();
-            raiseEvent(new GuiControlChangedEvent(this));
-        } else
-            select(index);
+        dist().forceSelect(key);
     }
     
-    @Override
-    public void select(int index) {
-        super.select(index);
-        if (selected() != null)
-            forced = null;
+    public static interface GuiComboBoxFlexibleDist<K> extends GuiComboBoxDist<K> {
+        
+        public void init(Function<K, Component> function);
+        
+        public void forceSelect(K key);
+        
     }
     
-    @Override
-    public K selected() {
-        if (forced != null)
-            return forced;
-        return super.selected();
-    }
 }

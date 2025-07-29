@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 import org.jetbrains.annotations.Nullable;
 
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.IGuiParent;
 
 public class GuiTextfield extends GuiControl {
@@ -117,7 +116,7 @@ public class GuiTextfield extends GuiControl {
         dist().setCursorPositionZero();
     }
     
-    public static interface GuiTextfieldDist extends GuiControlDistHandler {
+    public static interface GuiTextfieldDist extends GuiFocusControlDist {
         
         public void setFloatOnly();
         

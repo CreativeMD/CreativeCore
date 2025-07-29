@@ -4,52 +4,38 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
-import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.util.type.tree.NamedTree;
 
 public class GuiMenuRoot<T> extends GuiMenu<T> {
     
-    protected final GuiExtensionCreator<? extends GuiControl, ? extends GuiMenu> parent;
-    protected final Function<String, Component> title;
-    protected final BiConsumer<String, T> clicked;
-    
-    public GuiMenuRoot(NamedTree<T> tree, GuiExtensionCreator<? extends GuiControl, ? extends GuiMenu> parent, Function<String, Component> title, BiConsumer<String, T> clicked) {
-        super(tree);
-        this.parent = parent;
-        this.title = title;
-        this.clicked = clicked;
-        buildTree();
+    public GuiMenuRoot(IGuiParent parent, NamedTree<T> tree, Function<String, Component> title, BiConsumer<String, T> clicked) {
+        super(parent, tree);
+        dist().set(title, clicked);
+        dist().buildTree();
     }
     
     @Override
-    public boolean isRoot() {
-        return true;
-    }
-    
-    @Override
-    public GuiMenuRoot<T> root() {
-        return this;
-    }
-    
-    @Override
-    public GuiExtensionCreator<? extends GuiControl, ? extends GuiMenu> parentCreator() {
-        return parent;
+    public GuiMenuRootDist<T> dist() {
+        return (GuiMenuRootDist<T>) super.dist();
     }
     
     public Component translate(String path, boolean hasValue) {
-        Component c = title.apply(path);
-        if (!hasValue)
-            c = ((MutableComponent) c).append(" >");
-        return c;
+        return dist().translate(path, hasValue);
     }
     
     public void select(String path, T value) {
-        if (submenu.hasExtension())
-            submenu.close();
-        parent.close();
-        clicked.accept(path, value);
+        dist().select(path, value);
+    }
+    
+    public static interface GuiMenuRootDist<T> extends GuiMenuDist<T> {
+        
+        public void set(Function<String, Component> title, BiConsumer<String, T> clicked);
+        
+        public Component translate(String path, boolean hasValue);
+        
+        public void select(String path, T value);
+        
     }
     
 }

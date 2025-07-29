@@ -1,34 +1,24 @@
 package team.creative.creativecore.common.gui.control.menu;
 
-import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
-import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.util.type.tree.NamedTree;
 
 public class GuiMenuSub<T> extends GuiMenu<T> {
     
-    protected final GuiMenuRoot<T> root;
-    protected final GuiExtensionCreator<GuiMenu, GuiMenu> parent;
-    
-    public GuiMenuSub(GuiMenuRoot<T> root, NamedTree<T> tree, GuiExtensionCreator<GuiMenu, GuiMenu> parent) {
-        super(tree);
-        this.root = root;
-        this.parent = parent;
-        buildTree();
+    public GuiMenuSub(GuiMenuRoot<T> root, NamedTree<T> tree) {
+        super(root.getParent(), tree);
+        dist().setRoot(root);
+        dist().buildTree();
     }
     
     @Override
-    public boolean isRoot() {
-        return false;
+    public GuiMenuSubDist<T> dist() {
+        return (GuiMenuSubDist<T>) super.dist();
     }
     
-    @Override
-    public GuiMenuRoot<T> root() {
-        return root;
-    }
-    
-    @Override
-    public GuiExtensionCreator<? extends GuiControl, GuiMenu> parentCreator() {
-        return parent;
+    public static interface GuiMenuSubDist<T> extends GuiMenuDist<T> {
+        
+        public void setRoot(GuiMenuRoot<T> root);
+        
     }
     
 }

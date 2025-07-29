@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
@@ -23,18 +24,21 @@ import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 public class GuiCheckList<T> extends GuiScrollY {
     
     protected List<GuiCheckListRow> rows = new ArrayList<>();
-    protected int cachedWidth;
-    protected int cachedHeight;
     
     public final boolean modifiable;
     
     public Predicate<T> canBeModified = x -> true;
     
-    public GuiCheckList(String name, boolean modifiable, TextMapBuilder<T> map, Object2BooleanMap<T> selected) {
-        super(name);
+    public GuiCheckList(IGuiParent parent, String name, boolean modifiable, TextMapBuilder<T> map, Object2BooleanMap<T> selected) {
+        super(parent, name);
         this.modifiable = modifiable;
         if (map != null)
             set(map, null);
+    }
+    
+    @Override
+    public GuiCheckListDist dist() {
+        return (GuiCheckListDist) super.dist();
     }
     
     public void set(TextMapBuilder<T> map, Object2BooleanMap<T> selected) {
@@ -42,11 +46,11 @@ public class GuiCheckList<T> extends GuiScrollY {
         clear();
         for (Entry<T, List<Component>> entry : map.entrySet())
             createControl(entry.getKey(), entry.getValue(), selected.getBoolean(entry.getKey()));
-        reflowInternal();
+        dist().reflowInternal();
     }
     
     protected void createControl(T key, List<Component> components, boolean selected) {
-        GuiCheckListRow row = new GuiCheckListRow(key, components, selected);
+        GuiCheckListRow row = new GuiCheckListRow(getParent(), key, components, selected);
         super.add(row);
         rows.add(row);
     }
@@ -77,28 +81,9 @@ public class GuiCheckList<T> extends GuiScrollY {
         throw new UnsupportedOperationException();
     }
     
-    @Override
-    public void flowX(int width, int preferred) {
-        this.cachedWidth = width;
-        super.flowX(width, preferred);
-    }
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        this.cachedHeight = height;
-        super.flowY(width, height, preferred);
-    }
-    
-    public void reflowInternal() {
-        if (hasGui()) {
-            super.flowX(cachedWidth, preferredWidth(cachedWidth));
-            super.flowY(cachedWidth, cachedHeight, preferredHeight(cachedWidth, cachedHeight));
-        }
-    }
-    
     public void removeItem(int index) {
         removeControl(index);
-        reflowInternal();
+        dist().reflowInternal();
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
@@ -112,12 +97,12 @@ public class GuiCheckList<T> extends GuiScrollY {
         return rows.size();
     }
     
-    public T get(int index) {
+    public T getValue(int index) {
         return rows.get(index).value;
     }
     
     public Iterable<T> selectedItems() {
-        return new FunctionIterator<T>(new FilterIterator<GuiCheckListRow>(rows, x -> x.checkBox.value).iterator(), x -> x.value);
+        return new FunctionIterator<T>(new FilterIterator<GuiCheckListRow>(rows, x -> x.checkBox.get()).iterator(), x -> x.value);
     }
     
     public Iterable<T> allItems() {
@@ -125,7 +110,7 @@ public class GuiCheckList<T> extends GuiScrollY {
     }
     
     public boolean checked(int index) {
-        return rows.get(index).checkBox.value;
+        return rows.get(index).checkBox.get();
     }
     
     public int indexOf(T value) {
@@ -141,16 +126,17 @@ public class GuiCheckList<T> extends GuiScrollY {
         public final GuiButton removeButton;
         public final GuiCheckBox checkBox;
         
-        public GuiCheckListRow(T value, List<Component> title, boolean selected) {
+        public GuiCheckListRow(IGuiParent parent, T value, List<Component> title, boolean selected) {
+            super(parent);
             this.value = value;
-            GuiColumn content = (GuiColumn) new GuiColumn().setExpandableX();
-            content.align = Align.LEFT;
-            content.add(checkBox = new GuiCheckBox("box", selected).setTitle(title));
+            GuiColumn content = (GuiColumn) new GuiColumn(parent).setExpandableX();
+            content.setAlign(Align.LEFT);
+            content.add(checkBox = new GuiCheckBox(parent, "box", selected).setTitle(title));
             addColumn(content);
             if (modifiable && canBeModified.test(value)) {
-                GuiColumn remove = new GuiColumn(20);
-                remove.align = Align.CENTER;
-                removeButton = new GuiButton("x", (x) -> removeItem(indexOf(value)));
+                GuiColumn remove = new GuiColumn(parent, 20);
+                remove.setAlign(Align.CENTER);
+                removeButton = new GuiButton(parent, "x", (x) -> removeItem(indexOf(value)));
                 removeButton.setDim(6, 8);
                 removeButton.setAlign(Align.CENTER);
                 removeButton.setTitle(Component.literal("x"));
@@ -159,6 +145,12 @@ public class GuiCheckList<T> extends GuiScrollY {
             } else
                 removeButton = null;
         }
+    }
+    
+    public static interface GuiCheckListDist extends GuiScrollYDist {
+        
+        public void reflowInternal();
+        
     }
     
 }
