@@ -56,7 +56,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
     
     @Override
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        parent.add(new GuiListBoxBase<>("data", false, new ArrayList<>()).setDim(50, 150).setExpandable());
+        parent.add(new GuiListBoxBase<>(parent, "data", false, new ArrayList<>()).setDim(50, 150).setExpandable());
     }
     
     @Override
@@ -85,7 +85,7 @@ public class ConfigTypeArray extends ConfigTypeConveration {
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         Object value = Array.newInstance(arrayKey.field().getType(), box.size());
         for (int i = 0; i < box.size(); i++) {
-            arrayKey.save(box.get(i), configParent, side);
+            arrayKey.save(box.getItem(i), configParent, side);
             Array.set(value, i, arrayKey.copy(configParent.provider(), side));
         }
         return value;

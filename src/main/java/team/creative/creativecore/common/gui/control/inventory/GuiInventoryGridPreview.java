@@ -27,7 +27,7 @@ public class GuiInventoryGridPreview extends GuiParent {
         this.container = container;
         this.fixedSize = Math.min(container.getContainerSize(), cols * rows);
         for (int i = 0; i < fixedSize; i++)
-            super.add(new GuiSlotViewer(parent, container.getItem(i)));
+            super.add(new GuiSlotViewer(this, container.getItem(i)));
     }
     
     @Override

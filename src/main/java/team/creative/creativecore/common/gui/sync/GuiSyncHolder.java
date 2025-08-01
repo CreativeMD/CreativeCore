@@ -1,9 +1,10 @@
 package team.creative.creativecore.common.gui.sync;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.apache.commons.lang3.function.TriFunction;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -87,7 +88,7 @@ public abstract class GuiSyncHolder {
             return sync;
         }
         
-        public <T extends GuiLayer> GuiSyncGlobalLayer<T> layer(String id, BiFunction<HolderLookup.Provider, CompoundTag, T> creator) {
+        public <T extends GuiLayer> GuiSyncGlobalLayer<T> layer(String id, TriFunction<Boolean, HolderLookup.Provider, CompoundTag, T> creator) {
             GuiSyncGlobalLayer<T> sync = new GuiSyncGlobalLayer<T>(this, id, creator);
             SYNC_REGISTRY.register(id, sync);
             return sync;

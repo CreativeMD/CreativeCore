@@ -12,6 +12,7 @@ import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.parent.GuiPanel;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
@@ -26,17 +27,18 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
     private final Side side;
     private final GuiParent panel;
     
-    public GuiConfigSubControlNested(String name, ICreativeConfigHolder holder, Object value, Side side, @Nullable Runnable updateListener, boolean invisiblePanel) {
-        super(name);
+    public GuiConfigSubControlNested(IGuiParent parent, String name, ICreativeConfigHolder holder, Object value, Side side, @Nullable Runnable updateListener, boolean invisiblePanel) {
+        super(parent, name);
         setExpandable();
-        this.panel = invisiblePanel ? new GuiParent(GuiFlow.STACK_Y) : new GuiPanel(GuiFlow.STACK_Y);
+        this.panel = invisiblePanel ? new GuiParent(this, GuiFlow.STACK_Y) : new GuiPanel(this, GuiFlow.STACK_Y);
         add(panel);
         this.holder = holder;
         this.value = value;
         this.side = side;
         this.updateListener = updateListener;
-        flow = GuiFlow.STACK_Y;
+        setFlow(GuiFlow.STACK_Y);
         createControls();
+        setFormatting(ControlFormatting.TRANSPARENT);
     }
     
     public void load(ICreativeConfigHolder holder, Object value) {
@@ -46,18 +48,13 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
     
     @Override
     public void addNameUnmodifieable(String name) {
-        nameLabel = new GuiLabel("title").setTitle(Component.literal(name));
+        nameLabel = new GuiLabel(this, "title").setTitle(Component.literal(name));
         panel.add(nameLabel);
     }
     
     @Override
     public void addNameTextfield(String name) {
-        panel.add(nameField = new GuiTextfield("title", name).setDim(50, 8));
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
+        panel.add(nameField = new GuiTextfield(this, "title", name).setDim(50, 8));
     }
     
     public void createControls() {
@@ -71,12 +68,12 @@ public class GuiConfigSubControlNested extends GuiConfigSubControl {
             String comment = path + key.name + ".comment";
             
             if (key.isFolder()) {
-                GuiConfigSubControlNested config = new GuiConfigSubControlNested(key.name, key.holder(), key.field().get(), side, updateListener, false);
+                GuiConfigSubControlNested config = new GuiConfigSubControlNested(this, key.name, key.holder(), key.field().get(), side, updateListener, false);
                 panel.add(config);
                 config.addNameUnmodifieable(caption);
                 config.createControls();
             } else {
-                GuiConfigControl config = new GuiConfigControl((ConfigKeyType) key, side, caption, comment) {
+                GuiConfigControl config = new GuiConfigControl(this, (ConfigKeyType) key, side, caption, comment) {
                     
                     @Override
                     public void updateButton() {

@@ -102,7 +102,7 @@ public class ConfigKeyType extends ConfigKey {
     
     @Override
     public GuiConfigSubControl create(IGuiConfigParent configParent, String name, Side side) {
-        var control = new GuiConfigSubControl(name);
+        var control = new GuiConfigSubControl(configParent, name);
         converation.createControls(control, configParent, this, side);
         return control;
     }

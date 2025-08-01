@@ -68,7 +68,7 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
         if (!path.isBlank())
             path += ".";
         for (Entry<String, NamedTree<K>> entry : tree.entries())
-            control.add(control.new GuiMenuEntry(control.getParent(), path + entry.getKey(), entry.getValue()));
+            control.add(control.new GuiMenuEntry(control, path + entry.getKey(), entry.getValue()));
     }
     
     @Override

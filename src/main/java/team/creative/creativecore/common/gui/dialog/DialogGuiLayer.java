@@ -29,10 +29,10 @@ public class DialogGuiLayer extends GuiLayer {
     
     @Override
     public void create() {
-        add(new GuiLabel(getParent(), "text").setTitle(title));
-        GuiParent hBox = new GuiParent(getParent(), GuiFlow.STACK_X);
+        add(new GuiLabel(this, "text").setTitle(title));
+        GuiParent hBox = new GuiParent(this, GuiFlow.STACK_X);
         for (DialogButton button : buttons)
-            hBox.add(new GuiButton(getParent(), button.name(), x -> closeDialog(button)).setTitle(Component.translatable("dialog.button." + button.name())));
+            hBox.add(new GuiButton(this, button.name(), x -> closeDialog(button)).setTitle(Component.translatable("dialog.button." + button.name())));
         add(hBox);
     }
     

@@ -60,10 +60,10 @@ public class CreativeCore {
     
     public static MenuType<ContainerIntegration> GUI_CONTAINER;
     
-    public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator.register("config",
-        new GuiCreatorBasic((player, nbt) -> new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.SERVER)));
-    public static final GuiCreatorBasic CONFIG_CLIENT_SYNC_OPEN = GuiCreator.register("clientconfig",
-        new GuiCreatorBasic((player, nbt) -> new ClientSyncGuiLayer(CreativeConfigRegistry.ROOT)));
+    public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator.register("config", new GuiCreatorBasic((nbt, player) -> new ConfigGuiLayer(player.level()
+            .isClientSide(), CreativeConfigRegistry.ROOT, Side.SERVER)));
+    public static final GuiCreatorBasic CONFIG_CLIENT_SYNC_OPEN = GuiCreator.register("clientconfig", new GuiCreatorBasic((nbt, player) -> new ClientSyncGuiLayer(player.level()
+            .isClientSide(), CreativeConfigRegistry.ROOT)));
     
     public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, MODID);
     public static final Supplier<SingletonArgumentInfo<StringArrayArgumentType>> STRING_ARRAY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES.register("string_array",

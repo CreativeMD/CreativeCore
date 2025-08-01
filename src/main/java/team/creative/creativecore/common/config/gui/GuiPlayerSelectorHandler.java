@@ -49,7 +49,7 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.add(new GuiPlayerSelectorButton("not", selector instanceof PlayerSelectorNot select ? select.selector : new PlayerSelectorLevel(0)));
+                gui.add(new GuiPlayerSelectorButton(gui, "not", selector instanceof PlayerSelectorNot select ? select.selector : new PlayerSelectorLevel(0)));
             }
             
             @Override
@@ -65,7 +65,7 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.add(new GuiTextfield("content", selector instanceof PlayerSelectorLevel select ? "" + select.permissionLevel : "0").setNumbersOnly());
+                gui.add(new GuiTextfield(gui, "content", selector instanceof PlayerSelectorLevel select ? "" + select.permissionLevel : "0").setNumbersOnly());
             }
             
             @Override
@@ -79,8 +79,9 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.add(new GuiStateButton<GameType>("mode", selector instanceof PlayerSelectorGamemode select ? select.type : GameType.SURVIVAL, new TextMapBuilder<GameType>()
-                        .addComponent(GameType.values(), x -> x.getShortDisplayName())));
+                gui.add(
+                    new GuiStateButton<GameType>(gui, "mode", selector instanceof PlayerSelectorGamemode select ? select.type : GameType.SURVIVAL, new TextMapBuilder<GameType>()
+                            .addComponent(GameType.values(), x -> x.getShortDisplayName())));
             }
             
             @Override
@@ -94,7 +95,7 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             
             @Override
             public void createControls(PlayerSelectorDialog gui, PlayerSelector selector) {
-                gui.add(new GuiTextfield("content", selector instanceof PlayerSelectorCommandSelector select ? select.pattern : "@a[]"));
+                gui.add(new GuiTextfield(gui, "content", selector instanceof PlayerSelectorCommandSelector select ? select.pattern : "@a[]"));
             }
             
             @Override
@@ -136,10 +137,10 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             List<GuiPlayerSelectorButton> buttons = new ArrayList<>();
             if (selectors != null)
                 for (int i = 0; i < selectors.length; i++)
-                    buttons.add(new GuiPlayerSelectorButton("" + i, selectors[i]));
-            GuiListBoxBase<GuiPlayerSelectorButton> list = new GuiListBoxBase<>("list", true, buttons);
+                    buttons.add(new GuiPlayerSelectorButton(gui, "" + i, selectors[i]));
+            GuiListBoxBase<GuiPlayerSelectorButton> list = new GuiListBoxBase<>(gui, "list", true, buttons);
             gui.add(list);
-            gui.add(new GuiButton("add", x -> list.addItem(new GuiPlayerSelectorButton("new", new PlayerSelectorLevel(0)))));
+            gui.add(new GuiButton(gui, "add", x -> list.addItem(new GuiPlayerSelectorButton(gui, "new", new PlayerSelectorLevel(0)))));
         }
         
         @Override
@@ -147,7 +148,7 @@ public abstract class GuiPlayerSelectorHandler<T extends PlayerSelector> {
             GuiListBoxBase<GuiPlayerSelectorButton> list = gui.get("list");
             PlayerSelector[] selectors = new PlayerSelector[list.size()];
             for (int i = 0; i < selectors.length; i++)
-                selectors[i] = list.get(i).get();
+                selectors[i] = list.getItem(i).get();
             if (selectors.length > 0)
                 return parseSelector(selectors);
             return null;

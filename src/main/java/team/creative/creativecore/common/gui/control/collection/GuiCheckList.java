@@ -50,7 +50,7 @@ public class GuiCheckList<T> extends GuiScrollY {
     }
     
     protected void createControl(T key, List<Component> components, boolean selected) {
-        GuiCheckListRow row = new GuiCheckListRow(getParent(), key, components, selected);
+        GuiCheckListRow row = new GuiCheckListRow(this, key, components, selected);
         super.add(row);
         rows.add(row);
     }
@@ -129,14 +129,14 @@ public class GuiCheckList<T> extends GuiScrollY {
         public GuiCheckListRow(IGuiParent parent, T value, List<Component> title, boolean selected) {
             super(parent);
             this.value = value;
-            GuiColumn content = (GuiColumn) new GuiColumn(parent).setExpandableX();
+            GuiColumn content = (GuiColumn) new GuiColumn(this).setExpandableX();
             content.setAlign(Align.LEFT);
-            content.add(checkBox = new GuiCheckBox(parent, "box", selected).setTitle(title));
+            content.add(checkBox = new GuiCheckBox(this, "box", selected).setTitle(title));
             addColumn(content);
             if (modifiable && canBeModified.test(value)) {
-                GuiColumn remove = new GuiColumn(parent, 20);
+                GuiColumn remove = new GuiColumn(this, 20);
                 remove.setAlign(Align.CENTER);
-                removeButton = new GuiButton(parent, "x", (x) -> removeItem(indexOf(value)));
+                removeButton = new GuiButton(this, "x", (x) -> removeItem(indexOf(value)));
                 removeButton.setDim(6, 8);
                 removeButton.setAlign(Align.CENTER);
                 removeButton.setTitle(Component.literal("x"));

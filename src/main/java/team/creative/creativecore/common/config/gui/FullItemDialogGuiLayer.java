@@ -27,9 +27,9 @@ public class FullItemDialogGuiLayer extends GuiLayer {
     
     public GuiCreativeIngredientHandler handler;
     
-    public FullItemDialogGuiLayer() {
-        super("info", 250, 230);
-        this.flow = GuiFlow.STACK_Y;
+    public FullItemDialogGuiLayer(boolean client) {
+        super(client, "info", 250, 230);
+        this.setFlow(GuiFlow.STACK_Y);
         registerEventChanged(x -> {
             if (x.control.is("type")) {
                 init();
@@ -51,31 +51,31 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         
         clear();
         
-        GuiTopBottomBox topBottom = new GuiTopBottomBox();
+        GuiTopBottomBox topBottom = new GuiTopBottomBox(this);
         add(topBottom);
-        box = new GuiComboBox<GuiCreativeIngredientHandler>("type", new TextMapBuilder<GuiCreativeIngredientHandler>().addEntrySet(GuiCreativeIngredientHandler.REGISTRY.entrySet(),
-            x -> Component.literal(x.getKey())));
+        box = new GuiComboBox<GuiCreativeIngredientHandler>(this, "type", new TextMapBuilder<GuiCreativeIngredientHandler>().addEntrySet(GuiCreativeIngredientHandler.REGISTRY
+                .entrySet(), x -> Component.literal(x.getKey())));
         box.setExpandableX();
         box.select(handler);
         topBottom.addTop(box);
         
         handler.createControls(topBottom.top, info);
         
-        topBottom.addBottom(new GuiParent("spacer").setDim(-1, 4));
-        topBottom.addBottom(new GuiLabel("latest").setTranslate("gui.ingredient.latest"));
-        GuiScrollY scroll = (GuiScrollY) new GuiScrollY("latest").setDim(100, 40).setExpandableX();
+        topBottom.addBottom(new GuiParent(this, "spacer").setDim(-1, 4));
+        topBottom.addBottom(new GuiLabel(this, "latest").setTranslate("gui.ingredient.latest"));
+        GuiScrollY scroll = (GuiScrollY) new GuiScrollY(this, "latest").setDim(100, 40).setExpandableX();
         for (int i = 0; i < latest.size(); i++) {
             final int id = i;
-            scroll.add(new GuiButton("" + i, x -> {
+            scroll.add(new GuiButton(this, "" + i, x -> {
                 FullItemDialogGuiLayer.this.button.set(latest.get(id));
                 closeTopLayer();
-                playSound(SoundEvents.UI_BUTTON_CLICK);
+                dist().playSound(SoundEvents.UI_BUTTON_CLICK);
             }).setTitle(GuiInfoStackButton.getLabelText(latest.get(i))).setAlign(Align.CENTER).setExpandableX());
         }
         topBottom.addBottom(scroll);
         
-        GuiLeftRightBox actionBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> closeTopLayer()).setTitle(Component.translatable("gui.cancel"))).addRight(
-            new GuiButton("save", x -> {
+        GuiLeftRightBox actionBox = new GuiLeftRightBox(this).addLeft(new GuiButton(this, "cancel", x -> closeTopLayer()).setTitle(Component.translatable("gui.cancel"))).addRight(
+            new GuiButton(this, "save", x -> {
                 CreativeIngredient parsedInfo = handler.parseControls(topBottom.top);
                 if (parsedInfo != null) {
                     FullItemDialogGuiLayer.this.button.set(parsedInfo);

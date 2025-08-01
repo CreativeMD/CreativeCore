@@ -18,7 +18,7 @@ public abstract class GuiRegistryObjectHandler {
         
         @Override
         public void createControls(GuiParent parent, Registry registry) {
-            parent.add(new GuiComboBox<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.keySet(), x -> {
+            parent.add(new GuiComboBox<ResourceLocation>(parent, "elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.keySet(), x -> {
                 if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                     return Component.literal(x.getPath());
                 return Component.literal(x.toString());
@@ -44,7 +44,7 @@ public abstract class GuiRegistryObjectHandler {
             
             @Override
             public void createControls(GuiParent parent, Registry registry) {
-                parent.add(new GuiStackSelector("content", null, new GuiStackSelector.CreativeCollector(new GuiStackSelector.GuiBlockSelector())));
+                parent.add(new GuiStackSelector(parent, "content", new GuiStackSelector.CreativeCollector(new GuiStackSelector.GuiBlockSelector())));
             }
             
             @Override

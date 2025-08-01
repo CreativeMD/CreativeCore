@@ -2,6 +2,7 @@ package team.creative.creativecore.common.config.gui;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.sync.GuiSyncGlobalLayer;
@@ -10,17 +11,17 @@ import team.creative.creativecore.common.util.player.PlayerSelector;
 
 public class GuiPlayerSelectorButton extends GuiButton {
     
-    public static final GuiSyncGlobalLayer<PlayerSelectorDialog> PLAYER_SELECTOR = GuiSyncHolder.GLOBAL.layer("player_selector", (p, nbt) -> new PlayerSelectorDialog());
+    public static final GuiSyncGlobalLayer<PlayerSelectorDialog> PLAYER_SELECTOR = GuiSyncHolder.GLOBAL.layer("player_selector", (c, p, nbt) -> new PlayerSelectorDialog(c));
     
     private PlayerSelector info;
     
-    public GuiPlayerSelectorButton(String name, PlayerSelector info) {
-        super(name, null);
-        pressed = x -> {
+    public GuiPlayerSelectorButton(IGuiParent parent, String name, PlayerSelector info) {
+        super(parent, name, null);
+        setPressed(x -> {
             PlayerSelectorDialog layer = PLAYER_SELECTOR.open(getIntegratedParent(), new CompoundTag());
             layer.button = this;
             layer.init();
-        };
+        });
         setTitle(Component.literal(getLabelText(info)));
         this.info = info;
     }

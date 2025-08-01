@@ -18,9 +18,9 @@ public class GuiTopBottomBox extends GuiParent {
         setExpandableY();
         setAlign(Align.STRETCH);
         setVAlign(VAlign.STRETCH);
-        this.top = (GuiParent) new GuiParent(parent, GuiFlow.STACK_Y).setExpandableY();
+        this.top = (GuiParent) new GuiParent(this, GuiFlow.STACK_Y).setExpandableY();
         super.add(top);
-        this.bottom = new GuiParent(parent, GuiFlow.STACK_Y);
+        this.bottom = new GuiParent(this, GuiFlow.STACK_Y);
         super.add(bottom);
     }
     

@@ -42,16 +42,16 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
     }
     
     protected void createControl(int index) {
-        GuiRow row = new GuiRow(getParent());
+        GuiRow row = new GuiRow(this);
         super.add(row);
-        GuiColumn content = (GuiColumn) new GuiColumn(getParent()).setExpandableX();
+        GuiColumn content = (GuiColumn) new GuiColumn(this).setExpandableX();
         content.setAlign(Align.CENTER);
         content.add(this.content.get(index));
         row.addColumn(content);
         if (modifiable && canBeModified.test(this.content.get(index))) {
-            GuiColumn remove = new GuiColumn(getParent(), 20);
+            GuiColumn remove = new GuiColumn(this, 20);
             remove.setAlign(Align.CENTER);
-            remove.add(new GuiButtonRemove(getParent(), index));
+            remove.add(new GuiButtonRemove(this, index));
             row.addColumn(remove);
         }
         rows.add(row);

@@ -1,8 +1,9 @@
 package team.creative.creativecore.common.config.gui;
 
 import net.minecraft.core.HolderLookup;
+import team.creative.creativecore.common.gui.IGuiParent;
 
-public interface IGuiConfigParent {
+public interface IGuiConfigParent extends IGuiParent {
     
     public HolderLookup.Provider provider();
     

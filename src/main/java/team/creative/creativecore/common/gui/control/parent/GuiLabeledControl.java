@@ -17,10 +17,11 @@ public class GuiLabeledControl extends GuiParent {
     public GuiLabeledControl(IGuiParent parent, Component text, GuiControl control) {
         super(parent, GuiFlow.STACK_X);
         setVAlign(VAlign.CENTER);
-        label = new GuiLabel(parent, "label");
+        label = new GuiLabel(this, "label");
         if (text != null)
             label.setTitle(text);
         add(label);
+        setParent(control, this);
         add(control);
     }
     

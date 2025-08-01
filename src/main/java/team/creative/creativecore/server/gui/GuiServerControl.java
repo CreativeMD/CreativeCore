@@ -2,13 +2,22 @@ package team.creative.creativecore.server.gui;
 
 import java.util.List;
 
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
 
 public class GuiServerControl<T extends GuiControl> implements GuiControlDistHandler {
+    
+    public final T control;
+    
+    public GuiServerControl(T control) {
+        this.control = control;
+    }
     
     @Override
     public void setVisible(boolean visible) {}
@@ -61,5 +70,22 @@ public class GuiServerControl<T extends GuiControl> implements GuiControlDistHan
     
     @Override
     public void setFormatting(ControlFormatting formatting) {}
+    
+    @Override
+    public ControlFormattingCustom setCustomFormatting() {
+        return new ControlFormattingCustom(ControlFormatting.CLICKABLE); // Just return something to prevent a crash
+    }
+    
+    @Override
+    public void playSound(Reference<SoundEvent> sound) {}
+    
+    @Override
+    public void playSound(SoundEvent event) {}
+    
+    @Override
+    public void playSound(SoundEvent event, float volume, float pitch) {}
+    
+    @Override
+    public void playSound(Reference<SoundEvent> event, float volume, float pitch) {}
     
 }

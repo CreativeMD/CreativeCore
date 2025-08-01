@@ -12,8 +12,8 @@ public class PlayerSelectorDialog extends GuiLayer {
     public GuiPlayerSelectorButton button;
     public GuiPlayerSelectorHandler handler;
     
-    public PlayerSelectorDialog() {
-        super("playerselector", 150, 150);
+    public PlayerSelectorDialog(boolean client) {
+        super(client, "playerselector", 150, 150);
         registerEventChanged(event -> {
             if (event.control.is("type")) {
                 reinit();
@@ -33,19 +33,19 @@ public class PlayerSelectorDialog extends GuiLayer {
         
         clear();
         
-        box = new GuiComboBox<String>("type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), Component::literal));
+        box = new GuiComboBox<String>(this, "type", new TextMapBuilder<String>().addComponent(GuiPlayerSelectorHandler.REGISTRY.keys(), Component::literal));
         box.select(handler.getName());
         add(box);
         
         handler.createControls(this, selector);
-        add(new GuiButton("Cancel", x -> closeTopLayer()));
-        add(new GuiButton("Save", x -> {
+        add(new GuiButton(this, "cancel", x -> closeTopLayer()).setTranslate("gui.cancel"));
+        add(new GuiButton(this, "save", x -> {
             PlayerSelector parsed = handler.parseSelector(PlayerSelectorDialog.this);
             if (parsed != null) {
                 PlayerSelectorDialog.this.button.set(parsed);
                 closeTopLayer();
             }
-        }));
+        }).setTranslate("gui.save"));
     }
     
 }

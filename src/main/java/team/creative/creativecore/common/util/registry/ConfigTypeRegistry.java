@@ -14,6 +14,7 @@ import team.creative.creativecore.common.config.core.ConfigEqualChecker;
 import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlNested;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.util.mc.JsonUtils;
 import team.creative.creativecore.common.util.mc.NBTUtils;
 
@@ -75,9 +76,9 @@ public class ConfigTypeRegistry<T> implements ICreativeRegistry {
         return type.save(provider, data, nbt, side);
     }
     
-    public GuiConfigSubControlNested create(String name, T data, Side side) {
+    public GuiConfigSubControlNested create(IGuiParent parent, String name, T data, Side side) {
         var type = get(data);
-        return new GuiConfigSubControlNested(name, type.create(side, data), data, side, null, true);
+        return new GuiConfigSubControlNested(parent, name, type.create(side, data), data, side, null, true);
     }
     
     public T createDefault(String id) {

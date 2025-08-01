@@ -51,7 +51,7 @@ public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends 
         
         if (box.hasSearchbar()) {
             if (textfield == null) {
-                textfield = new GuiTextfield(control.getParent(), "searchBar", search == null ? "" : search);
+                textfield = new GuiTextfield(control, "searchBar", search == null ? "" : search);
                 control.addCustomControl(textfield.setExpandableX());
             }
             textfield.dist().focus();
@@ -62,7 +62,7 @@ public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends 
         for (CompiledText text : box.lines()) {
             if (search == null || text.contains(search)) {
                 final int index = i;
-                var label = new GuiListEntry(control.getParent(), "" + i, i, i == box.selectedIndex(), x -> {
+                var label = new GuiListEntry(control, "" + i, i, i == box.selectedIndex(), x -> {
                     creator.parent.select(index);
                     creator.close();
                 });

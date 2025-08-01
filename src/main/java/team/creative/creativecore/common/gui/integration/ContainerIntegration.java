@@ -18,6 +18,7 @@ import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.gui.packet.LayerClosePacket;
 import team.creative.creativecore.common.network.CreativePacket;
+import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class ContainerIntegration extends AbstractContainerMenu implements IGuiIntegratedParent {
     
@@ -148,6 +149,11 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     @Override
     public <T extends GuiManagerDist> T createDist(GuiManager<T> manager) {
         return (isClient() ? GuiLayer.CLIENT : GuiLayer.SERVER).createDist(manager);
+    }
+    
+    @Override
+    public Rect toScreenRect(GuiControl control, Rect rect) {
+        throw new UnsupportedOperationException();
     }
     
 }

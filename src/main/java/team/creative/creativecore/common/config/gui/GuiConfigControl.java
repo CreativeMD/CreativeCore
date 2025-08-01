@@ -6,13 +6,13 @@ import net.minecraft.network.chat.Component;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiSizeRatioRules;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.TextBuilder;
 
 public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
@@ -24,33 +24,33 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
     private Object extra;
     private boolean loading = false;
     
-    public GuiConfigControl(ConfigKeyType field, Side side, int width, boolean showReset) {
-        this(field, side, null, null, width, showReset);
+    public GuiConfigControl(IGuiParent parent, ConfigKeyType field, Side side, int width, boolean showReset) {
+        this(parent, field, side, null, null, width, showReset);
     }
     
-    public GuiConfigControl(ConfigKeyType field, Side side, String caption, String comment) {
-        this(field, side, caption, comment, 200, true);
+    public GuiConfigControl(IGuiParent parent, ConfigKeyType field, Side side, String caption, String comment) {
+        this(parent, field, side, caption, comment, 200, true);
     }
     
-    public GuiConfigControl(ConfigKeyType field, Side side, String caption, String comment, int width, boolean showReset) {
-        super();
+    public GuiConfigControl(IGuiParent parent, ConfigKeyType field, Side side, String caption, String comment, int width, boolean showReset) {
+        super(parent);
         this.field = field;
         this.side = side;
         if (caption != null) {
             this.setExpandableX();
-            GuiColumn text = (GuiColumn) new GuiColumn().setDim(new GuiSizeRatioRules().maxWidth(200));
-            text.valign = VAlign.CENTER;
+            GuiColumn text = (GuiColumn) new GuiColumn(this).setDim(new GuiSizeRatioRules().maxWidth(200));
+            text.setVAlign(VAlign.CENTER);
             addColumn(text);
-            text.add(new GuiLabel(caption + ":").setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+            text.add(new GuiLabel(this, caption + ":").setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         }
         
-        addColumn(main = (GuiColumn) new GuiColumn(width).setExpandableX());
+        addColumn(main = (GuiColumn) new GuiColumn(this, width).setExpandableX());
         
         if (showReset) {
-            GuiColumn end = new GuiColumn(20);
-            end.align = Align.CENTER;
+            GuiColumn end = new GuiColumn(this, 20);
+            end.setAlign(Align.CENTER);
             addColumn(end);
-            this.resetButton = (GuiButton) new GuiButton("r", x -> GuiConfigControl.this.reset()).setTranslate("gui.config.reset").setAlign(Align.CENTER);
+            this.resetButton = (GuiButton) new GuiButton(this, "r", x -> GuiConfigControl.this.reset()).setTranslate("gui.config.reset").setAlign(Align.CENTER);
             end.add(resetButton.setTooltip(new TextBuilder().text("reset to default").build()));
         }
         
@@ -60,18 +60,13 @@ public class GuiConfigControl extends GuiRow implements IGuiConfigParent {
         });
     }
     
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT;
-    }
-    
     public boolean isDefault() {
         return !field.isDefault(field.converation.save(main, this, field, side), side);
     }
     
     public void updateButton() {
         if (resetButton != null)
-            this.resetButton.enabled = isDefault();
+            this.resetButton.setEnabled(isDefault());
     }
     
     public void init(JsonElement initalValue) {

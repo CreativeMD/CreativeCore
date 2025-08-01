@@ -16,11 +16,10 @@ public class GuiPlayerInventoryGrid extends GuiInventoryGrid {
     
     @Override
     protected void createInventoryGrid(BiFunction<Container, Integer, Slot> slotFactory) {
-        var parent = getParent();
         for (int i = 9; i < fixedSize; i++)
-            addSlot(new GuiSlot(parent, slotFactory.apply(container, i)));
+            addSlot(new GuiSlot(this, slotFactory.apply(container, i)));
         for (int i = 0; i < 9; i++)
-            addSlot(new GuiSlot(parent, slotFactory.apply(container, i)));
+            addSlot(new GuiSlot(this, slotFactory.apply(container, i)));
     }
     
     @Override

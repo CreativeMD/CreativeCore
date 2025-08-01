@@ -75,7 +75,7 @@ public abstract class PlayerSelector {
             @Environment(EnvType.CLIENT)
             @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiPlayerSelectorButton("data", new PlayerSelectorLevel(0)));
+                parent.add(new GuiPlayerSelectorButton(parent, "data", new PlayerSelectorLevel(0)));
             }
             
             @Override

@@ -43,8 +43,8 @@ public class PermissionGuiLayer extends GuiLayer {
     private List<PermissionGuiGroup> groups;
     private final HashMap<ConfigKeyType, GuiRow> rows = new HashMap<>();
     
-    public PermissionGuiLayer() {
-        super("permission", 500, 260);
+    public PermissionGuiLayer(boolean client) {
+        super(client, "permission", 500, 260);
     }
     
     @Override
@@ -52,14 +52,14 @@ public class PermissionGuiLayer extends GuiLayer {
         if (button == null)
             return;
         
-        flow = GuiFlow.STACK_Y;
-        align = Align.STRETCH;
+        setFlow(GuiFlow.STACK_Y);
+        setAlign(Align.STRETCH);
         converation = button.key.converation();
         groups = new ArrayList<>();
         
-        GuiParent top = new GuiParent();
+        GuiParent top = new GuiParent(this);
         add(top);
-        top.add(new GuiButton("add", x -> {
+        top.add(new GuiButton(getParent(), "add", x -> {
             
             PermissionGuiGroup group;
             if (converation != null) {
@@ -68,7 +68,7 @@ public class PermissionGuiLayer extends GuiLayer {
                 group = new PermissionGuiGroupSimple("", null);
                 groups.add(group);
                 
-                GuiColumn col = new GuiColumn();
+                GuiColumn col = new GuiColumn(this);
                 ((PermissionGuiGroupSimple) group).control = col;
                 
                 converation.createControls(col, button.configParent, button.key, button.side);
@@ -82,8 +82,8 @@ public class PermissionGuiLayer extends GuiLayer {
                 
                 for (Entry<ConfigKeyType, GuiRow> entry : rows.entrySet()) {
                     
-                    GuiColumn col = new GuiColumn();
-                    GuiConfigControl config = new GuiConfigControl(entry.getKey(), button.side, 100, false) {
+                    GuiColumn col = new GuiColumn(this);
+                    GuiConfigControl config = new GuiConfigControl(this, entry.getKey(), button.side, 100, false) {
                         
                         @Override
                         public void changed() {
@@ -103,16 +103,16 @@ public class PermissionGuiLayer extends GuiLayer {
             reflow();
         }).setTranslate("gui.perm.add"));
         
-        table = new GuiTableScrollable();
+        table = new GuiTableScrollable(this);
         add(table);
         GuiRow topRow = table.getTopRow();
-        topRow.addColumn(new GuiColumn());
+        topRow.addColumn(new GuiColumn(this));
         if (converation != null) {
-            GuiRow row = new GuiRow();
+            GuiRow row = new GuiRow(this);
             
             String caption = translateOrDefault("gui.content", "content");
-            GuiColumn labelCol = new GuiColumn();
-            labelCol.setVAlign(VAlign.CENTER).add(new GuiLabel("label").setTitle(Component.literal(caption + ":")));
+            GuiColumn labelCol = new GuiColumn(this);
+            labelCol.setVAlign(VAlign.CENTER).add(new GuiLabel(this, "label").setTitle(Component.literal(caption + ":")));
             row.addColumn(labelCol);
             
             table.addRow(row);
@@ -122,7 +122,7 @@ public class PermissionGuiLayer extends GuiLayer {
                 PermissionGuiGroupSimple group = new PermissionGuiGroupSimple(entry.getKey(), defaultValue);
                 groups.add(group);
                 
-                GuiColumn col = new GuiColumn();
+                GuiColumn col = new GuiColumn(this);
                 group.control = col;
                 
                 converation.createControls(col, button.configParent, button.key, button.side);
@@ -149,23 +149,23 @@ public class PermissionGuiLayer extends GuiLayer {
                         continue;
                     
                     if (rows.size() <= i) {
-                        GuiRow row = new GuiRow();
+                        GuiRow row = new GuiRow(this);
                         String path = "config." + String.join(".", holder.path());
                         if (!path.endsWith("."))
                             path += ".";
                         String caption = translateOrDefault(path + key.name + ".name", key.name);
                         String comment = path + key.name + ".comment";
-                        GuiColumn col = new GuiColumn();
-                        col.setVAlign(VAlign.CENTER).add(new GuiLabel("label" + i).setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(comment)
-                                .build()));
+                        GuiColumn col = new GuiColumn(this);
+                        col.setVAlign(VAlign.CENTER).add(new GuiLabel(this, "label" + i).setTitle(Component.literal(caption + ":")).setTooltip(new TextBuilder().translateIfCan(
+                            comment).build()));
                         row.addColumn(col);
                         table.addRow(row);
                         rows.add(row);
                         this.rows.put((ConfigKeyType) key, row);
                     }
                     
-                    GuiColumn col = new GuiColumn();
-                    GuiConfigControl config = new GuiConfigControl((ConfigKeyType) key, Side.SERVER, 100, false) {
+                    GuiColumn col = new GuiColumn(this);
+                    GuiConfigControl config = new GuiConfigControl(this, (ConfigKeyType) key, Side.SERVER, 100, false) {
                         
                         @Override
                         public void changed() {
@@ -190,10 +190,10 @@ public class PermissionGuiLayer extends GuiLayer {
             i++;
         }
         
-        GuiLeftRightBox bottom = new GuiLeftRightBox();
-        add(bottom.setUnexpandableX());
-        bottom.addLeft(new GuiButton("cancel", x -> closeTopLayer()).setTranslate("gui.cancel"));
-        bottom.addRight(new GuiButton("save", x -> {
+        GuiLeftRightBox bottom = new GuiLeftRightBox(this);
+        add(bottom.setFixedX());
+        bottom.addLeft(new GuiButton(this, "cancel", x -> closeTopLayer()).setTranslate("gui.cancel"));
+        bottom.addRight(new GuiButton(this, "save", x -> {
             button.setNewValue(save());
             force = true;
             closeTopLayer();
@@ -204,18 +204,18 @@ public class PermissionGuiLayer extends GuiLayer {
     }
     
     protected void addGroupHeader(boolean defaultCol, PermissionGuiGroup group, String name) {
-        GuiColumn col = new GuiColumn();
+        GuiColumn col = new GuiColumn(this);
         col.setVAlign(VAlign.CENTER).setDim(new GuiSizeRules().maxWidth(100));
         if (defaultCol)
-            col.add(new GuiLabel("name").setTitle(Component.literal(name)));
+            col.add(new GuiLabel(this, "name").setTitle(Component.literal(name)));
         else
-            col.add(group.textfield = new GuiTextfield("name", name).setDim(100));
+            col.add(group.textfield = new GuiTextfield(this, "name", name).setDim(100));
         
         if (!name.isEmpty() && button.defaultValue.containsKey(name))
-            col.add(group.resetButton = (GuiButton) new GuiButton("r", x -> group.reset()).setTranslate("gui.config.reset").setAlign(Align.CENTER));
+            col.add(group.resetButton = (GuiButton) new GuiButton(this, "r", x -> group.reset()).setTranslate("gui.config.reset").setAlign(Align.CENTER));
         
         if (!defaultCol)
-            col.add(new GuiButton("x", x -> {
+            col.add(new GuiButton(this, "x", x -> {
                 int index = groups.indexOf(group);
                 groups.remove(index);
                 table.removeContentCol(index);
@@ -266,7 +266,7 @@ public class PermissionGuiLayer extends GuiLayer {
         
         public void updateResetButton() {
             if (resetButton != null)
-                resetButton.enabled = !isDefault();
+                resetButton.setEnabled(!isDefault());
         }
         
         public abstract Object save();

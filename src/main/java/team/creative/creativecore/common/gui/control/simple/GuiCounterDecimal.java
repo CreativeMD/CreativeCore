@@ -42,8 +42,8 @@ public class GuiCounterDecimal extends GuiParent {
         this.stepAmount = 1;
         this.setSpacing(1);
         this.setFlow(GuiFlow.STACK_X);
-        this.textfield = new GuiTextfield(parent, "value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
-        this.buttons = new GuiParent(parent, GuiFlow.STACK_Y);
+        this.textfield = new GuiTextfield(this, "value", "" + Mth.clamp(value, min, max)).setDim(30, 10).setFloatOnly();
+        this.buttons = new GuiParent(this, GuiFlow.STACK_Y);
         this.buttons.setSpacing(0);
         this.buttonsFormatting = buttonsFormatting;
         this.createButtons();
@@ -52,8 +52,8 @@ public class GuiCounterDecimal extends GuiParent {
     }
     
     protected void createButtons() {
-        this.buttons.add(new GuiButtonHold(getParent(), "+", x -> stepUp()).setHoverEffect(true).setTranslate("gui.plus").setFormatting(buttonsFormatting).setDim(6, 3));
-        this.buttons.add(new GuiButtonHold(getParent(), "-", x -> stepDown()).setHoverEffect(true).setTranslate("gui.minus").setFormatting(buttonsFormatting).setDim(6, 3));
+        this.buttons.add(new GuiButtonHold(this, "+", x -> stepUp()).setHoverEffect(true).setTranslate("gui.plus").setFormatting(buttonsFormatting).setDim(6, 3));
+        this.buttons.add(new GuiButtonHold(this, "-", x -> stepDown()).setHoverEffect(true).setTranslate("gui.minus").setFormatting(buttonsFormatting).setDim(6, 3));
     }
     
     @Override

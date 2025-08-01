@@ -36,9 +36,9 @@ public class ConfigGuiLayer extends GuiLayer {
     public int nextAction;
     public boolean force;
     
-    public ConfigGuiLayer(ICreativeConfigHolder holder, Side side) {
-        super("config", 420, 234);
-        this.flow = GuiFlow.STACK_Y;
+    public ConfigGuiLayer(boolean client, ICreativeConfigHolder holder, Side side) {
+        super(client, "config", 420, 234);
+        this.setFlow(GuiFlow.STACK_Y);
         this.rootHolder = holder;
         this.holder = holder;
         this.side = side;
@@ -68,17 +68,17 @@ public class ConfigGuiLayer extends GuiLayer {
             savePage();
             clear();
         }
-        GuiLeftRightBox upperBox = new GuiLeftRightBox();
-        upperBox.addLeft(new GuiLabel("path").setTitle(Component.literal("/" + String.join("/", holder.path()))));
+        GuiLeftRightBox upperBox = new GuiLeftRightBox(this);
+        upperBox.addLeft(new GuiLabel(this, "path").setTitle(Component.literal("/" + String.join("/", holder.path()))));
         
-        upperBox.addRight(new GuiButton("back", x -> loadHolder(holder.parent())).setTranslate("gui.back").setEnabled(holder != rootHolder));
+        upperBox.addRight(new GuiButton(this, "back", x -> loadHolder(holder.parent())).setTranslate("gui.back").setEnabled(holder != rootHolder));
         this.holder = holder;
         
         add(upperBox);
-        GuiScrollY box = new GuiScrollY("box").setDim(100, 100).setExpandable();
+        GuiScrollY box = new GuiScrollY(this, "box").setDim(100, 100).setExpandable();
         add(box);
         
-        GuiTable table = new GuiTable("table").setExpandable();
+        GuiTable table = new GuiTable(this, "table").setExpandable();
         box.add(table);
         JsonObject json = JsonUtils.tryGet(ROOT, holder.path());
         
@@ -93,36 +93,36 @@ public class ConfigGuiLayer extends GuiLayer {
             String comment = path + key.name + ".comment";
             if (key.isFolder()) {
                 if (!key.holder().isEmpty(side)) {
-                    GuiRow row = new GuiRow();
+                    GuiRow row = new GuiRow(this);
                     table.addRow(row);
-                    GuiColumn col = new GuiColumn();
+                    GuiColumn col = new GuiColumn(this);
                     row.addColumn(col);
-                    col.add(new GuiButton(caption, x -> loadHolder(key.holder())).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment)
+                    col.add(new GuiButton(this, caption, x -> loadHolder(key.holder())).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment)
                             .build()));
                 }
             } else {
                 if (!key.is(side))
                     continue;
                 
-                GuiConfigControl control = new GuiConfigControl((ConfigKeyType) key, side, caption, comment);
+                GuiConfigControl control = new GuiConfigControl(this, (ConfigKeyType) key, side, caption, comment);
                 table.addRow(control);
                 control.init(json != null ? json.get(key.name) : null);
             }
             
         }
         
-        GuiLeftRightBox lowerBox = new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
+        GuiLeftRightBox lowerBox = new GuiLeftRightBox(this).addLeft(new GuiButton(this, "cancel", x -> {
             nextAction = 0;
             closeTopLayer();
         }).setTitle(Component.translatable("gui.cancel")));
         
         if (side.isServer())
-            lowerBox.addLeft(new GuiButton("client-config", x -> {
+            lowerBox.addLeft(new GuiButton(this, "client-config", x -> {
                 nextAction = 1;
                 closeTopLayer();
             }).setTitle(Component.translatable("gui.client-config")));
         
-        lowerBox.addRight(new GuiButton("save", x -> {
+        lowerBox.addRight(new GuiButton(this, "save", x -> {
             nextAction = 0;
             savePage();
             sendUpdate();

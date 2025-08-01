@@ -10,6 +10,7 @@ import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.key.ConfigKeyType;
 import team.creative.creativecore.common.gui.GuiControl;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 
 public class GuiConfigSubControlHolder extends GuiConfigSubControl {
@@ -19,14 +20,14 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     private final Runnable updateListener;
     private final Side side;
     
-    public GuiConfigSubControlHolder(String name, ICreativeConfigHolder holder, Object value, Side side, @Nullable Runnable updateListener) {
-        super(name);
+    public GuiConfigSubControlHolder(IGuiParent parent, String name, ICreativeConfigHolder holder, Object value, Side side, @Nullable Runnable updateListener) {
+        super(parent, name);
         setExpandable();
         this.holder = holder;
         this.value = value;
         this.side = side;
         this.updateListener = updateListener;
-        flow = GuiFlow.STACK_Y;
+        setFlow(GuiFlow.STACK_Y);
     }
     
     public void load(ICreativeConfigHolder holder, Object value) {
@@ -44,7 +45,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
                 path += ".";
             String caption = translateOrDefault(path + key.name + ".name", key.name);
             String comment = path + key.name + ".comment";
-            GuiConfigControl config = new GuiConfigControl((ConfigKeyType) key, side, caption, comment) {
+            GuiConfigControl config = new GuiConfigControl(this, (ConfigKeyType) key, side, caption, comment) {
                 
                 @Override
                 public void updateButton() {
@@ -62,7 +63,7 @@ public class GuiConfigSubControlHolder extends GuiConfigSubControl {
     
     public void save() {
         JsonObject json = new JsonObject();
-        for (GuiControl control : this.controls)
+        for (GuiControl control : this)
             if (control instanceof GuiConfigControl c) {
                 JsonElement element = c.save();
                 if (element != null)

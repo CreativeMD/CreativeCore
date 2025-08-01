@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import team.creative.creativecore.client.gui.GuiClientLayer;
+import team.creative.creativecore.client.gui.IGuiClientIntegratedParent;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
@@ -37,7 +38,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        getMenu().render(graphics, this, listener, mouseX, mouseY);
+        IGuiClientIntegratedParent.render(getMenu(), graphics, this, listener, mouseX, mouseY);
         
         // Update dimensions for JEI
         int minX = Integer.MAX_VALUE;

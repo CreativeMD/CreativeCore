@@ -109,7 +109,7 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     }
     
     protected GuiTextfield createTextfield() {
-        return new GuiTextfield(control.getParent(), control.getNestedName() + ".text").setFloatOnly().setDim(rect.getContentWidth(), rect.getContentHeight());
+        return new GuiTextfield(control, control.getNestedName() + ".text").setFloatOnly().setDim(rect.getContentWidth(), rect.getContentHeight());
     }
     
     @Override

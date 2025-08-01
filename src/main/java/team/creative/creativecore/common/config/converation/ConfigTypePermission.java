@@ -10,13 +10,14 @@ import team.creative.creativecore.common.config.gui.PermissionGuiLayer;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.premade.Permission;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.sync.GuiSyncGlobalLayer;
 import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 
 public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     
-    public static final GuiSyncGlobalLayer<PermissionGuiLayer> PERMISSION_DIALOG = GuiSyncHolder.GLOBAL.layer("permission_dialog", (p, t) -> new PermissionGuiLayer());
+    public static final GuiSyncGlobalLayer<PermissionGuiLayer> PERMISSION_DIALOG = GuiSyncHolder.GLOBAL.layer("permission_dialog", (c, p, t) -> new PermissionGuiLayer(c));
     
     @Override
     protected Permission create(ConfigKey key, Side side) {
@@ -67,7 +68,7 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
     
     @Override
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        parent.add(new GuiPermissionConfigButton("button", this, ConfigKey.ofGenericType(key, side), configParent, side));
+        parent.add(new GuiPermissionConfigButton(parent, "button", this, ConfigKey.ofGenericType(key, side), configParent, side));
     }
     
     @Override
@@ -91,16 +92,16 @@ public class ConfigTypePermission extends ConfigTypeNamedList<Permission> {
         public IGuiConfigParent configParent;
         public final Side side;
         
-        public GuiPermissionConfigButton(String name, ConfigTypePermission configTypePerm, ConfigKey key, IGuiConfigParent configParent, Side side) {
-            super(name, null);
+        public GuiPermissionConfigButton(IGuiParent parent, String name, ConfigTypePermission configTypePerm, ConfigKey key, IGuiConfigParent configParent, Side side) {
+            super(parent, name, null);
             this.key = key;
             this.configTypePerm = configTypePerm;
             this.configParent = configParent;
-            pressed = x -> {
+            setPressed(x -> {
                 PermissionGuiLayer layer = PERMISSION_DIALOG.open(getIntegratedParent(), new CompoundTag());
                 layer.button = this;
                 layer.init();
-            };
+            });
             this.side = side;
             setTranslate("gui.perm.open");
         }

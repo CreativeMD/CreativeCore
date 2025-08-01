@@ -12,9 +12,9 @@ public class GuiLeftRightBox extends GuiRow {
     
     public GuiLeftRightBox(IGuiParent parent) {
         super(parent);
-        this.left = (GuiColumn) new GuiColumn(parent).setExpandableX();
+        this.left = (GuiColumn) new GuiColumn(this).setExpandableX();
         super.addColumn(left);
-        this.right = new GuiColumn(parent);
+        this.right = new GuiColumn(this);
         this.right.setAlign(Align.RIGHT);
         super.addColumn(right);
         setExpandableX();

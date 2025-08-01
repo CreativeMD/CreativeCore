@@ -10,17 +10,17 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.client.gui.GuiClientLayer;
+import team.creative.creativecore.client.gui.IGuiClientIntegratedParent;
 import team.creative.creativecore.client.gui.registry.GuiClientRegistry;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
-import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.network.CreativePacket;
 
-public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent, IScaleableGuiScreen {
+public class GuiScreenIntegration extends Screen implements IGuiClientIntegratedParent, IScaleableGuiScreen {
     
     public final Minecraft mc = Minecraft.getInstance();
     private List<GuiLayer> layers = new ArrayList<>();
@@ -92,7 +92,7 @@ public class GuiScreenIntegration extends Screen implements IGuiIntegratedParent
     
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        render(graphics, this, listener, mouseX, mouseY);
+        IGuiClientIntegratedParent.render(this, graphics, this, listener, mouseX, mouseY);
     }
     
     @Override

@@ -81,7 +81,7 @@ public class ConfigTypeNumber {
             
             @Override
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiStateButton<Boolean>("data", 0, new TextMapBuilder<Boolean>().addComponent(false, Component.translatable("gui.false").setStyle(Style.EMPTY
+                parent.add(new GuiStateButton<Boolean>(parent, "data", 0, new TextMapBuilder<Boolean>().addComponent(false, Component.translatable("gui.false").setStyle(Style.EMPTY
                         .withColor(ChatFormatting.RED))).addComponent(true, Component.translatable("gui.true").setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))))
                         .setExpandableX());
             }
@@ -150,31 +150,31 @@ public class ConfigTypeNumber {
                     if (decimal) {
                         CreativeConfig.DecimalRange decRange = key.field().getAnnotation(CreativeConfig.DecimalRange.class);
                         if (decRange != null && decRange.slider()) {
-                            parent.add(new GuiSlider("data", decRange.min(), decRange.min(), decRange.max()).setExpandableX());
+                            parent.add(new GuiSlider(parent, "data", decRange.min(), decRange.min(), decRange.max()).setExpandableX());
                             return;
                         }
                         CreativeConfig.DecimalRangeSupplier supplier = key.field().getAnnotation(CreativeConfig.DecimalRangeSupplier.class);
                         if (supplier != null && supplier.slider()) {
                             var s = getDecimalRangeSupplier(supplier.supplier());
-                            parent.add(new GuiSlider("data", s.getMin(), s.getMin(), s.getMax()).setExpandableX());
+                            parent.add(new GuiSlider(parent, "data", s.getMin(), s.getMin(), s.getMax()).setExpandableX());
                             return;
                         }
                     } else {
                         CreativeConfig.IntRange intRange = key.field().getAnnotation(CreativeConfig.IntRange.class);
                         if (intRange != null && intRange.slider()) {
-                            parent.add(new GuiSteppedSlider("data", intRange.min(), intRange.min(), intRange.max()).setExpandableX());
+                            parent.add(new GuiSteppedSlider(parent, "data", intRange.min(), intRange.min(), intRange.max()).setExpandableX());
                             return;
                         }
                         CreativeConfig.IntRangeSupplier supplier = key.field().getAnnotation(CreativeConfig.IntRangeSupplier.class);
                         if (supplier != null && supplier.slider()) {
                             var s = getIntRangeSupplier(supplier.supplier());
-                            parent.add(new GuiSteppedSlider("data", s.getMin(), s.getMin(), s.getMax()).setExpandableX());
+                            parent.add(new GuiSteppedSlider(parent, "data", s.getMin(), s.getMin(), s.getMax()).setExpandableX());
                             return;
                         }
                     }
                 }
                 
-                GuiTextfield textfield = (GuiTextfield) new GuiTextfield("data").setDim(30, 8).setExpandableX();
+                GuiTextfield textfield = (GuiTextfield) new GuiTextfield(parent, "data").setDim(30, 8).setExpandableX();
                 if (decimal)
                     textfield.setFloatOnly();
                 else

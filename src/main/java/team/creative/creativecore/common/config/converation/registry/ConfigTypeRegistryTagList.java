@@ -47,12 +47,12 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
     
     @Override
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        parent.flow = GuiFlow.STACK_Y;
-        GuiListBoxBase listBox = new GuiListBoxBase<>("data", true, new ArrayList<>());
+        parent.setFlow(GuiFlow.STACK_Y);
+        GuiListBoxBase listBox = new GuiListBoxBase<>(parent, "data", true, new ArrayList<>());
         parent.add(listBox.setDim(50, 130).setExpandable());
-        listBox.spacing = -1;
+        listBox.setSpacing(-1);
         
-        parent.add(new GuiButton("add", null).setTitle(Component.translatable("gui.add")));
+        parent.add(new GuiButton(parent, "add", null).setTitle(Component.translatable("gui.add")));
     }
     
     @Override
@@ -65,13 +65,13 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
         
         GuiButton add = parent.get("add");
         add.setPressed(x -> {
-            GuiParent entry = new GuiParent().setAlign(Align.STRETCH);
+            GuiParent entry = new GuiParent(parent).setAlign(Align.STRETCH);
             GuiRegistryTagHandler.REGISTRY.get(value.registry).createControls(entry, value.registry);
             listBox.addItem(entry.setExpandableX());
         });
         
         for (TagKey tag : (Iterable<TagKey>) value) {
-            GuiParent entry = new GuiParent().setAlign(Align.STRETCH);
+            GuiParent entry = new GuiParent(parent).setAlign(Align.STRETCH);
             GuiRegistryTagHandler.REGISTRY.get(value.registry).createControls(entry, value.registry);
             GuiRegistryTagHandler.REGISTRY.get(value.registry).loadValue(entry, value.registry, tag);
             listBox.addItem(entry.setExpandableX());
@@ -85,7 +85,7 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
         
         GuiListBoxBase<GuiParent> listBox = parent.get("data");
         for (int i = 0; i < listBox.size(); i++)
-            list.add(GuiRegistryTagHandler.REGISTRY.get(list.registry).saveValue(listBox.get(i), list.registry));
+            list.add(GuiRegistryTagHandler.REGISTRY.get(list.registry).saveValue(listBox.getItem(i), list.registry));
         
         return list;
     }

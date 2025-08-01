@@ -7,7 +7,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -15,6 +14,7 @@ import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigurationClientPacket;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiLeftRightBox;
@@ -41,14 +41,14 @@ public class ClientSyncGuiLayer extends GuiLayer {
     public int nextAction;
     public boolean force;
     
-    public ClientSyncGuiLayer(ICreativeConfigHolder holder) {
-        super("client-sync", 300, 200);
+    public ClientSyncGuiLayer(boolean client, ICreativeConfigHolder holder) {
+        super(client, "client-sync", 300, 200);
         this.root = holder;
-        this.flow = GuiFlow.STACK_Y;
+        setFlow(GuiFlow.STACK_Y);
         registerEvent(GuiControlChangedEvent.class, x -> {
             changed = true;
-            if (x.control instanceof GuiTreeCheckBox && !((GuiTreeCheckBox) x.control).value)
-                ((GuiTreeCheckBox) x.control).partial = ((GuiTreeCheckBox) x.control).entry.isChildEnabled();
+            if (x.control instanceof GuiTreeCheckBox && !((GuiTreeCheckBox) x.control).get())
+                ((GuiTreeCheckBox) x.control).setPartial(((GuiTreeCheckBox) x.control).entry.isChildEnabled());
         });
         
         BiConsumer<ConfigKey, Boolean> setter = (x, y) -> x.forceSynchronization = y;
@@ -88,40 +88,39 @@ public class ClientSyncGuiLayer extends GuiLayer {
             clear();
         
         ICreativeConfigHolder holder = entry.content == null ? root : entry.content.holder();
-        
-        add(new GuiLeftRightBox().addLeft(new GuiLabel("path").setTitle(Component.literal("/" + String.join("/", holder.path())))).addRight(new GuiButton("back", x -> load(
-            entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
+        add(new GuiLeftRightBox(this).addLeft(new GuiLabel(this, "path").setTitle(Component.literal("/" + String.join("/", holder.path())))).addRight(
+            new GuiButton(this, "back", x -> load(entry.parent)).setTranslate("gui.back").setEnabled(entry.parent != null)));
         this.currentView = entry;
         
-        GuiScrollY box = new GuiScrollY("").setExpandable().setDim(100, 100);
+        GuiScrollY box = new GuiScrollY(this, "").setExpandable().setDim(100, 100);
         add(box);
         
         for (CheckTree<ConfigKey>.CheckTreeEntry key : currentView.children) {
-            GuiRow row = new GuiRow();
+            GuiRow row = new GuiRow(this);
             box.add(row);
-            GuiColumn first = new GuiColumn(20);
+            GuiColumn first = new GuiColumn(this, 20);
             row.addColumn(first);
             first.setVAlign(VAlign.CENTER);
             first.setAlign(Align.CENTER);
-            first.add(new GuiTreeCheckBox(key));
+            first.add(new GuiTreeCheckBox(this, key));
             
-            GuiColumn second = (GuiColumn) new GuiColumn().setExpandableX();
+            GuiColumn second = (GuiColumn) new GuiColumn(this).setExpandableX();
             row.addColumn(second);
             String caption = translateOrDefault("config." + String.join(".", holder.path()) + "." + key.content.name + ".name", key.content.name);
             String comment = "config." + String.join(".", holder.path()) + "." + key.content.name + ".comment";
             if (key.content.isFolder())
-                second.add(new GuiButton(caption, x -> load(key)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                second.add(new GuiButton(this, caption, x -> load(key)).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
             else
-                second.add(new GuiLabel(caption).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
+                second.add(new GuiLabel(this, caption).setTitle(Component.literal(caption)).setTooltip(new TextBuilder().translateIfCan(comment).build()));
         }
         
-        add(new GuiLeftRightBox().addLeft(new GuiButton("cancel", x -> {
+        add(new GuiLeftRightBox(this).addLeft(new GuiButton(this, "cancel", x -> {
             nextAction = 0;
             closeTopLayer();
-        }).setTranslate("gui.cancel")).addLeft(new GuiButton("config", x -> {
+        }).setTranslate("gui.cancel")).addLeft(new GuiButton(this, "config", x -> {
             nextAction = 1;
             closeTopLayer();
-        }).setTranslate("gui.config")).addRight(new GuiButton("save", x -> {
+        }).setTranslate("gui.config")).addRight(new GuiButton(this, "save", x -> {
             nextAction = 0;
             force = true;
             save();
@@ -153,24 +152,11 @@ public class ClientSyncGuiLayer extends GuiLayer {
         
         public final CheckTree<ConfigKey>.CheckTreeEntry entry;
         
-        public GuiTreeCheckBox(CheckTree<ConfigKey>.CheckTreeEntry entry) {
-            super(entry.content.name, entry.isEnabled());
+        public GuiTreeCheckBox(IGuiParent parent, CheckTree<ConfigKey>.CheckTreeEntry entry) {
+            super(parent, entry.content.name, entry.isEnabled());
             this.entry = entry;
-            if (!value)
-                partial = entry.isChildEnabled();
-        }
-        
-        @Override
-        public boolean mouseClicked(double x, double y, int button) {
-            playSound(SoundEvents.UI_BUTTON_CLICK);
-            this.value = !value;
-            
-            if (value)
-                entry.enable();
-            else
-                entry.disable();
-            raiseEvent(new GuiControlChangedEvent(this));
-            return true;
+            if (!get())
+                setPartial(entry.isChildEnabled());
         }
         
     }

@@ -51,7 +51,7 @@ public class CreativeCoreClient {
         ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> ((a, b) -> {
             ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(modid);
             if (holder != null && !holder.isEmpty(Side.CLIENT))
-                return new GuiScreenIntegration(new ConfigGuiLayer(holder, Side.CLIENT));
+                return new GuiScreenIntegration(new ConfigGuiLayer(true, holder, Side.CLIENT));
             return null;
         }));
     }
@@ -67,7 +67,7 @@ public class CreativeCoreClient {
     public static void commands(RegisterClientCommandsEvent event) {
         event.getDispatcher().register(LiteralArgumentBuilder.<CommandSourceStack>literal("cmdclientconfig").executes((x) -> {
             try {
-                GuiScreenHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
+                GuiScreenHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(true, CreativeConfigRegistry.ROOT, Side.CLIENT)));
             } catch (Exception e) {
                 LOGGER.error(e);
             }

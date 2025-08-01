@@ -46,19 +46,19 @@ public class GuiTimeline extends GuiParent {
         setVAlign(VAlign.STRETCH);
         setFlow(GuiFlow.STACK_Y);
         setSpacing(-1);
-        header = new GuiRow((GuiColumnHeader) new GuiColumnHeader(parent).setDim(new GuiFixedDimension(sidebarWidth)), new GuiTimelineHeader(this));
+        header = new GuiRow((GuiColumnHeader) new GuiColumnHeader(this).setDim(new GuiFixedDimension(sidebarWidth)), new GuiTimelineHeader(this));
         header.setDim(new GuiSizeRule.GuiSizeRules().prefHeight(headerHeight).minHeight(headerHeight));
         header.setSpacing(-1);
         add(header);
-        channelParent = new GuiScrollY(parent).setScrollWhenCTRL().setHovered().setFormatting(ControlFormatting.TRANSPARENT);
+        channelParent = new GuiScrollY(this).setScrollWhenCTRL().setHovered().setFormatting(ControlFormatting.TRANSPARENT);
         channelParent.setSpacing(-1);
         channelParent.setAlign(Align.STRETCH);
         channelParent.setFlow(GuiFlow.STACK_X);
         add(channelParent);
-        sidebar = new GuiParent(parent, GuiFlow.STACK_Y).setAlign(Align.STRETCH);
+        sidebar = new GuiParent(this, GuiFlow.STACK_Y).setAlign(Align.STRETCH);
         sidebar.setSpacing(-1);
         channelParent.add(sidebar);
-        channelbar = new GuiParent(parent, GuiFlow.STACK_Y).setAlign(Align.STRETCH);
+        channelbar = new GuiParent(this, GuiFlow.STACK_Y).setAlign(Align.STRETCH);
         channelbar.setSpacing(-1);
         channelParent.add(channelbar.setExpandableX());
     }
@@ -117,8 +117,8 @@ public class GuiTimeline extends GuiParent {
     }
     
     public GuiTimelineChannel addGuiTimelineChannel(MutableComponent title, GuiTimelineChannel channel) {
-        GuiColumn left = new GuiColumnHeader(getParent());
-        left.add(new GuiLabel(getParent(), "title").setDropShadow(false).setDefaultColor(ColorUtils.BLACK).setTitle(title.withStyle(ChatFormatting.BOLD)));
+        GuiColumn left = new GuiColumnHeader(this);
+        left.add(new GuiLabel(this, "title").setDropShadow(false).setDefaultColor(ColorUtils.BLACK).setTitle(title.withStyle(ChatFormatting.BOLD)));
         sidebar.add(left.setVAlign(VAlign.CENTER).setDim(sidebarWidth, channelHeight));
         channel.sidebarTitle = left;
         channels.add(channel);

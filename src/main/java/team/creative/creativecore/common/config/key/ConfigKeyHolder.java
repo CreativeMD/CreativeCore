@@ -84,7 +84,7 @@ public class ConfigKeyHolder extends ConfigKey {
     
     @Override
     public GuiConfigSubControl create(IGuiConfigParent configParent, String name, Side side) {
-        return new GuiConfigSubControlHolder(name, null, null, side, configParent::changed);
+        return new GuiConfigSubControlHolder(configParent, name, null, null, side, configParent::changed);
     }
     
     @Override

@@ -68,13 +68,13 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
         
         if (comboBox.hasSearchbar()) {
             if (textfield == null)
-                textfield = new GuiTextfield(control.getParent(), "searchBar", search == null ? "" : search);
+                textfield = new GuiTextfield(control, "searchBar", search == null ? "" : search);
             control.add(textfield);
             textfield.dist().focus();
         }
         
         for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
-            control.add(new GuiLabel(control.getParent(), "title").setTitle(Component.translatable(entry.getKey())));
+            control.add(new GuiLabel(control, "title").setTitle(Component.translatable(entry.getKey())));
             
             SimpleContainer container = new SimpleContainer(entry.getValue().size());
             int i = 0;
@@ -82,7 +82,7 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
                 container.setItem(i, stack);
                 i++;
             }
-            control.add(new GuiInventoryGridPreview(control.getParent(), entry.getKey(), container));
+            control.add(new GuiInventoryGridPreview(control, entry.getKey(), container));
         }
         if (control.hasGui())
             reflowInternal();

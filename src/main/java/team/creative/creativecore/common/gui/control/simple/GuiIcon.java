@@ -9,14 +9,14 @@ import team.creative.creativecore.common.util.type.Color;
 
 public class GuiIcon extends GuiControl {
     
-    @Override
-    public GuiIconDist dist() {
-        return (GuiIconDist) super.dist();
-    }
-    
     public GuiIcon(IGuiParent parent, String name, Icon icon) {
         super(parent, name);
         dist().setIcon(icon);
+    }
+    
+    @Override
+    public GuiIconDist dist() {
+        return (GuiIconDist) super.dist();
     }
     
     public GuiIcon setIcon(Icon icon) {

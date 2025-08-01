@@ -51,7 +51,7 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     
     protected void createInventoryGrid(BiFunction<Container, Integer, Slot> slotFactory) {
         for (int i = 0; i < fixedSize; i++)
-            addSlot(new GuiSlot(getParent(), slotFactory.apply(container, i)));
+            addSlot(new GuiSlot(this, slotFactory.apply(container, i)));
     }
     
     public GuiInventoryGrid disableSlot(int index) {

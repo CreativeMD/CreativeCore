@@ -174,7 +174,7 @@ public abstract class CreativeIngredient {
             
             @Override
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                parent.add(new GuiInfoStackButton("data", temp).setExpandableX());
+                parent.add(new GuiInfoStackButton(parent, "data", temp).setExpandableX());
             }
             
             @Override

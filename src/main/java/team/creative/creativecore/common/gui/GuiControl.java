@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
-import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
@@ -22,8 +21,8 @@ public abstract class GuiControl {
         layer.parent = parent;
     }
     
-    public static void setParent(GuiTextfield layer, IGuiParent parent) {
-        ((GuiControl) layer).parent = parent;
+    public static void setParent(GuiControl layer, IGuiParent parent) {
+        layer.parent = parent;
     }
     
     IGuiParent parent;

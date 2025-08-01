@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.collection.GuiCheckList;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.control.collection.GuiStackSelector;
@@ -50,11 +51,11 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
-                GuiStackSelector selector = (GuiStackSelector) new GuiStackSelector("inv", gui
-                        .getPlayer(), new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector())).setExpandableX();
+                GuiStackSelector selector = (GuiStackSelector) new GuiStackSelector(gui, "inv", new GuiStackSelector.CreativeCollector(new GuiStackSelector.SearchSelector()))
+                        .setExpandableX();
                 gui.add(selector);
                 
-                gui.add(new GuiDataCheckList("list", false, null, info instanceof CreativeIngredientItemStack s ? s.getIncluded() : new ArrayList<>()).setExpandable());
+                gui.add(new GuiDataCheckList(gui, "list", false, null, info instanceof CreativeIngredientItemStack s ? s.getIncluded() : new ArrayList<>()).setExpandable());
                 
                 if (info instanceof CreativeIngredientBlock || info instanceof CreativeIngredientItem || info instanceof CreativeIngredientItemStack)
                     selector.setSelectedForce(info.getExample().copy());
@@ -123,10 +124,10 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
-                gui.flow = GuiFlow.STACK_Y;
-                gui.align = Align.STRETCH;
-                GuiComboBox<TagKey<Block>> box = new GuiComboBox<>("tag", new TextMapBuilder<TagKey<Block>>().addComponents(BuiltInRegistries.BLOCK.getTags().map(x -> x.unwrapKey()
-                        .get()).toList(), x -> {
+                gui.setFlow(GuiFlow.STACK_Y);
+                gui.setAlign(Align.STRETCH);
+                GuiComboBox<TagKey<Block>> box = new GuiComboBox<>(gui, "tag", new TextMapBuilder<TagKey<Block>>().addComponents(BuiltInRegistries.BLOCK.getTags().map(x -> x
+                        .unwrapKey().get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
                             var itr = BuiltInRegistries.BLOCK.getTagOrEmpty(x).iterator();
                             if (itr.hasNext())
@@ -134,7 +135,7 @@ public abstract class GuiCreativeIngredientHandler {
                             return builder.text(x.location().toString()).build();
                         }));
                 gui.add(box);
-                gui.add(new GuiTextfield("search"));
+                gui.add(new GuiTextfield(gui, "search"));
                 if (info instanceof CreativeIngredientBlockTag)
                     box.select(((CreativeIngredientBlockTag) info).tag);
             }
@@ -173,10 +174,10 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
-                gui.flow = GuiFlow.STACK_Y;
-                gui.align = Align.STRETCH;
-                GuiComboBox<TagKey<Item>> box = new GuiComboBox<>("tag", new TextMapBuilder<TagKey<Item>>().addComponents(BuiltInRegistries.ITEM.getTags().map(x -> x.unwrapKey()
-                        .get()).toList(), x -> {
+                gui.setFlow(GuiFlow.STACK_Y);
+                gui.setAlign(Align.STRETCH);
+                GuiComboBox<TagKey<Item>> box = new GuiComboBox<>(gui, "tag", new TextMapBuilder<TagKey<Item>>().addComponents(BuiltInRegistries.ITEM.getTags().map(x -> x
+                        .unwrapKey().get()).toList(), x -> {
                             TextBuilder builder = new TextBuilder();
                             var itr = BuiltInRegistries.ITEM.getTagOrEmpty(x).iterator();
                             if (itr.hasNext())
@@ -184,7 +185,7 @@ public abstract class GuiCreativeIngredientHandler {
                             return builder.text(x.location().toString()).build();
                         }));
                 gui.add(box);
-                gui.add(new GuiTextfield("search"));
+                gui.add(new GuiTextfield(gui, "search"));
                 if (info instanceof CreativeIngredientItemTag)
                     box.select(((CreativeIngredientItemTag) info).tag);
             }
@@ -219,7 +220,7 @@ public abstract class GuiCreativeIngredientHandler {
             
             @Override
             public void createControls(GuiParent gui, CreativeIngredient info) {
-                gui.add(new GuiLabel("info").setTitle(Component.literal("Nothing to select")));
+                gui.add(new GuiLabel(gui, "info").setTitle(Component.literal("Nothing to select")));
             }
             
             @Override
@@ -241,8 +242,8 @@ public abstract class GuiCreativeIngredientHandler {
         
         public List<ResourceLocation> included;
         
-        public GuiDataCheckList(String name, boolean modifiable, TextMapBuilder<DataComponentType<?>> map, List<ResourceLocation> included) {
-            super(name, modifiable, map, null);
+        public GuiDataCheckList(IGuiParent parent, String name, boolean modifiable, TextMapBuilder<DataComponentType<?>> map, List<ResourceLocation> included) {
+            super(parent, name, modifiable, map, null);
             this.included = included;
         }
         
@@ -253,7 +254,7 @@ public abstract class GuiCreativeIngredientHandler {
         public List<ResourceLocation> getConfiguredIncluded() {
             List<ResourceLocation> included = new ArrayList<>();
             for (GuiCheckList<DataComponentType<?>>.GuiCheckListRow row : rows)
-                if (row.checkBox.value)
+                if (row.checkBox.get())
                     included.add(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(row.value));
             return included;
         }

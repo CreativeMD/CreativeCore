@@ -20,20 +20,20 @@ public class GuiDuration extends GuiParent {
         super(parent, name);
         setVAlign(VAlign.CENTER);
         if (showDays) {
-            add(d = new GuiCounter(parent, "d", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel(parent, "dLabel").setTranslate("gui.day"));
+            add(d = new GuiCounter(this, "d", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(this, "dLabel").setTranslate("gui.day"));
         }
         if (showHours) {
-            add(h = new GuiCounter(parent, "h", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel(parent, "hLabel").setTranslate("gui.hour"));
+            add(h = new GuiCounter(this, "h", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(this, "hLabel").setTranslate("gui.hour"));
         }
         if (showMinutes) {
-            add(m = new GuiCounter(parent, "m", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel(parent, "mLabel").setTranslate("gui.minute"));
+            add(m = new GuiCounter(this, "m", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(this, "mLabel").setTranslate("gui.minute"));
         }
         if (showSeconds) {
-            add(s = new GuiCounter(parent, "s", 0, 0, Integer.MAX_VALUE));
-            add(new GuiLabel(parent, "sLabel").setTranslate("gui.second"));
+            add(s = new GuiCounter(this, "s", 0, 0, Integer.MAX_VALUE));
+            add(new GuiLabel(this, "sLabel").setTranslate("gui.second"));
         }
         setDuration(ticks);
     }

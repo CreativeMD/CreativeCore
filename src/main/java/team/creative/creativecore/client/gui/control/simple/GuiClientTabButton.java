@@ -37,7 +37,7 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
         int i = 0;
         for (Tuple<K, CompiledText> t : data) {
             final int bIndex = i;
-            var b = new GuiButton(control.getParent(), "b" + i, x -> select(bIndex));
+            var b = new GuiButton(control, "b" + i, x -> select(bIndex));
             b.setFormatting(GuiTabButton.BUTTON_INACTIVE);
             ((GuiClientLabel) b.dist()).setText(t.value);
             control.add(b);

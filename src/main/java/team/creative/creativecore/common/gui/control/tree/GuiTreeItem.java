@@ -62,7 +62,7 @@ public class GuiTreeItem extends GuiParent {
     protected GuiCheckBox getOrCreateCheckbox() {
         if (checkbox != null)
             return checkbox;
-        return checkbox = new GuiCheckBox(getParent(), "box", true).consumeChanged(x -> {
+        return checkbox = new GuiCheckBox(this, "box", true).consumeChanged(x -> {
             if (parentItem != null && tree.hasCheckboxesPartial())
                 parentItem.childCheckedChanged(x);
             setChecked(x);
@@ -141,7 +141,7 @@ public class GuiTreeItem extends GuiParent {
         if (items.isEmpty()) {
             button = null;
         } else {
-            add(button = (GuiButton) new GuiButtonHold(getParent(), "expand", x -> toggle()).setTitle(Component.literal("-")).setFormatting(ControlFormatting.TRANSPARENT));
+            add(button = (GuiButton) new GuiButtonHold(this, "expand", x -> toggle()).setTitle(Component.literal("-")).setFormatting(ControlFormatting.TRANSPARENT));
         }
         if (tree.hasCheckboxes())
             add(getOrCreateCheckbox());

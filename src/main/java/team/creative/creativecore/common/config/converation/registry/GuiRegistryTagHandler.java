@@ -33,7 +33,7 @@ public abstract class GuiRegistryTagHandler {
         
         @Override
         public void createControls(GuiParent parent, Registry registry) {
-            parent.add(new GuiComboBox<ResourceLocation>("elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.getTags().iterator(), x -> {
+            parent.add(new GuiComboBox<ResourceLocation>(parent, "elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.getTags().iterator(), x -> {
                 if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                     return Component.literal(x.getPath());
                 return Component.literal(x.toString());
@@ -61,7 +61,7 @@ public abstract class GuiRegistryTagHandler {
             
             @Override
             public void createControls(GuiParent parent, Registry registry) {
-                parent.add(new GuiStackSelector("content", null, new GuiStackSelector.StackCollector(new GuiStackSelector.GuiBlockSelector()) {
+                parent.add(new GuiStackSelector(parent, "content", new GuiStackSelector.StackCollector(new GuiStackSelector.GuiBlockSelector()) {
                     
                     @Override
                     public HashMapList<String, ItemStack> collect(Player player) {

@@ -354,23 +354,27 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     
     // SOUND
     
-    public static void playSound(SoundInstance sound) {
+    public void playSound(SoundInstance sound) {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
     
-    public static void playSound(Holder.Reference<SoundEvent> sound) {
+    @Override
+    public void playSound(Holder.Reference<SoundEvent> sound) {
         playSound(sound.value());
     }
     
-    public static void playSound(SoundEvent event) {
+    @Override
+    public void playSound(SoundEvent event) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F));
     }
     
-    public static void playSound(SoundEvent event, float volume, float pitch) {
+    @Override
+    public void playSound(SoundEvent event, float volume, float pitch) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(event, pitch, volume));
     }
     
-    public static void playSound(Holder.Reference<SoundEvent> event, float volume, float pitch) {
+    @Override
+    public void playSound(Holder.Reference<SoundEvent> event, float volume, float pitch) {
         playSound(event.value(), volume, pitch);
     }
 }

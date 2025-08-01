@@ -146,6 +146,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     
     public GuiParent add(GuiControl control) {
         controls.add(control);
+        setParent(control, parent); // Just to make sure it is set correctly
         return this;
     }
     

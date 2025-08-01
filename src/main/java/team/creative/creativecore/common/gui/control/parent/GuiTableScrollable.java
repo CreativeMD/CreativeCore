@@ -21,10 +21,10 @@ public class GuiTableScrollable extends GuiParent {
     
     public GuiTableScrollable(IGuiParent parent, String name) {
         super(parent, name);
-        topRow = new GuiRow(parent);
-        bottom = new GuiParent(parent);
-        firstCol = new GuiParent(parent, GuiFlow.STACK_Y);
-        scrollableTable = new GuiScrollXY(parent, "", GuiFlow.STACK_Y);
+        topRow = new GuiRow(this);
+        bottom = new GuiParent(this);
+        firstCol = new GuiParent(this, GuiFlow.STACK_Y);
+        scrollableTable = new GuiScrollXY(this, "", GuiFlow.STACK_Y);
         
         setFlow(GuiFlow.STACK_Y);
         super.add(topRow);

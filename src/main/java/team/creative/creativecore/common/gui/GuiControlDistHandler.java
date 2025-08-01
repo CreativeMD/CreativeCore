@@ -2,7 +2,9 @@ package team.creative.creativecore.common.gui;
 
 import java.util.List;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
@@ -42,5 +44,13 @@ public interface GuiControlDistHandler {
     public void setFormatting(ControlFormatting formatting);
     
     public ControlFormattingCustom setCustomFormatting();
+    
+    public void playSound(Holder.Reference<SoundEvent> sound);
+    
+    public void playSound(SoundEvent event);
+    
+    public void playSound(SoundEvent event, float volume, float pitch);
+    
+    public void playSound(Holder.Reference<SoundEvent> event, float volume, float pitch);
     
 }

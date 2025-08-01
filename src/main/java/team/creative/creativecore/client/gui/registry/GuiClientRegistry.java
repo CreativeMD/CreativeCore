@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import team.creative.creativecore.client.config.gui.GuiClientTreeCheckBox;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.client.gui.GuiClientParent;
@@ -62,6 +63,7 @@ import team.creative.creativecore.client.gui.control.tree.GuiClientTree;
 import team.creative.creativecore.client.gui.control.tree.GuiClientTreeItem;
 import team.creative.creativecore.client.gui.manager.GuiClientManager;
 import team.creative.creativecore.client.gui.manager.GuiClientManagerItem;
+import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer.GuiTreeCheckBox;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -229,6 +231,9 @@ public class GuiClientRegistry {
         
         register(GuiTree.class, GuiClientTree::new);
         register(GuiTreeItem.class, GuiClientTreeItem::new);
+        
+        // Config
+        register(GuiTreeCheckBox.class, GuiClientTreeCheckBox::new);
         
         registerManager(GuiManagerItem.class, GuiClientManagerItem::new);
     }

@@ -65,12 +65,13 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
     
     @Override
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", true, new ArrayList<>()).setDim(50, 130).setExpandable();
+        GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>(parent, "data", true, new ArrayList<>()).setDim(50, 130)
+                .setExpandable();
         listBox.canBeModified = x -> !x.defaultHolder;
         parent.add(listBox);
         
         ConfigKey listKey = ConfigKey.ofGenericType(key, side);
-        parent.add(new GuiButton("add", x -> {
+        parent.add(new GuiButton(parent, "add", x -> {
             listKey.forceValue(ConfigTypeConveration.createObject(listKey.field()), side);
             var c = listKey.create(configParent, "", side);
             c.addNameTextfield("");
@@ -116,8 +117,8 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         T value = create(key, side);
         for (int i = 0; i < box.size(); i++) {
-            listKey.save(box.get(i), configParent, side);
-            addToList(value, box.get(i).getName(), listKey.copy(configParent.provider(), side));
+            listKey.save(box.getItem(i), configParent, side);
+            addToList(value, box.getItem(i).getName(), listKey.copy(configParent.provider(), side));
         }
         return value;
     }

@@ -25,7 +25,7 @@ public class GuiTabs extends GuiParent {
         setFlow(GuiFlow.STACK_Y);
         setAlign(Align.STRETCH);
         setVAlign(VAlign.STRETCH);
-        add(bar = new GuiTabBar(parent, "bar"));
+        add(bar = new GuiTabBar(this, "bar"));
         dist().init(tabs, bar);
     }
     
@@ -83,7 +83,7 @@ public class GuiTabs extends GuiParent {
         }
         
         public void addTab(Component component, int index) {
-            add(new GuiButton(getParent(), "b" + count, x -> select(index)).setTitle(component));
+            add(new GuiButton(this, "b" + count, x -> select(index)).setTitle(component));
             count++;
         }
         

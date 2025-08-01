@@ -29,10 +29,10 @@ public class GuiTree extends GuiScrollXY {
         super(parent, name, GuiFlow.STACK_Y);
         this.searchbar = searchbar;
         if (searchbar)
-            search = new GuiTextfield(parent, name);
+            search = new GuiTextfield(this, name);
         else
             search = null;
-        this.root = new GuiTreeItem(parent, "root", this);
+        this.root = new GuiTreeItem(this, "root", this);
         setSpacing(3);
         setLineThickness(1);
     }
