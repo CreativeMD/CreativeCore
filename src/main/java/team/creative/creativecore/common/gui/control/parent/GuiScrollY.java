@@ -4,6 +4,7 @@ import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
+import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public class GuiScrollY extends GuiParent {
     
@@ -30,6 +31,16 @@ public class GuiScrollY extends GuiParent {
         return this;
     }
     
+    public GuiScrollY setScrollWhenCTRL() {
+        dist().setScrollWhenCTRL();
+        return this;
+    }
+    
+    @Override
+    public GuiScrollY setFormatting(ControlFormatting formatting) {
+        return (GuiScrollY) super.setFormatting(formatting);
+    }
+    
     @Override
     public GuiScrollY setDim(int width, int height) {
         return (GuiScrollY) super.setDim(width, height);
@@ -50,6 +61,8 @@ public class GuiScrollY extends GuiParent {
         public void setHovered();
         
         public void setHover(boolean hover);
+        
+        public void setScrollWhenCTRL();
         
     }
     

@@ -18,7 +18,7 @@ public record GuiTreeDragPosition(team.creative.creativecore.common.gui.control.
     
     @Override
     public String toString() {
-        return position.name() + "," + item.rect;
+        return position.name() + "," + item;
     }
     
     public enum ItemPosition {

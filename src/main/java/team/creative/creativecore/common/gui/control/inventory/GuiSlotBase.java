@@ -1,32 +1,13 @@
 package team.creative.creativecore.common.gui.control.inventory;
 
-import java.util.List;
-
-import org.joml.Matrix3x2fStack;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.display.DisplayColor;
+import team.creative.creativecore.common.gui.IGuiParent;
 
 public abstract class GuiSlotBase extends GuiControl {
     
-    public static final int SLOT_SIZE = 18;
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    private static DisplayColor HOVER;
-    
-    public GuiSlotBase(String name) {
-        super(name);
+    public GuiSlotBase(IGuiParent parent, String name) {
+        super(parent, name);
     }
     
     @Override
@@ -38,80 +19,6 @@ public abstract class GuiSlotBase extends GuiControl {
     @Override
     public void tick() {}
     
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.SLOT;
-    }
-    
     public abstract ItemStack getStack();
     
-    protected abstract ItemStack getStackToRender();
-    
-    @Override
-    public List<Component> getTooltip() {
-        if (getStack().isEmpty())
-            return super.getTooltip();
-        return getStack().getTooltipLines(TooltipContext.of(provider()), getPlayer(), TooltipFlag.Default.NORMAL);
-    }
-    
-    @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        if (HOVER == null)
-            HOVER = new DisplayColor(1, 1, 1, 0.3F);
-        Matrix3x2fStack pose = graphics.pose();
-        pose.translate(1, 1);
-        ItemStack stack = getStackToRender();
-        graphics.renderItem(stack, 0, 0);
-        ((CreativeGuiGraphics) graphics).renderItemDecorations(stack, 0, 0);
-        pose.translate(-1, -1);
-        if (rect.inside(mouseX, mouseY) && enabled) {
-            //RenderSystem.enableBlend();
-            //TODO 1.21.5 YET TO BE TESTED
-            HOVER.render(graphics, rect.getWidth(), rect.getHeight());
-        }
-        
-    }
-    
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        return true;
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {}
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {}
-    
-    @Override
-    protected int maxWidth(int availableWidth) {
-        return SLOT_SIZE;
-    }
-    
-    @Override
-    protected int maxHeight(int width, int availableHeight) {
-        return SLOT_SIZE;
-    }
-    
-    @Override
-    protected int preferredWidth(int availableWidth) {
-        return SLOT_SIZE;
-    }
-    
-    @Override
-    protected int preferredHeight(int width, int availableHeight) {
-        return SLOT_SIZE;
-    }
-    
-    @Override
-    protected int minWidth(int availableWidth) {
-        return SLOT_SIZE;
-    }
-    
-    @Override
-    protected int minHeight(int width, int availableHeight) {
-        return SLOT_SIZE;
-    }
 }

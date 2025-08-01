@@ -19,8 +19,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCoreGuiRegistry;
 import team.creative.creativecore.client.gui.GuiClientLayer;
+import team.creative.creativecore.client.gui.control.inventory.GuiClientSlot;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
-import team.creative.creativecore.common.gui.control.inventory.GuiSlot;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
 
 public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
@@ -37,11 +37,19 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
     
     private boolean drag;
     private boolean rightClick;
-    private List<GuiSlot> dragged;
+    private List<GuiClientSlot> dragged;
     private List<Integer> stackSizes;
     
     public GuiClientManagerItem(GuiManagerItem manager) {
         super(manager);
+    }
+    
+    public ItemStack getHand() {
+        return manager.getHand();
+    }
+    
+    public void setHandChanged() {
+        manager.setHandChanged();
     }
     
     @Override
@@ -83,7 +91,7 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
         }
     }
     
-    public void startDrag(GuiSlot slot, boolean rightClick, int stackSize) {
+    public void startDrag(GuiClientSlot slot, boolean rightClick, int stackSize) {
         drag = true;
         dragged = new ArrayList<>();
         dragged.add(slot);
@@ -93,8 +101,8 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
         slot.draggedIndex = 0;
     }
     
-    public void addToDrag(GuiSlot slot) {
-        int stackSize = freeSpace(slot.slot, manager.getHand());
+    public void addToDrag(GuiClientSlot slot) {
+        int stackSize = freeSpace(slot.slot(), manager.getHand());
         if (stackSize > 0) {
             slot.draggedIndex = dragged.size();
             dragged.add(slot);
@@ -102,12 +110,12 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
         }
     }
     
-    public void modifyDrag(GuiSlot slot) {
-        stackSizes.set(slot.draggedIndex, freeSpace(slot.slot, manager.getHand()));
+    public void modifyDrag(GuiClientSlot slot) {
+        stackSizes.set(slot.draggedIndex, freeSpace(slot.slot(), manager.getHand()));
     }
     
     public void abortDrag() {
-        for (GuiSlot slot : dragged)
+        for (GuiClientSlot slot : dragged)
             slot.draggedIndex = -1;
         drag = false;
         rightClick = false;
@@ -123,7 +131,7 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
         ListTag names = new ListTag();
         int[] ids = new int[dragged.size() * 2];
         int i = 0;
-        for (GuiSlot slot : dragged) {
+        for (GuiClientSlot slot : dragged) {
             String inventory = slot.inventory().name();
             Integer inventoryId = inventories.get(inventory);
             if (inventoryId == null) {
@@ -131,7 +139,7 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
                 names.add(StringTag.valueOf(inventory));
             }
             ids[i] = inventoryId;
-            ids[i + 1] = slot.slot.getContainerSlot();
+            ids[i + 1] = slot.slot().getContainerSlot();
             i += 2;
         }
         nbt.putIntArray("ids", ids);

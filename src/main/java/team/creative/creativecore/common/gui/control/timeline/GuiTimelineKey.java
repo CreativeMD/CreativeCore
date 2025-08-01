@@ -1,71 +1,29 @@
 package team.creative.creativecore.common.gui.control.timeline;
 
-import org.joml.Matrix3x2fStack;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.sounds.SoundEvents;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.gui.GuiControl;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
-import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.gui.style.display.StyleDisplay;
-import team.creative.creativecore.common.util.math.geo.Rect;
+import team.creative.creativecore.common.gui.GuiControlDistHandler;
 
 public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimelineKey> {
     
-    public static final double DRAG_TIME = 2;
     public GuiTimelineChannel channel;
     public boolean modifiable = true;
     public int tick;
     public T value;
-    private boolean selected;
-    private boolean clicked;
     
     public GuiTimelineKey(GuiTimelineChannel channel, int tick, T value) {
-        super("");
+        super(channel.getParent(), "");
         this.channel = channel;
         this.tick = tick;
         this.value = value;
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == 0) {
-            channel.select(this);
-            playSound(SoundEvents.UI_BUTTON_CLICK);
-            clicked = true;
-        } else if (button == 1) {
-            if (selected)
-                channel.timeline.deselect();
-            channel.removeKey(this);
-            playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 0.1F, 0.6F);
-        }
-        return true;
-    }
-    
-    @Override
-    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
-        if (clicked && time > DRAG_TIME) {
-            channel.dragKey(this);
-            clicked = false;
-        }
-        super.mouseDragged(x, y, button, dragX, dragY, time);
-    }
-    
-    @Override
-    public void mouseReleased(double x, double y, int button) {
-        clicked = false;
+    public GuiTimelineKeyDist dist() {
+        return (GuiTimelineKeyDist) super.dist();
     }
     
     public void setSelected(boolean selected) {
-        this.selected = selected;
+        dist().setSelected(selected);
     }
     
     public void removeKey() {
@@ -86,69 +44,9 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     @Override
     public void tick() {}
     
-    @Override
-    public void flowX(int width, int preferred) {}
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {}
-    
-    @Override
-    protected int preferredWidth(int availableWidth) {
-        return 6;
+    public static interface GuiTimelineKeyDist extends GuiControlDistHandler {
+        
+        public void setSelected(boolean selected);
+        
     }
-    
-    @Override
-    protected int preferredHeight(int width, int availableHeight) {
-        return 6;
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.TRANSPARENT_NO_DISABLE;
-    }
-    
-    @Override
-    public Rect createChildRect(Rect contentRect, double scale, double xOffset, double yOffset) {
-        Rect temp = rect.rectCopy();
-        temp.grow(Math.max(temp.getWidth() / 4, temp.getHeight() / 4));
-        return contentRect.child(temp, scale, xOffset, yOffset);
-    }
-    
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
-    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
-        
-        Matrix3x2fStack pose = graphics.pose();
-        GuiStyle style = getStyle();
-        
-        pose.pushMatrix();
-        int width = rect.getWidth();
-        int height = rect.getHeight();
-        
-        pose.translate(width * 0.5F, height * 0.5F);
-        pose.rotate(45);
-        pose.translate(width * -0.5F, height * -0.5F);
-        
-        int borderWidth = style.getBorder(ControlStyleBorder.SMALL);
-        
-        style.border.render(graphics, width, height);
-        
-        StyleDisplay foreground = style.clickable;
-        if (!enabled || !modifiable)
-            foreground = style.disabledBackground;
-        else if (selected)
-            foreground = style.headerBackground;
-        else if (controlRect.inside(mouseX, mouseY))
-            foreground = style.clickableHighlight;
-        
-        foreground.render(graphics, borderWidth, borderWidth, width - borderWidth * 2, height - borderWidth * 2);
-        pose.popMatrix();
-    }
-    
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
 }

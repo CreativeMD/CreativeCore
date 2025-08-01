@@ -17,6 +17,10 @@ import team.creative.creativecore.client.gui.control.collection.GuiClientComboBo
 import team.creative.creativecore.client.gui.control.collection.GuiClientListBoxBase;
 import team.creative.creativecore.client.gui.control.collection.GuiClientStackSelector;
 import team.creative.creativecore.client.gui.control.collection.GuiClientStackSelectorExtension;
+import team.creative.creativecore.client.gui.control.inventory.GuiClientInventoryGrid;
+import team.creative.creativecore.client.gui.control.inventory.GuiClientInventoryGridPreview;
+import team.creative.creativecore.client.gui.control.inventory.GuiClientSlot;
+import team.creative.creativecore.client.gui.control.inventory.GuiClientSlotViewer;
 import team.creative.creativecore.client.gui.control.menu.GuiClientMenu.GuiClientMenuEntry;
 import team.creative.creativecore.client.gui.control.menu.GuiClientMenuRoot;
 import team.creative.creativecore.client.gui.control.menu.GuiClientMenuSub;
@@ -50,6 +54,12 @@ import team.creative.creativecore.client.gui.control.simple.GuiClientStateButton
 import team.creative.creativecore.client.gui.control.simple.GuiClientSteppedSlider;
 import team.creative.creativecore.client.gui.control.simple.GuiClientTabButton;
 import team.creative.creativecore.client.gui.control.simple.GuiClientTextfield;
+import team.creative.creativecore.client.gui.control.timeline.GuiClientTimeline;
+import team.creative.creativecore.client.gui.control.timeline.GuiClientTimelineChannel;
+import team.creative.creativecore.client.gui.control.timeline.GuiClientTimelineHeader;
+import team.creative.creativecore.client.gui.control.timeline.GuiClientTimelineKey;
+import team.creative.creativecore.client.gui.control.tree.GuiClientTree;
+import team.creative.creativecore.client.gui.control.tree.GuiClientTreeItem;
 import team.creative.creativecore.client.gui.manager.GuiClientManager;
 import team.creative.creativecore.client.gui.manager.GuiClientManagerItem;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -63,6 +73,10 @@ import team.creative.creativecore.common.gui.control.collection.GuiComboBoxTree;
 import team.creative.creativecore.common.gui.control.collection.GuiListBoxBase;
 import team.creative.creativecore.common.gui.control.collection.GuiStackSelector;
 import team.creative.creativecore.common.gui.control.collection.GuiStackSelectorExtension;
+import team.creative.creativecore.common.gui.control.inventory.GuiInventoryGrid;
+import team.creative.creativecore.common.gui.control.inventory.GuiInventoryGridPreview;
+import team.creative.creativecore.common.gui.control.inventory.GuiSlot;
+import team.creative.creativecore.common.gui.control.inventory.GuiSlotViewer;
 import team.creative.creativecore.common.gui.control.menu.GuiMenu.GuiMenuEntry;
 import team.creative.creativecore.common.gui.control.menu.GuiMenuRoot;
 import team.creative.creativecore.common.gui.control.menu.GuiMenuSub;
@@ -94,6 +108,12 @@ import team.creative.creativecore.common.gui.control.simple.GuiStateButtonIcon;
 import team.creative.creativecore.common.gui.control.simple.GuiSteppedSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiTabButton;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
+import team.creative.creativecore.common.gui.control.timeline.GuiTimeline;
+import team.creative.creativecore.common.gui.control.timeline.GuiTimelineChannel;
+import team.creative.creativecore.common.gui.control.timeline.GuiTimelineHeader;
+import team.creative.creativecore.common.gui.control.timeline.GuiTimelineKey;
+import team.creative.creativecore.common.gui.control.tree.GuiTree;
+import team.creative.creativecore.common.gui.control.tree.GuiTreeItem;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
 import team.creative.creativecore.common.util.type.list.PairList;
@@ -196,6 +216,19 @@ public class GuiClientRegistry {
         register(GuiMenuEntry.class, GuiClientMenuEntry::new);
         register(GuiMenuRoot.class, GuiClientMenuRoot::new);
         register(GuiMenuSub.class, GuiClientMenuSub::new);
+        
+        register(GuiInventoryGrid.class, GuiClientInventoryGrid::new);
+        register(GuiInventoryGridPreview.class, GuiClientInventoryGridPreview::new);
+        register(GuiSlotViewer.class, GuiClientSlotViewer::new);
+        register(GuiSlot.class, GuiClientSlot::new);
+        
+        register(GuiTimelineKey.class, GuiClientTimelineKey::new);
+        register(GuiTimelineChannel.class, GuiClientTimelineChannel::new);
+        register(GuiTimelineHeader.class, GuiClientTimelineHeader::new);
+        register(GuiTimeline.class, GuiClientTimeline::new);
+        
+        register(GuiTree.class, GuiClientTree::new);
+        register(GuiTreeItem.class, GuiClientTreeItem::new);
         
         registerManager(GuiManagerItem.class, GuiClientManagerItem::new);
     }

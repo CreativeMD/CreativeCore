@@ -3,6 +3,7 @@ package team.creative.creativecore.client.gui.control.parent;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientParent;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
@@ -22,9 +23,15 @@ public class GuiClientScrollY<T extends GuiScrollY> extends GuiClientParent<T> i
     public int scrollbarWidth = 3;
     public boolean hoveredScroll;
     protected int cachedHeight;
+    private boolean scrollWhenCTRL;
     
     public GuiClientScrollY(T control) {
         super(control);
+    }
+    
+    @Override
+    public void setScrollWhenCTRL() {
+        this.scrollWhenCTRL = true;
     }
     
     @Override
@@ -63,8 +70,10 @@ public class GuiClientScrollY<T extends GuiScrollY> extends GuiClientParent<T> i
     }
     
     public void scroll(double scrolled) {
-        this.scrolled.set(this.scrolled.aimed() - scrolled * 10);
-        onScrolled();
+        if (!scrollWhenCTRL || Screen.hasControlDown()) {
+            this.scrolled.set(this.scrolled.aimed() - scrolled * 10);
+            onScrolled();
+        }
     }
     
     @Override

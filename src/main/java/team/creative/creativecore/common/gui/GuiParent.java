@@ -215,7 +215,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     }
     
     public int size() {
-        return controls.hoverSize();
+        return controls.controlSize();
     }
     
     @Override

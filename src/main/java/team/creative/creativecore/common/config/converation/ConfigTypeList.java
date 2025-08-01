@@ -53,12 +53,13 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
     @Override
     public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
         parent.setFlow(GuiFlow.STACK_Y);
-        GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>("data", true, createList(key, 0)).setDim(50, 130).setExpandable();
+        GuiListBoxBase<GuiConfigSubControl> listBox = (GuiListBoxBase<GuiConfigSubControl>) new GuiListBoxBase<>(parent, "data", true, createList(key, 0)).setDim(50, 130)
+                .setExpandable();
         parent.add(listBox);
         listBox.setSpacing(-1);
         
         ConfigKey listKey = ConfigKey.ofGenericType(key, side);
-        parent.add(new GuiButton("add", x -> {
+        parent.add(new GuiButton(parent, "add", x -> {
             listKey.forceValue(ConfigTypeConveration.createObject(listKey.field()), side);
             var c = listKey.create(configParent, "", side);
             listKey.load(configParent, c, side);
@@ -99,7 +100,7 @@ public class ConfigTypeList extends ConfigTypeConveration<List> {
         GuiListBoxBase<GuiConfigSubControl> box = parent.get("data");
         List value = createList(key, box.size());
         for (int i = 0; i < box.size(); i++) {
-            listKey.save(box.get(i), configParent, side);
+            listKey.save(box.getItem(i), configParent, side);
             value.add(listKey.copy(configParent.provider(), side));
         }
         return value;

@@ -7,7 +7,7 @@ public class GuiTimelineChannelDouble extends GuiTimelineChannel<Double> {
     }
     
     @Override
-    protected Double getValueAt(int time) {
+    public Double getValueAt(int time) {
         return 0D;
     }
     

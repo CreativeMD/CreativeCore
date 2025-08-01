@@ -3,24 +3,11 @@ package team.creative.creativecore.common.gui.control.timeline;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Matrix3x2fStack;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.Align;
-import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn.GuiColumnHeader;
@@ -33,21 +20,9 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiFixedDimension;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
-import team.creative.creativecore.common.gui.style.GuiStyle;
-import team.creative.creativecore.common.gui.style.display.DisplayColor;
-import team.creative.creativecore.common.gui.style.display.StyleDisplay;
-import team.creative.creativecore.common.util.math.geo.Rect;
-import team.creative.creativecore.common.util.math.vec.SmoothValue;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class GuiTimeline extends GuiParent {
-    
-    protected static final double MAXIMUM_ZOOM = 10;
-    
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
-    public StyleDisplay cursorHighlight;
     
     public final GuiAnimationHandler handler;
     
@@ -58,56 +33,47 @@ public class GuiTimeline extends GuiParent {
     private final GuiScrollY channelParent;
     
     protected int duration = 100;
-    protected double basePixelWidth;
-    
     protected int headerHeight = 15;
     protected int channelHeight = 9;
     protected int sidebarWidth = 50;
-    protected int timelineOffset = 8;
-    
-    protected SmoothValue zoom = new SmoothValue(100);
-    protected SmoothValue scrollX = new SmoothValue(100);
     
     private GuiTimelineKey selected;
     
-    private int cachedTimelineWidth;
-    private double lastZoom = 0;
-    protected double maxScrollX;
-    
-    public GuiTimeline(GuiAnimationHandler handler) {
+    public GuiTimeline(IGuiParent parent, GuiAnimationHandler handler) {
+        super(parent);
         this.handler = handler;
-        align = Align.STRETCH;
-        valign = VAlign.STRETCH;
-        flow = GuiFlow.STACK_Y;
-        spacing = -1;
-        header = new GuiRow((GuiColumnHeader) new GuiColumnHeader().setDim(new GuiFixedDimension(sidebarWidth)), new GuiTimelineHeader());
+        setAlign(Align.STRETCH);
+        setVAlign(VAlign.STRETCH);
+        setFlow(GuiFlow.STACK_Y);
+        setSpacing(-1);
+        header = new GuiRow((GuiColumnHeader) new GuiColumnHeader(parent).setDim(new GuiFixedDimension(sidebarWidth)), new GuiTimelineHeader(this));
         header.setDim(new GuiSizeRule.GuiSizeRules().prefHeight(headerHeight).minHeight(headerHeight));
-        header.spacing = -1;
+        header.setSpacing(-1);
         add(header);
-        channelParent = new GuiScrollY() {
-            
-            @Override
-            public ControlFormatting getControlFormatting() {
-                return ControlFormatting.TRANSPARENT;
-            }
-            
-            @Override
-            public void scroll(double scrolled) {
-                if (Screen.hasControlDown())
-                    super.scroll(scrolled);
-            }
-            
-        }.setHovered();
-        channelParent.spacing = -1;
-        channelParent.align = Align.STRETCH;
-        channelParent.flow = GuiFlow.STACK_X;
+        channelParent = new GuiScrollY(parent).setScrollWhenCTRL().setHovered().setFormatting(ControlFormatting.TRANSPARENT);
+        channelParent.setSpacing(-1);
+        channelParent.setAlign(Align.STRETCH);
+        channelParent.setFlow(GuiFlow.STACK_X);
         add(channelParent);
-        sidebar = new GuiParent(GuiFlow.STACK_Y).setAlign(Align.STRETCH);
-        sidebar.spacing = -1;
+        sidebar = new GuiParent(parent, GuiFlow.STACK_Y).setAlign(Align.STRETCH);
+        sidebar.setSpacing(-1);
         channelParent.add(sidebar);
-        channelbar = new GuiParent(GuiFlow.STACK_Y).setAlign(Align.STRETCH);
-        channelbar.spacing = -1;
+        channelbar = new GuiParent(parent, GuiFlow.STACK_Y).setAlign(Align.STRETCH);
+        channelbar.setSpacing(-1);
         channelParent.add(channelbar.setExpandableX());
+    }
+    
+    public Iterable<GuiTimelineChannel> channels() {
+        return channels;
+    }
+    
+    public GuiScrollY getChannelParent() {
+        return channelParent;
+    }
+    
+    @Override
+    public GuiTimelineDist dist() {
+        return (GuiTimelineDist) super.dist();
     }
     
     public int getDuration() {
@@ -116,17 +82,9 @@ public class GuiTimeline extends GuiParent {
     
     public GuiTimeline setDuration(int duration) {
         this.duration = duration;
-        if (cachedTimelineWidth != 0)
-            updateTickWidth();
-        adjustKeysPositionX();
-        scrollX.setStart(0);
-        zoom.setStart(0);
+        
         raiseEvent(new GuiControlChangedEvent(this));
         return this;
-    }
-    
-    private void updateTickWidth() {
-        basePixelWidth = (double) (cachedTimelineWidth - timelineOffset * 2) / (double) duration;
     }
     
     public void selectKey(GuiTimelineKey key) {
@@ -145,29 +103,12 @@ public class GuiTimeline extends GuiParent {
         }
     }
     
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        boolean result = super.mouseClicked(x, y, button);
-        if (!result && button == 0) {
-            deselect();
-            return false;
-        }
-        return result;
-    }
-    
-    public double scrolledX() {
-        return scrollX.current();
-    }
-    
     public void adjustKeyPositionX(GuiTimelineKey key) {
-        key.rect.setX(timelineOffset + (int) (key.tick * getTickWidth()) - (key.rect.getWidth() / 2));
+        dist().adjustKeyPositionX(key);
     }
     
     public void adjustKeysPositionX() {
-        double tickWidth = getTickWidth();
-        for (GuiTimelineChannel<?> channel : channels)
-            for (GuiControl key : channel)
-                key.rect.setX(timelineOffset + (int) (((GuiTimelineKey) key).tick * tickWidth) - (key.rect.getWidth() / 2));
+        dist().adjustKeysPositionX();
     }
     
     public void setSidebarWidth(int sidebarWidth) {
@@ -176,8 +117,8 @@ public class GuiTimeline extends GuiParent {
     }
     
     public GuiTimelineChannel addGuiTimelineChannel(MutableComponent title, GuiTimelineChannel channel) {
-        GuiColumn left = new GuiColumnHeader();
-        left.add(new GuiLabel("title").setDropShadow(false).setDefaultColor(ColorUtils.BLACK).setTitle(title.withStyle(ChatFormatting.BOLD)));
+        GuiColumn left = new GuiColumnHeader(getParent());
+        left.add(new GuiLabel(getParent(), "title").setDropShadow(false).setDefaultColor(ColorUtils.BLACK).setTitle(title.withStyle(ChatFormatting.BOLD)));
         sidebar.add(left.setVAlign(VAlign.CENTER).setDim(sidebarWidth, channelHeight));
         channel.sidebarTitle = left;
         channels.add(channel);
@@ -194,164 +135,7 @@ public class GuiTimeline extends GuiParent {
     
     @Override
     public boolean isExpandableX() {
-        return expandableX;
-    }
-    
-    protected double getTickWidth() {
-        return basePixelWidth + zoom.current();
-    }
-    
-    protected double getTickWidthAimed() {
-        return basePixelWidth + zoom.aimed();
-    }
-    
-    public int getTimeAt(double x) {
-        double tickWidth = getTickWidth();
-        return Mth.clamp((int) ((x - timelineOffset + tickWidth / 2 + scrollX.current()) / tickWidth), 0, duration);
-    }
-    
-    public int getTimeAtAimed(double x) {
-        double tickWidth = getTickWidthAimed();
-        return Mth.clamp((int) ((x - timelineOffset + tickWidth / 2 + scrollX.aimed()) / tickWidth), 0, duration);
-    }
-    
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    @Environment(EnvType.CLIENT)
-    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        zoom.tick();
-        scrollX.tick();
-        super.render(graphics, controlRect, realRect, scale, mouseX, mouseY);
-    }
-    
-    @Override
-    public boolean mouseScrolled(double x, double y, double delta) {
-        if (Screen.hasShiftDown()) {
-            scrollX.set(Mth.clamp(scrollX.aimed() - delta * 10, 0, maxScrollX));
-            return true;
-        }
-        if (Screen.hasControlDown()) {
-            channelParent.scroll(delta);
-            return true;
-        }
-        return super.mouseScrolled(x, y, delta);
-    }
-    
-    public void scrolled(int width, double x, double delta) {
-        x += timelineOffset;
-        int focusedTick = Math.max(0, getTimeAtAimed(x));
-        zoom.set(Mth.clamp(zoom.aimed() + delta * basePixelWidth * 2 * Math.max(basePixelWidth * 2, zoom.aimed()) / MAXIMUM_ZOOM, 0, MAXIMUM_ZOOM));
-        int currentTick = Math.max(0, getTimeAtAimed(x));
-        double aimedTickWidth = getTickWidthAimed();
-        
-        double sizeX = timelineOffset * 2 + aimedTickWidth * duration;
-        maxScrollX = Math.max(0, sizeX - width);
-        scrollX.set(Mth.clamp(scrollX.aimed() + (focusedTick - currentTick) * aimedTickWidth, 0, maxScrollX));
-    }
-    
-    public class GuiTimelineHeader extends GuiColumnHeader {
-        
-        public boolean dragged = false;
-        
-        public GuiTimelineHeader() {
-            setExpandableX();
-        }
-        
-        @Override
-        public boolean mouseClicked(double x, double y, int button) {
-            dragged = true;
-            handler.set(getTimeAt(x));
-            playSound(SoundEvents.GLOW_ITEM_FRAME_ROTATE_ITEM);
-            return true;
-        }
-        
-        @Override
-        public void mouseMoved(double x, double y) {
-            if (dragged) {
-                int tick = getTimeAt(x);
-                if (tick != handler.get()) {
-                    handler.set(tick);
-                    playSound(SoundEvents.GLOW_ITEM_FRAME_ROTATE_ITEM, 0.02F, 1);
-                }
-            }
-        }
-        
-        @Override
-        public void mouseReleased(double x, double y, int button) {
-            dragged = false;
-        }
-        
-        @Override
-        public boolean mouseScrolled(double x, double y, double delta) {
-            scrolled(rect.getWidth(), x, delta);
-            return true;
-        }
-        
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        @Environment(EnvType.CLIENT)
-        protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-            
-            if (lastZoom != zoom.current()) {
-                lastZoom = zoom.current();
-                adjustKeysPositionX();
-            }
-            
-            Matrix3x2fStack pose = graphics.pose();
-            
-            double tickWidth = getTickWidth();
-            
-            if (cursorHighlight == null)
-                cursorHighlight = new DisplayColor(0.78F, 0.78F, 0, 0.59F);
-            
-            int width = rect.getContentWidth();
-            int height = rect.getContentHeight();
-            int contentOffset = getContentOffset() - 1;
-            pose.translate(timelineOffset - 1, -contentOffset);
-            
-            int ticks = (int) (width / tickWidth);
-            int area = 5;
-            int halfArea = 5;
-            int smallestStep = 0;
-            while (Math.pow(area, smallestStep) * tickWidth < 3)
-                smallestStep++;
-            smallestStep = (int) Math.pow(area, smallestStep);
-            
-            double stepWidth = tickWidth * smallestStep;
-            int stepOffset = (int) (scrollX.current() / stepWidth);
-            int stamps = ticks / smallestStep;
-            int begin = Math.max(0, stepOffset);
-            int end = stepOffset + stamps + 1;
-            
-            int pointerWidth = Math.max((int) tickWidth, 1);
-            cursorHighlight.render(graphics, tickWidth * handler.get() - pointerWidth / 2D - scrollX.current(), 0, pointerWidth, height);
-            
-            GuiStyle style = getStyle();
-            StyleDisplay border = style.get(ControlStyleBorder.SMALL);
-            Font font = ((CreativeGuiGraphics) graphics).getFont();
-            
-            pose.pushMatrix();
-            pose.translate((float) (-scrollX.current() + begin * stepWidth), 0);
-            for (int i = begin; i < end; i++) {
-                if (i % halfArea == 0) {
-                    border.render(graphics, 1, 4);
-                    String text = "" + (i * smallestStep);
-                    graphics.drawString(Minecraft.getInstance().font, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false);
-                } else
-                    border.render(graphics, 1, 2);
-                
-                pose.translate((float) stepWidth, 0);
-            }
-            pose.popMatrix();
-        }
-        
-        @Override
-        public void flowX(int width, int preferred) {
-            super.flowX(width, preferred);
-            cachedTimelineWidth = width;
-            updateTickWidth();
-        }
-        
+        return dist().isExpandableX();
     }
     
     public static class KeySelectedEvent extends GuiControlEvent<GuiTimelineKey> {
@@ -378,6 +162,15 @@ public class GuiTimeline extends GuiParent {
             return false;
         }
         
+    }
+    
+    public static interface GuiTimelineDist extends GuiParentDistHandler {
+        
+        public void afterDurationSet();
+        
+        public void adjustKeyPositionX(GuiTimelineKey key);
+        
+        public void adjustKeysPositionX();
     }
     
 }

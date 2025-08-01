@@ -26,6 +26,15 @@ public class GuiCheckBox extends GuiLabel {
         return dist().get();
     }
     
+    public GuiCheckBox setPartial(boolean partial) {
+        dist().setPartial(partial);
+        return this;
+    }
+    
+    public boolean getPartial() {
+        return dist().getPartial();
+    }
+    
     public GuiCheckBox consumeChanged(Consumer<Boolean> changed) {
         this.consumeChanged(changed);
         return this;
@@ -53,6 +62,10 @@ public class GuiCheckBox extends GuiLabel {
         public void set(boolean value);
         
         public boolean get();
+        
+        public void setPartial(boolean partial);
+        
+        public boolean getPartial();
         
     }
     

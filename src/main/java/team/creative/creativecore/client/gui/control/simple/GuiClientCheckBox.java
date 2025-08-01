@@ -32,6 +32,16 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
     }
     
     @Override
+    public void setPartial(boolean partial) {
+        this.partial = partial;
+    }
+    
+    @Override
+    public boolean getPartial() {
+        return partial;
+    }
+    
+    @Override
     protected int preferredWidth(int availableWidth) {
         return super.preferredWidth(availableWidth) + CHECKBOX_WIDTH + 3;
     }

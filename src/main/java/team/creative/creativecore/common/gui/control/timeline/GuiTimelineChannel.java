@@ -7,25 +7,26 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
-import team.creative.creativecore.common.gui.style.ControlFormatting;
 
 public abstract class GuiTimelineChannel<T> extends GuiParent {
     
     public final GuiTimeline timeline;
     public GuiControl sidebarTitle;
-    private int cachedHeight;
     private List<GuiTimelineKey<T>> keys = new ArrayList<>();
-    private GuiTimelineKey<T> dragged;
     
     public GuiTimelineChannel(GuiTimeline timeline) {
-        super();
+        super(timeline.getParent());
         this.timeline = timeline;
-        valign = VAlign.CENTER;
+        setVAlign(VAlign.CENTER);
+    }
+    
+    @Override
+    public GuiTimelineChannelDist<T> dist() {
+        return (GuiTimelineChannelDist<T>) super.dist();
     }
     
     @Override
@@ -45,11 +46,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
         GuiTimelineKey<T> key = new GuiTimelineKey<T>(this, tick, value);
         add(key);
         if (hasLayer()) {
-            key.rect.setWidth(key.rect.getPreferredWidth(0), 0);
-            key.rect.flowX();
-            key.rect.setHeight(key.rect.getPreferredHeight(0), 0);
-            key.rect.flowY();
-            key.rect.setY((int) Math.ceil(cachedHeight / 2D - key.rect.getHeight() / 2D));
+            dist().keyInitialFlow(key);
         }
         timeline.adjustKeyPositionX(key);
         for (int i = 0; i < keys.size(); i++) {
@@ -66,31 +63,6 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
         keys.add(key);
         timeline.raiseEvent(new GuiControlChangedEvent(timeline));
         return key;
-    }
-    
-    @Override
-    public void flowX(int width, int preferred) {
-        for (GuiControl control : controls) {
-            control.rect.setWidth(control.rect.getPreferredWidth(0), 0);
-            control.rect.flowX();
-        }
-        timeline.adjustKeysPositionX();
-    }
-    
-    @Override
-    public void flowY(int width, int height, int preferred) {
-        super.flowY(width, height, preferred);
-        this.cachedHeight = height;
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        return ControlFormatting.NESTED;
-    }
-    
-    @Override
-    public double getOffsetX() {
-        return -timeline.scrolledX();
     }
     
     public void select(GuiTimelineKey<T> key) {
@@ -118,35 +90,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     
     public void dragKey(GuiTimelineKey<T> key) {
         if (key.modifiable)
-            this.dragged = key;
-    }
-    
-    @Override
-    public void mouseMoved(double x, double y) {
-        if (dragged != null) {
-            int tick = Math.max(0, timeline.getTimeAt(x));
-            if (dragged.channel.isSpaceFor(dragged, tick)) {
-                dragged.tick = tick;
-                timeline.adjustKeyPositionX(dragged);
-            }
-        }
-        super.mouseMoved(x, y);
-    }
-    
-    @Override
-    public void mouseReleased(double x, double y, int button) {
-        if (dragged != null) {
-            this.dragged.channel.movedKey(dragged);
-            this.dragged = null;
-        }
-        
-        super.mouseReleased(x, y, button);
-    }
-    
-    @Override
-    public boolean mouseScrolled(double x, double y, double delta) {
-        timeline.scrolled(rect.getWidth(), x, delta);
-        return true;
+            dist().dragKey(key);
     }
     
     public boolean isSpaceFor(@Nullable GuiTimelineKey<T> key, int tick) {
@@ -162,24 +106,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
         return true;
     }
     
-    protected abstract T getValueAt(int time);
-    
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        boolean result = super.mouseClicked(x, y, button);
-        if (!result && button == 1) {
-            int time = timeline.getTimeAt(x);
-            if (isSpaceFor(null, time)) {
-                GuiTimelineKey<T> key = addKey(time, getValueAt(time));
-                if (key != null) {
-                    select(key);
-                    playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 0.1F, 0.6F);
-                }
-            }
-            return true;
-        }
-        return result;
-    }
+    public abstract T getValueAt(int time);
     
     public boolean isChannelEmpty() {
         return keys.isEmpty();
@@ -199,6 +126,14 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
         if (keys.isEmpty())
             return null;
         return keys.get(keys.size() - 1);
+    }
+    
+    public static interface GuiTimelineChannelDist<K> extends GuiParentDistHandler {
+        
+        public void keyInitialFlow(GuiTimelineKey<K> key);
+        
+        public void dragKey(GuiTimelineKey<K> key);
+        
     }
     
 }

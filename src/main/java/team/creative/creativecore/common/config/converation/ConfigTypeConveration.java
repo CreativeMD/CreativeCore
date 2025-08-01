@@ -257,7 +257,7 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiTextfield("data").setDim(30, 8).setExpandableX());
+                parent.add(new GuiTextfield(parent, "data").setDim(30, 8).setExpandableX());
             }
             
             @Override
@@ -296,7 +296,7 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiTextfield("data").setDim(30, 8).setExpandableX());
+                parent.add(new GuiTextfield(parent, "data").setDim(30, 8).setExpandableX());
             }
             
             @Override
@@ -341,14 +341,15 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                parent.flow = GuiFlow.STACK_Y;
-                parent.add(new GuiComboBox<>("sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
+                parent.setFlow(GuiFlow.STACK_Y);
+                parent.add(new GuiComboBox<>(parent, "sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
                     if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
                 })).setSearchbar(true));
-                GuiParent hBox = new GuiParent(GuiFlow.STACK_X).add(new GuiLabel("volumeLabel").setTranslate("gui.volume")).add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10))
-                        .add(new GuiLabel("pitchLabel").setTranslate("gui.pitch")).add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
+                GuiParent hBox = new GuiParent(parent, GuiFlow.STACK_X).add(new GuiLabel(parent, "volumeLabel").setTranslate("gui.volume")).add(
+                    new GuiSlider(parent, "volume", 1, 0, 1).setDim(40, 10)).add(new GuiLabel(parent, "pitchLabel").setTranslate("gui.pitch")).add(
+                        new GuiSlider(parent, "pitch", 1, 0.5, 2).setDim(40, 10));
                 parent.add(hBox);
             }
             
@@ -407,7 +408,7 @@ public abstract class ConfigTypeConveration<T> {
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 SelectableConfig value = (SelectableConfig) key.get();
                 configParent.setCustomData(value.getSelected());
-                parent.add(new GuiComboBox("data", new TextMapBuilder().addComponent(value.getArray(), x -> Component.literal(x.toString()))).setExpandableX());
+                parent.add(new GuiComboBox(parent, "data", new TextMapBuilder().addComponent(value.getArray(), x -> Component.literal(x.toString()))).setExpandableX());
             }
             
             @Override
@@ -473,22 +474,22 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.flow = GuiFlow.STACK_Y;
-                GuiParent r = new GuiParent();
+                parent.setFlow(GuiFlow.STACK_Y);
+                GuiParent r = new GuiParent(parent);
                 parent.add(r);
-                r.add(new GuiTextfield("m00").setNumbersIncludingNegativeOnly());
-                r.add(new GuiTextfield("m01").setNumbersIncludingNegativeOnly());
-                r.add(new GuiTextfield("m02").setNumbersIncludingNegativeOnly());
-                r = new GuiParent();
+                r.add(new GuiTextfield(parent, "m00").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield(parent, "m01").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield(parent, "m02").setNumbersIncludingNegativeOnly());
+                r = new GuiParent(parent);
                 parent.add(r);
-                r.add(new GuiTextfield("m10").setNumbersIncludingNegativeOnly());
-                r.add(new GuiTextfield("m11").setNumbersIncludingNegativeOnly());
-                r.add(new GuiTextfield("m12").setNumbersIncludingNegativeOnly());
-                r = new GuiParent();
+                r.add(new GuiTextfield(parent, "m10").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield(parent, "m11").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield(parent, "m12").setNumbersIncludingNegativeOnly());
+                r = new GuiParent(parent);
                 parent.add(r);
-                r.add(new GuiTextfield("m20").setNumbersIncludingNegativeOnly());
-                r.add(new GuiTextfield("m21").setNumbersIncludingNegativeOnly());
-                r.add(new GuiTextfield("m22").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield(parent, "m20").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield(parent, "m21").setNumbersIncludingNegativeOnly());
+                r.add(new GuiTextfield(parent, "m22").setNumbersIncludingNegativeOnly());
             }
             
             @Override
@@ -552,8 +553,8 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public void createControls(GuiParent parent, ConfigKey key) {
-                parent.add(new GuiComboBox<>("data", new TextMapBuilder<>().addComponent(getEnumClass(key.field().getType()).getEnumConstants(), (x) -> Component.literal(((Enum) x)
-                        .name()))));
+                parent.add(new GuiComboBox<>(parent, "data", new TextMapBuilder<>().addComponent(getEnumClass(key.field().getType()).getEnumConstants(), (x) -> Component.literal(
+                    ((Enum) x).name()))));
             }
             
             @Override

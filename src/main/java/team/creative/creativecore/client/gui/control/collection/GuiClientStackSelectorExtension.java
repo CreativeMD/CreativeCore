@@ -82,7 +82,7 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
                 container.setItem(i, stack);
                 i++;
             }
-            control.add(new GuiInventoryGridPreview(entry.getKey(), container));
+            control.add(new GuiInventoryGridPreview(control.getParent(), entry.getKey(), container));
         }
         if (control.hasGui())
             reflowInternal();

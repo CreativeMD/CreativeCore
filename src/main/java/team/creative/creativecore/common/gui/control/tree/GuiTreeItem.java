@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.GuiParent;
+import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
-import team.creative.creativecore.common.gui.control.simple.GuiButtonHoldSlim;
+import team.creative.creativecore.common.gui.control.simple.GuiButtonHold;
 import team.creative.creativecore.common.gui.control.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
@@ -26,17 +26,17 @@ public class GuiTreeItem extends GuiParent {
     private GuiCheckBox checkbox;
     private final GuiLabel label;
     private GuiButton button;
-    private ItemClickState state = null;
+    
     protected boolean moving = false;
     
-    public GuiTreeItem(String name, GuiTree tree) {
-        super(name);
+    public GuiTreeItem(IGuiParent parent, String name, GuiTree tree) {
+        super(parent, name);
         this.tree = tree;
         if (tree.hasCheckboxes())
             add(getOrCreateCheckbox());
-        add(label = new GuiLabel("title"));
-        flow = GuiFlow.STACK_X;
-        spacing = 5;
+        add(label = new GuiLabel(parent, "title"));
+        setFlow(GuiFlow.STACK_X);
+        setSpacing(5);
     }
     
     public GuiTreeItem setTranslate(String translate) {
@@ -56,13 +56,13 @@ public class GuiTreeItem extends GuiParent {
     
     public void resetCheckboxPartial() {
         if (checkbox != null)
-            checkbox.partial = false;
+            checkbox.setPartial(false);
     }
     
     protected GuiCheckBox getOrCreateCheckbox() {
         if (checkbox != null)
             return checkbox;
-        return checkbox = new GuiCheckBox("box", true).consumeChanged(x -> {
+        return checkbox = new GuiCheckBox(getParent(), "box", true).consumeChanged(x -> {
             if (parentItem != null && tree.hasCheckboxesPartial())
                 parentItem.childCheckedChanged(x);
             setChecked(x);
@@ -90,17 +90,17 @@ public class GuiTreeItem extends GuiParent {
     }
     
     public boolean isAtLeastPartiallyChecked() {
-        return checkbox != null && (checkbox.value || checkbox.partial);
+        return checkbox != null && (checkbox.get() || checkbox.getPartial());
     }
     
     public boolean isChecked() {
-        return checkbox != null && checkbox.value;
+        return checkbox != null && checkbox.get();
     }
     
     protected void setChecked(boolean value) {
         if (checkbox != null) {
-            checkbox.value = value;
-            checkbox.partial = false;
+            checkbox.set(value);
+            checkbox.setPartial(false);
         }
         if (tree.hasCheckboxesPartial())
             for (GuiTreeItem item : items)
@@ -110,23 +110,23 @@ public class GuiTreeItem extends GuiParent {
     protected void childCheckedChanged(boolean value) {
         if (checkbox == null)
             return;
-        if (checkbox.value)
+        if (checkbox.get())
             return;
         if (value) {
-            if (checkbox.partial)
+            if (checkbox.getPartial())
                 return;
-            checkbox.partial = true;
+            checkbox.setPartial(true);
             if (parentItem != null)
                 parentItem.childCheckedChanged(true);
         } else {
-            if (!checkbox.partial)
+            if (!checkbox.getPartial())
                 return;
             
             for (GuiTreeItem item : items)
                 if (item.isAtLeastPartiallyChecked())
                     return;
                 
-            checkbox.partial = false;
+            checkbox.setPartial(false);
             if (parentItem != null)
                 parentItem.childCheckedChanged(false);
         }
@@ -141,7 +141,7 @@ public class GuiTreeItem extends GuiParent {
         if (items.isEmpty()) {
             button = null;
         } else {
-            add(button = (GuiButton) new GuiButtonHoldSlim("expand", x -> toggle()).setTitle(Component.literal("-")));
+            add(button = (GuiButton) new GuiButtonHold(getParent(), "expand", x -> toggle()).setTitle(Component.literal("-")).setFormatting(ControlFormatting.TRANSPARENT));
         }
         if (tree.hasCheckboxes())
             add(getOrCreateCheckbox());
@@ -246,67 +246,6 @@ public class GuiTreeItem extends GuiParent {
         return false;
     }
     
-    @Override
-    public void mouseMoved(double x, double y) {
-        super.mouseMoved(x, y);
-        if (state == ItemClickState.CLICKED && !tree.isDragged() && !rect.inside(x, y)) {
-            tree.startDrag(this);
-            state = ItemClickState.DRAGGED;
-        }
-    }
-    
-    @Override
-    public void mouseReleased(double x, double y, int button) {
-        super.mouseReleased(x, y, button);
-        
-        if (state == ItemClickState.CLICKED) {
-            tree.select(this);
-            playSound(SoundEvents.UI_BUTTON_CLICK);
-            state = null;
-        } else if (state == ItemClickState.DRAGGED) {
-            state = null;
-            if (tree.endDrag())
-                playSound(SoundEvents.UI_BUTTON_CLICK, 0.1F, 2F);
-            
-        }
-        
-    }
-    
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (super.mouseClicked(x, y, button))
-            return true;
-        state = ItemClickState.CLICKED;
-        return true;
-    }
-    
-    @Override
-    public boolean mouseDoubleClicked(double x, double y, int button) {
-        toggle();
-        tree.select(this);
-        playSound(SoundEvents.UI_BUTTON_CLICK);
-        return true;
-    }
-    
-    @Override
-    public boolean testForDoubleClick(double x, double y, int button) {
-        return button == 0;
-    }
-    
-    protected void updateColor() {
-        if (selected)
-            label.setDefaultColor(ColorUtils.YELLOW);
-        else
-            label.setDefaultColor(ColorUtils.WHITE);
-    }
-    
-    @Override
-    public ControlFormatting getControlFormatting() {
-        if (state == ItemClickState.DRAGGED)
-            return ControlFormatting.OUTLINE;
-        return super.getControlFormatting();
-    }
-    
     public boolean selected() {
         return selected;
     }
@@ -321,11 +260,11 @@ public class GuiTreeItem extends GuiParent {
         updateColor();
     }
     
-    private static enum ItemClickState {
-        
-        CLICKED,
-        DRAGGED;
-        
+    protected void updateColor() {
+        if (selected)
+            label.setDefaultColor(ColorUtils.YELLOW);
+        else
+            label.setDefaultColor(ColorUtils.WHITE);
     }
     
 }
