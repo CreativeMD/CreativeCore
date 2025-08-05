@@ -9,17 +9,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-@Environment(EnvType.CLIENT)
-@OnlyIn(Dist.CLIENT)
 @JsonAdapter(value = StyleDisplayDeserializer.class)
 public abstract class StyleDisplay {
     

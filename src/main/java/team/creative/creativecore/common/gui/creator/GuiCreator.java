@@ -2,9 +2,6 @@ package team.creative.creativecore.common.gui.creator;
 
 import java.util.function.BiFunction;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,10 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
-import team.creative.creativecore.client.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
@@ -50,12 +44,6 @@ public abstract class GuiCreator {
             CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
         else
             OpenGuiPacket.openGuiOnServer(this, nbt, (ServerPlayer) player);
-    }
-    
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
-    public static void openClientSide(GuiLayer layer) {
-        Minecraft.getInstance().forceSetScreen(new GuiScreenIntegration(layer));
     }
     
     public static class GuiCreatorBasic extends GuiCreator {

@@ -1,17 +1,10 @@
 package team.creative.creativecore.common.util.math.matrix;
 
-import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.box.ABB;
 import team.creative.creativecore.common.util.math.box.BoxCorner;
@@ -221,7 +214,7 @@ public interface IVecOrigin {
         return bb;
     }
     
-    @Environment(EnvType.CLIENT)
+    /*@Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
     public default void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
@@ -246,7 +239,7 @@ public interface IVecOrigin {
     @OnlyIn(Dist.CLIENT)
     public default void setupRendering(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
         setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
-    }
+    } TODO Reimplement for LittleTiles */
     
     public default boolean hasChanged() {
         return offXLast() != offX() || offYLast() != offY() || offZLast() != offZ() || rotXLast() != rotX() || rotYLast() != rotY() || rotZLast() != rotZ();

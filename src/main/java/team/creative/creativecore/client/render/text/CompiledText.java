@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -17,8 +15,6 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringDecomposer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.VAlign;
@@ -71,8 +67,6 @@ public class CompiledText {
         }
         
         @Override
-        @Environment(EnvType.CLIENT)
-        @OnlyIn(Dist.CLIENT)
         public void render(GuiGraphics graphics) {}
     };
     
@@ -166,8 +160,6 @@ public class CompiledText {
         compileNext(null, true, copy);
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
             if (newLine)
@@ -177,8 +169,6 @@ public class CompiledText {
         return currentLine;
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     private CompiledLine compileNext(CompiledLine currentLine, boolean newLine, FormattedText component) {
         if (newLine)
             lines.add(currentLine = new CompiledLine());
@@ -203,8 +193,6 @@ public class CompiledText {
         return currentLine;
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public int getTotalHeight() {
         int height = -lineSpacing;
         for (CompiledLine line : lines)
@@ -212,8 +200,6 @@ public class CompiledText {
         return Mth.ceil(height * scale);
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public void render(GuiGraphics graphics) {
         if (lines == null)
             return;
@@ -290,8 +276,6 @@ public class CompiledText {
             return false;
         }
         
-        @Environment(EnvType.CLIENT)
-        @OnlyIn(Dist.CLIENT)
         public void render(GuiGraphics graphics) {
             Font font = Minecraft.getInstance().font;
             var pose = graphics.pose();
@@ -316,8 +300,6 @@ public class CompiledText {
             
         }
         
-        @Environment(EnvType.CLIENT)
-        @OnlyIn(Dist.CLIENT)
         public void updateDimension(int width, int height) {
             this.width = Math.max(width, this.width);
             this.height = Math.max(height, this.height);
@@ -353,8 +335,6 @@ public class CompiledText {
         
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public FormattedTextSplit splitByWidth(FormattedText text, int width, Style style, boolean force) {
         final WidthLimitedCharSink charSink = new WidthLimitedCharSink(width, Minecraft.getInstance().font.getSplitter());
         ComponentCollector head = new ComponentCollector();
@@ -443,14 +423,10 @@ public class CompiledText {
         
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     public int getTotalWidth() {
         return Mth.ceil(calculateWidth(0, true, original) * scale);
     }
     
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     private int calculateWidth(int width, boolean newLine, List<? extends FormattedText> components) {
         for (FormattedText component : components) {
             int result = width(component);

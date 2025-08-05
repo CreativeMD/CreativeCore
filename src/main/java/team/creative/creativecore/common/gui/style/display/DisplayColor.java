@@ -1,15 +1,9 @@
 package team.creative.creativecore.common.gui.style.display;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.type.Color;
 
-@Environment(EnvType.CLIENT)
-@OnlyIn(Dist.CLIENT)
 public class DisplayColor extends StyleDisplay {
     
     public int color;

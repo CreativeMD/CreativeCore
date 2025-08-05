@@ -7,8 +7,6 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,8 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
@@ -72,23 +68,17 @@ public abstract class PlayerSelector {
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {
                 parent.add(new GuiPlayerSelectorButton(parent, "data", new PlayerSelectorLevel(0)));
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void loadValue(PlayerSelector value, GuiParent parent) {
                 GuiPlayerSelectorButton button = parent.get("data");
                 button.set(value);
             }
             
             @Override
-            @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             protected PlayerSelector saveValue(GuiParent parent, ConfigKey key) {
                 GuiPlayerSelectorButton button = parent.get("data");
                 return button.get();

@@ -4,15 +4,11 @@ import java.util.List;
 
 import org.joml.Matrix3x2fStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.control.inventory.GuiSlotBase;
@@ -43,8 +39,6 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
     }
     
     @Override
-    @Environment(EnvType.CLIENT)
-    @OnlyIn(Dist.CLIENT)
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         pose.translate(1, 1);

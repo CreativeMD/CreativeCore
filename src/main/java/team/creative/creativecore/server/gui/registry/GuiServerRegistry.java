@@ -13,6 +13,7 @@ import team.creative.creativecore.server.gui.manager.GuiServerManager;
 
 public class GuiServerRegistry {
     
+    private static final GuiServerControl EMPTY = new GuiServerControl(null);
     private static final Object2ObjectMap<Class<? extends GuiControl>, Function<GuiControl, GuiServerControl>> CONTROL_FACTORY = new Object2ObjectArrayMap<>();
     private static final List<Function<GuiControl, GuiServerControl>> CONTROL_SPECIAL_FACTORY = new ArrayList<>();
     
@@ -50,7 +51,7 @@ public class GuiServerRegistry {
     }
     
     static {
-        
+        registerSpecial(x -> EMPTY);
     }
     
 }

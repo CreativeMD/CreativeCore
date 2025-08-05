@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 
@@ -19,6 +20,7 @@ public class GuiScreenHandler {
         GuiScreenHandler.displayScreen = displayScreen;
     }
     
+    @SubscribeEvent
     public static void onTick(RenderFrameEvent.Pre tick) {
         Minecraft mc = Minecraft.getInstance();
         if (displayScreen != null) {

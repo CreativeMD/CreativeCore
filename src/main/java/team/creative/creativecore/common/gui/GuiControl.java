@@ -42,7 +42,8 @@ public abstract class GuiControl {
     }
     
     public GuiControl setVisible(boolean visible) {
-        dist.setVisible(visible);
+        if (dist != null)
+            dist.setVisible(visible);
         return this;
     }
     
