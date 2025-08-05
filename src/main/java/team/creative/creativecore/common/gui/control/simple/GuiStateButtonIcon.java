@@ -8,11 +8,13 @@ public class GuiStateButtonIcon extends GuiButtonIcon {
     
     public GuiStateButtonIcon(IGuiParent parent, String name, Icon... icons) {
         super(parent, name, icons[0], null);
-        dist().setIcons(icons);
+        if (dist() != null)
+            dist().setIcons(icons);
     }
     
     public GuiStateButtonIcon setState(int index) {
-        dist().setState(index);
+        if (dist() != null)
+            dist().setState(index);
         return this;
     }
     
@@ -22,7 +24,9 @@ public class GuiStateButtonIcon extends GuiButtonIcon {
     }
     
     public int getState() {
-        return dist().getState();
+        if (dist() != null)
+            return dist().getState();
+        return 0;
     }
     
     @Override
@@ -36,11 +40,13 @@ public class GuiStateButtonIcon extends GuiButtonIcon {
     }
     
     public void previousState() {
-        dist().previousState();
+        if (dist() != null)
+            dist().previousState();
     }
     
     public void nextState() {
-        dist().nextState();
+        if (dist() != null)
+            dist().nextState();
     }
     
     public static interface GuiStateButtonIconDist extends GuiButtonIconDist {

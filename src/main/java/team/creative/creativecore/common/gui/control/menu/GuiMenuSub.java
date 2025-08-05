@@ -6,8 +6,10 @@ public class GuiMenuSub<T> extends GuiMenu<T> {
     
     public GuiMenuSub(GuiMenuRoot<T> root, NamedTree<T> tree) {
         super(root.getParent(), tree);
-        dist().setRoot(root);
-        dist().buildTree();
+        if (dist() != null) {
+            dist().setRoot(root);
+            dist().buildTree();
+        }
     }
     
     @Override

@@ -17,9 +17,11 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     
     public GuiSlider(IGuiParent parent, String name, double value, double min, double max, DoubleValueParser parser) {
         super(parent, name);
-        dist().setMinValue(min);
-        dist().setMaxValue(max);
-        dist().setParser(parser);
+        if (dist() != null) {
+            dist().setMinValue(min);
+            dist().setMaxValue(max);
+            dist().setParser(parser);
+        }
         setValue(value);
     }
     
@@ -29,57 +31,76 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     }
     
     public String getTextByValue() {
-        return dist().getTextByValue();
+        if (dist() != null)
+            return dist().getTextByValue();
+        return "";
     }
     
     public String getTextfieldValue() {
-        return dist().getTextfieldValue();
+        if (dist() != null)
+            return dist().getTextfieldValue();
+        return "";
     }
     
     public double getPercentage() {
-        return dist().getPercentage();
+        if (dist() != null)
+            return dist().getPercentage();
+        return 0;
     }
     
     public void closeTextField() {
-        dist().closeTextField();
+        if (dist() != null)
+            dist().closeTextField();
     }
     
     public void setMaxValue(double maxValue) {
-        dist().setMaxValue(maxValue);
+        if (dist() != null)
+            dist().setMaxValue(maxValue);
     }
     
     public void setMinValue(double minValue) {
-        dist().setMinValue(minValue);
+        if (dist() != null)
+            dist().setMinValue(minValue);
     }
     
     public void setValue(double value) {
-        dist().setValue(value);
+        if (dist() != null)
+            dist().setValue(value);
     }
     
     public double getValue() {
-        return dist().getValue();
+        if (dist() != null)
+            return dist().getValue();
+        return 0;
     }
     
     public double getMinValue() {
-        return dist().getMinValue();
+        if (dist() != null)
+            return dist().getMinValue();
+        return 0;
     }
     
     public double getMaxValue() {
-        return dist().getMaxValue();
+        if (dist() != null)
+            return dist().getMaxValue();
+        return 1;
     }
     
     public GuiSlider setSliderSize(int size) {
-        dist().setSliderSize(size);
+        if (dist() != null)
+            dist().setSliderSize(size);
         return this;
     }
     
     public GuiSlider setMinSlider(GuiSlider slider) {
-        dist().setMinSlider(slider);
+        if (dist() != null)
+            dist().setMinSlider(slider);
         return this;
     }
     
     public GuiSlider setMaxSlider(GuiSlider slider) {
-        dist().setMaxSlider(slider);
+        if (dist() != null)
+            dist().setMaxSlider(slider);
         return this;
     }
     

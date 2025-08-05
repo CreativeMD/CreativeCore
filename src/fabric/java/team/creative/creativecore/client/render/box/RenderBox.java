@@ -2,27 +2,17 @@ package team.creative.creativecore.client.render.box;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
-import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
-@Environment(EnvType.CLIENT)
-@OnlyIn(Dist.CLIENT)
 public class RenderBox extends AlignedBox {
     
     private static final VectorFan DOWN = new VectorFanSimple(new Vec3f[] { new Vec3f(0, 0, 1), new Vec3f(0, 0, 0), new Vec3f(1, 0, 0), new Vec3f(1, 0, 1) });
@@ -342,7 +332,7 @@ public class RenderBox extends AlignedBox {
         }
     }*/
     
-    public void renderLines(PoseStack pose, VertexConsumer consumer, int alpha) {
+    /*public void renderLines(PoseStack pose, VertexConsumer consumer, int alpha) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
@@ -402,7 +392,7 @@ public class RenderBox extends AlignedBox {
                     fan.renderLines(pose.last(), consumer, red, green, blue, alpha, center, grow);
             }
         }
-    }
+    }*/
     
     public boolean isTranslucent() {
         if (ColorUtils.isTransparent(color))
@@ -506,9 +496,7 @@ public class RenderBox extends AlignedBox {
             super(coords);
         }
         
-        @Override
-        @Environment(EnvType.CLIENT)
-        @OnlyIn(Dist.CLIENT)
+        /*@Override
         public void generate(QuadGeneratorContext holder, List<BakedQuad> quads) {
             int index = 0;
             while (index < coords.length - 3) {
@@ -522,7 +510,7 @@ public class RenderBox extends AlignedBox {
         @Override
         protected boolean doMinMaxLate() {
             return true;
-        }
+        }*/
         
     }
     

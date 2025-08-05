@@ -36,7 +36,7 @@ public class GuiTabs extends GuiParent {
     
     @Override
     public GuiControlDistHandler createDist(GuiControl control) {
-        if (control instanceof GuiTabSpecialParent special)
+        if (control instanceof GuiTabSpecialParent special && dist() != null)
             return dist().createSpecialParent(special);
         return super.createDist(control);
     }
@@ -57,11 +57,14 @@ public class GuiTabs extends GuiParent {
     }
     
     public void select(int select) {
-        dist().select(select);
+        if (dist() != null)
+            dist().select(select);
     }
     
     public int index() {
-        return dist().index();
+        if (dist() != null)
+            return dist().index();
+        return -1;
     }
     
     public class GuiTabBar extends GuiParent {

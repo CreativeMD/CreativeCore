@@ -63,7 +63,9 @@ public class GuiCounter extends GuiParent {
     
     @Override
     public boolean isExpandableX() {
-        return dist().isExpandableX();
+        if (dist() != null)
+            return dist().isExpandableX();
+        return false;
     }
     
     public GuiButtonHold getPlusButton() {

@@ -1,7 +1,5 @@
 package team.creative.creativecore.client.gui.control.timeline;
 
-import org.checkerframework.checker.units.qual.K;
-
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientParent;
@@ -10,7 +8,7 @@ import team.creative.creativecore.common.gui.control.timeline.GuiTimelineChannel
 import team.creative.creativecore.common.gui.control.timeline.GuiTimelineKey;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 
-public class GuiClientTimelineChannel<T extends GuiTimelineChannel<K>> extends GuiClientParent<T> implements GuiTimelineChannelDist<K> {
+public class GuiClientTimelineChannel<T extends GuiTimelineChannel<K>, K> extends GuiClientParent<T> implements GuiTimelineChannelDist<K> {
     
     private GuiTimelineKey<T> dragged;
     

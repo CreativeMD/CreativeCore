@@ -17,11 +17,13 @@ public class GuiButton extends GuiLabel {
     }
     
     public void setPressed(Consumer<Integer> pressed) {
-        dist().setPressed(pressed);
+        if (dist() != null)
+            dist().setPressed(pressed);
     }
     
     public GuiButton setHoverEffect(boolean active) {
-        dist().setHoverEffect(active);
+        if (dist() != null)
+            dist().setHoverEffect(active);
         return this;
     }
     

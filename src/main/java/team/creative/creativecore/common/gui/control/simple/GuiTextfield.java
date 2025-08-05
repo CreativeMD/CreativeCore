@@ -21,7 +21,8 @@ public class GuiTextfield extends GuiControl {
     
     public GuiTextfield(IGuiParent parent, String name, String text, int maxStringLength) {
         super(parent, name);
-        dist().setMaxStringLength(maxStringLength);
+        if (dist() != null)
+            dist().setMaxStringLength(maxStringLength);
         this.setText(text);
     }
     
@@ -40,23 +41,28 @@ public class GuiTextfield extends GuiControl {
     }
     
     public GuiTextfield setFloatOnly() {
-        dist().setFloatOnly();
+        if (dist() != null)
+            dist().setFloatOnly();
         return this;
     }
     
     public GuiTextfield setNumbersIncludingNegativeOnly() {
-        dist().setNumbersIncludingNegativeOnly();
+        if (dist() != null)
+            dist().setNumbersIncludingNegativeOnly();
         return this;
     }
     
     public GuiTextfield setNumbersOnly() {
-        dist().setNumbersOnly();
+        if (dist() != null)
+            dist().setNumbersOnly();
         return this;
     }
     
     public float parseFloat() {
         try {
-            return Float.parseFloat(dist().getText());
+            if (dist() != null)
+                return Float.parseFloat(dist().getText());
+            return 0;
         } catch (NumberFormatException e) {
             return 0;
         }
@@ -64,7 +70,9 @@ public class GuiTextfield extends GuiControl {
     
     public double parseDouble() {
         try {
-            return Double.parseDouble(dist().getText());
+            if (dist() != null)
+                return Double.parseDouble(dist().getText());
+            return 0;
         } catch (NumberFormatException e) {
             return 0;
         }
@@ -72,7 +80,9 @@ public class GuiTextfield extends GuiControl {
     
     public int parseInteger() {
         try {
-            return Integer.parseInt(dist().getText());
+            if (dist() != null)
+                return Integer.parseInt(dist().getText());
+            return 0;
         } catch (NumberFormatException e) {
             return 0;
         }
@@ -86,34 +96,42 @@ public class GuiTextfield extends GuiControl {
     
     @Override
     public void tick() {
-        dist().tick();
+        if (dist() != null)
+            dist().tick();
     }
     
     public GuiTextfield setText(String textIn) {
-        dist().setText(textIn);
+        if (dist() != null)
+            dist().setText(textIn);
         return this;
     }
     
     public String getText() {
-        return dist().getText();
+        if (dist() != null)
+            return dist().getText();
+        return "";
     }
     
     public void setValidator(Predicate<String> validatorIn) {
-        dist().setValidator(validatorIn);
+        if (dist() != null)
+            dist().setValidator(validatorIn);
     }
     
     public GuiTextfield setMaxStringLength(int length) {
-        dist().setMaxStringLength(length);
+        if (dist() != null)
+            dist().setMaxStringLength(length);
         return this;
     }
     
     public GuiTextfield setSuggestion(@Nullable String suggestion) {
-        dist().setSuggestion(suggestion);
+        if (dist() != null)
+            dist().setSuggestion(suggestion);
         return this;
     }
     
     public void setCursorPositionZero() {
-        dist().setCursorPositionZero();
+        if (dist() != null)
+            dist().setCursorPositionZero();
     }
     
     public static interface GuiTextfieldDist extends GuiFocusControlDist {

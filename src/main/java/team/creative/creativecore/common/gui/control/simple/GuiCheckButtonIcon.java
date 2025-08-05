@@ -16,9 +16,11 @@ public class GuiCheckButtonIcon extends GuiButtonIcon {
     
     public GuiCheckButtonIcon(IGuiParent parent, String name, Icon on, Icon off, boolean state, Consumer<Integer> pressed) {
         super(parent, name, state ? on : off, pressed);
-        dist().setState(state);
-        dist().setOnIcon(on);
-        dist().setOffIcon(off);
+        if (dist() != null) {
+            dist().setState(state);
+            dist().setOnIcon(on);
+            dist().setOffIcon(off);
+        }
     }
     
     @Override
@@ -27,12 +29,14 @@ public class GuiCheckButtonIcon extends GuiButtonIcon {
     }
     
     public GuiCheckButtonIcon setOnIcon(Icon icon) {
-        dist().setOnIcon(icon);
+        if (dist() != null)
+            dist().setOnIcon(icon);
         return this;
     }
     
     public GuiCheckButtonIcon setOffIcon(Icon icon) {
-        dist().setOffIcon(icon);
+        if (dist() != null)
+            dist().setOffIcon(icon);
         return this;
     }
     
@@ -64,14 +68,17 @@ public class GuiCheckButtonIcon extends GuiButtonIcon {
     }
     
     public boolean getState() {
-        return dist().getState();
+        if (dist() != null)
+            return dist().getState();
+        return false;
     }
     
     public void setState(boolean value) {
-        if (dist().getState() != value) {
-            dist().setState(value);
-            this.raiseEvent(new GuiControlChangedEvent<>(this));
-        }
+        if (dist() != null)
+            if (dist().getState() != value) {
+                dist().setState(value);
+                this.raiseEvent(new GuiControlChangedEvent<>(this));
+            }
     }
     
     public static interface GuiCheckButtonIconDist extends GuiButtonIconDist {

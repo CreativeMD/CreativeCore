@@ -18,7 +18,8 @@ public class GuiButtonHold<T extends GuiButtonHoldDist> extends GuiButton {
     
     @Override
     public void tick() {
-        dist().tick();
+        if (dist() != null)
+            dist().tick();
     }
     
     public static interface GuiButtonHoldDist extends GuiButtonDist {

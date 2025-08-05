@@ -45,9 +45,8 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     public GuiTimelineKey<T> addKey(int tick, T value) {
         GuiTimelineKey<T> key = new GuiTimelineKey<T>(this, tick, value);
         add(key);
-        if (hasLayer()) {
+        if (hasLayer() && dist() != null)
             dist().keyInitialFlow(key);
-        }
         timeline.adjustKeyPositionX(key);
         for (int i = 0; i < keys.size(); i++) {
             GuiTimelineKey<T> other = keys.get(i);
@@ -89,7 +88,7 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     }
     
     public void dragKey(GuiTimelineKey<T> key) {
-        if (key.modifiable)
+        if (key.modifiable && dist() != null)
             dist().dragKey(key);
     }
     

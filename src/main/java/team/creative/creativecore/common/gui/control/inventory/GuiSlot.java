@@ -72,7 +72,8 @@ public class GuiSlot extends GuiSlotBase {
     public void changed() {
         changed = true;
         inventory().setChanged(slot.getContainerSlot());
-        dist().changed();
+        if (dist() != null)
+            dist().changed();
     }
     
     public ItemStack insert(ItemStack stack) {

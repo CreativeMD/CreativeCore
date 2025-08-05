@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import javax.annotation.Nullable;
+
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.event.GuiControlClickEvent;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -16,12 +18,14 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiControl> {
     
     private GuiEventManager eventManager;
-    private final GuiControls controls;
+    private final GuiControls controls = new GuiControls();
     
     public GuiParent(IGuiParent parent, String name, GuiFlow flow) {
         super(parent, name);
-        dist().setFlow(flow);
-        dist().initControlList(controls = new GuiControls());
+        if (dist() != null) {
+            dist().setFlow(flow);
+            dist().initControlList(controls);
+        }
     }
     
     public GuiParent(IGuiParent parent, String name, GuiFlow flow, VAlign valign) {
@@ -34,8 +38,10 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     
     public GuiParent(IGuiParent parent, String name, GuiFlow flow, Align align, VAlign valign) {
         this(parent, name, flow);
-        dist().setAlign(align);
-        dist().setVAlign(valign);
+        if (dist() != null) {
+            dist().setAlign(align);
+            dist().setVAlign(valign);
+        }
     }
     
     public GuiParent(IGuiParent parent, String name) {
@@ -51,6 +57,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     }
     
     @Override
+    @Nullable
     public GuiParentDistHandler dist() {
         return (GuiParentDistHandler) super.dist();
     }
@@ -61,27 +68,32 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     }
     
     public GuiParent setScale(double scale) {
-        dist().setScale(scale);
+        if (dist() != null)
+            dist().setScale(scale);
         return this;
     }
     
     public GuiParent setAlign(Align align) {
-        dist().setAlign(align);
+        if (dist() != null)
+            dist().setAlign(align);
         return this;
     }
     
     public GuiParent setVAlign(VAlign valign) {
-        dist().setVAlign(valign);
+        if (dist() != null)
+            dist().setVAlign(valign);
         return this;
     }
     
     public GuiParent setSpacing(int spacing) {
-        dist().setSpacing(spacing);
+        if (dist() != null)
+            dist().setSpacing(spacing);
         return this;
     }
     
     public GuiParent setFlow(GuiFlow flow) {
-        dist().setFlow(flow);
+        if (dist() != null)
+            dist().setFlow(flow);
         return this;
     }
     
@@ -146,7 +158,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     
     public GuiParent add(GuiControl control) {
         controls.add(control);
-        setParent(control, parent); // Just to make sure it is set correctly
+        setParent(control, this); // Just to make sure it is set correctly
         return this;
     }
     
@@ -302,13 +314,15 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     
     @Override
     public Rect toLayerRect(GuiControl control, Rect rect) {
-        dist().applyOffset(control, rect);
+        if (dist() != null)
+            dist().applyOffset(control, rect);
         return getParent().toLayerRect(this, rect);
     }
     
     @Override
     public Rect toScreenRect(GuiControl control, Rect rect) {
-        dist().applyOffset(control, rect);
+        if (dist() != null)
+            dist().applyOffset(control, rect);
         return getParent().toScreenRect(this, rect);
     }
     

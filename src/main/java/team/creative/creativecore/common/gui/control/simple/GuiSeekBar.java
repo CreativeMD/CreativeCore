@@ -18,7 +18,8 @@ public class GuiSeekBar extends GuiControl {
     
     public GuiSeekBar(IGuiParent parent, String name, LongSupplier posSupplier, LongSupplier maxSupplier, LongValueParser parser) {
         super(parent, name);
-        dist().init(posSupplier, maxSupplier, parser);
+        if (dist() != null)
+            dist().init(posSupplier, maxSupplier, parser);
         this.tick();
     }
     
@@ -28,17 +29,20 @@ public class GuiSeekBar extends GuiControl {
     }
     
     public GuiSeekBar setOnTimeUpdate(LongConsumer consumer) {
-        dist().setOnTimeUpdate(consumer);
+        if (dist() != null)
+            dist().setOnTimeUpdate(consumer);
         return this;
     }
     
     public GuiSeekBar setOnLastTimeUpdate(LongConsumer consumer) {
-        dist().setOnLastTimeUpdate(consumer);
+        if (dist() != null)
+            dist().setOnLastTimeUpdate(consumer);
         return this;
     }
     
     public void setPosition(long value) {
-        dist().setPosition(value);
+        if (dist() != null)
+            dist().setPosition(value);
     }
     
     @Override
@@ -55,7 +59,8 @@ public class GuiSeekBar extends GuiControl {
     
     @Override
     public void tick() {
-        dist().tick();
+        if (dist() != null)
+            dist().tick();
     }
     
     public static interface GuiSeekBarDist extends GuiControlDistHandler {

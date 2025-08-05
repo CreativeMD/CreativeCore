@@ -2,6 +2,8 @@ package team.creative.creativecore.common.gui;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -11,7 +13,8 @@ import team.creative.creativecore.common.gui.event.GuiEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.integration.IGuiIntegratedParent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
+import team.creative.creativecore.common.gui.style.ControlFormattingFlexible;
+import team.creative.creativecore.common.gui.style.ControlFormattingFlexible.ControlFormattingFlexibleEmpty;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.LanguageUtils;
 
@@ -37,6 +40,7 @@ public abstract class GuiControl {
     
     // CONSTRUCTION
     
+    @Nullable
     public GuiControlDistHandler dist() {
         return dist;
     }
@@ -48,70 +52,87 @@ public abstract class GuiControl {
     }
     
     public GuiControl setFixed() {
-        dist.setFixed();
+        if (dist != null)
+            dist.setFixed();
         return this;
     }
     
     public GuiControl setFixedX() {
-        dist.setFixedX();
+        if (dist != null)
+            dist.setFixedX();
         return this;
     }
     
     public GuiControl setFixedY() {
-        dist.setFixedY();
+        if (dist != null)
+            dist.setFixedY();
         return this;
     }
     
     public GuiControl setExpandable() {
-        dist.setExpandable();
+        if (dist != null)
+            dist.setExpandable();
         return this;
     }
     
     public GuiControl setExpandableX() {
-        dist.setExpandableX();
+        if (dist != null)
+            dist.setExpandableX();
         return this;
     }
     
     public GuiControl setExpandableY() {
-        dist.setExpandableY();
+        if (dist != null)
+            dist.setExpandableY();
         return this;
     }
     
     public boolean isExpandableX() {
-        return dist.isExpandableX();
+        if (dist != null)
+            return dist.isExpandableX();
+        return false;
     }
     
     public boolean isExpandableY() {
-        return dist.isExpandableY();
+        if (dist != null)
+            return dist.isExpandableY();
+        return false;
     }
     
     public GuiControl setDim(int width, int height) {
-        dist.setDim(width, height);
+        if (dist != null)
+            dist.setDim(width, height);
         return this;
     }
     
     public GuiControl setDim(GuiSizeRule dim) {
-        dist.setDim(dim);
+        if (dist != null)
+            dist.setDim(dim);
         return this;
     }
     
     public GuiControl setEnabled(boolean enabled) {
-        dist.setEnabled(enabled);
+        if (dist != null)
+            dist.setEnabled(enabled);
         return this;
     }
     
     public GuiControl removeFormatting() {
-        dist.removeFormatting();
+        if (dist != null)
+            dist.removeFormatting();
         return this;
     }
     
     public GuiControl setFormatting(ControlFormatting formatting) {
-        dist.setFormatting(formatting);
+        if (dist != null)
+            dist.setFormatting(formatting);
         return this;
     }
     
-    public ControlFormattingCustom setCustomFormatting() {
-        return dist.setCustomFormatting();
+    public ControlFormattingFlexible setCustomFormatting() {
+        if (dist != null)
+            return dist.setCustomFormatting();
+        return new ControlFormattingFlexibleEmpty();
     }
     
     // BASICS
@@ -133,12 +154,14 @@ public abstract class GuiControl {
     }
     
     public GuiControl setTooltip(List<Component> tooltip) {
-        dist.setTooltip(tooltip);
+        if (dist != null)
+            dist.setTooltip(tooltip);
         return this;
     }
     
     public GuiControl setTooltip(String translate) {
-        dist.setTooltip(translate);
+        if (dist != null)
+            dist.setTooltip(translate);
         return this;
     }
     

@@ -23,7 +23,8 @@ import team.creative.creativecore.common.gui.event.GuiTooltipEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiFixedDimension;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
+import team.creative.creativecore.common.gui.style.ControlFormattingFlexible;
+import team.creative.creativecore.common.gui.style.ControlFormattingFlexible.ControlFormattingFlexibleImpl;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -135,8 +136,8 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     }
     
     @Override
-    public ControlFormattingCustom setCustomFormatting() {
-        return (ControlFormattingCustom) (customFormatting = new ControlFormattingCustom(getControlFormatting()));
+    public ControlFormattingFlexible setCustomFormatting() {
+        return (ControlFormattingFlexible) (customFormatting = new ControlFormattingFlexibleImpl(getControlFormatting()));
     }
     
     @Override

@@ -46,7 +46,8 @@ public class GuiCheckList<T> extends GuiScrollY {
         clear();
         for (Entry<T, List<Component>> entry : map.entrySet())
             createControl(entry.getKey(), entry.getValue(), selected.getBoolean(entry.getKey()));
-        dist().reflowInternal();
+        if (dist() != null)
+            dist().reflowInternal();
     }
     
     protected void createControl(T key, List<Component> components, boolean selected) {
@@ -83,7 +84,8 @@ public class GuiCheckList<T> extends GuiScrollY {
     
     public void removeItem(int index) {
         removeControl(index);
-        dist().reflowInternal();
+        if (dist() != null)
+            dist().reflowInternal();
         raiseEvent(new GuiControlChangedEvent(this));
     }
     

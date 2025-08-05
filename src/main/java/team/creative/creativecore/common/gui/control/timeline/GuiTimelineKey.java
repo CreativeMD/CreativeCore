@@ -23,7 +23,8 @@ public class GuiTimelineKey<T> extends GuiControl implements Comparable<GuiTimel
     }
     
     public void setSelected(boolean selected) {
-        dist().setSelected(selected);
+        if (dist() != null)
+            dist().setSelected(selected);
     }
     
     public void removeKey() {

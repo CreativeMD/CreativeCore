@@ -13,7 +13,7 @@ import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 
 public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends GuiClientListBoxBase<T> implements GuiComboBoxExtensionDist {
     
-    public GuiExtensionCreator<? extends GuiClientComboBox<?>, ? extends GuiComboBoxExtension> creator;
+    public GuiExtensionCreator<? extends GuiClientComboBox<?, ?>, ? extends GuiComboBoxExtension> creator;
     public String search = "";
     
     public GuiClientComboBoxExtension(T control) {

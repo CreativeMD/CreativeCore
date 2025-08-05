@@ -117,7 +117,8 @@ public class GuiTree extends GuiScrollXY {
     }
     
     public GuiTree setLineThickness(int thickness) {
-        dist().setLineThickness(thickness);
+        if (dist() != null)
+            dist().setLineThickness(thickness);
         return this;
     }
     
@@ -143,7 +144,8 @@ public class GuiTree extends GuiScrollXY {
         if (!visibleRoot || root.opened())
             addItem(root);
         
-        dist().reflowTree();
+        if (dist() != null)
+            dist().reflowTree();
     }
     
     private void addItem(GuiTreeItem item) {
@@ -195,15 +197,20 @@ public class GuiTree extends GuiScrollXY {
     }
     
     public boolean isDragged() {
-        return dist().isDragged();
+        if (dist() != null)
+            return dist().isDragged();
+        return false;
     }
     
     public void startDrag(GuiTreeItem item) {
-        dist().startDrag(item);
+        if (dist() != null)
+            dist().startDrag(item);
     }
     
     public boolean endDrag() {
-        return dist().endDrag();
+        if (dist() != null)
+            return dist().endDrag();
+        return false;
     }
     
     public static class GuiTreeSelectionChanged extends GuiControlChangedEvent {

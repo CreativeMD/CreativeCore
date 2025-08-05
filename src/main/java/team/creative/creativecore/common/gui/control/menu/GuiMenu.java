@@ -9,7 +9,8 @@ public abstract class GuiMenu<T> extends GuiScrollY {
     
     public GuiMenu(IGuiParent parent, NamedTree<T> tree) {
         super(parent);
-        dist().init(tree);
+        if (dist() != null)
+            dist().init(tree);
     }
     
     @Override
@@ -19,15 +20,20 @@ public abstract class GuiMenu<T> extends GuiScrollY {
     
     @Override
     public void closed() {
-        dist().closed();
+        if (dist() != null)
+            dist().closed();
     }
     
     public boolean isRoot() {
-        return dist().isRoot();
+        if (dist() != null)
+            return dist().isRoot();
+        return false;
     }
     
     public GuiMenuRoot<T> root() {
-        return dist().root();
+        if (dist() != null)
+            return dist().root();
+        return null;
     }
     
     public class GuiMenuEntry extends GuiLabel {

@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.style;
 
-public abstract class ControlFormatting {
+public abstract interface ControlFormatting {
     
     public static final ControlFormatting PROGRESSBAR = new ControlFormattingStatic(ControlStyleBorder.SMALL, 0, ControlStyleFace.BAR);
     public static final ControlFormatting CLICKABLE = new ControlFormattingStatic(ControlStyleBorder.SMALL, 2, ControlStyleFace.CLICKABLE);
@@ -27,7 +27,7 @@ public abstract class ControlFormatting {
     
     public abstract boolean hasDisabledEffect();
     
-    public static class ControlFormattingStatic extends ControlFormatting {
+    public static class ControlFormattingStatic implements ControlFormatting {
         
         public final ControlStyleBorder border;
         public final int padding;

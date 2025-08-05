@@ -10,7 +10,8 @@ public class GuiButtonIcon extends GuiIcon {
     
     public GuiButtonIcon(IGuiParent parent, String name, Icon icon, Consumer<Integer> pressed) {
         super(parent, name, icon);
-        dist().setPressed(pressed);
+        if (dist() != null)
+            dist().setPressed(pressed);
     }
     
     @Override

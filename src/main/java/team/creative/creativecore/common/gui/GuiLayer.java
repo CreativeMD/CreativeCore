@@ -175,7 +175,8 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public void reflow() {
-        dist().reflow();
+        if (dist() != null)
+            dist().reflow();
     }
     
     public static interface GuiLayerDistHandler extends GuiParent.GuiParentDistHandler {

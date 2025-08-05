@@ -23,7 +23,8 @@ public class GuiInventoryGridPreview extends GuiParent {
     public GuiInventoryGridPreview(IGuiParent parent, String name, Container container, int cols, int rows) {
         super(parent, name);
         this.hasFixedSize = true;
-        dist().setGridDim(cols, rows);
+        if (dist() != null)
+            dist().setGridDim(cols, rows);
         this.container = container;
         this.fixedSize = Math.min(container.getContainerSize(), cols * rows);
         for (int i = 0; i < fixedSize; i++)

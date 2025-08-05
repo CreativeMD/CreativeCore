@@ -10,12 +10,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
-import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.client.event.ContainerScreenEvent.Render.Background;
-import net.neoforged.neoforge.common.NeoForge;
+import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.client.gui.integration.ScreenEventListener;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -42,8 +39,7 @@ public interface IGuiClientIntegratedParent extends IGuiIntegratedParent {
             if (i == layers.size() - 1) {
                 if (cLayer.hasGrayBackground())
                     ((CreativeGuiGraphics) graphics).verticalGradientRect(0, 0, width, height, -1072689136, -804253680);
-                if (screen instanceof AbstractContainerScreen)
-                    NeoForge.EVENT_BUS.post(new Background((AbstractContainerScreen<?>) screen, graphics, mouseX, mouseY));
+                CreativeCoreClient.postBackgroundEvent(screen, graphics, mouseX, mouseY);
             }
             
             pose.pushMatrix();
@@ -69,8 +65,8 @@ public interface IGuiClientIntegratedParent extends IGuiIntegratedParent {
             layer.raiseEvent(event);
             if (!event.isCanceled()) {
                 var font = Minecraft.getInstance().font;
-                List<ClientTooltipComponent> list = ClientHooks.gatherTooltipComponents(null, event.tooltip, Optional.empty(), mouseX, graphics.guiWidth(), graphics.guiHeight(),
-                    font);
+                List<ClientTooltipComponent> list = CreativeCoreClient.gatherTooltipComponents(null, event.tooltip, Optional.empty(), mouseX, graphics.guiWidth(), graphics
+                        .guiHeight(), font);
                 graphics.renderTooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
             }
         }

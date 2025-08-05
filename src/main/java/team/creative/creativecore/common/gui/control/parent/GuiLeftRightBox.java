@@ -22,7 +22,9 @@ public class GuiLeftRightBox extends GuiRow {
     
     @Override
     public boolean isExpandableX() {
-        return dist().isExpandableX();
+        if (dist() != null)
+            return dist().isExpandableX();
+        return false;
     }
     
     public GuiLeftRightBox addLeft(GuiControl control) {
@@ -37,8 +39,10 @@ public class GuiLeftRightBox extends GuiRow {
     
     @Override
     public GuiLeftRightBox setVAlign(VAlign valign) {
-        left.setVAlign(valign);
-        right.setVAlign(valign);
+        if (left != null) {
+            left.setVAlign(valign);
+            right.setVAlign(valign);
+        }
         return this;
     }
     

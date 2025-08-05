@@ -18,11 +18,14 @@ public class GuiColorPlate extends GuiControl {
     }
     
     public void setColor(Color color) {
-        dist().setColor(color);
+        if (dist() != null)
+            dist().setColor(color);
     }
     
     public Color getColor() {
-        return dist().getColor();
+        if (dist() != null)
+            return dist().getColor();
+        return Color.WHITE;
     }
     
     @Override

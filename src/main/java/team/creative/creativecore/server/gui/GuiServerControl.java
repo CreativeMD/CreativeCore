@@ -9,7 +9,8 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
+import team.creative.creativecore.common.gui.style.ControlFormattingFlexible;
+import team.creative.creativecore.common.gui.style.ControlFormattingFlexible.ControlFormattingFlexibleEmpty;
 
 public class GuiServerControl<T extends GuiControl> implements GuiControlDistHandler {
     
@@ -72,8 +73,8 @@ public class GuiServerControl<T extends GuiControl> implements GuiControlDistHan
     public void setFormatting(ControlFormatting formatting) {}
     
     @Override
-    public ControlFormattingCustom setCustomFormatting() {
-        return new ControlFormattingCustom(ControlFormatting.CLICKABLE); // Just return something to prevent a crash
+    public ControlFormattingFlexible setCustomFormatting() {
+        return new ControlFormattingFlexibleEmpty();
     }
     
     @Override

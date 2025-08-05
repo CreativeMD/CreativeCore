@@ -10,7 +10,8 @@ public class GuiComboBoxFlexible<K> extends GuiComboBox<K> {
     
     public GuiComboBoxFlexible(IGuiParent parent, String name, TextMapBuilder<K> lines, Function<K, Component> function) {
         super(parent, name, lines);
-        dist().init(function);
+        if (dist() != null)
+            dist().init(function);
     }
     
     @Override
@@ -19,7 +20,8 @@ public class GuiComboBoxFlexible<K> extends GuiComboBox<K> {
     }
     
     public void forceSelect(K key) {
-        dist().forceSelect(key);
+        if (dist() != null)
+            dist().forceSelect(key);
     }
     
     public static interface GuiComboBoxFlexibleDist<K> extends GuiComboBoxDist<K> {

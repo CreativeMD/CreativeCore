@@ -11,7 +11,8 @@ public class GuiIcon extends GuiControl {
     
     public GuiIcon(IGuiParent parent, String name, Icon icon) {
         super(parent, name);
-        dist().setIcon(icon);
+        if (dist() != null)
+            dist().setIcon(icon);
     }
     
     @Override
@@ -20,22 +21,26 @@ public class GuiIcon extends GuiControl {
     }
     
     public GuiIcon setIcon(Icon icon) {
-        dist().setIcon(icon);
+        if (dist() != null)
+            dist().setIcon(icon);
         return this;
     }
     
     public GuiIcon setColor(Color color) {
-        dist().setColor(color);
+        if (dist() != null)
+            dist().setColor(color);
         return this;
     }
     
     public GuiIcon setShadow(Color shadowColor) {
-        dist().setShadow(shadowColor);
+        if (dist() != null)
+            dist().setShadow(shadowColor);
         return this;
     }
     
     public GuiIcon setSquared(boolean squared) {
-        dist().setSquared(squared);
+        if (dist() != null)
+            dist().setSquared(squared);
         return this;
     }
     

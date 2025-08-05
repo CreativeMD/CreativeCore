@@ -4,8 +4,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import org.checkerframework.checker.units.qual.K;
-
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import team.creative.creativecore.client.gui.control.simple.GuiClientLabel;
@@ -21,9 +19,9 @@ import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.IComponentMap;
 import team.creative.creativecore.common.util.type.list.TupleList;
 
-public class GuiClientComboBox<T extends GuiComboBox<K>> extends GuiClientLabel<T> implements GuiComboBoxDist<K> {
+public class GuiClientComboBox<T extends GuiComboBox<K>, K> extends GuiClientLabel<T> implements GuiComboBoxDist<K> {
     
-    protected GuiExtensionCreator<GuiClientComboBox<T>, GuiComboBoxExtension> ex = new GuiExtensionCreator<GuiClientComboBox<T>, GuiComboBoxExtension>(this);
+    protected GuiExtensionCreator<GuiClientComboBox<T, K>, GuiComboBoxExtension> ex = new GuiExtensionCreator<GuiClientComboBox<T, K>, GuiComboBoxExtension>(this);
     protected TupleList<K, CompiledText> data;
     private int index;
     private K selected;
@@ -169,7 +167,7 @@ public class GuiClientComboBox<T extends GuiComboBox<K>> extends GuiClientLabel<
         return ControlFormatting.CLICKABLE;
     }
     
-    protected GuiComboBoxExtension createBox(GuiExtensionCreator<GuiClientComboBox<T>, GuiComboBoxExtension> creator) {
+    protected GuiComboBoxExtension createBox(GuiExtensionCreator<GuiClientComboBox<T, K>, GuiComboBoxExtension> creator) {
         var extension = new GuiComboBoxExtension(control.getParent(), control.name + "extension");
         ((GuiClientComboBoxExtension) extension.dist()).creator = creator;
         return extension;

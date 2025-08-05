@@ -38,7 +38,8 @@ public class GuiInventoryGrid extends GuiParent implements IGuiInventory {
     public GuiInventoryGrid(IGuiParent parent, String name, Container container, int cols, int rows, BiFunction<Container, Integer, Slot> slotFactory) {
         super(parent, name);
         this.hasFixedSize = true;
-        dist().setGridDim(cols, rows);
+        if (dist() != null)
+            dist().setGridDim(cols, rows);
         this.container = container;
         this.fixedSize = Math.min(container.getContainerSize(), cols * rows);
         createInventoryGrid(slotFactory);

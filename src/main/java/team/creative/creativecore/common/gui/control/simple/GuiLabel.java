@@ -21,22 +21,26 @@ public class GuiLabel extends GuiControl {
     }
     
     public GuiLabel setDefaultColor(int color) {
-        dist().setDefaultColor(color);
+        if (dist() != null)
+            dist().setDefaultColor(color);
         return this;
     }
     
     public GuiLabel setDropShadow(boolean shadow) {
-        dist().setDropShadow(shadow);
+        if (dist() != null)
+            dist().setDropShadow(shadow);
         return this;
     }
     
     public GuiLabel setAlign(Align align) {
-        dist().setAlign(align);
+        if (dist() != null)
+            dist().setAlign(align);
         return this;
     }
     
     public GuiLabel setVAlign(VAlign valgin) {
-        dist().setVAlign(valgin);
+        if (dist() != null)
+            dist().setVAlign(valgin);
         return this;
     }
     
@@ -49,21 +53,24 @@ public class GuiLabel extends GuiControl {
     }
     
     public GuiLabel setTitle(Component component) {
-        dist().setTitle(component);
+        if (dist() != null)
+            dist().setTitle(component);
         if (hasGui())
             reflow();
         return this;
     }
     
     public GuiLabel setTitle(List<Component> components) {
-        dist().setTitle(components);
+        if (dist() != null)
+            dist().setTitle(components);
         if (hasGui())
             reflow();
         return this;
     }
     
     public GuiLabel setScale(double scale) {
-        dist().setScale(scale);
+        if (dist() != null)
+            dist().setScale(scale);
         return this;
     }
     

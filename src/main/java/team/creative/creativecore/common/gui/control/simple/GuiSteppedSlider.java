@@ -11,7 +11,8 @@ public class GuiSteppedSlider extends GuiSlider {
     
     public GuiSteppedSlider(IGuiParent parent, String name, int value, int min, int max, IntValueParser parser) {
         super(parent, name, value, min, max);
-        dist().setSteppedParser(parser);
+        if (dist() != null)
+            dist().setSteppedParser(parser);
     }
     
     @Override
@@ -58,15 +59,21 @@ public class GuiSteppedSlider extends GuiSlider {
     }
     
     public int getIntValue() {
-        return dist().getIntValue();
+        if (dist() != null)
+            return dist().getIntValue();
+        return 0;
     }
     
     public int getIntMaxValue() {
-        return dist().getIntMaxValue();
+        if (dist() != null)
+            return dist().getIntMaxValue();
+        return 1;
     }
     
     public int getIntMinValue() {
-        return dist().getIntMinValue();
+        if (dist() != null)
+            return dist().getIntMinValue();
+        return 0;
     }
     
     public static interface GuiSteppedSliderDist extends GuiSliderDist {

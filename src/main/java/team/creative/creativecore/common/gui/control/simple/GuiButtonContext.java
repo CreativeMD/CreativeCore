@@ -18,7 +18,8 @@ public class GuiButtonContext extends GuiButton {
     }
     
     public GuiButtonContext set(TextMapBuilder<Consumer<Integer>> map) {
-        dist().set(map);
+        if (dist() != null)
+            dist().set(map);
         return this;
     }
     

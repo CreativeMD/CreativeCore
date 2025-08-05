@@ -2,25 +2,37 @@ package team.creative.creativecore.client;
 
 import static team.creative.creativecore.CreativeCore.LOGGER;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import team.creative.creativecore.CreativeCore;
@@ -70,6 +82,7 @@ public class CreativeCoreClient {
                 GuiScreenHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(true, CreativeConfigRegistry.ROOT, Side.CLIENT)));
             } catch (Exception e) {
                 LOGGER.error(e);
+                e.printStackTrace();
             }
             return 1;
         }));
@@ -111,4 +124,14 @@ public class CreativeCoreClient {
         if (Minecraft.getInstance().screen instanceof IScaleableGuiScreen gui)
             gui.clientTick();
     }
+    
+    public static void postBackgroundEvent(Screen screen, GuiGraphics graphics, int mouseX, int mouseY) {
+        NeoForge.EVENT_BUS.post(new ScreenEvent.Render.Background(screen, graphics, mouseX, mouseY, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)));
+    }
+    
+    public static List<ClientTooltipComponent> gatherTooltipComponents(ItemStack stack, List<? extends FormattedText> textElements, Optional<TooltipComponent> itemComponent,
+            int mouseX, int screenWidth, int screenHeight, Font fallbackFont) {
+        return ClientHooks.gatherTooltipComponents(stack, textElements, itemComponent, mouseX, screenWidth, screenHeight, fallbackFont);
+    }
+    
 }

@@ -10,7 +10,8 @@ public class GuiCheckBox extends GuiLabel {
     
     public GuiCheckBox(IGuiParent parent, String name, boolean value) {
         super(parent, name);
-        dist().set(value);
+        if (dist() != null)
+            dist().set(value);
     }
     
     @Override
@@ -19,20 +20,26 @@ public class GuiCheckBox extends GuiLabel {
     }
     
     public void set(boolean value) {
-        dist().set(value);
+        if (dist() != null)
+            dist().set(value);
     }
     
     public boolean get() {
-        return dist().get();
+        if (dist() != null)
+            return dist().get();
+        return false;
     }
     
     public GuiCheckBox setPartial(boolean partial) {
-        dist().setPartial(partial);
+        if (dist() != null)
+            dist().setPartial(partial);
         return this;
     }
     
     public boolean getPartial() {
-        return dist().getPartial();
+        if (dist() != null)
+            return dist().getPartial();
+        return false;
     }
     
     public GuiCheckBox consumeChanged(Consumer<Boolean> changed) {

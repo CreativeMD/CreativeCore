@@ -22,17 +22,20 @@ public class GuiScrollY extends GuiParent {
     }
     
     public GuiScrollY setHovered() {
-        dist().setHovered();
+        if (dist() != null)
+            dist().setHovered();
         return this;
     }
     
     public GuiScrollY setHover(boolean hover) {
-        dist().setHover(hover);
+        if (dist() != null)
+            dist().setHover(hover);
         return this;
     }
     
     public GuiScrollY setScrollWhenCTRL() {
-        dist().setScrollWhenCTRL();
+        if (dist() != null)
+            dist().setScrollWhenCTRL();
         return this;
     }
     

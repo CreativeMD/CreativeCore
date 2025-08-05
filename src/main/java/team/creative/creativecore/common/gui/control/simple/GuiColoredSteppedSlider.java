@@ -7,8 +7,10 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
     
     public GuiColoredSteppedSlider(IGuiParent parent, String name, GuiColorPicker picker, ColorPart part) {
         super(parent, name, part.get(picker.color), 0, 255);
-        dist().setPicker(picker);
-        dist().setPart(part);
+        if (dist() != null) {
+            dist().setPicker(picker);
+            dist().setPart(part);
+        }
     }
     
     @Override

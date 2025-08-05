@@ -11,8 +11,10 @@ public class GuiMenuRoot<T> extends GuiMenu<T> {
     
     public GuiMenuRoot(IGuiParent parent, NamedTree<T> tree, Function<String, Component> title, BiConsumer<String, T> clicked) {
         super(parent, tree);
-        dist().set(title, clicked);
-        dist().buildTree();
+        if (dist() != null) {
+            dist().set(title, clicked);
+            dist().buildTree();
+        }
     }
     
     @Override
@@ -21,11 +23,14 @@ public class GuiMenuRoot<T> extends GuiMenu<T> {
     }
     
     public Component translate(String path, boolean hasValue) {
-        return dist().translate(path, hasValue);
+        if (dist() != null)
+            return dist().translate(path, hasValue);
+        return Component.empty();
     }
     
     public void select(String path, T value) {
-        dist().select(path, value);
+        if (dist() != null)
+            dist().select(path, value);
     }
     
     public static interface GuiMenuRootDist<T> extends GuiMenuDist<T> {

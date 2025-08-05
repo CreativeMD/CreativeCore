@@ -2,15 +2,13 @@ package team.creative.creativecore.client.gui.control.collection;
 
 import java.util.function.Function;
 
-import org.checkerframework.checker.units.qual.K;
-
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBoxFlexible;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBoxFlexible.GuiComboBoxFlexibleDist;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 
-public class GuiClientComboBoxFlexible<T extends GuiComboBoxFlexible<K>> extends GuiClientComboBox<T> implements GuiComboBoxFlexibleDist<K> {
+public class GuiClientComboBoxFlexible<T extends GuiComboBoxFlexible<K>, K> extends GuiClientComboBox<T, K> implements GuiComboBoxFlexibleDist<K> {
     
     protected K forced;
     protected Function<K, Component> function;

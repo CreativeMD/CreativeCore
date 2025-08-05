@@ -104,11 +104,13 @@ public class GuiTimeline extends GuiParent {
     }
     
     public void adjustKeyPositionX(GuiTimelineKey key) {
-        dist().adjustKeyPositionX(key);
+        if (dist() != null)
+            dist().adjustKeyPositionX(key);
     }
     
     public void adjustKeysPositionX() {
-        dist().adjustKeysPositionX();
+        if (dist() != null)
+            dist().adjustKeysPositionX();
     }
     
     public void setSidebarWidth(int sidebarWidth) {
@@ -135,7 +137,9 @@ public class GuiTimeline extends GuiParent {
     
     @Override
     public boolean isExpandableX() {
-        return dist().isExpandableX();
+        if (dist() != null)
+            return dist().isExpandableX();
+        return false;
     }
     
     public static class KeySelectedEvent extends GuiControlEvent<GuiTimelineKey> {

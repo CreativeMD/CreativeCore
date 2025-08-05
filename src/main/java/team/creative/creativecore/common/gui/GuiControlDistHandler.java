@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
-import team.creative.creativecore.common.gui.style.ControlFormattingCustom;
+import team.creative.creativecore.common.gui.style.ControlFormattingFlexible;
 
 public interface GuiControlDistHandler {
     
@@ -43,7 +43,7 @@ public interface GuiControlDistHandler {
     
     public void setFormatting(ControlFormatting formatting);
     
-    public ControlFormattingCustom setCustomFormatting();
+    public ControlFormattingFlexible setCustomFormatting();
     
     public void playSound(Holder.Reference<SoundEvent> sound);
     

@@ -21,15 +21,19 @@ public class GuiArraySlider extends GuiSteppedSlider {
     }
     
     public void select(String value) {
-        dist().select(value);
+        if (dist() != null)
+            dist().select(value);
     }
     
     public void setValues(String[] values) {
-        dist().setValues(values);
+        if (dist() != null)
+            dist().setValues(values);
     }
     
     public String get() {
-        return dist().get();
+        if (dist() != null)
+            return dist().get();
+        return "";
     }
     
     public static interface GuiArraySliderDist extends GuiSteppedSliderDist {

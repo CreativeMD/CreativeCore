@@ -22,8 +22,10 @@ public class GuiStackSelector extends GuiLabel {
     
     public GuiStackSelector(IGuiParent parent, String name, StackCollector collector, boolean searchbar) {
         super(parent, name);
-        dist().setSearchbar(searchbar);
-        dist().setCollector(collector);
+        if (dist() != null) {
+            dist().setSearchbar(searchbar);
+            dist().setCollector(collector);
+        }
         updateCollectedStacks();
         selectFirst();
         setAlign(Align.CENTER);
@@ -44,36 +46,50 @@ public class GuiStackSelector extends GuiLabel {
     }
     
     public boolean hasSearchbar() {
-        return dist().hasSearchbar();
+        if (dist() != null)
+            return dist().hasSearchbar();
+        return false;
     }
     
     public GuiStackSelector setSearchbar(boolean searchbar) {
-        dist().setSearchbar(searchbar);
+        if (dist() != null)
+            dist().setSearchbar(searchbar);
         return this;
     }
     
     public boolean selectFirst() {
-        return dist().selectFirst();
+        if (dist() != null)
+            return dist().selectFirst();
+        return false;
     }
     
     public void updateCollectedStacks() {
-        dist().updateCollectedStacks();
+        if (dist() != null)
+            dist().updateCollectedStacks();
     }
     
     public boolean setSelectedForce(ItemStack stack) {
-        return dist().setSelectedForce(stack);
+        if (dist() != null)
+            return dist().setSelectedForce(stack);
+        return false;
     }
     
     public boolean setSelected(ItemStack stack) {
-        return dist().setSelected(stack);
+        if (dist() != null)
+            return dist().setSelected(stack);
+        return false;
     }
     
     public HashMapList<String, ItemStack> getStacks() {
-        return dist().getStacks();
+        if (dist() != null)
+            return dist().getStacks();
+        return null;
     }
     
     public ItemStack getSelected() {
-        return dist().getSelected();
+        if (dist() != null)
+            return dist().getSelected();
+        return ItemStack.EMPTY;
     }
     
     public static abstract class StackCollector {

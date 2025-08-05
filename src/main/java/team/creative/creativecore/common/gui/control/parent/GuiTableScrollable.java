@@ -70,12 +70,16 @@ public class GuiTableScrollable extends GuiParent {
     
     @Override
     public boolean isExpandableX() {
-        return dist().isExpandableX();
+        if (dist() != null)
+            return dist().isExpandableX();
+        return false;
     }
     
     @Override
     public boolean isExpandableY() {
-        return dist().isExpandableY();
+        if (dist() != null)
+            return dist().isExpandableY();
+        return false;
     }
     
     public void removeContentCol(int index) {
@@ -90,12 +94,14 @@ public class GuiTableScrollable extends GuiParent {
     
     @Override
     public GuiControlDistHandler createDist(GuiControl control) {
-        if (control == scrollableTable)
-            return dist().createScrollBox(scrollableTable);
-        if (control == topRow)
-            return dist().createTopRow(topRow);
-        if (control == firstCol)
-            return dist().createFirstCol(firstCol);
+        if (dist() != null) {
+            if (control == scrollableTable)
+                return dist().createScrollBox(scrollableTable);
+            if (control == topRow)
+                return dist().createTopRow(topRow);
+            if (control == firstCol)
+                return dist().createFirstCol(firstCol);
+        }
         return super.createDist(control);
     }
     

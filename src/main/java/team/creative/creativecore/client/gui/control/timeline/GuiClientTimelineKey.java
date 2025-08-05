@@ -1,6 +1,5 @@
 package team.creative.creativecore.client.gui.control.timeline;
 
-import org.checkerframework.checker.units.qual.K;
 import org.joml.Matrix3x2fStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -17,7 +16,7 @@ import team.creative.creativecore.common.gui.style.GuiStyle;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 
-public class GuiClientTimelineKey<T extends GuiTimelineKey<K>> extends GuiClientControl<T> implements GuiTimelineKeyDist {
+public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiClientControl<T> implements GuiTimelineKeyDist {
     
     public static final double DRAG_TIME = 2;
     private boolean selected;

@@ -21,12 +21,14 @@ public class GuiScrollX extends GuiParent {
     }
     
     public GuiScrollX setHovered() {
-        dist().setHovered();
+        if (dist() != null)
+            dist().setHovered();
         return this;
     }
     
     public GuiScrollX setHover(boolean hover) {
-        dist().setHover(hover);
+        if (dist() != null)
+            dist().setHover(hover);
         return this;
     }
     

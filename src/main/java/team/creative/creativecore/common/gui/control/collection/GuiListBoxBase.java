@@ -86,7 +86,8 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
             for (int i = 0; i < rows.size(); i++)
                 if (canBeModified.test(this.content.get(i)))
                     ((GuiButtonRemove) rows.get(i).getCol(1).get("x")).index = i;
-        dist().reflowInternal();
+        if (dist() != null)
+            dist().reflowInternal();
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
@@ -100,15 +101,15 @@ public class GuiListBoxBase<T extends GuiControl> extends GuiScrollY {
             content.add(entry);
             createControl(content.size() - 1);
         }
-        
-        dist().reflowInternal();
+        if (dist() != null)
+            dist().reflowInternal();
     }
     
     public void addItem(T entry) {
         content.add(entry);
         createControl(content.size() - 1);
-        
-        dist().reflowInternal();
+        if (dist() != null)
+            dist().reflowInternal();
         
         raiseEvent(new GuiControlChangedEvent(this));
     }

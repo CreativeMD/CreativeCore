@@ -9,10 +9,10 @@ import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.minecraft.client.gui.screens.Screen;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
+import team.creative.creativecore.client.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
-import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 
 public class ModMenuImpl implements ModMenuApi {
     
@@ -25,7 +25,7 @@ public class ModMenuImpl implements ModMenuApi {
         return (screen) -> {
             ICreativeConfigHolder holder = CreativeConfigRegistry.ROOT.followPath(modid);
             if (holder != null && !holder.isEmpty(Side.CLIENT))
-                return new GuiScreenIntegration(new ConfigGuiLayer(holder, Side.CLIENT)) {
+                return new GuiScreenIntegration(new ConfigGuiLayer(true, holder, Side.CLIENT)) {
                     
                     @Override
                     public void onClose() {
