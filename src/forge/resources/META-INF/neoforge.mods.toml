@@ -16,7 +16,7 @@ license="LGPL-3.0-only"
 [[dependencies.creativecore]]
     modId="neoforge"
     type="required"
-    versionRange="[21.7,)"
+    versionRange="[21.6,)"
     ordering="NONE"
     side="BOTH"
 
