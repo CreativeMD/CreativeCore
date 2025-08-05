@@ -1,3 +1,7 @@
+2.14.0
+Removed use of OnlyIn entirely
+Reworked gui-api to have a designated system for client and server handling
+
 2.13.3
 Fixed holding item rendering offset
 Fixed rendering count of one when holding an item stack
