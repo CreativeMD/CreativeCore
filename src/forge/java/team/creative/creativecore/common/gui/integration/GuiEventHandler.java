@@ -8,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
 
 public class GuiEventHandler {
@@ -45,7 +46,7 @@ public class GuiEventHandler {
         if (mc.screen instanceof IScaleableGuiScreen gui) {
             if (!changed)
                 defaultScale = mc.options.guiScale().get();
-            int maxScale = gui.getMaxScale(window.getWidth(), window.getHeight());
+            int maxScale = Math.min(CreativeCore.CONFIG.maxGuiScale, gui.getMaxScale(window.getWidth(), window.getHeight()));
             int scale = Math.min(defaultScale, maxScale);
             if (defaultScale == 0)
                 scale = maxScale;
