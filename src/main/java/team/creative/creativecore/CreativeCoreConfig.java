@@ -14,12 +14,6 @@ import team.creative.creativecore.common.util.player.PlayerSelector.PlayerSelect
 
 public class CreativeCoreConfig {
     
-    @CreativeConfig(name = "use-stencil", type = ConfigSynchronization.CLIENT)
-    public boolean useStencil = true;
-    
-    @CreativeConfig(name = "use-optifine-compat", type = ConfigSynchronization.CLIENT)
-    public boolean useOptifineCompat = true;
-    
     @CreativeConfig(type = ConfigSynchronization.CLIENT)
     public List<ColorPalette> palette = List.of(new ColorPalette("basic", ColorUtils.WHITE, ColorUtils.BLACK, ColorUtils.RED, ColorUtils.GREEN, ColorUtils.BLUE));
     
