@@ -1,3 +1,9 @@
+2.13.9
+Added maxGuiScale config option
+Fixed config of CreativeCore not being registered
+Fixed mouse over effect of slots
+Removed useStencil, color palette and useOptifineCompat config option
+
 2.13.8
 Fixed slider textfield not working correctly
 
