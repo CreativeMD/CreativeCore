@@ -113,6 +113,8 @@ public class CreativeCore {
         NETWORK.registerType(ImmediateItemStackPacket.class, ImmediateItemStackPacket::new);
         CONFIG_HANDLER = new ConfigEventHandler(FMLPaths.CONFIGDIR.get().toFile(), LOGGER);
         
+        CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG);
+        
         LOADER.loadCommon();
     }
     

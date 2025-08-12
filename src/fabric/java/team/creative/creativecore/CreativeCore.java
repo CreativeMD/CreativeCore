@@ -93,6 +93,8 @@ public class CreativeCore implements ModInitializer {
         
         ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray()));
         
+        CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG);
+        
         LOADER.loadCommon();
     }
     
