@@ -128,7 +128,7 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
     
     @Override
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
-        var font = ((CreativeGuiGraphics) graphics).getFont();
+        var font = ((CreativeGuiGraphics) graphics).font();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
         GuiStyle style = getStyle();

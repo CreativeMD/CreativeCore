@@ -97,7 +97,7 @@ public class GuiClientTimelineHeader<T extends GuiTimelineHeader> extends GuiCli
         
         GuiStyle style = getStyle();
         StyleDisplay border = style.get(ControlStyleBorder.SMALL);
-        Font font = ((CreativeGuiGraphics) graphics).getFont();
+        Font font = ((CreativeGuiGraphics) graphics).font();
         
         pose.pushMatrix();
         pose.translate((float) (-timeline().scrollX.current() + begin * stepWidth), 0);
