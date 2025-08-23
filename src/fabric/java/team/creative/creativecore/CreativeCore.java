@@ -60,6 +60,8 @@ public class CreativeCore implements ModInitializer {
     
     public CreativeCore() {
         ServerLifecycleEvents.SERVER_STARTING.register(this::server);
+        
+        CONFIG_HANDLER = new ConfigEventHandler(FabricLoader.getInstance().getConfigDir().toFile(), LOGGER);
     }
     
     private void server(MinecraftServer server) {
@@ -88,8 +90,6 @@ public class CreativeCore implements ModInitializer {
         NETWORK.registerType(ImmediateItemStackPacket.class, ImmediateItemStackPacket::new);
         
         Registry.register(BuiltInRegistries.MENU, ResourceLocation.tryBuild(MODID, "container"), GUI_CONTAINER);
-        
-        CONFIG_HANDLER = new ConfigEventHandler(FabricLoader.getInstance().getConfigDir().toFile(), LOGGER);
         
         ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray()));
         
