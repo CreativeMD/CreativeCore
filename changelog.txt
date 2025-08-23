@@ -1,3 +1,6 @@
+2.14.2
+Fixed config handler not getting created early enough causing crash with AmbientSounds (fabric)
+
 2.14.1
 Fixed creataive gui graphics do not work properly
 
