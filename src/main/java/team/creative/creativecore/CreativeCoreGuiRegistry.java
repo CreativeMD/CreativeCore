@@ -30,14 +30,7 @@ public class CreativeCoreGuiRegistry {
         Slot slot = c.slot;
         Player player = c.getPlayer();
         if (slot.hasItem() && slot.mayPickup(player)) {
-            ItemStack drop = slot.getItem().copy();
-            if (ctrl)
-                slot.set(ItemStack.EMPTY);
-            else
-                drop.setCount(1);
-            ItemStack newStack = slot.getItem();
-            newStack.shrink(1);
-            
+            ItemStack drop = slot.remove(ctrl ? Math.min(slot.getMaxStackSize(slot.getItem()), slot.getItem().getCount()) : 1);
             player.drop(drop, true);
             slot.onTake(player, drop);
             c.changed();
@@ -85,9 +78,11 @@ public class CreativeCoreGuiRegistry {
         if (stack.isEmpty() || !slot.mayPlace(stack))
             return;
         
-        int amount = Math.min(t.asInt().get(), slot.getMaxStackSize(stack) - stack.getCount());
-        ItemStack extract = stack.copy();
-        extract.setCount(amount);
+        int amount = Math.min(t.intValue(), slot.getMaxStackSize(stack) - stack.getCount());
+        ItemStack extract = slot.remove(amount);
+        
+        if (extract.isEmpty())
+            return;
         
         for (IGuiInventory inv : layer.inventoriesToExract()) {
             if (inv == c.inventory())
