@@ -1,3 +1,8 @@
+2.13.10
+Fixed drop in gui not correctly interacting with every inventory
+Fixed extraction in gui not correctly interacting with every inventory
+Fixed slot drop with q not working correctly
+
 2.13.9
 Added maxGuiScale config option
 Fixed config of CreativeCore not being registered
