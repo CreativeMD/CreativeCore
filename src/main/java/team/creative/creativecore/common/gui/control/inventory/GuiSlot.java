@@ -70,7 +70,7 @@ public class GuiSlot extends GuiSlotBase {
     
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (Minecraft.getInstance().options.keyDrop.matches(keyCode, scanCode)) {
+        if (Minecraft.getInstance().options.keyDrop.matches(keyCode, scanCode) && isHovered()) {
             CreativeCoreGuiRegistry.DROP.sendAndExecute(this, ByteTag.valueOf(Screen.hasControlDown()));
             return true;
         }

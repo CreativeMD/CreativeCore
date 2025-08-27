@@ -27,6 +27,10 @@ public abstract class GuiSlotBase extends GuiControl {
     @OnlyIn(Dist.CLIENT)
     private static DisplayColor HOVER;
     
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    private boolean hovered;
+    
     public GuiSlotBase(String name) {
         super(name);
     }
@@ -56,6 +60,12 @@ public abstract class GuiSlotBase extends GuiControl {
         return getStack().getTooltipLines(TooltipContext.of(provider()), getPlayer(), TooltipFlag.Default.NORMAL);
     }
     
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public boolean isHovered() {
+        return hovered;
+    }
+    
     @Override
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
@@ -71,7 +81,9 @@ public abstract class GuiSlotBase extends GuiControl {
         if (realRect.inside(mouseX, mouseY) && enabled) {
             RenderSystem.enableBlend();
             HOVER.render(graphics, rect.getWidth(), rect.getHeight());
-        }
+            hovered = true;
+        } else
+            hovered = false;
     }
     
     @Override
