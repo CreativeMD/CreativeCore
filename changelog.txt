@@ -1,3 +1,6 @@
+2.13.11
+Reverted back to all packets being optional (might cause issues when connecting to server with creativecore installed, but enables connection to paper or spigot)
+
 2.13.10
 Fixed drop in gui not correctly interacting with every inventory
 Fixed extraction in gui not correctly interacting with every inventory
