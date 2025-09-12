@@ -20,6 +20,7 @@ import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
+import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
@@ -775,6 +776,8 @@ public class VectorFan {
             ray1.directionOne = vec1.get(one) - before1.get(one);
             ray1.directionTwo = vec1.get(two) - before1.get(two);
             
+            boolean onEdgeLow = false;
+            boolean onEdgeHigh = false;
             Vec3f before2 = other.coords[0];
             Ray2d ray2 = new Ray2d(one, two, 0, 0, 0, 0);
             for (int i2 = 1; i2 <= other.coords.length; i2++) {
@@ -788,6 +791,14 @@ public class VectorFan {
                     double t = ray1.intersectWhen(ray2);
                     double otherT = ray2.intersectWhen(ray1);
                     if (t > episilon && t < 1 - episilon && otherT > episilon && otherT < 1 - episilon)
+                        return true;
+                    else if (Maths.within(otherT, 0, 1, episilon)) {
+                        if (Maths.equals(t, 0, episilon))
+                            onEdgeLow = true;
+                        if (Maths.equals(t, 1, episilon))
+                            onEdgeHigh = true;
+                    }
+                    if (onEdgeLow && onEdgeHigh) // An edge case when a line crosses exactly diagonal it never intersects with one line exactly, but it twice exactly on the edge.
                         return true;
                 } catch (ParallelException e) {
                     double startT;
