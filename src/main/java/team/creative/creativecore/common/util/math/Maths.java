@@ -14,12 +14,28 @@ public class Maths {
     public static final double EPSILON_PRECISE_DOUBLE = 0.00001;
     public static final double EPSILON_PRECISE_UP_DOUBLE = 1 / EPSILON_PRECISE_DOUBLE;
     
-    public static boolean smallerThanAndEquals(double a, double b) {
+    public static boolean within(double value, double min, double max) {
+        return within(value, min, max, EPSILON_DOUBLE);
+    }
+    
+    public static boolean within(double value, double min, double max, double epsilon) {
+        return greaterThanOrEquals(value, min, epsilon) && smallerThanOrEquals(value, max, epsilon);
+    }
+    
+    public static boolean smallerThanOrEquals(double a, double b) {
         return a < b || equals(a, b);
     }
     
-    public static boolean greaterThanAndEquals(double a, double b) {
+    public static boolean smallerThanOrEquals(double a, double b, double epsilon) {
+        return a < b || equals(a, b, epsilon);
+    }
+    
+    public static boolean greaterThanOrEquals(double a, double b) {
         return a > b || equals(a, b);
+    }
+    
+    public static boolean greaterThanOrEquals(double a, double b, double epsilon) {
+        return a > b || equals(a, b, epsilon);
     }
     
     public static boolean equals(double a, double b) {
