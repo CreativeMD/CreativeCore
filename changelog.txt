@@ -1,3 +1,6 @@
+2.14.3
+Reverted back to all packets being optional (might cause issues when connecting to server with creativecore installed, but enables connection to paper or spigot)
+
 2.14.2
 Fixed config handler not getting created early enough causing crash with AmbientSounds (fabric)
 
