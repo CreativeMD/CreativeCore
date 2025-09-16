@@ -531,6 +531,7 @@ public class VectorFan {
             
             boolean onEdgeLow = false;
             boolean onEdgeHigh = false;
+            boolean doSideCheck = false;
             Vec3f before2 = other.coords[0];
             Ray2d ray2 = new Ray2d(one, two, 0, 0, 0, 0);
             for (int i2 = 1; i2 <= other.coords.length; i2++) {
@@ -552,7 +553,7 @@ public class VectorFan {
                             onEdgeHigh = true;
                     }
                     if (onEdgeLow && onEdgeHigh) // An edge case when a line crosses exactly diagonal it never intersects with one line exactly, but it twice exactly on the edge.
-                        return true;
+                        doSideCheck = true;
                 } catch (ParallelException e) {
                     double startT;
                     double endT;
@@ -571,6 +572,19 @@ public class VectorFan {
                 }
                 
                 before2 = vec2;
+            }
+            
+            Boolean side = null;
+            if (doSideCheck) { // Checks if an intersection is possible by points being of either side of the ray, otherwise it is just parallel
+                for (int i2 = 0; i2 < other.coords.length; i2++) {
+                    Vec3f vec = other.coords[i2];
+                    Boolean result = ray1.isCoordinateToTheRight(vec.get(one), vec.get(two));
+                    if (result != null)
+                        if (side == null)
+                            side = result;
+                        else if (side != result)
+                            return true;
+                }
             }
             
             before1 = vec1;
