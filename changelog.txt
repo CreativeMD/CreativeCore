@@ -1,3 +1,6 @@
+2.12.34
+Added missing CreativeNetwork send variants (fabric)
+
 2.12.33
 Removed all unnecessary forge classes
 
