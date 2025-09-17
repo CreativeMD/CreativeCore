@@ -15,13 +15,20 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import team.creative.creativecore.CreativeCore;
+import team.creative.creativecore.common.level.ISubLevel;
 
 public class CreativeNetwork {
     
@@ -116,6 +123,42 @@ public class CreativeNetwork {
         var BUFF = new FriendlyByteBuf(Unpooled.buffer());
         packetTypes.get(message.getClass()).write(message, BUFF);
         ServerPlayNetworking.send(player, packetTypeChannels.get(message.getClass()), BUFF);
+    }
+    
+    public void sendToClient(CreativePacket message, Level level, BlockPos pos) {
+        if (level instanceof ISubLevel)
+            sendToClientTracking(message, ((ISubLevel) level).getHolder());
+        else
+            sendToClient(message, level.getChunkAt(pos));
+    }
+    
+    public void sendToClient(CreativePacket message, LevelChunk chunk) {
+        var BUFF = new FriendlyByteBuf(Unpooled.buffer());
+        packetTypes.get(message.getClass()).write(message, BUFF);
+        for (ServerPlayer player : ((ServerLevel) chunk.getLevel()).getChunkSource().chunkMap.getPlayers(chunk.getPos(), false))
+            ServerPlayNetworking.send(player, packetTypeChannels.get(message.getClass()), BUFF);
+    }
+    
+    public void sendToClientTracking(CreativePacket message, Entity entity) {
+        if (entity.level() instanceof ISubLevel sub)
+            sendToClientTracking(message, sub.getHolder());
+        else {
+            var BUFF = new FriendlyByteBuf(Unpooled.buffer());
+            packetTypes.get(message.getClass()).write(message, BUFF);
+            if (entity.level().getChunkSource() instanceof ServerChunkCache chunkCache)
+                chunkCache.broadcast(entity, ServerPlayNetworking.createS2CPacket(packetTypeChannels.get(message.getClass()), BUFF));
+        }
+    }
+    
+    public void sendToClientTrackingAndSelf(CreativePacket message, Entity entity) {
+        if (entity.level() instanceof ISubLevel sub)
+            sendToClientTrackingAndSelf(message, sub.getHolder());
+        else {
+            var BUFF = new FriendlyByteBuf(Unpooled.buffer());
+            packetTypes.get(message.getClass()).write(message, BUFF);
+            if (entity.level().getChunkSource() instanceof ServerChunkCache chunkCache)
+                chunkCache.broadcastAndSend(entity, ServerPlayNetworking.createS2CPacket(packetTypeChannels.get(message.getClass()), BUFF));
+        }
     }
     
     public void sendToClientAll(MinecraftServer server, CreativePacket message) {
