@@ -30,18 +30,6 @@ public interface CreativeGuiGraphics {
         return (CreativeGuiGraphics) graphics;
     }
     
-    @Nullable
-    public static ScreenRectangle getBounds(int x0, int y0, int x1, int y1, Matrix3x2f pose, @Nullable ScreenRectangle rect) {
-        ScreenRectangle screenrectangle = new ScreenRectangle(x0, y0, x1 - x0, y1 - y0).transformMaxBounds(pose);
-        return rect != null ? rect.intersection(screenrectangle) : screenrectangle;
-    }
-    
-    @Nullable
-    public static ScreenRectangle getBounds(float x0, float y0, float x1, float y1, Matrix3x2f pose, @Nullable ScreenRectangle rect) {
-        ScreenRectangle screenrectangle = new ScreenRectangle((int) x0, (int) y0, (int) (x1 - x0), (int) (y1 - y0)).transformMaxBounds(pose);
-        return rect != null ? rect.intersection(screenrectangle) : screenrectangle;
-    }
-    
     public default void drawStringCentered(String text, float width, float height, int color, boolean shadow) {
         var minecraft = minecraft();
         int textWidth = minecraft.font.width(text);
@@ -66,23 +54,23 @@ public interface CreativeGuiGraphics {
     
     public default void drawString(FormattedCharSequence text, int x, int y, int color, int shadowColor, boolean shadow) {
         if (ARGB.alpha(color) != 0)
-            guiRenderState().submitText(new GuiTextRenderState(font(), text, new Matrix3x2f(pose()), x, y, color, shadowColor, shadow, peekSissor()));
+            guiRenderState().submitText(new GuiTextRenderState(font(), text, new Matrix3x2f(pose()), x, y, color, shadowColor, shadow, peekScissor()));
     }
     
     public default void horizontalGradientRect(int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        guiRenderState().submitGuiElement(new HorizontalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekSissor()));
+        guiRenderState().submitGuiElement(new HorizontalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekScissor()));
     }
     
     public default void horizontalGradientRect(float x, float y, float x2, float y2, int colorFrom, int colorTo) {
-        guiRenderState().submitGuiElement(new HorizontalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekSissor()));
+        guiRenderState().submitGuiElement(new HorizontalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekScissor()));
     }
     
     public default void verticalGradientRect(int x, int y, int x2, int y2, int colorFrom, int colorTo) {
-        guiRenderState().submitGuiElement(new VerticalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekSissor()));
+        guiRenderState().submitGuiElement(new VerticalGradientRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekScissor()));
     }
     
     public default void verticalGradientRect(float x, float y, float x2, float y2, int colorFrom, int colorTo) {
-        guiRenderState().submitGuiElement(new VerticalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekSissor()));
+        guiRenderState().submitGuiElement(new VerticalGradientRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x2, y2, colorFrom, colorTo, peekScissor()));
     }
     
     public default void horizontalGradientMaskRect(int x, int y, int x2, int y2, int color, int mask) {
@@ -94,11 +82,11 @@ public interface CreativeGuiGraphics {
     }
     
     public default void colorRect(int x, int y, int width, int height, int color) {
-        guiRenderState().submitGuiElement(new ColorRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x + width, y + height, color, peekSissor()));
+        guiRenderState().submitGuiElement(new ColorRect(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x + width, y + height, color, peekScissor()));
     }
     
     public default void colorRect(float x, float y, float width, float height, int color) {
-        guiRenderState().submitGuiElement(new ColorRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x + width, y + height, color, peekSissor()));
+        guiRenderState().submitGuiElement(new ColorRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x + width, y + height, color, peekScissor()));
     }
     
     public default void textureRect(ResourceLocation location, int x, int y, int width, int height, float u, float v) {
@@ -162,6 +150,10 @@ public interface CreativeGuiGraphics {
     
     public GuiRenderState guiRenderState();
     
-    public ScreenRectangle peekSissor();
+    public ScreenRectangle peekScissor();
+    
+    public void setOverrideScissor(@Nullable ScreenRectangle rect);
+    
+    public void clearOverrideScissor();
     
 }

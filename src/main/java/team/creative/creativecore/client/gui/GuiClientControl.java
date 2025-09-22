@@ -6,16 +6,17 @@ import javax.annotation.Nullable;
 
 import org.joml.Matrix3x2fStack;
 
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.event.GuiEvent;
@@ -37,14 +38,14 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         return new Rect(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
     }
     
-    public static void scissor(Rect rect) {
-        Window window = Minecraft.getInstance().getWindow();
-        double realMinX = rect.minX * window.getGuiScale();
-        double realMinY = window.getHeight() - (rect.minY + rect.getHeight()) * window.getGuiScale();
-        double realMaxX = rect.getWidth() * window.getGuiScale();
-        double realMaxY = rect.getHeight() * window.getGuiScale();
+    public static void scissor(GuiGraphics graphics, @Nullable Rect rect) {
+        if (rect == null) {
+            ((CreativeGuiGraphics) graphics).setOverrideScissor(null);
+            return;
+        }
         
-        RenderSystem.enableScissorForRenderTypeDraws((int) Math.floor(realMinX), (int) Math.floor(realMinY), (int) Math.ceil(realMaxX), (int) Math.ceil(realMaxY) + 1);
+        ((CreativeGuiGraphics) graphics).setOverrideScissor(new ScreenRectangle((int) Math.floor(rect.minX), (int) Math.floor(rect.minY), (int) Math.ceil(rect
+                .getWidth()), (int) Math.ceil(rect.getHeight()) + 1));
     }
     
     public final GuiControlRect rect = new GuiControlRect(this);
@@ -285,7 +286,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         renderContent(graphics, formatting, borderSize, controlRect, realRect, scale, mouseX, mouseY);
         
         if (!enabled && formatting.hasDisabledEffect()) {
-            scissor(realRect);
+            scissor(graphics, realRect);
             //RenderSystem.disableDepthTest();
             // TODO 1.21.5 YET TO BE TESTED
             //RenderSystem.enableBlend();

@@ -1,5 +1,9 @@
 package team.creative.creativecore.mixin;
 
+import java.lang.reflect.Field;
+
+import javax.annotation.Nullable;
+
 import org.joml.Matrix3x2fStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,10 +18,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.resources.ResourceLocation;
+import team.creative.creativecore.client.render.ScissorStackExtender;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
+import team.creative.creativecore.reflection.ReflectionHelper;
 
 @Mixin(GuiGraphics.class)
 public class GuiGraphicsMixin implements CreativeGuiGraphics {
+    
+    private static final Field SCISSOR_STACK_FIELD = ReflectionHelper.findFieldByType(GuiGraphics.class, "net.minecraft.client.gui.GuiGraphics$ScissorStack");
     
     @Shadow
     @Final
@@ -48,7 +56,25 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
     }
     
     @Override
-    public ScreenRectangle peekSissor() {
+    public void setOverrideScissor(@Nullable ScreenRectangle rect) {
+        try {
+            ((ScissorStackExtender) SCISSOR_STACK_FIELD.get(this)).setOverrideScissor(rect);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void clearOverrideScissor() {
+        try {
+            ((ScissorStackExtender) SCISSOR_STACK_FIELD.get(this)).clearOverrideScissor();
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public ScreenRectangle peekScissor() {
         return as().scissorStack.peek();
     }
     

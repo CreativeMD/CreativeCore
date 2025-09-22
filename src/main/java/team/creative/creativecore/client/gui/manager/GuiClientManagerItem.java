@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.joml.Matrix3x2fStack;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
@@ -18,6 +16,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCoreGuiRegistry;
+import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.client.gui.control.inventory.GuiClientSlot;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
@@ -82,7 +81,7 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
         if (!stack.isEmpty() && (!drag || rightClick || dragged.size() > 1)) {
             Matrix3x2fStack pose = graphics.pose();
             pose.pushMatrix();
-            RenderSystem.disableScissorForRenderTypeDraws();
+            GuiClientControl.scissor(graphics, null);
             
             pose.translate(mouseX - 8, mouseY - 8);
             graphics.renderItem(stack, 0, 0);

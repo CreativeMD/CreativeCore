@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import org.joml.Matrix3x2fStack;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -51,8 +49,10 @@ public interface IGuiClientIntegratedParent extends IGuiIntegratedParent {
             cLayer.render(graphics, controlRect, screenRect.intersection(controlRect), 1, mouseX, mouseY);
             pose.popMatrix();
             
-            RenderSystem.disableScissorForRenderTypeDraws();
+            GuiClientControl.scissor(graphics, null);
         }
+        
+        ((CreativeGuiGraphics) graphics).clearOverrideScissor();
         
         if (layers.isEmpty())
             return;

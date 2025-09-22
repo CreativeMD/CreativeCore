@@ -11,10 +11,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 
-public record ColorRect(RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, int x0, int y0, int x1, int y1, int color, @Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds) implements GuiElementRenderState {
-    public ColorRect(RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, int x0, int y0, int x1, int y1, int color, @Nullable ScreenRectangle scissorArea) {
-        this(pipeline, textureSetup, pose, x0, y0, x1, y1, color, scissorArea, CreativeGuiGraphics.getBounds(x0, y0, x1, y1, pose, scissorArea));
-    }
+public record ColorRect(RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, int x0, int y0, int x1, int y1, int color, @Nullable ScreenRectangle scissorArea) implements GuiElementRenderState {
     
     @Override
     public void buildVertices(VertexConsumer consumer, float z) {
@@ -22,6 +19,11 @@ public record ColorRect(RenderPipeline pipeline, TextureSetup textureSetup, Matr
         consumer.addVertexWith2DPose(this.pose, this.x0, this.y0, z).setColor(this.color);
         consumer.addVertexWith2DPose(this.pose, this.x0, this.y1, z).setColor(this.color);
         consumer.addVertexWith2DPose(this.pose, this.x1, this.y1, z).setColor(this.color);
+    }
+    
+    @Override
+    public ScreenRectangle bounds() {
+        return null;
     }
     
 }

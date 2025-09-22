@@ -4,8 +4,6 @@ import java.util.ListIterator;
 
 import org.joml.Matrix3x2fStack;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.Align;
@@ -112,9 +110,9 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
             Rect realRect = realContentRect.intersection(controlContentRect);
             if (realRect != null || hover) {
                 if (hover)
-                    RenderSystem.disableScissorForRenderTypeDraws();
+                    scissor(graphics, null);
                 else
-                    scissor(realRect);
+                    scissor(graphics, realRect);
                 
                 pose.pushMatrix();
                 pose.translate((float) (control.rect.getX() + xOffset), (float) (control.rect.getY() + yOffset));

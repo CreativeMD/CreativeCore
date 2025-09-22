@@ -14,7 +14,8 @@
     "client": [
         "GuiGraphicsMixin",
         "MouseHandlerAccessor",
-        "StringSplitterAccessor"
+        "StringSplitterAccessor",
+        "ScissorStackMixin"
     ],
     "minVersion": "0.8"
 }

@@ -177,7 +177,7 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
         float controlInvScale = (float) scaleFactorInv();
         pose.scale(controlInvScale, controlInvScale);
         
-        scissor(realRect);
+        scissor(graphics, realRect);
         GuiStyle style = getStyle();
         
         //RenderSystem.disableDepthTest();

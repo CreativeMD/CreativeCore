@@ -131,7 +131,7 @@ public class GuiClientScrollY<T extends GuiScrollY> extends GuiClientParent<T> i
         float controlInvScale = (float) scaleFactorInv();
         pose.scale(controlInvScale, controlInvScale);
         
-        scissor(realRect);
+        scissor(graphics, realRect);
         GuiStyle style = getStyle();
         
         scrolled.tick();

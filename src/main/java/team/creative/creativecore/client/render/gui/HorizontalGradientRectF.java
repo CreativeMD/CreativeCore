@@ -11,10 +11,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiElementRenderState;
 
-public record HorizontalGradientRectF(RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, float x0, float y0, float x1, float y1, int colorFrom, int colorTo, @Nullable ScreenRectangle scissorArea, @Nullable ScreenRectangle bounds) implements GuiElementRenderState {
-    public HorizontalGradientRectF(RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, float x0, float y0, float x1, float y1, int colorFrom, int colorTo, @Nullable ScreenRectangle scissorArea) {
-        this(pipeline, textureSetup, pose, x0, y0, x1, y1, colorFrom, colorTo, scissorArea, CreativeGuiGraphics.getBounds(x0, y0, x1, y1, pose, scissorArea));
-    }
+public record HorizontalGradientRectF(RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose, float x0, float y0, float x1, float y1, int colorFrom, int colorTo, @Nullable ScreenRectangle scissorArea) implements GuiElementRenderState {
     
     @Override
     public void buildVertices(VertexConsumer consumer, float z) {
@@ -22,6 +19,11 @@ public record HorizontalGradientRectF(RenderPipeline pipeline, TextureSetup text
         consumer.addVertexWith2DPose(this.pose, this.x0, this.y0, z).setColor(this.colorFrom);
         consumer.addVertexWith2DPose(this.pose, this.x0, this.y1, z).setColor(this.colorFrom);
         consumer.addVertexWith2DPose(this.pose, this.x1, this.y1, z).setColor(this.colorTo);
+    }
+    
+    @Override
+    public ScreenRectangle bounds() {
+        return null;
     }
     
 }
