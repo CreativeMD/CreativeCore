@@ -303,7 +303,9 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         if (!enabled)
             pose.pushMatrix();
         pose.translate(borderWidth + formatting.padding(), borderWidth + formatting.padding());
-        renderContent(graphics, controlRect, controlRect.intersection(realRect), scale, mouseX, mouseY);
+        var r = controlRect.intersection(realRect);
+        if (r != null)
+            renderContent(graphics, controlRect, r, scale, mouseX, mouseY);
         if (!enabled)
             pose.popMatrix();
     }
