@@ -56,7 +56,7 @@ public class FullItemDialogGuiLayer extends GuiLayer {
         box = new GuiComboBox<GuiCreativeIngredientHandler>(this, "type", new TextMapBuilder<GuiCreativeIngredientHandler>().addEntrySet(GuiCreativeIngredientHandler.REGISTRY
                 .entrySet(), x -> Component.literal(x.getKey())));
         box.setExpandableX();
-        box.select(handler);
+        box.selectSilent(handler);
         topBottom.addTop(box);
         
         handler.createControls(topBottom.top, info);
