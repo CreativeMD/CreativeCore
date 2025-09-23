@@ -75,7 +75,7 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
         if (comboBox.hasSearchbar()) {
             if (textfield == null)
                 textfield = new GuiTextfield(control, "searchBar", search == null ? "" : search);
-            control.add(textfield);
+            control.add(textfield.setExpandableX());
             textfield.dist().focus();
         }
         
