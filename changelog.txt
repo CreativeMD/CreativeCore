@@ -1,3 +1,8 @@
+2.14.6
+Fixed incorrect equal check for classes that have implemented equals method
+Fixed color picker not displaying color in sliders
+Fixed BoxCorner.facingTo method causing troubles with slope shapes of littletiles
+
 2.14.5
 Fixed crash during startup due to invalid reflection for fabric
 
