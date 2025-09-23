@@ -14,6 +14,7 @@ import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.control.inventory.GuiSlotBase;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
+import team.creative.creativecore.common.util.math.geo.Rect;
 
 public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClientControl<T> {
     
@@ -39,20 +40,19 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         pose.translate(1, 1);
         ItemStack stack = getStackToRender();
         graphics.renderItem(stack, 0, 0);
         ((CreativeGuiGraphics) graphics).renderItemDecorations(stack, 0, 0);
         pose.translate(-1, -1);
-        if (rect.inside(mouseX, mouseY) && enabled) {
-            //RenderSystem.enableBlend();
-            //TODO 1.21.5 YET TO BE TESTED
+        if (realRect.inside(mouseX, mouseY) && enabled)
             HOVER.render(graphics, rect.getWidth(), rect.getHeight());
-        }
-        
     }
+    
+    @Override
+    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
