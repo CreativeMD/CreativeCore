@@ -113,6 +113,10 @@ public class CompiledText {
         return maxHeight;
     }
     
+    public int getDefaultColor() {
+        return this.defaultColor;
+    }
+    
     public void setDefaultColor(int color) {
         this.defaultColor = color;
     }
