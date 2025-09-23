@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.client.gui.integration.ScreenEventListener;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
@@ -65,8 +66,8 @@ public interface IGuiClientIntegratedParent extends IGuiIntegratedParent {
             layer.raiseEvent(event);
             if (!event.isCanceled()) {
                 var font = Minecraft.getInstance().font;
-                List<ClientTooltipComponent> list = CreativeCoreClient.gatherTooltipComponents(null, event.tooltip, Optional.empty(), mouseX, graphics.guiWidth(), graphics
-                        .guiHeight(), font);
+                List<ClientTooltipComponent> list = CreativeCoreClient.gatherTooltipComponents(ItemStack.EMPTY, event.tooltip, Optional.empty(), mouseX, graphics.guiWidth(),
+                    graphics.guiHeight(), font);
                 graphics.renderTooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
             }
         }
