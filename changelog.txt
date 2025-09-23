@@ -1,3 +1,34 @@
+2.14.4
+Fixed crash when using player selector dialog
+Fixed wrong iteration of controls on client side causing hover controls to not be clicked when being above another control
+Fixed extension being offset by a few pixels
+Fixed incorrect intersection check for vectors fans caused by angled line go over two edges exactly #2
+Fixed incorrect intersection check for vectors fans caused by angled line go over two edges exactly
+Fixed drop in gui not correctly interacting with every inventory
+Fixed extraction in gui not correctly interacting with every inventory
+Fixed slot drop with q not working correctly
+Removed color palette settings
+Added maxGuiScale config option
+Fixed config of CreativeCore not being registered
+Removed useStencil and useOptifineCompat config option
+Fixed slider textfield not working correctly
+Fixed rendering controls which have no visible rect on screen
+Added GuiLabelHover
+Added subtract to ColorUtils
+Fixed selecting combobox flexible after forced value not setting value before raising changed event
+Added better timeline channel unmodifiable key support
+Fixed container on client side not being able to calculate toScreentRect
+Fixed initialization of extensions not working properly
+Fixed displaying group in stack selector even though it is empty
+Fixed stack selector search bar not taking full width
+Fixed stack selector search not working
+Fixed slots hover effect not working correctly
+Fixed chaining changes endlessly in item select dialog
+Added notify parameter gui dist handlers to avoid change looping
+Fixed tooltip in gui causing crash
+Fixed limited matrix stack size causing crash with guis with many control parents
+Fixed scissor in gui api not working correctly causing multiple rendering issues
+
 2.14.3
 Reverted back to all packets being optional (might cause issues when connecting to server with creativecore installed, but enables connection to paper or spigot)
 
