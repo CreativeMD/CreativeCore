@@ -45,9 +45,8 @@ public class GuiClientComboBoxFlexible<T extends GuiComboBoxFlexible<K>, K> exte
     
     @Override
     public void select(int index, boolean notify) {
+        forced = null;
         super.select(index, notify);
-        if (selected() != null)
-            forced = null;
     }
     
     @Override
