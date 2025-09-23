@@ -118,13 +118,13 @@ public abstract class GuiTimelineChannel<T> extends GuiParent {
     public GuiTimelineKey<T> getFirst() {
         if (keys.isEmpty())
             return null;
-        return keys.get(0);
+        return keys.getFirst();
     }
     
     public GuiTimelineKey<T> getLast() {
         if (keys.isEmpty())
             return null;
-        return keys.get(keys.size() - 1);
+        return keys.getLast();
     }
     
     public static interface GuiTimelineChannelDist<K> extends GuiParentDistHandler {

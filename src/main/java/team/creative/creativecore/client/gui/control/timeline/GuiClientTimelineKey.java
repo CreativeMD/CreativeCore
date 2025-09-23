@@ -35,6 +35,8 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
+        if (!control.modifiable)
+            return false;
         if (button == 0) {
             control.channel.select(control);
             playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -50,6 +52,8 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     
     @Override
     public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
+        if (!control.modifiable)
+            return;
         if (clicked && time > DRAG_TIME) {
             control.channel.dragKey(control);
             clicked = false;
