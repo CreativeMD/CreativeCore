@@ -1,3 +1,6 @@
+2.14.5
+Fixed crash during startup due to invalid reflection for fabric
+
 2.14.4
 Fixed crash when using player selector dialog
 Fixed wrong iteration of controls on client side causing hover controls to not be clicked when being above another control
