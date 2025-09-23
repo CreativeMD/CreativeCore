@@ -24,6 +24,12 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
     
     public GuiClientStackSelectorExtension(T control) {
         super(control);
+        control.registerEventChanged(x -> {
+            if (x.control.is("searchBar")) {
+                search = ((GuiTextfield) x.control).getText();
+                reloadControls();
+            }
+        });
     }
     
     @Override
