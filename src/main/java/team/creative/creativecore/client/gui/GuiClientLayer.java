@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
 import team.creative.creativecore.client.gui.manager.GuiClientManager;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.GuiLayer.GuiLayerDistHandler;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -143,6 +144,12 @@ public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLaye
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public void applyOffset(GuiControl control, Rect rect) {
+        rect.move(((GuiClientControl) control.dist()).rect.getX() + getOffsetX(), ((GuiClientControl) control.dist()).rect.getY() + getOffsetY());
+        rect.scale(scaleFactor());
     }
     
 }

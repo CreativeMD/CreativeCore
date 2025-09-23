@@ -179,6 +179,13 @@ public abstract class GuiLayer extends GuiParent {
             dist().reflow();
     }
     
+    @Override
+    public Rect toLayerRect(GuiControl control, Rect rect) {
+        if (dist() != null)
+            dist().applyOffset(control, rect);
+        return rect;
+    }
+    
     public static interface GuiLayerDistHandler extends GuiParent.GuiParentDistHandler {
         
         public void reflow();
