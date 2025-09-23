@@ -24,6 +24,8 @@ public class PlayerSelectorDialog extends GuiLayer {
     
     @Override
     public void create() {
+        if (button == null)
+            return;
         PlayerSelector selector = button.get();
         handler = GuiPlayerSelectorHandler.get(selector);
         
