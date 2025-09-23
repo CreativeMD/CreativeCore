@@ -172,7 +172,7 @@ public class GuiClientComboBox<T extends GuiComboBox<K>, K> extends GuiClientLab
     
     protected GuiComboBoxExtension createBox(GuiExtensionCreator<GuiClientComboBox<T, K>, GuiComboBoxExtension> creator) {
         var extension = new GuiComboBoxExtension(control.getParent(), control.name + "extension");
-        ((GuiClientComboBoxExtension) extension.dist()).creator = creator;
+        ((GuiClientComboBoxExtension) extension.dist()).init(creator);
         return extension;
     }
     

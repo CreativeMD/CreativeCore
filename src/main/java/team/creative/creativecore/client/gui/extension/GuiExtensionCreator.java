@@ -97,7 +97,7 @@ public class GuiExtensionCreator<P extends GuiClientControl, T extends GuiContro
                 extension.flowY();
                 
                 Rect absolute = layer.control.getIntegratedParent().toScreenRect(layer.control, extension.rectCopy());
-                Rect screen = GuiClientControl.getScreenRect();;
+                Rect screen = GuiClientControl.getScreenRect();
                 
                 if (absolute.maxY > screen.maxY && absolute.minY - absolute.getHeight() >= screen.minX)
                     extension.setY(extension.getY() - ((int) creatorRect.getHeight() + extension.getHeight()));

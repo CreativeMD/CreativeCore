@@ -22,7 +22,7 @@ import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class GuiClientButtonContext<T extends GuiButtonContext> extends GuiClientButton<T> implements GuiButtonContextDist {
     
-    protected GuiExtensionCreator<GuiClientButtonContext, GuiParent> ex = new GuiExtensionCreator<>(this);
+    private GuiExtensionCreator<GuiClientButtonContext, GuiParent> ex = new GuiExtensionCreator<>(this);
     protected TextMapBuilder<Consumer<Integer>> map;
     protected boolean isHovered = false;
     

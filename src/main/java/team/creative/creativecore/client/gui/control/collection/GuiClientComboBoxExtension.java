@@ -7,21 +7,20 @@ import team.creative.creativecore.client.gui.control.simple.GuiClientLabel;
 import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.client.render.text.CompiledText;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBoxExtension;
-import team.creative.creativecore.common.gui.control.collection.GuiComboBoxExtension.GuiComboBoxExtensionDist;
 import team.creative.creativecore.common.gui.control.simple.GuiListEntry;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 
-public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends GuiClientListBoxBase<T> implements GuiComboBoxExtensionDist {
+public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends GuiClientListBoxBase<T> {
     
-    public GuiExtensionCreator<? extends GuiClientComboBox<?, ?>, ? extends GuiComboBoxExtension> creator;
+    private GuiExtensionCreator<? extends GuiClientComboBox<?, ?>, ? extends GuiComboBoxExtension> creator;
     public String search = "";
     
     public GuiClientComboBoxExtension(T control) {
         super(control);
     }
     
-    @Override
-    public void init() {
+    public void init(GuiExtensionCreator<? extends GuiClientComboBox<?, ?>, ? extends GuiComboBoxExtension> creator) {
+        this.creator = creator;
         control.registerEventChanged((event) -> {
             if (event.control.is("searchBar")) {
                 search = ((GuiTextfield) event.control).getText();
@@ -29,6 +28,10 @@ public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends 
             }
         });
         reloadControls();
+    }
+    
+    public GuiExtensionCreator<? extends GuiClientComboBox<?, ?>, ? extends GuiComboBoxExtension> creator() {
+        return creator;
     }
     
     @Override

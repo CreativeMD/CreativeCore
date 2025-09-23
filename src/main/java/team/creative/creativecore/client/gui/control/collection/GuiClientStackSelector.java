@@ -105,7 +105,7 @@ public class GuiClientStackSelector<T extends GuiStackSelector> extends GuiClien
     
     protected GuiStackSelectorExtension createBox(GuiExtensionCreator<GuiClientStackSelector, GuiStackSelectorExtension> creator) {
         var ex = new GuiStackSelectorExtension(control.getParent(), control.name + "extension");
-        ((GuiClientStackSelectorExtension) ex.dist()).creator = creator;
+        ((GuiClientStackSelectorExtension) ex.dist()).init(creator);
         return ex;
     }
     

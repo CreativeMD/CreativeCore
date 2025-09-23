@@ -9,19 +9,6 @@ public class GuiComboBoxExtension extends GuiListBoxBase<GuiListEntry> {
     
     public GuiComboBoxExtension(IGuiParent parent, String name) {
         super(parent, name, false, new ArrayList<>());
-        if (dist() != null)
-            dist().init();
-    }
-    
-    @Override
-    public GuiComboBoxExtensionDist dist() {
-        return (GuiComboBoxExtensionDist) super.dist();
-    }
-    
-    public static interface GuiComboBoxExtensionDist extends GuiListBoxBaseDist {
-        
-        public void init();
-        
     }
     
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.gui.control.parent.GuiClientScrollY;
@@ -12,13 +13,14 @@ import team.creative.creativecore.common.gui.control.collection.GuiStackSelector
 import team.creative.creativecore.common.gui.control.collection.GuiStackSelectorExtension;
 import team.creative.creativecore.common.gui.control.collection.GuiStackSelectorExtension.GuiStackSelectorExtensionDist;
 import team.creative.creativecore.common.gui.control.inventory.GuiInventoryGridPreview;
+import team.creative.creativecore.common.gui.control.inventory.GuiSlotViewer;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.util.type.map.HashMapList;
 
 public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension> extends GuiClientScrollY<T> implements GuiStackSelectorExtensionDist {
     
-    public GuiExtensionCreator<GuiClientStackSelector<?>, GuiStackSelectorExtension> creator;
+    private GuiExtensionCreator<GuiClientStackSelector<?>, GuiStackSelectorExtension> creator;
     private String search = "";
     protected int cachedWidth;
     
@@ -30,12 +32,28 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
                 reloadControls();
             }
         });
+        control.registerEventClick((event) -> {
+            if (event.control instanceof GuiSlotViewer && event.control.isParent(control)) {
+                creator.parent.setSelected(((GuiSlotViewer) event.control).getStack(), true);
+                playSound(SoundEvents.UI_BUTTON_CLICK);
+                creator.close();
+            }
+        });
+    }
+    
+    public void init(GuiExtensionCreator<GuiClientStackSelector<?>, GuiStackSelectorExtension> creator) {
+        this.creator = creator;
+        reloadControls();
+    }
+    
+    public GuiExtensionCreator<GuiClientStackSelector<?>, GuiStackSelectorExtension> creator() {
+        return creator;
     }
     
     @Override
     public boolean mouseClicked(double x, double y, int button) {
-        if (super.mouseClicked(x, y, button))
-            creator.markKeptFocus();
+        super.mouseClicked(x, y, button);
+        creator.markKeptFocus();
         return true;
     }
     
