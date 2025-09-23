@@ -5,6 +5,7 @@ import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.control.simple.GuiColorPicker;
 import team.creative.creativecore.common.gui.control.simple.GuiColoredSteppedSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiColoredSteppedSlider.GuiColoredSteppedSliderDist;
+import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils.ColorPart;
 import team.creative.creativecore.common.util.type.Color;
 
@@ -37,7 +38,7 @@ public class GuiClientColoredSteppedSlider<T extends GuiColoredSteppedSlider> ex
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         if (part == ColorPart.ALPHA) {
             Color startColor = new Color(picker.color);
             startColor.setAlpha(0);
@@ -46,7 +47,7 @@ public class GuiClientColoredSteppedSlider<T extends GuiColoredSteppedSlider> ex
             ((CreativeGuiGraphics) graphics).horizontalGradientRect(0, 0, rect.getContentWidth(), rect.getContentHeight(), startColor.toInt(), endColor.toInt());
         } else
             ((CreativeGuiGraphics) graphics).horizontalGradientMaskRect(0, 0, rect.getContentWidth(), rect.getContentHeight(), picker.color.toInt(), part.code);
-        super.renderContent(graphics, mouseX, mouseY);
+        super.renderContent(graphics, controlRect, realRect, scale, mouseX, mouseY);
     }
     
 }
