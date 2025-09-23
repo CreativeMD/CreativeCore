@@ -9,7 +9,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 import net.minecraft.client.Minecraft;
@@ -53,6 +56,12 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
     @Override
     public Minecraft minecraft() {
         return minecraft;
+    }
+    
+    @WrapOperation(method = "<init>(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/render/state/GuiRenderState;)V", require = 1, at = @At(value = "NEW",
+            target = "(I)Lorg/joml/Matrix3x2fStack;"))
+    private static Matrix3x2fStack modifyStackSize(int stacksize, Operation<Matrix3x2fStack> op) {
+        return new Matrix3x2fStack(64);
     }
     
     @Override
