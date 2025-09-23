@@ -211,7 +211,7 @@ public class GuiControls implements Iterable<GuiControl> {
     }
     
     public Iterable<GuiControlDistHandler> distAll() {
-        return new ConsecutiveIterator<>(distControls, distHoverControls);
+        return new ConsecutiveIterator<>(distHoverControls, distControls);
     }
     
     public Stream<GuiControlDistHandler> streamDistControls() {
