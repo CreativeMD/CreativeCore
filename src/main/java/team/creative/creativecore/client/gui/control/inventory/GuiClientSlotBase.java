@@ -21,6 +21,8 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
     public static final int SLOT_SIZE = 18;
     public static final DisplayColor HOVER = new DisplayColor(1, 1, 1, 0.3F);
     
+    private boolean hovered;
+    
     public GuiClientSlotBase(T control) {
         super(control);
     }
@@ -39,6 +41,10 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
         return control.getStack().getTooltipLines(TooltipContext.of(control.provider()), control.getPlayer(), TooltipFlag.Default.NORMAL);
     }
     
+    public boolean isHovered() {
+        return hovered;
+    }
+    
     @Override
     protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
@@ -47,8 +53,11 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
         graphics.renderItem(stack, 0, 0);
         ((CreativeGuiGraphics) graphics).renderItemDecorations(stack, 0, 0);
         pose.translate(-1, -1);
-        if (realRect.inside(mouseX, mouseY) && enabled)
+        if (realRect.inside(mouseX, mouseY) && enabled) {
             HOVER.render(graphics, rect.getWidth(), rect.getHeight());
+            hovered = true;
+        } else
+            hovered = false;
     }
     
     @Override
