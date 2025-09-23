@@ -21,16 +21,16 @@ public class GuiClientArraySlider<T extends GuiArraySlider> extends GuiClientSte
     }
     
     @Override
-    public void select(String value) {
-        this.setValue(ArrayUtils.indexOf(values, value));
+    public void select(String value, boolean notify) {
+        this.setValue(ArrayUtils.indexOf(values, value), notify);
     }
     
     @Override
-    public void setValues(String[] values) {
+    public void setValues(String[] values, boolean notify) {
         this.setMinValue(0);
         this.setMaxValue(values.length - 1);
         this.values = values;
-        this.setValue(0);
+        this.setValue(0, notify);
     }
     
     @Override

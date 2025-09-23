@@ -55,15 +55,17 @@ public class GuiClientComboBox<T extends GuiComboBox<K>, K> extends GuiClientLab
     }
     
     @Override
-    public void set(IComponentMap<K> builder) {
+    public void set(IComponentMap<K> builder, boolean notify) {
         this.data = builder.build();
         
-        select(index);
+        select(index, false);
         
         for (CompiledText text : data.values())
             text.setAlign(Align.CENTER);
         
         updateDisplay();
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override
@@ -81,7 +83,7 @@ public class GuiClientComboBox<T extends GuiComboBox<K>, K> extends GuiClientLab
     }
     
     @Override
-    public void select(int index) {
+    public void select(int index, boolean notify) {
         this.index = Mth.clamp(index, 0, this.data.size() - 1);
         
         if (!data.isEmpty())
@@ -90,12 +92,13 @@ public class GuiClientComboBox<T extends GuiComboBox<K>, K> extends GuiClientLab
             selected = null;
         
         updateDisplay();
-        raiseEvent(new GuiControlChangedEvent(control));
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override
-    public void select(K key) {
-        select(indexOf(key));
+    public void select(K key, boolean notify) {
+        select(indexOf(key), notify);
     }
     
     @Override
@@ -111,7 +114,7 @@ public class GuiClientComboBox<T extends GuiComboBox<K>, K> extends GuiClientLab
         int index = this.index + 1;
         if (index >= data.size())
             index = 0;
-        select(index);
+        select(index, true);
     }
     
     @Override
@@ -119,7 +122,7 @@ public class GuiClientComboBox<T extends GuiComboBox<K>, K> extends GuiClientLab
         int index = this.index - 1;
         if (index < 0)
             index = data.size() - 1;
-        select(index);
+        select(index, true);
     }
     
     @Override

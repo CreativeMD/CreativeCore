@@ -24,8 +24,8 @@ public class GuiTabButton<K> extends GuiParent {
         super(parent, name, null);
         setFlow(GuiFlow.STACK_X);
         if (dist() != null) {
-            dist().set(map);
-            dist().select(index);
+            dist().set(map, false);
+            dist().select(index, false);
         }
     }
     
@@ -36,7 +36,7 @@ public class GuiTabButton<K> extends GuiParent {
     
     public void set(IComponentMap<K> builder) {
         if (dist() != null)
-            dist().set(builder);
+            dist().set(builder, true);
     }
     
     @Nullable
@@ -54,12 +54,12 @@ public class GuiTabButton<K> extends GuiParent {
     
     public void select(int index) {
         if (dist() != null)
-            dist().select(index);
+            dist().select(index, true);
     }
     
     public void select(K key) {
         if (dist() != null)
-            dist().select(key);
+            dist().select(key, true);
     }
     
     public int indexOf(K key) {
@@ -86,16 +86,16 @@ public class GuiTabButton<K> extends GuiParent {
     
     public static interface GuiTabButtonDist<K> extends GuiParentDistHandler {
         
-        public void set(IComponentMap<K> builder);
+        public void set(IComponentMap<K> builder, boolean notify);
         
         @Nullable
         public K selected();
         
         public K selected(K defaultValue);
         
-        public void select(int index);
+        public void select(int index, boolean notify);
         
-        public void select(K key);
+        public void select(K key, boolean notify);
         
         public int indexOf(K key);
         

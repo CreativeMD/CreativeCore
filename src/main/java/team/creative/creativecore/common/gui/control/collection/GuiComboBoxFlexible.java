@@ -21,14 +21,14 @@ public class GuiComboBoxFlexible<K> extends GuiComboBox<K> {
     
     public void forceSelect(K key) {
         if (dist() != null)
-            dist().forceSelect(key);
+            dist().forceSelect(key, true);
     }
     
     public static interface GuiComboBoxFlexibleDist<K> extends GuiComboBoxDist<K> {
         
         public void init(Function<K, Component> function);
         
-        public void forceSelect(K key);
+        public void forceSelect(K key, boolean notify);
         
     }
     

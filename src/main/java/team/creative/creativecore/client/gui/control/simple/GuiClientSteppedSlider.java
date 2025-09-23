@@ -21,7 +21,7 @@ public class GuiClientSteppedSlider<T extends GuiSteppedSlider> extends GuiClien
     
     @Override
     public boolean mouseScrolled(double x, double y, double scrolled) {
-        this.setValue(getIntValue() + (Screen.hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1));
+        this.setValue(getIntValue() + (Screen.hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1), true);
         return true;
     }
     

@@ -9,11 +9,13 @@ import team.creative.creativecore.client.gui.GuiClientParent;
 import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.client.gui.extension.GuiExtensionCreator.ExtensionDirection;
 import team.creative.creativecore.common.gui.Align;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.gui.control.simple.GuiButtonContext;
 import team.creative.creativecore.common.gui.control.simple.GuiButtonContext.GuiButtonContextDist;
 import team.creative.creativecore.common.gui.control.simple.GuiListEntry;
+import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
@@ -29,8 +31,10 @@ public class GuiClientButtonContext<T extends GuiButtonContext> extends GuiClien
     }
     
     @Override
-    public void set(TextMapBuilder<Consumer<Integer>> map) {
+    public void set(TextMapBuilder<Consumer<Integer>> map, boolean notify) {
         this.map = map;
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent<GuiControl>(control));
     }
     
     @Override

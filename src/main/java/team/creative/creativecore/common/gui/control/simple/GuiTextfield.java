@@ -11,19 +11,19 @@ public class GuiTextfield extends GuiControl {
     
     public GuiTextfield(IGuiParent parent, String name) {
         super(parent, name);
-        this.setText("");
+        this.setTextSilent("");
     }
     
     public GuiTextfield(IGuiParent parent, String name, String text) {
         super(parent, name);
-        this.setText(text);
+        this.setTextSilent(text);
     }
     
     public GuiTextfield(IGuiParent parent, String name, String text, int maxStringLength) {
         super(parent, name);
         if (dist() != null)
             dist().setMaxStringLength(maxStringLength);
-        this.setText(text);
+        this.setTextSilent(text);
     }
     
     @Override
@@ -100,9 +100,14 @@ public class GuiTextfield extends GuiControl {
             dist().tick();
     }
     
+    protected void setTextSilent(String textIn) {
+        if (dist() != null)
+            dist().setText(textIn, false);
+    }
+    
     public GuiTextfield setText(String textIn) {
         if (dist() != null)
-            dist().setText(textIn);
+            dist().setText(textIn, true);
         return this;
     }
     
@@ -144,7 +149,7 @@ public class GuiTextfield extends GuiControl {
         
         public void tick();
         
-        public void setText(String textIn);
+        public void setText(String textIn, boolean notify);
         
         public String getText();
         

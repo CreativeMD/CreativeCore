@@ -32,8 +32,13 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
     }
     
     @Override
-    public void setPartial(boolean partial) {
+    public void setPartial(boolean partial, boolean notify) {
         this.partial = partial;
+        if (notify) {
+            if (changed != null)
+                changed.accept(value);
+            raiseEvent(new GuiControlChangedEvent(control));
+        }
     }
     
     @Override
@@ -86,11 +91,12 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
     }
     
     @Override
-    public void set(boolean value) {
+    public void set(boolean value, boolean notify) {
         if (this.value == value)
             return;
         this.value = value;
-        raiseEvent(new GuiControlChangedEvent(control));
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
         if (changed != null)
             changed.accept(value);
     }
@@ -103,7 +109,7 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
     @Override
     public boolean mouseClicked(double x, double y, int button) {
         playSound(SoundEvents.UI_BUTTON_CLICK);
-        set(!value);
+        set(!value, true);
         return true;
     }
     

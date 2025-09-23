@@ -18,11 +18,10 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     public GuiSlider(IGuiParent parent, String name, double value, double min, double max, DoubleValueParser parser) {
         super(parent, name);
         if (dist() != null) {
-            dist().setMinValue(min);
-            dist().setMaxValue(max);
+            dist().setBounds(min, max, false);
             dist().setParser(parser);
+            dist().setValue(value, false);
         }
-        setValue(value);
     }
     
     @Override
@@ -65,7 +64,7 @@ public class GuiSlider extends GuiControl implements IGuiParent {
     
     public void setValue(double value) {
         if (dist() != null)
-            dist().setValue(value);
+            dist().setValue(value, true);
     }
     
     public double getValue() {
@@ -160,11 +159,13 @@ public class GuiSlider extends GuiControl implements IGuiParent {
         
         public void closeTextField();
         
+        public void setBounds(double min, double max, boolean notify);
+        
         public void setMaxValue(double maxValue);
         
         public void setMinValue(double minValue);
         
-        public void setValue(double value);
+        public void setValue(double value, boolean notify);
         
         public double getValue();
         

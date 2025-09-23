@@ -116,10 +116,10 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     public void closeTextField() {
         double value = this.value;
         try {
-            setValue(textfield.parseFloat());
+            setValue(textfield.parseFloat(), true);
             playSound(SoundEvents.UI_BUTTON_CLICK);
         } catch (NumberFormatException e) {
-            setValue(value);
+            setValue(value, true);
         }
         textfield = null;
     }
@@ -144,10 +144,17 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     }
     
     @Override
+    public void setBounds(double min, double max, boolean notify) {
+        this.minValue = min;
+        this.maxValue = max;
+        setValue(Math.clamp(value, min, max), notify);
+    }
+    
+    @Override
     public void setMaxValue(double maxValue) {
         if (this.maxValue != maxValue) {
             this.maxValue = Math.max(this.minValue, maxValue);
-            this.setValue(value);
+            this.setValue(value, true);
         }
     }
     
@@ -155,16 +162,17 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     public void setMinValue(double minValue) {
         if (this.minValue != minValue) {
             this.minValue = Math.min(minValue, this.maxValue);
-            this.setValue(value);
+            this.setValue(value, true);
         }
     }
     
     @Override
-    public void setValue(double value) {
+    public void setValue(double value, boolean notify) {
+        double valueBefore = this.value;
         this.value = Math.max(minValue, value);
         this.value = Math.min(maxValue, this.value);
         
-        if (this.getParent() != null)
+        if (notify && valueBefore != this.value)
             this.raiseEvent(new GuiSliderUpdateEvent(control));
         if (this.minSlider != null)
             this.minSlider.setMaxValue(value);
@@ -205,7 +213,7 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
                 int mouseOffsetX = (int) (x - getContentOffset() - sliderSize / 2);
                 this.value = (float) (this.minValue + (float) ((this.maxValue - this.minValue) * ((float) mouseOffsetX / (float) width)));
             }
-            this.setValue(value);
+            this.setValue(value, true);
         }
     }
     

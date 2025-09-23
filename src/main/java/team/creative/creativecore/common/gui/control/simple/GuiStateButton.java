@@ -19,8 +19,10 @@ public class GuiStateButton<K> extends GuiButton {
             else
                 next();
         });
-        set(map);
-        select(index);
+        if (dist() != null) {
+            dist().set(map, false);
+            dist().select(index, false);
+        }
     }
     
     public GuiStateButton(IGuiParent parent, String name, K value, IComponentMap<K> map) {
@@ -35,7 +37,7 @@ public class GuiStateButton<K> extends GuiButton {
     
     public void set(IComponentMap<K> builder) {
         if (dist() != null)
-            dist().set(builder);
+            dist().set(builder, true);
     }
     
     @Nullable
@@ -53,12 +55,12 @@ public class GuiStateButton<K> extends GuiButton {
     
     public void select(int index) {
         if (dist() != null)
-            dist().select(index);
+            dist().select(index, true);
     }
     
     public void select(K key) {
         if (dist() != null)
-            dist().select(key);
+            dist().select(key, true);
     }
     
     public int indexOf(K key) {
@@ -79,15 +81,15 @@ public class GuiStateButton<K> extends GuiButton {
     
     public static interface GuiStateButtonDist<K> extends GuiButtonDist {
         
-        public void set(IComponentMap<K> builder);
+        public void set(IComponentMap<K> builder, boolean notify);
         
         public K selected();
         
         public K selected(K defaultValue);
         
-        public void select(int index);
+        public void select(int index, boolean notify);
         
-        public void select(K key);
+        public void select(K key, boolean notify);
         
         public int indexOf(K key);
         

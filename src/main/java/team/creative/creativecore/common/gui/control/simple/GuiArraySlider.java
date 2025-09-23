@@ -8,7 +8,8 @@ public class GuiArraySlider extends GuiSteppedSlider {
     
     public GuiArraySlider(IGuiParent parent, String name, String value, String... values) {
         super(parent, name, ArrayUtils.indexOf(values, value), 0, values.length - 1);
-        setValues(values);
+        if (dist() != null)
+            dist().setValues(values, false);
     }
     
     public GuiArraySlider(IGuiParent parent, String name) {
@@ -22,12 +23,12 @@ public class GuiArraySlider extends GuiSteppedSlider {
     
     public void select(String value) {
         if (dist() != null)
-            dist().select(value);
+            dist().select(value, true);
     }
     
     public void setValues(String[] values) {
         if (dist() != null)
-            dist().setValues(values);
+            dist().setValues(values, true);
     }
     
     public String get() {
@@ -38,9 +39,9 @@ public class GuiArraySlider extends GuiSteppedSlider {
     
     public static interface GuiArraySliderDist extends GuiSteppedSliderDist {
         
-        public void select(String value);
+        public void select(String value, boolean notify);
         
-        public void setValues(String[] values);
+        public void setValues(String[] values, boolean notify);
         
         public String get();
         

@@ -28,8 +28,8 @@ public class GuiClientColoredSteppedSlider<T extends GuiColoredSteppedSlider> ex
     }
     
     @Override
-    public void setValue(double value) {
-        super.setValue((int) value);
+    public void setValue(double value, boolean notify) {
+        super.setValue((int) value, notify);
         if (part != null) {
             part.set(picker.color, this.getIntValue());
             picker.onColorChanged();

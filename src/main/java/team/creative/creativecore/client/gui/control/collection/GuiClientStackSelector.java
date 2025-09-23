@@ -42,11 +42,11 @@ public class GuiClientStackSelector<T extends GuiStackSelector> extends GuiClien
     }
     
     @Override
-    public boolean selectFirst() {
+    public boolean selectFirst(boolean notify) {
         if (stacks != null) {
             ItemStack first = stacks.getFirst();
             if (first != null) {
-                setSelected(first);
+                setSelected(first, notify);
                 return true;
             }
         }
@@ -54,24 +54,28 @@ public class GuiClientStackSelector<T extends GuiStackSelector> extends GuiClien
     }
     
     @Override
-    public void updateCollectedStacks() {
+    public void updateCollectedStacks(boolean notify) {
         stacks = collector.collect(control.getPlayer());
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override
-    public boolean setSelectedForce(ItemStack stack) {
+    public boolean setSelectedForce(ItemStack stack, boolean notify) {
         setTitle(new TextBuilder().stack(stack).add(stack.getHoverName()).build());
         this.selected = stack;
-        raiseEvent(new GuiControlChangedEvent(control));
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
         return true;
     }
     
     @Override
-    public boolean setSelected(ItemStack stack) {
+    public boolean setSelected(ItemStack stack, boolean notify) {
         if (stacks.contains(stack)) {
             setTitle(new TextBuilder().stack(stack).add(stack.getHoverName()).build());
             this.selected = stack;
-            raiseEvent(new GuiControlChangedEvent(control));
+            if (notify)
+                raiseEvent(new GuiControlChangedEvent(control));
             return true;
         }
         return false;

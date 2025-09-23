@@ -3,7 +3,6 @@ package team.creative.creativecore.common.gui.control.simple;
 import java.util.function.Consumer;
 
 import team.creative.creativecore.common.gui.IGuiParent;
-import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule;
 import team.creative.creativecore.common.gui.style.Icon;
 import team.creative.creativecore.common.util.type.Color;
@@ -17,7 +16,7 @@ public class GuiCheckButtonIcon extends GuiButtonIcon {
     public GuiCheckButtonIcon(IGuiParent parent, String name, Icon on, Icon off, boolean state, Consumer<Integer> pressed) {
         super(parent, name, state ? on : off, pressed);
         if (dist() != null) {
-            dist().setState(state);
+            dist().setState(state, false);
             dist().setOnIcon(on);
             dist().setOffIcon(off);
         }
@@ -75,10 +74,7 @@ public class GuiCheckButtonIcon extends GuiButtonIcon {
     
     public void setState(boolean value) {
         if (dist() != null)
-            if (dist().getState() != value) {
-                dist().setState(value);
-                this.raiseEvent(new GuiControlChangedEvent<>(this));
-            }
+            dist().setState(value, true);
     }
     
     public static interface GuiCheckButtonIconDist extends GuiButtonIconDist {
@@ -89,6 +85,6 @@ public class GuiCheckButtonIcon extends GuiButtonIcon {
         
         public boolean getState();
         
-        public void setState(boolean value);
+        public void setState(boolean value, boolean notify);
     }
 }

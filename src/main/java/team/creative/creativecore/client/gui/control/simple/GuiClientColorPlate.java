@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.common.gui.control.simple.GuiColorPlate;
 import team.creative.creativecore.common.gui.control.simple.GuiColorPlate.GuiColorPlateDist;
+import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
 import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.util.type.Color;
@@ -18,9 +19,11 @@ public class GuiClientColorPlate<T extends GuiColorPlate> extends GuiClientContr
     }
     
     @Override
-    public void setColor(Color color) {
+    public void setColor(Color color, boolean notify) {
         this.color = color;
         this.colorPlate = new DisplayColor(color);
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override

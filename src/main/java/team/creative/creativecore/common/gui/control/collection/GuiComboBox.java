@@ -11,12 +11,14 @@ public class GuiComboBox<K> extends GuiLabel {
     
     public GuiComboBox(IGuiParent parent, String name, K selected, IComponentMap<K> builder) {
         this(parent, name, builder);
-        select(selected);
+        if (dist() != null)
+            dist().select(selected, false);
     }
     
     public GuiComboBox(IGuiParent parent, String name, IComponentMap<K> builder) {
         super(parent, name);
-        set(builder);
+        if (dist() != null)
+            dist().set(builder, false);
     }
     
     @Override
@@ -44,7 +46,7 @@ public class GuiComboBox<K> extends GuiLabel {
     
     public void set(IComponentMap<K> builder) {
         if (dist() != null)
-            dist().set(builder);
+            dist().set(builder, true);
     }
     
     @Nullable
@@ -60,14 +62,24 @@ public class GuiComboBox<K> extends GuiLabel {
         return defaultValue;
     }
     
+    public void selectSilent(int index) {
+        if (dist() != null)
+            dist().select(index, false);
+    }
+    
     public void select(int index) {
         if (dist() != null)
-            dist().select(index);
+            dist().select(index, true);
+    }
+    
+    public void selectSilent(K key) {
+        if (dist() != null)
+            dist().select(key, false);
     }
     
     public void select(K key) {
         if (dist() != null)
-            dist().select(key);
+            dist().select(key, true);
     }
     
     public int indexOf(K key) {
@@ -100,16 +112,16 @@ public class GuiComboBox<K> extends GuiLabel {
         
         public void setDirection(ExtensionDirection direction);
         
-        public void set(IComponentMap<K> builder);
+        public void set(IComponentMap<K> builder, boolean notify);
         
         @Nullable
         public K selected();
         
         public K selected(K defaultValue);
         
-        public void select(int index);
+        public void select(int index, boolean notify);
         
-        public void select(K key);
+        public void select(K key, boolean notify);
         
         public int indexOf(K key);
         

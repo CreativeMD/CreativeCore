@@ -29,7 +29,7 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
     }
     
     @Override
-    public void set(IComponentMap<K> builder) {
+    public void set(IComponentMap<K> builder, boolean notify) {
         this.data = builder.build();
         
         buttons = new ArrayList<>();
@@ -37,7 +37,7 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
         int i = 0;
         for (Tuple<K, CompiledText> t : data) {
             final int bIndex = i;
-            var b = new GuiButton(control, "b" + i, x -> select(bIndex));
+            var b = new GuiButton(control, "b" + i, x -> select(bIndex, true));
             b.setFormatting(GuiTabButton.BUTTON_INACTIVE);
             ((GuiClientLabel) b.dist()).setText(t.value);
             control.add(b);
@@ -45,7 +45,7 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
             i++;
         }
         
-        select(index);
+        select(index, notify);
     }
     
     @Override
@@ -65,7 +65,7 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
     }
     
     @Override
-    public void select(int index) {
+    public void select(int index, boolean notify) {
         this.index = Mth.clamp(index, 0, this.data.size() - 1);
         
         if (selected != null)
@@ -77,12 +77,13 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
         } else
             selected = null;
         
-        raiseEvent(new GuiControlChangedEvent(control));
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override
-    public void select(K key) {
-        select(indexOf(key));
+    public void select(K key, boolean notify) {
+        select(indexOf(key), notify);
     }
     
     @Override
@@ -98,7 +99,7 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
         int index = this.index + 1;
         if (index >= data.size())
             index = 0;
-        select(index);
+        select(index, true);
     }
     
     @Override
@@ -106,7 +107,7 @@ public class GuiClientTabButton<T extends GuiTabButton, K> extends GuiClientPare
         int index = this.index - 1;
         if (index < 0)
             index = data.size() - 1;
-        select(index);
+        select(index, true);
     }
     
     @Override

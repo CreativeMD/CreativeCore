@@ -55,7 +55,7 @@ public class GuiClientTabs<T extends GuiTabs> extends GuiClientParent<T> impleme
     }
     
     @Override
-    public void select(int select) {
+    public void select(int select, boolean notify) {
         if (selected != null)
             control.remove(selected);
         index = select;
@@ -73,7 +73,8 @@ public class GuiClientTabs<T extends GuiTabs> extends GuiClientParent<T> impleme
             rect.setHeight(lastHeight, lastHeight);
             rect.flowY();
         }
-        raiseEvent(new GuiControlChangedEvent(control));
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override

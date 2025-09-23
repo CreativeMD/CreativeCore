@@ -89,7 +89,7 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
     }
     
     @Override
-    public void setText(String textIn) {
+    public void setText(String textIn, boolean notify) {
         if (this.validator.test(textIn)) {
             if (textIn.length() > this.maxStringLength)
                 this.text = textIn.substring(0, this.maxStringLength);
@@ -98,7 +98,8 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
             
             this.setCursorPositionZero();
             this.setSelectionPos(this.cursorPosition);
-            this.onTextChanged(textIn);
+            if (notify)
+                this.onTextChanged(textIn);
         }
     }
     

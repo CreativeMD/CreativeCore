@@ -53,9 +53,9 @@ public class GuiClientComboBoxTree<T extends GuiComboBoxTree<K>, K> extends GuiC
     }
     
     @Override
-    public void set(NamedTree<K> data) {
+    public void set(NamedTree<K> data, boolean notify) {
         this.data = data;
-        select(data.first());
+        select(data.first(), notify);
         updateDisplay();
     }
     
@@ -74,21 +74,22 @@ public class GuiClientComboBoxTree<T extends GuiComboBoxTree<K>, K> extends GuiC
     }
     
     @Override
-    public void select(String path, K key) {
+    public void select(String path, K key, boolean notify) {
         this.selectedPath = path;
         this.selected = key;
         
         updateDisplay();
-        raiseEvent(new GuiControlChangedEvent(control));
+        if (notify)
+            raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override
-    public void select(K key) {
+    public void select(K key, boolean notify) {
         String path = data.findPath(key);
         if (path == null)
-            select(null, null);
+            select(null, null, notify);
         else
-            select(path, key);
+            select(path, key, notify);
     }
     
     protected void updateDisplay() {
@@ -112,7 +113,7 @@ public class GuiClientComboBoxTree<T extends GuiComboBoxTree<K>, K> extends GuiC
     }
     
     protected GuiMenuRoot<K> createBox(GuiExtensionCreator<GuiClientComboBoxTree<T, K>, GuiMenuRoot<K>> creator) {
-        var root = new GuiMenuRoot<K>(control.getParent(), data, title, this::select);
+        var root = new GuiMenuRoot<K>(control.getParent(), data, title, (x, y) -> select(x, y, true));
         ((GuiClientMenuRoot<K, ?>) root.dist()).parent = creator;
         return root;
     }

@@ -9,12 +9,12 @@ public class GuiStateButtonIcon extends GuiButtonIcon {
     public GuiStateButtonIcon(IGuiParent parent, String name, Icon... icons) {
         super(parent, name, icons[0], null);
         if (dist() != null)
-            dist().setIcons(icons);
+            dist().setIcons(false, icons);
     }
     
     public GuiStateButtonIcon setState(int index) {
         if (dist() != null)
-            dist().setState(index);
+            dist().setState(index, true);
         return this;
     }
     
@@ -53,9 +53,9 @@ public class GuiStateButtonIcon extends GuiButtonIcon {
         
         public int getState();
         
-        public void setState(int index);
+        public void setState(int index, boolean notify);
         
-        public void setIcons(Icon... icons);
+        public void setIcons(boolean notify, Icon... icons);
         
         public void previousState();
         

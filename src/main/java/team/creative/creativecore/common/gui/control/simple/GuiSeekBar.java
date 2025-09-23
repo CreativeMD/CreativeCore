@@ -42,7 +42,7 @@ public class GuiSeekBar extends GuiControl {
     
     public void setPosition(long value) {
         if (dist() != null)
-            dist().setPosition(value);
+            dist().setPosition(value, true);
     }
     
     @Override
@@ -71,7 +71,7 @@ public class GuiSeekBar extends GuiControl {
         
         public void setOnLastTimeUpdate(LongConsumer consumer);
         
-        public void setPosition(long value);
+        public void setPosition(long value, boolean notify);
         
         public void tick();
     }

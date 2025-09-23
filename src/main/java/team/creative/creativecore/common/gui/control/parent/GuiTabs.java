@@ -58,7 +58,7 @@ public class GuiTabs extends GuiParent {
     
     public void select(int select) {
         if (dist() != null)
-            dist().select(select);
+            dist().select(select, true);
     }
     
     public int index() {
@@ -113,7 +113,7 @@ public class GuiTabs extends GuiParent {
         
         public int index();
         
-        public void select(int index);
+        public void select(int index, boolean notify);
         
         public GuiParentDistHandler createSpecialParent(GuiTabSpecialParent parent);
         

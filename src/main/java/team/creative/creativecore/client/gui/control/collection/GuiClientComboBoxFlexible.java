@@ -32,19 +32,20 @@ public class GuiClientComboBoxFlexible<T extends GuiComboBoxFlexible<K>, K> exte
     }
     
     @Override
-    public void forceSelect(K key) {
+    public void forceSelect(K key, boolean notify) {
         int index = indexOf(key);
         if (index == -1) {
             forced = key;
             updateDisplay();
-            raiseEvent(new GuiControlChangedEvent(control));
+            if (notify)
+                raiseEvent(new GuiControlChangedEvent(control));
         } else
-            select(index);
+            select(index, notify);
     }
     
     @Override
-    public void select(int index) {
-        super.select(index);
+    public void select(int index, boolean notify) {
+        super.select(index, notify);
         if (selected() != null)
             forced = null;
     }

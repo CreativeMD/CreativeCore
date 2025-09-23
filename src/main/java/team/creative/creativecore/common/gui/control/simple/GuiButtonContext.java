@@ -9,7 +9,8 @@ public class GuiButtonContext extends GuiButton {
     
     public GuiButtonContext(IGuiParent parent, String name, TextMapBuilder<Consumer<Integer>> map) {
         super(parent, name, map.first());
-        set(map);
+        if (dist() != null)
+            dist().set(map, false);
     }
     
     @Override
@@ -19,13 +20,13 @@ public class GuiButtonContext extends GuiButton {
     
     public GuiButtonContext set(TextMapBuilder<Consumer<Integer>> map) {
         if (dist() != null)
-            dist().set(map);
+            dist().set(map, true);
         return this;
     }
     
     public static interface GuiButtonContextDist extends GuiButtonDist {
         
-        public void set(TextMapBuilder<Consumer<Integer>> map);
+        public void set(TextMapBuilder<Consumer<Integer>> map, boolean notify);
         
     }
     

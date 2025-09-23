@@ -63,7 +63,7 @@ public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends 
             if (search == null || text.contains(search)) {
                 final int index = i;
                 var label = new GuiListEntry(control, "" + i, i, i == box.selectedIndex(), x -> {
-                    creator.parent.select(index);
+                    creator.parent.select(index, true);
                     creator.close();
                 });
                 ((GuiClientLabel) label.dist()).setText(text.copy());

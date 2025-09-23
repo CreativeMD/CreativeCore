@@ -14,14 +14,16 @@ public class GuiComboBoxTree<K> extends GuiLabel {
     
     public GuiComboBoxTree(IGuiParent parent, String name, K selected, NamedTree<K> data, Function<String, Component> title) {
         this(parent, name, data, title);
-        select(selected);
+        if (dist() != null)
+            dist().select(selected, false);
     }
     
     public GuiComboBoxTree(IGuiParent parent, String name, NamedTree<K> data, Function<String, Component> title) {
         super(parent, name);
-        if (dist() != null)
+        if (dist() != null) {
             dist().init(title);
-        set(data);
+            dist().set(data, false);
+        }
     }
     
     @Override
@@ -49,7 +51,7 @@ public class GuiComboBoxTree<K> extends GuiLabel {
     
     public void set(NamedTree<K> data) {
         if (dist() != null)
-            dist().set(data);
+            dist().set(data, true);
     }
     
     @Nullable
@@ -67,12 +69,12 @@ public class GuiComboBoxTree<K> extends GuiLabel {
     
     public void select(String path, K key) {
         if (dist() != null)
-            dist().select(path, key);
+            dist().select(path, key, true);
     }
     
     public void select(K key) {
         if (dist() != null)
-            dist().select(key);
+            dist().select(key, true);
     }
     
     public static interface GuiComboBoxTreeDist<K> extends GuiLabelDist {
@@ -85,15 +87,15 @@ public class GuiComboBoxTree<K> extends GuiLabel {
         
         public void setDirection(ExtensionDirection direction);
         
-        public void set(NamedTree<K> data);
+        public void set(NamedTree<K> data, boolean notify);
         
         @Nullable
         public K selected();
         
         public K selected(K defaultValue);
         
-        public void select(String path, K key);
+        public void select(String path, K key, boolean notify);
         
-        public void select(K key);
+        public void select(K key, boolean notify);
     }
 }

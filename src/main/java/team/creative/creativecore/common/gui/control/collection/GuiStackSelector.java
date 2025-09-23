@@ -25,9 +25,9 @@ public class GuiStackSelector extends GuiLabel {
         if (dist() != null) {
             dist().setSearchbar(searchbar);
             dist().setCollector(collector);
+            dist().updateCollectedStacks(false);
+            dist().selectFirst(false);
         }
-        updateCollectedStacks();
-        selectFirst();
         setAlign(Align.CENTER);
     }
     
@@ -59,24 +59,24 @@ public class GuiStackSelector extends GuiLabel {
     
     public boolean selectFirst() {
         if (dist() != null)
-            return dist().selectFirst();
+            return dist().selectFirst(true);
         return false;
     }
     
     public void updateCollectedStacks() {
         if (dist() != null)
-            dist().updateCollectedStacks();
+            dist().updateCollectedStacks(true);
     }
     
     public boolean setSelectedForce(ItemStack stack) {
         if (dist() != null)
-            return dist().setSelectedForce(stack);
+            return dist().setSelectedForce(stack, true);
         return false;
     }
     
     public boolean setSelected(ItemStack stack) {
         if (dist() != null)
-            return dist().setSelected(stack);
+            return dist().setSelected(stack, true);
         return false;
     }
     
@@ -212,13 +212,13 @@ public class GuiStackSelector extends GuiLabel {
         
         public void setSearchbar(boolean searchbar);
         
-        public boolean selectFirst();
+        public boolean selectFirst(boolean notify);
         
-        public void updateCollectedStacks();
+        public void updateCollectedStacks(boolean notify);
         
-        public boolean setSelectedForce(ItemStack stack);
+        public boolean setSelectedForce(ItemStack stack, boolean notify);
         
-        public boolean setSelected(ItemStack stack);
+        public boolean setSelected(ItemStack stack, boolean notify);
         
         public HashMapList<String, ItemStack> getStacks();
         

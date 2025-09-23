@@ -11,7 +11,7 @@ public class GuiCheckBox extends GuiLabel {
     public GuiCheckBox(IGuiParent parent, String name, boolean value) {
         super(parent, name);
         if (dist() != null)
-            dist().set(value);
+            dist().set(value, false);
     }
     
     @Override
@@ -21,7 +21,7 @@ public class GuiCheckBox extends GuiLabel {
     
     public void set(boolean value) {
         if (dist() != null)
-            dist().set(value);
+            dist().set(value, true);
     }
     
     public boolean get() {
@@ -32,7 +32,7 @@ public class GuiCheckBox extends GuiLabel {
     
     public GuiCheckBox setPartial(boolean partial) {
         if (dist() != null)
-            dist().setPartial(partial);
+            dist().setPartial(partial, false);
         return this;
     }
     
@@ -66,11 +66,11 @@ public class GuiCheckBox extends GuiLabel {
         
         public void consumeChanged(Consumer<Boolean> changed);
         
-        public void set(boolean value);
+        public void set(boolean value, boolean notify);
         
         public boolean get();
         
-        public void setPartial(boolean partial);
+        public void setPartial(boolean partial, boolean notify);
         
         public boolean getPartial();
         

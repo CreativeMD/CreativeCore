@@ -48,12 +48,12 @@ public class GuiClientSeekBar<T extends GuiSeekBar> extends GuiClientControl<T> 
     }
     
     @Override
-    public void setPosition(long value) {
+    public void setPosition(long value, boolean notify) {
         if (this.pos >= this.max)
             value = this.max;
         this.timeUpdate.accept(value);
         this.pos = value;
-        if (this.getParent() != null)
+        if (this.getParent() != null && notify)
             this.raiseEvent(new GuiControlChangedEvent(control));
     }
     
@@ -93,7 +93,7 @@ public class GuiClientSeekBar<T extends GuiSeekBar> extends GuiClientControl<T> 
                 int mouseOffsetX = (int) (x - getContentOffset());
                 value = (long) ((this.maxSupplier.getAsLong()) * ((float) mouseOffsetX / (float) width));
             }
-            this.setPosition(value);
+            this.setPosition(value, true);
         }
     }
     

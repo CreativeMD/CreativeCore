@@ -9,7 +9,8 @@ public class GuiColorPlate extends GuiControl {
     
     public GuiColorPlate(IGuiParent parent, String name, Color color) {
         super(parent, name);
-        setColor(color);
+        if (dist() != null)
+            dist().setColor(color, false);
     }
     
     @Override
@@ -19,7 +20,7 @@ public class GuiColorPlate extends GuiControl {
     
     public void setColor(Color color) {
         if (dist() != null)
-            dist().setColor(color);
+            dist().setColor(color, true);
     }
     
     public Color getColor() {
@@ -39,7 +40,7 @@ public class GuiColorPlate extends GuiControl {
     
     public static interface GuiColorPlateDist extends GuiControlDistHandler {
         
-        public void setColor(Color color);
+        public void setColor(Color color, boolean notify);
         
         public Color getColor();
         

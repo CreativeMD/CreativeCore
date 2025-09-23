@@ -20,46 +20,42 @@ public class GuiClientStateButtonIcon<T extends GuiStateButtonIcon> extends GuiC
     }
     
     @Override
-    public void setIcons(Icon... icons) {
+    public void setIcons(boolean notify, Icon... icons) {
         this.states = icons;
+        setState(index, notify);
     }
     
     @Override
-    public void setState(int index) {
+    public void setState(int index, boolean notify) {
         this.index = index;
         this.icon = states[index];
+        if (notify)
+            this.raiseEvent(new GuiControlChangedEvent(control));
     }
     
     @Override
     public void previousState() {
         int state = this.getState();
         --state;
-        if (state < 0) {
+        if (state < 0)
             state = this.states.length - 1;
-        }
-        
-        if (state >= this.states.length) {
+        if (state >= this.states.length)
             state = 0;
-        }
         
-        this.setState(state);
-        this.raiseEvent(new GuiControlChangedEvent(control));
+        this.setState(state, true);
+        
     }
     
     @Override
     public void nextState() {
         int state = this.getState();
         ++state;
-        if (state < 0) {
+        if (state < 0)
             state = this.states.length - 1;
-        }
-        
-        if (state >= this.states.length) {
+        if (state >= this.states.length)
             state = 0;
-        }
         
-        this.setState(state);
-        this.raiseEvent(new GuiControlChangedEvent(control));
+        this.setState(state, true);
     }
     
     @Override
