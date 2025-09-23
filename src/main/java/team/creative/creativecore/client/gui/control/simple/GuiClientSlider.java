@@ -102,7 +102,11 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
             textfield().setCursorPositionEnd();
             GuiControl.setParent(textfield, control);
             int width = rect.getWidth();
-            textfield().flowX(width, width);
+            textfield().rect.setWidth(width, width);
+            textfield().rect.flowX();
+            int height = rect.getHeight();
+            textfield().rect.setHeight(height, height);
+            textfield().rect.flowY();
             return true;
         }
         return false;
