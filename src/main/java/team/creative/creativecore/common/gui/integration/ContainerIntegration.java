@@ -24,6 +24,7 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     
     private List<GuiLayer> layers = new ArrayList<>();
     private final Player player;
+    private IGuiIntegratedParent screen;
     
     public ContainerIntegration(MenuType<ContainerIntegration> type, int id, Player player, GuiLayer layer) {
         super(type, id);
@@ -35,6 +36,10 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     public ContainerIntegration(MenuType<ContainerIntegration> type, int id, Player player) {
         super(type, id);
         this.player = player;
+    }
+    
+    public void setScreen(IGuiIntegratedParent screen) {
+        this.screen = screen;
     }
     
     @Override
@@ -153,6 +158,8 @@ public class ContainerIntegration extends AbstractContainerMenu implements IGuiI
     
     @Override
     public Rect toScreenRect(GuiControl control, Rect rect) {
+        if (screen != null)
+            return screen.toScreenRect(control, rect);
         throw new UnsupportedOperationException();
     }
     
