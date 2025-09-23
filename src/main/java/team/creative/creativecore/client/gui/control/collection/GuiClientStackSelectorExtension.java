@@ -80,6 +80,8 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
         }
         
         for (Entry<String, ArrayList<ItemStack>> entry : stacks.entrySet()) {
+            if (entry.getValue().isEmpty())
+                continue;
             control.add(new GuiLabel(control, "title").setTitle(Component.translatable(entry.getKey())));
             
             SimpleContainer container = new SimpleContainer(entry.getValue().size());
