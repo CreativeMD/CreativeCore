@@ -1,3 +1,6 @@
+2.13.14
+Fixed client commands not working when connected to a server on fabric
+
 2.13.13
 Fixed incorrect intersection check for vectors fans caused by angled line go over two edges exactly #2
 
