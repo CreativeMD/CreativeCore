@@ -118,6 +118,7 @@ import team.creative.creativecore.common.gui.control.timeline.GuiTimelineHeader;
 import team.creative.creativecore.common.gui.control.timeline.GuiTimelineKey;
 import team.creative.creativecore.common.gui.control.tree.GuiTree;
 import team.creative.creativecore.common.gui.control.tree.GuiTreeItem;
+import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManagerItem;
 import team.creative.creativecore.common.util.type.list.PairList;
@@ -239,6 +240,13 @@ public class GuiClientRegistry {
         register(GuiTreeCheckBox.class, GuiClientTreeCheckBox::new);
         
         registerManager(GuiManagerItem.class, GuiClientManagerItem::new);
+        
+        ContainerIntegration.EMPTY_CLIENT = new GuiLayer(true, "empty") {
+            
+            @Override
+            public void create() {}
+            
+        };
     }
     
 }

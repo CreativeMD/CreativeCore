@@ -22,6 +22,15 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public class ContainerIntegration extends AbstractContainerMenu implements IGuiIntegratedParent {
     
+    public static GuiLayer EMPTY_CLIENT;
+    
+    public static GuiLayer EMPTY_SERVER = new GuiLayer(false, "empty") {
+        
+        @Override
+        public void create() {}
+        
+    };
+    
     private List<GuiLayer> layers = new ArrayList<>();
     private final Player player;
     private IGuiIntegratedParent screen;

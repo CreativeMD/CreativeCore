@@ -12,20 +12,6 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public interface IGuiIntegratedParent extends IGuiParent {
     
-    public GuiLayer EMPTY_CLIENT = new GuiLayer(true, "empty") {
-        
-        @Override
-        public void create() {}
-        
-    };
-    
-    public GuiLayer EMPTY_SERVER = new GuiLayer(false, "empty") {
-        
-        @Override
-        public void create() {}
-        
-    };
-    
     public HolderLookup.Provider provider();
     
     List<GuiLayer> getLayers();

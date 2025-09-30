@@ -16,6 +16,7 @@ import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiControlDistHandler;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.IScaleableGuiScreen;
+import team.creative.creativecore.common.gui.integration.ContainerIntegration;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 import team.creative.creativecore.common.gui.manager.GuiManagerDist;
 import team.creative.creativecore.common.network.CreativePacket;
@@ -103,7 +104,7 @@ public class GuiScreenIntegration extends Screen implements IGuiClientIntegrated
     @Override
     public GuiLayer getTopLayer() {
         if (layers.isEmpty())
-            return EMPTY_CLIENT;
+            return ContainerIntegration.EMPTY_CLIENT;
         return layers.get(layers.size() - 1);
     }
     
