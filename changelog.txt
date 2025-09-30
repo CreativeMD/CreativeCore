@@ -1,3 +1,7 @@
+2.14.7
+Fixed client commands not working when connected to a server on fabric
+Fixed crash when opening gui on server side
+
 2.14.6
 Fixed incorrect equal check for classes that have implemented equals method
 Fixed color picker not displaying color in sliders
