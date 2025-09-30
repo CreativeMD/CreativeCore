@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -36,18 +35,12 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import team.creative.creativecore.CreativeCore;
-import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.field.ConfigFieldTyped;
 import team.creative.creativecore.common.network.BundlePacketWrapper;
 import team.creative.creativecore.common.network.CreativeByteBuf;
 import team.creative.creativecore.common.network.CreativeNetworkUtils;
@@ -747,25 +740,6 @@ public class NetworkFieldTypes {
                     packets.add(buffer.readNullable(codec));
                 return new BundlePacketWrapper(packets);
             }
-        });
-        
-        NetworkFieldTypes.register(new NetworkFieldTypeSpecial<ValueIOSerializable>((x, y) -> ValueIOSerializable.class.isAssignableFrom(x)) {
-            
-            @Override
-            public void write(ValueIOSerializable content, Class classType, @Nullable Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
-                var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, buffer.registryAccess());
-                content.serialize(output);
-                buffer.writeNbt(output.buildResult());
-            }
-            
-            @Override
-            public ValueIOSerializable read(Class classType, @Nullable Type genericType, CreativeByteBuf buffer, PacketFlow flow) {
-                var input = TagValueInput.create(ProblemReporter.DISCARDING, buffer.registryAccess(), buffer.readNbt());
-                ValueIOSerializable value = (ValueIOSerializable) ConfigTypeConveration.createObject(new ConfigFieldTyped(null, genericType, classType));
-                value.deserialize(input);
-                return value;
-            }
-            
         });
         
         NetworkFieldTypes.register(new NetworkFieldTypeClass<Class>() {
