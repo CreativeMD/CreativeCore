@@ -9,13 +9,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.datafixers.util.Either;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,8 +26,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -64,8 +63,8 @@ public class CreativeCoreClient implements ClientModInitializer {
         return mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
     
-    public static void commands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
-        dispatcher.register(Commands.literal("cmdclientconfig").executes((CommandContext<CommandSourceStack> x) -> {
+    public static void commands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
+        dispatcher.register(ClientCommandManager.literal("cmdclientconfig").executes(x -> {
             GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(true, CreativeConfigRegistry.ROOT, Side.CLIENT)));
             return 0;
         }));
@@ -82,7 +81,7 @@ public class CreativeCoreClient implements ClientModInitializer {
                 return new ContainerScreenIntegration(container, inventory);
             }
         });
-        CommandRegistrationCallback.EVENT.register(CreativeCoreClient::commands);
+        ClientCommandRegistrationCallback.EVENT.register(CreativeCoreClient::commands);
         ClientTickEvents.START_CLIENT_TICK.register(CreativeCoreClient::clientTick);
     }
     
