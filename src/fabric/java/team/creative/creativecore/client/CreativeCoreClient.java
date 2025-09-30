@@ -4,18 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import team.creative.creativecore.CreativeCore;
@@ -49,8 +48,8 @@ public class CreativeCoreClient implements ClientModInitializer {
         return mc.getTimer().getGameTimeDeltaPartialTick(false);
     }
     
-    public static void commands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
-        dispatcher.register(Commands.literal("cmdclientconfig").executes((CommandContext<CommandSourceStack> x) -> {
+    public static void commands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
+        dispatcher.register(ClientCommandManager.literal("cmdclientconfig").executes(x -> {
             GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
             return 0;
         }));
@@ -67,7 +66,7 @@ public class CreativeCoreClient implements ClientModInitializer {
                 return new ContainerScreenIntegration(container, inventory);
             }
         });
-        CommandRegistrationCallback.EVENT.register(CreativeCoreClient::commands);
+        ClientCommandRegistrationCallback.EVENT.register(CreativeCoreClient::commands);
         ClientTickEvents.START_CLIENT_TICK.register(CreativeCoreClient::clientTick);
     }
     
