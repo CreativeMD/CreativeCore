@@ -3,6 +3,7 @@ package team.creative.creativecore.client.gui.control.collection;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.client.gui.control.simple.GuiClientLabel;
 import team.creative.creativecore.client.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.client.render.text.CompiledText;
@@ -81,8 +82,8 @@ public class GuiClientComboBoxExtension<T extends GuiComboBoxExtension> extends 
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (super.mouseClicked(x, y, button)) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (super.mouseClicked(x, y, info)) {
             creator.markKeptFocus();
             return true;
         }

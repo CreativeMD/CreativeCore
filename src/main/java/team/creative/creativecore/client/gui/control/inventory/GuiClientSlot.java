@@ -1,7 +1,8 @@
 package team.creative.creativecore.client.gui.control.inventory;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.IntTag;
@@ -47,17 +48,17 @@ public class GuiClientSlot<T extends GuiSlot> extends GuiClientSlotBase<T> imple
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (Minecraft.getInstance().options.keyDrop.matches(keyCode, scanCode) && isHovered()) {
-            CreativeCoreGuiRegistry.DROP.sendAndExecute(control, ByteTag.valueOf(Screen.hasControlDown()));
+    public boolean keyPressed(KeyEvent key) {
+        if (Minecraft.getInstance().options.keyDrop.matches(key) && isHovered()) {
+            CreativeCoreGuiRegistry.DROP.sendAndExecute(control, ByteTag.valueOf(key.hasControlDown()));
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(key);
     }
     
     @Override
     public boolean mouseScrolled(double x, double y, double delta) {
-        if (!Screen.hasShiftDown())
+        if (!Minecraft.getInstance().hasShiftDown())
             return false;
         
         if (delta > 0)
@@ -68,29 +69,29 @@ public class GuiClientSlot<T extends GuiSlot> extends GuiClientSlotBase<T> imple
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         if (itemManager().isDragged())
             return true;
         
-        if (Screen.hasShiftDown()) {
+        if (info.hasShiftDown()) {
             if (control.slot.mayPickup(control.getPlayer()))
                 CreativeCoreGuiRegistry.INSERT.sendAndExecute(control, IntTag.valueOf(control.slot.getMaxStackSize()));
             return true;
         }
         
         ItemStack hand = itemManager().getHand();
-        if (!hand.isEmpty() && button < 2) {
+        if (!hand.isEmpty() && info.button() < 2) {
             int stackSize = GuiClientManagerItem.freeSpace(control.slot, hand);
             if (stackSize > 0)
-                itemManager().startDrag(this, button == 1, stackSize);
+                itemManager().startDrag(this, info.button() == 1, stackSize);
             if (stackSize != -1)
                 return true;
         }
         
-        if (button == 2)
+        if (info.button() == 2)
             CreativeCoreGuiRegistry.DUPLICATE.sendAndExecute(control, EndTag.INSTANCE);
         else if (control.slot.mayPickup(control.getPlayer()) && (hand.isEmpty() || control.slot.mayPlace(hand)))
-            CreativeCoreGuiRegistry.SWAP.sendAndExecute(control, ByteTag.valueOf(button == 1));
+            CreativeCoreGuiRegistry.SWAP.sendAndExecute(control, ByteTag.valueOf(info.button() == 1));
         return true;
     }
     

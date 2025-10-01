@@ -1,6 +1,7 @@
 package team.creative.creativecore.client.gui.control.simple;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.control.simple.GuiListEntry;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -25,8 +26,8 @@ public class GuiClientListEntry<T extends GuiListEntry> extends GuiClientLabel<T
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        control.consumer.accept(button);
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        control.consumer.accept(info.button());
         playSound(SoundEvents.UI_BUTTON_CLICK);
         return true;
     }

@@ -6,6 +6,7 @@ import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.control.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.control.simple.GuiCheckBox.GuiCheckBoxDist;
@@ -107,7 +108,7 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         playSound(SoundEvents.UI_BUTTON_CLICK);
         set(!value, true);
         return true;

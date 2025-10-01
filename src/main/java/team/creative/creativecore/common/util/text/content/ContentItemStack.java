@@ -4,8 +4,11 @@ import java.util.Optional;
 
 import org.joml.Matrix3x2fStack;
 
+import com.mojang.serialization.MapCodec;
+
 import net.minecraft.client.StringSplitter.WidthProvider;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +66,7 @@ public record ContentItemStack(ItemStack stack) implements AdvancedContent {
     }
     
     @Override
-    public Type<?> type() {
+    public MapCodec<? extends ComponentContents> codec() {
         return null;
     }
     

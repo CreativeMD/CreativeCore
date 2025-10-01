@@ -5,6 +5,7 @@ import org.joml.Matrix3x2fStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientParent;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
@@ -32,7 +33,7 @@ public class GuiClientTimelineHeader<T extends GuiTimelineHeader> extends GuiCli
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         dragged = true;
         handler().set(timeline().getTimeAt(x));
         playSound(SoundEvents.GLOW_ITEM_FRAME_ROTATE_ITEM);
@@ -51,7 +52,7 @@ public class GuiClientTimelineHeader<T extends GuiTimelineHeader> extends GuiCli
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
         dragged = false;
     }
     

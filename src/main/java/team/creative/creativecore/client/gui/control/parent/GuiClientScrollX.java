@@ -3,6 +3,7 @@ package team.creative.creativecore.client.gui.control.parent;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientParent;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollX;
@@ -68,13 +69,13 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == 0 && rect.getHeight() - y <= scrollbarHeight && needsScrollbar()) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (info.button() == 0 && rect.getHeight() - y <= scrollbarHeight && needsScrollbar()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             dragged = true;
             return true;
         }
-        return super.mouseClicked(x, y, button);
+        return super.mouseClicked(x, y, info);
     }
     
     @Override
@@ -96,8 +97,8 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
-        super.mouseReleased(x, y, button);
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
+        super.mouseReleased(x, y, info);
         dragged = false;
     }
     
@@ -114,10 +115,6 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
         
         if (!needsScrollbar() && hoveredScroll)
             return;
-        
-        //if (hoveredScroll)
-        //    RenderSystem.disableDepthTest();
-        // TODO 1.21.5 YET TO BE TESTED
         
         float controlInvScale = (float) scaleFactorInv();
         pose.scale(controlInvScale, controlInvScale);
@@ -142,9 +139,6 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
         
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale);
-        
-        //if (hoveredScroll)
-        //    RenderSystem.enableDepthTest();
     }
     
     @Override

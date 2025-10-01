@@ -1,5 +1,6 @@
 package team.creative.creativecore.client.gui.control.collection;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.gui.control.simple.GuiClientLabel;
@@ -92,7 +93,7 @@ public class GuiClientStackSelector<T extends GuiStackSelector> extends GuiClien
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         ex.toggle(this::createBox);
         playSound(SoundEvents.UI_BUTTON_CLICK);
         return true;

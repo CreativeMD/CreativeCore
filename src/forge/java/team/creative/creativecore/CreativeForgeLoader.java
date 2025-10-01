@@ -39,7 +39,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public Side getOverallSide() {
-        return FMLEnvironment.dist.isClient() ? Side.CLIENT : Side.SERVER;
+        return FMLEnvironment.getDist().isClient() ? Side.CLIENT : Side.SERVER;
     }
     
     @Override
@@ -49,7 +49,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public void registerClient(ClientLoader loader) {
-        if (FMLLoader.getDist() == Dist.CLIENT) {
+        if (FMLLoader.getCurrent().getDist() == Dist.CLIENT) {
             ModLoadingContext.get().getActiveContainer().getEventBus().addListener((FMLClientSetupEvent x) -> loader.onInitializeClient());
             NeoForge.EVENT_BUS.addListener((RegisterClientCommandsEvent x) -> loader.registerClientCommands(x.getDispatcher()));
         }

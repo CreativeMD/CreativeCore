@@ -3,6 +3,8 @@ package team.creative.creativecore.client.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.client.gui.manager.GuiClientManager;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiLayer;
@@ -112,34 +114,34 @@ public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLaye
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         if (!this.rect.inside(x, y) && !isMouseOverHovered(x, y)) {
             looseFocus();
             for (GuiClientManager manager : managers())
                 manager.mouseClickedOutside(x, y);
             return false;
         }
-        return super.mouseClicked(x, y, button);
+        return super.mouseClicked(x, y, info);
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
-        super.mouseReleased(x, y, button);
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
+        super.mouseReleased(x, y, info);
         
         for (GuiClientManager manager : managers())
-            manager.mouseReleased(x, y, button);
+            manager.mouseReleased(x, y, info);
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 256) {
+    public boolean keyPressed(KeyEvent key) {
+        if (key.key() == 256) {
             if (control.closeLayerUsingEscape())
                 control.closeTopLayer();
             return true;
         }
-        if (super.keyPressed(keyCode, scanCode, modifiers))
+        if (super.keyPressed(key))
             return true;
-        if (getSettings().keyInventory.matches(keyCode, scanCode)) {
+        if (getSettings().keyInventory.matches(key)) {
             control.closeTopLayer();
             return true;
         }

@@ -1,6 +1,6 @@
 package team.creative.creativecore.client.gui.control.simple;
 
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import team.creative.creativecore.common.gui.control.simple.GuiSteppedSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiSteppedSlider.GuiSteppedSliderDist;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
@@ -21,7 +21,7 @@ public class GuiClientSteppedSlider<T extends GuiSteppedSlider> extends GuiClien
     
     @Override
     public boolean mouseScrolled(double x, double y, double scrolled) {
-        this.setValue(getIntValue() + (Screen.hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1), true);
+        this.setValue(getIntValue() + (Minecraft.getInstance().hasShiftDown() ? 10 : 1) * (scrolled > 0 ? 1 : -1), true);
         return true;
     }
     

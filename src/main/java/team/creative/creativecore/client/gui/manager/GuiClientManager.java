@@ -1,6 +1,7 @@
 package team.creative.creativecore.client.gui.manager;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.common.gui.manager.GuiManager;
 
@@ -14,7 +15,7 @@ public class GuiClientManager<T extends GuiManager> {
     
     public void renderOverlay(GuiGraphics graphics, GuiClientLayer layer, int mouseX, int mouseY) {}
     
-    public void mouseReleased(double x, double y, int button) {}
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {}
     
     public void mouseClickedOutside(double x, double y) {}
     

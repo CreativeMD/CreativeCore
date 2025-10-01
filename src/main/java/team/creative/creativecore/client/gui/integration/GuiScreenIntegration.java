@@ -6,6 +6,8 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -144,24 +146,24 @@ public class GuiScreenIntegration extends Screen implements IGuiClientIntegrated
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (listener.keyPressed(keyCode, scanCode, modifiers))
+    public boolean keyPressed(KeyEvent key) {
+        if (listener.keyPressed(key))
             return true;
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(key);
     }
     
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        if (listener.keyReleased(keyCode, scanCode, modifiers))
+    public boolean keyReleased(KeyEvent key) {
+        if (listener.keyReleased(key))
             return true;
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyReleased(key);
     }
     
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        if (listener.charTyped(codePoint, modifiers))
+    public boolean charTyped(CharacterEvent event) {
+        if (listener.charTyped(event))
             return true;
-        return super.charTyped(codePoint, modifiers);
+        return super.charTyped(event);
     }
     
     @Override

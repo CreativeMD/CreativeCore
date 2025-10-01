@@ -1,5 +1,6 @@
 package team.creative.creativecore.client.config.gui;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.control.simple.GuiClientCheckBox;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer.GuiTreeCheckBox;
@@ -12,7 +13,7 @@ public class GuiClientTreeCheckBox<T extends GuiTreeCheckBox> extends GuiClientC
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         playSound(SoundEvents.UI_BUTTON_CLICK);
         this.value = !value;
         

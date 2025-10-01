@@ -6,6 +6,7 @@
     "mixins": [
         "ArgumentTypeInfosAccessor",
         "ConnectionMixin",
+        "GameRendererMixin",
         "ModNioResourcePackAccessor",
         "PlayerListMixin",
         "ServerConfigurationPacketListenerImplMixin",

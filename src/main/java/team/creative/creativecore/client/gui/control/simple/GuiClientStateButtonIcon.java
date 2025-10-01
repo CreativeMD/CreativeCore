@@ -1,5 +1,6 @@
 package team.creative.creativecore.client.gui.control.simple;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.common.gui.control.simple.GuiStateButtonIcon;
 import team.creative.creativecore.common.gui.control.simple.GuiStateButtonIcon.GuiStateButtonIconDist;
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
@@ -59,9 +60,9 @@ public class GuiClientStateButtonIcon<T extends GuiStateButtonIcon> extends GuiC
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         this.nextState();
-        return super.mouseClicked(x, y, button);
+        return super.mouseClicked(x, y, info);
     }
     
 }

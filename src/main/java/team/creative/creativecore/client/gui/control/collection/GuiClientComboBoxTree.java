@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.control.menu.GuiClientMenuRoot;
@@ -101,7 +102,7 @@ public class GuiClientComboBoxTree<T extends GuiComboBoxTree<K>, K> extends GuiC
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         ex.toggle(this::createBox, direction);
         playSound(SoundEvents.UI_BUTTON_CLICK);
         return true;

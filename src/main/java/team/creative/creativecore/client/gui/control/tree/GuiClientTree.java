@@ -6,6 +6,7 @@ import java.util.List;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.control.parent.GuiClientScrollXY;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -208,8 +209,8 @@ public class GuiClientTree<T extends GuiTree> extends GuiClientScrollXY<T> imple
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (super.mouseClicked(x, y, button))
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (super.mouseClicked(x, y, info))
             return true;
         if (control.canDeselect())
             control.select(null);

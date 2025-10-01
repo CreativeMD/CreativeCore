@@ -75,7 +75,7 @@ public class CreativeCore {
         COMMAND_ARGUMENT_TYPES.register(ModLoadingContext.get().getActiveContainer().getEventBus());
         
         NeoForge.EVENT_BUS.addListener(this::server);
-        if (FMLLoader.getDist() == Dist.CLIENT)
+        if (FMLLoader.getCurrent().getDist() == Dist.CLIENT)
             CreativeCoreClient.load(ModLoadingContext.get().getActiveContainer().getEventBus());
         
         GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {

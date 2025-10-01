@@ -1,5 +1,6 @@
 package team.creative.creativecore.client.gui.control.simple;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.common.gui.control.simple.GuiButtonHold;
 import team.creative.creativecore.common.gui.control.simple.GuiButtonHold.GuiButtonHoldDist;
 
@@ -17,17 +18,17 @@ public class GuiClientButtonHold<T extends GuiButtonHold> extends GuiClientButto
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         wait = System.currentTimeMillis();
-        clicked = button;
+        clicked = info.button();
         inital = true;
-        return super.mouseClicked(x, y, button);
+        return super.mouseClicked(x, y, info);
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
         clicked = -1;
-        super.mouseReleased(x, y, button);
+        super.mouseReleased(x, y, info);
     }
     
     @Override

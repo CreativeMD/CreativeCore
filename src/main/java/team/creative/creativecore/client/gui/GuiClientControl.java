@@ -11,6 +11,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.Holder;
@@ -193,7 +196,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     
     // INTERACTION
     
-    public boolean testForDoubleClick(double x, double y, int button) {
+    public boolean testForDoubleClick(double x, double y, MouseButtonInfo info) {
         return false;
     }
     
@@ -203,31 +206,31 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     
     public void mouseMoved(double x, double y) {}
     
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         return false;
     }
     
-    public boolean mouseDoubleClicked(double x, double y, int button) {
-        return mouseClicked(x, y, button);
+    public boolean mouseDoubleClicked(double x, double y, MouseButtonInfo info) {
+        return mouseClicked(x, y, info);
     }
     
-    public void mouseReleased(double x, double y, int button) {}
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {}
     
-    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {}
+    public void mouseDragged(double x, double y, MouseButtonInfo info, double dragX, double dragY, double time) {}
     
     public boolean mouseScrolled(double x, double y, double delta) {
         return false;
     }
     
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent key) {
         return false;
     }
     
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyEvent key) {
         return false;
     }
     
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         return false;
     }
     

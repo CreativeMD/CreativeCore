@@ -21,7 +21,7 @@ public abstract class BlockEntityCreative extends BlockEntity {
     
     public boolean isClient() {
         if (level != null)
-            return level.isClientSide;
+            return level.isClientSide();
         return EffectiveSide.get().isClient();
     }
     

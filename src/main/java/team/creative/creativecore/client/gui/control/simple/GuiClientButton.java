@@ -3,6 +3,7 @@ package team.creative.creativecore.client.gui.control.simple;
 import java.util.function.Consumer;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.control.simple.GuiButton.GuiButtonDist;
@@ -33,10 +34,10 @@ public class GuiClientButton<T extends GuiButton> extends GuiClientLabel<T> impl
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         playSound(SoundEvents.UI_BUTTON_CLICK);
         if (pressed != null)
-            pressed.accept(button);
+            pressed.accept(info.button());
         return true;
     }
     

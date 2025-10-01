@@ -3,6 +3,7 @@ package team.creative.creativecore.client.gui.control.collection;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
@@ -51,8 +52,8 @@ public class GuiClientStackSelectorExtension<T extends GuiStackSelectorExtension
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        super.mouseClicked(x, y, button);
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        super.mouseClicked(x, y, info);
         creator.markKeptFocus();
         return true;
     }

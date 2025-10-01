@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 @Mixin(AbstractContainerScreen.class)
@@ -16,8 +17,8 @@ public abstract class AbstractContainerScreenMixin extends Screen {
     }
     
     @Inject(method = "mouseReleased", at = @At(value = "HEAD"))
-    private void handleWhenYouReleaseMouse(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void handleWhenYouReleaseMouse(MouseButtonEvent mouseButtonEvent, CallbackInfoReturnable<Boolean> cir) {
         // PORTED FIX FROM FORGE: this was required to make sliders work properly
-        super.mouseReleased(mouseX, mouseY, button);
+        super.mouseReleased(mouseButtonEvent);
     }
 }

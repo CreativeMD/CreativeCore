@@ -10,7 +10,9 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
@@ -225,8 +227,8 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
         }
     }
     
-    private void delete(int p_212950_1_) {
-        if (Screen.hasControlDown())
+    private void delete(int p_212950_1_, KeyEvent key) {
+        if (key.hasControlDown())
             this.deleteWords(p_212950_1_);
         else
             this.deleteFromCursor(p_212950_1_);
@@ -326,32 +328,32 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent key) {
         if (!this.canWrite())
             return false;
-        this.shift = Screen.hasShiftDown();
-        if (Screen.isSelectAll(keyCode)) {
+        this.shift = key.hasShiftDown();
+        if (key.isSelectAll()) {
             this.setCursorPositionEnd();
             this.setSelectionPos(0);
             return true;
-        } else if (Screen.isCopy(keyCode)) {
+        } else if (key.isCopy()) {
             Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
             return true;
-        } else if (Screen.isPaste(keyCode)) {
+        } else if (key.isPaste()) {
             this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
             
             return true;
-        } else if (Screen.isCut(keyCode)) {
+        } else if (key.isCut()) {
             Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
             this.writeText("");
             
             return true;
         } else {
-            switch (keyCode) {
+            switch (key.key()) {
                 case 259:
                     this.shift = false;
-                    this.delete(-1);
-                    this.shift = Screen.hasShiftDown();
+                    this.delete(-1, key);
+                    this.shift = key.hasShiftDown();
                     
                     return true;
                 case 258:
@@ -362,22 +364,22 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
                 case 267:
                     return false;
                 default:
-                    return StringUtil.isAllowedChatCharacter((char) keyCode);
+                    return StringUtil.isAllowedChatCharacter((char) key.key());
                 case 261:
                     this.shift = false;
-                    this.delete(1);
-                    this.shift = Screen.hasShiftDown();
+                    this.delete(1, key);
+                    this.shift = key.hasShiftDown();
                     
                     return true;
                 case 262:
-                    if (Screen.hasControlDown())
+                    if (key.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(1));
                     else
                         this.moveCursorBy(1);
                     
                     return true;
                 case 263:
-                    if (Screen.hasControlDown())
+                    if (key.hasControlDown())
                         this.setCursorPosition(this.getNthWordFromCursor(-1));
                     else
                         this.moveCursorBy(-1);
@@ -398,25 +400,25 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
     }
     
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         if (!this.canWrite())
             return false;
-        else if (StringUtil.isAllowedChatCharacter(codePoint)) {
-            this.writeText(Character.toString(codePoint));
+        else if (StringUtil.isAllowedChatCharacter(event.codepoint())) {
+            this.writeText(Character.toString(event.codepoint()));
             return true;
         } else
             return false;
     }
     
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(double mouseX, double mouseY, MouseButtonInfo info) {
+        super.mouseClicked(mouseX, mouseY, info);
         
-        if (button == 0) {
+        if (info.button() == 0) {
             int i = Mth.floor(mouseX);
             Font fontRenderer = Minecraft.getInstance().font;
             String s = fontRenderer.plainSubstrByWidth(text.substring(this.lineScrollOffset), rect.getContentWidth());
-            this.shift = Screen.hasShiftDown();
+            this.shift = info.hasShiftDown();
             this.setCursorPosition(fontRenderer.plainSubstrByWidth(s, i).length() + this.lineScrollOffset);
             return true;
         }

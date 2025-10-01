@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.common.gui.control.timeline.GuiTimelineKey;
@@ -34,14 +35,14 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         if (!control.modifiable)
             return false;
-        if (button == 0) {
+        if (info.button() == 0) {
             control.channel.select(control);
             playSound(SoundEvents.UI_BUTTON_CLICK);
             clicked = true;
-        } else if (button == 1) {
+        } else if (info.button() == 1) {
             if (selected)
                 control.channel.timeline.deselect();
             control.channel.removeKey(control);
@@ -51,18 +52,18 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     }
     
     @Override
-    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
+    public void mouseDragged(double x, double y, MouseButtonInfo info, double dragX, double dragY, double time) {
         if (!control.modifiable)
             return;
         if (clicked && time > DRAG_TIME) {
             control.channel.dragKey(control);
             clicked = false;
         }
-        super.mouseDragged(x, y, button, dragX, dragY, time);
+        super.mouseDragged(x, y, info, dragX, dragY, time);
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
         clicked = false;
     }
     

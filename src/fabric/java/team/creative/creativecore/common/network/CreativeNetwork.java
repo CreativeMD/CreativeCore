@@ -66,7 +66,7 @@ public class CreativeNetwork {
         
         ServerPlayNetworking.registerGlobalReceiver(handler.sid, (payload, context) -> {
             try {
-                context.player().getServer().execute(() -> payload.execute(context.player()));
+                context.server().execute(() -> payload.execute(context.player()));
             } catch (Throwable e) {
                 CreativeCore.LOGGER.error("Executing a packet ran into an exception", e);
                 CreativeCore.LOGGER.catching(e);
@@ -114,7 +114,7 @@ public class CreativeNetwork {
         else {
             var p = prepare(message, PacketFlow.SERVERBOUND);
             if (entity.level().getChunkSource() instanceof ServerChunkCache chunkCache)
-                chunkCache.broadcast(entity, ServerPlayNetworking.createS2CPacket(p));
+                chunkCache.sendToTrackingPlayers(entity, ServerPlayNetworking.createS2CPacket(p));
         }
     }
     
@@ -124,7 +124,7 @@ public class CreativeNetwork {
         else {
             var p = prepare(message, PacketFlow.SERVERBOUND);
             if (entity.level().getChunkSource() instanceof ServerChunkCache chunkCache)
-                chunkCache.broadcastAndSend(entity, ServerPlayNetworking.createS2CPacket(p));
+                chunkCache.sendToTrackingPlayersAndSelf(entity, ServerPlayNetworking.createS2CPacket(p));
         }
     }
     

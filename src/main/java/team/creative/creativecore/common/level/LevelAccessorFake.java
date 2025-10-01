@@ -99,7 +99,7 @@ public class LevelAccessorFake implements LevelAccessor {
     
     @Override
     public boolean isClientSide() {
-        return level.isClientSide;
+        return level.isClientSide();
     }
     
     @Override

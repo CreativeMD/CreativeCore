@@ -5,6 +5,7 @@ import java.util.List;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +65,7 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
     protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         return true;
     }
     

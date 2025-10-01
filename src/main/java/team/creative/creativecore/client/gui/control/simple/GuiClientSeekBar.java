@@ -4,6 +4,7 @@ import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
@@ -69,8 +70,8 @@ public class GuiClientSeekBar<T extends GuiSeekBar> extends GuiClientControl<T> 
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == 0) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (info.button() == 0) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             grabbedSlider = this.max > 0; // validates maxTime is not a custom state
             this.mouseMoved(x, y);
@@ -98,7 +99,7 @@ public class GuiClientSeekBar<T extends GuiSeekBar> extends GuiClientControl<T> 
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
         if (this.grabbedSlider) {
             this.lastTimeUpdate.accept(pos);
             this.grabbedSlider = false;

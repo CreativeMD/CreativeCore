@@ -1,5 +1,6 @@
 package team.creative.creativecore.client.gui.control.tree;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientParent;
 import team.creative.creativecore.common.gui.control.tree.GuiTreeItem;
@@ -23,8 +24,8 @@ public class GuiClientTreeItem<T extends GuiTreeItem> extends GuiClientParent<T>
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
-        super.mouseReleased(x, y, button);
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
+        super.mouseReleased(x, y, info);
         
         if (state == ItemClickState.CLICKED) {
             control.tree.select(control);
@@ -40,15 +41,15 @@ public class GuiClientTreeItem<T extends GuiTreeItem> extends GuiClientParent<T>
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (super.mouseClicked(x, y, button))
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (super.mouseClicked(x, y, info))
             return true;
         state = ItemClickState.CLICKED;
         return true;
     }
     
     @Override
-    public boolean mouseDoubleClicked(double x, double y, int button) {
+    public boolean mouseDoubleClicked(double x, double y, MouseButtonInfo info) {
         control.toggle();
         control.tree.select(control);
         playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -56,8 +57,8 @@ public class GuiClientTreeItem<T extends GuiTreeItem> extends GuiClientParent<T>
     }
     
     @Override
-    public boolean testForDoubleClick(double x, double y, int button) {
-        return button == 0;
+    public boolean testForDoubleClick(double x, double y, MouseButtonInfo info) {
+        return info.button() == 0;
     }
     
     @Override

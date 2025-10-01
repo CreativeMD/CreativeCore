@@ -1,7 +1,8 @@
 package team.creative.creativecore.client.gui.control.timeline;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.util.Mth;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientParent;
@@ -83,9 +84,9 @@ public class GuiClientTimeline<T extends GuiTimeline> extends GuiClientParent<T>
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        boolean result = super.mouseClicked(x, y, button);
-        if (!result && button == 0) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        boolean result = super.mouseClicked(x, y, info);
+        if (!result && info.button() == 0) {
             control.deselect();
             return false;
         }
@@ -101,11 +102,11 @@ public class GuiClientTimeline<T extends GuiTimeline> extends GuiClientParent<T>
     
     @Override
     public boolean mouseScrolled(double x, double y, double delta) {
-        if (Screen.hasShiftDown()) {
+        if (Minecraft.getInstance().hasShiftDown()) {
             scrollX.set(Mth.clamp(scrollX.aimed() - delta * 10, 0, maxScrollX));
             return true;
         }
-        if (Screen.hasControlDown()) {
+        if (Minecraft.getInstance().hasControlDown()) {
             ((GuiClientScrollY) control.getChannelParent().dist()).scroll(delta);
             return true;
         }

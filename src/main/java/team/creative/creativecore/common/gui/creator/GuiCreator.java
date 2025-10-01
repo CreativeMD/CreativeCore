@@ -40,7 +40,7 @@ public abstract class GuiCreator {
     }
     
     protected void openGui(CompoundTag nbt, Player player) {
-        if (player.level().isClientSide)
+        if (player.level().isClientSide())
             CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
         else
             OpenGuiPacket.openGuiOnServer(this, nbt, (ServerPlayer) player);

@@ -129,7 +129,7 @@ public class ConfigEventHandler {
     }
     
     public boolean isOwner(ServerPlayer player) {
-        return player.getServer().isSingleplayerOwner(player.getGameProfile());
+        return player.level().getServer().isSingleplayerOwner(player.nameAndId());
     }
     
     public void sync(ICreativeConfigHolder holder, MinecraftServer server) {

@@ -1,5 +1,7 @@
 package team.creative.creativecore;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -9,7 +11,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -29,6 +30,8 @@ import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 
 public class CreativeFabricLoader implements ICreativeLoader {
+    
+    public final List<Runnable> RENDER_START = new ArrayList<>();
     
     @Override
     public void register(CommonLoader loader) {}
@@ -51,7 +54,7 @@ public class CreativeFabricLoader implements ICreativeLoader {
     
     @Override
     public void registerClientRenderStart(Runnable run) {
-        WorldRenderEvents.START.register(x -> run.run());
+        RENDER_START.add(run);
     }
     
     @Override

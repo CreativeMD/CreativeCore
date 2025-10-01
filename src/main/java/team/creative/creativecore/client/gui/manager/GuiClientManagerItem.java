@@ -7,6 +7,7 @@ import java.util.List;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.ListTag;
@@ -58,8 +59,8 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
-        if (isDragged() && rightClick == (button == 1))
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
+        if (isDragged() && rightClick == (info.button() == 1))
             endDrag();
     }
     

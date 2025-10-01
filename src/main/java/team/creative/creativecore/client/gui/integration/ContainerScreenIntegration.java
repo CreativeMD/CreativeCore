@@ -4,6 +4,9 @@ import java.util.List;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,8 +45,8 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
-    public boolean mouseDragged(double x, double y, int button, double dragX, double dragY) {
-        return this.getFocused() != null && this.isDragging() && button == 0 && this.getFocused().mouseDragged(x, y, button, dragX, dragY);
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        return this.getFocused() != null && this.isDragging() && event.button() == 0 && this.getFocused().mouseDragged(event, dragX, dragY);
     }
     
     @Override
@@ -102,24 +105,24 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (listener.keyPressed(keyCode, scanCode, modifiers))
+    public boolean keyPressed(KeyEvent event) {
+        if (listener.keyPressed(event))
             return true;
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
     
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        if (listener.keyReleased(keyCode, scanCode, modifiers))
+    public boolean keyReleased(KeyEvent event) {
+        if (listener.keyReleased(event))
             return true;
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyReleased(event);
     }
     
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
-        if (listener.charTyped(codePoint, modifiers))
+    public boolean charTyped(CharacterEvent event) {
+        if (listener.charTyped(event))
             return true;
-        return super.charTyped(codePoint, modifiers);
+        return super.charTyped(event);
     }
     
     @Override

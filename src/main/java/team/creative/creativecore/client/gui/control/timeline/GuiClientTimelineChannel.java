@@ -1,5 +1,6 @@
 package team.creative.creativecore.client.gui.control.timeline;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientParent;
@@ -67,13 +68,13 @@ public class GuiClientTimelineChannel<T extends GuiTimelineChannel<K>, K> extend
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
         if (dragged != null) {
             this.dragged.channel.movedKey(dragged);
             this.dragged = null;
         }
         
-        super.mouseReleased(x, y, button);
+        super.mouseReleased(x, y, info);
     }
     
     @Override
@@ -83,9 +84,9 @@ public class GuiClientTimelineChannel<T extends GuiTimelineChannel<K>, K> extend
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        boolean result = super.mouseClicked(x, y, button);
-        if (!result && button == 1) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        boolean result = super.mouseClicked(x, y, info);
+        if (!result && info.button() == 1) {
             int time = timeline().getTimeAt(x);
             if (control.isSpaceFor(null, time)) {
                 GuiTimelineKey<K> key = control.addKey(time, control.getValueAt(time));

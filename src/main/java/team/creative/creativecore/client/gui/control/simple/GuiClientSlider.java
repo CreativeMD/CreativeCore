@@ -3,6 +3,9 @@ package team.creative.creativecore.client.gui.control.simple;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
@@ -86,15 +89,15 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == 0) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (info.button() == 0) {
             if (textfield != null)
-                return textfield().mouseClicked(x, y, button);
+                return textfield().mouseClicked(x, y, info);
             playSound(SoundEvents.UI_BUTTON_CLICK);
             grabbedSlider = true;
             mouseMoved(x, y);
             return true;
-        } else if (button == 1) {
+        } else if (info.button() == 1) {
             grabbedSlider = false;
             textfield = createTextfield();
             textfield().focus();
@@ -129,22 +132,22 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent key) {
         if (textfield != null) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            if (key.key() == GLFW.GLFW_KEY_ENTER) {
                 closeTextField();
                 return true;
             }
-            return textfield().keyPressed(keyCode, scanCode, modifiers);
+            return textfield().keyPressed(key);
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(key);
     }
     
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         if (textfield != null)
-            return textfield().charTyped(codePoint, modifiers);
-        return super.charTyped(codePoint, modifiers);
+            return textfield().charTyped(event);
+        return super.charTyped(event);
     }
     
     @Override
@@ -229,7 +232,7 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
         if (this.grabbedSlider)
             this.grabbedSlider = false;
     }

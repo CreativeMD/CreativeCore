@@ -287,10 +287,10 @@ public abstract class PlayerSelector {
         @Override
         public boolean is(Player player) {
             if (player instanceof ServerPlayer) {
-                ServerOpListEntry entry = player.getServer().getPlayerList().getOps().get(player.getGameProfile());
+                ServerOpListEntry entry = player.level().getServer().getPlayerList().getOps().get(player.nameAndId());
                 if (entry != null)
                     return entry.getLevel() >= permissionLevel;
-                return player.getServer().getOperatorUserPermissionLevel() >= permissionLevel;
+                return player.level().getServer().operatorUserPermissionLevel() >= permissionLevel;
             }
             return true;
         }
@@ -328,7 +328,7 @@ public abstract class PlayerSelector {
         public boolean is(Player player) {
             try {
                 if (player instanceof ServerPlayer)
-                    return EntityArgument.players().parse(new StringReader(pattern)).findPlayers(player.getServer().createCommandSourceStack()).contains(player);
+                    return EntityArgument.players().parse(new StringReader(pattern)).findPlayers(player.level().getServer().createCommandSourceStack()).contains(player);
                 return true;
             } catch (CommandSyntaxException e) {}
             return false;

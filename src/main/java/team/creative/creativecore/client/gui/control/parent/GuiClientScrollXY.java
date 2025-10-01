@@ -2,8 +2,9 @@ package team.creative.creativecore.client.gui.control.parent;
 
 import org.joml.Matrix3x2fStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientParent;
@@ -77,7 +78,7 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
     
     public void scroll(double scrolled) {
         if (alternativeScrolling) {
-            if (Screen.hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 if (needsScrollbarX()) {
                     this.scrolledX.set(this.scrolledX.aimed() - scrolled * 10);
                     onScrolledX();
@@ -108,18 +109,18 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == 0 && rect.getHeight() - y <= scrollbarThickness && needsScrollbarX()) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (info.button() == 0 && rect.getHeight() - y <= scrollbarThickness && needsScrollbarX()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             draggedX = true;
             return true;
         }
-        if (button == 0 && rect.getWidth() - x <= scrollbarThickness && needsScrollbarY()) {
+        if (info.button() == 0 && rect.getWidth() - x <= scrollbarThickness && needsScrollbarY()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             draggedY = true;
             return true;
         }
-        return super.mouseClicked(x, y, button);
+        return super.mouseClicked(x, y, info);
     }
     
     @Override
@@ -154,8 +155,8 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
-        super.mouseReleased(x, y, button);
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
+        super.mouseReleased(x, y, info);
         draggedX = draggedY = false;
     }
     
@@ -179,9 +180,6 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
         
         scissor(graphics, realRect);
         GuiStyle style = getStyle();
-        
-        //RenderSystem.disableDepthTest();
-        // TODO 1.21.5 YET TO BE TESTED
         
         scrolledX.tick();
         
@@ -217,8 +215,6 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
         
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale);
-        
-        //RenderSystem.enableDepthTest();
     }
     
     @Override

@@ -5,6 +5,9 @@ import java.util.ListIterator;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiControl;
@@ -183,14 +186,14 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    public boolean testForDoubleClick(double x, double y, int button) {
+    public boolean testForDoubleClick(double x, double y, MouseButtonInfo info) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
         x += -getOffsetX() - offset;
         y += -getOffsetY() - offset;
         for (GuiClientControl control : all())
-            if (control.isInteractable() && control.rect.inside(x, y) && control.testForDoubleClick(x - control.rect.getX(), y - control.rect.getY(), button))
+            if (control.isInteractable() && control.rect.inside(x, y) && control.testForDoubleClick(x - control.rect.getX(), y - control.rect.getY(), info))
                 return true;
         return false;
         
@@ -209,7 +212,7 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
@@ -217,8 +220,8 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         y += -getOffsetY() - offset;
         boolean result = false;
         for (GuiClientControl control : all())
-            if (!result && control.isInteractable() && control.rect.inside(x, y) && control.mouseClicked(x - control.rect.getX(), y - control.rect.getY(), button)) {
-                raiseEvent(new GuiControlClickEvent(control.control, button, false));
+            if (!result && control.isInteractable() && control.rect.inside(x, y) && control.mouseClicked(x - control.rect.getX(), y - control.rect.getY(), info)) {
+                raiseEvent(new GuiControlClickEvent(control.control, info.button(), false));
                 result = true;
             } else
                 control.looseFocus();
@@ -226,7 +229,7 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    public boolean mouseDoubleClicked(double x, double y, int button) {
+    public boolean mouseDoubleClicked(double x, double y, MouseButtonInfo info) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
@@ -234,8 +237,8 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         y += -getOffsetY() - offset;
         boolean result = false;
         for (GuiClientControl control : all())
-            if (!result && control.isInteractable() && control.rect.inside(x, y) && control.mouseDoubleClicked(x - control.rect.getX(), y - control.rect.getY(), button)) {
-                raiseEvent(new GuiControlClickEvent(control.control, button, false));
+            if (!result && control.isInteractable() && control.rect.inside(x, y) && control.mouseDoubleClicked(x - control.rect.getX(), y - control.rect.getY(), info)) {
+                raiseEvent(new GuiControlClickEvent(control.control, info.button(), false));
                 result = true;
             } else
                 control.looseFocus();
@@ -244,7 +247,7 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
@@ -252,11 +255,11 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         y += -getOffsetY() - offset;
         for (GuiClientControl control : all())
             if (control.isInteractable())
-                control.mouseReleased(x - control.rect.getX(), y - control.rect.getY(), button);
+                control.mouseReleased(x - control.rect.getX(), y - control.rect.getY(), info);
     }
     
     @Override
-    public void mouseDragged(double x, double y, int button, double dragX, double dragY, double time) {
+    public void mouseDragged(double x, double y, MouseButtonInfo info, double dragX, double dragY, double time) {
         x *= scaleFactorInv();
         y *= scaleFactorInv();
         int offset = getContentOffset();
@@ -264,7 +267,7 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         y += -getOffsetY() - offset;
         for (GuiClientControl control : all())
             if (control.isInteractable())
-                control.mouseDragged(x - control.rect.getX(), y - control.rect.getY(), button, dragX, dragY, time);
+                control.mouseDragged(x - control.rect.getX(), y - control.rect.getY(), info, dragX, dragY, time);
     }
     
     @Override
@@ -281,25 +284,25 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent key) {
         for (GuiClientControl control : all())
-            if (control.isInteractable() && control.keyPressed(keyCode, scanCode, modifiers))
+            if (control.isInteractable() && control.keyPressed(key))
                 return true;
         return false;
     }
     
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(KeyEvent key) {
         for (GuiClientControl control : all())
-            if (control.isInteractable() && control.keyReleased(keyCode, scanCode, modifiers))
+            if (control.isInteractable() && control.keyReleased(key))
                 return true;
         return false;
     }
     
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
         for (GuiClientControl control : all())
-            if (control.isInteractable() && control.charTyped(codePoint, modifiers))
+            if (control.isInteractable() && control.charTyped(event))
                 return true;
         return false;
     }

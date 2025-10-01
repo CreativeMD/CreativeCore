@@ -2,6 +2,7 @@ package team.creative.creativecore.client.gui.control.menu;
 
 import java.util.Map.Entry;
 
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.control.parent.GuiClientScrollY;
@@ -46,8 +47,8 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (super.mouseClicked(x, y, button)) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (super.mouseClicked(x, y, info)) {
             parentCreator().markKeptFocus();
             return true;
         }
@@ -95,7 +96,7 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
         }
         
         @Override
-        public boolean mouseClicked(double x, double y, int button) {
+        public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
             if (control.folder.value != null) {
                 control.menu().root().select(control.folder.path(), control.folder.value);
                 playSound(SoundEvents.UI_BUTTON_CLICK);

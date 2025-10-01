@@ -2,8 +2,9 @@ package team.creative.creativecore.client.gui.control.parent;
 
 import org.joml.Matrix3x2fStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientParent;
 import team.creative.creativecore.common.gui.control.parent.GuiScrollY;
@@ -70,20 +71,20 @@ public class GuiClientScrollY<T extends GuiScrollY> extends GuiClientParent<T> i
     }
     
     public void scroll(double scrolled) {
-        if (!scrollWhenCTRL || Screen.hasControlDown()) {
+        if (!scrollWhenCTRL || Minecraft.getInstance().hasControlDown()) {
             this.scrolled.set(this.scrolled.aimed() - scrolled * 10);
             onScrolled();
         }
     }
     
     @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        if (button == 0 && rect.getWidth() - x <= scrollbarWidth && needsScrollbar()) {
+    public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
+        if (info.button() == 0 && rect.getWidth() - x <= scrollbarWidth && needsScrollbar()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             dragged = true;
             return true;
         }
-        return super.mouseClicked(x, y, button);
+        return super.mouseClicked(x, y, info);
     }
     
     @Override
@@ -105,8 +106,8 @@ public class GuiClientScrollY<T extends GuiScrollY> extends GuiClientParent<T> i
     }
     
     @Override
-    public void mouseReleased(double x, double y, int button) {
-        super.mouseReleased(x, y, button);
+    public void mouseReleased(double x, double y, MouseButtonInfo info) {
+        super.mouseReleased(x, y, info);
         dragged = false;
     }
     
@@ -123,10 +124,6 @@ public class GuiClientScrollY<T extends GuiScrollY> extends GuiClientParent<T> i
         
         if (!needsScrollbar() && hoveredScroll)
             return;
-        
-        //if (hoveredScroll)
-        //    RenderSystem.disableDepthTest();
-        // TODO 1.21.5 YET TO BE TESTED
         
         float controlInvScale = (float) scaleFactorInv();
         pose.scale(controlInvScale, controlInvScale);
@@ -151,9 +148,6 @@ public class GuiClientScrollY<T extends GuiScrollY> extends GuiClientParent<T> i
         
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale);
-        
-        //if (hoveredScroll)
-        //    RenderSystem.enableDepthTest();
     }
     
     @Override

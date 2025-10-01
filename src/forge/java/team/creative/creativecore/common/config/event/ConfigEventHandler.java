@@ -66,14 +66,14 @@ public class ConfigEventHandler {
     
     @SubscribeEvent
     public void playerLoggedIn(OnDatapackSyncEvent event) {
-        if (event.getPlayer() != null && (!event.getPlayer().getServer().isSingleplayer() || !isOwner(event.getPlayer()))) {
+        if (event.getPlayer() != null && (!event.getPlayer().level().getServer().isSingleplayer() || !isOwner(event.getPlayer()))) {
             CreativeCore.NETWORK.sendToClient(new ConfigurationClientPacket(CreativeConfigRegistry.ROOT), event.getPlayer());
             CreativeCore.NETWORK.sendToClient(new ConfigurationPacket(event.getPlayer().registryAccess(), CreativeConfigRegistry.ROOT, false), event.getPlayer());
         }
     }
     
     public boolean isOwner(ServerPlayer player) {
-        return player.getServer().isSingleplayerOwner(player.getGameProfile());
+        return player.level().getServer().isSingleplayerOwner(player.nameAndId());
     }
     
     @SubscribeEvent

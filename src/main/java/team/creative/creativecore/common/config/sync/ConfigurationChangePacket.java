@@ -34,7 +34,7 @@ public class ConfigurationChangePacket extends CreativePacket {
         if (player.hasPermissions(2)) {
             CreativeConfigRegistry.ROOT.followPath(path).load(player.registryAccess(), false, true, json, Side.SERVER);
             CreativeCore.CONFIG_HANDLER.save(player.registryAccess(), Side.SERVER);
-            CreativeCore.CONFIG_HANDLER.syncAll(player.getServer());
+            CreativeCore.CONFIG_HANDLER.syncAll(player.level().getServer());
         } else
             CreativeCore.CONFIG_HANDLER.syncAll(player);
     }
