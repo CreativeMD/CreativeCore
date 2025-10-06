@@ -1,3 +1,6 @@
+2.14.8
+Added asContent to InventoryUtils
+
 2.14.7
 Fixed client commands not working when connected to a server on fabric
 Fixed crash when opening gui on server side
