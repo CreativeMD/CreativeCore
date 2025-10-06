@@ -11,7 +11,10 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 
 public class InventoryUtils {
@@ -216,6 +219,13 @@ public class InventoryUtils {
             }
         }
         return result + "]";
+    }
+    
+    public static ItemContainerContents asContent(ResourceHandler<ItemResource> handler) {
+        List<ItemStack> stacks = new ArrayList(handler.size());
+        for (int i = 0; i < handler.size(); i++)
+            stacks.add(handler.getResource(i).toStack(handler.getAmountAsInt(i)));
+        return ItemContainerContents.fromItems(stacks);
     }
     
 }
