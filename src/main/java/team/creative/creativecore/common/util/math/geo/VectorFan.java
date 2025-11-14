@@ -31,7 +31,7 @@ import team.creative.creativecore.common.util.math.vec.VectorUtils;
 
 public class VectorFan {
     
-    public static final float EPSILON = 0.0001F;
+    public static final float EPSILON = 0.0005F;
     
     protected static void setLineNormal(Vec3f normal, Vec3f first, Vec3f second) {
         setLineNormal(normal, first.x, first.y, first.z, second.x, second.y, second.z);
