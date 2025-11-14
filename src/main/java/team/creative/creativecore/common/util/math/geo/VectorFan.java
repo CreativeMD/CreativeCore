@@ -732,14 +732,17 @@ public class VectorFan {
                 
                 Boolean[] outside = new Boolean[shape.size()];
                 boolean inside = true;
+                boolean notNull = false;
                 for (int k = 0; k < shape.size(); k++) {
-                    Boolean front = shape.get(k).isInFront(vec);
+                    Boolean front = shape.get(k).isInFront(vec, EPSILON);
                     if (!BooleanUtils.isFalse(front))
                         inside = false;
+                    if (front != null)
+                        notNull = true;
                     outside[k] = front;
                 }
                 
-                if (inside)
+                if (inside && notNull)
                     return true;
                 
                 if (i > 0) {
