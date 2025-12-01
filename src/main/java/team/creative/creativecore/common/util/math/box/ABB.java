@@ -2,11 +2,16 @@ package team.creative.creativecore.common.util.math.box;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollisionCoordinator;
@@ -450,4 +455,31 @@ public class ABB {
         }
         return null;
     }
+    
+    public void deflate(double amount) {
+        deflate(amount, amount, amount);
+    }
+    
+    public void deflate(double x, double y, double z) {
+        inflate(-x, -y, -z);
+    }
+    
+    public void inflate(double amount) {
+        inflate(amount, amount, amount);
+    }
+    
+    public void inflate(double x, double y, double z) {
+        this.minX -= x;
+        this.minY -= y;
+        this.minZ -= z;
+        this.maxX += x;
+        this.maxY += y;
+        this.maxZ += z;
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public void renderLines(PoseStack pose, VertexConsumer consumer, float red, float green, float blue, float alpha) {
+        //TODO READD LevelRenderer.renderLineBox(pose, consumer, minX, minY, minZ, maxX, maxY, maxZ, red, green, blue, alpha);
+    }
+    
 }
