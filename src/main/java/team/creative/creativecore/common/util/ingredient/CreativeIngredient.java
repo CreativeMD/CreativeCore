@@ -7,14 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
@@ -23,19 +18,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
-import team.creative.creativecore.common.config.gui.IGuiConfigParent;
-import team.creative.creativecore.common.config.key.ConfigKey;
-import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.util.registry.NamedTypeRegistry;
 
 public abstract class CreativeIngredient {
     
     public static final NamedTypeRegistry<CreativeIngredient> REGISTRY = new NamedTypeRegistry<CreativeIngredient>().addConstructorPattern();
-    private static final List<Function<Object, ? extends CreativeIngredient>> objectParsers = new ArrayList<>();
+    private static final List<Function<Object, ? extends CreativeIngredient>> OBJECT_PARSERS = new ArrayList<>();
     private static final CreativeIngredient EMPTY = new CreativeIngredient() {
         
         @Override
@@ -83,7 +71,7 @@ public abstract class CreativeIngredient {
     public static <T extends CreativeIngredient> void registerType(String id, Class<T> classType, Function<Object, T> parser) {
         REGISTRY.register(id, classType);
         if (parser != null)
-            objectParsers.add(parser);
+            OBJECT_PARSERS.add(parser);
     }
     
     public static CreativeIngredient parse(Object object) {
@@ -92,9 +80,9 @@ public abstract class CreativeIngredient {
         if (object instanceof CreativeIngredient)
             return (CreativeIngredient) object;
         
-        for (int i = 0; i < objectParsers.size(); i++)
+        for (int i = 0; i < OBJECT_PARSERS.size(); i++)
             try {
-                CreativeIngredient ingredient = objectParsers.get(i).apply(object);
+                CreativeIngredient ingredient = OBJECT_PARSERS.get(i).apply(object);
                 if (ingredient != null)
                     return ingredient;
             } catch (Exception e) {}
@@ -151,50 +139,6 @@ public abstract class CreativeIngredient {
         registerType("itemstack", CreativeIngredientItemStack.class, (x) -> x instanceof ItemStack s ? new CreativeIngredientItemStack(s) : null);
         registerType("fuel", CreativeIngredientFuel.class, null);
         
-        final CreativeIngredient temp = new CreativeIngredientBlock(Blocks.DIRT);
-        
-        ConfigTypeConveration.registerSpecialType(CreativeIngredient.class::isAssignableFrom, new ConfigTypeConveration<CreativeIngredient>() {
-            
-            @Override
-            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
-                    Side side, ConfigKey key) {
-                if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
-                    try {
-                        return CreativeIngredient.load(provider, TagParser.parseCompoundFully(element.getAsString()));
-                    } catch (CommandSyntaxException e) {
-                        LOGGER.error(e);
-                    }
-                return defaultValue;
-            }
-            
-            @Override
-            public JsonElement writeElement(HolderLookup.Provider provider, CreativeIngredient value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
-                return new JsonPrimitive(value.save(provider).toString());
-            }
-            
-            @Override
-            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                parent.add(new GuiInfoStackButton(parent, "data", temp).setExpandableX());
-            }
-            
-            @Override
-            public void loadValue(CreativeIngredient value, CreativeIngredient defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiInfoStackButton button = parent.get("data");
-                button.set(value);
-            }
-            
-            @Override
-            protected CreativeIngredient saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiInfoStackButton button = parent.get("data");
-                return button.get();
-            }
-            
-            @Override
-            public CreativeIngredient set(ConfigKey key, CreativeIngredient value) {
-                return value;
-            }
-        });
-        ConfigTypeConveration.registerTypeCreator(CreativeIngredient.class, () -> new CreativeIngredientBlock(Blocks.DIRT));
     }
     
     public CreativeIngredient() {}
