@@ -1,10 +1,13 @@
 package team.creative.creativecore.common.config.converation;
 
+import static team.creative.creativecore.CreativeCore.LOGGER;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -15,13 +18,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
@@ -32,6 +38,7 @@ import team.creative.creativecore.common.config.converation.registry.ConfigTypeR
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTagList;
 import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
+import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
@@ -52,6 +59,8 @@ import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
+import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlock;
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3;
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
@@ -125,7 +134,7 @@ public abstract class ConfigTypeConveration<T> {
         
         @Override
         public Collection<? extends ConfigKey> fields() {
-            return null;
+            return Collections.EMPTY_LIST;
         }
         
         @Override
@@ -619,6 +628,56 @@ public abstract class ConfigTypeConveration<T> {
         });
         
         registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeList());
+        
+        final CreativeIngredient temp = new CreativeIngredientBlock(Blocks.DIRT);
+        ConfigTypeConveration.registerSpecialType(CreativeIngredient.class::isAssignableFrom, new ConfigTypeConveration<CreativeIngredient>() {
+            
+            @Override
+            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
+                    Side side, ConfigKey key) {
+                if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
+                    try {
+                        return CreativeIngredient.load(provider, TagParser.parseTag(element.getAsString()));
+                    } catch (CommandSyntaxException e) {
+                        LOGGER.error(e);
+                    }
+                return defaultValue;
+            }
+            
+            @Override
+            public JsonElement writeElement(HolderLookup.Provider provider, CreativeIngredient value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
+                return new JsonPrimitive(value.save(provider).toString());
+            }
+            
+            @Override
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
+            public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+                parent.add(new GuiInfoStackButton("data", temp).setExpandableX());
+            }
+            
+            @Override
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
+            public void loadValue(CreativeIngredient value, CreativeIngredient defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+                GuiInfoStackButton button = parent.get("data");
+                button.set(value);
+            }
+            
+            @Override
+            @Environment(EnvType.CLIENT)
+            @OnlyIn(Dist.CLIENT)
+            protected CreativeIngredient saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
+                GuiInfoStackButton button = parent.get("data");
+                return button.get();
+            }
+            
+            @Override
+            public CreativeIngredient set(ConfigKey key, CreativeIngredient value) {
+                return value;
+            }
+        });
+        ConfigTypeConveration.registerTypeCreator(CreativeIngredient.class, () -> new CreativeIngredientBlock(Blocks.DIRT));
     }
     
     public abstract T readElement(HolderLookup.Provider provider, T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key);
