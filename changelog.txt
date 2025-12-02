@@ -1,3 +1,6 @@
+2.13.17
+Fixed CreativeIngredient sometimes not being ready for config (when used externally)
+
 2.13.16
 Added inflate, deflate and renderLines method to ABB
 
