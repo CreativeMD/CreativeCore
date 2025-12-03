@@ -1,6 +1,7 @@
 package team.creative.creativecore.client.gui.control.simple;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.control.simple.GuiColorPicker;
 import team.creative.creativecore.common.gui.control.simple.GuiColoredSteppedSlider;
@@ -33,8 +34,15 @@ public class GuiClientColoredSteppedSlider<T extends GuiColoredSteppedSlider> ex
         super.setValue((int) value, notify);
         if (part != null) {
             part.set(picker.color, this.getIntValue());
-            picker.onColorChanged();
+            picker.onColorChanged(true);
         }
+    }
+    
+    @Override
+    public void setValueSilent(int value) {
+        this.value = Mth.clamp(value, (int) minValue, (int) maxValue);
+        if (part != null)
+            part.set(picker.color, this.getIntValue());
     }
     
     @Override

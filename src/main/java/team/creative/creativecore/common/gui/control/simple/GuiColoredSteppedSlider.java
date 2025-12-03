@@ -13,6 +13,11 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
         }
     }
     
+    public void setValueSilent(int value) {
+        if (dist() != null)
+            dist().setValueSilent(value);
+    }
+    
     @Override
     public GuiColoredSteppedSliderDist dist() {
         return (GuiColoredSteppedSliderDist) super.dist();
@@ -23,6 +28,8 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
         public void setPicker(GuiColorPicker picker);
         
         public void setPart(ColorPart part);
+        
+        public void setValueSilent(int value);
         
     }
     

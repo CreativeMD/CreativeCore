@@ -58,6 +58,12 @@ public class GuiTextfield extends GuiControl {
         return this;
     }
     
+    public GuiTextfield setHexOnly() {
+        if (dist() != null)
+            dist().setHexOnly();
+        return this;
+    }
+    
     public float parseFloat() {
         try {
             if (dist() != null)
@@ -102,12 +108,18 @@ public class GuiTextfield extends GuiControl {
     
     protected void setTextSilent(String textIn) {
         if (dist() != null)
-            dist().setText(textIn, false);
+            dist().setText(textIn, false, false);
     }
     
     public GuiTextfield setText(String textIn) {
         if (dist() != null)
-            dist().setText(textIn, true);
+            dist().setText(textIn, true, false);
+        return this;
+    }
+    
+    public GuiTextfield setText(String textIn, boolean keepCursor) {
+        if (dist() != null)
+            dist().setText(textIn, true, keepCursor);
         return this;
     }
     
@@ -147,9 +159,11 @@ public class GuiTextfield extends GuiControl {
         
         public void setNumbersOnly();
         
+        public void setHexOnly();
+        
         public void tick();
         
-        public void setText(String textIn, boolean notify);
+        public void setText(String textIn, boolean notify, boolean keepCursor);
         
         public String getText();
         

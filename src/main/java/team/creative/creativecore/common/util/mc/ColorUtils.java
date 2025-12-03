@@ -1,11 +1,15 @@
 package team.creative.creativecore.common.util.mc;
 
+import java.util.HexFormat;
+
 import org.joml.Vector3d;
 
 import net.minecraft.util.Mth;
 import team.creative.creativecore.common.util.type.Color;
 
 public class ColorUtils {
+    
+    public static final HexFormat HEX = HexFormat.of();
     
     public static enum ColorPart {
         RED(0xFF0000) {
@@ -188,5 +192,13 @@ public class ColorUtils {
         int b = (int) ((b1 * iRatio) + (b2 * ratio));
         
         return a << 24 | r << 16 | g << 8 | b;
+    }
+    
+    public static String toHex(int value) {
+        return HEX.toHexDigits(value).substring(2);
+    }
+    
+    public static int fromHex(String hex) {
+        return HexFormat.fromHexDigits(hex);
     }
 }

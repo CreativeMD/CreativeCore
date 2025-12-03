@@ -1,7 +1,9 @@
 package team.creative.creativecore.client.gui.control.simple;
 
+import java.util.HexFormat;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +44,7 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
     private int selectionEnd;
     private int cachedWidth;
     
+    private Function<String, String> modifyPaste = null;
     private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private Predicate<String> validator = Objects::nonNull;
     
@@ -91,15 +94,30 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
     }
     
     @Override
-    public void setText(String textIn, boolean notify) {
+    public void setHexOnly() {
+        modifyPaste = x -> x.replace("#", "");
+        validator = x -> {
+            try {
+                HexFormat.fromHexDigits(x);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        };
+    }
+    
+    @Override
+    public void setText(String textIn, boolean notify, boolean keepCursor) {
         if (this.validator.test(textIn)) {
             if (textIn.length() > this.maxStringLength)
                 this.text = textIn.substring(0, this.maxStringLength);
             else
                 this.text = textIn;
             
-            this.setCursorPositionZero();
-            this.setSelectionPos(this.cursorPosition);
+            if (!keepCursor) {
+                this.setCursorPositionZero();
+                this.setSelectionPos(this.cursorPosition);
+            }
             if (notify)
                 this.onTextChanged(textIn);
         }
@@ -340,7 +358,10 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
             Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
             return true;
         } else if (key.isPaste()) {
-            this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
+            var s = Minecraft.getInstance().keyboardHandler.getClipboard();
+            if (modifyPaste != null)
+                s = modifyPaste.apply(s);
+            this.writeText(s);
             
             return true;
         } else if (key.isCut()) {
