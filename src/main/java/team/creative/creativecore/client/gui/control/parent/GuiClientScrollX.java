@@ -136,6 +136,9 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
             scrollThingWidth, scrollbarHeight);
         
         maxScroll = Math.max(0, (cachedWidth - completeWidth) + formatting.padding() * 2 + 1);
+        double newScroll = Math.clamp(scrolled.aimed(), 0, maxScroll);
+        if (newScroll != scrolled.aimed())
+            scrolled.set(newScroll);
         
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale);

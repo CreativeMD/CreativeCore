@@ -195,6 +195,9 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
                     .getHeight() - scrollbarThickness - borderWidth, scrollThingWidth, scrollbarThickness);
             
             maxScrollX = Math.max(0, (cachedWidth - completeWidth) + formatting.padding() * 2 + 1);
+            double newScroll = Math.clamp(scrolledX.aimed(), 0, maxScrollX);
+            if (newScroll != scrolledX.aimed())
+                scrolledX.set(newScroll);
         }
         
         scrolledY.tick();
@@ -211,6 +214,9 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
                 (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarThickness, scrollThingHeight);
             
             maxScrollY = Math.max(0, (cachedHeight - completeHeight) + formatting.padding() * 2 + 1);
+            double newScroll = Math.clamp(scrolledY.aimed(), 0, maxScrollY);
+            if (newScroll != scrolledY.aimed())
+                scrolledY.set(newScroll);
         }
         
         float controlScale = (float) scaleFactor();
