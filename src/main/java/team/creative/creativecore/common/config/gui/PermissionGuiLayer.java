@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.converation.ConfigTypePermission.GuiPermissionConfigButton;
@@ -21,6 +22,7 @@ import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.VAlign;
+import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.control.parent.GuiColumn;
 import team.creative.creativecore.common.gui.control.parent.GuiLeftRightBox;
 import team.creative.creativecore.common.gui.control.parent.GuiRow;
@@ -33,6 +35,7 @@ import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.gui.flow.GuiSizeRule.GuiSizeRules;
 import team.creative.creativecore.common.util.text.TextBuilder;
+import team.creative.creativecore.common.util.text.TextMapBuilder;
 
 public class PermissionGuiLayer extends GuiLayer {
     
@@ -44,7 +47,7 @@ public class PermissionGuiLayer extends GuiLayer {
     private final HashMap<ConfigKeyType, GuiRow> rows = new HashMap<>();
     
     public PermissionGuiLayer(boolean client) {
-        super(client, "permission", 500, 260);
+        super(client, "permission", 700, 300);
     }
     
     @Override
@@ -208,8 +211,11 @@ public class PermissionGuiLayer extends GuiLayer {
         col.setVAlign(VAlign.CENTER).setDim(new GuiSizeRules().maxWidth(100));
         if (defaultCol)
             col.add(new GuiLabel(this, "name").setTitle(Component.literal(name)));
-        else
-            col.add(group.textfield = new GuiTextfield(this, "name", name).setDim(100));
+        else {
+            col.add(group.combobox = (GuiComboBox<String>) new GuiComboBox<String>(this, "name", new TextMapBuilder<String>().addComponent(CreativeCore.CONFIG.usergroups.keySet(),
+                Component::literal)).setDim(100, 8));
+            group.combobox.select(name);
+        }
         
         if (!name.isEmpty() && button.defaultValue.containsKey(name))
             col.add(group.resetButton = (GuiButton) new GuiButton(this, "r", x -> group.reset()).setTranslate("gui.config.reset").setAlign(Align.CENTER));
@@ -251,7 +257,7 @@ public class PermissionGuiLayer extends GuiLayer {
     public static abstract class PermissionGuiGroup {
         
         public final String originalGroup;
-        public GuiTextfield textfield;
+        public GuiComboBox<String> combobox;
         public GuiButton resetButton;
         
         public PermissionGuiGroup(String group) {
@@ -261,7 +267,7 @@ public class PermissionGuiLayer extends GuiLayer {
         public String getTitle() {
             if (isDefaultGroup())
                 return "default";
-            return textfield.getText();
+            return combobox.selected();
         }
         
         public void updateResetButton() {
@@ -273,7 +279,7 @@ public class PermissionGuiLayer extends GuiLayer {
         
         public void reset() {
             if (!isDefaultGroup())
-                textfield.setText(originalGroup);
+                combobox.select(originalGroup);
             resetInternal();
             updateResetButton();
         }
@@ -283,7 +289,7 @@ public class PermissionGuiLayer extends GuiLayer {
         public abstract boolean isDefault();
         
         public boolean isDefaultGroup() {
-            return textfield == null;
+            return combobox == null;
         }
         
     }
