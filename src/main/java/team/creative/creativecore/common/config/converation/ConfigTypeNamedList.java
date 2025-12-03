@@ -107,6 +107,7 @@ public class ConfigTypeNamedList<T extends NamedList> extends ConfigTypeConverat
         for (Entry<String, ?> entry : (Set<Entry<String, ?>>) value.entrySet()) {
             listKey.forceValue(entry.getValue(), side);
             var c = listKey.create(configParent, "", side);
+            c.setParent(box); // to fix issue with parent not being available
             if (entry.getKey().equals("default"))
                 c.addNameUnmodifieable(entry.getKey());
             else
