@@ -1,3 +1,11 @@
+2.13.18
+Added hex configuration to color picker
+Made permission group use a combobox instead of a textfield to specify usergroup
+Fixed not being able to scroll inside permission gui everywhere
+Fixed scrollbox not reseting to possible position when size changes
+Fixed usergroup configuration not working
+Fixed issue with nested configuration of missing parent information
+
 2.13.17
 Fixed CreativeIngredient sometimes not being ready for config (when used externally)
 
