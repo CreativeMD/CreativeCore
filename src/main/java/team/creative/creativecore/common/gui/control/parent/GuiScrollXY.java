@@ -210,7 +210,11 @@ public class GuiScrollXY extends GuiParent {
                     .getHeight() - scrollbarThickness - borderWidth, scrollThingWidth, scrollbarThickness);
             
             maxScrollX = Math.max(0, (cachedWidth - completeWidth) + formatting.padding * 2 + 1);
-        }
+            double newScroll = Math.clamp(scrolledX.aimed(), 0, maxScrollX);
+            if (newScroll != scrolledX.aimed())
+                scrolledX.set(newScroll);
+        } else
+            scrolledX.set(0);
         
         scrolledY.tick();
         
@@ -226,7 +230,11 @@ public class GuiScrollXY extends GuiParent {
                 (int) (percent * (completeHeight - scrollThingHeight)) + borderWidth, scrollbarThickness, scrollThingHeight);
             
             maxScrollY = Math.max(0, (cachedHeight - completeHeight) + formatting.padding * 2 + 1);
-        }
+            double newScroll = Math.clamp(scrolledY.aimed(), 0, maxScrollY);
+            if (newScroll != scrolledY.aimed())
+                scrolledY.set(newScroll);
+        } else
+            scrolledY.set(0);
         
         float controlScale = (float) scaleFactor();
         pose.scale(controlScale, controlScale, controlScale);
