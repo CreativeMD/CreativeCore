@@ -59,6 +59,10 @@ public class GuiClientTableScrollable<T extends GuiTableScrollable> extends GuiC
                 return ((GuiClientParent) GuiClientTableScrollable.this.control.scrollableTable.dist()).getOffsetX();
             }
             
+            @Override
+            public boolean mouseScrolled(double x, double y, double delta) {
+                return ((GuiClientControl) GuiClientTableScrollable.this.control.scrollableTable.dist()).mouseScrolled(x, y, delta);
+            }
         };
     }
     
@@ -69,6 +73,11 @@ public class GuiClientTableScrollable<T extends GuiTableScrollable> extends GuiC
             @Override
             public double getOffsetY() {
                 return ((GuiClientParent) GuiClientTableScrollable.this.control.scrollableTable.dist()).getOffsetY();
+            }
+            
+            @Override
+            public boolean mouseScrolled(double x, double y, double delta) {
+                return ((GuiClientControl) GuiClientTableScrollable.this.control.scrollableTable.dist()).mouseScrolled(x, y, delta);
             }
             
         };
