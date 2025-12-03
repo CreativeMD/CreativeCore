@@ -34,7 +34,7 @@ public class GuiConfigSubControl extends GuiParent {
     }
     
     public void addNameTextfield(String name) {
-        add(nameField = new GuiTextfield(this, "title", name).setDim(50, 8));
+        add(nameField = (GuiTextfield) new GuiTextfield(this, "title", name).setExpandableX());
     }
     
 }

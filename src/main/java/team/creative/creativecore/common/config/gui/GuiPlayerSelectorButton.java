@@ -22,21 +22,18 @@ public class GuiPlayerSelectorButton extends GuiButton {
             layer.button = this;
             layer.init();
         });
-        setTitle(Component.literal(getLabelText(info)));
+        setTitle(getLabelText(info));
         this.info = info;
     }
     
     public void set(PlayerSelector info) {
         this.info = info;
-        setTitle(Component.literal(getLabelText(info)));
+        setTitle((getLabelText(info)));
         raiseEvent(new GuiControlChangedEvent(this));
     }
     
-    public static String getLabelText(PlayerSelector value) {
-        String info = value.info();
-        if (info.length() > 25)
-            info = info.substring(22) + "...";
-        return info;
+    public static Component getLabelText(PlayerSelector value) {
+        return value.info();
     }
     
     public PlayerSelector get() {

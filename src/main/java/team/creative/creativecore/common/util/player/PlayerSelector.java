@@ -11,6 +11,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.ServerOpListEntry;
 import net.minecraft.world.entity.player.Player;
@@ -90,6 +91,7 @@ public abstract class PlayerSelector {
             }
             
         });
+        ConfigTypeConveration.registerTypeCreator(PlayerSelector.class, () -> new PlayerSelectorGamemode(GameType.CREATIVE));
     }
     
     public abstract boolean is(Player player);
@@ -98,7 +100,7 @@ public abstract class PlayerSelector {
     
     protected abstract void write(CompoundTag nbt);
     
-    public abstract String info();
+    public abstract Component info();
     
     public CompoundTag writeToNBT(CompoundTag nbt) {
         write(nbt);
@@ -110,9 +112,7 @@ public abstract class PlayerSelector {
         
         public PlayerSelector[] selectors;
         
-        public PlayerSelectorAnd() {
-            
-        }
+        public PlayerSelectorAnd() {}
         
         public PlayerSelectorAnd(PlayerSelector... selector) {
             this.selectors = selector;
@@ -143,14 +143,14 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public String info() {
-            StringBuilder text = new StringBuilder("[");
+        public Component info() {
+            var text = Component.literal("");
             for (int i = 0; i < selectors.length; i++) {
                 if (i > 0)
-                    text.append("&");
+                    text.append(" and ");
                 text.append(selectors[i].info());
             }
-            return text + "]";
+            return text.append("");
         }
         
     }
@@ -159,9 +159,7 @@ public abstract class PlayerSelector {
         
         public PlayerSelector[] selectors;
         
-        public PlayerSelectorOr() {
-            
-        }
+        public PlayerSelectorOr() {}
         
         public PlayerSelectorOr(PlayerSelector... selector) {
             this.selectors = selector;
@@ -192,14 +190,14 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public String info() {
-            StringBuilder text = new StringBuilder("[");
+        public Component info() {
+            var text = Component.literal("");
             for (int i = 0; i < selectors.length; i++) {
                 if (i > 0)
-                    text.append("|");
+                    text.append(" or ");
                 text.append(selectors[i].info());
             }
-            return text + "]";
+            return text.append("");
         }
         
     }
@@ -208,9 +206,7 @@ public abstract class PlayerSelector {
         
         public PlayerSelector selector;
         
-        public PlayerSelectorNot() {
-            
-        }
+        public PlayerSelectorNot() {}
         
         public PlayerSelectorNot(PlayerSelector selector) {
             this.selector = selector;
@@ -232,8 +228,8 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public String info() {
-            return "!" + selector.info();
+        public Component info() {
+            return Component.literal("!").append(selector.info());
         }
         
     }
@@ -242,9 +238,7 @@ public abstract class PlayerSelector {
         
         public GameType type;
         
-        public PlayerSelectorGamemode() {
-            
-        }
+        public PlayerSelectorGamemode() {}
         
         public PlayerSelectorGamemode(GameType type) {
             this.type = type;
@@ -266,8 +260,8 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public String info() {
-            return type.getName();
+        public Component info() {
+            return Component.translatable("selectWorld.gameMode").append(": ").append(type.getShortDisplayName());
         }
         
     }
@@ -276,9 +270,7 @@ public abstract class PlayerSelector {
         
         public int permissionLevel;
         
-        public PlayerSelectorLevel() {
-            
-        }
+        public PlayerSelectorLevel() {}
         
         public PlayerSelectorLevel(int permissionLevel) {
             this.permissionLevel = permissionLevel;
@@ -306,8 +298,8 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public String info() {
-            return "level>=" + permissionLevel;
+        public Component info() {
+            return Component.literal("level>=" + permissionLevel);
         }
         
     }
@@ -316,9 +308,7 @@ public abstract class PlayerSelector {
         
         public String pattern;
         
-        public PlayerSelectorCommandSelector() {
-            
-        }
+        public PlayerSelectorCommandSelector() {}
         
         public PlayerSelectorCommandSelector(String pattern) {
             this.pattern = pattern;
@@ -345,8 +335,8 @@ public abstract class PlayerSelector {
         }
         
         @Override
-        public String info() {
-            return pattern;
+        public Component info() {
+            return Component.literal("pattern: " + pattern);
         }
         
     }
