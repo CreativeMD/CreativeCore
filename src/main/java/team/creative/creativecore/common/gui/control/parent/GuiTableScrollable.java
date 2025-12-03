@@ -21,12 +21,22 @@ public class GuiTableScrollable extends GuiParent {
         public double getOffsetX() {
             return scrollableTable.getOffsetX();
         }
+        
+        @Override
+        public boolean mouseScrolled(double x, double y, double delta) {
+            return scrollableTable.mouseScrolled(x, y, delta);
+        }
     };
     protected GuiParent bottom = new GuiParent();
     protected GuiParent firstCol = new GuiParent(GuiFlow.STACK_Y) {
         @Override
         public double getOffsetY() {
             return scrollableTable.getOffsetY();
+        }
+        
+        @Override
+        public boolean mouseScrolled(double x, double y, double delta) {
+            return scrollableTable.mouseScrolled(x, y, delta);
         }
     };
     protected GuiScrollXY scrollableTable = new GuiScrollXY("", GuiFlow.STACK_Y) {
