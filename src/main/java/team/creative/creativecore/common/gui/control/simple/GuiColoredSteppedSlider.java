@@ -3,6 +3,7 @@ package team.creative.creativecore.common.gui.control.simple;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.client.render.GuiRenderHelper;
@@ -26,8 +27,14 @@ public class GuiColoredSteppedSlider extends GuiSteppedSlider {
         super.setValue((int) value);
         if (part != null) {
             part.set(picker.color, this.getIntValue());
-            picker.onColorChanged();
+            picker.onColorChanged(true);
         }
+    }
+    
+    public void setValueSilent(int value) {
+        this.value = Mth.clamp(value, (int) minValue, (int) maxValue);
+        if (part != null)
+            part.set(picker.color, this.getIntValue());
     }
     
     @Override

@@ -13,7 +13,7 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 
 public class Color {
-
+    
     public static final Color NONE = new Color(0) {
         @Override
         public void glColor() {}
@@ -98,6 +98,13 @@ public class Color {
         this.green = color.getGreen();
         this.blue = color.getBlue();
         this.alpha = color.getAlpha();
+    }
+    
+    public void set(int color) {
+        this.red = (short) ColorUtils.red(color);
+        this.green = (short) ColorUtils.green(color);
+        this.blue = (short) ColorUtils.blue(color);
+        this.alpha = (short) ColorUtils.alpha(color);
     }
     
     public void set(ColorType type, int value) {
@@ -307,6 +314,10 @@ public class Color {
         int b = (int) ((b1 * iRatio) + (b2 * ratio));
         
         return a << 24 | r << 16 | g << 8 | b;
+    }
+    
+    public String hex() {
+        return ColorUtils.toHex(toInt());
     }
     
 }

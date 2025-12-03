@@ -1,7 +1,9 @@
 package team.creative.creativecore.common.gui.control.simple;
 
+import java.util.HexFormat;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +43,7 @@ public class GuiTextfield extends GuiFocusControl {
     private int selectionEnd;
     /** Called to check if the text is valid */
     private Predicate<String> validator = Objects::nonNull;
+    private Function<String, String> modifyPaste = null;
     private final BiFunction<String, Integer, FormattedCharSequence> textFormatter = (text, pos) -> FormattedCharSequence.forward(text, Style.EMPTY);
     private int cachedWidth;
     
@@ -103,6 +106,19 @@ public class GuiTextfield extends GuiFocusControl {
                 return true;
             try {
                 return Integer.parseInt(x) >= 0;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        };
+        return this;
+    }
+    
+    public GuiTextfield setHexOnly() {
+        modifyPaste = x -> x.replace("#", "");
+        validator = x -> {
+            try {
+                HexFormat.fromHexDigits(x);
+                return true;
             } catch (NumberFormatException e) {
                 return false;
             }
@@ -201,14 +217,20 @@ public class GuiTextfield extends GuiFocusControl {
     }
     
     public GuiTextfield setText(String textIn) {
+        return setText(textIn, false);
+    }
+    
+    public GuiTextfield setText(String textIn, boolean keepCursor) {
         if (this.validator.test(textIn)) {
             if (textIn.length() > this.maxStringLength)
                 this.text = textIn.substring(0, this.maxStringLength);
             else
                 this.text = textIn;
             
-            this.setCursorPositionZero();
-            this.setSelectionPos(this.cursorPosition);
+            if (!keepCursor) {
+                this.setCursorPositionZero();
+                this.setSelectionPos(this.cursorPosition);
+            }
             this.onTextChanged(textIn);
         }
         return this;
@@ -365,7 +387,10 @@ public class GuiTextfield extends GuiFocusControl {
             Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
             return true;
         } else if (Screen.isPaste(keyCode)) {
-            this.writeText(Minecraft.getInstance().keyboardHandler.getClipboard());
+            var s = Minecraft.getInstance().keyboardHandler.getClipboard();
+            if (modifyPaste != null)
+                s = modifyPaste.apply(s);
+            this.writeText(s);
             
             return true;
         } else if (Screen.isCut(keyCode)) {
