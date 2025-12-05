@@ -596,11 +596,17 @@ public class NetworkFieldTypes {
                 NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
-                if (genericType instanceof ParameterizedType) {
-                    Type[] types = ((ParameterizedType) genericType).getActualTypeArguments();
+                if (genericType instanceof ParameterizedType p) {
+                    Type[] types = p.getActualTypeArguments();
                     if (types.length == 1) {
-                        subClass = (Class) ((ParameterizedType) genericType).getActualTypeArguments()[0];
-                        subType = types[0];
+                        if (p.getActualTypeArguments()[0] instanceof ParameterizedType p2) {
+                            subClass = (Class) p2.getRawType();
+                            subType = types[0];
+                        } else {
+                            subClass = (Class) p.getActualTypeArguments()[0];
+                            subType = types[0];
+                        }
+                        
                         subParser = get(subClass, subType);
                         if (subParser == null)
                             throw new RuntimeException("Invalid class type " + classType.getComponentType().getName());
@@ -619,11 +625,16 @@ public class NetworkFieldTypes {
                 NetworkFieldType subParser;
                 Class subClass;
                 Type subType;
-                if (genericType instanceof ParameterizedType) {
-                    Type[] types = ((ParameterizedType) genericType).getActualTypeArguments();
+                if (genericType instanceof ParameterizedType p) {
+                    Type[] types = p.getActualTypeArguments();
                     if (types.length == 1) {
-                        subClass = (Class) ((ParameterizedType) genericType).getActualTypeArguments()[0];
-                        subType = types[0];
+                        if (p.getActualTypeArguments()[0] instanceof ParameterizedType p2) {
+                            subClass = (Class) p2.getRawType();
+                            subType = types[0];
+                        } else {
+                            subClass = (Class) p.getActualTypeArguments()[0];
+                            subType = types[0];
+                        }
                         subParser = get(subClass, subType);
                         if (subParser == null)
                             throw new RuntimeException("Invalid class type " + classType.getComponentType().getName());
