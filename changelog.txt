@@ -1,3 +1,7 @@
+2.13.19
+Fixed not being able to send nested lists via network
+Fixed not being able to send component via network
+
 2.13.18
 Added hex configuration to color picker
 Made permission group use a combobox instead of a textfield to specify usergroup
