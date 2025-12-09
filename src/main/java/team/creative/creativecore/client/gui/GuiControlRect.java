@@ -73,6 +73,10 @@ public class GuiControlRect {
         return left;
     }
     
+    public int centerX() {
+        return (left + right) / 2;
+    }
+    
     public void setX(int x) {
         int width = getWidth();
         left = x;
@@ -81,6 +85,10 @@ public class GuiControlRect {
     
     public int getY() {
         return top;
+    }
+    
+    public int centerY() {
+        return (top + bottom) / 2;
     }
     
     public void setY(int y) {
