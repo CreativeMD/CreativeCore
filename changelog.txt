@@ -1,3 +1,6 @@
+2.13.20
+Added centerX and centerY to GuiControlRect
+
 2.13.19
 Fixed not being able to send nested lists via network
 Fixed not being able to send component via network
