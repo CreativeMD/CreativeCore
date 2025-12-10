@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -30,7 +30,7 @@ public class CreativeIngredientBlockTag extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        tag = TagKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getStringOr("tag", "")));
+        tag = TagKey.create(Registries.BLOCK, Identifier.parse(nbt.getStringOr("tag", "")));
     }
     
     @Override

@@ -21,7 +21,7 @@ public class SortingBlockList {
     }
     
     public SortingBlockList add(Block block) {
-        blocks.add(block.builtInRegistryHolder().unwrapKey().get().location());
+        blocks.add(block.builtInRegistryHolder().unwrapKey().get().identifier());
         return this;
     }
     
@@ -33,7 +33,7 @@ public class SortingBlockList {
         for (TagKey<Block> tag : tags)
             if (block.builtInRegistryHolder().is(tag))
                 return true;
-        return blocks.contains(block.builtInRegistryHolder().unwrapKey().get().location());
+        return blocks.contains(block.builtInRegistryHolder().unwrapKey().get().identifier());
     }
     
 }

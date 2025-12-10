@@ -17,7 +17,7 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.GuiRenderState;
 import net.minecraft.client.gui.render.state.GuiTextRenderState;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +54,7 @@ public interface CreativeGuiGraphics {
     
     public default void drawString(FormattedCharSequence text, int x, int y, int color, int shadowColor, boolean shadow) {
         if (ARGB.alpha(color) != 0)
-            guiRenderState().submitText(new GuiTextRenderState(font(), text, new Matrix3x2f(pose()), x, y, color, shadowColor, shadow, peekScissor()));
+            guiRenderState().submitText(new GuiTextRenderState(font(), text, new Matrix3x2f(pose()), x, y, color, shadowColor, shadow, true, peekScissor()));
     }
     
     public default void horizontalGradientRect(int x, int y, int x2, int y2, int colorFrom, int colorTo) {
@@ -89,44 +89,44 @@ public interface CreativeGuiGraphics {
         guiRenderState().submitGuiElement(new ColorRectF(RenderPipelines.GUI, TextureSetup.noTexture(), pose(), x, y, x + width, y + height, color, peekScissor()));
     }
     
-    public default void textureRect(ResourceLocation location, int x, int y, int width, int height, float u, float v) {
+    public default void textureRect(Identifier location, int x, int y, int width, int height, float u, float v) {
         int textureWidth = 256;
         int textureHeight = 256;
         blit(RenderPipelines.GUI_TEXTURED, location, x, x + width, y, y + height, u / textureWidth, (u + width) / textureWidth, v / textureHeight, (v + height) / textureHeight,
             -1);
     }
     
-    public default void textureRect(ResourceLocation location, float x, float y, float width, float height, float u, float v) {
+    public default void textureRect(Identifier location, float x, float y, float width, float height, float u, float v) {
         int textureWidth = 256;
         int textureHeight = 256;
         blit(RenderPipelines.GUI_TEXTURED, location, (int) x, (int) (x + width), (int) y, (int) (y + height), u / textureWidth, (u + width) / textureWidth, v / textureHeight,
             (v + height) / textureHeight, -1);
     }
     
-    public default void textureRect(ResourceLocation location, int x, int y, int width, int height, float u, float v, float u2, float v2) {
+    public default void textureRect(Identifier location, int x, int y, int width, int height, float u, float v, float u2, float v2) {
         int textureWidth = 256;
         int textureHeight = 256;
         blit(RenderPipelines.GUI_TEXTURED, location, x, x + width, y, y + height, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight, -1);
     }
     
-    public default void textureRect(ResourceLocation location, float x, float y, float width, float height, float u, float v, float u2, float v2) {
+    public default void textureRect(Identifier location, float x, float y, float width, float height, float u, float v, float u2, float v2) {
         int textureWidth = 256;
         int textureHeight = 256;
         blit(RenderPipelines.GUI_TEXTURED, location, (int) x, (int) (x + width), (int) y, (int) (y + height), u / textureWidth, u2 / textureWidth, v / textureHeight,
             v2 / textureHeight, -1);
     }
     
-    public default void textureRectColor(ResourceLocation location, int x, int y, int width, int height, float u, float v, float u2, float v2, int color) {
+    public default void textureRectColor(Identifier location, int x, int y, int width, int height, float u, float v, float u2, float v2, int color) {
         int textureWidth = 256;
         int textureHeight = 256;
         blit(RenderPipelines.GUI_TEXTURED, location, x, x + width, y, y + height, u / textureWidth, u2 / textureWidth, v / textureHeight, v2 / textureHeight, color);
     }
     
-    public default void textureRectStrechted(ResourceLocation location, int x, int y, int width, int height) {
+    public default void textureRectStrechted(Identifier location, int x, int y, int width, int height) {
         blit(RenderPipelines.GUI_TEXTURED, location, x, x + width, y, y + height, 0, 1, 0, 1, -1);
     }
     
-    public default void textureRectColorStretched(ResourceLocation location, int x, int y, int width, int height, int color) {
+    public default void textureRectColorStretched(Identifier location, int x, int y, int width, int height, int color) {
         blit(RenderPipelines.GUI_TEXTURED, location, x, x + width, y, y + height, 0, 1, 0, 1, color);
     }
     
@@ -138,7 +138,7 @@ public interface CreativeGuiGraphics {
         as().renderItemDecorations(font(), stack, x, y, text);
     }
     
-    public void blit(RenderPipeline renderPipeline, ResourceLocation resourceLocation, int x0, int x1, int y0, int y1, float u, float u2, float v, float v2, int color);
+    public void blit(RenderPipeline renderPipeline, Identifier resourceLocation, int x0, int x1, int y0, int y1, float u, float u2, float v, float v2, int color);
     
     public GuiGraphics as();
     

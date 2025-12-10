@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class CreativeNetworkPacket<T extends CreativePacket> {
     
@@ -19,9 +19,9 @@ public class CreativeNetworkPacket<T extends CreativePacket> {
     public List<CreativeNetworkField> parsers = new ArrayList<>();
     public final boolean fabric;
     
-    public CreativeNetworkPacket(ResourceLocation id, Class<T> classType, Supplier<T> supplier, boolean fabric) {
-        this.sid = new CustomPacketPayload.Type(ResourceLocation.tryBuild(id.getNamespace(), id.getPath() + "s"));
-        this.cid = new CustomPacketPayload.Type(ResourceLocation.tryBuild(id.getNamespace(), id.getPath() + "c"));
+    public CreativeNetworkPacket(Identifier id, Class<T> classType, Supplier<T> supplier, boolean fabric) {
+        this.sid = new CustomPacketPayload.Type(Identifier.tryBuild(id.getNamespace(), id.getPath() + "s"));
+        this.cid = new CustomPacketPayload.Type(Identifier.tryBuild(id.getNamespace(), id.getPath() + "c"));
         this.classType = classType;
         this.supplier = supplier;
         this.fabric = fabric;

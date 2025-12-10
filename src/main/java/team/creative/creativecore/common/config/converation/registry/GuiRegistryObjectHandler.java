@@ -3,7 +3,7 @@ package team.creative.creativecore.common.config.converation.registry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import team.creative.creativecore.common.gui.GuiParent;
@@ -18,22 +18,22 @@ public abstract class GuiRegistryObjectHandler {
         
         @Override
         public void createControls(GuiParent parent, Registry registry) {
-            parent.add(new GuiComboBox<ResourceLocation>(parent, "elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.keySet(), x -> {
-                if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
+            parent.add(new GuiComboBox<Identifier>(parent, "elements", new TextMapBuilder<Identifier>().addComponent(registry.keySet(), x -> {
+                if (x.getNamespace().equals(Identifier.DEFAULT_NAMESPACE))
                     return Component.literal(x.getPath());
                 return Component.literal(x.toString());
             })));
         }
         
         @Override
-        public void loadValue(GuiParent parent, Registry registry, ResourceLocation location) {
-            GuiComboBox<ResourceLocation> box = parent.get("elements");
+        public void loadValue(GuiParent parent, Registry registry, Identifier location) {
+            GuiComboBox<Identifier> box = parent.get("elements");
             box.select(location);
         }
         
         @Override
-        public ResourceLocation saveValue(GuiParent parent, Registry registry) {
-            GuiComboBox<ResourceLocation> box = parent.get("elements");
+        public Identifier saveValue(GuiParent parent, Registry registry) {
+            GuiComboBox<Identifier> box = parent.get("elements");
             return box.selected();
         }
         
@@ -48,17 +48,17 @@ public abstract class GuiRegistryObjectHandler {
             }
             
             @Override
-            public void loadValue(GuiParent parent, Registry registry, ResourceLocation location) {
+            public void loadValue(GuiParent parent, Registry registry, Identifier location) {
                 GuiStackSelector selector = parent.get("content");
                 Block block = (Block) registry.getValue(location);
                 selector.setSelectedForce(new ItemStack(block));
             }
             
             @Override
-            public ResourceLocation saveValue(GuiParent parent, Registry registry) {
+            public Identifier saveValue(GuiParent parent, Registry registry) {
                 GuiStackSelector selector = parent.get("content");
                 Block block = Block.byItem(selector.getSelected().getItem());
-                return block.builtInRegistryHolder().unwrapKey().get().location();
+                return block.builtInRegistryHolder().unwrapKey().get().identifier();
             }
             
         });
@@ -66,8 +66,8 @@ public abstract class GuiRegistryObjectHandler {
     
     public abstract void createControls(GuiParent parent, Registry registry);
     
-    public abstract void loadValue(GuiParent parent, Registry registry, ResourceLocation location);
+    public abstract void loadValue(GuiParent parent, Registry registry, Identifier location);
     
-    public abstract ResourceLocation saveValue(GuiParent parent, Registry registry);
+    public abstract Identifier saveValue(GuiParent parent, Registry registry);
     
 }

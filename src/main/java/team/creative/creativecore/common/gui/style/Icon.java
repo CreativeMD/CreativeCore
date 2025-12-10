@@ -1,8 +1,8 @@
 package team.creative.creativecore.common.gui.style;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public record Icon(ResourceLocation location, int minX, int minY, int width, int height) {
+public record Icon(Identifier identifier, int minX, int minY, int width, int height) {
     
     public static final Icon EMPTY = new Icon(GuiStyleUtils.GUI_ASSETS, 224, 224, 16, 16);
     public static final Icon ARROW_RIGHT = new Icon(GuiStyleUtils.GUI_ASSETS, 240, 0, 16, 16);

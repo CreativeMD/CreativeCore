@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.gui.style.display;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 
 public class DisplayTextureRepeat extends DisplayTexture {
@@ -13,8 +13,8 @@ public class DisplayTextureRepeat extends DisplayTexture {
         super();
     }
     
-    public DisplayTextureRepeat(ResourceLocation location, int u, int v, int width, int height) {
-        super(location, u, v);
+    public DisplayTextureRepeat(Identifier identifier, int u, int v, int width, int height) {
+        super(identifier, u, v);
         this.w = width;
         this.h = height;
     }
@@ -27,7 +27,7 @@ public class DisplayTextureRepeat extends DisplayTexture {
             int renderedWidth = Math.min(w, (int) width - renderedX);
             while (renderedY < (int) height) {
                 int renderedHeight = Math.min(h, (int) height - renderedY);
-                ((CreativeGuiGraphics) graphics).textureRect(location, (int) x + renderedX, renderedY, (int) y + renderedWidth, renderedHeight, u, v, u + renderedWidth,
+                ((CreativeGuiGraphics) graphics).textureRect(identifier, (int) x + renderedX, renderedY, (int) y + renderedWidth, renderedHeight, u, v, u + renderedWidth,
                     v + renderedHeight);
                 renderedY += renderedHeight;
             }

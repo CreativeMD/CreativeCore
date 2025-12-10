@@ -70,7 +70,7 @@ public class GuiClientIcon<T extends GuiIcon> extends GuiClientControl<T> implem
         Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         
-        var location = this.icon.location();
+        var identifier = this.icon.identifier();
         
         int x = 0, y = 0, width = rect.getContentWidth(), height = rect.getContentHeight();
         if (squared) {
@@ -84,11 +84,11 @@ public class GuiClientIcon<T extends GuiIcon> extends GuiClientControl<T> implem
         }
         
         if (this.shadow != Color.NONE) {
-            ((CreativeGuiGraphics) graphics).textureRectColor(location, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(),
+            ((CreativeGuiGraphics) graphics).textureRectColor(identifier, x + 1, y + 1, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(),
                 this.icon.minY() + this.icon.height(), shadow.toInt());
         }
         
-        ((CreativeGuiGraphics) graphics).textureRectColor(location, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
+        ((CreativeGuiGraphics) graphics).textureRectColor(identifier, x, y, width, height, this.icon.minX(), this.icon.minY(), this.icon.minX() + this.icon.width(), this.icon
                 .minY() + this.icon.height(), color.toInt());
         pose.popMatrix();
     }

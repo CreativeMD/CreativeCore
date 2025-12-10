@@ -1,24 +1,24 @@
 package team.creative.creativecore.common.config.premade;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
 public class SoundConfig {
     
-    public ResourceLocation event;
+    public Identifier event;
     public float volume;
     public float pitch;
     
-    public SoundConfig(ResourceLocation location, float volume, float pitch) {
+    public SoundConfig(Identifier location, float volume, float pitch) {
         this.event = location;
         this.volume = volume;
         this.pitch = pitch;
     }
     
-    public SoundConfig(ResourceLocation location) {
+    public SoundConfig(Identifier location) {
         this(location, 1, 1);
     }
     

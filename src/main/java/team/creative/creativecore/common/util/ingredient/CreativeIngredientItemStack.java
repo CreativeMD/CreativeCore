@@ -12,7 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import team.creative.creativecore.common.util.type.itr.FunctionIterator;
@@ -20,13 +20,13 @@ import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 public class CreativeIngredientItemStack extends CreativeIngredient {
     
     public ItemStack stack;
-    private List<ResourceLocation> included = Collections.EMPTY_LIST;
+    private List<Identifier> included = Collections.EMPTY_LIST;
     
     public CreativeIngredientItemStack(ItemStack stack) {
         this.stack = stack;
     }
     
-    public CreativeIngredientItemStack(ItemStack stack, List<ResourceLocation> included) {
+    public CreativeIngredientItemStack(ItemStack stack, List<Identifier> included) {
         this.stack = stack;
         this.included = included;
     }
@@ -35,7 +35,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
         super();
     }
     
-    public List<ResourceLocation> getIncluded() {
+    public List<Identifier> getIncluded() {
         return new ArrayList<>(included);
     }
     
@@ -53,7 +53,7 @@ public class CreativeIngredientItemStack extends CreativeIngredient {
             included = new ArrayList<>();
             var array = nbt.getStringOr("included", "").split(";");
             for (int i = 0; i < array.length; i++)
-                included.add(ResourceLocation.parse(array[i]));
+                included.add(Identifier.parse(array[i]));
         }
     }
     

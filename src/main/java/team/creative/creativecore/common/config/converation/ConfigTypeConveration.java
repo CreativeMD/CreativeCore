@@ -19,7 +19,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObject;
@@ -280,17 +280,17 @@ public abstract class ConfigTypeConveration<T> {
         });
         registerTypeCreator(String.class, () -> "");
         
-        registerType(ResourceLocation.class, new SimpleConfigTypeConveration<>() {
+        registerType(Identifier.class, new SimpleConfigTypeConveration<>() {
             
             @Override
-            public ResourceLocation readElement(ConfigKey key, ResourceLocation defaultValue, Side side, JsonElement element) {
+            public Identifier readElement(ConfigKey key, Identifier defaultValue, Side side, JsonElement element) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
-                    return ResourceLocation.parse(element.getAsString());
+                    return Identifier.parse(element.getAsString());
                 return defaultValue;
             }
             
             @Override
-            public JsonElement writeElement(ResourceLocation value, ConfigKey key, Side side) {
+            public JsonElement writeElement(Identifier value, ConfigKey key, Side side) {
                 return new JsonPrimitive(value.toString());
             }
             
@@ -300,24 +300,24 @@ public abstract class ConfigTypeConveration<T> {
             }
             
             @Override
-            public void loadValue(ResourceLocation value, GuiParent parent) {
+            public void loadValue(Identifier value, GuiParent parent) {
                 GuiTextfield button = parent.get("data");
                 button.setText(value.toString());
             }
             
             @Override
-            protected ResourceLocation saveValue(GuiParent parent, ConfigKey key) {
+            protected Identifier saveValue(GuiParent parent, ConfigKey key) {
                 GuiTextfield button = parent.get("data");
-                return ResourceLocation.parse(button.getText());
+                return Identifier.parse(button.getText());
             }
             
             @Override
-            public ResourceLocation set(ConfigKey key, ResourceLocation value) {
+            public Identifier set(ConfigKey key, Identifier value) {
                 return value;
             }
             
         });
-        registerTypeCreator(ResourceLocation.class, () -> ResourceLocation.withDefaultNamespace(""));
+        registerTypeCreator(Identifier.class, () -> Identifier.withDefaultNamespace(""));
         
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
@@ -325,8 +325,8 @@ public abstract class ConfigTypeConveration<T> {
             public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side,
                     ConfigKey key) {
                 if (element.isJsonObject())
-                    return new SoundConfig(ResourceLocation.parse(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume")
-                            .getAsFloat(), element.getAsJsonObject().get("pitch").getAsFloat());
+                    return new SoundConfig(Identifier.parse(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume").getAsFloat(), element
+                            .getAsJsonObject().get("pitch").getAsFloat());
                 return defaultValue;
             }
             
@@ -342,8 +342,8 @@ public abstract class ConfigTypeConveration<T> {
             @Override
             public void createControls(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
                 parent.setFlow(GuiFlow.STACK_Y);
-                parent.add(new GuiComboBox<>(parent, "sound", new TextMapBuilder<ResourceLocation>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
-                    if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
+                parent.add(new GuiComboBox<>(parent, "sound", new TextMapBuilder<Identifier>().addComponent(BuiltInRegistries.SOUND_EVENT.keySet(), x -> {
+                    if (x.getNamespace().equals(Identifier.DEFAULT_NAMESPACE))
                         return Component.literal(x.getPath());
                     return Component.literal(x.toString());
                 })).setSearchbar(true));
@@ -355,7 +355,7 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             public void loadValue(SoundConfig value, SoundConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiComboBox<ResourceLocation> box = parent.get("sound");
+                GuiComboBox<Identifier> box = parent.get("sound");
                 GuiSlider volume = parent.get("volume");
                 GuiSlider pitch = parent.get("pitch");
                 
@@ -366,7 +366,7 @@ public abstract class ConfigTypeConveration<T> {
             
             @Override
             protected SoundConfig saveValue(GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-                GuiComboBox<ResourceLocation> box = parent.get("sound");
+                GuiComboBox<Identifier> box = parent.get("sound");
                 GuiSlider volume = parent.get("volume");
                 GuiSlider pitch = parent.get("pitch");
                 
@@ -379,7 +379,7 @@ public abstract class ConfigTypeConveration<T> {
             }
             
         });
-        registerTypeCreator(SoundConfig.class, () -> new SoundConfig(ResourceLocation.withDefaultNamespace("missing")));
+        registerTypeCreator(SoundConfig.class, () -> new SoundConfig(Identifier.withDefaultNamespace("missing")));
         
         registerType(RegistryObjectConfig.class, new ConfigTypeRegistryObject());
         registerType(RegistryObjectListConfig.class, new ConfigTypeRegistryObjectList());
@@ -446,7 +446,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(NamedList.class, new ConfigTypeNamedList());
         registerType(Permission.class, new ConfigTypePermission());
         
-        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, ResourceLocation.withDefaultNamespace("slowness"), 2, 1, false));
+        registerTypeCreator(MobEffectConfig.class, () -> new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, Identifier.withDefaultNamespace("slowness"), 2, 1, false));
         
         registerType(ToggleableConfig.class, new ConfigTypeToggleable());
         

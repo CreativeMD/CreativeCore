@@ -33,8 +33,8 @@ import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.network.protocol.BundlePacket;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -340,18 +340,18 @@ public class NetworkFieldTypes {
             }
         }, ItemStack.class);
         
-        register(new NetworkFieldTypeClass<ResourceLocation>() {
+        register(new NetworkFieldTypeClass<Identifier>() {
             
             @Override
-            protected void writeContent(ResourceLocation content, RegistryFriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(content);
+            protected void writeContent(Identifier content, RegistryFriendlyByteBuf buffer) {
+                buffer.writeIdentifier(content);
             }
             
             @Override
-            protected ResourceLocation readContent(RegistryFriendlyByteBuf buffer) {
-                return buffer.readResourceLocation();
+            protected Identifier readContent(RegistryFriendlyByteBuf buffer) {
+                return buffer.readIdentifier();
             }
-        }, ResourceLocation.class);
+        }, Identifier.class);
         
         register(new NetworkFieldTypeClass<BlockState>() {
             
@@ -370,12 +370,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Block content, RegistryFriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(content));
+                buffer.writeIdentifier(BuiltInRegistries.BLOCK.getKey(content));
             }
             
             @Override
             protected Block readContent(RegistryFriendlyByteBuf buffer) {
-                return BuiltInRegistries.BLOCK.getValue(buffer.readResourceLocation());
+                return BuiltInRegistries.BLOCK.getValue(buffer.readIdentifier());
             }
         }, Block.class);
         
@@ -383,12 +383,12 @@ public class NetworkFieldTypes {
             
             @Override
             protected void writeContent(Item content, RegistryFriendlyByteBuf buffer) {
-                buffer.writeResourceLocation(BuiltInRegistries.ITEM.getKey(content));
+                buffer.writeIdentifier(BuiltInRegistries.ITEM.getKey(content));
             }
             
             @Override
             protected Item readContent(RegistryFriendlyByteBuf buffer) {
-                return BuiltInRegistries.ITEM.getValue(buffer.readResourceLocation());
+                return BuiltInRegistries.ITEM.getValue(buffer.readIdentifier());
             }
         }, Item.class);
         
@@ -553,13 +553,13 @@ public class NetworkFieldTypes {
             @Override
             protected void writeContent(Holder content, RegistryFriendlyByteBuf buffer) {
                 ResourceKey key = (ResourceKey) content.unwrapKey().get();
-                buffer.writeResourceLocation(key.registry());
-                buffer.writeResourceLocation(key.location());
+                buffer.writeIdentifier(key.registry());
+                buffer.writeIdentifier(key.identifier());
             }
             
             @Override
             protected Holder readContent(RegistryFriendlyByteBuf buffer) {
-                ResourceKey<?> key = ResourceKey.create(buffer.readRegistryKey(), buffer.readResourceLocation());
+                ResourceKey<?> key = ResourceKey.create(buffer.readRegistryKey(), buffer.readIdentifier());
                 RegistryLookup l = buffer.registryAccess().lookupOrThrow(key.registryKey());
                 return l.getOrThrow(key);
             }

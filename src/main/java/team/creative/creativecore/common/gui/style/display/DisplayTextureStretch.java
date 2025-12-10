@@ -1,7 +1,7 @@
 package team.creative.creativecore.common.gui.style.display;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 
 public class DisplayTextureStretch extends DisplayTexture {
@@ -13,15 +13,15 @@ public class DisplayTextureStretch extends DisplayTexture {
         super();
     }
     
-    public DisplayTextureStretch(ResourceLocation location, int u, int v, int width, int height) {
-        super(location, u, v);
+    public DisplayTextureStretch(Identifier identifier, int u, int v, int width, int height) {
+        super(identifier, u, v);
         this.w = width;
         this.h = height;
     }
     
     @Override
     public void render(GuiGraphics graphics, double x, double y, double width, double height) {
-        ((CreativeGuiGraphics) graphics).textureRect(location, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
+        ((CreativeGuiGraphics) graphics).textureRect(identifier, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
     }
     
 }

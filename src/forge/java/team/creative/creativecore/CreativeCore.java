@@ -12,7 +12,7 @@ import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
@@ -55,7 +55,7 @@ public class CreativeCore {
     public static final String MODID = "creativecore";
     public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
     public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
-    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, ResourceLocation.tryBuild(CreativeCore.MODID, "main"));
+    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, Identifier.tryBuild(CreativeCore.MODID, "main"));
     public static ConfigEventHandler CONFIG_HANDLER;
     
     public static MenuType<ContainerIntegration> GUI_CONTAINER;
@@ -92,7 +92,7 @@ public class CreativeCore {
     }
     
     public void registerMenus(RegisterEvent event) {
-        event.register(Registries.MENU, (x) -> x.register(ResourceLocation.tryBuild(MODID, "container"), GUI_CONTAINER));
+        event.register(Registries.MENU, (x) -> x.register(Identifier.tryBuild(MODID, "container"), GUI_CONTAINER));
     }
     
     private void server(final ServerStartingEvent event) {

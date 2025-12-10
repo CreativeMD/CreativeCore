@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -95,7 +95,7 @@ public class CreativeCoreClient {
     }
     
     public static void reloadListener(AddClientReloadListenersEvent event) {
-        event.addListener(ResourceLocation.tryBuild(CreativeCore.MODID, "gui"), new SimplePreparableReloadListener() {
+        event.addListener(Identifier.tryBuild(CreativeCore.MODID, "gui"), new SimplePreparableReloadListener() {
             
             @Override
             protected Object prepare(ResourceManager p_10796_, ProfilerFiller p_10797_) {

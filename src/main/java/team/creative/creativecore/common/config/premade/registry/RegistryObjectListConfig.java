@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
 public class RegistryObjectListConfig<T> implements Iterable<T> {
@@ -17,9 +17,9 @@ public class RegistryObjectListConfig<T> implements Iterable<T> {
         this.registry = registry;
     }
     
-    public void add(ResourceLocation location) {
-        if (!contains(location))
-            content.add(new RegistryHolder(location));
+    public void add(Identifier identifier) {
+        if (!contains(identifier))
+            content.add(new RegistryHolder(identifier));
     }
     
     @Override
@@ -27,19 +27,19 @@ public class RegistryObjectListConfig<T> implements Iterable<T> {
         return new FunctionIterator<>(content, x -> x.get());
     }
     
-    public Iterable<ResourceLocation> locations() {
-        return new FunctionIterator<>(content, x -> x.location);
+    public Iterable<Identifier> identifiers() {
+        return new FunctionIterator<>(content, x -> x.identifier);
     }
     
-    public boolean contains(ResourceLocation location) {
+    public boolean contains(Identifier location) {
         for (int i = 0; i < content.size(); i++)
-            if (content.get(i).location.equals(location))
+            if (content.get(i).identifier.equals(location))
                 return true;
         return false;
     }
     
-    public ResourceLocation getLocation(int index) {
-        return content.get(index).location;
+    public Identifier getLocation(int index) {
+        return content.get(index).identifier;
     }
     
     public int size() {
@@ -48,28 +48,28 @@ public class RegistryObjectListConfig<T> implements Iterable<T> {
     
     public class RegistryHolder {
         
-        public final ResourceLocation location;
+        public final Identifier identifier;
         private T cache;
         
-        public RegistryHolder(ResourceLocation location) {
-            this.location = location;
+        public RegistryHolder(Identifier identifier) {
+            this.identifier = identifier;
         }
         
         @Override
         public int hashCode() {
-            return location.hashCode();
+            return identifier.hashCode();
         }
         
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof RegistryObjectListConfig.RegistryHolder h)
-                return h.location.equals(location);
+                return h.identifier.equals(identifier);
             return super.equals(obj);
         }
         
         public T get() {
             if (cache == null)
-                cache = registry.getValue(location);
+                cache = registry.getValue(identifier);
             return cache;
             
         }

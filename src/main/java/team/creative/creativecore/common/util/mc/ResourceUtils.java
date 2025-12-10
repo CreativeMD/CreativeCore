@@ -4,12 +4,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import net.minecraft.FileUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.util.FileUtil;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.mixin.FilePackResourcesAccessor;
 import team.creative.creativecore.mixin.PathPackResourcesAccessor;
@@ -18,11 +18,11 @@ import team.creative.creativecore.mixin.VanillaPackResourcesAccessor;
 
 public class ResourceUtils {
     
-    public static long length(PackType type, Resource resource, ResourceLocation location) {
+    public static long length(PackType type, Resource resource, Identifier location) {
         return length(type, resource.source(), location);
     }
     
-    public static long length(PackType type, PackResources source, ResourceLocation location) {
+    public static long length(PackType type, PackResources source, Identifier location) {
         if (source instanceof FilePackResourcesAccessor zip) {
             var entry = ((SharedZipFileAccessAccessor) zip.getZipFileAccess()).callGetOrCreateZipFile().getEntry(FilePackResourcesAccessor.callGetPathFromLocation(type, location));
             if (entry != null)
@@ -47,7 +47,7 @@ public class ResourceUtils {
         return 0;
     }
     
-    private static Path resolve(List<Path> rootPaths, ResourceLocation location, List<String> parts) {
+    private static Path resolve(List<Path> rootPaths, Identifier location, List<String> parts) {
         for (Path path : rootPaths) {
             Path path1 = FileUtil.resolvePath(path.resolve(location.getNamespace()), parts);
             if (Files.exists(path1) && PathPackResources.validatePath(path1))

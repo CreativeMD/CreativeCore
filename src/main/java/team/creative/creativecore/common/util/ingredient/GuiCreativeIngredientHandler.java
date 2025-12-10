@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -97,7 +97,7 @@ public abstract class GuiCreativeIngredientHandler {
                         nbt = nbt.getCompoundOrEmpty("components");
                         if (!nbt.isEmpty())
                             for (String component : nbt.keySet()) {
-                                var location = ResourceLocation.parse(component);
+                                var location = Identifier.parse(component);
                                 var type = BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(location);
                                 map.addComponent(type, Component.literal(component).append(": ").append(Component.literal(nbt.get(component).asString().get()).withStyle(
                                     ChatFormatting.GRAY)));
@@ -240,9 +240,9 @@ public abstract class GuiCreativeIngredientHandler {
     
     public static class GuiDataCheckList extends GuiCheckList<DataComponentType<?>> {
         
-        public List<ResourceLocation> included;
+        public List<Identifier> included;
         
-        public GuiDataCheckList(IGuiParent parent, String name, boolean modifiable, TextMapBuilder<DataComponentType<?>> map, List<ResourceLocation> included) {
+        public GuiDataCheckList(IGuiParent parent, String name, boolean modifiable, TextMapBuilder<DataComponentType<?>> map, List<Identifier> included) {
             super(parent, name, modifiable, map, null);
             this.included = included;
         }
@@ -251,8 +251,8 @@ public abstract class GuiCreativeIngredientHandler {
             return included.contains(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(type));
         }
         
-        public List<ResourceLocation> getConfiguredIncluded() {
-            List<ResourceLocation> included = new ArrayList<>();
+        public List<Identifier> getConfiguredIncluded() {
+            List<Identifier> included = new ArrayList<>();
             for (GuiCheckList<DataComponentType<?>>.GuiCheckListRow row : rows)
                 if (row.checkBox.get())
                     included.add(BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(row.value));

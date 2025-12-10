@@ -6,12 +6,12 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class LocatedHandlerRegistry<T> {
     
-    private final HashMap<ResourceLocation, T> handlers = new LinkedHashMap<>();
-    private final HashMap<T, ResourceLocation> handlersInv = new LinkedHashMap<>();
+    private final HashMap<Identifier, T> handlers = new LinkedHashMap<>();
+    private final HashMap<T, Identifier> handlersInv = new LinkedHashMap<>();
     private T defaultHandler;
     private boolean allowOverwrite = false;
     
@@ -28,42 +28,42 @@ public class LocatedHandlerRegistry<T> {
         return defaultHandler;
     }
     
-    public void register(ResourceLocation id, T handler) {
+    public void register(Identifier id, T handler) {
         if (!allowOverwrite && handlers.containsKey(id))
             throw new IllegalArgumentException("'" + id + "' already exists");
         handlers.put(id, handler);
         handlersInv.put(handler, id);
     }
     
-    public void registerDefault(ResourceLocation id, T handler) {
+    public void registerDefault(Identifier id, T handler) {
         defaultHandler = handler;
         register(id, handler);
     }
     
-    public ResourceLocation getLocation(T type) {
+    public Identifier getLocation(T type) {
         return handlersInv.get(type);
     }
     
-    public T get(ResourceLocation id) {
+    public T get(Identifier id) {
         return handlers.getOrDefault(id, defaultHandler);
     }
     
-    public T getOrThrow(ResourceLocation id) {
+    public T getOrThrow(Identifier id) {
         T handler = handlers.get(id);
         if (handler == null)
             throw new IllegalArgumentException("'" + id + "' does not exist");
         return handler;
     }
     
-    public boolean contains(ResourceLocation id) {
+    public boolean contains(Identifier id) {
         return handlers.containsKey(id);
     }
     
-    public Collection<ResourceLocation> keys() {
+    public Collection<Identifier> keys() {
         return handlers.keySet();
     }
     
-    public Set<Entry<ResourceLocation, T>> entrySet() {
+    public Set<Entry<Identifier, T>> entrySet() {
         return handlers.entrySet();
     }
     

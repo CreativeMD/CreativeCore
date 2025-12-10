@@ -3,6 +3,7 @@ package team.creative.creativecore.common.config.sync;
 import com.google.gson.JsonObject;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
@@ -31,7 +32,7 @@ public class ConfigurationChangePacket extends CreativePacket {
     
     @Override
     public void executeServer(ServerPlayer player) {
-        if (player.hasPermissions(2)) {
+        if (player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
             CreativeConfigRegistry.ROOT.followPath(path).load(player.registryAccess(), false, true, json, Side.SERVER);
             CreativeCore.CONFIG_HANDLER.save(player.registryAccess(), Side.SERVER);
             CreativeCore.CONFIG_HANDLER.syncAll(player.level().getServer());

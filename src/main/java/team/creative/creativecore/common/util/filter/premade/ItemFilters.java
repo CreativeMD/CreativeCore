@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import team.creative.creativecore.common.util.CompoundSerializer;
 import team.creative.creativecore.common.util.filter.Filter;
@@ -53,7 +53,7 @@ public class ItemFilters {
         
         @SuppressWarnings("unused")
         public ItemFilter(CompoundTag nbt) {
-            this.item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(nbt.getStringOr("i", "")));
+            this.item = BuiltInRegistries.ITEM.getValue(Identifier.parse(nbt.getStringOr("i", "")));
         }
         
         @Override
@@ -83,7 +83,7 @@ public class ItemFilters {
             ListTag list = nbt.getListOrEmpty("i");
             this.items = new Item[list.size()];
             for (int i = 0; i < items.length; i++)
-                items[i] = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(list.getStringOr(i, "")));
+                items[i] = BuiltInRegistries.ITEM.getValue(Identifier.parse(list.getStringOr(i, "")));
         }
         
         @Override

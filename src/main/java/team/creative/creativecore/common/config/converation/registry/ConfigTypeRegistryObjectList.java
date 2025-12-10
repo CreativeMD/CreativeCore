@@ -9,7 +9,7 @@ import com.google.gson.JsonElement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -30,7 +30,7 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
             RegistryObjectListConfig list = new RegistryObjectListConfig(defaultValue.registry);
             JsonArray array = element.getAsJsonArray();
             for (int i = 0; i < array.size(); i++)
-                list.add(ResourceLocation.parse(array.get(i).getAsString()));
+                list.add(Identifier.parse(array.get(i).getAsString()));
             return list;
         }
         return defaultValue;
@@ -39,7 +39,7 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
     @Override
     public JsonElement writeElement(HolderLookup.Provider provider, RegistryObjectListConfig value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
         JsonArray array = new JsonArray(value.size());
-        for (ResourceLocation location : (Iterable<ResourceLocation>) value.locations())
+        for (Identifier location : (Iterable<Identifier>) value.identifiers())
             array.add(location.toString());
         return array;
     }
@@ -69,7 +69,7 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
             listBox.addItem(entry.setExpandableX());
         });
         
-        for (ResourceLocation location : (Iterable<ResourceLocation>) value.locations()) {
+        for (Identifier location : (Iterable<Identifier>) value.identifiers()) {
             GuiParent entry = new GuiParent(parent).setAlign(Align.STRETCH);
             GuiRegistryObjectHandler.REGISTRY.get(value.registry).createControls(entry, value.registry);
             GuiRegistryObjectHandler.REGISTRY.get(value.registry).loadValue(entry, value.registry, location);
@@ -102,8 +102,8 @@ public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<Registry
         if (one.registry != two.registry)
             return false;
         
-        List<ResourceLocation> copy = new ArrayList<>();
-        for (ResourceLocation location : (Iterable<ResourceLocation>) two.locations())
+        List<Identifier> copy = new ArrayList<>();
+        for (Identifier location : (Iterable<Identifier>) two.identifiers())
             copy.add(location);
         for (int i = 0; i < one.size(); i++)
             if (!copy.remove(one.getLocation(i)))

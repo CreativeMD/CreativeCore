@@ -289,8 +289,8 @@ public abstract class PlayerSelector {
             if (player instanceof ServerPlayer) {
                 ServerOpListEntry entry = player.level().getServer().getPlayerList().getOps().get(player.nameAndId());
                 if (entry != null)
-                    return entry.getLevel() >= permissionLevel;
-                return player.level().getServer().operatorUserPermissionLevel() >= permissionLevel;
+                    return entry.permissions().level().id() >= permissionLevel;
+                return player.level().getServer().operatorUserPermissions().level().id() >= permissionLevel;
             }
             return true;
         }

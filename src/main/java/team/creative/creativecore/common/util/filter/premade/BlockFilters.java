@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -63,7 +63,7 @@ public class BlockFilters {
         
         @SuppressWarnings("unused")
         public BlockFilter(CompoundTag nbt) {
-            this.block = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(nbt.getStringOr("b", "")));
+            this.block = BuiltInRegistries.BLOCK.getValue(Identifier.parse(nbt.getStringOr("b", "")));
         }
         
         @Override
@@ -93,7 +93,7 @@ public class BlockFilters {
             ListTag list = nbt.getListOrEmpty("b");
             this.blocks = new Block[list.size()];
             for (int i = 0; i < blocks.length; i++)
-                blocks[i] = BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(list.getStringOr(i, "")));
+                blocks[i] = BuiltInRegistries.BLOCK.getValue(Identifier.parse(list.getStringOr(i, "")));
         }
         
         @Override

@@ -5,8 +5,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +24,7 @@ public class CreativeIngredientBlock extends CreativeIngredient {
     
     @Override
     protected void loadExtra(HolderLookup.Provider provider, CompoundTag nbt) {
-        block = provider.lookup(Registries.BLOCK).get().get(ResourceKey.create(Registries.BLOCK, ResourceLocation.parse(nbt.getStringOr("block", "")))).orElse(Blocks.AIR
+        block = provider.lookup(Registries.BLOCK).get().get(ResourceKey.create(Registries.BLOCK, Identifier.parse(nbt.getStringOr("block", "")))).orElse(Blocks.AIR
                 .builtInRegistryHolder()).value();
     }
     

@@ -9,7 +9,7 @@ import com.google.gson.JsonElement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
@@ -31,7 +31,7 @@ public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTag
             RegistryTagListConfig list = new RegistryTagListConfig(defaultValue.registry);
             JsonArray array = element.getAsJsonArray();
             for (int i = 0; i < array.size(); i++)
-                list.add(TagKey.create(defaultValue.registry.key(), ResourceLocation.parse(array.get(i).getAsString())));
+                list.add(TagKey.create(defaultValue.registry.key(), Identifier.parse(array.get(i).getAsString())));
             return list;
         }
         return defaultValue;

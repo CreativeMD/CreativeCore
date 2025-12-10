@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
@@ -19,7 +19,7 @@ public class ConfigTypeRegistryTag extends ConfigTypeConveration<RegistryTagConf
     public RegistryTagConfig readElement(HolderLookup.Provider provider, RegistryTagConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side,
             ConfigKey key) {
         if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
-            return new RegistryTagConfig(defaultValue.registry, TagKey.create(defaultValue.registry.key(), ResourceLocation.parse(element.getAsString())));
+            return new RegistryTagConfig(defaultValue.registry, TagKey.create(defaultValue.registry.key(), Identifier.parse(element.getAsString())));
         return defaultValue;
     }
     

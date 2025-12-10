@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,11 +36,11 @@ public class CreativeNetwork {
     
     private int id = 0;
     
-    public CreativeNetwork(int version, Logger logger, ResourceLocation location) {
+    public CreativeNetwork(int version, Logger logger, Identifier identifier) {
         this.logger = logger;
         this.version = "" + version;
-        this.modid = location.getNamespace();
-        this.logger.debug("Created network " + location + "");
+        this.modid = identifier.getNamespace();
+        this.logger.debug("Created network " + identifier + "");
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::register);
     }
     
@@ -67,7 +67,7 @@ public class CreativeNetwork {
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
-        CreativeNetworkPacket handler = new CreativeNetworkPacket(ResourceLocation.tryBuild(modid, "" + id), classType, supplier, false);
+        CreativeNetworkPacket handler = new CreativeNetworkPacket(Identifier.tryBuild(modid, "" + id), classType, supplier, false);
         packetTypes.put(classType, handler);
         if (registrar != null)
             registerType(handler);

@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -18,13 +18,13 @@ public class ConfigTypeRegistryObject extends ConfigTypeConveration<RegistryObje
     public RegistryObjectConfig readElement(HolderLookup.Provider provider, RegistryObjectConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
             Side side, ConfigKey key) {
         if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
-            return new RegistryObjectConfig(defaultValue.registry, ResourceLocation.parse(element.getAsString()));
+            return new RegistryObjectConfig(defaultValue.registry, Identifier.parse(element.getAsString()));
         return defaultValue;
     }
     
     @Override
     public JsonElement writeElement(HolderLookup.Provider provider, RegistryObjectConfig value, boolean saveDefault, boolean ignoreRestart, Side side, ConfigKey key) {
-        return new JsonPrimitive(value.location.toString());
+        return new JsonPrimitive(value.identifier.toString());
     }
     
     @Override
@@ -35,7 +35,7 @@ public class ConfigTypeRegistryObject extends ConfigTypeConveration<RegistryObje
     
     @Override
     public void loadValue(RegistryObjectConfig value, RegistryObjectConfig defaultValue, GuiParent parent, IGuiConfigParent configParent, ConfigKey key, Side side) {
-        GuiRegistryObjectHandler.REGISTRY.get(value.registry).loadValue(parent, value.registry, value.location);
+        GuiRegistryObjectHandler.REGISTRY.get(value.registry).loadValue(parent, value.registry, value.identifier);
     }
     
     @Override

@@ -7,9 +7,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.util.Mth;
-import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.client.render.box.QuadGeneratorContext;
-import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -85,7 +83,7 @@ public class VectorFanClient {
     }
     
     protected static void generate(VectorFan fan, QuadGeneratorContext holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
-        int[] vertices = holder.quad.vertices().clone();
+        /*int[] vertices = holder.quad.vertices().clone();
         RenderBox box = holder.box;
         
         for (int k = 0; k < 4; k++) {
@@ -153,6 +151,8 @@ public class VectorFanClient {
         //BakedQuad quad = new CreativeBakedQuad(vertices, holder.quad, holder.box, holder.color, holder.shouldOverrideColor, holder.facing.toVanilla());
         //TODO 1.21.5 YET TO BE IMPLEMENTED
         //quads.add(quad);
+        ///
+         */
     }
     
     /*public static void renderPreview(Matrix4f matrix, VertexConsumer consumer, int red, int green, int blue, int alpha) {

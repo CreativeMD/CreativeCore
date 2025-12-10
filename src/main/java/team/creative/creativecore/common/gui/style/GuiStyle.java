@@ -16,7 +16,7 @@ import com.google.gson.annotations.SerializedName;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.style.ControlFormatting.ControlStyleBorder;
@@ -63,7 +63,7 @@ public class GuiStyle {
         if (!LOADED.getBoolean(name)) {
             try {
                 try {
-                    Resource resource = mc.getResourceManager().getResource(ResourceLocation.parse(name)).orElseThrow();
+                    Resource resource = mc.getResourceManager().getResource(Identifier.parse(name)).orElseThrow();
                     InputStream input = resource.open();
                     try {
                         JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();

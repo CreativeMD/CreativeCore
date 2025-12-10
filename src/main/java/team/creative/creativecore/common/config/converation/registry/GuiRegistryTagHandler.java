@@ -13,7 +13,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -33,8 +33,8 @@ public abstract class GuiRegistryTagHandler {
         
         @Override
         public void createControls(GuiParent parent, Registry registry) {
-            parent.add(new GuiComboBox<ResourceLocation>(parent, "elements", new TextMapBuilder<ResourceLocation>().addComponent(registry.getTags().iterator(), x -> {
-                if (x.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE))
+            parent.add(new GuiComboBox<Identifier>(parent, "elements", new TextMapBuilder<Identifier>().addComponent(registry.getTags().iterator(), x -> {
+                if (x.getNamespace().equals(Identifier.DEFAULT_NAMESPACE))
                     return Component.literal(x.getPath());
                 return Component.literal(x.toString());
             })));
@@ -42,13 +42,13 @@ public abstract class GuiRegistryTagHandler {
         
         @Override
         public void loadValue(GuiParent parent, Registry registry, TagKey tag) {
-            GuiComboBox<ResourceLocation> box = parent.get("elements");
+            GuiComboBox<Identifier> box = parent.get("elements");
             box.select(tag.location());
         }
         
         @Override
         public TagKey saveValue(GuiParent parent, Registry registry) {
-            GuiComboBox<ResourceLocation> box = parent.get("elements");
+            GuiComboBox<Identifier> box = parent.get("elements");
             return TagKey.create(registry.key(), box.selected());
         }
         
@@ -110,7 +110,7 @@ public abstract class GuiRegistryTagHandler {
             @Override
             public TagKey saveValue(GuiParent parent, Registry registry) {
                 GuiStackSelector selector = parent.get("content");
-                return TagKey.create(registry.key(), ResourceLocation.parse(getName(selector.getSelected())));
+                return TagKey.create(registry.key(), Identifier.parse(getName(selector.getSelected())));
             }
             
         });
