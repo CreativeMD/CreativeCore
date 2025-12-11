@@ -1,3 +1,15 @@
+2.14.9
+Added centerX and centerY to GuiControlRect
+Fixed not being able to send nested lists via network
+Fixed not being able to send component via network
+Made permission group use a combobox instead of a textfield to specify usergroup
+Fixed not being able to scroll inside permission gui everywhere
+Fixed scrollbox not reseting to possible position when size changes
+Fixed usergroup configuration not working
+Added hex configuration to color picker
+Added inflate, deflate and renderLines method to ABB
+Fixed CreativeIngredient sometimes not being ready for config (when used externally)
+
 2.14.8
 Added asContent to InventoryUtils
 
