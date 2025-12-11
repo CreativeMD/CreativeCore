@@ -14,7 +14,7 @@ import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
@@ -46,7 +46,7 @@ public class CreativeCore implements ModInitializer {
     private static final ILoaderUtils UTILS = new FabricLoaderUtils();
     public static final String MODID = "creativecore";
     public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
-    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, ResourceLocation.tryBuild(CreativeCore.MODID, "main"));
+    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, Identifier.tryBuild(CreativeCore.MODID, "main"));
     public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
     
     public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator.register("config", new GuiCreatorBasic((nbt, player) -> new ConfigGuiLayer(player.level()
@@ -89,7 +89,7 @@ public class CreativeCore implements ModInitializer {
         NETWORK.registerType(SyncPacket.class, SyncPacket::new);
         NETWORK.registerType(ImmediateItemStackPacket.class, ImmediateItemStackPacket::new);
         
-        Registry.register(BuiltInRegistries.MENU, ResourceLocation.tryBuild(MODID, "container"), GUI_CONTAINER);
+        Registry.register(BuiltInRegistries.MENU, Identifier.tryBuild(MODID, "container"), GUI_CONTAINER);
         
         ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray()));
         

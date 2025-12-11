@@ -18,7 +18,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.state.GuiRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import team.creative.creativecore.client.render.ScissorStackExtender;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 
@@ -53,7 +53,7 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
         return minecraft;
     }
     
-    @WrapOperation(method = "<init>(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/render/state/GuiRenderState;)V", require = 1, at = @At(value = "NEW",
+    @WrapOperation(method = "<init>(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/render/state/GuiRenderState;II)V", require = 1, at = @At(value = "NEW",
             target = "(I)Lorg/joml/Matrix3x2fStack;"))
     private static Matrix3x2fStack modifyStackSize(int stacksize, Operation<Matrix3x2fStack> op) {
         return new Matrix3x2fStack(64);
@@ -85,12 +85,12 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
     }
     
     @Override
-    public void blit(RenderPipeline renderPipeline, ResourceLocation resourceLocation, int x0, int x1, int y0, int y1, float u, float u2, float v, float v2, int color) {
-        innerBlit(renderPipeline, resourceLocation, x0, x1, y0, y1, u, u2, v, v2, color);
+    public void blit(RenderPipeline renderPipeline, Identifier identifier, int x0, int x1, int y0, int y1, float u, float u2, float v, float v2, int color) {
+        innerBlit(renderPipeline, identifier, x0, x1, y0, y1, u, u2, v, v2, color);
     }
     
     @Shadow
-    public void innerBlit(RenderPipeline renderPipeline, ResourceLocation resourceLocation, int x0, int x1, int y0, int y1, float u, float u2, float v, float v2, int color) {
+    public void innerBlit(RenderPipeline renderPipeline, Identifier identifier, int x0, int x1, int y0, int y1, float u, float u2, float v, float v2, int color) {
         throw new UnsupportedOperationException();
     }
     

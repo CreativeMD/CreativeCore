@@ -17,7 +17,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -58,7 +58,7 @@ public class CreativeFabricLoader implements ICreativeLoader {
     }
     
     @Override
-    public void registerReloadListener(ResourceLocation location, PreparableReloadListener listener) {
+    public void registerReloadListener(Identifier identifier, PreparableReloadListener listener) {
         registerClientStarted(() -> {
             Minecraft minecraft = Minecraft.getInstance();
             ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();

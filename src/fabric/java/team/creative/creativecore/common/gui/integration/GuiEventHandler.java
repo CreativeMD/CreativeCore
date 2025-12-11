@@ -31,7 +31,7 @@ public class GuiEventHandler {
                 mc.options.guiScale().set(defaultScale);
                 window.setGuiScale(window.calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode()));
                 if (mc.screen != null)
-                    mc.screen.resize(mc, window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                    mc.screen.resize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
             }
         }
         
@@ -46,14 +46,14 @@ public class GuiEventHandler {
                 changed = true;
                 mc.options.guiScale().set(scale);
                 window.setGuiScale(scale);
-                mc.screen.resize(mc, window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                mc.screen.resize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
             }
         } else if (changed) {
             changed = false;
             mc.options.guiScale().set(defaultScale);
             mc.getWindow().setGuiScale(mc.getWindow().calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode()));
             if (mc.screen != null)
-                mc.screen.resize(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
+                mc.screen.resize(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
         }
     }
     

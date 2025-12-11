@@ -16,7 +16,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
@@ -33,14 +33,14 @@ public class CreativeNetwork {
         return field.isAnnotationPresent(Environment.class);
     }
     
-    public final ResourceLocation CHANNEL;
+    public final Identifier CHANNEL;
     private final HashMap<Class<? extends CreativePacket>, CreativeNetworkPacket> packetTypes = new HashMap<>();
     private final Logger logger;
     
     private final String modid;
     private int id = 0;
     
-    public CreativeNetwork(int version, Logger logger, ResourceLocation location) {
+    public CreativeNetwork(int version, Logger logger, Identifier location) {
         this.logger = logger;
         this.CHANNEL = location;
         this.modid = location.getNamespace();
@@ -48,7 +48,7 @@ public class CreativeNetwork {
     }
     
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
-        CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(ResourceLocation.tryBuild(modid, "" + id), classType, supplier, true);
+        CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(Identifier.tryBuild(modid, "" + id), classType, supplier, true);
         
         PayloadTypeRegistry.playC2S().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.CLIENTBOUND), x -> {
             T packet = handler.read((CreativeByteBuf) x, PacketFlow.CLIENTBOUND);
