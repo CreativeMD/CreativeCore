@@ -150,6 +150,14 @@ public class GuiTextfield extends GuiFocusControl {
         }
     }
     
+    public long parseLong() {
+        try {
+            return Long.parseLong(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+    
     @Override
     public void init() {}
     
