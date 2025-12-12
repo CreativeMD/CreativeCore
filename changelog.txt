@@ -1,3 +1,7 @@
+2.13.21
+Fixed flow of controls not taking scale into account
+Added parseLong to textfield
+
 2.13.20
 Added centerX and centerY to GuiControlRect
 
