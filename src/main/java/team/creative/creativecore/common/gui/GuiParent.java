@@ -610,12 +610,12 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     
     @Override
     public void flowX(int width, int preferred) {
-        flow.flowX(controls.stream().map(x -> x.rect).toList(), spacing, align, width, preferred, endlessX());
+        flow.flowX(controls.stream().map(x -> x.rect).toList(), spacing, align, (int) (width / scale), preferred, endlessX());
     }
     
     @Override
     public void flowY(int width, int height, int preferred) {
-        flow.flowY(controls.stream().map(x -> x.rect).toList(), spacing, valign, width, height, preferred, endlessY());
+        flow.flowY(controls.stream().map(x -> x.rect).toList(), spacing, valign, (int) (width / scale), (int) (height / scale), preferred, endlessY());
     }
     
     protected boolean endlessX() {
