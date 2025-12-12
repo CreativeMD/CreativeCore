@@ -315,12 +315,13 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     
     @Override
     public void flowX(int width, int preferred) {
-        flow.flowX(controls.streamDistControls().map(x -> ((GuiClientControl) x).rect).toList(), spacing, align, width, preferred, endlessX());
+        flow.flowX(controls.streamDistControls().map(x -> ((GuiClientControl) x).rect).toList(), spacing, align, (int) (width / scale), preferred, endlessX());
     }
     
     @Override
     public void flowY(int width, int height, int preferred) {
-        flow.flowY(controls.streamDistControls().map(x -> ((GuiClientControl) x).rect).toList(), spacing, valign, width, height, preferred, endlessY());
+        flow.flowY(controls.streamDistControls().map(x -> ((GuiClientControl) x).rect).toList(), spacing, valign, (int) (width / scale), (int) (height / scale), preferred,
+            endlessY());
     }
     
     protected boolean endlessX() {
