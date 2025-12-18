@@ -61,6 +61,10 @@ public interface IVecOrigin {
     
     public void rot(double x, double y, double z);
     
+    public Vec3d deltaMovement();
+    
+    public void deltaMovement(Vec3d value);
+    
     public Vec3d center();
     
     public void setCenter(Vec3d vec);

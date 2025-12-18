@@ -30,6 +30,8 @@ public class VecOrigin implements IVecOrigin {
     protected double offsetYLast;
     protected double offsetZLast;
     
+    protected Vec3d deltaMovement;
+    
     @Override
     public double offX() {
         return offsetX;
@@ -125,6 +127,16 @@ public class VecOrigin implements IVecOrigin {
         this.rotY = y;
         this.rotZ = z;
         updateRotated();
+    }
+    
+    @Override
+    public Vec3d deltaMovement() {
+        return deltaMovement;
+    }
+    
+    @Override
+    public void deltaMovement(Vec3d value) {
+        this.deltaMovement = value;
     }
     
     @Override
