@@ -32,13 +32,17 @@ public class InventoryUtils {
     
     public static SimpleContainer load(HolderLookup.Provider provider, CompoundTag nbt, int length) {
         SimpleContainer basic = new SimpleContainer(length);
-        for (int i = 0; i < length; i++) {
+        load(basic, provider, nbt);
+        return basic;
+    }
+    
+    public static void load(Container basic, HolderLookup.Provider provider, CompoundTag nbt) {
+        for (int i = 0; i < basic.getContainerSize(); i++) {
             if (nbt.contains("s" + i))
                 basic.setItem(i, ItemStack.parseOptional(provider, nbt.getCompound("s" + i)));
             else
                 basic.setItem(i, ItemStack.EMPTY);
         }
-        return basic;
     }
     
     public static boolean isItemStackEqual(ItemStack stackA, ItemStack stackB) {
