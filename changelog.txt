@@ -1,3 +1,6 @@
+2.13.23
+Added new method to InventoryUtils to allow custom containers
+
 2.13.22
 Added delta movement to VecOrigin
 
