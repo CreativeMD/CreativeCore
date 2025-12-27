@@ -96,7 +96,7 @@ public class GuiTextfield extends GuiControl {
     
     public long parseLong() {
         try {
-            return Long.parseLong(text);
+            return Long.parseLong(dist().getText());
         } catch (NumberFormatException e) {
             return 0;
         }
