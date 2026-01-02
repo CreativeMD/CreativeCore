@@ -229,7 +229,8 @@ public class GuiClientTree<T extends GuiTree> extends GuiClientScrollXY<T> imple
     
     @Override
     public boolean endDrag() {
-        control.performModication(dragged, lastDragPosition);
+        if (lastDragPosition != null)
+            control.performModication(dragged, lastDragPosition);
         lastDragPosition = null;
         dragged = null;
         return true;
