@@ -1,3 +1,6 @@
+2.13.24
+Fixed crash when dragging item in tree if there is just a single entry
+
 2.13.23
 Added new method to InventoryUtils to allow custom containers
 
