@@ -385,7 +385,8 @@ public class GuiTree extends GuiScrollXY {
     }
     
     public boolean endDrag() {
-        performModication(dragged, lastDragPosition);
+        if (lastDragPosition != null)
+            performModication(dragged, lastDragPosition);
         lastDragPosition = null;
         dragged = null;
         return true;
