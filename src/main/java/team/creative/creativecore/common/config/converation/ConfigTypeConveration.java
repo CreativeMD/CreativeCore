@@ -51,6 +51,7 @@ import team.creative.creativecore.common.config.premade.registry.RegistryTagList
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
@@ -360,6 +361,14 @@ public abstract class ConfigTypeConveration<T> {
                     new GuiSlider(parent, "volume", 1, 0, 1).setDim(40, 10)).add(new GuiLabel(parent, "pitchLabel").setTranslate("gui.pitch")).add(
                         new GuiSlider(parent, "pitch", 1, 0.5, 2).setDim(40, 10));
                 parent.add(hBox);
+                hBox.add(new GuiButton(hBox, "play", x -> {
+                    GuiComboBox<Identifier> box = parent.get("sound");
+                    GuiSlider volume = parent.get("volume");
+                    GuiSlider pitch = parent.get("pitch");
+                    var sound = BuiltInRegistries.SOUND_EVENT.get(box.selected());
+                    if (sound.isPresent() && parent.dist() != null)
+                        parent.dist().playSound(sound.get(), (float) volume.getValue(), (float) pitch.getValue());
+                }).setTranslate("gui.play"));
             }
             
             @Override
