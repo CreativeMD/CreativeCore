@@ -1,3 +1,6 @@
+2.13.25
+Added play button to sound config
+
 2.13.24
 Fixed crash when dragging item in tree if there is just a single entry
 
