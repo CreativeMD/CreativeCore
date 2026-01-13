@@ -53,8 +53,10 @@ import team.creative.creativecore.common.config.premade.registry.RegistryObjectL
 import team.creative.creativecore.common.config.premade.registry.RegistryTagConfig;
 import team.creative.creativecore.common.config.premade.registry.RegistryTagListConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
+import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
+import team.creative.creativecore.common.gui.control.simple.GuiButton;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
@@ -377,6 +379,14 @@ public abstract class ConfigTypeConveration<T> {
                 GuiParent hBox = new GuiParent(GuiFlow.STACK_X).add(new GuiLabel("volumeLabel").setTranslate("gui.volume")).add(new GuiSlider("volume", 1, 0, 1).setDim(40, 10))
                         .add(new GuiLabel("pitchLabel").setTranslate("gui.pitch")).add(new GuiSlider("pitch", 1, 0.5, 2).setDim(40, 10));
                 parent.add(hBox);
+                hBox.add(new GuiButton("play", x -> {
+                    GuiComboBox<ResourceLocation> box = parent.get("sound");
+                    GuiSlider volume = parent.get("volume");
+                    GuiSlider pitch = parent.get("pitch");
+                    var sound = BuiltInRegistries.SOUND_EVENT.get(box.selected());
+                    if (sound != null)
+                        GuiControl.playSound(sound, (float) volume.getValue(), (float) pitch.getValue());
+                }).setTranslate("gui.play"));
             }
             
             @Override

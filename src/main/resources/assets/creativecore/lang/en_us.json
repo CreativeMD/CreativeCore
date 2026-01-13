@@ -20,6 +20,7 @@
     "gui.hour": "h",
     "gui.minute": "m",
     "gui.second": "s",
+    "gui.play": "play",
     "gui.ingredient.latest": "Recent ingredients:",
     "dialog.savechanges": "Do you want to save your changes?",
     "dialog.button.OK": "Okay",
