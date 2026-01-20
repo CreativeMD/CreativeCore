@@ -30,6 +30,10 @@ public abstract class CreativeItemBoxModel extends CreativeItemModel {
     
     public abstract List<? extends RenderBox> getBoxes(ItemStack stack, boolean translucent);
     
+    public boolean checkTranslucentLayer(ItemStack stack) {
+        return false;
+    }
+    
     public boolean hasTranslucentLayer(ItemStack stack) {
         return false;
     }
