@@ -75,7 +75,7 @@ public class ColorUtils {
     public static final int LIGHT_BLUE = -16740609;
     public static final int ORANGE = -23296;
     public static final int YELLOW = -256;
-    public static final int CYAN = 16711681;
+    public static final int CYAN = -16711681;
     public static final int MAGENTA = -65281;
     public static final int BLACK = -16777216;
     public static final int GRAY = -5592406;
