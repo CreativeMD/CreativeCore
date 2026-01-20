@@ -55,8 +55,10 @@ public class CreativeBakedBoxModel extends CreativeBakedModel {
             if (item)
                 defaultColor = mc.getItemColors().getColor(new ItemStack(state.getBlock()), defaultColor);
             
+            boolean fusion = blockModel.getClass().getPackageName().startsWith("com.supermartijn642.fusion.");
+            
             QuadGeneratorContext context = QUAD_CONTEXT.get();
-            baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, ModelData.EMPTY, side, layer, rand, true, defaultColor));
+            baked.addAll(box.getBakedQuad(context, null, null, box.getOffset(), state, blockModel, ModelData.EMPTY, side, fusion ? null : layer, rand, true, defaultColor));
             context.clear();
         }
         for (BakedQuad quad : baked)
