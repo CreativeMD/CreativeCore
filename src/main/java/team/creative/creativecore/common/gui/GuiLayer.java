@@ -92,7 +92,7 @@ public abstract class GuiLayer extends GuiParent {
         return inventories;
     }
     
-    public Iterable<IGuiInventory> inventoriesToExract() {
+    public Iterable<IGuiInventory> inventoriesToExtract() {
         List<IGuiInventory> inventories = new ArrayList<>();
         collectInventories(this, inventories);
         Collections.reverse(inventories);

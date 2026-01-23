@@ -84,7 +84,7 @@ public class CreativeCoreGuiRegistry {
         if (extract.isEmpty())
             return;
         
-        for (IGuiInventory inv : layer.inventoriesToExract()) {
+        for (IGuiInventory inv : layer.inventoriesToExtract()) {
             if (inv == c.inventory())
                 continue;
             
