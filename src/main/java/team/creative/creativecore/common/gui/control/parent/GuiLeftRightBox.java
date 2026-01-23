@@ -23,6 +23,14 @@ public class GuiLeftRightBox extends GuiRow {
         return expandableX;
     }
     
+    public GuiColumn getLeft() {
+        return left;
+    }
+    
+    public GuiColumn getRight() {
+        return right;
+    }
+    
     public GuiLeftRightBox addLeft(GuiControl control) {
         left.add(control);
         return this;
