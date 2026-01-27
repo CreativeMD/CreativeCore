@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.joml.Matrix3x2fStack;
 
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.client.StringSplitter.WidthProvider;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,6 +15,9 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
 public record ContentItemStack(ItemStack stack) implements AdvancedContent {
+    
+    public static final MapCodec<ContentItemStack> CODEC = RecordCodecBuilder.mapCodec(content -> content.group(ItemStack.CODEC.fieldOf("stack").forGetter(ContentItemStack::stack))
+            .apply(content, ContentItemStack::new));
     
     @Override
     public <T> Optional<T> visit(FormattedText.StyledContentConsumer<T> consumer, Style style) {
@@ -67,7 +71,7 @@ public record ContentItemStack(ItemStack stack) implements AdvancedContent {
     
     @Override
     public MapCodec<? extends ComponentContents> codec() {
-        return null;
+        return CODEC;
     }
     
 }
