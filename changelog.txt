@@ -1,3 +1,11 @@
+2.13.26
+Added getLeft and getRight to GuiLeftRightBox
+Fixed not being able to save & load itemstack component content
+Fixed small typo in GuiLayer inventoriesToExtract()
+Fixed cyan color being incorrect
+Fixed items using fusion mod not being rendered in gui at all
+Fixed not correctly checking whether an item has translucent layer or not
+
 2.13.25
 Added play button to sound config
 
