@@ -3,15 +3,23 @@ package team.creative.creativecore.common.util.text.content;
 import java.util.Optional;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.client.StringSplitter.WidthProvider;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.client.render.GuiRenderHelper;
 
 public record ContentItemStack(ItemStack stack) implements AdvancedContent {
+    
+    public static final MapCodec<ContentItemStack> CODEC = RecordCodecBuilder.mapCodec(content -> content.group(ItemStack.CODEC.fieldOf("stack").forGetter(ContentItemStack::stack))
+            .apply(content, ContentItemStack::new));
+    
+    public static final ComponentContents.Type<ContentItemStack> TYPE = new Type<>(CODEC, "stack");
     
     @Override
     public <T> Optional<T> visit(FormattedText.StyledContentConsumer<T> consumer, Style style) {
@@ -65,7 +73,7 @@ public record ContentItemStack(ItemStack stack) implements AdvancedContent {
     
     @Override
     public Type<?> type() {
-        return null;
+        return TYPE;
     }
     
 }

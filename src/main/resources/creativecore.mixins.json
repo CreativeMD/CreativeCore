@@ -4,6 +4,7 @@
     "compatibilityLevel": "JAVA_21",
     "refmap": "creativecore.mixins.refmap.json",
     "mixins": [
+        "ComponentSerializationMixin",
         "FilePackResourcesAccessor",
         "PathPackResourcesAccessor",
         "ShapesMixin",
