@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class CreativeItemModel {
     
+    public CreativeModelResolver resolver;
     protected final ModelResourceLocation location;
     
     public CreativeItemModel(ModelResourceLocation location) {
@@ -18,6 +19,11 @@ public class CreativeItemModel {
     
     public CreativeBakedModel create(CreativeBlockModel block) {
         return new CreativeBakedModel(location, this);
+    }
+    
+    public CreativeItemModel setResolver(CreativeModelResolver resolver) {
+        this.resolver = resolver;
+        return this;
     }
     
 }

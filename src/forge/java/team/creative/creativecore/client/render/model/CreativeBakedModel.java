@@ -34,9 +34,14 @@ public class CreativeBakedModel implements BakedModel {
     public ItemOverrides customOverride = new ItemOverrides() {
         
         @Override
-        public BakedModel resolve(BakedModel original, ItemStack stack, ClientLevel level, LivingEntity entity, int p_173469_) {
+        public BakedModel resolve(BakedModel original, ItemStack stack, ClientLevel level, LivingEntity entity, int light) {
+            if (item.resolver != null) {
+                var changed = item.resolver.resolve(original, stack, level, entity, light);
+                if (changed != null && changed != this)
+                    return changed;
+            }
             renderedStack = stack;
-            return super.resolve(original, stack, level, entity, p_173469_);
+            return super.resolve(original, stack, level, entity, light);
         }
     };
     
@@ -52,7 +57,8 @@ public class CreativeBakedModel implements BakedModel {
     }
     
     @Override
-    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
+    public @NotNull List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data,
+            @Nullable RenderType renderType) {
         return get().getQuads(state, side, rand, data, renderType);
     }
     
