@@ -8,6 +8,7 @@ import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.common.gui.GuiControl;
 import team.creative.creativecore.common.util.mc.ColorUtils;
@@ -53,17 +54,27 @@ public class TextBuilder {
         return this;
     }
     
+    public Style getLastStyle() {
+        if (lines.isEmpty())
+            return Style.EMPTY;
+        var last = lines.getLast();
+        while (!last.getSiblings().isEmpty())
+            last = last.getSiblings().getLast();
+        return last.getStyle();
+    }
+    
     public TextBuilder text(String text) {
+        Style style = getLastStyle();
         if (text.contains("\n")) {
             String[] lines = text.split("\\n");
-            add(Component.literal(lines[0]));
+            add(Component.literal(lines[0]).withStyle(style));
             for (int i = 1; i < lines.length; i++) {
                 newLine();
-                add(Component.literal(lines[i]));
+                add(Component.literal(lines[i]).withStyle(style));
             }
             return this;
         }
-        add(Component.literal(text));
+        add(Component.literal(text).withStyle(style));
         return this;
     }
     
@@ -98,9 +109,9 @@ public class TextBuilder {
     
     public TextBuilder bool(boolean value) {
         if (value)
-            color(ColorUtils.GREEN).translate("gui.true");
+            textColor(ChatFormatting.GREEN).translate("gui.true");
         else
-            color(ColorUtils.RED).translate("gui.false");
+            textColor(ChatFormatting.RED).translate("gui.false");
         return this;
     }
     
@@ -120,6 +131,10 @@ public class TextBuilder {
     
     public List<Component> build() {
         return lines;
+    }
+    
+    public TextBuilder textColor(ChatFormatting white) {
+        return add(Component.empty().withStyle(white));
     }
     
 }
