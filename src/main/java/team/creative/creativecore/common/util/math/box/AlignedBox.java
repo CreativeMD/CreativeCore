@@ -227,6 +227,15 @@ public class AlignedBox {
         };
     }
     
+    public void grow(float value) {
+        this.minX -= value;
+        this.minY -= value;
+        this.minZ -= value;
+        this.maxX += value;
+        this.maxY += value;
+        this.maxZ += value;
+    }
+    
     public void grow(Axis axis, float value) {
         value /= 2;
         setMin(axis, getMin(axis) - value);
