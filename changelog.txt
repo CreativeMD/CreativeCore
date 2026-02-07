@@ -1,3 +1,8 @@
+2.13.28
+Added grow to AlignedBox
+Added BlockHitResult as network type
+Made setLineNormal in VectorFan public
+
 2.13.27
 Added textColor to TextBuilder and made it remember the style of the previous component
 Added resolver to baked model
