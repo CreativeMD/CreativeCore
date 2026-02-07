@@ -39,6 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.network.BundlePacketWrapper;
@@ -564,6 +565,19 @@ public class NetworkFieldTypes {
                 return l.getOrThrow(key);
             }
         }, Holder.class);
+        
+        register(new NetworkFieldTypeClass<BlockHitResult>() {
+            
+            @Override
+            protected void writeContent(BlockHitResult content, RegistryFriendlyByteBuf buffer) {
+                buffer.writeBlockHitResult(content);
+            }
+            
+            @Override
+            protected BlockHitResult readContent(RegistryFriendlyByteBuf buffer) {
+                return buffer.readBlockHitResult();
+            }
+        }, BlockHitResult.class);
         
         register(new NetworkFieldTypeSpecial<>((x, y) -> x.isArray()) {
             
