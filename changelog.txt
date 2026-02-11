@@ -1,3 +1,13 @@
+2.14.11
+Added contact information to fabric.mod.json
+Added grow to AlignedBox
+Added BlockHitResult as network type
+Added textColor to TextBuilder and made it remember the style of the previous component
+Fixed not being able to save & load itemstack component content
+Added getLeft and getRight to GuiLeftRightBox
+Fixed small typo in GuiLayer inventoriesToExtract()
+Fixed cyan color being incorrect
+
 2.14.10
 Added play button to sound config
 Fixed crash when dragging item in tree if there is just a single entry
