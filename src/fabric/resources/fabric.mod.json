@@ -8,6 +8,11 @@
         "CreativeMD",
         "AriaFreeze"
     ],
+    "contact": {
+        "sources": "https://github.com/CreativeMD/CreativeCore",
+        "homepage": "https://modrinth.com/mod/creativecore",
+        "issues": "https://github.com/CreativeMD/CreativeCore/issues"
+    },
     "custom": {
         "modmenu": {
             "links": {
