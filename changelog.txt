@@ -1,3 +1,6 @@
+2.13.29
+Added contact information to fabric.mod.json
+
 2.13.28
 Added grow to AlignedBox
 Added BlockHitResult as network type
