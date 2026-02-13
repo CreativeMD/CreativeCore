@@ -128,6 +128,10 @@ public class Ray2d {
         return result < 0;
     }
     
+    public boolean isParallel(Ray2d line) {
+        return VectorUtils.isZero(directionOne * line.directionTwo - directionTwo * line.directionOne);
+    }
+    
     public Vec3f intersect(Vec3f start, Vec3f end, float thirdValue) {
         float lineOriginOne = start.get(one);
         float lineOriginTwo = start.get(two);
