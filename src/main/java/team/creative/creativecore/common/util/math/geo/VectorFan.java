@@ -1001,6 +1001,95 @@ public class VectorFan {
         return new VectorFan(right.toArray(new Vec3f[0]));
     }
     
+    /** only works for convex vector fans. Otherwise it will not be combined */
+    public VectorFan combine(Axis axis, VectorFan fan) {
+        // First find a matching corner
+        for (int i = 0; i < coords.length; i++)
+            for (int j = 0; j < fan.coords.length; j++)
+                if (coords[i].epsilonEquals(fan.coords[j])) {
+                    //boolean direction;
+                    //if (coords[(i - 1) % coords.length].epsilonEquals(fan.coords[(j + 1) % fan.coords.length]))
+                    //    direction = false;
+                    //else if (coords[(i + 1) % coords.length].epsilonEquals(fan.coords[(j - 1) % fan.coords.length]))
+                    //    direction = true;
+                    //else
+                    //   continue; // Could not find the second coordinate
+                    
+                    int next = (i + 1) % coords.length;
+                    int otherPrevious = Math.floorMod(j - 1, fan.coords.length);
+                    
+                    if (!coords[next].epsilonEquals(fan.coords[otherPrevious]))
+                        continue;
+                    
+                    // Found a starting point to merge the two fans together
+                    // From here insert one fan into the other
+                    int previous = Math.floorMod(i - 1, coords.length);
+                    int otherNext = (j + 1) % fan.coords.length;
+                    
+                    List<Vec3f> newCoords = new ArrayList<>();
+                    // Add origin
+                    newCoords.add(coords[0].copy());
+                    
+                    // Add all points before the connected line
+                    for (int k = 1; k < i; k++)
+                        newCoords.add(coords[k].copy());
+                    
+                    // Add connection point if it is not on a line between the other points
+                    if (i != 0 && !isPointBetween(coords[previous], fan.coords[otherNext], coords[i]))
+                        newCoords.add(coords[i].copy());
+                    
+                    // Add the other shape
+                    int otherIndex = otherNext;
+                    while (otherIndex != otherPrevious) {
+                        newCoords.add(fan.coords[otherIndex].copy());
+                        otherIndex++;
+                        otherIndex %= fan.coords.length;
+                    }
+                    
+                    // Add second connection point if again the point is not on a line between the points
+                    if (next != 0 && !isPointBetween(coords[(next + 1) % coords.length], fan.coords[Math.floorMod(otherPrevious - 1, fan.coords.length)], coords[next]))
+                        newCoords.add(coords[next].copy());
+                    
+                    // Add remaining points from existing shape
+                    if (next > 0)
+                        for (int k = next + 1; k < coords.length; k++)
+                            newCoords.add(coords[k].copy());
+                        
+                    if (newCoords.size() > 2 && checkConvexAndShrink(axis, newCoords))
+                        return new VectorFan(newCoords.toArray(new Vec3f[newCoords.size()]));
+                    return null;
+                }
+        return null;
+    }
+    
+    public static boolean checkConvexAndShrink(Axis axis, List<Vec3f> coords) {
+        if (coords.size() <= 3)
+            return true;
+        Axis one = axis.one();
+        Axis two = axis.two();
+        
+        Ray2d ray = new Ray2d(one, two, 0, 0, 0, 0);
+        
+        ray.set(one, two, coords.getLast().get(one), coords.getLast().get(two), coords.get(1).get(one), coords.get(1).get(two));
+        Boolean previous = ray.isCoordinateToTheRight(coords.getFirst().get(one), coords.getFirst().get(two));
+        if (previous == null)
+            coords.remove(0);
+        
+        int i = 0;
+        while (i + 2 < coords.size()) {
+            ray.set(one, two, coords.get(i).get(one), coords.get(i).get(two), coords.get(i + 2).get(one), coords.get(i + 2).get(two));
+            Boolean temp = ray.isCoordinateToTheRight(coords.get(i + 1).get(one), coords.get(i + 1).get(two));
+            if (temp == null)
+                coords.remove(i + 1);
+            if (previous != null && previous != temp)
+                return false;
+            else
+                i++;
+            previous = temp;
+        }
+        return true;
+    }
+    
     public static boolean isInside(List<NormalPlaneF> shape, Vec3f before, Vec3f vec, Boolean beforeOutside, Boolean outside, int currentPlane) {
         if (BooleanUtils.isFalse(beforeOutside)) {
             if (outside == null) {
