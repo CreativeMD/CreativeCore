@@ -1,3 +1,6 @@
+2.13.30
+Added combine method to VectorFan
+
 2.13.29
 Added contact information to fabric.mod.json
 
