@@ -144,6 +144,14 @@ public class VectorUtils {
         return number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON;
     }
     
+    public static boolean within(double number, double min, double max) {
+        return (number >= min && number <= max) || equals(number, min) || equals(number, max);
+    }
+    
+    public static boolean within(float number, float min, float max) {
+        return (number >= min && number <= max) || equals(number, min) || equals(number, max);
+    }
+    
     public static boolean greaterEquals(float number, float number2) {
         return number > number2 || (number - number2 > -VectorFan.EPSILON && number - number2 < VectorFan.EPSILON);
     }
