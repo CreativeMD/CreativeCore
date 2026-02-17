@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mojang.brigadier.Command;
+
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
@@ -12,6 +14,7 @@ import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
@@ -45,6 +48,9 @@ import team.creative.creativecore.common.gui.packet.SyncPacket;
 import team.creative.creativecore.common.loader.ForgeLoaderUtils;
 import team.creative.creativecore.common.loader.ILoaderUtils;
 import team.creative.creativecore.common.network.CreativeNetwork;
+import team.creative.creativecore.common.test.CreativeTestArgument;
+import team.creative.creativecore.common.test.CreativeTestException;
+import team.creative.creativecore.common.test.CreativeTestHelper;
 import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
 
 @Mod(CreativeCore.MODID)
@@ -68,6 +74,8 @@ public class CreativeCore {
     public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, MODID);
     public static final Supplier<SingletonArgumentInfo<StringArrayArgumentType>> STRING_ARRAY_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES.register("string_array",
         () -> ArgumentTypeInfos.registerByClass(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(StringArrayArgumentType::stringArray)));
+    public static final Supplier<SingletonArgumentInfo<CreativeTestArgument>> TEST_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES.register("test", () -> ArgumentTypeInfos.registerByClass(
+        CreativeTestArgument.class, SingletonArgumentInfo.contextFree(CreativeTestArgument::test)));
     
     public CreativeCore() {
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::init);
@@ -100,6 +108,22 @@ public class CreativeCore {
             CONFIG_OPEN.open(new CompoundTag(), x.getSource().getPlayerOrException());
             return 0;
         }));
+        
+        event.getServer().getCommands().getDispatcher().register(Commands.literal("cmdtest").then(Commands.argument("test", CreativeTestArgument.test()).executes(x -> {
+            var test = CreativeTestArgument.getTest(x, "test");
+            if (test == null) {
+                x.getSource().sendFailure(Component.literal("Test could not be found"));
+                return 0;
+            }
+            
+            try {
+                test.test(new CreativeTestHelper());
+                return Command.SINGLE_SUCCESS;
+            } catch (CreativeTestException e) {
+                x.getSource().sendFailure(Component.literal(e.getMessage()));
+            }
+            return 0;
+        })));
     }
     
     private void init(final FMLCommonSetupEvent event) {
