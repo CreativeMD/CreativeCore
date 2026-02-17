@@ -74,7 +74,7 @@ public class VectorFan {
         return coords.length;
     }
     
-    protected Vec3f[] cutMinMax(Axis one, Axis two, Axis axis, float minOne, float minTwo, float maxOne, float maxTwo) {
+    public Vec3f[] cutMinMax(Axis one, Axis two, Axis axis, float minOne, float minTwo, float maxOne, float maxTwo) {
         boolean allTheSame = true;
         boolean allValue = false;
         boolean[] inside = new boolean[coords.length];
@@ -83,8 +83,7 @@ public class VectorFan {
             float valueOne = coords[i].get(one);
             float valueTwo = coords[i].get(two);
             
-            inside[i] = VectorUtils.greaterEquals(valueOne, minOne) && VectorUtils.smallerEquals(valueOne, maxOne) && VectorUtils.greaterEquals(valueTwo, minTwo) && VectorUtils
-                    .smallerEquals(valueTwo, maxTwo);
+            inside[i] = VectorUtils.within(valueOne, minOne, maxOne) && VectorUtils.within(valueTwo, minTwo, maxTwo);
             
             if (allTheSame) {
                 if (i == 0)
@@ -110,6 +109,7 @@ public class VectorFan {
             vec.set(axis, plane.project(one, two, axis, vec2d.x, vec2d.y));
             result[i] = vec;
         }
+        
         return result;
     }
     
