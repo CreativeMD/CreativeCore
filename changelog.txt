@@ -1,3 +1,9 @@
+2.13.31
+Added Tests
+Added vector fan cut min max test
+Removed IntersectionHelper
+Fixed issues with connected textures and collision
+
 2.13.30
 Added combine method to VectorFan
 
