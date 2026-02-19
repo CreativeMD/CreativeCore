@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.math.box;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joml.Vector2d;
@@ -8,12 +9,95 @@ import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
-import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
+import team.creative.creativecore.common.util.math.geo.VectorFan;
 import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
+import team.creative.creativecore.common.util.math.utils.BooleanUtils;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
+import team.creative.creativecore.common.util.math.vec.VectorUtils;
 
 public class OBB extends ABB {
+    
+    private static boolean isPointBetween(Vec2d start, Vec2d end, Vec2d between) {
+        return Math.abs((end.x - start.x) * (between.y - start.y) - (end.y - start.y) * (between.x - start.x)) < VectorFan.EPSILON;
+    }
+    
+    public static Vec2d[] cut(Vec2d[] coords, DoubleBoundsChecker[] planes) {
+        for (int i = 0; i < planes.length; i++) {
+            coords = cut(coords, planes[i]);
+            
+            if (coords == null || coords.length < 3)
+                return null;
+        }
+        return coords;
+    }
+    
+    public static Vec2d[] cut(Vec2d[] coords, DoubleBoundsChecker predicate) {
+        boolean allTheSame = true;
+        Boolean allValue = null;
+        Boolean[] cutted = new Boolean[coords.length];
+        for (int i = 0; i < cutted.length; i++) {
+            cutted[i] = predicate.test(coords[i]);
+            if (allTheSame) {
+                if (i == 0)
+                    allValue = cutted[i];
+                else {
+                    if (allValue == null)
+                        allValue = cutted[i];
+                    else if (allValue != cutted[i] && cutted[i] != null)
+                        allTheSame = false;
+                }
+            }
+        }
+        
+        if (allTheSame) {
+            if (allValue == null)
+                return null;
+            else if (allValue)
+                return coords;
+            return null;
+        }
+        
+        List<Vec2d> right = new ArrayList<>();
+        Boolean beforeCutted = cutted[cutted.length - 1];
+        Vec2d beforeVec = coords[coords.length - 1];
+        
+        for (int i = 0; i < coords.length; i++) {
+            Vec2d vec = coords[i];
+            
+            if (BooleanUtils.isTrue(cutted[i])) {
+                if (BooleanUtils.isFalse(beforeCutted)) {
+                    //Intersection
+                    Vec2d intersection = predicate.intersect(vec, beforeVec);
+                    if (intersection != null)
+                        right.add(intersection);
+                }
+                right.add(vec.copy());
+            } else if (BooleanUtils.isFalse(cutted[i])) {
+                if (BooleanUtils.isTrue(beforeCutted)) {
+                    //Intersection
+                    Vec2d intersection = predicate.intersect(vec, beforeVec);
+                    if (intersection != null)
+                        right.add(intersection);
+                }
+            } else
+                right.add(vec.copy());
+            
+            beforeCutted = cutted[i];
+            beforeVec = vec;
+        }
+        
+        if (isPointBetween(right.get(right.size() - 2), right.get(0), right.get(right.size() - 1)))
+            right.remove(right.size() - 1);
+        
+        if (right.size() >= 3 && isPointBetween(right.get(right.size() - 1), right.get(1), right.get(0)))
+            right.remove(0);
+        
+        if (right.size() < 3)
+            return null;
+        
+        return right.toArray(new Vec2d[0]);
+    }
     
     /** @return -1 -> value is too small; 0 -> value is inside min and max; 1 ->
      *         value is too large */
@@ -137,11 +221,12 @@ public class OBB extends ABB {
                     minDistance = Math.min(distance, minDistance);
                 }
             } else {
-                List<Vec2d> points = IntersectionHelper.cutMinMax(0, 0, 1, 1, vectorsRelative);
-                for (int j = 0; j < points.size(); j++) {
-                    double distance = calculateDistanceFromPlane(positive, closestValue, points.get(j), firstAxisValue, secondAxisValue, outerCornerAxis);
-                    minDistance = Math.min(distance, minDistance);
-                }
+                Vec2d[] points = cut(vectorsRelative, DoubleBoundsChecker.STANDARD_BOUNDS);
+                if (points != null)
+                    for (int j = 0; j < points.length; j++) {
+                        double distance = calculateDistanceFromPlane(positive, closestValue, points[j], firstAxisValue, secondAxisValue, outerCornerAxis);
+                        minDistance = Math.min(distance, minDistance);
+                    }
             }
             
         }
@@ -179,5 +264,90 @@ public class OBB extends ABB {
     @Override
     public String toString() {
         return "OBB[" + this.minX + ", " + this.minY + ", " + this.minZ + "] -> [" + this.maxX + ", " + this.maxY + ", " + this.maxZ + "]";
+    }
+    
+    public static interface DoubleBoundsChecker {
+        
+        public static DoubleBoundsChecker ZERO_X = new DoubleBoundsChecker() {
+            
+            @Override
+            public Boolean test(Vec2d value) {
+                if (VectorUtils.equals(value.x, 0))
+                    return null;
+                return value.x > 0;
+            }
+            
+            @Override
+            public Vec2d intersect(Vec2d start, Vec2d end) {
+                double directionX = end.x - start.x;
+                double directionY = end.y - start.y;
+                
+                return new Vec2d(0, start.y + directionY * (0 - start.x) / directionX);
+            }
+            
+        };
+        
+        public static DoubleBoundsChecker ONE_X = new DoubleBoundsChecker() {
+            
+            @Override
+            public Boolean test(Vec2d value) {
+                if (VectorUtils.equals(value.x, 1))
+                    return null;
+                return value.x < 1;
+            }
+            
+            @Override
+            public Vec2d intersect(Vec2d start, Vec2d end) {
+                double directionX = end.x - start.x;
+                double directionY = end.y - start.y;
+                
+                return new Vec2d(1, start.y + directionY * (1 - start.x) / directionX);
+            }
+            
+        };
+        
+        public static DoubleBoundsChecker ZERO_Y = new DoubleBoundsChecker() {
+            
+            @Override
+            public Boolean test(Vec2d value) {
+                if (VectorUtils.equals(value.y, 0))
+                    return null;
+                return value.y > 0;
+            }
+            
+            @Override
+            public Vec2d intersect(Vec2d start, Vec2d end) {
+                double directionX = end.x - start.x;
+                double directionY = end.y - start.y;
+                
+                return new Vec2d(start.x + directionX * (0 - start.y) / directionY, 0);
+            }
+            
+        };
+        
+        public static DoubleBoundsChecker ONE_Y = new DoubleBoundsChecker() {
+            
+            @Override
+            public Boolean test(Vec2d value) {
+                if (VectorUtils.equals(value.y, 1))
+                    return null;
+                return value.y < 1;
+            }
+            
+            @Override
+            public Vec2d intersect(Vec2d start, Vec2d end) {
+                double directionX = end.x - start.x;
+                double directionY = end.y - start.y;
+                
+                return new Vec2d(start.x + directionX * (1 - start.y) / directionY, 1);
+            }
+            
+        };
+        
+        public static DoubleBoundsChecker[] STANDARD_BOUNDS = new DoubleBoundsChecker[] { ZERO_X, ZERO_Y, ONE_X, ONE_Y };
+        
+        public Boolean test(Vec2d value);
+        
+        public Vec2d intersect(Vec2d start, Vec2d end);
     }
 }

@@ -25,9 +25,7 @@ import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
-import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
-import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
 import team.creative.creativecore.common.util.math.vec.VectorUtils;
@@ -77,43 +75,13 @@ public class VectorFan {
         return coords.length;
     }
     
-    protected Vec3f[] cutMinMax(Axis one, Axis two, Axis axis, float minOne, float minTwo, float maxOne, float maxTwo) {
-        boolean allTheSame = true;
-        boolean allValue = false;
-        boolean[] inside = new boolean[coords.length];
-        
-        for (int i = 0; i < inside.length; i++) {
-            float valueOne = coords[i].get(one);
-            float valueTwo = coords[i].get(two);
-            
-            inside[i] = VectorUtils.greaterEquals(valueOne, minOne) && VectorUtils.smallerEquals(valueOne, maxOne) && VectorUtils.greaterEquals(valueTwo, minTwo) && VectorUtils
-                    .smallerEquals(valueTwo, maxTwo);
-            
-            if (allTheSame) {
-                if (i == 0)
-                    allValue = inside[i];
-                else if (allValue != inside[i])
-                    allTheSame = false;
-            }
-        }
-        
-        if (allTheSame && allValue)
-            return coords;
-        List<Vec2f> shape = IntersectionHelper.cutMinMax(one, two, minOne, minTwo, maxOne, maxTwo, coords);
-        if (shape == null)
-            return null;
-        
-        NormalPlaneF plane = createPlane();
-        Vec3f[] result = new Vec3f[shape.size()];
-        for (int i = 0; i < result.length; i++) {
-            Vec3f vec = new Vec3f();
-            Vec2f vec2d = shape.get(i);
-            vec.set(one, vec2d.x);
-            vec.set(two, vec2d.y);
-            vec.set(axis, plane.project(one, two, axis, vec2d.x, vec2d.y));
-            result[i] = vec;
-        }
-        return result;
+    public Vec3f[] cutMinMax(Axis one, Axis two, Axis axis, float minOne, float minTwo, float maxOne, float maxTwo) {
+        NormalPlaneF[] planes = new NormalPlaneF[] { new NormalPlaneF(one, minOne, one.facing(false)), new NormalPlaneF(one, maxOne, one.facing(
+            true)), new NormalPlaneF(two, minTwo, two.facing(false)), new NormalPlaneF(two, maxTwo, two.facing(true)) };
+        var result = this.copy();
+        if (result.cutWithoutCopy(planes))
+            return result.coords;
+        return null;
     }
     
     @Environment(EnvType.CLIENT)
