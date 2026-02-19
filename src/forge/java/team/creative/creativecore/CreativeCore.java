@@ -115,13 +115,20 @@ public class CreativeCore {
                 x.getSource().sendFailure(Component.literal("Test could not be found"));
                 return 0;
             }
-            
+            var helper = new CreativeTestHelper();
             try {
-                test.test(new CreativeTestHelper());
+                test.test(helper);
+                x.getSource().sendSystemMessage(Component.literal("test passed"));
+                for (String text : helper.results())
+                    x.getSource().sendSystemMessage(Component.literal(text));
                 return Command.SINGLE_SUCCESS;
             } catch (CreativeTestException e) {
                 x.getSource().sendFailure(Component.literal(e.getMessage()));
+                for (String text : helper.results())
+                    x.getSource().sendFailure(Component.literal(text));
+                
             }
+            
             return 0;
         })));
     }
