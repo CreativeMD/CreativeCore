@@ -1,3 +1,7 @@
+2.12.35
+Removed IntersectionHelper
+Fixed issues with connected textures and collision
+
 2.12.34
 Added missing CreativeNetwork send variants (fabric)
 
