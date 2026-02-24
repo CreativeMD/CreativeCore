@@ -116,13 +116,17 @@ public abstract class GuiLayer extends GuiParent {
         reflow();
     }
     
+    public boolean hasMinimumOuterSpacing() {
+        return true;
+    }
+    
     @Override
     public void reflow() {
         if (CreativeCore.loader().getOverallSide().isServer())
             return;
         
         Rect screen = Rect.getScreenRect();
-        int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_OUTER_SPACING;
+        int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - (hasMinimumOuterSpacing() ? MINIMUM_OUTER_SPACING : 0);
         int fixedWidth = -1;
         int width = 0;
         
@@ -144,7 +148,7 @@ public abstract class GuiLayer extends GuiParent {
         rect.setRight(width + getContentOffset() * 2);
         flowX(width, preferredWidth(fixedWidth != -1 ? fixedWidth : screenWidth));
         
-        int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_OUTER_SPACING;
+        int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - (hasMinimumOuterSpacing() ? MINIMUM_OUTER_SPACING : 0);
         int fixedHeight = -1;
         int height = 0;
         if (preferred != null)
