@@ -1,3 +1,8 @@
+2.13.32
+Added KeyConfig
+Added option to use ConfigHolderDynamic as a field to allow for custom creation of configurations within an existing configuration
+Added hasMinimumSpacing to GuiLayer
+
 2.13.31
 Added Tests
 Added vector fan cut min max test
