@@ -134,13 +134,13 @@ public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLaye
     
     @Override
     public boolean keyPressed(KeyEvent key) {
+        if (super.keyPressed(key))
+            return true;
         if (key.key() == 256) {
             if (control.closeLayerUsingEscape())
                 control.closeTopLayer();
             return true;
         }
-        if (super.keyPressed(key))
-            return true;
         if (getSettings().keyInventory.matches(key)) {
             control.closeTopLayer();
             return true;

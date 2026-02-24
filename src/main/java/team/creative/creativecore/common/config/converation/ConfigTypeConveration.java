@@ -34,10 +34,12 @@ import team.creative.creativecore.common.config.converation.registry.ConfigTypeR
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTagList;
 import team.creative.creativecore.common.config.core.ICreativeRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
+import team.creative.creativecore.common.config.gui.GuiButtonKeyConfig;
 import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.key.ConfigKey;
+import team.creative.creativecore.common.config.premade.KeyConfig;
 import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.creativecore.common.config.premade.NamedList;
 import team.creative.creativecore.common.config.premade.Permission;
@@ -638,6 +640,45 @@ public abstract class ConfigTypeConveration<T> {
             }
         });
         ConfigTypeConveration.registerTypeCreator(CreativeIngredient.class, () -> new CreativeIngredientBlock(Blocks.DIRT));
+        
+        ConfigTypeConveration.registerType(KeyConfig.class, new SimpleConfigTypeConveration<KeyConfig>() {
+            
+            @Override
+            public KeyConfig set(ConfigKey key, KeyConfig value) {
+                return value;
+            }
+            
+            @Override
+            public JsonElement writeElement(KeyConfig value, ConfigKey key, Side side) {
+                JsonObject object = new JsonObject();
+                object.addProperty("key", value.keyCode);
+                object.addProperty("scan", value.scanCode);
+                object.addProperty("modifier", value.modifier);
+                return object;
+            }
+            
+            @Override
+            public KeyConfig readElement(ConfigKey key, KeyConfig defaultValue, Side side, JsonElement element) {
+                if (element instanceof JsonObject object)
+                    return new KeyConfig(object.get("key").getAsInt(), object.get("scan").getAsInt(), object.get("modifier").getAsInt());
+                return KeyConfig.UNBOUND;
+            }
+            
+            @Override
+            protected KeyConfig saveValue(GuiParent parent, ConfigKey key) {
+                return parent.get("key", GuiButtonKeyConfig.class).getValue();
+            }
+            
+            @Override
+            public void loadValue(KeyConfig value, GuiParent parent) {
+                parent.get("key", GuiButtonKeyConfig.class).setValue(value);
+            }
+            
+            @Override
+            public void createControls(GuiParent parent, ConfigKey key) {
+                parent.add(new GuiButtonKeyConfig(parent, "key", KeyConfig.UNBOUND));
+            }
+        });
     }
     
     public abstract T readElement(HolderLookup.Provider provider, T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key);
