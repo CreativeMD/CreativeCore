@@ -68,7 +68,10 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKey> {
                 hideFromGUI = config.hideFromGUI();
             }
             try {
-                this.fields.add(name, ConfigKey.of(this, field, name, field.get(defaultReference), fieldSync, requiresRestart, hideFromGUI, object));
+                var value = field.get(defaultReference);
+                if (field.getType() == ConfigHolderDynamic.class && value == null)
+                    field.set(defaultReference, value = new ConfigHolderDynamic(this, name, fieldSync));
+                this.fields.add(name, ConfigKey.of(this, field, name, value, fieldSync, requiresRestart, hideFromGUI, object));
             } catch (IllegalArgumentException | IllegalAccessException e) {}
         }
     }

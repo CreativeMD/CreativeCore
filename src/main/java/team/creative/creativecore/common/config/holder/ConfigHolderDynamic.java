@@ -21,6 +21,10 @@ public class ConfigHolderDynamic extends ConfigHolder<ConfigKey> {
         super();
     }
     
+    public void clear() {
+        fields.clear();
+    }
+    
     public ConfigHolderDynamic registerFolder(String key) {
         return registerFolder(key, ConfigSynchronization.UNIVERSAL);
     }
