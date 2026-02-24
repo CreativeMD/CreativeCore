@@ -140,6 +140,10 @@ public abstract class GuiLayer extends GuiParent {
         reflow();
     }
     
+    public boolean hasMinimumOuterSpacing() {
+        return true;
+    }
+    
     public abstract void create();
     
     /** called when a layer is removed and this layer is the new top layer */

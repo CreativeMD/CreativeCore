@@ -45,7 +45,7 @@ public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLaye
     @Override
     public void reflow() {
         Rect screen = getScreenRect();
-        int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - MINIMUM_OUTER_SPACING;
+        int screenWidth = (int) screen.getWidth() - getContentOffset() * 2 - (control.hasMinimumOuterSpacing() ? MINIMUM_OUTER_SPACING : 0);
         int fixedWidth = -1;
         int width = 0;
         
@@ -67,7 +67,7 @@ public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLaye
         rect.setRight(width + getContentOffset() * 2);
         flowX(width, preferredWidth(fixedWidth != -1 ? fixedWidth : screenWidth));
         
-        int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - MINIMUM_OUTER_SPACING;
+        int screenHeight = (int) screen.getHeight() - getContentOffset() * 2 - (control.hasMinimumOuterSpacing() ? MINIMUM_OUTER_SPACING : 0);
         int fixedHeight = -1;
         int height = 0;
         if (preferred != null)
