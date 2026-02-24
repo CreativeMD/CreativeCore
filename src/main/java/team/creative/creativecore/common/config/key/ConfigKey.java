@@ -19,6 +19,7 @@ import team.creative.creativecore.common.config.field.ConfigFieldTyped;
 import team.creative.creativecore.common.config.field.ConfigFieldWrapper;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
+import team.creative.creativecore.common.config.holder.ConfigHolder;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
@@ -34,6 +35,8 @@ public abstract class ConfigKey {
             boolean hideFromGUI) {
         if (ConfigTypeConveration.has(field.getType()))
             return new ConfigKeyType(field, name, defaultValue, sync, requiresRestart, hideFromGUI, parent.getRegistry());
+        if (defaultValue instanceof ConfigHolder holder)
+            return new ConfigKeyHolder(holder, field, name, sync, requiresRestart, hideFromGUI);
         return new ConfigKeyHolder(new ConfigHolderObject(parent, sync, name, defaultValue), field, name, sync, requiresRestart, hideFromGUI);
     }
     
