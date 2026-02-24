@@ -244,13 +244,13 @@ public abstract class GuiLayer extends GuiParent {
     
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (super.keyPressed(keyCode, scanCode, modifiers))
+            return true;
         if (keyCode == 256) {
             if (closeLayerUsingEscape())
                 closeTopLayer();
             return true;
         }
-        if (super.keyPressed(keyCode, scanCode, modifiers))
-            return true;
         if (getSettings().keyInventory.matches(keyCode, scanCode)) {
             closeTopLayer();
             return true;

@@ -32,11 +32,12 @@ public class NamedHandlerRegistry<T> {
         return defaultHandler;
     }
     
-    public void register(String id, T handler) {
+    public <K extends T> K register(String id, K handler) {
         if (!allowOverwrite && handlers.containsKey(id))
             throw new IllegalArgumentException("'" + id + "' already exists");
         handlers.put(id, handler);
         handlersInv.put(handler, id);
+        return handler;
     }
     
     public void registerDefault(String id, T handler) {
