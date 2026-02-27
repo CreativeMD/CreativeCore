@@ -107,7 +107,7 @@ public class GuiTree extends GuiScrollXY {
     public Iterable<GuiTreeItem> itemsChecked() {
         if (visibleRoot)
             return root.itemsChecked();
-        return new NestedFunctionIterator<>(root.items(), GuiTreeItem::itemsChecked);
+        return new NestedFunctionIterator<>(new SingleIterator<>(root).iterator(), GuiTreeItem::itemsChecked);
     }
     
     public GuiTreeItem selected() {
