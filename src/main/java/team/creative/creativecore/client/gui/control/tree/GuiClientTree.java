@@ -34,12 +34,23 @@ public class GuiClientTree<T extends GuiTree> extends GuiClientScrollXY<T> imple
     
     private int lineThickness;
     private int halfLineThickness;
+    private boolean orderStrict = false;
     
     private GuiTreeItem dragged = null;
     private GuiTreeDragPosition lastDragPosition = null;
     
     public GuiClientTree(T control) {
         super(control);
+    }
+    
+    @Override
+    public void setKeepOrder(boolean keep) {
+        this.orderStrict = keep;
+    }
+    
+    @Override
+    public boolean keepOrder() {
+        return orderStrict;
     }
     
     @Override

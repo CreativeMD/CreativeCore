@@ -55,6 +55,18 @@ public class GuiTree extends GuiScrollXY {
         return this;
     }
     
+    public GuiTree setKeepOrder(boolean keep) {
+        if (dist() != null)
+            dist().setKeepOrder(keep);
+        return this;
+    }
+    
+    public boolean keepOrder() {
+        if (dist() != null)
+            return dist().keepOrder();
+        return false;
+    }
+    
     public GuiTree keepSelected() {
         canDeselect = false;
         return this;
@@ -237,6 +249,10 @@ public class GuiTree extends GuiScrollXY {
         public void startDrag(GuiTreeItem item);
         
         public boolean endDrag();
+        
+        public void setKeepOrder(boolean keep);
+        
+        public boolean keepOrder();
         
     }
     

@@ -17,7 +17,7 @@ public class GuiClientTreeItem<T extends GuiTreeItem> extends GuiClientParent<T>
     @Override
     public void mouseMoved(double x, double y) {
         super.mouseMoved(x, y);
-        if (state == ItemClickState.CLICKED && !control.tree.isDragged() && !rect.inside(x, y)) {
+        if (state == ItemClickState.CLICKED && !control.tree.isDragged() && !rect.inside(x, y) && !control.tree.keepOrder()) {
             control.tree.startDrag(control);
             state = ItemClickState.DRAGGED;
         }
@@ -35,9 +35,7 @@ public class GuiClientTreeItem<T extends GuiTreeItem> extends GuiClientParent<T>
             state = null;
             if (control.tree.endDrag())
                 playSound(SoundEvents.UI_BUTTON_CLICK, 0.1F, 2F);
-            
         }
-        
     }
     
     @Override
