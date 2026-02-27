@@ -7,6 +7,7 @@ import team.creative.creativecore.common.gui.control.tree.GuiTreeDragPosition.It
 import team.creative.creativecore.common.gui.event.GuiControlChangedEvent;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
 import team.creative.creativecore.common.util.type.itr.NestedFunctionIterator;
+import team.creative.creativecore.common.util.type.itr.SingleIterator;
 import team.creative.creativecore.common.util.type.itr.TreeIterator;
 
 public class GuiTree extends GuiScrollXY {
@@ -91,7 +92,7 @@ public class GuiTree extends GuiScrollXY {
     public Iterable<GuiTreeItem> itemsChecked() {
         if (visibleRoot)
             return root.itemsChecked();
-        return new NestedFunctionIterator<>(root.items(), GuiTreeItem::itemsChecked);
+        return new NestedFunctionIterator<>(new SingleIterator<>(root).iterator(), GuiTreeItem::itemsChecked);
     }
     
     public GuiTreeItem selected() {
