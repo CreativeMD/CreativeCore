@@ -60,8 +60,12 @@ public class KeyConfig {
         return getModifier().getCombinedName(key, () -> key.getDisplayName());
     }
     
-    public boolean matches(InputEvent.Key key) {
+    public boolean matchesPress(InputEvent.Key key) {
         return this.keyCode == key.getKey() && key.getAction() == InputConstants.PRESS && getModifier().isActive(null);
+    }
+    
+    public boolean matches(InputEvent.Key key) {
+        return this.keyCode == key.getKey() && getModifier().isActive(null);
     }
     
     @Override
