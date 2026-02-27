@@ -250,7 +250,7 @@ public class GuiTreeItem extends GuiParent {
     @Override
     public void mouseMoved(double x, double y) {
         super.mouseMoved(x, y);
-        if (state == ItemClickState.CLICKED && !tree.isDragged() && !rect.inside(x, y)) {
+        if (state == ItemClickState.CLICKED && !tree.isDragged() && !rect.inside(x, y) && !tree.keepOrder()) {
             tree.startDrag(this);
             state = ItemClickState.DRAGGED;
         }

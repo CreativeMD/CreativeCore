@@ -22,6 +22,7 @@ import team.creative.creativecore.common.gui.style.display.StyleDisplay;
 import team.creative.creativecore.common.util.math.geo.Rect;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.type.itr.NestedFunctionIterator;
+import team.creative.creativecore.common.util.type.itr.SingleIterator;
 import team.creative.creativecore.common.util.type.itr.TreeIterator;
 
 public class GuiTree extends GuiScrollXY {
@@ -42,6 +43,7 @@ public class GuiTree extends GuiScrollXY {
     protected StyleDisplay dragHover = new DisplayColor(ColorUtils.rgb(200, 150, 0));
     private int lineThickness;
     private int halfLineThickness;
+    private boolean orderStrict = false;
     
     private GuiTreeItem selected = null;
     private GuiTreeItem dragged = null;
@@ -74,6 +76,15 @@ public class GuiTree extends GuiScrollXY {
                 item.updateControls();
             }
         return this;
+    }
+    
+    public GuiTree setKeepOrder(boolean keep) {
+        this.orderStrict = keep;
+        return this;
+    }
+    
+    public boolean keepOrder() {
+        return orderStrict;
     }
     
     public GuiTree keepSelected() {
