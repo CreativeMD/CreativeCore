@@ -6,12 +6,15 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Objects;
 
 import team.creative.creativecore.common.util.type.itr.ConsecutiveIterator;
 import team.creative.creativecore.common.util.type.itr.FilterIterator;
 import team.creative.creativecore.common.util.type.itr.NestedFunctionIterator;
 import team.creative.creativecore.common.util.type.itr.SingleIterator;
+import team.creative.creativecore.common.util.type.list.TupleList;
 
 public class NamedTree<T> {
     
@@ -30,6 +33,15 @@ public class NamedTree<T> {
         this.name = name;
     }
     
+    public String name() {
+        return name;
+    }
+    
+    @Nullable
+    public NamedTree<T> parent() {
+        return parent;
+    }
+    
     public T add(String path, T value) {
         String[] parts = path.split("\\.");
         folderForce(parts, 0).value = value;
@@ -42,6 +54,10 @@ public class NamedTree<T> {
     
     public Set<Entry<String, NamedTree<T>>> entries() {
         return children.entrySet();
+    }
+    
+    public Set<String> keySet() {
+        return children.keySet();
     }
     
     public T get(String path) {
@@ -111,9 +127,27 @@ public class NamedTree<T> {
         return "[" + value + "|" + children + "]";
     }
     
-    public Iterable<T> values() {
+    public Iterable<T> allValues() {
         return FilterIterator.<T>skipNull(new ConsecutiveIterator<T>((Iterator<T>) new SingleIterator<T>(value), (Iterator<T>) new NestedFunctionIterator<T>(children
-                .values(), x -> x.values())));
+                .values(), x -> x.allValues())));
+    }
+    
+    public Iterable<String> allNames() {
+        return new ConsecutiveIterator<String>((Iterator<String>) new SingleIterator<String>(path()), (Iterator<String>) new NestedFunctionIterator<String>(children
+                .entrySet(), x -> x.getValue().allNames()));
+    }
+    
+    protected void collect(TupleList<String, T> list) {
+        if (parent != null || value != null)
+            list.add(path(), value);
+        for (NamedTree<T> tree : children.values())
+            tree.collect(list);
+    }
+    
+    public TupleList<String, T> all() {
+        TupleList<String, T> list = new TupleList<>();
+        collect(list);
+        return list;
     }
     
     /** First considered is the first value value from the first child, the last is the last value of the current node */
@@ -130,7 +164,14 @@ public class NamedTree<T> {
         return null;
     }
     
+    public String firstKey() {
+        if (children.isEmpty())
+            return null;
+        return children.firstEntry().getKey();
+    }
+    
     public boolean hasChildren() {
         return !children.isEmpty();
     }
+    
 }

@@ -10,6 +10,8 @@ import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator;
 import team.creative.creativecore.common.gui.extension.GuiExtensionCreator.ExtensionDirection;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.util.type.tree.NamedTree;
 
 public abstract class GuiMenu<T> extends GuiScrollY {
@@ -22,6 +24,7 @@ public abstract class GuiMenu<T> extends GuiScrollY {
         }
     };
     protected final NamedTree<T> tree;
+    private String opened;
     
     public GuiMenu(NamedTree<T> tree) {
         super();
@@ -36,7 +39,27 @@ public abstract class GuiMenu<T> extends GuiScrollY {
         if (!path.isBlank())
             path += ".";
         for (Entry<String, NamedTree<T>> entry : tree.entries())
-            add(new GuiMenuEntry(path + entry.getKey(), entry.getValue()));
+            add(new GuiMenuEntry(entry.getKey(), path + entry.getKey(), entry.getValue()));
+    }
+    
+    protected void populateEntryTree(NamedTree<GuiMenuEntry> entryTree) {
+        for (Entry<String, NamedTree<T>> entry : tree.entries())
+            entryTree.add(entry.getKey(), get(entry.getKey(), GuiMenuEntry.class));
+        if (submenu.hasExtension())
+            submenu.get().populateEntryTree(entryTree.folder(opened));
+    }
+    
+    public GuiMenuEntry getEntry(String path) {
+        String name = path.split("\\.")[0];
+        var entry = get(name, GuiMenuEntry.class);
+        if (entry == null)
+            return null;
+        if (path.contains(".")) {
+            if (entry.name.equals(opened))
+                return submenu.get().getEntry(path.substring(name.length()));
+            return null;
+        }
+        return entry;
     }
     
     @Override
@@ -67,22 +90,42 @@ public abstract class GuiMenu<T> extends GuiScrollY {
     
     public class GuiMenuEntry extends GuiLabel {
         
+        private static final GuiStyle HOVERED = new GuiStyle();
+        
+        static {
+            HOVERED.clickable = new DisplayColor(0.7F, 0.7F, 0.7F, 1);
+        }
+        
+        private boolean highlighted;
+        
         public NamedTree<T> folder;
         
-        public GuiMenuEntry(String name, NamedTree<T> folder) {
+        public GuiMenuEntry(String name, String title, NamedTree<T> folder) {
             super(name);
             this.folder = folder;
-            setTitle(root().translate(name, folder.value != null));
+            setTitle(root().translate(title, folder.value != null));
+        }
+        
+        public void setHighlighted(boolean value) {
+            this.highlighted = value;
+        }
+        
+        public void close() {
+            if (submenu.hasExtension())
+                submenu.close();
+        }
+        
+        public void open() {
+            if (submenu.hasExtension())
+                submenu.close();
+            submenu.open(new GuiMenuSub<T>(root(), folder, submenu), this, ExtensionDirection.RIGHT);
+            opened = name;
         }
         
         @Override
         public void mouseMoved(double x, double y) {
-            if (rect.insideLocalPos(x, y) && folder.hasChildren()) {
-                if (submenu.hasExtension())
-                    submenu.close();
-                submenu.open(new GuiMenuSub<T>(root(), folder, submenu), this, ExtensionDirection.RIGHT);
-                
-            }
+            if (rect.insideLocalPos(x, y) && folder.hasChildren())
+                open();
         }
         
         @Override
@@ -92,6 +135,13 @@ public abstract class GuiMenu<T> extends GuiScrollY {
                 playSound(SoundEvents.UI_BUTTON_CLICK);
             }
             return true;
+        }
+        
+        @Override
+        public GuiStyle getStyle() {
+            if (highlighted)
+                return HOVERED;
+            return super.getStyle();
         }
         
         @Override
