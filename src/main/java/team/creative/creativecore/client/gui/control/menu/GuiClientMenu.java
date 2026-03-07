@@ -13,9 +13,12 @@ import team.creative.creativecore.common.gui.Align;
 import team.creative.creativecore.common.gui.control.menu.GuiMenu;
 import team.creative.creativecore.common.gui.control.menu.GuiMenu.GuiMenuDist;
 import team.creative.creativecore.common.gui.control.menu.GuiMenu.GuiMenuEntry;
+import team.creative.creativecore.common.gui.control.menu.GuiMenu.GuiMenuEntryDist;
 import team.creative.creativecore.common.gui.control.menu.GuiMenuRoot;
 import team.creative.creativecore.common.gui.control.menu.GuiMenuSub;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
+import team.creative.creativecore.common.gui.style.GuiStyle;
+import team.creative.creativecore.common.gui.style.display.DisplayColor;
 import team.creative.creativecore.common.util.type.tree.NamedTree;
 
 public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientScrollY<T> implements GuiMenuDist<K> {
@@ -28,9 +31,18 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
         }
     };
     protected NamedTree<K> tree;
+    private String opened;
     
     public GuiClientMenu(T control) {
         super(control);
+    }
+    
+    @Override
+    public void populateEntryTree(NamedTree<GuiMenuEntry> entryTree) {
+        for (Entry<String, NamedTree<K>> entry : tree.entries())
+            entryTree.add(entry.getKey(), control.get(entry.getKey(), GuiMenuEntry.class));
+        if (submenu.hasExtension())
+            submenu.get().populateEntryTree(entryTree.folder(opened));
     }
     
     @Override
@@ -69,7 +81,7 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
         if (!path.isBlank())
             path += ".";
         for (Entry<String, NamedTree<K>> entry : tree.entries())
-            control.add(control.new GuiMenuEntry(control, path + entry.getKey(), entry.getValue()));
+            control.add(new GuiMenuEntry(control, entry.getKey(), path + entry.getKey(), entry.getValue()));
     }
     
     @Override
@@ -78,10 +90,45 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
             submenu.close();
     }
     
-    public static class GuiClientMenuEntry extends GuiClientLabel<GuiMenuEntry> {
+    public static class GuiClientMenuEntry extends GuiClientLabel<GuiMenuEntry> implements GuiMenuEntryDist {
+        
+        private static final GuiStyle HOVERED = new GuiStyle();
+        
+        static {
+            HOVERED.clickable = new DisplayColor(0.7F, 0.7F, 0.7F, 1);
+        }
+        
+        private boolean highlighted;
         
         public GuiClientMenuEntry(GuiMenuEntry control) {
             super(control);
+        }
+        
+        public GuiClientMenu getMenu() {
+            return (GuiClientMenu) control.menu().dist();
+        }
+        
+        @Override
+        public void setHighlighted(boolean value) {
+            this.highlighted = value;
+        }
+        
+        @Override
+        public void close() {
+            var menu = getMenu();
+            if (menu.submenu.hasExtension())
+                menu.submenu.close();
+        }
+        
+        @Override
+        public void open() {
+            var menu = getMenu();
+            if (menu.submenu.hasExtension())
+                menu.submenu.close();
+            var sub = new GuiMenuSub(menu.root(), control.folder);
+            ((GuiClientMenuSub) sub.dist()).parent = menu.submenu;
+            menu.submenu.open(sub, this, ExtensionDirection.RIGHT);
+            menu.opened = control.name;
         }
         
         @Override
@@ -102,6 +149,13 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
                 playSound(SoundEvents.UI_BUTTON_CLICK);
             }
             return true;
+        }
+        
+        @Override
+        public GuiStyle getStyle() {
+            if (highlighted)
+                return HOVERED;
+            return super.getStyle();
         }
         
         @Override

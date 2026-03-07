@@ -43,4 +43,10 @@ public class GuiMenuRoot<T> extends GuiMenu<T> {
         
     }
     
+    public NamedTree<GuiMenuEntry> createEntryTree() {
+        NamedTree<GuiMenuEntry> entryTree = new NamedTree<>();
+        populateEntryTree(entryTree);
+        return entryTree;
+    }
+    
 }
