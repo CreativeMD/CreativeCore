@@ -64,8 +64,16 @@ public class KeyConfig {
         return this.keyCode == key.getKey() && key.getAction() == InputConstants.PRESS && getModifier().isActive(null);
     }
     
+    public boolean matchesPress(int keyCode, int action) {
+        return this.keyCode == keyCode && action == InputConstants.PRESS && getModifier().isActive(null);
+    }
+    
     public boolean matches(InputEvent.Key key) {
         return this.keyCode == key.getKey() && getModifier().isActive(null);
+    }
+    
+    public boolean matches(int keyCode) {
+        return this.keyCode == keyCode && getModifier().isActive(null);
     }
     
     @Override
