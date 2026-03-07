@@ -1,3 +1,7 @@
+2.13.35
+Added better functionality to support key controlled menu scrolling
+Added matche methods for KeyConfig which take keyCode
+
 2.13.34
 Fixed checked items iteration for GuiTree
 Added keepOrder to GuiTree
