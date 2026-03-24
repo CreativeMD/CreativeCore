@@ -354,7 +354,7 @@ public class RenderBox extends AlignedBox {
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
         
-        if (red == 1 && green == 1 && blue == 1)
+        if (red == 255 && green == 255 && blue == 255)
             red = green = blue = 0;
         
         if (previewScalingAndOffset()) {
