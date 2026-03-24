@@ -1,3 +1,10 @@
+2.13.36
+Added contains to GuiParent
+Added register codec to NetworkFieldTypes
+Made GuiTree remember state of checkbox when toggling them
+Fixed crash when moving structures around in blueprint gui with child events
+Fixed rendering lines for render box not rendering block when color is white
+
 2.13.35
 Added better functionality to support key controlled menu scrolling
 Added matche methods for KeyConfig which take keyCode
