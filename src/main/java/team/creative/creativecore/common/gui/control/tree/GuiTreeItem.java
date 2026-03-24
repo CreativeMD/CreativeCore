@@ -135,19 +135,16 @@ public class GuiTreeItem extends GuiParent {
     }
     
     protected void updateControls() {
-        if (tree.hasCheckboxes() == (checkbox != null) && items.isEmpty() == (button == null))
+        if (tree.hasCheckboxes() == (checkbox != null && contains(checkbox)) && items.isEmpty() == (button == null))
             return;
         
         clear();
-        if (items.isEmpty()) {
+        if (items.isEmpty())
             button = null;
-        } else {
+        else
             add(button = (GuiButton) new GuiButtonHold(this, "expand", x -> toggle()).setTitle(Component.literal("-")).setFormatting(ControlFormatting.TRANSPARENT));
-        }
         if (tree.hasCheckboxes())
             add(getOrCreateCheckbox());
-        else if (checkbox != null)
-            checkbox = null;
         add(label);
     }
     
