@@ -227,7 +227,9 @@ public class GuiTreeItem extends GuiParent {
     }
     
     public GuiTreeItem getItem(int index) {
-        return items.get(index);
+        if (index < items.size())
+            return items.get(index);
+        return null;
     }
     
     public int indexOf(GuiTreeItem item) {
