@@ -213,6 +213,10 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
         return toInsert;
     }
     
+    public boolean contains(GuiControl control) {
+        return controls.contains(control) || hoverControls.contains(control);
+    }
+    
     public GuiParent add(GuiControl control) {
         control.setParent(this);
         controls.add(control);
