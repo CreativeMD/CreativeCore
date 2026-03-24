@@ -71,6 +71,10 @@ public class NetworkFieldTypes {
         PARSERS.put(classType, parser);
     }
     
+    public static <T> void register(StreamCodec<? extends FriendlyByteBuf, T> codec, Class<T> classType) {
+        PARSERS.put(classType, new NetworkFieldTypeCodec(codec));
+    }
+    
     public static <T> StreamCodec<RegistryFriendlyByteBuf, T> registerAndCodec(NetworkFieldTypeClass<T> parser, Class<T> classType) {
         register(parser, classType);
         return StreamCodec.<RegistryFriendlyByteBuf, T>of((x, y) -> parser.writeContent(y, x), parser::readContent);
