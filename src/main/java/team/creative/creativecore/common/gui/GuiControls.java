@@ -100,6 +100,10 @@ public class GuiControls implements Iterable<GuiControl> {
         distHoverControls.add(control.dist());
     }
     
+    public boolean contains(GuiControl control) {
+        return controls.contains(control) || hoverControls.contains(control);
+    }
+    
     public boolean remove(GuiControl control) {
         int index = controls.indexOf(control);
         if (index != -1) {
