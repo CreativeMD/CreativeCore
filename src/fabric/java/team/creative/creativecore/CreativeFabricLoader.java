@@ -9,13 +9,16 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -32,6 +35,7 @@ import team.creative.creativecore.common.CommonLoader;
 public class CreativeFabricLoader implements ICreativeLoader {
     
     public final List<Runnable> RENDER_START = new ArrayList<>();
+    public final List<Consumer> RENDER_GUI = new ArrayList<>();
     
     @Override
     public void register(CommonLoader loader) {}
@@ -49,7 +53,17 @@ public class CreativeFabricLoader implements ICreativeLoader {
     
     @Override
     public void registerClientRenderGui(Consumer run) {
-        HudRenderCallback.EVENT.register((graphics, partialTicks) -> run.accept(graphics));
+        if (RENDER_GUI.isEmpty())
+            HudElementRegistry.addLast(Identifier.tryBuild(CreativeCore.MODID, "gui"), new HudElement() {
+                
+                @Override
+                public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+                    for (Consumer consumer : RENDER_GUI) {
+                        consumer.accept(graphics);
+                    }
+                }
+            });
+        RENDER_GUI.add(run);
     }
     
     @Override
@@ -68,22 +82,22 @@ public class CreativeFabricLoader implements ICreativeLoader {
     
     @Override
     public void registerLevelTick(Consumer<ServerLevel> consumer) {
-        ServerTickEvents.END_WORLD_TICK.register(x -> consumer.accept(x));
+        ServerTickEvents.END_LEVEL_TICK.register(x -> consumer.accept(x));
     }
     
     @Override
     public void registerLevelTickStart(Consumer<ServerLevel> consumer) {
-        ServerTickEvents.START_WORLD_TICK.register(x -> consumer.accept(x));
+        ServerTickEvents.START_LEVEL_TICK.register(x -> consumer.accept(x));
     }
     
     @Override
     public void registerLoadLevel(Consumer<LevelAccessor> consumer) {
-        ServerWorldEvents.LOAD.register((server, level) -> consumer.accept(level));
+        ServerLevelEvents.LOAD.register((server, level) -> consumer.accept(level));
     }
     
     @Override
     public void registerUnloadLevel(Consumer<LevelAccessor> consumer) {
-        ServerWorldEvents.UNLOAD.register((server, level) -> consumer.accept(level));
+        ServerLevelEvents.UNLOAD.register((server, level) -> consumer.accept(level));
     }
     
     @Override
@@ -107,7 +121,7 @@ public class CreativeFabricLoader implements ICreativeLoader {
     
     @Override
     public void registerKeybind(Supplier<KeyMapping> supplier) {
-        KeyBindingHelper.registerKeyBinding(supplier.get());
+        KeyMappingHelper.registerKeyMapping(supplier.get());
     }
     
     @Override

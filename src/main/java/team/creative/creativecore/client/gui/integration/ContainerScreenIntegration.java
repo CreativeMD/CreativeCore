@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui.integration;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -50,7 +50,7 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
         IGuiClientIntegratedParent.render(getMenu(), graphics, this, listener, mouseX, mouseY);
         
         // Update dimensions for JEI
@@ -70,8 +70,6 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
         
         leftPos = minX;
         topPos = minY;
-        imageWidth = maxX - minX;
-        imageHeight = maxY - minY;
     }
     
     @Override
@@ -95,9 +93,6 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
             height = Math.max(height, ((GuiClientLayer) layer.dist()).getHeight());
         return height;
     }
-    
-    @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int x, int y) {}
     
     @Override
     public void mouseMoved(double x, double y) {

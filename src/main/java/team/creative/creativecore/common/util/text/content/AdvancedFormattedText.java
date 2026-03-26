@@ -3,7 +3,7 @@ package team.creative.creativecore.common.util.text.content;
 import java.util.Optional;
 
 import net.minecraft.client.StringSplitter.WidthProvider;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 
@@ -23,6 +23,6 @@ public interface AdvancedFormattedText extends FormattedText {
     
     public int height();
     
-    public void render(GuiGraphics graphics, int defaultColor);
+    public void render(GuiGraphicsExtractor graphics, int defaultColor);
     
 }

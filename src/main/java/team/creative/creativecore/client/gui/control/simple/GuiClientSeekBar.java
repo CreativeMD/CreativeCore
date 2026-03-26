@@ -3,7 +3,7 @@ package team.creative.creativecore.client.gui.control.simple;
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
@@ -59,13 +59,13 @@ public class GuiClientSeekBar<T extends GuiSeekBar> extends GuiClientControl<T> 
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         final double percent = this.max > 0 ? pos / (double) max : 0;
         this.renderProgress(graphics, percent);
         ((CreativeGuiGraphics) graphics).drawStringCentered(parser.parse(pos, max), rect.getContentWidth(), rect.getContentHeight(), this.getStyle().fontColor.toInt(), true);
     }
     
-    protected void renderProgress(GuiGraphics graphics, double percent) {
+    protected void renderProgress(GuiGraphicsExtractor graphics, double percent) {
         this.getStyle().clickable.render(graphics, 0, 0, (rect.getContentWidth() * Math.min(percent, 1.0d)), rect.getContentHeight());
     }
     

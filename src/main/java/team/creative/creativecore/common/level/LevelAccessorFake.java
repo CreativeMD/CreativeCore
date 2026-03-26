@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleOptions;
@@ -110,11 +109,6 @@ public class LevelAccessorFake implements LevelAccessor {
     @Override
     public DimensionType dimensionType() {
         return level.dimensionType();
-    }
-    
-    @Override
-    public float getShade(Direction p_45522_, boolean p_45523_) {
-        return level.getShade(p_45522_, p_45523_);
     }
     
     @Override

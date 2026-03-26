@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui.control.simple;
 
 import org.joml.Matrix3x2fStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.common.gui.control.simple.GuiShowItem;
 import team.creative.creativecore.common.gui.style.ControlFormatting;
@@ -35,11 +35,11 @@ public class GuiClientShowItem<T extends GuiShowItem> extends GuiClientControl<T
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         float scale = Math.min(rect.getContentWidth() / 16, rect.getContentHeight() / 16);
         Matrix3x2fStack pose = graphics.pose();
         pose.scale(scale, scale);
-        graphics.renderItem(control.stack, 0, 0);
+        graphics.item(control.stack, 0, 0);
     }
     
 }

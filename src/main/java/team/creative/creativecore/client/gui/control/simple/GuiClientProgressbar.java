@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui.control.simple;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
@@ -29,13 +29,13 @@ public class GuiClientProgressbar<T extends GuiProgressbar> extends GuiClientCon
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         this.renderProgress(graphics, control.getPercentage());
         ((CreativeGuiGraphics) graphics).drawStringCentered(control.parser.parse(control.pos, control.max), rect.getContentWidth(), rect.getContentHeight(), getStyle().fontColor
                 .toInt(), true);
     }
     
-    protected void renderProgress(GuiGraphics graphics, double percent) {
+    protected void renderProgress(GuiGraphicsExtractor graphics, double percent) {
         getStyle().clickable.render(graphics, 0, 0, (int) (rect.getContentWidth() * percent), rect.getContentHeight());
     }
     

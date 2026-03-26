@@ -8,7 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 @Environment(EnvType.CLIENT)
 public class DebugTextRenderer {
@@ -49,12 +49,12 @@ public class DebugTextRenderer {
         return this;
     }
     
-    public void render(Font font, GuiGraphics graphics) {
+    public void render(Font font, GuiGraphicsExtractor graphics) {
         int top = 2;
         for (String msg : lines) {
             if (msg != null && !msg.isEmpty()) {
                 graphics.fill(1, top - 1, 2 + font.width(msg) + 1, top + font.lineHeight - 1, -1873784752);
-                graphics.drawString(font, msg, 2, top, -2039584, false);
+                graphics.text(font, msg, 2, top, -2039584, false);
             }
             top += font.lineHeight;
         }

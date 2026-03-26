@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.style.display;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import team.creative.creativecore.common.util.mc.ColorUtils;
 import team.creative.creativecore.common.util.type.Color;
 
@@ -41,7 +41,7 @@ public class DisplayColor extends StyleDisplay {
     }
     
     @Override
-    public void render(GuiGraphics graphics, double x, double y, double width, double height) {
+    public void render(GuiGraphicsExtractor graphics, double x, double y, double width, double height) {
         graphics.fill((int) x, (int) y, (int) (x + width), (int) (y + height), color);
     }
     

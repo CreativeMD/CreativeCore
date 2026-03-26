@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui.control.simple;
 
 import org.joml.Matrix3x2fStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.common.gui.control.simple.GuiIcon;
@@ -66,7 +66,7 @@ public class GuiClientIcon<T extends GuiIcon> extends GuiClientControl<T> implem
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         

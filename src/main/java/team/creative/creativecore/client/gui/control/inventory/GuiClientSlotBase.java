@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.joml.Matrix3x2fStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -47,11 +47,11 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         pose.translate(1, 1);
         ItemStack stack = getStackToRender();
-        graphics.renderItem(stack, 0, 0);
+        graphics.item(stack, 0, 0);
         ((CreativeGuiGraphics) graphics).renderItemDecorations(stack, 0, 0);
         pose.translate(-1, -1);
         if (realRect.inside(mouseX, mouseY) && enabled) {
@@ -62,7 +62,7 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {}
     
     @Override
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {

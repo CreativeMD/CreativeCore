@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui.control.simple;
 
 import java.util.function.Consumer;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
@@ -24,7 +24,7 @@ public class GuiClientButton<T extends GuiButton> extends GuiClientLabel<T> impl
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (hoverEffect)
             if (rect.inside(mouseX, mouseY))
                 text.setDefaultColor(getStyle().fontColorHighlight.toInt());

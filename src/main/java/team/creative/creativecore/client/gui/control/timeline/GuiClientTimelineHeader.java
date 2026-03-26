@@ -4,7 +4,7 @@ import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientParent;
@@ -63,7 +63,7 @@ public class GuiClientTimelineHeader<T extends GuiTimelineHeader> extends GuiCli
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         
         if (timeline().getLastZoom() != timeline().zoom.current()) {
             timeline().setLastZoom(timeline().zoom.current());
@@ -106,7 +106,7 @@ public class GuiClientTimelineHeader<T extends GuiTimelineHeader> extends GuiCli
             if (i % halfArea == 0) {
                 border.render(graphics, 1, 4);
                 String text = "" + (i * smallestStep);
-                graphics.drawString(Minecraft.getInstance().font, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false);
+                graphics.text(Minecraft.getInstance().font, text, 0 - font.width(text) / 2, 5, ColorUtils.BLACK, false);
             } else
                 border.render(graphics, 1, 2);
             

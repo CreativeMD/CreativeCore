@@ -3,7 +3,7 @@ package team.creative.creativecore.client.gui.control.simple;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.render.text.CompiledText;
@@ -66,7 +66,7 @@ public class GuiClientLabel<T extends GuiLabel> extends GuiClientControl<T> impl
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         text.render(graphics);
     }
     

@@ -17,18 +17,18 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.gui.render.state.GuiRenderState;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.resources.Identifier;
 import team.creative.creativecore.client.render.ScissorStackExtender;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 import team.creative.creativecore.reflection.ReflectionHelper;
 
-@Mixin(GuiGraphics.class)
-public class GuiGraphicsMixin implements CreativeGuiGraphics {
+@Mixin(GuiGraphicsExtractor.class)
+public class GuiGraphicsExtractorMixin implements CreativeGuiGraphics {
     
-    private static final Field SCISSOR_STACK_FIELD = ReflectionHelper.findFieldByType(GuiGraphics.class, "net.minecraft.client.gui.GuiGraphics$ScissorStack");
+    private static final Field SCISSOR_STACK_FIELD = ReflectionHelper.findFieldByType(GuiGraphicsExtractor.class, "net.minecraft.client.gui.GuiGraphicsExtractor$ScissorStack");
     
     @Shadow
     @Final
@@ -44,8 +44,8 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
     
     @Override
     @Unique
-    public GuiGraphics as() {
-        return (GuiGraphics) (Object) this;
+    public GuiGraphicsExtractor as() {
+        return (GuiGraphicsExtractor) (Object) this;
     }
     
     @Override
@@ -58,7 +58,7 @@ public class GuiGraphicsMixin implements CreativeGuiGraphics {
         return minecraft;
     }
     
-    @WrapOperation(method = "<init>(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/gui/render/state/GuiRenderState;II)V", require = 1, at = @At(value = "NEW",
+    @WrapOperation(method = "<init>(Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/renderer/state/gui/GuiRenderState;II)V", require = 1, at = @At(value = "NEW",
             target = "(I)Lorg/joml/Matrix3x2fStack;"))
     private static Matrix3x2fStack modifyStackSize(int stacksize, Operation<Matrix3x2fStack> op) {
         return new Matrix3x2fStack(64);

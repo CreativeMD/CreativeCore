@@ -1,7 +1,7 @@
 package team.creative.creativecore.client.gui.control.timeline;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.util.Mth;
 import team.creative.creativecore.client.gui.GuiClientControl;
@@ -94,7 +94,7 @@ public class GuiClientTimeline<T extends GuiTimeline> extends GuiClientParent<T>
     }
     
     @Override
-    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         zoom.tick();
         scrollX.tick();
         super.render(graphics, controlRect, realRect, scale, mouseX, mouseY);

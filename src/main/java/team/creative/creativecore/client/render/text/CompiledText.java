@@ -8,7 +8,7 @@ import java.util.Optional;
 import net.minecraft.client.ComponentCollector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -67,7 +67,7 @@ public class CompiledText {
         }
         
         @Override
-        public void render(GuiGraphics graphics) {}
+        public void render(GuiGraphicsExtractor graphics) {}
     };
     
     private int maxWidth;
@@ -204,7 +204,7 @@ public class CompiledText {
         return Mth.ceil(height * scale);
     }
     
-    public void render(GuiGraphics graphics) {
+    public void render(GuiGraphicsExtractor graphics) {
         if (lines == null)
             return;
         
@@ -280,7 +280,7 @@ public class CompiledText {
             return false;
         }
         
-        public void render(GuiGraphics graphics) {
+        public void render(GuiGraphicsExtractor graphics) {
             Font font = Minecraft.getInstance().font;
             var pose = graphics.pose();
             
@@ -297,7 +297,7 @@ public class CompiledText {
                 if (text instanceof AdvancedFormattedText adv)
                     adv.render(graphics, defaultColor);
                 else
-                    graphics.drawString(font, Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow);
+                    graphics.text(font, Language.getInstance().getVisualOrder(text), 0, 0, defaultColor, shadow);
                 pose.popMatrix();
                 xOffset += width;
             }

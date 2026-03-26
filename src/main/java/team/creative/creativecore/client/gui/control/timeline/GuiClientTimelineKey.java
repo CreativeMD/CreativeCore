@@ -5,7 +5,7 @@ import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientControl;
@@ -89,7 +89,7 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     }
     
     @Override
-    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
         
         Matrix3x2fStack pose = graphics.pose();
@@ -120,7 +120,7 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {}
     
     @Override
     public void setSelected(boolean selected) {

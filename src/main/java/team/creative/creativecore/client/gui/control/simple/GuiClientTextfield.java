@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -148,7 +148,7 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         var font = ((CreativeGuiGraphics) graphics).font();
         int j = this.cursorPosition - this.lineScrollOffset;
         int k = this.selectionEnd - this.lineScrollOffset;
@@ -165,7 +165,7 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
         if (!s.isEmpty()) {
             String s1 = flag ? s.substring(0, j) : s;
             var textFormatted = this.textFormatter.apply(s1, this.lineScrollOffset);
-            graphics.drawString(font, textFormatted, xOffset, yOffset, color, false);
+            graphics.text(font, textFormatted, xOffset, yOffset, color, false);
             xOffset = font.width(textFormatted) + 1;
         }
         
@@ -179,16 +179,16 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
         }
         
         if (!s.isEmpty() && flag && j < s.length())
-            graphics.drawString(font, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color, false);
+            graphics.text(font, this.textFormatter.apply(s.substring(j), this.cursorPosition), xOffset, yOffset, color, false);
         
         if (text.isEmpty() && !this.suggestion.isEmpty())
-            graphics.drawString(font, this.suggestion, k1 - 1, yOffset, -8355712);
+            graphics.text(font, this.suggestion, k1 - 1, yOffset, -8355712);
         
         if (flag1)
             if (flag2)
                 graphics.fill(k1, yOffset - 1, k1 + 1, yOffset + 1 + 9, -3092272);
             else
-                graphics.drawString(font, "_", k1, yOffset, color);
+                graphics.text(font, "_", k1, yOffset, color);
             
         if (k != j) {
             int l1 = font.width(s.substring(0, k));
@@ -196,7 +196,7 @@ public class GuiClientTextfield<T extends GuiTextfield> extends GuiFocusControl<
         }
     }
     
-    private void drawSelectionBox(GuiGraphics graphics, int startX, int startY, int endX, int endY) {
+    private void drawSelectionBox(GuiGraphicsExtractor graphics, int startX, int startY, int endX, int endY) {
         if (startX < endX) {
             int i = startX;
             startX = endX;

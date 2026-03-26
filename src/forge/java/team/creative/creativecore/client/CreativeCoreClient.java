@@ -9,7 +9,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -125,7 +125,7 @@ public class CreativeCoreClient {
             gui.clientTick();
     }
     
-    public static void postBackgroundEvent(Screen screen, GuiGraphics graphics, int mouseX, int mouseY) {
+    public static void postBackgroundEvent(Screen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         NeoForge.EVENT_BUS.post(new ScreenEvent.Render.Background(screen, graphics, mouseX, mouseY, Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false)));
     }
     

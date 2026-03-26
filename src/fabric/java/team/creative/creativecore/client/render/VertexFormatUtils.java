@@ -22,15 +22,11 @@ public class VertexFormatUtils {
         UV_OFFSET = -1;
         int offset = 0;
         for (VertexFormatElement element : format.getElements()) {
-            switch (element.usage()) {
-                case POSITION -> POSITION_OFFSET = offset;
-                case UV -> {
-                    if (UV_OFFSET == -1)
-                        UV_OFFSET = offset;
-                }
-                default -> {
-                }
-            }
+            if (element == VertexFormatElement.POSITION)
+                POSITION_OFFSET = offset;
+            else if (element == VertexFormatElement.UV)
+                if (UV_OFFSET == -1)
+                    UV_OFFSET = offset;
             offset += element.byteSize();
         }
     }

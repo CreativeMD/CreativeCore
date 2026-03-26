@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui.control.parent;
 
 import org.joml.Matrix3x2fStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.client.gui.GuiClientParent;
@@ -107,7 +107,8 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX,
+            int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         super.renderContent(graphics, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);

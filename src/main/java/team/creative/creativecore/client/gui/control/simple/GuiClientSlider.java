@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui.control.simple;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -238,7 +238,7 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         double percent = getPercentage();
         
         int posX = (int) ((rect.getContentWidth() - sliderSize) * percent);
@@ -252,7 +252,7 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {}
     
     @Override
     public void flowX(int width, int preferred) {

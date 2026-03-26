@@ -1,6 +1,6 @@
 package team.creative.creativecore.client.gui.control.simple;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.common.gui.control.simple.GuiColorPlate;
 import team.creative.creativecore.common.gui.control.simple.GuiColorPlate.GuiColorPlateDist;
@@ -37,7 +37,7 @@ public class GuiClientColorPlate<T extends GuiColorPlate> extends GuiClientContr
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         getStyle().transparencyBackground.render(graphics, rect.getContentWidth(), rect.getContentHeight());
         colorPlate.set(color);
         colorPlate.render(graphics, rect.getContentWidth(), rect.getContentHeight());

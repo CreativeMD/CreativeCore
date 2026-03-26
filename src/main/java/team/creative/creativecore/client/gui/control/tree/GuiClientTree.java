@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.joml.Matrix3x2fStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.control.parent.GuiClientScrollXY;
@@ -90,7 +90,8 @@ public class GuiClientTree<T extends GuiTree> extends GuiClientScrollXY<T> imple
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX,
+            int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         if (control.isDragged()) {
             pose.pushMatrix();
@@ -254,7 +255,7 @@ public class GuiClientTree<T extends GuiTree> extends GuiClientScrollXY<T> imple
             invalid = false;
         }
         
-        public void render(GuiGraphics graphics) {
+        public void render(GuiGraphicsExtractor graphics) {
             line.render(graphics, x, y, lineThickness, y2 - y);
         }
     }

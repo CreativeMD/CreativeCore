@@ -8,7 +8,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.client.StringSplitter.WidthProvider;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
@@ -57,13 +57,13 @@ public record ContentItemStack(ItemStack stack) implements AdvancedContent {
         }
         
         @Override
-        public void render(GuiGraphics graphics, int defaultColor) {
+        public void render(GuiGraphicsExtractor graphics, int defaultColor) {
             Matrix3x2fStack pose = graphics.pose();
             pose.pushMatrix();
             
             pose.translate(0, -2);
             pose.scale(0.8F, 0.8F);
-            graphics.renderItem(content.stack, 0, 0);
+            graphics.item(content.stack, 0, 0);
             pose.popMatrix();
         }
         

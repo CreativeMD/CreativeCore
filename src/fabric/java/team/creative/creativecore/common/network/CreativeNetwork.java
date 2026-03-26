@@ -50,12 +50,12 @@ public class CreativeNetwork {
     public <T extends CreativePacket> void registerType(Class<T> classType, Supplier<T> supplier) {
         CreativeNetworkPacket<T> handler = new CreativeNetworkPacket<>(Identifier.tryBuild(modid, "" + id), classType, supplier, true);
         
-        PayloadTypeRegistry.playC2S().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.CLIENTBOUND), x -> {
+        PayloadTypeRegistry.clientboundPlay().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.CLIENTBOUND), x -> {
             T packet = handler.read((CreativeByteBuf) x, PacketFlow.CLIENTBOUND);
             packet.setType(handler.sid);
             return packet;
         }));
-        PayloadTypeRegistry.playS2C().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.SERVERBOUND), x -> {
+        PayloadTypeRegistry.serverboundPlay().register(handler.sid, StreamCodec.ofMember((x, y) -> handler.write(x, (CreativeByteBuf) y, PacketFlow.SERVERBOUND), x -> {
             T packet = handler.read((CreativeByteBuf) x, PacketFlow.SERVERBOUND);
             packet.setType(handler.sid);
             return packet;
@@ -114,7 +114,7 @@ public class CreativeNetwork {
         else {
             var p = prepare(message, PacketFlow.SERVERBOUND);
             if (entity.level().getChunkSource() instanceof ServerChunkCache chunkCache)
-                chunkCache.sendToTrackingPlayers(entity, ServerPlayNetworking.createS2CPacket(p));
+                chunkCache.sendToTrackingPlayers(entity, ServerPlayNetworking.createClientboundPacket(p));
         }
     }
     
@@ -124,7 +124,7 @@ public class CreativeNetwork {
         else {
             var p = prepare(message, PacketFlow.SERVERBOUND);
             if (entity.level().getChunkSource() instanceof ServerChunkCache chunkCache)
-                chunkCache.sendToTrackingPlayersAndSelf(entity, ServerPlayNetworking.createS2CPacket(p));
+                chunkCache.sendToTrackingPlayersAndSelf(entity, ServerPlayNetworking.createClientboundPacket(p));
         }
     }
     

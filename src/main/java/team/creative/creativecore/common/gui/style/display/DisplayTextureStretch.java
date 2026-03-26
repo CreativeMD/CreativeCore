@@ -1,6 +1,6 @@
 package team.creative.creativecore.common.gui.style.display;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import team.creative.creativecore.client.render.gui.CreativeGuiGraphics;
 
@@ -20,7 +20,7 @@ public class DisplayTextureStretch extends DisplayTexture {
     }
     
     @Override
-    public void render(GuiGraphics graphics, double x, double y, double width, double height) {
+    public void render(GuiGraphicsExtractor graphics, double x, double y, double width, double height) {
         ((CreativeGuiGraphics) graphics).textureRect(identifier, (int) x, (int) y, (int) width, (int) height, u, v, u + w, v + h);
     }
     

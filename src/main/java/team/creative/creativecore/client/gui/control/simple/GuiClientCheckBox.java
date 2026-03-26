@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.control.simple.GuiCheckBox;
@@ -63,7 +63,7 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         int yoffset = 0;
         
         Matrix3x2fStack pose = graphics.pose();
@@ -76,7 +76,7 @@ public class GuiClientCheckBox<T extends GuiCheckBox> extends GuiClientLabel<T> 
         style.get(ControlStyleFace.NESTED_BACKGROUND, rect.inside(mouseX, mouseY)).render(graphics, 1, yoffset + 1, CHECKBOX_WIDTH - 2, CHECKBOX_WIDTH - 2);
         
         if (value)
-            graphics.drawString(Minecraft.getInstance().font, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), false);
+            graphics.text(Minecraft.getInstance().font, "x", 1, yoffset - 1, enabled ? ColorUtils.WHITE : style.fontColorHighlight.toInt(), false);
         else if (partial)
             PARTIAL_STYLE.render(graphics, 2, yoffset + 2, CHECKBOX_WIDTH - 4, CHECKBOX_WIDTH - 4);
         

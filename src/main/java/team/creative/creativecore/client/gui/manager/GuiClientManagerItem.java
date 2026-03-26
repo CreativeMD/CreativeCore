@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.joml.Matrix3x2fStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.EndTag;
@@ -65,7 +65,7 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
     }
     
     @Override
-    public void renderOverlay(GuiGraphics graphics, GuiClientLayer layer, int mouseX, int mouseY) {
+    public void renderOverlay(GuiGraphicsExtractor graphics, GuiClientLayer layer, int mouseX, int mouseY) {
         ItemStack stack = manager.getHand();
         int count = stack.getCount();
         if (drag) {
@@ -85,7 +85,7 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
             GuiClientControl.scissor(graphics, null);
             
             pose.translate(mouseX - 8, mouseY - 8);
-            graphics.renderItem(stack, 0, 0);
+            graphics.item(stack, 0, 0);
             ((CreativeGuiGraphics) graphics).renderItemDecorations(stack, 0, 0, count == 1 ? null : "" + count);
             pose.popMatrix();
         }

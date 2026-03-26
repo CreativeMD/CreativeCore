@@ -12,14 +12,14 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.datafixers.util.Either;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
@@ -64,7 +64,7 @@ public class CreativeCoreClient implements ClientModInitializer {
     }
     
     public static void commands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
-        dispatcher.register(ClientCommandManager.literal("cmdclientconfig").executes(x -> {
+        dispatcher.register(ClientCommands.literal("cmdclientconfig").executes(x -> {
             GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(true, CreativeConfigRegistry.ROOT, Side.CLIENT)));
             return 0;
         }));
@@ -90,7 +90,7 @@ public class CreativeCoreClient implements ClientModInitializer {
             scaleableGuiScreen.clientTick();
     }
     
-    public static void postBackgroundEvent(Screen screen, GuiGraphics graphics, double mouseX, double mouseY) {}
+    public static void postBackgroundEvent(Screen screen, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {}
     
     public static List<ClientTooltipComponent> gatherTooltipComponents(ItemStack stack, List<? extends FormattedText> textElements, Optional<TooltipComponent> itemComponent, int mouseX, int screenWidth, int screenHeight, Font fallbackFont) {
         List<Either<FormattedText, TooltipComponent>> elements = textElements.stream().map((Function<FormattedText, Either<FormattedText, TooltipComponent>>) Either::left).collect(

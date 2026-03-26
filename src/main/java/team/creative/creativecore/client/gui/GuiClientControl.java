@@ -9,7 +9,7 @@ import org.joml.Matrix3x2fStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -41,7 +41,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         return new Rect(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
     }
     
-    public static void scissor(GuiGraphics graphics, @Nullable Rect rect) {
+    public static void scissor(GuiGraphicsExtractor graphics, @Nullable Rect rect) {
         if (rect == null) {
             ((CreativeGuiGraphics) graphics).setOverrideScissor(null);
             return;
@@ -260,7 +260,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         return display;
     }
     
-    public void render(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    public void render(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
         
         Rect rectCopy = null;
@@ -300,7 +300,8 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         //graphics.flush();
     }
     
-    protected void renderContent(GuiGraphics graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX,
+            int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         controlRect.shrink(formatting.padding() * scale);
         if (!enabled)
@@ -313,11 +314,11 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
             pose.popMatrix();
     }
     
-    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         renderContent(graphics, mouseX, mouseY);
     }
     
-    protected abstract void renderContent(GuiGraphics graphics, int mouseX, int mouseY);
+    protected abstract void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY);
     
     // TOOLTIP
     

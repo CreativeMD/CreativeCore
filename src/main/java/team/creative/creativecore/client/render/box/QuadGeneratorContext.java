@@ -2,7 +2,7 @@ package team.creative.creativecore.client.render.box;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.common.util.math.base.Facing;
@@ -74,7 +74,7 @@ public class QuadGeneratorContext {
     
     public void setQuad(BakedQuad quad, boolean overrideTint, int defaultColor) {
         this.quad = quad;
-        this.shouldOverrideColor = overrideTint && (defaultColor == -1 || quad.isTinted()) && color != -1;
+        this.shouldOverrideColor = overrideTint && (defaultColor == -1 || quad.materialInfo().isTinted()) && color != -1;
     }
     
     public void setBounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {

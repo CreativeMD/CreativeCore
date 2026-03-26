@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.joml.Matrix3x2fStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
@@ -22,7 +22,7 @@ import team.creative.creativecore.common.util.math.geo.Rect;
 
 public interface IGuiClientIntegratedParent extends IGuiIntegratedParent {
     
-    public static void render(IGuiIntegratedParent parent, GuiGraphics graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
+    public static void render(IGuiIntegratedParent parent, GuiGraphicsExtractor graphics, Screen screen, ScreenEventListener listener, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         int width = screen.width;
         int height = screen.height;
@@ -68,7 +68,7 @@ public interface IGuiClientIntegratedParent extends IGuiIntegratedParent {
                 var font = Minecraft.getInstance().font;
                 List<ClientTooltipComponent> list = CreativeCoreClient.gatherTooltipComponents(ItemStack.EMPTY, event.tooltip, Optional.empty(), mouseX, graphics.guiWidth(),
                     graphics.guiHeight(), font);
-                graphics.renderTooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                graphics.tooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
             }
         }
     }

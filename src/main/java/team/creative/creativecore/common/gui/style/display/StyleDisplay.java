@@ -9,7 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.JsonAdapter;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import team.creative.creativecore.client.gui.GuiControlRect;
 import team.creative.creativecore.common.gui.style.display.StyleDisplay.StyleDisplayDeserializer;
 import team.creative.creativecore.common.util.math.geo.Rect;
@@ -20,7 +20,7 @@ public abstract class StyleDisplay {
     public static final StyleDisplay NONE = new StyleDisplay() {
         
         @Override
-        public void render(GuiGraphics graphics, double x, double y, double width, double height) {}
+        public void render(GuiGraphicsExtractor graphics, double x, double y, double width, double height) {}
     };
     
     private static final HashMap<String, Class<? extends StyleDisplay>> types = new HashMap<>();
@@ -31,19 +31,19 @@ public abstract class StyleDisplay {
         types.put(id, clazz);
     }
     
-    public void render(GuiGraphics graphics, double width, double height) {
+    public void render(GuiGraphicsExtractor graphics, double width, double height) {
         render(graphics, 0, 0, width, height);
     }
     
-    public void render(GuiGraphics graphics, Rect origin, Rect rect) {
+    public void render(GuiGraphicsExtractor graphics, Rect origin, Rect rect) {
         render(graphics, rect.getWidth(), rect.getHeight());
     }
     
-    public void render(GuiGraphics graphics, GuiControlRect rect) {
+    public void render(GuiGraphicsExtractor graphics, GuiControlRect rect) {
         render(graphics, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
     
-    public abstract void render(GuiGraphics graphics, double x, double y, double width, double height);
+    public abstract void render(GuiGraphicsExtractor graphics, double x, double y, double width, double height);
     
     static {
         registerType("color", DisplayColor.class);

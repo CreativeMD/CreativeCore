@@ -4,7 +4,7 @@ import java.util.ListIterator;
 
 import org.joml.Matrix3x2fStack;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -99,8 +99,8 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         this.flow = flow;
     }
     
-    protected void renderControls(GuiGraphics graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiClientControl> collection, double scale,
-            double xOffset, double yOffset, boolean hover) {
+    protected void renderControls(GuiGraphicsExtractor graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiClientControl> collection,
+            double scale, double xOffset, double yOffset, boolean hover) {
         Matrix3x2fStack pose = graphics.pose();
         
         while (collection.hasPrevious()) {
@@ -125,12 +125,13 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         }
     }
     
-    protected void renderControl(GuiGraphics graphics, GuiClientControl control, Rect controlContentRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
+    protected void renderControl(GuiGraphicsExtractor graphics, GuiClientControl control, Rect controlContentRect, Rect realRect, double scale, int mouseX, int mouseY,
+            boolean hover) {
         control.render(graphics, controlContentRect, hover ? controlContentRect : realRect, scale, mouseX, mouseY);
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, Rect contentRect, Rect realContentRect, double scale, int mouseX, int mouseY) {
         if (realContentRect == null)
             return;
         
@@ -151,7 +152,7 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {}
     
     public boolean isMouseOverHovered(double x, double y) {
         x *= scaleFactorInv();

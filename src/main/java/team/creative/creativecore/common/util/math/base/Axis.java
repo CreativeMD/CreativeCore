@@ -66,12 +66,12 @@ public enum Axis {
         
         @Override
         public int get(ChunkPos pos) {
-            return pos.x;
+            return pos.x();
         }
         
         @Override
         public ChunkPos set(ChunkPos pos, int value) {
-            return new ChunkPos(value, pos.z);
+            return new ChunkPos(value, pos.z());
         }
         
         @Override
@@ -298,12 +298,12 @@ public enum Axis {
         
         @Override
         public int get(ChunkPos pos) {
-            return pos.z;
+            return pos.z();
         }
         
         @Override
         public ChunkPos set(ChunkPos pos, int value) {
-            return new ChunkPos(pos.x, value);
+            return new ChunkPos(pos.x(), value);
         }
         
         @Override

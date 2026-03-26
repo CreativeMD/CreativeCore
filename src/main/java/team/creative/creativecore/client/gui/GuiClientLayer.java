@@ -2,7 +2,7 @@ package team.creative.creativecore.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import team.creative.creativecore.client.gui.manager.GuiClientManager;
@@ -95,7 +95,7 @@ public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLaye
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         super.renderContent(graphics, controlRect, realRect, scale, mouseX, mouseY);
         
         for (GuiClientManager manager : managers())
@@ -103,7 +103,7 @@ public class GuiClientLayer extends GuiClientParent<GuiLayer> implements GuiLaye
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, int mouseX, int mouseY) {}
+    protected void renderContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {}
     
     public Options getSettings() {
         return Minecraft.getInstance().options;

@@ -11,7 +11,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import team.creative.creativecore.client.render.ScissorStackExtender;
 
-@Mixin(targets = "net.minecraft.client.gui.GuiGraphics$ScissorStack")
+@Mixin(targets = "net.minecraft.client.gui.GuiGraphicsExtractor$ScissorStack")
 public abstract class ScissorStackMixin implements ScissorStackExtender {
     
     @Unique

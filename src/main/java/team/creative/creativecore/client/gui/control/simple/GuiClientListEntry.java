@@ -1,6 +1,6 @@
 package team.creative.creativecore.client.gui.control.simple;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.sounds.SoundEvents;
 import team.creative.creativecore.common.gui.control.simple.GuiListEntry;
@@ -14,7 +14,7 @@ public class GuiClientListEntry<T extends GuiListEntry> extends GuiClientLabel<T
     }
     
     @Override
-    protected void renderContent(GuiGraphics graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         if (control.selected)
             text.setDefaultColor(realRect.inside(mouseX, mouseY) ? ColorUtils.rgba(230, 230, 0, 255) : ColorUtils.rgba(200, 200, 0, 255));
         else if (realRect.inside(mouseX, mouseY))
