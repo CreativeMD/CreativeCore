@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -54,15 +55,7 @@ public class CreativeFabricLoader implements ICreativeLoader {
     @Override
     public void registerClientRenderGui(Consumer run) {
         if (RENDER_GUI.isEmpty())
-            HudElementRegistry.addLast(Identifier.tryBuild(CreativeCore.MODID, "gui"), new HudElement() {
-                
-                @Override
-                public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
-                    for (Consumer consumer : RENDER_GUI) {
-                        consumer.accept(graphics);
-                    }
-                }
-            });
+            HudElementRegistry.addLast(Identifier.tryBuild(CreativeCore.MODID, "gui"), new CreativeHudElement());
         RENDER_GUI.add(run);
     }
     
@@ -142,4 +135,14 @@ public class CreativeFabricLoader implements ICreativeLoader {
         return Side.SERVER; // Not supported on fabric
     }
     
+    @Environment(EnvType.CLIENT)
+    private class CreativeHudElement implements HudElement {
+        
+        @Override
+        public void extractRenderState(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
+            for (Consumer consumer : RENDER_GUI) {
+                consumer.accept(graphics);
+            }
+        }
+    }
 }
