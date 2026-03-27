@@ -1,3 +1,6 @@
+2.14.12
+Fixed startup crash on fabric side
+
 2.14.11
 Added contact information to fabric.mod.json
 Added grow to AlignedBox
