@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "creativecore",
-    "version": "2.14.12",
+    "version": "2.14.13",
     "name": "CreativeCore",
     "description": "A simple but powerful coremod.",
     "authors": [
@@ -42,7 +42,7 @@
         "creativecore.fabric.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.18.4",
+        "fabricloader": ">=0.18.5",
         "fabric-api": "*",
         "minecraft": ">=26.1"
     },
