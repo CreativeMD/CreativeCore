@@ -52,11 +52,17 @@ public class CreativeFabricLoader implements ICreativeLoader {
         ClientTickEvents.END_CLIENT_TICK.register(x -> run.run());
     }
     
-    @Override
-    public void registerClientRenderGui(Consumer run) {
+    @Environment(EnvType.CLIENT)
+    private void registerHudElement(Consumer run) {
         if (RENDER_GUI.isEmpty())
             HudElementRegistry.addLast(Identifier.tryBuild(CreativeCore.MODID, "gui"), new CreativeHudElement());
         RENDER_GUI.add(run);
+    }
+    
+    @Override
+    public void registerClientRenderGui(Consumer run) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
+            registerHudElement(run);
     }
     
     @Override
