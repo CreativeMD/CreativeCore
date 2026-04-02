@@ -391,7 +391,14 @@ public class RenderBox extends AlignedBox {
         if (pos != null)
             rand.setSeed(state.getSeed(pos));
         TODO 1.21.5 YET TO BE IMPLEMENTED
-        List<BakedQuad> blockQuads = blockModel.getQuads(state, facing.toVanilla(), rand, modelData, layer);
+        List<BakedQuad> blockQuads;
+        if (layer == RenderType.TRANSLUCENT && ColorUtils.isTransparent(this.color != -1 ? this.color : defaultColor)) {
+            var set = blockModel.getRenderTypes(state, rand, modelData);
+            blockQuads = new ArrayList<>();
+            for (RenderType type : set)
+                blockQuads.addAll(blockModel.getQuads(state, facing.toVanilla(), rand, modelData, type));
+        } else
+            blockQuads = blockModel.getQuads(state, facing.toVanilla(), rand, modelData, layer);
         
         if (blockQuads.isEmpty())
             return Collections.emptyList();
