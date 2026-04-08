@@ -9,7 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlHolder;
@@ -112,7 +112,7 @@ public class ConfigKeyHolder extends ConfigKey {
     }
     
     @Override
-    public ICreativeRegistry getRegistry() {
+    public IConfigRegistry getRegistry() {
         return holder.getRegistry();
     }
 }

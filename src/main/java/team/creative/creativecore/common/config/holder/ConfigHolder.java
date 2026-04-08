@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.util.type.list.PairList;
@@ -139,7 +139,7 @@ public abstract class ConfigHolder<T extends ConfigKey> implements ICreativeConf
     }
     
     @Override
-    public ICreativeRegistry getRegistry() {
+    public IConfigRegistry getRegistry() {
         return parent.getRegistry();
     }
     

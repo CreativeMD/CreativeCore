@@ -11,7 +11,7 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.IConfigObject;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControl;
 import team.creative.creativecore.common.config.gui.IGuiConfigParent;
@@ -20,11 +20,11 @@ import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public class ConfigKeyType extends ConfigKey {
     
-    public final ICreativeRegistry registry;
+    public final IConfigRegistry registry;
     public final ConfigTypeConveration converation;
     public final Object defaultValue;
     
-    public ConfigKeyType(ConfigField field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart, boolean hideFromGUI, ICreativeRegistry registry) {
+    public ConfigKeyType(ConfigField field, String name, Object defaultValue, ConfigSynchronization synchronization, boolean requiresRestart, boolean hideFromGUI, IConfigRegistry registry) {
         super(field, name, synchronization, requiresRestart, hideFromGUI);
         this.converation = ConfigTypeConveration.get(field.getType());
         this.defaultValue = defaultValue;
@@ -128,7 +128,7 @@ public class ConfigKeyType extends ConfigKey {
     }
     
     @Override
-    public ICreativeRegistry getRegistry() {
+    public IConfigRegistry getRegistry() {
         return registry;
     }
     

@@ -11,22 +11,22 @@ import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.api.ICreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public class ConfigHolderObject extends ConfigHolder<ConfigKey> {
     
-    public static ConfigHolderObject createUnrelated(ICreativeRegistry registry, Side side, Object value) {
+    public static ConfigHolderObject createUnrelated(IConfigRegistry registry, Side side, Object value) {
         return createUnrelated(registry, side, value, value);
     }
     
-    public static ConfigHolderObject createUnrelated(ICreativeRegistry registry, Side side, Object value, Object defaultReference) {
+    public static ConfigHolderObject createUnrelated(IConfigRegistry registry, Side side, Object value, Object defaultReference) {
         return new ConfigHolderObject(ConfigTypeConveration.FAKE_PARENT, side
                 .isClient() ? ConfigSynchronization.CLIENT : ConfigSynchronization.SERVER, registry, "", value, defaultReference);
     }
     
-    public static List<Field> collectFields(Class clazz, List<Field> fields, ICreativeRegistry registry) {
+    public static List<Field> collectFields(Class clazz, List<Field> fields, IConfigRegistry registry) {
         if (clazz.getSuperclass() != Object.class)
             collectFields(clazz.getSuperclass(), fields, registry);
         
@@ -38,7 +38,7 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKey> {
     }
     
     public final Object object;
-    private final ICreativeRegistry registry;
+    private final IConfigRegistry registry;
     
     public ConfigHolderObject(ICreativeConfigHolder parent, ConfigSynchronization synchronization, String key, Object object) {
         this(parent, synchronization, key, object, object);
@@ -48,7 +48,7 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKey> {
         this(parent, synchronization, parent.getRegistry(), key, object, defaultReference);
     }
     
-    private ConfigHolderObject(ICreativeConfigHolder parent, ConfigSynchronization synchronization, ICreativeRegistry registry, String key, Object object, Object defaultReference) {
+    private ConfigHolderObject(ICreativeConfigHolder parent, ConfigSynchronization synchronization, IConfigRegistry registry, String key, Object object, Object defaultReference) {
         super(parent, key, synchronization);
         this.object = object;
         this.registry = registry;
@@ -77,7 +77,7 @@ public class ConfigHolderObject extends ConfigHolder<ConfigKey> {
     }
     
     @Override
-    public ICreativeRegistry getRegistry() {
+    public IConfigRegistry getRegistry() {
         return registry;
     }
     

@@ -9,11 +9,11 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.core.ConfigEqualChecker;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.key.ConfigKey;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
-public class CreativeConfigRegistry extends ConfigHolderDynamic implements ICreativeRegistry {
+public class CreativeConfigRegistry extends ConfigHolderDynamic implements IConfigRegistry {
     
     public static final CreativeConfigRegistry ROOT = new CreativeConfigRegistry();
     public static final Predicate<Field> FIELD_PREDICATE = x -> Modifier.isPublic(x.getModifiers()) && !Modifier.isStatic(x.getModifiers()) && x.isAnnotationPresent(
@@ -80,7 +80,7 @@ public class CreativeConfigRegistry extends ConfigHolderDynamic implements ICrea
     }
     
     @Override
-    public ICreativeRegistry getRegistry() {
+    public IConfigRegistry getRegistry() {
         return this;
     }
     

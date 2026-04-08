@@ -5,7 +5,7 @@ import java.lang.reflect.Field;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 
-public interface ICreativeRegistry {
+public interface IConfigRegistry {
     
     public ConfigEqualChecker getEqualChecker();
     
