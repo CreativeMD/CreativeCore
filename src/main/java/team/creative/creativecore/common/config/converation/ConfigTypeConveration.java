@@ -32,7 +32,7 @@ import team.creative.creativecore.common.config.converation.registry.ConfigTypeR
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryObjectList;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTag;
 import team.creative.creativecore.common.config.converation.registry.ConfigTypeRegistryTagList;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.gui.GuiButtonKeyConfig;
 import team.creative.creativecore.common.config.gui.GuiInfoStackButton;
@@ -140,7 +140,7 @@ public abstract class ConfigTypeConveration<T> {
         public void configured(Side side) {}
         
         @Override
-        public ICreativeRegistry getRegistry() {
+        public IConfigRegistry getRegistry() {
             throw new UnsupportedOperationException("This fake parent should never be used to get the registry");
         }
         

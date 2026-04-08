@@ -11,14 +11,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.core.ConfigEqualChecker;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.gui.GuiConfigSubControlNested;
 import team.creative.creativecore.common.config.holder.ConfigHolderObject;
 import team.creative.creativecore.common.gui.IGuiParent;
 import team.creative.creativecore.common.util.mc.JsonUtils;
 import team.creative.creativecore.common.util.mc.NBTUtils;
 
-public class ConfigTypeRegistry<T> implements ICreativeRegistry {
+public class ConfigTypeRegistry<T> implements IConfigRegistry {
     
     public static final Predicate<Field> DEFAULT_FIELD_PREDICATE = x -> Modifier.isPublic(x.getModifiers()) && !Modifier.isTransient(x.getModifiers()) && !Modifier.isStatic(x
             .getModifiers());

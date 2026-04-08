@@ -9,7 +9,7 @@ import com.google.gson.JsonElement;
 import net.minecraft.core.HolderLookup;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
-import team.creative.creativecore.common.config.core.ICreativeRegistry;
+import team.creative.creativecore.common.config.core.IConfigRegistry;
 import team.creative.creativecore.common.config.field.ConfigField;
 import team.creative.creativecore.common.config.field.ConfigFieldTyped;
 import team.creative.creativecore.common.config.field.ConfigFieldWrapper;
@@ -142,6 +142,6 @@ public abstract class ConfigKey {
         return field;
     }
     
-    public abstract ICreativeRegistry getRegistry();
+    public abstract IConfigRegistry getRegistry();
     
 }

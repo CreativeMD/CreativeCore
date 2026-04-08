@@ -18,7 +18,7 @@ public class ConfigEqualChecker {
     private final HashSet<Class> toIgnore = new HashSet<>();
     
     /** Will be called automatically when calling registerTypeCreator */
-    public TriPredicate<Object, Object, Side> register(Class clazz, ICreativeRegistry registry) {
+    public TriPredicate<Object, Object, Side> register(Class clazz, IConfigRegistry registry) {
         try {
             var method = clazz.getDeclaredMethod("equals", Object.class);
             if (method != null) {
@@ -54,7 +54,7 @@ public class ConfigEqualChecker {
         return result;
     }
     
-    public boolean equals(Object one, Object two, Side side, ICreativeRegistry registry) {
+    public boolean equals(Object one, Object two, Side side, IConfigRegistry registry) {
         if (Objects.equals(one, two))
             return true;
         
