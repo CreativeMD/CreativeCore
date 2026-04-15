@@ -42,9 +42,9 @@
         "creativecore.fabric.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.18.5",
+        "fabricloader": ">=0.19.1",
         "fabric-api": "*",
-        "minecraft": ">=26.1"
+        "minecraft": ">=26.1.2"
     },
     "accessWidener": "creativecore.accesswidener"
 }
