@@ -6,7 +6,7 @@ license="LGPL-3.0-only"
 [[mods]]
     modId="creativecore"
     logoFile="creativecore.png"
-    version="2.14.11"
+    version="2.14.13"
     displayName="CreativeCore"
     displayURL="https://modrinth.com/mod/creativecore"
     authors="CreativeMD"
@@ -16,14 +16,14 @@ license="LGPL-3.0-only"
 [[dependencies.creativecore]]
     modId="neoforge"
     type="required"
-    versionRange="[26.1.0.1-beta,)"
+    versionRange="[26.1.2.10-beta,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.creativecore]]
     modId="minecraft"
     type="required"
-    versionRange="[26.1,)"
+    versionRange="[26.2,)"
     ordering="NONE"
     side="BOTH"
 
