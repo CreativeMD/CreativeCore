@@ -7,8 +7,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.resources.ResourceLocation;
+import team.creative.creativecore.common.util.type.itr.FunctionIterator;
 
-public class LocatedHandlerRegistry<T> {
+public class LocatedHandlerRegistry<T> implements ICreativeRegistry<T> {
     
     private final HashMap<ResourceLocation, T> handlers = new LinkedHashMap<>();
     private final HashMap<T, ResourceLocation> handlersInv = new LinkedHashMap<>();
@@ -67,7 +68,23 @@ public class LocatedHandlerRegistry<T> {
         return handlers.entrySet();
     }
     
+    @Override
     public Collection<T> values() {
         return handlers.values();
+    }
+    
+    @Override
+    public T get(String id) {
+        return get(ResourceLocation.parse(id));
+    }
+    
+    @Override
+    public String name(T value) {
+        return getLocation(value).toString();
+    }
+    
+    @Override
+    public Iterable<String> names() {
+        return new FunctionIterator<>(keys(), x -> x.toString());
     }
 }

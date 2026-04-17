@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class NamedHandlerRegistry<T> {
+public class NamedHandlerRegistry<T> implements ICreativeRegistry<T> {
     
     public static void clearRegistry(NamedHandlerRegistry registry) {
         registry.handlers.clear();
@@ -49,6 +49,7 @@ public class NamedHandlerRegistry<T> {
         return handlersInv.get(type);
     }
     
+    @Override
     public T get(String id) {
         return handlers.getOrDefault(id, defaultHandler);
     }
@@ -68,11 +69,22 @@ public class NamedHandlerRegistry<T> {
         return handlers.keySet();
     }
     
+    @Override
+    public Collection<String> names() {
+        return handlers.keySet();
+    }
+    
     public Set<Entry<String, T>> entrySet() {
         return handlers.entrySet();
     }
     
+    @Override
     public Collection<T> values() {
         return handlers.values();
+    }
+    
+    @Override
+    public String name(T value) {
+        return getId(value);
     }
 }
