@@ -22,6 +22,10 @@ public interface ICreativeLoader {
         GuiDialogHandler.init();
     }
     
+    public boolean forge();
+    
+    public boolean fabric();
+    
     public Side getOverallSide();
     
     public Side getEffectiveSide();
