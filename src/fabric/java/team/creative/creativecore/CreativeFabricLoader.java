@@ -141,6 +141,16 @@ public class CreativeFabricLoader implements ICreativeLoader {
         return Side.SERVER; // Not supported on fabric
     }
     
+    @Override
+    public boolean forge() {
+        return false;
+    }
+    
+    @Override
+    public boolean fabric() {
+        return true;
+    }
+      
     @Environment(EnvType.CLIENT)
     private class CreativeHudElement implements HudElement {
         
