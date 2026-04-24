@@ -1,3 +1,32 @@
+2.14.14
+Moved key config to forge (to fix issues on fabric)
+Fix: Remove hasBounds() check in VectorFan.generate() to resolve compact CTM slope render issue (by nickeh913678)
+Added forge and fabric method to CreativeLoader
+Added ICreativeRegistry interface for LocatedHandlerRegistry and NamedHandlerRegistry
+Renamed ICreativeRegistry to IConfigRegistry
+Fixed crash when playing sound config if the event does not exist
+Fixed some blocks not being rendered when they are colored translucent (blocks from rechiseled for example)
+Fixed crash when moving structures around in blueprint gui with child events
+Made GuiTree remember state of checkbox when toggling them
+Added contains to GuiParent
+Added register codec to NetworkFieldTypes
+Fixed rendering lines for render box not rendering block when color is white
+Added better functionality to support key controlled menu scrolling
+Added matche methods for KeyConfig which take keyCode
+Fixed checked items iteration for GuiTree
+Added keepOrder to GuiTree
+Added matchesPress to KeyConfig
+Added KeyConfig
+Added option to use ConfigHolderDynamic as a field to allow for custom creation of configurations within an existing configuration
+Added hasMinimumSpacing to GuiLayer
+Added time tracking for tests
+Added results information
+Added Tests
+Added vector fan cut min max test
+Reworked IntersectionHelper
+Added combine method to VectorFan
+
+
 2.14.13
 Fixed server startup crash on fabric side
 
