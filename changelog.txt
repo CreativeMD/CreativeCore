@@ -1,3 +1,11 @@
+2.13.37
+Added forge and fabric method to CreativeLoader
+Added ICreativeRegistry interface for LocatedHandlerRegistry and NamedHandlerRegistry
+Renamed ICreativeRegistry to IConfigRegistry
+Fixed crash when playing sound config if the event does not exist
+Fixed some blocks not being rendered when they are colored translucent (blocks from rechiseled for example)
+Fix: Remove hasBounds() check in VectorFan.generate() to resolve compact CTM slope render issue (by nickeh913678)
+
 2.13.36
 Added contains to GuiParent
 Added register codec to NetworkFieldTypes
