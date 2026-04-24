@@ -148,4 +148,13 @@ public class CreativeForgeLoader implements ICreativeLoader {
         return EffectiveSide.get().isClient() ? Side.CLIENT : Side.SERVER;
     }
     
+    @Override
+    public boolean forge() {
+        return true;
+    }
+    
+    @Override
+    public boolean fabric() {
+        return false;
+    }
 }
