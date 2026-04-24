@@ -88,7 +88,7 @@ public class VectorFan {
     @OnlyIn(Dist.CLIENT)
     public void generate(QuadGeneratorContext holder, List<BakedQuad> quads) {
         Vec3f[] coords = this.coords;
-        if (!holder.box.allowOverlap && holder.hasBounds()) {
+        if (!holder.box.allowOverlap) {
             Axis one = holder.facing.one();
             Axis two = holder.facing.two();
             
