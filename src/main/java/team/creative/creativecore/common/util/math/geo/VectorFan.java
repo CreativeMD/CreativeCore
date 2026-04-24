@@ -8,12 +8,9 @@ import java.util.function.BiConsumer;
 import team.creative.creativecore.client.render.box.QuadGeneratorContext;
 import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
-import team.creative.creativecore.common.util.math.collision.IntersectionHelper;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
-import team.creative.creativecore.common.util.math.vec.Vec2f;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 import team.creative.creativecore.common.util.math.vec.Vec3f;
-import team.creative.creativecore.common.util.math.vec.VectorUtils;
 
 public class VectorFan {
     
@@ -73,9 +70,92 @@ public class VectorFan {
     }
     
     public Vec3f[] cutMinMax(Axis one, Axis two, Axis axis, float minOne, float minTwo, float maxOne, float maxTwo) {
-        boolean allTheSame = true;
-        boolean allValue = false;
-        boolean[] inside = new boolean[coords.length];
+        NormalPlaneF[] planes = new NormalPlaneF[] { new NormalPlaneF(one, minOne, one.facing(false)), new NormalPlaneF(one, maxOne, one.facing(
+            true)), new NormalPlaneF(two, minTwo, two.facing(false)), new NormalPlaneF(two, maxTwo, two.facing(true)) };
+        var result = this.copy();
+        if (result.cutWithoutCopy(planes))
+            return result.coords;
+        return null;
+    }
+    
+    /*@Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public void generate(QuadGeneratorContext holder, List<BakedQuad> quads) {
+        Vec3f[] coords = this.coords;
+        if (!holder.box.allowOverlap) {
+            Axis one = holder.facing.one();
+            Axis two = holder.facing.two();
+            
+            float scaleOne;
+            float scaleTwo;
+            float offsetOne;
+            float offsetTwo;
+            if (holder.scaleAndOffset) {
+                scaleOne = 1 / VectorUtils.get(one, holder.scaleX, holder.scaleY, holder.scaleZ);
+                scaleTwo = 1 / VectorUtils.get(two, holder.scaleX, holder.scaleY, holder.scaleZ);
+                offsetOne = VectorUtils.get(one, holder.offsetX, holder.offsetY, holder.offsetZ);
+                offsetTwo = VectorUtils.get(two, holder.offsetX, holder.offsetY, holder.offsetZ);
+            } else {
+                scaleOne = 1;
+                scaleTwo = 1;
+                offsetOne = 0;
+                offsetTwo = 0;
+            }
+            
+            float minOne = VectorUtils.get(one, holder.minX, holder.minY, holder.minZ) * scaleOne - offsetOne;
+            float minTwo = VectorUtils.get(two, holder.minX, holder.minY, holder.minZ) * scaleTwo - offsetTwo;
+            float maxOne = VectorUtils.get(one, holder.maxX, holder.maxY, holder.maxZ) * scaleOne - offsetOne;
+            float maxTwo = VectorUtils.get(two, holder.maxX, holder.maxY, holder.maxZ) * scaleTwo - offsetTwo;
+            
+            coords = cutMinMax(one, two, holder.facing.axis, minOne, minTwo, maxOne, maxTwo);
+        }
+        if (coords == null)
+            return;
+        int index = 1;
+        while (index < coords.length - 2) {
+            generate(holder, coords[0], coords[index], coords[index + 1], coords[index + 2], quads);
+            index += 2;
+        }
+        if (index < coords.length - 1)
+            generate(holder, coords[0], coords[index], coords[index + 1], coords[index + 1], quads);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    protected void generate(QuadGeneratorContext holder, Vec3f vec1, Vec3f vec2, Vec3f vec3, Vec3f vec4, List<BakedQuad> quads) {
+        int[] vertices = holder.quad.getVertices().clone();
+        RenderBox box = holder.box;
+        
+        for (int k = 0; k < 4; k++) {
+            Vec3f vec;
+            if (k == 0)
+                vec = vec1;
+            else if (k == 1)
+                vec = vec2;
+            else if (k == 2)
+                vec = vec3;
+            else
+                vec = vec4;
+            
+            int index = k * VertexFormatUtils.blockFormatIntSize();
+            
+            float x;
+            float y;
+            float z;
+            
+            if (holder.scaleAndOffset) {
+                x = vec.x * holder.scaleX + holder.offsetX - holder.offset.getX();
+                y = vec.y * holder.scaleY + holder.offsetY - holder.offset.getY();
+                z = vec.z * holder.scaleZ + holder.offsetZ - holder.offset.getZ();
+            } else {
+                x = vec.x - holder.offset.getX();
+                y = vec.y - holder.offset.getY();
+                z = vec.z - holder.offset.getZ();
+            }
+            
+            if (doMinMaxLate() && !box.allowOverlap) {
+                if (holder.facing.axis != Axis.X)
+                    x = Mth.clamp(x, holder.minX, holder.maxX);
         
         for (int i = 0; i < inside.length; i++) {
             float valueOne = coords[i].get(one);
@@ -109,7 +189,7 @@ public class VectorFan {
         }
         
         return result;
-    }
+    }*/
     
     public boolean doMinMaxLate() {
         return false;
