@@ -10,6 +10,7 @@ import team.creative.creativecore.client.config.gui.GuiClientTreeCheckBox;
 import team.creative.creativecore.client.gui.GuiClientControl;
 import team.creative.creativecore.client.gui.GuiClientLayer;
 import team.creative.creativecore.client.gui.GuiClientParent;
+import team.creative.creativecore.client.gui.GuiClientRegistrySided;
 import team.creative.creativecore.client.gui.control.collection.GuiClientCheckList;
 import team.creative.creativecore.client.gui.control.collection.GuiClientComboBox;
 import team.creative.creativecore.client.gui.control.collection.GuiClientComboBoxExtension;
@@ -238,6 +239,8 @@ public class GuiClientRegistry {
         
         // Config
         register(GuiTreeCheckBox.class, GuiClientTreeCheckBox::new);
+        
+        GuiClientRegistrySided.register();
         
         registerManager(GuiManagerItem.class, GuiClientManagerItem::new);
         
