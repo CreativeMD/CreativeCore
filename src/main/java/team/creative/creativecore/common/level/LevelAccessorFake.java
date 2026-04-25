@@ -52,6 +52,16 @@ public class LevelAccessorFake implements LevelAccessor {
         this.state = state;
     }
     
+    /** Exposes the wrapped real level. May be {@code null} before {@link #set} is called. */
+    public Level getRealLevel() {
+        return level;
+    }
+    
+    /** Exposes the position the fake is bound to. */
+    public BlockPos getPos() {
+        return pos;
+    }
+    
     @Override
     public RegistryAccess registryAccess() {
         return level.registryAccess();

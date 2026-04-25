@@ -24,6 +24,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import team.creative.creativecore.client.render.VertexFormatUtils;
+import team.creative.creativecore.client.render.box.bridge.FabricRendererBridge;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
 import team.creative.creativecore.common.util.math.base.Axis;
@@ -413,9 +414,9 @@ public class RenderBox extends AlignedBox {
             var set = blockModel.getRenderTypes(state, rand, modelData);
             blockQuads = new ArrayList<>();
             for (RenderType type : set)
-                blockQuads.addAll(blockModel.getQuads(state, facing.toVanilla(), rand, modelData, type));
+                blockQuads.addAll(getQuadsBridged(blockModel, state, facing, rand, modelData, type, level, pos));
         } else
-            blockQuads = blockModel.getQuads(state, facing.toVanilla(), rand, modelData, layer);
+            blockQuads = getQuadsBridged(blockModel, state, facing, rand, modelData, layer, level, pos);
         
         if (blockQuads.isEmpty())
             return Collections.emptyList();
@@ -519,6 +520,25 @@ public class RenderBox extends AlignedBox {
                 c.updateAlpha();
         return quads;
         
+    }
+    
+    /**
+     * Resolves the quads for a given block model, optionally routing the call through
+     * {@link FabricRendererBridge} so that Fabric Renderer API consumers (e.g. Continuity's
+     * connected-textures pipeline) can transform the quads. Falls back to the vanilla
+     * {@link BakedModel#getQuads} call when the bridge is unavailable, when {@code pos} is
+     * unknown, or when the bridge declines to handle the model.
+     *
+     * <p>Subclasses can override this method to substitute a custom {@code level}/{@code pos}
+     * (e.g. to expose neighbouring tile state through a wrapped {@code BlockAndTintGetter}).</p>
+     */
+    protected List<BakedQuad> getQuadsBridged(BakedModel blockModel, BlockState state, Facing facing, RandomSource rand,
+            ModelData modelData, RenderType layer, @Nullable LevelAccessor level, @Nullable BlockPos pos) {
+        if (pos != null && FabricRendererBridge.isAvailable()) {
+            List<BakedQuad> bridged = FabricRendererBridge.tryBridge(blockModel, state, facing.toVanilla(), rand, modelData, layer, level, pos);
+            if (bridged != null) return bridged;
+        }
+        return blockModel.getQuads(state, facing.toVanilla(), rand, modelData, layer);
     }
     
     private static class VectorFanSimple extends VectorFan {
