@@ -2,11 +2,12 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'com.modrinth.minotaur' version '2.+'
-	id 'net.neoforged.gradle.userdev' version '7.0.+'
+	id 'net.neoforged.gradle.userdev' version '7.0.192'
 }
 
 repositories {
     maven { url = 'https://maven.fabricmc.net' }
+    maven { url = 'https://maven.su5ed.dev/releases' }
 }
 
 group= "team.creative" + project.mod_id
@@ -46,6 +47,16 @@ dependencies {
     implementation "net.neoforged:neoforge:${forge_version}"
     
     compileOnly "net.fabricmc:fabric-loader:${fabric_version}"
+
+    // Forgified Fabric API (compile-only). Required for the optional FabricRendererBridge in
+    // RenderBox; classes that import these symbols are isolated and only loaded at runtime
+    // when FabricBakedModel is actually present on the classpath.
+    compileOnly "org.sinytra.forgified-fabric-api:fabric-renderer-api-v1:3.4.1+9125b6dc19"
+    compileOnly "org.sinytra.forgified-fabric-api:fabric-renderer-indigo:1.7.1+9125b6dc19"
+    compileOnly "org.sinytra.forgified-fabric-api:fabric-api-base:0.4.42+d1308ded19"
+
+    // Sodium (compile-only) for the Sodium-aware bridge variant.
+    compileOnly files("libs/sodium-neoforge-0.6.13+mc1.21.1.jar")
 }
 
 modProperties = [ '    displayTest="NONE"' ]
