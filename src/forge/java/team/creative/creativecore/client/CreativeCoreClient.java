@@ -103,19 +103,20 @@ public class CreativeCoreClient {
         Minecraft minecraft = Minecraft.getInstance();
         ReloadableResourceManager reloadableResourceManager = (ReloadableResourceManager) minecraft.getResourceManager();
         
-        reloadableResourceManager.registerReloadListener(new SimplePreparableReloadListener() {
-            
-            @Override
-            protected Object prepare(ResourceManager p_10796_, ProfilerFiller p_10797_) {
-                return GuiStyle.class; // No idea
-            }
-            
-            @Override
-            protected void apply(Object p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
-                GuiStyle.reload();
-            }
+        minecraft.execute(() -> {
+            reloadableResourceManager.registerReloadListener(new SimplePreparableReloadListener() {
+                
+                @Override
+                protected Object prepare(ResourceManager p_10796_, ProfilerFiller p_10797_) {
+                    return GuiStyle.class; // No idea
+                }
+                
+                @Override
+                protected void apply(Object p_10793_, ResourceManager p_10794_, ProfilerFiller p_10795_) {
+                    GuiStyle.reload();
+                }
+            });
         });
-        
     }
     
     public static void modelEvent(RegisterGeometryLoaders event) {
