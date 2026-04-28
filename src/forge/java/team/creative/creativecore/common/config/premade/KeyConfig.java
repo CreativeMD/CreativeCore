@@ -5,8 +5,6 @@ import com.mojang.blaze3d.platform.InputConstants.Type;
 
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 
@@ -24,27 +22,22 @@ public class KeyConfig {
         this.modifier = modifier;
     }
     
-    @OnlyIn(Dist.CLIENT)
     public KeyConfig(int keyCode, KeyModifier modifier) {
         this(Type.KEYSYM, keyCode, modifier);
     }
     
-    @OnlyIn(Dist.CLIENT)
     public KeyConfig(InputConstants.Type type, int code, KeyModifier modifier) {
         this(type == Type.KEYSYM ? code : -1, type == Type.SCANCODE ? code : -1, modifier.ordinal());
     }
     
-    @OnlyIn(Dist.CLIENT)
     public KeyConfig(InputConstants.Key key, KeyModifier modifier) {
         this(key.getType(), key.getValue(), modifier);
     }
     
-    @OnlyIn(Dist.CLIENT)
     public KeyModifier getModifier() {
         return KeyModifier.values()[modifier];
     }
     
-    @OnlyIn(Dist.CLIENT)
     public InputConstants.Key getKey() {
         if (isUnbound())
             return InputConstants.UNKNOWN;

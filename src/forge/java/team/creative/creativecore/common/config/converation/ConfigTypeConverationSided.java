@@ -5,8 +5,6 @@ import com.google.gson.JsonObject;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.Side;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration.SimpleConfigTypeConveration;
 import team.creative.creativecore.common.config.gui.GuiButtonKeyConfig;
@@ -42,21 +40,18 @@ public class ConfigTypeConverationSided {
             
             @Override
             @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             protected KeyConfig saveValue(GuiParent parent, ConfigKey key) {
                 return parent.get("key", GuiButtonKeyConfig.class).getValue();
             }
             
             @Override
             @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void loadValue(KeyConfig value, GuiParent parent) {
                 parent.get("key", GuiButtonKeyConfig.class).setValue(value);
             }
             
             @Override
             @Environment(EnvType.CLIENT)
-            @OnlyIn(Dist.CLIENT)
             public void createControls(GuiParent parent, ConfigKey key) {
                 parent.add(new GuiButtonKeyConfig(parent, "key", KeyConfig.UNBOUND));
             }
