@@ -1,3 +1,6 @@
+2.14.15
+Removed OnlyIn annotations added accidently by merge
+
 2.14.14
 Moved key config to forge (to fix issues on fabric)
 Fix: Remove hasBounds() check in VectorFan.generate() to resolve compact CTM slope render issue (by nickeh913678)
