@@ -1,3 +1,6 @@
+2.12.37
+Fixed executing reloader manager off thread
+
 2.12.36
 Fixed crash when playing sound config if the event does not exist
 Added forge and fabric method to CreativeLoader
