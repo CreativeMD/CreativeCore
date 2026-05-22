@@ -21,7 +21,10 @@ public class IntMinMax implements ICreativeConfig {
     public int next(Random rand) {
         if (min == max)
             return min;
-        return min + rand.nextInt(max - min);
+        int size = max - min;
+        if (size < 0)
+            return min;
+        return min + rand.nextInt(size);
     }
     
     @Override
