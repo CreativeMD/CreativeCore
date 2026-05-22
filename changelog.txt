@@ -1,3 +1,6 @@
+2.12.38
+Fixed crash when min max is configured wrong (min being larger than max)
+
 2.12.37
 Fixed executing reloader manager off thread
 
