@@ -1,3 +1,6 @@
+2.13.40
+Fixed random crash when joining world (single or multiplayer)
+
 2.13.39
 Fixed crash when min max is configured wrong (min being larger than max)
 
