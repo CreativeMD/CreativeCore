@@ -213,7 +213,7 @@ public class ConfigEventHandler {
     
     public void load(HolderLookup.Provider provider, String modid, Side side) {
         ConfigKey field = CreativeConfigRegistry.ROOT.getField(modid);
-        if (field.isFolder()) {
+        if (field != null && field.isFolder()) {
             File config = new File(CONFIG_DIRECTORY, modid + (side.isClient() ? "-client" : "") + ".json");
             if (config.exists()) {
                 try {
