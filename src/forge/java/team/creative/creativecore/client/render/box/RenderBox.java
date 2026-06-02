@@ -367,11 +367,15 @@ public class RenderBox extends AlignedBox {
     }
     
     public void renderLines(PoseStack pose, VertexConsumer consumer, int alpha, Vec3d center, double grow) {
+        renderLines(pose, consumer, alpha, center, grow, false);
+    }
+    
+    public void renderLines(PoseStack pose, VertexConsumer consumer, int alpha, Vec3d center, double grow, boolean forceWhite) {
         int red = ColorUtils.red(color);
         int green = ColorUtils.green(color);
         int blue = ColorUtils.blue(color);
         
-        if (red == 255 && green == 255 && blue == 255)
+        if (!forceWhite && red == 255 && green == 255 && blue == 255)
             red = green = blue = 0;
         
         if (previewScalingAndOffset()) {

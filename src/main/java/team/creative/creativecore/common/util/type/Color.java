@@ -320,4 +320,10 @@ public class Color {
         return ColorUtils.toHex(toInt());
     }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Color c)
+            return c.red == red && c.green == green && c.blue == blue && c.alpha == alpha;
+        return false;
+    }
 }
