@@ -1,3 +1,6 @@
+2.13.41
+Added color config option
+
 2.13.40
 Fixed random crash when joining world (single or multiplayer)
 
