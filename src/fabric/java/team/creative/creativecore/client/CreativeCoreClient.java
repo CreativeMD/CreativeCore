@@ -86,7 +86,7 @@ public class CreativeCoreClient implements ClientModInitializer {
     }
     
     public static void clientTick(Minecraft client) {
-        if (client.screen instanceof IScaleableGuiScreen scaleableGuiScreen)
+        if (client.gui.screen() instanceof IScaleableGuiScreen scaleableGuiScreen)
             scaleableGuiScreen.clientTick();
     }
     

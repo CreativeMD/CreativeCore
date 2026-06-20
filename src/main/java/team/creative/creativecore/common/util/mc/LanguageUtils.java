@@ -9,7 +9,7 @@ import team.creative.creativecore.CreativeCore;
 public class LanguageUtils {
     
     public static boolean can(String name) {
-        return I18n.exists(name);
+        return Language.getInstance().has(name);
     }
     
     public static String translate(String name) {

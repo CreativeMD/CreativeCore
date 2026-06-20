@@ -29,7 +29,7 @@ public class ModMenuImpl implements ModMenuApi {
                     
                     @Override
                     public void onClose() {
-                        this.minecraft.setScreen(screen);
+                        this.minecraft.gui.setScreen(screen);
                     }
                     
                 };

@@ -21,11 +21,11 @@ public class VertexFormatUtils {
         VERTEX_FORMAT_INT_SIZE = VERTEX_FORMAT_SIZE / 4;
         UV_OFFSET = -1;
         for (VertexFormatElement element : format.getElements())
-            if (element == VertexFormatElement.POSITION)
-                POSITION_OFFSET = format.getOffset(element);
-            else if (element == VertexFormatElement.UV)
+            if (element.name().equals("Position"))
+                POSITION_OFFSET = element.offset();
+            else if (element.name().equals("Color"))
                 if (UV_OFFSET == -1)
-                    UV_OFFSET = format.getOffset(element);
+                    UV_OFFSET = element.offset();
     }
     
     public static int blockFormatSize() {

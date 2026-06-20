@@ -20,22 +20,21 @@ public class GuiEventHandler {
     
     public static void onTick(Minecraft mc) {
         if (displayScreen != null) {
-            mc.setScreen(displayScreen);
+            mc.gui.setScreen(displayScreen);
             displayScreen = null;
         }
         Window window = mc.getWindow();
         if (window.getWidth() != displayWidth || window.getHeight() != displayHeight) {
             displayWidth = window.getWidth();
             displayHeight = window.getHeight();
-            if (mc.screen instanceof IScaleableGuiScreen) {
+            if (mc.gui.screen() instanceof IScaleableGuiScreen) {
                 mc.options.guiScale().set(defaultScale);
                 window.setGuiScale(window.calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode()));
-                if (mc.screen != null)
-                    mc.screen.resize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                mc.gui.screen().resize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
             }
         }
         
-        if (mc.screen instanceof IScaleableGuiScreen gui) {
+        if (mc.gui.screen() instanceof IScaleableGuiScreen gui) {
             if (!changed)
                 defaultScale = mc.options.guiScale().get();
             int maxScale = gui.getMaxScale(window.getWidth(), window.getHeight());
@@ -46,14 +45,14 @@ public class GuiEventHandler {
                 changed = true;
                 mc.options.guiScale().set(scale);
                 window.setGuiScale(scale);
-                mc.screen.resize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+                mc.gui.screen().resize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
             }
         } else if (changed) {
             changed = false;
             mc.options.guiScale().set(defaultScale);
             mc.getWindow().setGuiScale(mc.getWindow().calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode()));
-            if (mc.screen != null)
-                mc.screen.resize(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
+            if (mc.gui.screen() != null)
+                mc.gui.screen().resize(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
         }
     }
     

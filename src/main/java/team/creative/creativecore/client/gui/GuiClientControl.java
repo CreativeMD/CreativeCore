@@ -261,7 +261,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
     }
     
     public void render(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
+        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().gameRenderer.mainRenderTarget().getDepthTexture(), 1.0);
         
         Rect rectCopy = null;
         if (!enabled)

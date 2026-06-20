@@ -121,7 +121,7 @@ public class CreativeCoreClient {
     
     @SubscribeEvent
     public static void clientTick(ClientTickEvent.Pre event) {
-        if (Minecraft.getInstance().screen instanceof IScaleableGuiScreen gui)
+        if (Minecraft.getInstance().gui.screen() instanceof IScaleableGuiScreen gui)
             gui.clientTick();
     }
     

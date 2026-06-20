@@ -90,7 +90,7 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     
     @Override
     public void render(GuiGraphicsExtractor graphics, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
-        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().getMainRenderTarget().getDepthTexture(), 1.0);
+        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(Minecraft.getInstance().gameRenderer.mainRenderTarget().getDepthTexture(), 1.0);
         
         Matrix3x2fStack pose = graphics.pose();
         GuiStyle style = getStyle();
