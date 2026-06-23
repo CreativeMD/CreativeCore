@@ -121,6 +121,8 @@ public abstract class CreativeIngredient {
         }
     }
     
+    public static void init() {}
+    
     static {
         // Load default types
         registerType("block", CreativeIngredientBlock.class, (x) -> {
@@ -159,8 +161,7 @@ public abstract class CreativeIngredient {
         ConfigTypeConveration.registerSpecialType(CreativeIngredient.class::isAssignableFrom, new ConfigTypeConveration<CreativeIngredient>() {
             
             @Override
-            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
-                    Side side, ConfigKey key) {
+            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
                         return CreativeIngredient.load(TagParser.parseTag(element.getAsString()));

@@ -62,6 +62,7 @@ import team.creative.creativecore.common.gui.controls.simple.GuiStateButton;
 import team.creative.creativecore.common.gui.controls.simple.GuiSteppedSlider;
 import team.creative.creativecore.common.gui.controls.simple.GuiTextfield;
 import team.creative.creativecore.common.gui.flow.GuiFlow;
+import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 import team.creative.creativecore.common.util.text.TextListBuilder;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
 import team.creative.creativecore.common.util.type.TriPredicate;
@@ -645,8 +646,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override
-            public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side,
-                    ConfigKey key) {
+            public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
                 if (element.isJsonObject())
                     return new SoundConfig(new ResourceLocation(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume").getAsFloat(), element
                             .getAsJsonObject().get("pitch").getAsFloat());
@@ -718,8 +718,7 @@ public abstract class ConfigTypeConveration<T> {
         registerType(SelectableConfig.class, new ConfigTypeConveration<SelectableConfig>() {
             
             @Override
-            public SelectableConfig readElement(HolderLookup.Provider provider, SelectableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
-                    Side side, ConfigKey key) {
+            public SelectableConfig readElement(HolderLookup.Provider provider, SelectableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isNumber())
                     defaultValue.select(element.getAsInt());
                 else
@@ -847,6 +846,8 @@ public abstract class ConfigTypeConveration<T> {
         });
         
         registerSpecialType((x) -> List.class.isAssignableFrom(x) || x == ArrayList.class, new ConfigTypeList());
+        
+        CreativeIngredient.init();
     }
     
     public abstract T readElement(HolderLookup.Provider provider, T defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key);
