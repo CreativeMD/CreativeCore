@@ -1,3 +1,6 @@
+2.12.39
+Fixed crash when config uses CreativeIngredient but it is not loaded yet
+
 2.12.38
 Fixed crash when min max is configured wrong (min being larger than max)
 
