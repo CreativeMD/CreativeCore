@@ -27,6 +27,18 @@ java.sourceSets {
     }
 }
 
+java.sourceSets.create("api") {
+    
+    java {
+        srcDir("src/api/java")
+    }
+    compileClasspath += sourceSets.main.compileClasspath
+    runtimeClasspath += sourceSets.main.runtimeClasspath
+}
+
+sourceSets.main.compileClasspath += sourceSets.api.output
+sourceSets.main.runtimeClasspath += sourceSets.api.output
+
 runs {	
 	configureEach {
 		workingDirectory project.file('run')

@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.math.box;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.SliceShape;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import team.creative.creativecore.common.mod.sable.SableManager;
 import team.creative.creativecore.common.util.type.list.SingletonList;
 import team.creative.creativecore.common.util.unsafe.CreativeHackery;
 import team.creative.creativecore.mixin.VoxelShapeAccessor;
@@ -280,6 +282,10 @@ public class BoxesVoxelShape extends SliceShape {
             maxZ = Math.max(maxZ, bb.maxZ);
         }
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+    
+    public Iterator<?> sable$allBoxes() {
+        return SableManager.sableBoxes(boxes);
     }
     
     @Override
