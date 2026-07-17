@@ -1,5 +1,8 @@
 package team.creative.creativecore.common.util.math.matrix;
 
+import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import team.creative.creativecore.common.util.math.base.Axis;
@@ -34,6 +37,12 @@ public class ChildVecOrigin extends VecOrigin {
     }
     
     @Override
+    public void setupRenderingInternal(Matrix4fStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
+        parent.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+        super.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+    }
+    
+    @Override
     public void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
         parent.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
         super.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
@@ -57,5 +66,19 @@ public class ChildVecOrigin extends VecOrigin {
     @Override
     protected VecOrigin createInternalCopy() {
         return new ChildVecOrigin(parent, new Vec3d(center()));
+    }
+    
+    @Override
+    public Matrix4f transform(double camX, double camY, double camZ, float partialTicks) {
+        var result = parent.transform(camX, camY, camZ, partialTicks);
+        result.mul(super.transform(camX, camY, camZ, partialTicks));
+        return result;
+    }
+    
+    @Override
+    public Matrix4f transformInverse(double camX, double camY, double camZ, float partialTicks) {
+        var result = super.transformInverse(camX, camY, camZ, partialTicks);
+        result.mul(parent.transformInverse(camX, camY, camZ, partialTicks));
+        return result;
     }
 }

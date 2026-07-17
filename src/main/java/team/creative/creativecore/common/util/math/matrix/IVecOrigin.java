@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.math.matrix;
 
+import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 
@@ -227,6 +229,32 @@ public interface IVecOrigin {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
+    public default void setupRenderingInternal(Matrix4fStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
+        double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
+        double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
+        double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
+        
+        double offX = offXLast() + (offX() - offXLast()) * partialTicks;
+        double offY = offYLast() + (offY() - offYLast()) * partialTicks;
+        double offZ = offZLast() + (offZ() - offZLast()) * partialTicks;
+        
+        Vec3d rotationCenter = center();
+        
+        matrixStack.translate((float) offX, (float) offY, (float) offZ);
+        
+        matrixStack.translate((float) (rotationCenter.x - camX), (float) (rotationCenter.y - camY), (float) (rotationCenter.z - camZ));
+        matrixStack.rotate(new Quaternionf().rotationXYZ((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ)));
+        matrixStack.translate((float) (-rotationCenter.x + camX), (float) (-rotationCenter.y + camY), (float) (-rotationCenter.z + camZ));
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    public default void setupRendering(Matrix4fStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
+        setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+    }
+    
+    @Environment(EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public default void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
@@ -250,6 +278,47 @@ public interface IVecOrigin {
     @OnlyIn(Dist.CLIENT)
     public default void setupRendering(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
         setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+    }
+    
+    public default Matrix4f transformInverse(double camX, double camY, double camZ, float partialTicks) {
+        Matrix4f matrix = new Matrix4f();
+        float rotX = (float) (rotXLast() + (rotX() - rotXLast()) * partialTicks);
+        float rotY = (float) (rotYLast() + (rotY() - rotYLast()) * partialTicks);
+        float rotZ = (float) (rotZLast() + (rotZ() - rotZLast()) * partialTicks);
+        
+        float offX = (float) (offXLast() + (offX() - offXLast()) * partialTicks);
+        float offY = (float) (offYLast() + (offY() - offYLast()) * partialTicks);
+        float offZ = (float) (offZLast() + (offZ() - offZLast()) * partialTicks);
+        
+        Vec3d rotationCenter = center();
+        
+        matrix.translate(offX, offY, offZ);
+        
+        matrix.translate((float) (rotationCenter.x - camX), (float) (rotationCenter.y - camY), (float) (rotationCenter.z - camZ));
+        matrix.rotate(new Quaternionf().rotationXYZ((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ)));
+        matrix.translate((float) (-rotationCenter.x + camX), (float) (-rotationCenter.y + camY), (float) (-rotationCenter.z + camZ));
+        //TODO Not yet implemented
+        return matrix;
+    }
+    
+    public default Matrix4f transform(double camX, double camY, double camZ, float partialTicks) {
+        Matrix4f matrix = new Matrix4f();
+        float rotX = (float) (rotXLast() + (rotX() - rotXLast()) * partialTicks);
+        float rotY = (float) (rotYLast() + (rotY() - rotYLast()) * partialTicks);
+        float rotZ = (float) (rotZLast() + (rotZ() - rotZLast()) * partialTicks);
+        
+        float offX = (float) (offXLast() + (offX() - offXLast()) * partialTicks);
+        float offY = (float) (offYLast() + (offY() - offYLast()) * partialTicks);
+        float offZ = (float) (offZLast() + (offZ() - offZLast()) * partialTicks);
+        
+        Vec3d rotationCenter = center();
+        
+        matrix.translate(offX, offY, offZ);
+        
+        matrix.translate((float) (rotationCenter.x - camX), (float) (rotationCenter.y - camY), (float) (rotationCenter.z - camZ));
+        matrix.rotate(new Quaternionf().rotationXYZ((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ)));
+        matrix.translate((float) (-rotationCenter.x + camX), (float) (-rotationCenter.y + camY), (float) (-rotationCenter.z + camZ));
+        return matrix;
     }
     
     public default boolean hasChanged() {
