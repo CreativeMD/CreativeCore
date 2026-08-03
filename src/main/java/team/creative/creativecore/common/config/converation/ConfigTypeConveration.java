@@ -52,6 +52,7 @@ import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.gui.GuiParent;
 import team.creative.creativecore.common.gui.control.collection.GuiComboBox;
 import team.creative.creativecore.common.gui.control.simple.GuiButton;
+import team.creative.creativecore.common.gui.control.simple.GuiColorPicker;
 import team.creative.creativecore.common.gui.control.simple.GuiLabel;
 import team.creative.creativecore.common.gui.control.simple.GuiSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiTextfield;
@@ -61,6 +62,7 @@ import team.creative.creativecore.common.util.ingredient.CreativeIngredientBlock
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3;
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
 import team.creative.creativecore.common.util.text.TextMapBuilder;
+import team.creative.creativecore.common.util.type.Color;
 import team.creative.creativecore.common.util.type.list.PairList;
 
 public abstract class ConfigTypeConveration<T> {
@@ -328,7 +330,42 @@ public abstract class ConfigTypeConveration<T> {
             
         });
         registerTypeCreator(Identifier.class, () -> Identifier.withDefaultNamespace(""));
-        
+        ConfigTypeConveration.registerType(Color.class, new SimpleConfigTypeConveration<Color>() {
+
+            @Override
+            public Color readElement(ConfigKey key, Color defaultValue, Side side, JsonElement element) {
+                if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber())
+                    return new Color(element.getAsInt());
+                return defaultValue;
+            }
+
+            @Override
+            public JsonElement writeElement(Color value, ConfigKey key, Side side) {
+                return new JsonPrimitive(value.toInt());
+            }
+
+            public void createControls(GuiParent parent, ConfigKey key) {
+                parent.add(new GuiColorPicker(parent, "color", new Color(), true, 0));
+            }
+
+            public void loadValue(Color value, GuiParent parent) {
+                GuiColorPicker picker = parent.get("color");
+                picker.setColor(value);
+            }
+
+            protected Color saveValue(GuiParent parent, ConfigKey key) {
+                GuiColorPicker picker = parent.get("color");
+                return new Color(picker.color);
+            }
+
+            @Override
+            public Color set(ConfigKey key, Color value) {
+                return value;
+            }
+        });
+
+        ConfigTypeConveration.registerTypeCreator(Color.class, () -> new Color());
+
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override
