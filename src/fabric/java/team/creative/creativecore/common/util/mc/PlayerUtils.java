@@ -32,10 +32,7 @@ public class PlayerUtils {
     }
     
     public static double getReach(Player player) {
-        double attrib = 5.0;
-        // TODO: Find out how to do this
-        //		double attrib = player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getValue();
-        
+        double attrib = player.blockInteractionRange();
         return player.isCreative() ? attrib : attrib - 0.5;
     }
     
