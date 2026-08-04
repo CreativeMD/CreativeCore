@@ -13,7 +13,7 @@ public class PlayerUtils {
     }
     
     public static double getReach(Player player) {
-        double attrib = player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE);
+        double attrib = player.blockInteractionRange();
         return player.isCreative() ? attrib : attrib - 0.5;
     }
     
