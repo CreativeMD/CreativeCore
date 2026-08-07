@@ -1,3 +1,8 @@
+2.13.42
+Adjusted setupRendering calls of IVecOrigin to support transformed cam
+Added origin support for matrix4fstack
+Added support for sable (custom VoxelShape)
+
 2.13.41
 Added color config option
 
