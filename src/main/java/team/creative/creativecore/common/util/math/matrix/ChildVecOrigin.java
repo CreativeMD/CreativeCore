@@ -5,6 +5,7 @@ import org.joml.Matrix4fStack;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.world.phys.Vec3;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
@@ -37,15 +38,17 @@ public class ChildVecOrigin extends VecOrigin {
     }
     
     @Override
-    public void setupRenderingInternal(Matrix4fStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
-        parent.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
-        super.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+    public Vec3 setupRenderingInternal(Matrix4fStack matrixStack, Vec3 cam, float partialTicks) {
+        cam = parent.setupRenderingInternal(matrixStack, cam, partialTicks);
+        cam = super.setupRenderingInternal(matrixStack, cam, partialTicks);
+        return cam;
     }
     
     @Override
-    public void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
-        parent.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
-        super.setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+    public Vec3 setupRenderingInternal(PoseStack matrixStack, Vec3 cam, float partialTicks) {
+        cam = parent.setupRenderingInternal(matrixStack, cam, partialTicks);
+        cam = super.setupRenderingInternal(matrixStack, cam, partialTicks);
+        return cam;
     }
     
     @Override

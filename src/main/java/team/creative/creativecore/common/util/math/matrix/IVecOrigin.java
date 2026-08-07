@@ -229,7 +229,7 @@ public interface IVecOrigin {
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRenderingInternal(Matrix4fStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
+    public default Vec3 setupRenderingInternal(Matrix4fStack matrixStack, Vec3 cam, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
         double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
@@ -242,20 +242,21 @@ public interface IVecOrigin {
         
         matrixStack.translate((float) offX, (float) offY, (float) offZ);
         
-        matrixStack.translate((float) (rotationCenter.x - camX), (float) (rotationCenter.y - camY), (float) (rotationCenter.z - camZ));
+        matrixStack.translate((float) (rotationCenter.x - cam.x), (float) (rotationCenter.y - cam.y), (float) (rotationCenter.z - cam.z));
         matrixStack.rotate(new Quaternionf().rotationXYZ((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ)));
-        matrixStack.translate((float) (-rotationCenter.x + camX), (float) (-rotationCenter.y + camY), (float) (-rotationCenter.z + camZ));
+        matrixStack.translate((float) (-rotationCenter.x + cam.x), (float) (-rotationCenter.y + cam.y), (float) (-rotationCenter.z + cam.z));
+        return cam;
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRendering(Matrix4fStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
-        setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+    public default Vec3 setupRendering(Matrix4fStack matrixStack, Vec3 cam, float partialTicks) {
+        return setupRenderingInternal(matrixStack, cam, partialTicks);
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRenderingInternal(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
+    public default Vec3 setupRenderingInternal(PoseStack matrixStack, Vec3 cam, float partialTicks) {
         double rotX = rotXLast() + (rotX() - rotXLast()) * partialTicks;
         double rotY = rotYLast() + (rotY() - rotYLast()) * partialTicks;
         double rotZ = rotZLast() + (rotZ() - rotZLast()) * partialTicks;
@@ -268,16 +269,16 @@ public interface IVecOrigin {
         
         matrixStack.translate(offX, offY, offZ);
         
-        matrixStack.translate(rotationCenter.x - camX, rotationCenter.y - camY, rotationCenter.z - camZ);
+        matrixStack.translate(rotationCenter.x - cam.x, rotationCenter.y - cam.y, rotationCenter.z - cam.z);
         matrixStack.mulPose(new Quaternionf().rotationXYZ((float) Math.toRadians(rotX), (float) Math.toRadians(rotY), (float) Math.toRadians(rotZ)));
-        matrixStack.translate(-rotationCenter.x + camX, -rotationCenter.y + camY, -rotationCenter.z + camZ);
-        
+        matrixStack.translate(-rotationCenter.x + cam.x, -rotationCenter.y + cam.y, -rotationCenter.z + cam.z);
+        return cam;
     }
     
     @Environment(EnvType.CLIENT)
     @OnlyIn(Dist.CLIENT)
-    public default void setupRendering(PoseStack matrixStack, double camX, double camY, double camZ, float partialTicks) {
-        setupRenderingInternal(matrixStack, camX, camY, camZ, partialTicks);
+    public default Vec3 setupRendering(PoseStack matrixStack, Vec3 cam, float partialTicks) {
+        return setupRenderingInternal(matrixStack, cam, partialTicks);
     }
     
     public default Matrix4f transformInverse(double camX, double camY, double camZ, float partialTicks) {
