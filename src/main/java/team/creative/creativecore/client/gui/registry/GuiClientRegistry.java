@@ -44,6 +44,7 @@ import team.creative.creativecore.client.gui.control.simple.GuiClientCheckBox;
 import team.creative.creativecore.client.gui.control.simple.GuiClientCheckButtonIcon;
 import team.creative.creativecore.client.gui.control.simple.GuiClientColorPlate;
 import team.creative.creativecore.client.gui.control.simple.GuiClientColoredSteppedSlider;
+import team.creative.creativecore.client.gui.control.simple.GuiClientHexButton;
 import team.creative.creativecore.client.gui.control.simple.GuiClientIcon;
 import team.creative.creativecore.client.gui.control.simple.GuiClientLabel;
 import team.creative.creativecore.client.gui.control.simple.GuiClientLabelHover;
@@ -98,6 +99,7 @@ import team.creative.creativecore.common.gui.control.simple.GuiButtonHold;
 import team.creative.creativecore.common.gui.control.simple.GuiButtonIcon;
 import team.creative.creativecore.common.gui.control.simple.GuiCheckBox;
 import team.creative.creativecore.common.gui.control.simple.GuiCheckButtonIcon;
+import team.creative.creativecore.common.gui.control.simple.GuiColorPicker;
 import team.creative.creativecore.common.gui.control.simple.GuiColorPlate;
 import team.creative.creativecore.common.gui.control.simple.GuiColoredSteppedSlider;
 import team.creative.creativecore.common.gui.control.simple.GuiIcon;
@@ -202,6 +204,7 @@ public class GuiClientRegistry {
         register(GuiShowItem.class, GuiClientShowItem::new);
         register(GuiStateButton.class, GuiClientStateButton::new);
         register(GuiStateButtonIcon.class, GuiClientStateButtonIcon::new);
+        register(GuiColorPicker.GuiHexButton.class, GuiClientHexButton::new);
         
         register(GuiPanel.class, GuiClientPanel::new);
         register(GuiScrollX.class, GuiClientScrollX::new);
