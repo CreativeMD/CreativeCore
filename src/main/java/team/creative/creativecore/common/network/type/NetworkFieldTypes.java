@@ -45,6 +45,7 @@ import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.network.BundlePacketWrapper;
 import team.creative.creativecore.common.network.CreativeNetworkUtils;
 import team.creative.creativecore.common.util.filter.BiFilter;
+import team.creative.creativecore.common.util.filter.BlockFilter;
 import team.creative.creativecore.common.util.filter.Filter;
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3;
 import team.creative.creativecore.common.util.math.matrix.IntMatrix3c;
@@ -679,6 +680,26 @@ public class NetworkFieldTypes {
                 return buffer.readEnum(classType);
             }
         });
+        
+        NetworkFieldTypes.register(new NetworkFieldTypeClass<BlockFilter>() {
+            
+            @Override
+            protected void writeContent(BlockFilter content, RegistryFriendlyByteBuf buffer) {
+                buffer.writeNbt(content.write());
+            }
+            
+            @Override
+            protected BlockFilter readContent(RegistryFriendlyByteBuf buffer) {
+                try {
+                    return BlockFilter.REGISTRY.read((CompoundTag) buffer.readNbt(NbtAccounter.unlimitedHeap()));
+                } catch (RegistryException e) {
+                    CreativeCore.LOGGER.error(e);
+                    return BlockFilter.ANY;
+                }
+                
+            }
+            
+        }, BlockFilter.class);
         
         NetworkFieldTypes.register(new NetworkFieldTypeClass<Filter>() {
             
