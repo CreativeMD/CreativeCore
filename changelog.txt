@@ -1,3 +1,8 @@
+2.13.43
+Removed BlockFilters and ItemFilters
+Added BlockFilter
+Add translation for 'play' in Spanish language file (Thanks to Texaliuz)
+
 2.13.42
 Adjusted setupRendering calls of IVecOrigin to support transformed cam
 Added origin support for matrix4fstack
