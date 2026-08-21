@@ -1,3 +1,7 @@
+2.13.44
+Reworked models for block and item (affects LittleTiles and LittleFrames)
+Fixed multiple filters not getting loaded properly
+
 2.13.43
 Removed BlockFilters and ItemFilters
 Added BlockFilter
