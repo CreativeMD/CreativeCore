@@ -56,14 +56,14 @@ public class FilterSerializer {
         String type = tag.getString("t");
         switch (type) {
             case "&" -> {
-                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                ListTag list = tag.getList("c", Tag.TAG_COMPOUND);
                 Filter[] filters = new Filter[list.size()];
                 for (int i = 0; i < list.size(); i++)
                     filters[i] = read(list.getCompound(i));
                 return new FilterAnd<>(filters);
             }
             case "+" -> {
-                ListTag list = tag.getList(type, Tag.TAG_COMPOUND);
+                ListTag list = tag.getList("c", Tag.TAG_COMPOUND);
                 Filter[] filters = new Filter[list.size()];
                 for (int i = 0; i < list.size(); i++)
                     filters[i] = read(list.getCompound(i));
