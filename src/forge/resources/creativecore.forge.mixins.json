@@ -7,6 +7,7 @@
     ],
     "client": [
         "ForgeModelBlockRendererAccessor",
+        "ItemRendererMixin",
         "QuadLighterMixin"
     ],
     "minVersion": "0.8"

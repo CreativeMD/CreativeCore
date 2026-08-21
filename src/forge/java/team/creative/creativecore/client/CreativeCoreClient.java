@@ -29,9 +29,12 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
-import team.creative.creativecore.client.render.model.CreativeBlockModel;
-import team.creative.creativecore.client.render.model.CreativeItemModel;
-import team.creative.creativecore.client.render.model.CreativeModelLoader;
+import team.creative.creativecore.client.render.model.box.CreativeUnbakedBoxItemLayer;
+import team.creative.creativecore.client.render.model.box.ItemModelBox;
+import team.creative.creativecore.client.render.model.empty.CreativeModelEmptyLoader;
+import team.creative.creativecore.client.render.model.layer.CreativeModelLayerLoader;
+import team.creative.creativecore.client.render.model.preview.CreativeUnbakedPreviewItemLayer;
+import team.creative.creativecore.client.render.model.preview.ItemModelPreview;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.config.holder.ICreativeConfigHolder;
@@ -46,8 +49,9 @@ import team.creative.creativecore.common.util.registry.LocatedHandlerRegistry;
 public class CreativeCoreClient {
     
     private static final Minecraft mc = Minecraft.getInstance();
-    public static final LocatedHandlerRegistry<CreativeBlockModel> BLOCK_MODEL_TYPES = new LocatedHandlerRegistry<CreativeBlockModel>(null).allowOverwrite();
-    public static final LocatedHandlerRegistry<CreativeItemModel> ITEM_MODEL_TYPES = new LocatedHandlerRegistry<CreativeItemModel>(null).allowOverwrite();
+    
+    public static final LocatedHandlerRegistry<ItemModelBox> BOX_MODEL_TYPES = new LocatedHandlerRegistry<ItemModelBox>(null).allowOverwrite();
+    public static final LocatedHandlerRegistry<ItemModelPreview> PREVIEW_MODEL_TYPES = new LocatedHandlerRegistry<ItemModelPreview>(null).allowOverwrite();
     
     private static final ItemColor ITEM_COLOR = (stack, tint) -> tint;
     
@@ -55,6 +59,9 @@ public class CreativeCoreClient {
         bus.addListener(CreativeCoreClient::init);
         bus.addListener(CreativeCoreClient::modelEvent);
         bus.addListener(CreativeCoreClient::screenEvent);
+        
+        CreativeModelLayerLoader.REGISTRY.register(CreativeCore.MODID + ":box", CreativeUnbakedBoxItemLayer.class);
+        CreativeModelLayerLoader.REGISTRY.register(CreativeCore.MODID + ":preview", CreativeUnbakedPreviewItemLayer.class);
     }
     
     public static void registerClientConfig(String modid) {
@@ -66,12 +73,12 @@ public class CreativeCoreClient {
         }));
     }
     
-    public static void registerBlockModel(ResourceLocation location, CreativeBlockModel renderer) {
-        BLOCK_MODEL_TYPES.register(location, renderer);
+    public static void registerItemBoxModel(ResourceLocation location, ItemModelBox renderer) {
+        BOX_MODEL_TYPES.register(location, renderer);
     }
     
-    public static void registerItemModel(ResourceLocation location, CreativeItemModel renderer) {
-        ITEM_MODEL_TYPES.register(location, renderer);
+    public static void registerItemPreviewModel(ResourceLocation location, ItemModelPreview renderer) {
+        PREVIEW_MODEL_TYPES.register(location, renderer);
     }
     
     public static void registerItemColor(ItemColors colors, Item item) {
@@ -86,7 +93,7 @@ public class CreativeCoreClient {
     
     @SubscribeEvent
     public static void commands(RegisterClientCommandsEvent event) {
-        event.getDispatcher().register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("cmdclientconfig")).executes((x) -> {
+        event.getDispatcher().register(LiteralArgumentBuilder.<CommandSourceStack>literal("cmdclientconfig").executes((x) -> {
             try {
                 GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(CreativeConfigRegistry.ROOT, Side.CLIENT)));
             } catch (Exception e) {
@@ -120,7 +127,8 @@ public class CreativeCoreClient {
     }
     
     public static void modelEvent(RegisterGeometryLoaders event) {
-        event.register(ResourceLocation.tryBuild(CreativeCore.MODID, "rendered"), new CreativeModelLoader());
+        event.register(ResourceLocation.tryBuild(CreativeCore.MODID, "layer"), new CreativeModelLayerLoader());
+        event.register(ResourceLocation.tryBuild(CreativeCore.MODID, "empty"), new CreativeModelEmptyLoader());
     }
     
     public static void screenEvent(RegisterMenuScreensEvent event) {
