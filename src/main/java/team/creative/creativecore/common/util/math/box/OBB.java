@@ -10,7 +10,7 @@ import team.creative.creativecore.common.util.math.Maths;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.geo.VectorFan;
-import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
+import team.creative.creativecore.common.util.math.origin.IVecOrigin;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
 import team.creative.creativecore.common.util.math.vec.Vec2d;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
@@ -150,7 +150,7 @@ public class OBB extends ABB {
         double maxOne = max(other, one);
         double maxTwo = max(other, two);
         
-        Vec3d[] corners = getOuterCorner(facing, origin, minOne, minTwo, maxOne, maxTwo);
+        Vec3d[] corners = getOuterCorner(facing, origin.pose(), minOne, minTwo, maxOne, maxTwo);
         
         Vec3d outerCorner = corners[0];
         double outerCornerOne = outerCorner.get(one);

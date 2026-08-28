@@ -19,9 +19,9 @@ public class LevelUtils {
     public static void dropItem(Level level, ItemStack stack, BlockPos pos) {
         if (stack == null)
             return;
-        if (level instanceof ISubLevel) {
-            pos = ((ISubLevel) level).transformToRealWorld(pos);
-            level = ((ISubLevel) level).getRealLevel();
+        if (level instanceof ISubLevel s) {
+            pos = s.transform(pos);
+            level = s.getRealLevel();
         }
         Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
     }

@@ -129,7 +129,7 @@ public class CollidingPlane {
     
     public boolean intersects(AABB toCheck, double checkRadiusSquared, Vec3d center, double t, CollisionCoordinator coordinator) {
         Vec3d cachedCenter = new Vec3d(cache.center);
-        coordinator.original().transformPointToWorld(cachedCenter);
+        coordinator.original().transform(cachedCenter);
         coordinator.transform(cachedCenter, t);
         cachedCenter.sub(center);
         
@@ -148,7 +148,7 @@ public class CollidingPlane {
         for (int i = 0; i < BoxCorner.values().length; i++) {
             BoxCorner.values()[i].set(bb, corner);
             
-            coordinator.original().transformPointToWorld(corner);
+            coordinator.original().transform(corner);
             coordinator.transform(matrix, corner);
             
             if (toCheck.contains(corner.x, corner.y, corner.z))

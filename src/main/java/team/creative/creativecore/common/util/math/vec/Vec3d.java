@@ -1,5 +1,6 @@
 package team.creative.creativecore.common.util.math.vec;
 
+import org.joml.Quaterniond;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -246,6 +247,24 @@ public class Vec3d extends VecNd<Vec3d> {
     @Override
     public double dot(Vec3d vec) {
         return x * vec.x + y * vec.y + z * vec.z;
+    }
+    
+    public void transform(Quaterniond quaternion) {
+        double xx = quaternion.x * quaternion.x, yy = quaternion.y * quaternion.y, zz = quaternion.z * quaternion.z, ww = quaternion.w * quaternion.w;
+        double xy = quaternion.x * quaternion.y, xz = quaternion.x * quaternion.z, yz = quaternion.y * quaternion.z, xw = quaternion.x * quaternion.w;
+        double zw = quaternion.z * quaternion.w, yw = quaternion.y * quaternion.w, k = 1 / (xx + yy + zz + ww);
+        set(Math.fma((xx - yy - zz + ww) * k, x, Math.fma(2 * (xy - zw) * k, y, (2 * (xz + yw) * k) * z)), Math.fma(2 * (xy + zw) * k, x, Math.fma((yy - xx - zz + ww) * k, y,
+            (2 * (yz - xw) * k) * z)), Math.fma(2 * (xz - yw) * k, x, Math.fma(2 * (yz + xw) * k, y, ((zz - xx - yy + ww) * k) * z)));
+    }
+    
+    public void transformInverse(Quaterniond quaternion) {
+        double n = 1.0 / Math.fma(quaternion.x, quaternion.x, Math.fma(quaternion.y, quaternion.y, Math.fma(quaternion.z, quaternion.z, quaternion.w * quaternion.w)));
+        double qx = quaternion.x * n, qy = quaternion.y * n, qz = quaternion.z * n, qw = quaternion.w * n;
+        double xx = qx * qx, yy = qy * qy, zz = qz * qz, ww = qw * qw;
+        double xy = qx * qy, xz = qx * qz, yz = qy * qz, xw = qx * qw;
+        double zw = qz * qw, yw = qy * qw, k = 1 / (xx + yy + zz + ww);
+        set(Math.fma((xx - yy - zz + ww) * k, x, Math.fma(2 * (xy + zw) * k, y, (2 * (xz - yw) * k) * z)), Math.fma(2 * (xy - zw) * k, x, Math.fma((yy - xx - zz + ww) * k, y,
+            (2 * (yz + xw) * k) * z)), Math.fma(2 * (xz + yw) * k, x, Math.fma(2 * (yz - xw) * k, y, ((zz - xx - yy + ww) * k) * z)));
     }
     
 }

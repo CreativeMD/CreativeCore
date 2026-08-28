@@ -4,9 +4,10 @@ import java.util.HashMap;
 
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.box.ABB;
-import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
 import team.creative.creativecore.common.util.math.matrix.Matrix4;
+import team.creative.creativecore.common.util.math.origin.IOriginPose;
+import team.creative.creativecore.common.util.math.origin.IVecOrigin;
 import team.creative.creativecore.common.util.math.utils.BooleanUtils;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
@@ -48,6 +49,7 @@ public class CollisionCoordinator {
     private final Vec3d rotationCenter;
     private final IVecOrigin moved;
     private final IVecOrigin original;
+    private final IOriginPose originalPose;
     
     private final double originalOffX;
     private final double originalOffY;
@@ -79,9 +81,10 @@ public class CollisionCoordinator {
         this.isSimple = isSimple();
         
         this.original = origin;
+        this.originalPose = original.pose();
         this.rotationCenter = new Vec3d(origin.center());
         if (origin.getParent() != null)
-            origin.getParent().transformPointToWorld(rotationCenter);
+            origin.getParent().pose().transform(rotationCenter);
         
         this.originalOffX = origin.offX();
         this.originalOffY = origin.offY();
@@ -91,8 +94,7 @@ public class CollisionCoordinator {
         this.originalRotZ = origin.rotZ();
         
         this.moved = original.copy();
-        this.moved.off(originalOffX + offX, originalOffY + offY, originalOffZ + offZ);
-        this.moved.rot(originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
+        this.moved.set(originalOffX + offX, originalOffY + offY, originalOffZ + offZ, originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
         
         this.translation = hasTranslation ? new Vec3d(offX, offY, offZ) : null;
         
@@ -153,8 +155,12 @@ public class CollisionCoordinator {
         };
     }
     
-    public IVecOrigin original() {
-        return original;
+    public IOriginPose original() {
+        return originalPose;
+    }
+    
+    public Vec3d getRotationCenter() {
+        return rotationCenter;
     }
     
     public IVecOrigin moved() {
@@ -268,8 +274,7 @@ public class CollisionCoordinator {
     }
     
     public void finish() {
-        this.original.off(originalOffX + offX, originalOffY + offY, originalOffZ + offZ);
-        this.original.rot(originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
+        this.original.set(originalOffX + offX, originalOffY + offY, originalOffZ + offZ, originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
     }
     
 }

@@ -9,8 +9,8 @@ public interface ISubLevel extends IOrientatedLevel {
     
     public Level getRealLevel();
     
-    public default BlockPos transformToRealWorld(BlockPos pos) {
-        return getOrigin().transformPointToWorld(pos);
+    public default BlockPos transform(BlockPos pos) {
+        return getOrigin().pose().transform(pos);
     }
     
 }

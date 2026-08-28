@@ -4,8 +4,8 @@ import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollisionCoordinator;
-import team.creative.creativecore.common.util.math.matrix.IVecOrigin;
 import team.creative.creativecore.common.util.math.matrix.Matrix3;
+import team.creative.creativecore.common.util.math.origin.IOriginPose;
 import team.creative.creativecore.common.util.math.transformation.BooleanRotation;
 import team.creative.creativecore.common.util.math.vec.Vec3d;
 
@@ -39,7 +39,7 @@ public class BoxUtils {
         double rotation = coordinator.getRotationDegree(axis);
         if (rotation == 0)
             return;
-        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.original().center(), coordinator.getRotationMatrix(axis), coordinator.translation);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationCenter(), coordinator.getRotationMatrix(axis), coordinator.translation);
     }
     
     public static void includeMaxRotationInBoxInverse(ABB box, Vec3d vec, Axis axis, CollisionCoordinator coordinator) {
@@ -52,7 +52,7 @@ public class BoxUtils {
             translation.invert();
         } else
             translation = null;
-        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.original().center(), coordinator.getRotationMatrixInv(axis), translation);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationCenter(), coordinator.getRotationMatrixInv(axis), translation);
     }
     
     private static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, double rotation, Vec3d rotationCenter, Matrix3 matrix, Vec3d translation) {
@@ -166,10 +166,10 @@ public class BoxUtils {
         return corners;
     }
     
-    public static Vec3d[] getRotatedCorners(AABB bb, IVecOrigin origin) {
+    public static Vec3d[] getRotatedCorners(AABB bb, IOriginPose pose) {
         Vec3d[] corners = getCorners(bb);
         for (int i = 0; i < corners.length; i++)
-            origin.transformPointToWorld(corners[i]);
+            pose.transform(corners[i]);
         return corners;
     }
     
