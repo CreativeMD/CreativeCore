@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.Function;
 
+import javax.annotation.Nullable;
+
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.renderer.RenderType;
@@ -13,8 +15,16 @@ import team.creative.creativecore.common.util.type.list.Tuple;
 
 public class ChunkLayerMap<T> implements Iterable<T> {
     
-    private static final int LAYERS_COUNT = RenderType.chunkBufferLayers().size();
+    public static final int LAYERS_COUNT = RenderType.chunkBufferLayers().size();
     private static final Object2IntMap<RenderType> LAYERS_INDEX_MAP;
+    
+    public static int index(RenderType layer) {
+        return LAYERS_INDEX_MAP.getInt(layer);
+    }
+    
+    public static RenderType layer(int index) {
+        return RenderType.CHUNK_BUFFER_LAYERS.get(index);
+    }
     
     static {
         LAYERS_INDEX_MAP = new Object2IntArrayMap<>();
@@ -41,12 +51,13 @@ public class ChunkLayerMap<T> implements Iterable<T> {
         content = (T[]) new Object[LAYERS_COUNT];
     }
     
-    private int index(RenderType layer) {
-        return LAYERS_INDEX_MAP.getInt(layer);
-    }
-    
     public T get(RenderType layer) {
         return content[index(layer)];
+    }
+    
+    @Nullable
+    public T getByIndex(int i) {
+        return content[i];
     }
     
     public T put(RenderType layer, T element) {
