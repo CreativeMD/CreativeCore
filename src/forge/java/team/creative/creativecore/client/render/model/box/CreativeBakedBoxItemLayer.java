@@ -79,7 +79,8 @@ public record CreativeBakedBoxItemLayer(ItemModelBox model, BakedModel block) im
             int packedOverlay) {
         pose.pushPose();
         
-        pose.translate(0, 0, 0.5);
+        if (context == ItemDisplayContext.GUI)
+            pose.translate(0, 0, 0.5);
         
         block.applyTransform(context, pose, left);
         pose.translate(-0.5F, -0.5F, -0.5F);
