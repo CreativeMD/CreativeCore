@@ -110,7 +110,7 @@ public record CreativeBakedBoxItemLayer(ItemModelBox model, BakedModel block) im
         if (cached != null)
             return cached;
         List<? extends RenderBox> boxes = model.getBoxes(stack, translucent);
-        if (boxes != null) {
+        if (boxes != null && !boxes.isEmpty()) {
             cached = new ArrayList<>();
             for (int i = 0; i < Facing.VALUES.length; i++)
                 compileBoxes(boxes, Facing.VALUES[i], layer, rand, true, cached);
