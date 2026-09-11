@@ -1,3 +1,8 @@
+2.13.46
+Fixed iterating over empty list of boxes in item rendering
+Fixed taking rotation values of animation as radians
+Fixed item box rendering being offset when held in hand and on ground
+
 2.13.45
 Added index method to ChunkLayerMap
 Reworked VecOrigin to have better support for partialTick time on client (also cleanup)
