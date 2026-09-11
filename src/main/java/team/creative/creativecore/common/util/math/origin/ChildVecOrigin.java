@@ -18,14 +18,16 @@ public class ChildVecOrigin extends VecOrigin {
     protected IOriginPose generatePose(double offX, double offY, double offZ, double rotX, double rotY, double rotZ) {
         if (parent == null)
             return null;
-        return new ChildOriginPose(parent.pose(), new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(rotX, rotY, rotZ), center().copy());
+        return new ChildOriginPose(parent.pose(), new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(Math.toRadians(rotX), Math.toRadians(rotY), Math.toRadians(
+            rotZ)), center().copy());
     }
     
     @Override
     protected IOriginPose generatePose(double offX, double offY, double offZ, double rotX, double rotY, double rotZ, float partialTick) {
         if (parent == null)
             return null;
-        return new ChildOriginPose(parent.pose(partialTick), new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(rotX, rotY, rotZ), center().copy());
+        return new ChildOriginPose(parent.pose(partialTick), new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(Math.toRadians(rotX), Math.toRadians(rotY), Math.toRadians(
+            rotZ)), center().copy());
     }
     
     @Override

@@ -100,11 +100,11 @@ public class VecOrigin implements IVecOrigin {
     }
     
     protected IOriginPose generatePose(double offX, double offY, double offZ, double rotX, double rotY, double rotZ) {
-        return new OriginPose(new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(rotX, rotY, rotZ), center.copy());
+        return new OriginPose(new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(Math.toRadians(rotX), Math.toRadians(rotY), Math.toRadians(rotZ)), center.copy());
     }
     
     protected IOriginPose generatePose(double offX, double offY, double offZ, double rotX, double rotY, double rotZ, float partialTick) {
-        return new OriginPose(new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(rotX, rotY, rotZ), center.copy());
+        return new OriginPose(new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(Math.toRadians(rotX), Math.toRadians(rotY), Math.toRadians(rotZ)), center.copy());
     }
     
     @Override
