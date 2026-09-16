@@ -1,7 +1,5 @@
 package team.creative.creativecore.client.gui.control.simple;
 
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -134,7 +132,7 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     @Override
     public boolean keyPressed(KeyEvent key) {
         if (textfield != null) {
-            if (key.key() == GLFW.GLFW_KEY_ENTER) {
+            if (key.isConfirmation()) {
                 closeTextField();
                 return true;
             }

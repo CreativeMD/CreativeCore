@@ -570,18 +570,7 @@ public class NetworkFieldTypes {
             }
         }, Holder.class);
         
-        register(new NetworkFieldTypeClass<BlockHitResult>() {
-            
-            @Override
-            protected void writeContent(BlockHitResult content, RegistryFriendlyByteBuf buffer) {
-                buffer.writeBlockHitResult(content);
-            }
-            
-            @Override
-            protected BlockHitResult readContent(RegistryFriendlyByteBuf buffer) {
-                return buffer.readBlockHitResult();
-            }
-        }, BlockHitResult.class);
+        register(new NetworkFieldTypeCodec<BlockHitResult>(BlockHitResult.STREAM_CODEC), BlockHitResult.class);
         
         register(new NetworkFieldTypeSpecial<>((x, y) -> x.isArray()) {
             
@@ -810,18 +799,7 @@ public class NetworkFieldTypes {
             }
         }, IntMatrix3c.class, IntMatrix3.class);
         
-        register(new NetworkFieldTypeClass<DataComponentPatch>() {
-            
-            @Override
-            protected void writeContent(DataComponentPatch content, RegistryFriendlyByteBuf buffer) {
-                DataComponentPatch.STREAM_CODEC.encode(buffer, content);
-            }
-            
-            @Override
-            protected DataComponentPatch readContent(RegistryFriendlyByteBuf buffer) {
-                return DataComponentPatch.STREAM_CODEC.decode(buffer);
-            }
-        }, DataComponentPatch.class);
+        register(new NetworkFieldTypeCodec<DataComponentPatch>(DataComponentPatch.STREAM_CODEC), DataComponentPatch.class);
     }
     
 }

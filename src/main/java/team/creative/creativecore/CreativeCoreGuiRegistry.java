@@ -10,6 +10,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -31,7 +32,7 @@ public class CreativeCoreGuiRegistry {
         Player player = c.getPlayer();
         if (slot.hasItem() && slot.mayPickup(player)) {
             ItemStack drop = slot.remove(ctrl ? Math.min(slot.getMaxStackSize(slot.getItem()), slot.getItem().getCount()) : 1);
-            player.drop(drop, true);
+            player.drop(drop, true, Prediction.PREDICTED);
             slot.onTake(player, drop);
             c.changed();
         }
@@ -41,7 +42,7 @@ public class CreativeCoreGuiRegistry {
         ItemStack hand = c.itemManager().getHand();
         Player player = c.getPlayer();
         if (!hand.isEmpty()) {
-            player.drop(hand, true);
+            player.drop(hand, true, Prediction.PREDICTED);
             c.itemManager().setHand(ItemStack.EMPTY);
         }
     });

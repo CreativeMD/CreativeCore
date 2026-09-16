@@ -4,7 +4,7 @@ import java.lang.reflect.Type;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
@@ -12,9 +12,9 @@ import team.creative.creativecore.common.network.CreativeByteBuf;
 
 public class NetworkFieldTypeCodec<T> extends NetworkFieldType<T> {
     
-    public final StreamCodec<? extends FriendlyByteBuf, T> codec;
+    public final StreamCodec<? extends ByteBuf, T> codec;
     
-    public NetworkFieldTypeCodec(StreamCodec<? extends FriendlyByteBuf, T> codec) {
+    public NetworkFieldTypeCodec(StreamCodec<? extends ByteBuf, T> codec) {
         this.codec = codec;
     }
     

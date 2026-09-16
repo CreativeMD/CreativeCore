@@ -3,6 +3,7 @@ package team.creative.creativecore.client.config.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.input.InputQuirks;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.settings.KeyModifier;
@@ -56,7 +57,7 @@ public class GuiClientButtonKeyConfig extends GuiClientButton<GuiButtonKeyConfig
         // We ignore events from keys with the scan code 63 as they're emitted
         // (only as RELEASE, not PRESS) by Mac systems to indicate that "Fn" is being pressed
         // See https://github.com/neoforged/NeoForge/issues/1683
-        if (waiting && (!net.minecraft.client.input.InputQuirks.ON_OSX || event.scancode() != 63)) {
+        if (waiting && !InputQuirks.isQuitShortcutDown()) {
             if (event.key() == InputConstants.KEY_ESCAPE) {
                 setKeyPressed(KeyConfig.UNBOUND);
                 lastPressedKey = InputConstants.UNKNOWN;

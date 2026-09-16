@@ -8,13 +8,14 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.VanillaPackResources;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.FileUtil;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.mixin.FilePackResourcesAccessor;
+import team.creative.creativecore.mixin.FixedPathPackResourcesAccessor;
 import team.creative.creativecore.mixin.PathPackResourcesAccessor;
 import team.creative.creativecore.mixin.SharedZipFileAccessAccessor;
-import team.creative.creativecore.mixin.VanillaPackResourcesAccessor;
 
 public class ResourceUtils {
     
@@ -31,8 +32,8 @@ public class ResourceUtils {
         }
         
         Path path = FileUtil.decomposePath(location.getPath()).mapOrElse(x -> {
-            if (source instanceof VanillaPackResourcesAccessor vanilla)
-                return resolve(vanilla.getPathsForType().get(type), location, x);
+            if (source instanceof VanillaPackResources vanilla && vanilla.fullResources() instanceof FixedPathPackResourcesAccessor v)
+                return resolve(v.getPathsForType().get(type), location, x);
             
             if (source instanceof PathPackResourcesAccessor pack)
                 return FileUtil.resolvePath(pack.getRoot().resolve(type.getDirectory()).resolve(location.getNamespace()), x);

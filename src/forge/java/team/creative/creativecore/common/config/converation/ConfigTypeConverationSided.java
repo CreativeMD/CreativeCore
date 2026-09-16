@@ -25,8 +25,8 @@ public class ConfigTypeConverationSided {
             @Override
             public JsonElement writeElement(KeyConfig value, ConfigKey key, Side side) {
                 JsonObject object = new JsonObject();
-                object.addProperty("key", value.keyCode);
-                object.addProperty("scan", value.scanCode);
+                object.addProperty("type", value.type);
+                object.addProperty("key", value.key);
                 object.addProperty("modifier", value.modifier);
                 return object;
             }
@@ -34,7 +34,7 @@ public class ConfigTypeConverationSided {
             @Override
             public KeyConfig readElement(ConfigKey key, KeyConfig defaultValue, Side side, JsonElement element) {
                 if (element instanceof JsonObject object)
-                    return new KeyConfig(object.get("key").getAsInt(), object.get("scan").getAsInt(), object.get("modifier").getAsInt());
+                    return new KeyConfig(object.get("type").getAsInt(), object.get("key").getAsInt(), object.get("modifier").getAsInt());
                 return KeyConfig.UNBOUND;
             }
             

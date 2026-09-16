@@ -2,6 +2,7 @@ package team.creative.creativecore.common.gui.manager;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.item.ItemStack;
 import team.creative.creativecore.CreativeCoreGuiRegistry;
@@ -42,7 +43,7 @@ public class GuiManagerItem extends GuiManager {
     @Override
     public void closed() {
         if (!layer.isClient() && !hand.isEmpty() && !layer.getPlayer().addItem(hand))
-            layer.getPlayer().drop(hand, false);
+            layer.getPlayer().drop(hand, false, Prediction.PREDICTED);
         super.closed();
     }
     

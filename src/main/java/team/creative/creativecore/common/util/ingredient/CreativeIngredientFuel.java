@@ -1,6 +1,7 @@
 package team.creative.creativecore.common.util.ingredient;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,7 @@ public class CreativeIngredientFuel extends CreativeIngredient {
     
     @Override
     public boolean is(Level level, ItemStack stack) {
-        return level.fuelValues().isFuel(stack);
+        return stack.has(DataComponents.COOKING_FUEL);
     }
     
     @Override

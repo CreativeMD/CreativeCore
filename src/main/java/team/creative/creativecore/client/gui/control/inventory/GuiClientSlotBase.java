@@ -42,6 +42,11 @@ public abstract class GuiClientSlotBase<T extends GuiSlotBase> extends GuiClient
         return control.getStack().getTooltipLines(TooltipContext.of(control.provider()), control.getPlayer(), TooltipFlag.Default.NORMAL);
     }
     
+    @Override
+    public boolean hasTooltipExtraSpaceAfterFirstLine() {
+        return true;
+    }
+    
     public boolean isHovered() {
         return hovered;
     }

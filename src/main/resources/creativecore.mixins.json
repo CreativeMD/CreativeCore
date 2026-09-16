@@ -6,10 +6,10 @@
     "mixins": [
         "ComponentSerializationMixin",
         "FilePackResourcesAccessor",
+        "FixedPathPackResourcesAccessor",
         "PathPackResourcesAccessor",
         "ShapesMixin",
         "SharedZipFileAccessAccessor",
-        "VanillaPackResourcesAccessor",
         "VoxelShapeAccessor"
     ],
     "client": [

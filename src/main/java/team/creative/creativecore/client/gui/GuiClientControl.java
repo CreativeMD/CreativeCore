@@ -326,6 +326,10 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         return customTooltip;
     }
     
+    public boolean hasTooltipExtraSpaceAfterFirstLine() {
+        return false;
+    }
+    
     public GuiTooltipEvent getTooltipEvent(double x, double y) {
         List<Component> toolTip = getTooltip();
         
@@ -343,7 +347,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         }
         
         if (toolTip != null)
-            return new GuiTooltipEvent(control, toolTip);
+            return new GuiTooltipEvent(control, toolTip, hasTooltipExtraSpaceAfterFirstLine());
         return null;
     }
     

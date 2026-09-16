@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +39,7 @@ public class PlayerUtils {
     
     public static void addOrDrop(Player player, ItemStack stack) {
         if (!stack.isEmpty() && !player.addItem(stack))
-            player.drop(stack, true, false);
+            player.drop(stack, true, Prediction.PREDICTED);
     }
     
     public static void addOrDrop(Player player, Container container) {

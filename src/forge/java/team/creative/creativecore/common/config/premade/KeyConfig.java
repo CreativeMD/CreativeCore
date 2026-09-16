@@ -4,30 +4,31 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Type;
 
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.settings.KeyModifier;
 
 public class KeyConfig {
     
-    public static final KeyConfig UNBOUND = new KeyConfig(-1, -1, 3);
+    public static final KeyConfig UNBOUND = new KeyConfig(Type.KEYBOARD.ordinal(), -1, 3);
     
-    public final int keyCode;
-    public final int scanCode;
+    public final int type;
+    public final int key;
     public final int modifier;
     
-    public KeyConfig(int keyCode, int scanCode, int modifier) {
-        this.keyCode = keyCode;
-        this.scanCode = scanCode;
+    public KeyConfig(int type, int key, int modifier) {
+        this.type = type;
+        this.key = key;
         this.modifier = modifier;
     }
     
     public KeyConfig(int keyCode, KeyModifier modifier) {
-        this(Type.KEYSYM, keyCode, modifier);
+        this(Type.KEYBOARD, keyCode, modifier);
     }
     
     public KeyConfig(InputConstants.Type type, int code, KeyModifier modifier) {
-        this(type == Type.KEYSYM ? code : -1, type == Type.SCANCODE ? code : -1, modifier.ordinal());
+        this(type.ordinal(), code, modifier.ordinal());
     }
     
     public KeyConfig(InputConstants.Key key, KeyModifier modifier) {
@@ -41,11 +42,11 @@ public class KeyConfig {
     public InputConstants.Key getKey() {
         if (isUnbound())
             return InputConstants.UNKNOWN;
-        return InputConstants.getKey(new KeyEvent(keyCode, scanCode, modifier));
+        return InputConstants.Type.values()[type].getOrCreate(key);
     }
     
     public boolean isUnbound() {
-        return keyCode == -1 && scanCode == -1;
+        return key == -1;
     }
     
     public Component getTranslatedKeyMessage() {
@@ -54,25 +55,33 @@ public class KeyConfig {
     }
     
     public boolean matchesPress(InputEvent.Key key) {
-        return this.keyCode == key.getKey() && key.getAction() == InputConstants.PRESS && getModifier().isActive(null);
+        return matches(key.getKeyEvent()) && key.getAction() == InputConstants.PRESS && getModifier().isActive(null);
     }
     
-    public boolean matchesPress(int keyCode, int action) {
-        return this.keyCode == keyCode && action == InputConstants.PRESS && getModifier().isActive(null);
+    public boolean matchesPress(int key, int action) {
+        return this.key == key && action == InputConstants.PRESS && getModifier().isActive(null);
     }
     
     public boolean matches(InputEvent.Key key) {
-        return this.keyCode == key.getKey() && getModifier().isActive(null);
+        return this.key == key.getKey() && getModifier().isActive(null);
     }
     
-    public boolean matches(int keyCode) {
-        return this.keyCode == keyCode && getModifier().isActive(null);
+    public boolean matches(KeyEvent event) {
+        return this.type == InputConstants.Type.KEYBOARD.ordinal() && this.key == event.key();
+    }
+    
+    public boolean matchesMouse(MouseButtonEvent event) {
+        return this.type == InputConstants.Type.MOUSE.ordinal() && this.key == event.button();
+    }
+    
+    public boolean matches(int key) {
+        return this.key == key && getModifier().isActive(null);
     }
     
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof KeyConfig key)
-            return key.keyCode == keyCode && key.scanCode == scanCode && key.modifier == modifier;
+            return key.type == type && key.key == this.key && key.modifier == modifier;
         return false;
     }
     

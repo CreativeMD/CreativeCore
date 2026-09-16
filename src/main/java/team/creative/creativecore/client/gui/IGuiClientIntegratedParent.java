@@ -68,7 +68,7 @@ public interface IGuiClientIntegratedParent extends IGuiIntegratedParent {
                 var font = Minecraft.getInstance().font;
                 List<ClientTooltipComponent> list = CreativeCoreClient.gatherTooltipComponents(ItemStack.EMPTY, event.tooltip, Optional.empty(), mouseX, graphics.guiWidth(),
                     graphics.guiHeight(), font);
-                graphics.tooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                graphics.tooltip(font, list, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null, event.extraSpaceAfterFirstLine);
             }
         }
     }
