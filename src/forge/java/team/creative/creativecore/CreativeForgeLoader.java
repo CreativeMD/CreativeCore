@@ -12,6 +12,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -30,6 +32,7 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import team.creative.creativecore.client.ClientLoader;
@@ -150,5 +153,10 @@ public class CreativeForgeLoader implements ICreativeLoader {
     @Override
     public boolean fabric() {
         return false;
+    }
+    
+    @Override
+    public boolean onItemToss(ItemEntity item, Player player) {
+        return NeoForge.EVENT_BUS.post(new ItemTossEvent(item, player)).isCanceled();
     }
 }

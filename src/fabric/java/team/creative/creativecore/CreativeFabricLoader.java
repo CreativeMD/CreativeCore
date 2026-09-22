@@ -26,6 +26,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -150,7 +152,7 @@ public class CreativeFabricLoader implements ICreativeLoader {
     public boolean fabric() {
         return true;
     }
-      
+    
     @Environment(EnvType.CLIENT)
     private class CreativeHudElement implements HudElement {
         
@@ -160,5 +162,10 @@ public class CreativeFabricLoader implements ICreativeLoader {
                 consumer.accept(graphics);
             }
         }
+    }
+    
+    @Override
+    public boolean onItemToss(ItemEntity item, Player player) {
+        return false;
     }
 }
