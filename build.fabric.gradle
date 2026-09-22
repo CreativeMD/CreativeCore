@@ -23,6 +23,18 @@ java.sourceSets {
     }
 }
 
+java.sourceSets.create("api") {
+    
+    java {
+        srcDir("src/api/java")
+    }
+    compileClasspath += sourceSets.main.compileClasspath
+    runtimeClasspath += sourceSets.main.runtimeClasspath
+}
+
+sourceSets.main.compileClasspath += sourceSets.api.output
+sourceSets.main.runtimeClasspath += sourceSets.api.output
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.officialMojangMappings()

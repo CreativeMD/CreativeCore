@@ -17,6 +17,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -120,5 +122,10 @@ public class CreativeFabricLoader implements ICreativeLoader {
     @Override
     public boolean fabric() {
         return true;
+    }
+    
+    @Override
+    public boolean onItemToss(ItemEntity item, Player player) {
+        return false;
     }
 }

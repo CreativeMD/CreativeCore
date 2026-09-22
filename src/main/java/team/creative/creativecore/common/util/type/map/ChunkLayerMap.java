@@ -23,7 +23,7 @@ public class ChunkLayerMap<T> implements Iterable<T> {
     }
     
     public static RenderType layer(int index) {
-        return RenderType.CHUNK_BUFFER_LAYERS.get(index);
+        return RenderType.chunkBufferLayers().get(index);
     }
     
     static {
