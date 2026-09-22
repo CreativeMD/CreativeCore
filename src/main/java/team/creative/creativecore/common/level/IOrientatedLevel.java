@@ -9,6 +9,10 @@ public interface IOrientatedLevel extends LevelAccessor {
     
     public IVecOrigin getOrigin();
     
+    public default IVecOrigin getUnwrappedOrigin() {
+        return getOrigin().unwrap();
+    }
+    
     public void setOrigin(Vec3d center);
     
     public Entity getHolder();

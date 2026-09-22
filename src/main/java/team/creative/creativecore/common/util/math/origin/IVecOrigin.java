@@ -63,4 +63,8 @@ public interface IVecOrigin {
     
     public int idPose();
     
+    public default IVecOrigin unwrap() {
+        return this;
+    }
+    
 }

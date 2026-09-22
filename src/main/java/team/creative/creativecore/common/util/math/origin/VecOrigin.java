@@ -8,7 +8,7 @@ public class VecOrigin implements IVecOrigin {
     
     protected boolean rotated = false;
     
-    private final Vec3d center;
+    protected final Vec3d center;
     
     private int poseIncrement;
     private IOriginPose pose;

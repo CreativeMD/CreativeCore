@@ -21,7 +21,7 @@ public class ChildVecOrigin extends VecOrigin {
             return null;
         parentPoseId = parent.idPose();
         return new ChildOriginPose(parent.pose(), new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(Math.toRadians(rotX), Math.toRadians(rotY), Math.toRadians(
-            rotZ)), center().copy());
+            rotZ)), center.copy());
     }
     
     @Override
@@ -30,7 +30,7 @@ public class ChildVecOrigin extends VecOrigin {
             return null;
         parentPoseId = parent.idPose();
         return new ChildOriginPose(parent.pose(partialTick), new Vec3d(offX, offY, offZ), new Quaterniond().rotationXYZ(Math.toRadians(rotX), Math.toRadians(rotY), Math.toRadians(
-            rotZ)), center().copy());
+            rotZ)), center.copy());
     }
     
     @Override
@@ -59,7 +59,7 @@ public class ChildVecOrigin extends VecOrigin {
     
     @Override
     protected VecOrigin createInternalCopy() {
-        return new ChildVecOrigin(parent, new Vec3d(center()));
+        return new ChildVecOrigin(parent, new Vec3d(center));
     }
     
 }
