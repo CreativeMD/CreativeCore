@@ -6,6 +6,8 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -61,6 +63,8 @@ public interface ICreativeLoader {
     public float getFluidViscosityMultiplier(Fluid fluid, Level level);
     
     public void postForge(Event event);
+    
+    public boolean onItemToss(ItemEntity item, Player player);
     
     public boolean isModLoaded(String modid);
     

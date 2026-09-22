@@ -9,6 +9,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -20,6 +22,7 @@ import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.DistExecutor;
@@ -156,5 +159,10 @@ public class CreativeForgeLoader implements ICreativeLoader {
     @Override
     public boolean fabric() {
         return false;
+    }
+    
+    @Override
+    public boolean onItemToss(ItemEntity item, Player player) {
+        return MinecraftForge.EVENT_BUS.post(new ItemTossEvent(item, player));
     }
 }
