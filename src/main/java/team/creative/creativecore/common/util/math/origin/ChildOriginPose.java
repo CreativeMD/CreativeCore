@@ -40,7 +40,6 @@ public class ChildOriginPose extends OriginPose {
     public void transformInverse(Vec3d vec) {
         parent.transformInverse(vec);
         super.transformInverse(vec);
-        
     }
     
     @Override

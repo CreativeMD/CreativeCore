@@ -10,6 +10,7 @@ public class VecOrigin implements IVecOrigin {
     
     private final Vec3d center;
     
+    private int poseIncrement;
     private IOriginPose pose;
     private IOriginPose renderPose;
     private float renderPoseTick = -1;
@@ -97,6 +98,7 @@ public class VecOrigin implements IVecOrigin {
         pose = generatePose(offX, offY, offZ, rotX, rotY, rotZ);
         renderPose = null;
         renderPoseTick = -1;
+        poseIncrement++;
     }
     
     protected IOriginPose generatePose(double offX, double offY, double offZ, double rotX, double rotY, double rotZ) {
@@ -200,5 +202,10 @@ public class VecOrigin implements IVecOrigin {
     @Override
     public IVecOrigin getParent() {
         return null;
+    }
+    
+    @Override
+    public int idPose() {
+        return poseIncrement;
     }
 }

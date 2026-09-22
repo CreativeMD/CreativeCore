@@ -61,4 +61,6 @@ public interface IVecOrigin {
     
     public IVecOrigin copy();
     
+    public int idPose();
+    
 }
