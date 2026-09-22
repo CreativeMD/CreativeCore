@@ -1,3 +1,6 @@
+2.12.40
+Added onItemToos to creative loader
+
 2.12.39
 Fixed crash when config uses CreativeIngredient but it is not loaded yet
 
