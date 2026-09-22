@@ -7,6 +7,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -59,6 +61,8 @@ public interface ICreativeLoader {
     public float getFriction(LevelAccessor level, BlockPos pos, Entity entity);
     
     public void postForge(Event event);
+    
+    public boolean onItemToss(ItemEntity item, Player player);
     
     public boolean isModLoaded(String modid);
     
