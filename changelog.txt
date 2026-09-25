@@ -1,3 +1,6 @@
+2.13.49
+Fixed vanilla rotation not being translated correctly
+
 2.13.48
 Added onItemToos to creative loader
 
