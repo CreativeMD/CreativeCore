@@ -6,7 +6,6 @@
     "mixins": [
         "ArgumentTypeInfosAccessor",
         "ConnectionMixin",
-        "GameRendererMixin",
         "ModNioResourcePackAccessor",
         "PlayerListMixin",
         "ServerConfigurationPacketListenerImplMixin",
@@ -14,7 +13,8 @@
     ],
     "client": [
         "ClientConfigurationPacketListenerImplMixin",
-        "AbstractContainerScreenMixin"
+        "AbstractContainerScreenMixin",
+        "GameRendererMixin"
     ],
     "minVersion": "0.8"
 }
