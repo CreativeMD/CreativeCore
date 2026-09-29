@@ -7,6 +7,7 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 public class VecOrigin implements IVecOrigin {
     
     protected boolean rotated = false;
+    protected boolean changed = true;
     
     protected final Vec3d center;
     
@@ -89,8 +90,6 @@ public class VecOrigin implements IVecOrigin {
         this.rotX = rotX;
         this.rotY = rotY;
         this.rotZ = rotZ;
-        
-        updatePose();
     }
     
     protected void updatePose() {
@@ -146,6 +145,7 @@ public class VecOrigin implements IVecOrigin {
     @Override
     public void setCenter(Vec3d vec) {
         this.center.set(vec);
+        setChanged();
     }
     
     @Override
@@ -207,5 +207,21 @@ public class VecOrigin implements IVecOrigin {
     @Override
     public int idPose() {
         return poseIncrement;
+    }
+    
+    @Override
+    public void setChanged() {
+        changed = true;
+        updatePose();
+    }
+    
+    @Override
+    public void processedChange() {
+        changed = false;
+    }
+    
+    @Override
+    public boolean hasChanged() {
+        return changed || offXLast != offX || offYLast != offY || offZLast != offZ || rotXLast != rotX || rotYLast != rotY || rotZLast != rotZ;
     }
 }

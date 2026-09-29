@@ -37,6 +37,7 @@ public interface IVecOrigin {
     public default void set(IVecOrigin origin) {
         setLast(origin.offXLast(), origin.offYLast(), origin.offZLast(), origin.rotXLast(), origin.rotYLast(), origin.rotZLast());
         set(origin.offX(), origin.offY(), origin.offZ(), origin.rotX(), origin.rotY(), origin.rotZ());
+        setChanged();
     }
     
     public Vec3d deltaMovement();
@@ -55,9 +56,11 @@ public interface IVecOrigin {
     
     public IOriginPose pose(float partialTick);
     
-    public default boolean hasChanged() {
-        return offXLast() != offX() || offYLast() != offY() || offZLast() != offZ() || rotXLast() != rotX() || rotYLast() != rotY() || rotZLast() != rotZ();
-    }
+    public boolean hasChanged();
+    
+    public void setChanged();
+    
+    public void processedChange();
     
     public IVecOrigin copy();
     

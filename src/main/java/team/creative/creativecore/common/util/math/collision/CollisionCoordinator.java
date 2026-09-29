@@ -275,6 +275,7 @@ public class CollisionCoordinator {
     
     public void finish() {
         this.original.set(originalOffX + offX, originalOffY + offY, originalOffZ + offZ, originalRotX + rotX, originalRotY + rotY, originalRotZ + rotZ);
+        this.original.setChanged();
     }
     
 }
