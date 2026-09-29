@@ -1,3 +1,8 @@
+2.14.18
+Fixed set parent for control in addHover method missing (by FreezePhoenix)
+Fixed CompoundTag returns an optional for getString (by FreezePhoenix)
+Fixed mixin crash on fabric servers (by arnokeesman)
+
 2.14.17
 Added onItemToos to creative loader
 
