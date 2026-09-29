@@ -180,6 +180,7 @@ public class GuiParent extends GuiControl implements IGuiParent, Iterable<GuiCon
     
     public GuiParent addHover(GuiControl control) {
         controls.addHover(control);
+        setParent(control, this); // Just to make sure it is set correctly
         return this;
     }
     
