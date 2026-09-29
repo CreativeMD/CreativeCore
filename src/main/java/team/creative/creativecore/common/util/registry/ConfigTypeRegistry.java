@@ -61,7 +61,7 @@ public class ConfigTypeRegistry<T> implements IConfigRegistry {
     }
     
     public T load(HolderLookup.Provider provider, CompoundTag nbt, Side side) {
-        ConfigurationType type = loaders.getOrDefault(nbt.getString("t"), defaultType);
+        ConfigurationType type = nbt.getString("t").map(loaders::get).orElse(defaultType);
         return type.load(provider, nbt, side);
     }
     
