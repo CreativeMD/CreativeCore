@@ -34,8 +34,8 @@ public abstract class GuiControl {
     
     public GuiControl(IGuiParent parent, String name) {
         this.parent = parent;
-        this.dist = parent.createDist(this);
         this.name = name;
+        this.dist = parent.createDist(this);
     }
     
     // CONSTRUCTION
