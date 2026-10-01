@@ -1,3 +1,12 @@
+2.14.19
+Fixed wrong use of mouse buttons
+Fixed textfield not working
+Fixed slider right click moving scroll offset in textfield so that you cannot see the value
+Fixed double click not working
+Refactor mouseMoved method to simplify submenu handling (by FreezePhoenix)
+Initialize name before creating dist (by FreezePhoenix)
+Refactor keyPressed to use isEscape method (by FreezePhoenix)
+
 2.14.18
 Fixed set parent for control in addHover method missing (by FreezePhoenix)
 Fixed CompoundTag returns an optional for getString (by FreezePhoenix)
