@@ -109,10 +109,7 @@ public class GuiTextfield extends GuiControl {
     public void closed() {}
     
     @Override
-    public void tick() {
-        if (dist() != null)
-            dist().tick();
-    }
+    public void tick() {}
     
     protected void setTextSilent(String textIn) {
         if (dist() != null)
@@ -154,9 +151,9 @@ public class GuiTextfield extends GuiControl {
         return this;
     }
     
-    public void setCursorPositionZero() {
+    public void moveCursorToEnd(boolean hasShiftDown) {
         if (dist() != null)
-            dist().setCursorPositionZero();
+            dist().moveCursorToEnd(hasShiftDown);
     }
     
     public static interface GuiTextfieldDist extends GuiFocusControlDist {
@@ -169,8 +166,6 @@ public class GuiTextfield extends GuiControl {
         
         public void setHexOnly();
         
-        public void tick();
-        
         public void setText(String textIn, boolean notify, boolean keepCursor);
         
         public String getText();
@@ -181,7 +176,7 @@ public class GuiTextfield extends GuiControl {
         
         public void setMaxStringLength(int length);
         
-        public void setCursorPositionZero();
+        public void moveCursorToEnd(boolean hasShiftDown);
         
     }
 }

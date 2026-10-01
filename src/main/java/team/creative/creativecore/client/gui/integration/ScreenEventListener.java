@@ -72,8 +72,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (getTopLayer().testForDoubleClick(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo())) {
-            
-            if (doubleClickButton.equals(event)) {
+            if (doubleClickButton != null && doubleClickButton.equals(event.buttonInfo())) {
                 released = false;
                 doubleClickButton = null;
                 return getTopLayer().mouseDoubleClicked(event.x() - getOffsetX(), event.y() - getOffsetY(), event.buttonInfo());
@@ -81,8 +80,8 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
             fireRemaingEvents();
             doubleClickButton = event.buttonInfo();
             time = getEventTime();
-            this.x = x - getOffsetX();
-            this.y = y - getOffsetY();
+            this.x = event.x() - getOffsetX();
+            this.y = event.y() - getOffsetY();
             return true;
         }
         fireRemaingEvents();
@@ -91,7 +90,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        if (doubleClickButton == event.buttonInfo()) {
+        if (doubleClickButton != null && doubleClickButton.equals(event.buttonInfo())) {
             released = true;
             return true;
         }
@@ -130,6 +129,7 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     @Override
     public void setFocused(boolean focused) {
         this.focused = focused;
+        Minecraft.getInstance().onTextInputFocusChange(this, focused);
     }
     
     @Override
@@ -148,6 +148,11 @@ public class ScreenEventListener implements GuiEventListener, NarratableEntry {
     @Override
     public NarrationPriority narrationPriority() {
         return NarrationPriority.NONE;
+    }
+    
+    @Override
+    public boolean capturesInput() {
+        return true;
     }
     
 }

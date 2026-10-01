@@ -86,7 +86,7 @@ public class GuiClientTimelineChannel<T extends GuiTimelineChannel<K>, K> extend
     @Override
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         boolean result = super.mouseClicked(x, y, info);
-        if (!result && info.button() == 1) {
+        if (!result && info.button() == 3) {
             int time = timeline().getTimeAt(x);
             if (control.isSpaceFor(null, time)) {
                 GuiTimelineKey<K> key = control.addKey(time, control.getValueAt(time));

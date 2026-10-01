@@ -14,7 +14,7 @@ public class GuiStateButton<K> extends GuiButton {
     public GuiStateButton(IGuiParent parent, String name, int index, IComponentMap<K> map) {
         super(parent, name, null);
         setPressed(button -> {
-            if (button == 1)
+            if (button == 3)
                 previous();
             else
                 next();

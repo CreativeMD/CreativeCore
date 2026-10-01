@@ -70,7 +70,7 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
     
     @Override
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
-        if (info.button() == 0 && rect.getHeight() - y <= scrollbarHeight && needsScrollbar()) {
+        if (info.button() == 1 && rect.getHeight() - y <= scrollbarHeight && needsScrollbar()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             dragged = true;
             return true;

@@ -88,19 +88,19 @@ public class GuiClientSlider<T extends GuiSlider> extends GuiClientControl<T> im
     
     @Override
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
-        if (info.button() == 0) {
+        if (info.button() == 1) {
             if (textfield != null)
                 return textfield().mouseClicked(x, y, info);
             playSound(SoundEvents.UI_BUTTON_CLICK);
             grabbedSlider = true;
             mouseMoved(x, y);
             return true;
-        } else if (info.button() == 1) {
+        } else if (info.button() == 3) {
             grabbedSlider = false;
             textfield = createTextfield();
             textfield().focus();
             textfield.setText(getTextfieldValue());
-            textfield().setCursorPositionEnd();
+            textfield().moveCursorToEnd(false);
             GuiControl.setParent(textfield, control);
             int width = rect.getWidth();
             textfield().rect.setWidth(width, width);

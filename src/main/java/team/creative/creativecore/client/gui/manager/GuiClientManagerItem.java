@@ -60,7 +60,7 @@ public class GuiClientManagerItem extends GuiClientManager<GuiManagerItem> {
     
     @Override
     public void mouseReleased(double x, double y, MouseButtonInfo info) {
-        if (isDragged() && rightClick == (info.button() == 1))
+        if (isDragged() && rightClick == (info.button() == 3))
             endDrag();
     }
     

@@ -77,7 +77,7 @@ public class GuiCounter extends GuiParent {
     }
     
     public void resetTextfield() {
-        textfield.setCursorPositionZero();
+        textfield.moveCursorToEnd(false);
     }
     
     @Override

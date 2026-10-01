@@ -80,10 +80,10 @@ public class GuiClientSlot<T extends GuiSlot> extends GuiClientSlotBase<T> imple
         }
         
         ItemStack hand = itemManager().getHand();
-        if (!hand.isEmpty() && info.button() < 2) {
+        if (!hand.isEmpty() && info.button() != 2) {
             int stackSize = GuiClientManagerItem.freeSpace(control.slot, hand);
             if (stackSize > 0)
-                itemManager().startDrag(this, info.button() == 1, stackSize);
+                itemManager().startDrag(this, info.button() == 3, stackSize);
             if (stackSize != -1)
                 return true;
         }
@@ -91,7 +91,7 @@ public class GuiClientSlot<T extends GuiSlot> extends GuiClientSlotBase<T> imple
         if (info.button() == 2)
             CreativeCoreGuiRegistry.DUPLICATE.sendAndExecute(control, EndTag.INSTANCE);
         else if (control.slot.mayPickup(control.getPlayer()) && (hand.isEmpty() || control.slot.mayPlace(hand)))
-            CreativeCoreGuiRegistry.SWAP.sendAndExecute(control, ByteTag.valueOf(info.button() == 1));
+            CreativeCoreGuiRegistry.SWAP.sendAndExecute(control, ByteTag.valueOf(info.button() == 3));
         return true;
     }
     

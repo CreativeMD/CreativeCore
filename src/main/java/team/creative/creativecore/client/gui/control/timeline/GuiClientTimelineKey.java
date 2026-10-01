@@ -38,11 +38,11 @@ public class GuiClientTimelineKey<T extends GuiTimelineKey<K>, K> extends GuiCli
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         if (!control.modifiable)
             return false;
-        if (info.button() == 0) {
+        if (info.button() == 1) {
             control.channel.select(control);
             playSound(SoundEvents.UI_BUTTON_CLICK);
             clicked = true;
-        } else if (info.button() == 1) {
+        } else if (info.button() == 3) {
             if (selected)
                 control.channel.timeline.deselect();
             control.channel.removeKey(control);

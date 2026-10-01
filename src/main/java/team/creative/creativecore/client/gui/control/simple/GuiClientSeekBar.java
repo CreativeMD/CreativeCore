@@ -71,7 +71,7 @@ public class GuiClientSeekBar<T extends GuiSeekBar> extends GuiClientControl<T> 
     
     @Override
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
-        if (info.button() == 0) {
+        if (info.button() == 1) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             grabbedSlider = this.max > 0; // validates maxTime is not a custom state
             this.mouseMoved(x, y);

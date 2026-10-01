@@ -86,7 +86,7 @@ public class GuiClientTimeline<T extends GuiTimeline> extends GuiClientParent<T>
     @Override
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
         boolean result = super.mouseClicked(x, y, info);
-        if (!result && info.button() == 0) {
+        if (!result && info.button() == 1) {
             control.deselect();
             return false;
         }

@@ -110,12 +110,12 @@ public class GuiClientScrollXY<T extends GuiScrollXY> extends GuiClientParent<T>
     
     @Override
     public boolean mouseClicked(double x, double y, MouseButtonInfo info) {
-        if (info.button() == 0 && rect.getHeight() - y <= scrollbarThickness && needsScrollbarX()) {
+        if (info.button() == 1 && rect.getHeight() - y <= scrollbarThickness && needsScrollbarX()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             draggedX = true;
             return true;
         }
-        if (info.button() == 0 && rect.getWidth() - x <= scrollbarThickness && needsScrollbarY()) {
+        if (info.button() == 1 && rect.getWidth() - x <= scrollbarThickness && needsScrollbarY()) {
             playSound(SoundEvents.UI_BUTTON_CLICK);
             draggedY = true;
             return true;

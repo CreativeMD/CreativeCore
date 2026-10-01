@@ -56,7 +56,7 @@ public class GuiClientTreeItem<T extends GuiTreeItem> extends GuiClientParent<T>
     
     @Override
     public boolean testForDoubleClick(double x, double y, MouseButtonInfo info) {
-        return info.button() == 0;
+        return info.button() == 1;
     }
     
     @Override
