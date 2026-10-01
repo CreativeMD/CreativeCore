@@ -134,11 +134,7 @@ public abstract class GuiClientMenu<K, T extends GuiMenu<K>> extends GuiClientSc
         @Override
         public void mouseMoved(double x, double y) {
             if (rect.insideLocalPos(x, y) && control.folder.hasChildren()) {
-                var dist = ((GuiClientMenu<?, ?>) control.menu().dist());
-                if (dist.submenu.hasExtension())
-                    dist.submenu.close();
-                dist.submenu.open(new GuiMenuSub<>(control.menu().root(), control.folder), this, ExtensionDirection.RIGHT);
-                
+                this.open();
             }
         }
         
