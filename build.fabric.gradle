@@ -33,8 +33,8 @@ dependencies {
     modImplementation "maven.modrinth:modmenu:${project.modmenu_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
-	api "net.minecraftforge:eventbus:6.0.3"
-    include "net.minecraftforge:eventbus:6.0.3"
+	api "net.minecraftforge:eventbus:6.2.33"
+    include "net.minecraftforge:eventbus:6.2.33"
 }
 
 modDependencies = []
