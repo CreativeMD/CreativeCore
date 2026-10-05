@@ -16,9 +16,8 @@ public class StackUtils {
         
         if (stack.has(DataComponents.CONTAINER)) {
             var container = stack.get(DataComponents.CONTAINER);
-            for (int i = 0; i < container.getSlots(); i++) {
-                collect(container.getStackInSlot(i), predicate, stacks);
-            }
+            
+            container.nonEmptyItemCopyStream().forEach(x -> collect(x, predicate, stacks));
         }
         
     }
