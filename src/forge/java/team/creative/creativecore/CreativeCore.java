@@ -15,10 +15,8 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
@@ -80,7 +78,7 @@ public class CreativeCore {
     
     public CreativeCore() {
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener((RegisterEvent event) -> {
-            FancyRegistry.INSTANCE.addEntries(new FancyRegistry.RegisterHelper() {
+            CommonRegistry.INSTANCE.addEntries(new CommonRegistry.RegisterHelper() {
                 @Override
                 public <T, I extends T> void register(Registry<T> registry, ResourceKey<T> name, Supplier<I> value) {
                     event.register(registry.key(),name.identifier(), value::get);
@@ -95,17 +93,7 @@ public class CreativeCore {
         if (FMLLoader.getCurrent().getDist() == Dist.CLIENT)
             CreativeCoreClient.load(ModLoadingContext.get().getActiveContainer().getEventBus());
         
-        GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {
-            @Override
-            public ContainerIntegration create(int windowId, Inventory playerInv, RegistryFriendlyByteBuf extraData) {
-                return new ContainerIntegration(this, windowId, playerInv.player);
-            }
-            
-            @Override
-            public ContainerIntegration create(int windowId, Inventory playerInv) {
-                return new ContainerIntegration(this, windowId, playerInv.player);
-            }
-        };
+        GUI_CONTAINER = new MenuType<>((windowId, playerInv) -> new ContainerIntegration(CreativeCore.GUI_CONTAINER, windowId, playerInv.player), FeatureFlags.VANILLA_SET);
     }
     
     public void registerMenus(RegisterEvent event) {

@@ -70,7 +70,7 @@ public class CreativeCore implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        FancyRegistry.INSTANCE.addEntries(new FancyRegistry.RegisterHelper() {
+        CommonRegistry.INSTANCE.addEntries(new CommonRegistry.RegisterHelper() {
             @Override
             public <T, I extends T> void register(Registry<T> registry, ResourceKey<T> name, Supplier<I> value) {
                 Registry.register(registry, name, value.get());

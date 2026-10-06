@@ -15,8 +15,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class FancyRegistry {
-	public static final FancyRegistry INSTANCE = new FancyRegistry();
+public class CommonRegistry {
+	public static final CommonRegistry INSTANCE = new CommonRegistry();
 	public final class NamespacedRegistry {
 		private final String namespace;
 		public NamespacedRegistry(String namespace) {
@@ -26,10 +26,10 @@ public class FancyRegistry {
 			return namespace;
 		}
 		public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registrySupplier, ResourceKey<R> registryKey, String identifier, Function<ResourceKey<T>, I> sup) {
-			return FancyRegistry.this.register(registrySupplier, registryKey, key -> ResourceKey.create(key, Identifier.fromNamespaceAndPath(namespace, identifier)), sup);
+			return CommonRegistry.this.register(registrySupplier, registryKey, key -> ResourceKey.create(key, Identifier.fromNamespaceAndPath(namespace, identifier)), sup);
 		}
 		public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registrySupplier, ResourceKey<R> registryKey, Identifier identifier, Function<ResourceKey<T>, I> sup) {
-			return FancyRegistry.this.register(registrySupplier, registryKey, key -> ResourceKey.create(key, identifier), sup);
+			return CommonRegistry.this.register(registrySupplier, registryKey, key -> ResourceKey.create(key, identifier), sup);
 		}
 
 		public BoundRegistry.Items createItems() {
@@ -135,7 +135,7 @@ public class FancyRegistry {
 		}
 	}
 	private final List<Entry<?, ?, ?>> entries;
-	private FancyRegistry() {
+	private CommonRegistry() {
 		this.entries = new ArrayList<>();
 	}
 
