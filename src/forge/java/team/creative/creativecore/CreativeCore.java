@@ -2,6 +2,8 @@ package team.creative.creativecore;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,7 +57,6 @@ import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
 
 @Mod(CreativeCore.MODID)
 public class CreativeCore {
-    
     private static final ICreativeLoader LOADER = new CreativeForgeLoader();
     private static final ILoaderUtils UTILS = new ForgeLoaderUtils();
     public static final String MODID = "creativecore";
@@ -78,6 +79,14 @@ public class CreativeCore {
         CreativeTestArgument.class, SingletonArgumentInfo.contextFree(CreativeTestArgument::test)));
     
     public CreativeCore() {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((RegisterEvent event) -> {
+            FancyRegistry.INSTANCE.addEntries(new FancyRegistry.RegisterHelper() {
+                @Override
+                public <T, I extends T> void register(Registry<T> registry, ResourceKey<T> name, Supplier<I> value) {
+                    event.register(registry.key(),name.identifier(), value::get);
+                }
+            });
+        });
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::init);
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::registerMenus);
         COMMAND_ARGUMENT_TYPES.register(ModLoadingContext.get().getActiveContainer().getEventBus());
