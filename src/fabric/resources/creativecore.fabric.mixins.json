@@ -8,6 +8,7 @@
         "ConnectionMixin",
         "ModNioResourcePackAccessor",
         "PlayerListMixin",
+        "LivingEntityMixin",
         "ServerConfigurationPacketListenerImplMixin",
         "ServerCommonPacketListenerImplAccessor"
     ],

@@ -2,6 +2,8 @@ package team.creative.creativecore;
 
 import java.util.function.Supplier;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,10 +15,8 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
@@ -55,7 +55,6 @@ import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
 
 @Mod(CreativeCore.MODID)
 public class CreativeCore {
-    
     private static final ICreativeLoader LOADER = new CreativeForgeLoader();
     private static final ILoaderUtils UTILS = new ForgeLoaderUtils();
     public static final String MODID = "creativecore";
@@ -78,6 +77,14 @@ public class CreativeCore {
         CreativeTestArgument.class, SingletonArgumentInfo.contextFree(CreativeTestArgument::test)));
     
     public CreativeCore() {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((RegisterEvent event) -> {
+            CommonRegistry.INSTANCE.addEntries(new CommonRegistry.RegisterHelper() {
+                @Override
+                public <T, I extends T> void register(Registry<T> registry, ResourceKey<T> name, Supplier<I> value) {
+                    event.register(registry.key(),name.identifier(), value::get);
+                }
+            });
+        });
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::init);
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::registerMenus);
         COMMAND_ARGUMENT_TYPES.register(ModLoadingContext.get().getActiveContainer().getEventBus());
@@ -86,17 +93,7 @@ public class CreativeCore {
         if (FMLLoader.getCurrent().getDist() == Dist.CLIENT)
             CreativeCoreClient.load(ModLoadingContext.get().getActiveContainer().getEventBus());
         
-        GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {
-            @Override
-            public ContainerIntegration create(int windowId, Inventory playerInv, RegistryFriendlyByteBuf extraData) {
-                return new ContainerIntegration(this, windowId, playerInv.player);
-            }
-            
-            @Override
-            public ContainerIntegration create(int windowId, Inventory playerInv) {
-                return new ContainerIntegration(this, windowId, playerInv.player);
-            }
-        };
+        GUI_CONTAINER = new MenuType<>((windowId, playerInv) -> new ContainerIntegration(CreativeCore.GUI_CONTAINER, windowId, playerInv.player), FeatureFlags.VANILLA_SET);
     }
     
     public void registerMenus(RegisterEvent event) {

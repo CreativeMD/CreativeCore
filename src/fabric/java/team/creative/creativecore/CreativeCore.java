@@ -1,10 +1,6 @@
 package team.creative.creativecore;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.mojang.brigadier.context.CommandContext;
-
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -15,10 +11,13 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import team.creative.creativecore.common.config.event.ConfigEventHandler;
 import team.creative.creativecore.common.config.gui.ClientSyncGuiLayer;
 import team.creative.creativecore.common.config.gui.ConfigGuiLayer;
@@ -29,52 +28,56 @@ import team.creative.creativecore.common.config.sync.ConfigurationPacket;
 import team.creative.creativecore.common.gui.creator.GuiCreator;
 import team.creative.creativecore.common.gui.creator.GuiCreator.GuiCreatorBasic;
 import team.creative.creativecore.common.gui.integration.ContainerIntegration;
-import team.creative.creativecore.common.gui.packet.ControlSyncPacket;
-import team.creative.creativecore.common.gui.packet.ImmediateItemStackPacket;
-import team.creative.creativecore.common.gui.packet.LayerClosePacket;
-import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
-import team.creative.creativecore.common.gui.packet.SyncPacket;
+import team.creative.creativecore.common.gui.packet.*;
 import team.creative.creativecore.common.loader.FabricLoaderUtils;
 import team.creative.creativecore.common.loader.ILoaderUtils;
 import team.creative.creativecore.common.network.CreativeNetwork;
 import team.creative.creativecore.common.util.argument.StringArrayArgumentType;
 import team.creative.creativecore.mixin.ArgumentTypeInfosAccessor;
 
+import java.util.function.Supplier;
+
 public class CreativeCore implements ModInitializer {
-    
+
     private static final ICreativeLoader LOADER = new CreativeFabricLoader();
     private static final ILoaderUtils UTILS = new FabricLoaderUtils();
     public static final String MODID = "creativecore";
     public static final Logger LOGGER = LogManager.getLogger(CreativeCore.MODID);
     public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, Identifier.tryBuild(CreativeCore.MODID, "main"));
     public static final CreativeCoreConfig CONFIG = new CreativeCoreConfig();
-    
+
     public static final GuiCreatorBasic CONFIG_OPEN = GuiCreator.register("config", new GuiCreatorBasic((nbt, player) -> new ConfigGuiLayer(player.level()
-            .isClientSide(), CreativeConfigRegistry.ROOT, Side.SERVER)));
+                                                                                                                                                  .isClientSide(), CreativeConfigRegistry.ROOT, Side.SERVER)));
     public static final GuiCreatorBasic CONFIG_CLIENT_OPEN = GuiCreator.register("clientconfig", new GuiCreatorBasic((nbt, player) -> new ConfigGuiLayer(player.level()
-            .isClientSide(), CreativeConfigRegistry.ROOT, Side.CLIENT)));
+                                                                                                                                                               .isClientSide(), CreativeConfigRegistry.ROOT, Side.CLIENT)));
     public static final GuiCreatorBasic CONFIG_CLIENT_SYNC_OPEN = GuiCreator.register("clientsyncconfig", new GuiCreatorBasic((nbt, player) -> new ClientSyncGuiLayer(player.level()
-            .isClientSide(), CreativeConfigRegistry.ROOT)));
+                                                                                                                                                                            .isClientSide(), CreativeConfigRegistry.ROOT)));
     public static ConfigEventHandler CONFIG_HANDLER;
     public static MenuType<ContainerIntegration> GUI_CONTAINER;
-    
+
     public CreativeCore() {
         ServerLifecycleEvents.SERVER_STARTING.register(this::server);
-        
+
         CONFIG_HANDLER = new ConfigEventHandler(FabricLoader.getInstance().getConfigDir().toFile(), LOGGER);
     }
-    
+
     private void server(MinecraftServer server) {
         server.getCommands().getDispatcher().register(Commands.literal("cmdconfig").executes((CommandContext<CommandSourceStack> x) -> {
             CONFIG_OPEN.open(new CompoundTag(), x.getSource().getPlayerOrException());
             return 0;
         }));
     }
-    
+
     @Override
     public void onInitialize() {
+        CommonRegistry.INSTANCE.addEntries(new CommonRegistry.RegisterHelper() {
+            @Override
+            public <T, I extends T> void register(Registry<T> registry, ResourceKey<T> name, Supplier<I> value) {
+                Registry.register(registry, name, value.get());
+            }
+        });
+
         GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {
-            
             @Override
             public ContainerIntegration create(int windowId, Inventory playerInv) {
                 return new ContainerIntegration(this, windowId, playerInv.player);
@@ -88,20 +91,20 @@ public class CreativeCore implements ModInitializer {
         NETWORK.registerType(ControlSyncPacket.class, ControlSyncPacket::new);
         NETWORK.registerType(SyncPacket.class, SyncPacket::new);
         NETWORK.registerType(ImmediateItemStackPacket.class, ImmediateItemStackPacket::new);
-        
+
         Registry.register(BuiltInRegistries.MENU, Identifier.tryBuild(MODID, "container"), GUI_CONTAINER);
-        
+
         ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray()));
-        
+
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG);
-        
+
         LOADER.loadCommon();
     }
-    
+
     public static ICreativeLoader loader() {
         return LOADER;
     }
-    
+
     public static ILoaderUtils utils() {
         return UTILS;
     }
