@@ -1,3 +1,7 @@
+2.14.21
+Added CommonFancy loader (by FreezePhoenix)
+Preparations for SOLOnion to support fabric (by FreezePhoenix)
+
 2.14.20
 Updated to NeoForge 26.3.0.48-beta
 
