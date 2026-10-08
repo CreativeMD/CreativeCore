@@ -99,8 +99,7 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         this.flow = flow;
     }
     
-    protected void renderControls(GuiGraphicsExtractor graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiClientControl> collection,
-            double scale, double xOffset, double yOffset, boolean hover) {
+    protected void renderControls(GuiGraphicsExtractor graphics, Rect contentRect, Rect realContentRect, int mouseX, int mouseY, ListIterator<GuiClientControl> collection, double scale, double xOffset, double yOffset, boolean hover) {
         Matrix3x2fStack pose = graphics.pose();
         
         while (collection.hasPrevious()) {
@@ -125,8 +124,7 @@ public class GuiClientParent<T extends GuiParent> extends GuiClientControl<T> im
         }
     }
     
-    protected void renderControl(GuiGraphicsExtractor graphics, GuiClientControl control, Rect controlContentRect, Rect realRect, double scale, int mouseX, int mouseY,
-            boolean hover) {
+    protected void renderControl(GuiGraphicsExtractor graphics, GuiClientControl control, Rect controlContentRect, Rect realRect, double scale, int mouseX, int mouseY, boolean hover) {
         control.render(graphics, controlContentRect, hover ? controlContentRect : realRect, scale, mouseX, mouseY);
     }
     

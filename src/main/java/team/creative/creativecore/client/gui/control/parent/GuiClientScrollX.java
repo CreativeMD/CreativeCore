@@ -107,8 +107,7 @@ public class GuiClientScrollX<T extends GuiScrollX> extends GuiClientParent<T> i
     }
     
     @Override
-    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX,
-            int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         pose.pushMatrix();
         super.renderContent(graphics, formatting, borderWidth, controlRect, realRect, scale, mouseX, mouseY);

@@ -15,8 +15,7 @@ import team.creative.creativecore.common.gui.GuiParent;
 public class ConfigTypeRegistryObject extends ConfigTypeConveration<RegistryObjectConfig> {
     
     @Override
-    public RegistryObjectConfig readElement(HolderLookup.Provider provider, RegistryObjectConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
-            Side side, ConfigKey key) {
+    public RegistryObjectConfig readElement(HolderLookup.Provider provider, RegistryObjectConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
         if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
             return new RegistryObjectConfig(defaultValue.registry, Identifier.parse(element.getAsString()));
         return defaultValue;

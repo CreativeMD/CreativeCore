@@ -231,8 +231,7 @@ public class VectorFanClient {
         });
     }
     
-    public static void renderLines(VectorFan fan, Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red,
-            int green, int blue, int alpha) {
+    public static void renderLines(VectorFan fan, Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha) {
         Vec3f normal = new Vec3f();
         fan.forAllEdges((x, y) -> {
             float x1 = x.x * scaleX + offX;
@@ -247,8 +246,7 @@ public class VectorFanClient {
         });
     }
     
-    public static void renderLines(VectorFan fan, Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red,
-            int green, int blue, int alpha, Vec3d center, double dGrow) {
+    public static void renderLines(VectorFan fan, Pose pose, VertexConsumer consumer, float offX, float offY, float offZ, float scaleX, float scaleY, float scaleZ, int red, int green, int blue, int alpha, Vec3d center, double dGrow) {
         float grow = (float) dGrow;
         Vec3f normal = new Vec3f();
         fan.forAllEdges((x, y) -> {

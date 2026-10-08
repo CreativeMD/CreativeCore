@@ -22,13 +22,11 @@ import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 
 public abstract class ConfigKey {
     
-    public static ConfigKey of(ICreativeConfigHolder parentHolder, Field field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart,
-            boolean hideFromGUI, Object parent) {
+    public static ConfigKey of(ICreativeConfigHolder parentHolder, Field field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart, boolean hideFromGUI, Object parent) {
         return of(parentHolder, new ConfigFieldWrapper(parent, field), name, defaultValue, sync, requiresRestart, hideFromGUI);
     }
     
-    public static ConfigKey of(ICreativeConfigHolder parent, ConfigField field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart,
-            boolean hideFromGUI) {
+    public static ConfigKey of(ICreativeConfigHolder parent, ConfigField field, String name, Object defaultValue, ConfigSynchronization sync, boolean requiresRestart, boolean hideFromGUI) {
         if (ConfigTypeConveration.has(field.getType()))
             return new ConfigKeyType(field, name, defaultValue, sync, requiresRestart, hideFromGUI, parent.getRegistry());
         if (defaultValue instanceof ConfigHolder holder)

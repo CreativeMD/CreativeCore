@@ -331,41 +331,41 @@ public abstract class ConfigTypeConveration<T> {
         });
         registerTypeCreator(Identifier.class, () -> Identifier.withDefaultNamespace(""));
         ConfigTypeConveration.registerType(Color.class, new SimpleConfigTypeConveration<Color>() {
-
+            
             @Override
             public Color readElement(ConfigKey key, Color defaultValue, Side side, JsonElement element) {
                 if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber())
                     return new Color(element.getAsInt());
                 return defaultValue;
             }
-
+            
             @Override
             public JsonElement writeElement(Color value, ConfigKey key, Side side) {
                 return new JsonPrimitive(value.toInt());
             }
-
+            
             public void createControls(GuiParent parent, ConfigKey key) {
                 parent.add(new GuiColorPicker(parent, "color", new Color(), true, 0));
             }
-
+            
             public void loadValue(Color value, GuiParent parent) {
                 GuiColorPicker picker = parent.get("color");
                 picker.setColor(value);
             }
-
+            
             protected Color saveValue(GuiParent parent, ConfigKey key) {
                 GuiColorPicker picker = parent.get("color");
                 return new Color(picker.color);
             }
-
+            
             @Override
             public Color set(ConfigKey key, Color value) {
                 return value;
             }
         });
-
+        
         ConfigTypeConveration.registerTypeCreator(Color.class, () -> new Color());
-
+        
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override

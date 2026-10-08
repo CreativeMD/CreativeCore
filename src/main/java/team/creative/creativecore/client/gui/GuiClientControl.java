@@ -300,8 +300,7 @@ public abstract class GuiClientControl<T extends GuiControl> implements GuiContr
         //graphics.flush();
     }
     
-    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX,
-            int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         controlRect.shrink(formatting.padding() * scale);
         if (!enabled)

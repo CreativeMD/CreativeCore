@@ -10,7 +10,7 @@ public class TimeMath {
     static {
         FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
-
+    
     public static String timestamp(long time) {
         if (time < 3600000) {
             long min = TimeUnit.MILLISECONDS.toMinutes(time);

@@ -9,6 +9,6 @@ public interface DoubleValueParser {
     DoubleValueParser BLOCKS = (v, max) -> Component.translatable("minecraft.blocks.counting", Maths.safeRound(v)).getString();
     DoubleValueParser PERCENT = (v, max) -> (int) (Maths.safeDivide(v, max) * 100.0F) + "%";
     DoubleValueParser ANGLE = (v, max) -> Maths.safeRound(v) + "°";
-
+    
     String parse(double v, double max);
 }

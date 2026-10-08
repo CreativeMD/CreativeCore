@@ -7,6 +7,6 @@ public interface IntValueParser {
     IntValueParser NONE = (v, max) -> v + "";
     IntValueParser PIXELS = (v, max) -> v + "px";
     IntValueParser BLOCKS = (v, max) -> Component.translatable("minecraft.blocks.counting", v).getString();
-
+    
     String parse(int v, int max);
 }

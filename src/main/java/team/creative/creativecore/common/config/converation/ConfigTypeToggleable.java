@@ -15,8 +15,7 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 public class ConfigTypeToggleable extends ConfigTypeConveration<ToggleableConfig> {
     
     @Override
-    public ToggleableConfig readElement(HolderLookup.Provider provider, ToggleableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side,
-            ConfigKey key) {
+    public ToggleableConfig readElement(HolderLookup.Provider provider, ToggleableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
         ConfigKey configKey = ConfigKey.ofGenericType(key, side);
         
         if (element.isJsonObject()) {

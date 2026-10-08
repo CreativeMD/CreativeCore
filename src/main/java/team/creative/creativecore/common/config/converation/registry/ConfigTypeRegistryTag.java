@@ -16,8 +16,7 @@ import team.creative.creativecore.common.gui.GuiParent;
 public class ConfigTypeRegistryTag extends ConfigTypeConveration<RegistryTagConfig> {
     
     @Override
-    public RegistryTagConfig readElement(HolderLookup.Provider provider, RegistryTagConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side,
-            ConfigKey key) {
+    public RegistryTagConfig readElement(HolderLookup.Provider provider, RegistryTagConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
         if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
             return new RegistryTagConfig(defaultValue.registry, TagKey.create(defaultValue.registry.key(), Identifier.parse(element.getAsString())));
         return defaultValue;

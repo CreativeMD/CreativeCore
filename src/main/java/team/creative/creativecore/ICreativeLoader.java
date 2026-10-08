@@ -1,5 +1,8 @@
 package team.creative.creativecore;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -20,9 +23,6 @@ import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 public interface ICreativeLoader {
     
     public default void loadCommon() {
@@ -37,7 +37,7 @@ public interface ICreativeLoader {
     public Side getOverallSide();
     
     public Side getEffectiveSide();
-
+    
     public void register(CommonLoader loader);
     
     public void registerClient(ClientLoader loader);
@@ -61,9 +61,9 @@ public interface ICreativeLoader {
     public void registerLoadLevel(Consumer<LevelAccessor> consumer);
     
     public void registerUnloadLevel(Consumer<LevelAccessor> consumer);
-
+    
     public void registerModifyCreativeTab(Consumer<CreativeModeTab.Output> modifier, ResourceKey<CreativeModeTab> tabResourceKey);
-
+    
     public <T> void registerListener(Consumer<T> consumer);
     
     public float getFluidViscosityMultiplier(Fluid fluid, Level level);
@@ -71,34 +71,34 @@ public interface ICreativeLoader {
     public float getFriction(LevelAccessor level, BlockPos pos, Entity entity);
     
     public void postForge(Event event);
-
+    
     public void registerPlayerJoin(Consumer<Player> consumer);
-
+    
     public void registerPlayerCopy(CopyConsumer consumer);
-
+    
     @FunctionalInterface
     public interface CopyConsumer {
         public void accept(Player oldPlayer, Player newPlayer, boolean wasDeath);
     }
-
+    
     @FunctionalInterface
     public interface PlayerDimensionChangeConsumer {
         public void accept(Player player, ResourceKey<Level> fromDim, ResourceKey<Level> toDim);
     }
-
+    
     @FunctionalInterface
     public interface FinishConsuming {
         void accept(LivingEntity entity, ItemStack stack);
     }
-
+    
     public void publishItemUsed(LivingEntity entity, ItemStack stack);
-
+    
     public void registerItemUsed(FinishConsuming consumer);
-
+    
     public void registerPlayerRespawn(Consumer<Player> consumer);
-
+    
     public void registerPlayerDimensionChange(PlayerDimensionChangeConsumer consumer);
-
+    
     public boolean onItemToss(ItemEntity item, Player player);
     
     public boolean isModLoaded(String modid);

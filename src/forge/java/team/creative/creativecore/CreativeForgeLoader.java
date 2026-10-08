@@ -1,30 +1,23 @@
 package team.creative.creativecore;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
@@ -43,7 +36,12 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import team.creative.creativecore.client.ClientLoader;
@@ -111,16 +109,16 @@ public class CreativeForgeLoader implements ICreativeLoader {
     public void registerUnloadLevel(Consumer<LevelAccessor> consumer) {
         NeoForge.EVENT_BUS.addListener((LevelEvent.Unload x) -> consumer.accept(x.getLevel()));
     }
-
+    
     @Override
     public void registerModifyCreativeTab(Consumer<CreativeModeTab.Output> modifier, ResourceKey<CreativeModeTab> tabResourceKey) {
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener((BuildCreativeModeTabContentsEvent event) -> {
-            if(event.getTabKey() == tabResourceKey) {
+            if (event.getTabKey() == tabResourceKey) {
                 modifier.accept(event);
             }
         });
     }
-
+    
     @Override
     public void registerLoadLevel(Consumer<LevelAccessor> consumer) {
         NeoForge.EVENT_BUS.addListener((LevelEvent.Load x) -> consumer.accept(x.getLevel()));
@@ -170,44 +168,44 @@ public class CreativeForgeLoader implements ICreativeLoader {
     public boolean forge() {
         return true;
     }
-
+    
     @Override
     public void registerPlayerJoin(Consumer<Player> consumer) {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> consumer.accept(event.getEntity()));
     }
-
+    
     @Override
     public void registerPlayerCopy(CopyConsumer consumer) {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.Clone event) -> consumer.accept(event.getOriginal(), event.getEntity(), event.isWasDeath()));
     }
-
+    
     @Override
     public void registerPlayerDimensionChange(PlayerDimensionChangeConsumer consumer) {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerChangedDimensionEvent event) -> {
-            consumer.accept(event.getEntity(),event.getFrom(),event.getTo());
+            consumer.accept(event.getEntity(), event.getFrom(), event.getTo());
         });
     }
-
+    
     @Override
     public void registerItemUsed(FinishConsuming consumer) {
         NeoForge.EVENT_BUS.addListener((LivingEntityUseItemEvent.Finish event) -> consumer.accept(event.getEntity(), event.getItem()));
     }
-
+    
     @Override
     public void registerPlayerRespawn(Consumer<Player> consumer) {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerRespawnEvent event) -> consumer.accept(event.getEntity()));
     }
-
+    
     @Override
     public boolean fabric() {
         return false;
     }
-
+    
     @Override
     public void publishItemUsed(LivingEntity entity, ItemStack stack) {
         EventHooks.onItemUseFinish(entity, stack, 0, ItemStack.EMPTY);
     }
-
+    
     @Override
     public boolean onItemToss(ItemEntity item, Player player) {
         return NeoForge.EVENT_BUS.post(new ItemTossEvent(item, player)).isCanceled();

@@ -101,8 +101,7 @@ public class GuiClientTree<T extends GuiTree> extends GuiClientScrollXY<T> imple
     }
     
     @Override
-    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX,
-            int mouseY) {
+    protected void renderContent(GuiGraphicsExtractor graphics, ControlFormatting formatting, int borderWidth, Rect controlRect, Rect realRect, double scale, int mouseX, int mouseY) {
         Matrix3x2fStack pose = graphics.pose();
         if (control.isDragged()) {
             pose.pushMatrix();

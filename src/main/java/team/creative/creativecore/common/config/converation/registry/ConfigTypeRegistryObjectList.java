@@ -24,8 +24,7 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 public class ConfigTypeRegistryObjectList extends ConfigTypeConveration<RegistryObjectListConfig> {
     
     @Override
-    public RegistryObjectListConfig readElement(HolderLookup.Provider provider, RegistryObjectListConfig defaultValue, boolean loadDefault, boolean ignoreRestart,
-            JsonElement element, Side side, ConfigKey key) {
+    public RegistryObjectListConfig readElement(HolderLookup.Provider provider, RegistryObjectListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
         if (element.isJsonArray()) {
             RegistryObjectListConfig list = new RegistryObjectListConfig(defaultValue.registry);
             JsonArray array = element.getAsJsonArray();
