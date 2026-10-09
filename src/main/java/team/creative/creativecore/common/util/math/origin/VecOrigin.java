@@ -143,6 +143,11 @@ public class VecOrigin implements IVecOrigin {
     }
     
     @Override
+    public Vec3d collisionCenterCopy() {
+        return center.copy();
+    }
+    
+    @Override
     public void setCenter(Vec3d vec) {
         this.center.set(vec);
         setChanged();

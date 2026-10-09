@@ -48,6 +48,8 @@ public interface IVecOrigin {
     
     public void setCenter(Vec3d vec);
     
+    public Vec3d collisionCenterCopy();
+    
     public void tick();
     
     public IVecOrigin getParent();
