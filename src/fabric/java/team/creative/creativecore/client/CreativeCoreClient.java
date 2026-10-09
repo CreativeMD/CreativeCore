@@ -44,38 +44,39 @@ import team.creative.creativecore.common.gui.integration.GuiEventHandler;
 import team.creative.creativecore.common.gui.style.GuiStyle;
 
 public class CreativeCoreClient implements ClientModInitializer {
-    
+
+    private static final ICreativeClientLoader LOADER = new CreativeFabricClientLoader();
     private static final Minecraft mc = Minecraft.getInstance();
-    
+
     private static final List<String> MOD_CONFIGS = new ArrayList<>();
-    
+
     public static Iterable<String> getModConfigs() {
         return MOD_CONFIGS;
     }
-    
+
     public static void registerClientConfig(String modid) {
         MOD_CONFIGS.add(modid);
     }
-    
+
     public static float getFrameTime() {
         if (mc.isPaused())
             return 1.0F;
         return mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
-    
+
     public static void commands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandBuildContext registryAccess) {
         dispatcher.register(ClientCommands.literal("cmdclientconfig").executes(x -> {
             GuiEventHandler.queueScreen(new GuiScreenIntegration(new ConfigGuiLayer(true, CreativeConfigRegistry.ROOT, Side.CLIENT)));
             return 0;
         }));
     }
-    
+
     @Override
     public void onInitializeClient() {
         ClientTickEvents.START_CLIENT_TICK.register(GuiEventHandler::onTick);
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> GuiStyle.reload());
         MenuScreens.register(CreativeCore.GUI_CONTAINER, new ScreenConstructor<ContainerIntegration, ContainerScreenIntegration>() {
-            
+
             @Override
             public ContainerScreenIntegration create(ContainerIntegration container, Inventory inventory, Component p_create_3_) {
                 return new ContainerScreenIntegration(container, inventory);
@@ -84,29 +85,29 @@ public class CreativeCoreClient implements ClientModInitializer {
         ClientCommandRegistrationCallback.EVENT.register(CreativeCoreClient::commands);
         ClientTickEvents.START_CLIENT_TICK.register(CreativeCoreClient::clientTick);
     }
-    
+
     public static void clientTick(Minecraft client) {
         if (client.gui.screen() instanceof IScaleableGuiScreen scaleableGuiScreen)
             scaleableGuiScreen.clientTick();
     }
-    
+
     public static void postBackgroundEvent(Screen screen, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {}
-    
+
     public static List<ClientTooltipComponent> gatherTooltipComponents(ItemStack stack, List<? extends FormattedText> textElements, Optional<TooltipComponent> itemComponent, int mouseX, int screenWidth, int screenHeight, Font fallbackFont) {
         List<Either<FormattedText, TooltipComponent>> elements = textElements.stream().map((Function<FormattedText, Either<FormattedText, TooltipComponent>>) Either::left).collect(
-            Collectors.toCollection(ArrayList::new));
+                Collectors.toCollection(ArrayList::new));
         itemComponent.ifPresent(c -> elements.add(1, Either.right(c)));
         return gatherTooltipComponentsFromElements(stack, elements, mouseX, screenWidth, screenHeight, fallbackFont);
     }
-    
+
     public static List<ClientTooltipComponent> gatherTooltipComponentsFromElements(ItemStack stack, List<Either<FormattedText, TooltipComponent>> elements, int mouseX, int screenWidth, int screenHeight, Font fallbackFont) {
         Font font = fallbackFont;
-        
+
         // text wrapping
         int tooltipTextWidth = elements.stream().mapToInt(either -> either.map(font::width, component -> 0)).max().orElse(0);
-        
+
         boolean needsWrap = false;
-        
+
         int tooltipX = mouseX + 12;
         if (tooltipX + tooltipTextWidth + 4 > screenWidth) {
             tooltipX = mouseX - 16 - tooltipTextWidth;
@@ -119,29 +120,29 @@ public class CreativeCoreClient implements ClientModInitializer {
                 needsWrap = true;
             }
         }
-        
+
         int tooltipTextWidthF = tooltipTextWidth;
         if (needsWrap) {
             return elements.stream().flatMap(either -> either.map(text -> splitLine(text, font, tooltipTextWidthF), component -> Stream.of(ClientTooltipComponent.create(
-                component)))).toList();
+                    component)))).toList();
         }
         return elements.stream().map(either -> either.map(text -> ClientTooltipComponent.create(text instanceof Component c ? c.getVisualOrderText() : Language.getInstance()
-                .getVisualOrder(text)), ClientTooltipComponent::create)).toList();
+                                                                                                                                                               .getVisualOrder(text)), ClientTooltipComponent::create)).toList();
     }
-    
+
     private static Stream<ClientTooltipComponent> splitLine(FormattedText text, Font font, int maxWidth) {
         if (text instanceof Component component && component.getString().isEmpty()) {
             return Stream.of(component.getVisualOrderText()).map(ClientTooltipComponent::create);
         }
         return font.split(text, maxWidth).stream().map(ClientTooltipComponent::create);
     }
-    
+
     public static Comparator<ParticleRenderType> makeParticleRenderTypeComparator(List<ParticleRenderType> renderOrder) {
         Comparator<ParticleRenderType> vanillaComparator = Comparator.comparingInt(renderOrder::indexOf);
         return (typeOne, typeTwo) -> {
             boolean vanillaOne = renderOrder.contains(typeOne);
             boolean vanillaTwo = renderOrder.contains(typeTwo);
-            
+
             if (vanillaOne && vanillaTwo) {
                 return vanillaComparator.compare(typeOne, typeTwo);
             }
@@ -150,5 +151,8 @@ public class CreativeCoreClient implements ClientModInitializer {
             }
             return vanillaOne ? -1 : 1;
         };
+    }
+    public static ICreativeClientLoader loader() {
+        return LOADER;
     }
 }

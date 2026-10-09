@@ -1,7 +1,6 @@
 package team.creative.creativecore.common.util.inventory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -12,7 +11,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
+import team.creative.creativecore.ICreativeLoader;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
 
 public class InventoryUtils {
@@ -109,7 +110,7 @@ public class InventoryUtils {
     public static void cleanInventory(Container inventory) {
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (stack != null && stack.isEmpty())
+            if (stack.isEmpty())
                 inventory.setItem(i, ItemStack.EMPTY);
         }
     }
@@ -149,7 +150,7 @@ public class InventoryUtils {
         }
         
         if (alphabetical)
-            Collections.sort(sorting, new Comparator<ItemStack>() {
+            sorting.sort(new Comparator<ItemStack>() {
                 
                 @Override
                 public int compare(ItemStack arg0, ItemStack arg1) {
@@ -158,7 +159,7 @@ public class InventoryUtils {
                 
             });
         else
-            Collections.sort(sorting, new Comparator<ItemStack>() {
+            sorting.sort(new Comparator<ItemStack>() {
                 
                 @Override
                 public int compare(ItemStack arg0, ItemStack arg1) {
@@ -204,7 +205,7 @@ public class InventoryUtils {
     }
     
     public static String toString(Container inventory) {
-        String result = "[";
+        StringBuilder result = new StringBuilder("[");
         boolean first = true;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
@@ -212,11 +213,20 @@ public class InventoryUtils {
                 if (first)
                     first = false;
                 else
-                    result += ",";
-                result += stack.toString();
+                    result.append(",");
+                result.append(stack);
             }
         }
+        
         return result + "]";
+    }
+    
+    public static ItemContainerContents asContent(ICreativeLoader.CommonItemStorage handler) {
+        List<ItemStack> stacks = new ArrayList<>();
+        for(var slot : handler) {
+            stacks.add(slot.getResource().toStack(slot.getAmountAsInt()));
+        }
+        return ItemContainerContents.fromItems(stacks);
     }
     
 }

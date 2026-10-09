@@ -16,5 +16,6 @@
         "AbstractContainerScreenMixin",
         "GameRendererMixin"
     ],
-    "minVersion": "0.8"
+    "minVersion": "0.8",
+    "mixinextras": {"minVersion": "0.5.5"}
 }
