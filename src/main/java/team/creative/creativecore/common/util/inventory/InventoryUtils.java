@@ -223,7 +223,7 @@ public class InventoryUtils {
     
     public static ItemContainerContents asContent(ICreativeLoader.CommonItemStorage handler) {
         List<ItemStack> stacks = new ArrayList<>();
-        for(var slot : handler) {
+        for (var slot : handler) {
             stacks.add(slot.getResource().toStack(slot.getAmountAsInt()));
         }
         return ItemContainerContents.fromItems(stacks);

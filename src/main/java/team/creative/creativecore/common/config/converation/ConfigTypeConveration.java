@@ -369,7 +369,8 @@ public abstract class ConfigTypeConveration<T> {
         registerType(SoundConfig.class, new ConfigTypeConveration<SoundConfig>() {
             
             @Override
-            public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+            public SoundConfig readElement(HolderLookup.Provider provider, SoundConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side,
+                    ConfigKey key) {
                 if (element.isJsonObject())
                     return new SoundConfig(Identifier.parse(element.getAsJsonObject().get("sound").getAsString()), element.getAsJsonObject().get("volume").getAsFloat(), element
                             .getAsJsonObject().get("pitch").getAsFloat());
@@ -444,7 +445,8 @@ public abstract class ConfigTypeConveration<T> {
         registerType(SelectableConfig.class, new ConfigTypeConveration<SelectableConfig>() {
             
             @Override
-            public SelectableConfig readElement(HolderLookup.Provider provider, SelectableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+            public SelectableConfig readElement(HolderLookup.Provider provider, SelectableConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
+                    Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isNumber())
                     defaultValue.select(element.getAsInt());
                 else
@@ -634,7 +636,8 @@ public abstract class ConfigTypeConveration<T> {
         ConfigTypeConveration.registerSpecialType(CreativeIngredient.class::isAssignableFrom, new ConfigTypeConveration<CreativeIngredient>() {
             
             @Override
-            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+            public CreativeIngredient readElement(HolderLookup.Provider provider, CreativeIngredient defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
+                    Side side, ConfigKey key) {
                 if (element.isJsonPrimitive() && ((JsonPrimitive) element).isString())
                     try {
                         return CreativeIngredient.load(provider, TagParser.parseCompoundFully(element.getAsString()));

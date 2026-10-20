@@ -49,6 +49,7 @@ import team.creative.creativecore.common.gui.style.GuiStyle;
 
 public class CreativeCoreClient {
     private static final ICreativeClientLoader LOADER = new CreativeForgeClientLoader();
+    
     public static void load(IEventBus bus) {
         bus.addListener(CreativeCoreClient::init);
         bus.addListener(CreativeCoreClient::screenEvent);
@@ -133,7 +134,7 @@ public class CreativeCoreClient {
             int mouseX, int screenWidth, int screenHeight, Font fallbackFont) {
         return ClientHooks.gatherTooltipComponents(stack, textElements, itemComponent, mouseX, screenWidth, screenHeight, fallbackFont);
     }
-
+    
     public static ICreativeClientLoader loader() {
         return LOADER;
     }

@@ -3,7 +3,6 @@ package team.creative.creativecore.common.util.type.map;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class LinkedHashMapFloat<K> extends LinkedHashMap<K, Float> {
     
@@ -27,7 +26,7 @@ public class LinkedHashMapFloat<K> extends LinkedHashMap<K, Float> {
     
     @Override
     public void putAll(Map<? extends K, ? extends Float> paramMap) {
-        for (Entry<? extends K, ? extends Float> entry : paramMap.entrySet()) {
+        for (java.util.Map.Entry<? extends K, ? extends Float> entry : paramMap.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }
@@ -36,7 +35,7 @@ public class LinkedHashMapFloat<K> extends LinkedHashMap<K, Float> {
     public String toString() {
         StringBuilder builder = new StringBuilder("[");
         boolean first = true;
-        for (Entry<K, Float> entry : entrySet()) {
+        for (java.util.Map.Entry<K, Float> entry : entrySet()) {
             if (first)
                 first = false;
             else
@@ -50,7 +49,7 @@ public class LinkedHashMapFloat<K> extends LinkedHashMap<K, Float> {
     public String toString(DecimalFormat df) {
         StringBuilder builder = new StringBuilder("[");
         boolean first = true;
-        for (Entry<K, Float> entry : entrySet()) {
+        for (java.util.Map.Entry<K, Float> entry : entrySet()) {
             if (first)
                 first = false;
             else

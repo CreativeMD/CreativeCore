@@ -85,8 +85,7 @@ public class CreativeCore implements ModInitializer {
         
         Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(MODID, "container"), GUI_CONTAINER);
         
-        ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(
-                StringArrayArgumentType::stringArray));
+        ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(StringArrayArgumentType::stringArray));
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG);
         
         LOADER.loadCommon();

@@ -2,7 +2,6 @@ package team.creative.creativecore.common.util.type.map;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class LinkedHashMapInteger<K> extends LinkedHashMap<K, Integer> {
     
@@ -26,7 +25,7 @@ public class LinkedHashMapInteger<K> extends LinkedHashMap<K, Integer> {
     
     @Override
     public void putAll(Map<? extends K, ? extends Integer> paramMap) {
-        for (Entry<? extends K, ? extends Integer> entry : paramMap.entrySet()) {
+        for (java.util.Map.Entry<? extends K, ? extends Integer> entry : paramMap.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
     }

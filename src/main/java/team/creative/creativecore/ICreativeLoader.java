@@ -5,7 +5,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.Nullable;
+
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.TypedInstance;
@@ -29,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.Event;
-import org.jspecify.annotations.Nullable;
 import team.creative.creativecore.client.ClientLoader;
 import team.creative.creativecore.common.CommonLoader;
 import team.creative.creativecore.common.gui.dialog.GuiDialogHandler;
@@ -40,7 +42,7 @@ public interface ICreativeLoader {
         CreativeCoreGuiRegistry.init();
         GuiDialogHandler.init();
     }
-
+    
     public MinecraftServer getCurrentServer();
     
     public boolean forge();
@@ -64,7 +66,7 @@ public interface ICreativeLoader {
     public void registerClientStarted(Runnable run);
     
     public void registerReloadListener(Identifier location, PreparableReloadListener listener);
-
+    
     public void registerLevelTick(Consumer<ServerLevel> consumer);
     
     public void registerLevelTickStart(Consumer<ServerLevel> consumer);
@@ -101,54 +103,63 @@ public interface ICreativeLoader {
     public interface FinishConsuming {
         void accept(LivingEntity entity, ItemStack stack);
     }
-
+    
     public <T> ICreativeAttachmentType<T> registerAttachment(Identifier identifier, Supplier<T> supplier, MapCodec<T> mapCodec);
-
+    
     @FunctionalInterface
     public interface RemoveEffect {
         boolean shouldCancel(MobEffectInstance effectInstance, LivingEntity entity);
     }
-
+    
     interface CommonTransaction extends AutoCloseable {
         // Commit the transaction
         void commit();
+        
         // Close the transaction if it hasn't been committed.
         @Override
         void close();
     }
-
+    
     interface CommonItemStorageView {
         int getCapacityAsInt();
+        
         CommonItemResource getResource();
+        
         int getAmountAsInt();
-
+        
         int insert(CommonItemResource resource, int amount, CommonTransaction transaction);
+        
         int extract(CommonItemResource resource, int amount, CommonTransaction transaction);
     }
-
+    
     interface CommonItemResource extends DataComponentHolder, TypedInstance<Item> {
         boolean isEmpty();
+        
         Item getItem();
+        
         int getMaxStackSize();
+        
         ItemStack toStack(int amount);
+        
         ItemStack toStack();
     }
-
+    
     interface CommonItemStorage extends Iterable<CommonItemStorageView> {
         int insert(CommonItemResource resource, int amount, CommonTransaction transaction);
+        
         int extract(CommonItemResource resource, int amount, CommonTransaction transaction);
     }
-
+    
     public CommonTransaction openTransaction(@Nullable CommonTransaction outer);
-
+    
     public void registerItemStorage(Function<ItemStack, List<ItemStack>> inventoryGetter, Supplier<ItemLike[]> items);
-
+    
     public CommonItemStorage getItemStorage(Player player, InteractionHand hand);
-
+    
     public CommonItemStorage getItemStorage(Level level, BlockPos pos, @Nullable Direction direction);
-
+    
     public void registerRemoveEffectCallback(RemoveEffect consumer);
-
+    
     public void publishItemUsed(LivingEntity entity, ItemStack stack);
     
     public void registerItemUsed(FinishConsuming consumer);
@@ -160,7 +171,7 @@ public interface ICreativeLoader {
     public boolean onItemToss(ItemEntity item, Player player);
     
     public void register(CommonRegistry registry);
-
+    
     public boolean isModLoaded(String modid);
     
 }

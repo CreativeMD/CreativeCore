@@ -28,11 +28,13 @@ public class CommonRegistry {
             return namespace;
         }
         
-        public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registrySupplier, ResourceKey<R> registryKey, String identifier, Function<ResourceKey<T>, I> sup) {
+        public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registrySupplier, ResourceKey<R> registryKey, String identifier,
+                Function<ResourceKey<T>, I> sup) {
             return CommonRegistry.this.register(registrySupplier, registryKey, key -> ResourceKey.create(key, Identifier.fromNamespaceAndPath(namespace, identifier)), sup);
         }
         
-        public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registrySupplier, ResourceKey<R> registryKey, Identifier identifier, Function<ResourceKey<T>, I> sup) {
+        public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registrySupplier, ResourceKey<R> registryKey, Identifier identifier,
+                Function<ResourceKey<T>, I> sup) {
             return CommonRegistry.this.register(registrySupplier, registryKey, key -> ResourceKey.create(key, identifier), sup);
         }
         
@@ -168,7 +170,8 @@ public class CommonRegistry {
         this.entries = new ArrayList<>();
     }
     
-    public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registry, ResourceKey<R> registryKey, Function<ResourceKey<R>, ResourceKey<T>> resourceKey, Function<ResourceKey<T>, I> sup) {
+    public <T, I extends T, R extends Registry<T>> DeferredHolder<T, I> register(Supplier<Registry<T>> registry, ResourceKey<R> registryKey,
+            Function<ResourceKey<R>, ResourceKey<T>> resourceKey, Function<ResourceKey<T>, I> sup) {
         Entry<T, I, R> entry = new Entry<>(registry, registryKey, resourceKey, sup);
         entries.add(entry);
         return entry;

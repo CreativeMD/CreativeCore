@@ -1,12 +1,13 @@
 package team.creative.creativecore;
 
-import com.mojang.serialization.MapCodec;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
-import java.util.function.Function;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
+
+import com.mojang.serialization.MapCodec;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -70,21 +71,22 @@ import team.creative.creativecore.common.util.type.itr.ComputeNextIterator;
 
 public class CreativeFabricLoader implements ICreativeLoader {
     private static MinecraftServer currentServer = null;
-    public static final net.fabricmc.fabric.api.event.Event<FinishConsuming> FINISH_CONSUMING = EventFactory.createArrayBacked(FinishConsuming.class, callbacks -> (entity, stack) -> {
-        for (FinishConsuming callback : callbacks) {
-            callback.accept(entity, stack);
-        }
-    });
+    public static final net.fabricmc.fabric.api.event.Event<FinishConsuming> FINISH_CONSUMING = EventFactory.createArrayBacked(FinishConsuming.class,
+        callbacks -> (entity, stack) -> {
+            for (FinishConsuming callback : callbacks) {
+                callback.accept(entity, stack);
+            }
+        });
     static {
         ServerLifecycleEvents.SERVER_STARTED.register((server) -> {
             currentServer = server;
         });
-
+        
         ServerLifecycleEvents.SERVER_STOPPED.register((server) -> {
             currentServer = null;
         });
     }
-
+    
     public final List<Runnable> RENDER_START = new ArrayList<>();
     public final List<Consumer> RENDER_GUI = new ArrayList<>();
     
@@ -142,7 +144,7 @@ public class CreativeFabricLoader implements ICreativeLoader {
     public void registerLevelTick(Consumer<ServerLevel> consumer) {
         ServerTickEvents.END_LEVEL_TICK.register(consumer::accept);
     }
-
+    
     @Override
     public void registerLevelTickStart(Consumer<ServerLevel> consumer) {
         ServerTickEvents.START_LEVEL_TICK.register(consumer::accept);
@@ -257,146 +259,156 @@ public class CreativeFabricLoader implements ICreativeLoader {
     
     @Override
     public <T> ICreativeAttachmentType<T> registerAttachment(Identifier identifier, Supplier<T> supplier, MapCodec<T> mapCodec) {
-        AttachmentType<T> type = AttachmentRegistry.create(identifier, builder -> { builder.initializer(supplier).persistent(mapCodec.codec()); });
+        AttachmentType<T> type = AttachmentRegistry.create(identifier, builder -> {
+            builder.initializer(supplier).persistent(mapCodec.codec());
+        });
         return new ICreativeAttachmentType<T>() {
             @Override
             public T get(Player player) {
                 return player.getAttachedOrCreate(type);
             }
-
+            
             @Override
             public void set(Player player, T value) {
-                player.setAttached(type,value);
+                player.setAttached(type, value);
             }
         };
     }
-
+    
     @Override
     public void registerRemoveEffectCallback(RemoveEffect consumer) {
-        ServerMobEffectEvents.ALLOW_EARLY_REMOVE.register((effectInstance, entity, ctx) -> !consumer.shouldCancel(effectInstance,entity));
+        ServerMobEffectEvents.ALLOW_EARLY_REMOVE.register((effectInstance, entity, ctx) -> !consumer.shouldCancel(effectInstance, entity));
     }
-
+    
     public static class FabricTransaction implements CommonTransaction {
         private final Transaction transaction;
+        
         public FabricTransaction(CommonTransaction other) {
-            if(other instanceof FabricTransaction cOther) {
+            if (other instanceof FabricTransaction cOther) {
                 this.transaction = Transaction.openNested(cOther.transaction);
             } else {
                 this.transaction = Transaction.openNested(null);
             }
         }
-
+        
         @Override
         public void commit() {
             transaction.commit();
         }
-
+        
         @Override
         public void close() {
             transaction.close();
         }
     }
-
+    
     private static class FabricItemResource implements CommonItemResource {
         private final ItemVariant resource;
+        
         public FabricItemResource(ItemVariant resource) {
             this.resource = resource;
         }
+        
         @Override
         public boolean isEmpty() {
             return resource.isBlank();
         }
-
+        
         @Override
         public int getMaxStackSize() {
             return resource.toStack().getMaxStackSize();
         }
-
+        
         @Override
         public Item getItem() {
             return resource.getItem();
         }
-
+        
         @Override
         public ItemStack toStack(int amount) {
             return resource.toStack(amount);
         }
+        
         @Override
         public ItemStack toStack() {
             return resource.toStack();
         }
-
+        
         @Override
         public Holder<Item> typeHolder() {
             return resource.typeHolder();
         }
-
+        
         @Override
         public DataComponentMap getComponents() {
             return resource.getComponents();
         }
     }
-
+    
     public static class FabricItemStorageView implements CommonItemStorageView {
         private final StorageView<ItemVariant> view;
         private final Storage<ItemVariant> parent;
+        
         public FabricItemStorageView(StorageView<ItemVariant> view, Storage<ItemVariant> parent) {
             this.view = view;
             this.parent = parent;
         }
-
+        
         @Override
         public int getCapacityAsInt() {
             return (int) view.getCapacity();
         }
-
+        
         @Override
         public CommonItemResource getResource() {
             return new FabricItemResource(view.getResource());
         }
-
+        
         @Override
         public int getAmountAsInt() {
             return (int) view.getAmount();
         }
-
+        
         @Override
         public int insert(CommonItemResource resource, int amount, CommonTransaction transaction) {
-            if(view instanceof Storage storage) {
+            if (view instanceof Storage storage) {
                 return (int) storage.insert(((FabricItemResource) resource).resource, amount, ((FabricTransaction) transaction).transaction);
             } else {
                 return (int) parent.insert(((FabricItemResource) resource).resource, amount, ((FabricTransaction) transaction).transaction);
             }
         }
-
+        
         @Override
         public int extract(CommonItemResource resource, int amount, CommonTransaction transaction) {
             return (int) view.extract(((FabricItemResource) resource).resource, amount, ((FabricTransaction) transaction).transaction);
         }
     }
-
+    
     private static class FabricItemStorage implements CommonItemStorage {
         private final SlottedStorage<ItemVariant> handler;
+        
         public FabricItemStorage(SlottedStorage<ItemVariant> handler) {
             this.handler = handler;
         }
+        
         @Override
         public int insert(CommonItemResource resource, int amount, CommonTransaction transaction) {
             return (int) handler.insert(((FabricItemResource) resource).resource, amount, ((FabricTransaction) transaction).transaction);
         }
-
+        
         @Override
         public int extract(CommonItemResource resource, int amount, CommonTransaction transaction) {
             return (int) handler.extract(((FabricItemResource) resource).resource, amount, ((FabricTransaction) transaction).transaction);
         }
-
+        
         @Override
         public Iterator<CommonItemStorageView> iterator() {
             return new ComputeNextIterator<>() {
                 Iterator<StorageView<ItemVariant>> iterator = handler.iterator();
+                
                 @Override
                 protected FabricItemStorageView computeNext() {
-                    if(iterator.hasNext()) {
+                    if (iterator.hasNext()) {
                         return new FabricItemStorageView(iterator.next(), handler);
                     }
                     end();
@@ -405,42 +417,37 @@ public class CreativeFabricLoader implements ICreativeLoader {
             };
         }
     }
-
+    
     @Override
     public CommonTransaction openTransaction(CommonTransaction outer) {
         return new FabricTransaction(outer);
     }
-
+    
     @Override
     public void registerItemStorage(Function<ItemStack, List<ItemStack>> inventoryGetter, Supplier<ItemLike[]> items) {
-        ItemStorage.ITEM.registerForItems(
-                (itemStack, context) -> {
-                    return ContainerStorage.of(
-                            new SimpleContainer(inventoryGetter.apply(itemStack)
-                                                               .toArray(new ItemStack[0])), null
-                    );
-                }, items.get()
-        );
+        ItemStorage.ITEM.registerForItems((itemStack, context) -> {
+            return ContainerStorage.of(new SimpleContainer(inventoryGetter.apply(itemStack).toArray(new ItemStack[0])), null);
+        }, items.get());
     }
-
+    
     @Override
     public CommonItemStorage getItemStorage(Player player, InteractionHand hand) {
         var unSlottedStorage = ContainerItemContext.forPlayerInteraction(player, hand).find(ItemStorage.ITEM);
-        if(unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage) {
+        if (unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage) {
             return new FabricItemStorage(slottedStorage);
         }
         return null;
     }
-
+    
     @Override
     public CommonItemStorage getItemStorage(Level level, BlockPos pos, Direction direction) {
         var unSlottedStorage = ItemStorage.SIDED.find(level, pos, direction);
-        if(unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage) {
+        if (unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage) {
             return new FabricItemStorage(slottedStorage);
         }
         return null;
     }
-
+    
     @Override
     public void register(CommonRegistry registry) {
         registry.addEntries(new CommonRegistry.RegisterHelper() {

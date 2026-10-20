@@ -25,7 +25,8 @@ import team.creative.creativecore.common.gui.flow.GuiFlow;
 public class ConfigTypeRegistryTagList extends ConfigTypeConveration<RegistryTagListConfig> {
     
     @Override
-    public RegistryTagListConfig readElement(HolderLookup.Provider provider, RegistryTagListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element, Side side, ConfigKey key) {
+    public RegistryTagListConfig readElement(HolderLookup.Provider provider, RegistryTagListConfig defaultValue, boolean loadDefault, boolean ignoreRestart, JsonElement element,
+            Side side, ConfigKey key) {
         if (element.isJsonArray()) {
             RegistryTagListConfig list = new RegistryTagListConfig(defaultValue.registry);
             JsonArray array = element.getAsJsonArray();
