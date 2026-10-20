@@ -1,3 +1,8 @@
+2.14.22
+Added client loader to support SOLOnion for fabric (by FreezePhoenix)
+Added common transaction handler (by FreezePhoenix)
+Fixed mouse scrolling not working in gui
+
 2.14.21
 Added CommonFancy loader (by FreezePhoenix)
 Preparations for SOLOnion to support fabric (by FreezePhoenix)
