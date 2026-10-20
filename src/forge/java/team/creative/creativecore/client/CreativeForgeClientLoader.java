@@ -3,7 +3,6 @@ package team.creative.creativecore.client;
 import java.util.function.Function;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -29,8 +28,10 @@ public class CreativeForgeClientLoader implements ICreativeClientLoader {
     }
     
     @Override
-    public void registerKeybind(Supplier<KeyMapping> supplier) {
-        Minecraft.getInstance().options.keyMappings = ArrayUtils.add(Minecraft.getInstance().options.keyMappings, supplier.get());
+    public void registerKeybind(KeyMapping keyMapping) {
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((RegisterKeyMappingsEvent event) -> {
+            event.register(keyMapping);
+        });
     }
     
     @Override
@@ -52,9 +53,8 @@ public class CreativeForgeClientLoader implements ICreativeClientLoader {
     public <T extends Screen, W extends AbstractWidget> void addScreenWidget(Function<Screen, T> cast, Function<T, W> factory) {
         NeoForge.EVENT_BUS.addListener((ScreenEvent.Init.Post event) -> {
             var screen = cast.apply(event.getScreen());
-            if (screen != null) {
+            if (screen != null)
                 event.addListener(factory.apply(screen));
-            }
         });
     }
 }

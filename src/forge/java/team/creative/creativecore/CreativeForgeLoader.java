@@ -272,9 +272,12 @@ public class CreativeForgeLoader implements ICreativeLoader {
         });
     }
     
-    private record ForgeTransaction(Transaction transaction) implements CommonTransaction {
+    private class ForgeTransaction implements CommonTransaction {
+        
+        private final Transaction transaction;
+        
         public ForgeTransaction(CommonTransaction other) {
-            this(other instanceof ForgeTransaction(Transaction transaction1) ? Transaction.open(transaction1) : null);
+            this.transaction = other instanceof ForgeTransaction f ? Transaction.open(f.transaction) : Transaction.openRoot();
         }
         
         @Override
@@ -299,6 +302,7 @@ public class CreativeForgeLoader implements ICreativeLoader {
             return resource.getItem();
         }
         
+        @Override
         public int getMaxStackSize() {
             return resource.getMaxStackSize();
         }
@@ -382,12 +386,18 @@ public class CreativeForgeLoader implements ICreativeLoader {
     
     @Override
     public CommonItemStorage getItemStorage(Player player, InteractionHand hand) {
-        return new ForgeItemStorage(player.getItemInHand(hand).getCapability(Capabilities.Item.ITEM, ItemAccess.forPlayerInteraction(player, hand)));
+        var handler = player.getItemInHand(hand).getCapability(Capabilities.Item.ITEM, ItemAccess.forPlayerInteraction(player, hand));
+        if (handler == null)
+            return null;
+        return new ForgeItemStorage(handler);
     }
     
     @Override
     public CommonItemStorage getItemStorage(Level level, BlockPos pos, Direction direction) {
-        return new ForgeItemStorage(level.getCapability(Capabilities.Item.BLOCK, pos, direction));
+        var handler = level.getCapability(Capabilities.Item.BLOCK, pos, direction);
+        if (handler == null)
+            return null;
+        return new ForgeItemStorage(handler);
     }
     
     @Override

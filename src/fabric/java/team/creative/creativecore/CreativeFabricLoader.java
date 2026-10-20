@@ -433,18 +433,16 @@ public class CreativeFabricLoader implements ICreativeLoader {
     @Override
     public CommonItemStorage getItemStorage(Player player, InteractionHand hand) {
         var unSlottedStorage = ContainerItemContext.forPlayerInteraction(player, hand).find(ItemStorage.ITEM);
-        if (unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage) {
+        if (unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage)
             return new FabricItemStorage(slottedStorage);
-        }
         return null;
     }
     
     @Override
     public CommonItemStorage getItemStorage(Level level, BlockPos pos, Direction direction) {
         var unSlottedStorage = ItemStorage.SIDED.find(level, pos, direction);
-        if (unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage) {
+        if (unSlottedStorage instanceof SlottedStorage<ItemVariant> slottedStorage)
             return new FabricItemStorage(slottedStorage);
-        }
         return null;
     }
     
