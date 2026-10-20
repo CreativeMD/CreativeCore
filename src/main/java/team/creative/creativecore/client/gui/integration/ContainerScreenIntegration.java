@@ -100,6 +100,11 @@ public class ContainerScreenIntegration extends AbstractContainerScreen<Containe
     }
     
     @Override
+    public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
+        return listener.mouseScrolled(x, y, deltaX, deltaY);
+    }
+    
+    @Override
     public boolean keyPressed(KeyEvent event) {
         if (listener.keyPressed(event))
             return true;

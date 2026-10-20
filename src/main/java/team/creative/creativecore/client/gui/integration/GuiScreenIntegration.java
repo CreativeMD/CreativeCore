@@ -144,6 +144,11 @@ public class GuiScreenIntegration extends Screen implements IGuiClientIntegrated
     }
     
     @Override
+    public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
+        return listener.mouseScrolled(x, y, deltaX, deltaY);
+    }
+    
+    @Override
     public void send(CreativePacket message) {}
     
     @Override
