@@ -1,7 +1,5 @@
 package team.creative.creativecore;
 
-import java.util.function.Supplier;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +15,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
@@ -76,19 +73,7 @@ public class CreativeCore implements ModInitializer {
     
     @Override
     public void onInitialize() {
-        CommonRegistry.INSTANCE.addEntries(new CommonRegistry.RegisterHelper() {
-            @Override
-            public <T, I extends T> void register(Registry<T> registry, ResourceKey<T> name, Supplier<I> value) {
-                Registry.register(registry, name, value.get());
-            }
-        });
-        
-        GUI_CONTAINER = new MenuType<>(null, FeatureFlags.VANILLA_SET) {
-            @Override
-            public ContainerIntegration create(int windowId, Inventory playerInv) {
-                return new ContainerIntegration(this, windowId, playerInv.player);
-            }
-        };
+        GUI_CONTAINER = new MenuType<>((int windowId, Inventory playerInv) -> new ContainerIntegration(CreativeCore.GUI_CONTAINER, windowId, playerInv.player), FeatureFlags.VANILLA_SET);
         NETWORK.registerType(ConfigurationChangePacket.class, ConfigurationChangePacket::new);
         NETWORK.registerType(ConfigurationClientPacket.class, ConfigurationClientPacket::new);
         NETWORK.registerType(ConfigurationPacket.class, ConfigurationPacket::new);
@@ -98,10 +83,10 @@ public class CreativeCore implements ModInitializer {
         NETWORK.registerType(SyncPacket.class, SyncPacket::new);
         NETWORK.registerType(ImmediateItemStackPacket.class, ImmediateItemStackPacket::new);
         
-        Registry.register(BuiltInRegistries.MENU, Identifier.tryBuild(MODID, "container"), GUI_CONTAINER);
+        Registry.register(BuiltInRegistries.MENU, Identifier.fromNamespaceAndPath(MODID, "container"), GUI_CONTAINER);
         
-        ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(() -> StringArrayArgumentType.stringArray()));
-        
+        ArgumentTypeInfosAccessor.getByClass().put(StringArrayArgumentType.class, SingletonArgumentInfo.contextFree(
+                StringArrayArgumentType::stringArray));
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG);
         
         LOADER.loadCommon();

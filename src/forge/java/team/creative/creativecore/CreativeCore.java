@@ -11,12 +11,10 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.api.distmarker.Dist;
@@ -77,14 +75,6 @@ public class CreativeCore {
         CreativeTestArgument.class, SingletonArgumentInfo.contextFree(CreativeTestArgument::test)));
     
     public CreativeCore() {
-        ModLoadingContext.get().getActiveContainer().getEventBus().addListener((RegisterEvent event) -> {
-            CommonRegistry.INSTANCE.addEntries(new CommonRegistry.RegisterHelper() {
-                @Override
-                public <T, I extends T> void register(Registry<T> registry, ResourceKey<T> name, Supplier<I> value) {
-                    event.register(registry.key(), name.identifier(), value::get);
-                }
-            });
-        });
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::init);
         ModLoadingContext.get().getActiveContainer().getEventBus().addListener(this::registerMenus);
         COMMAND_ARGUMENT_TYPES.register(ModLoadingContext.get().getActiveContainer().getEventBus());

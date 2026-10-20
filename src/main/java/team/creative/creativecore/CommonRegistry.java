@@ -17,8 +17,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class CommonRegistry {
-    public static final CommonRegistry INSTANCE = new CommonRegistry();
-    
     public final class NamespacedRegistry {
         private final String namespace;
         
@@ -166,7 +164,7 @@ public class CommonRegistry {
     
     private final List<Entry<?, ?, ?>> entries;
     
-    private CommonRegistry() {
+    public CommonRegistry() {
         this.entries = new ArrayList<>();
     }
     
