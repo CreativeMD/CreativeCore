@@ -22,9 +22,7 @@ public class LivingEntityMixin {
     @Expression("this.useItem.finishUsingItem(this.level(), this)")
     @WrapOperation(method = "completeUsingItem", at = @At("MIXINEXTRAS:EXPRESSION"))
     public ItemStack hook(ItemStack instance, Level level, LivingEntity livingEntity, Operation<ItemStack> original) {
-        var copy = instance.copy();
-        original.call(instance, level, livingEntity);
-        CreativeFabricLoader.FINISH_CONSUMING.invoker().accept(livingEntity, copy);
-        return instance;
+        CreativeFabricLoader.FINISH_CONSUMING.invoker().accept(livingEntity, instance.copy());
+        return original.call(instance, level, livingEntity);
     }
 }
