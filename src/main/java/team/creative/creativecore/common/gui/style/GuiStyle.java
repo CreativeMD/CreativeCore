@@ -37,12 +37,13 @@ public class GuiStyle {
     
     public static void reload() {
         try {
+            LOADED.clear();
+            
             Resource resource = mc.getResourceManager().getResource(GuiStyleUtils.DEFAULT_STYLE_LOCATION).orElseThrow();
             InputStream input = resource.open();
             try {
                 JsonObject root = JsonParser.parseString(IOUtils.toString(input, Charsets.UTF_8)).getAsJsonObject();
                 
-                LOADED.clear();
                 NamedHandlerRegistry.clearRegistry(REGISTRY);
                 REGISTRY.registerDefault("default", GSON.fromJson(root, GuiStyle.class));
             } finally {
