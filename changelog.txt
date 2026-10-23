@@ -1,3 +1,9 @@
+2.14.24
+Fixed could not load default gui style error during startup
+Fixed not clearing loaded gui styles if default style fails to load
+Fixed not having a reload listener for gui styles on fabric
+
+
 2.14.23
 Fixed consumables turning into empty item stacks (by FreezePhoenix)
 
