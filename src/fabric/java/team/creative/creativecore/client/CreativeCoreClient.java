@@ -8,6 +8,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.datafixers.util.Either;
 
@@ -17,6 +20,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -29,6 +33,11 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -74,7 +83,21 @@ public class CreativeCoreClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ClientTickEvents.START_CLIENT_TICK.register(GuiEventHandler::onTick);
-        ClientLifecycleEvents.CLIENT_STARTED.register(client -> GuiStyle.reload());
+        ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+            GuiStyle.reload();
+            ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(Identifier.tryBuild(CreativeCore.MODID, "gui"), new SimplePreparableReloadListener<Object>() {
+                @SuppressWarnings("NullableProblems")
+                @Override
+                protected @Nullable Object prepare(@NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
+                    return GuiStyle.class; // No idea
+                }
+                
+                @Override
+                protected void apply(@Nullable Object object, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) {
+                    GuiStyle.reload();
+                }
+            });
+        });
         MenuScreens.register(CreativeCore.GUI_CONTAINER, new ScreenConstructor<ContainerIntegration, ContainerScreenIntegration>() {
             
             @Override
