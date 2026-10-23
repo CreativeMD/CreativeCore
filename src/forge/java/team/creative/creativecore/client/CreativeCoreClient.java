@@ -92,7 +92,6 @@ public class CreativeCoreClient {
     public static void init(FMLClientSetupEvent event) {
         NeoForge.EVENT_BUS.register(CreativeCoreClient.class);
         NeoForge.EVENT_BUS.register(GuiScreenHandler.class);
-        GuiStyle.reload();
     }
     
     public static void reloadListener(AddClientReloadListenersEvent event) {
