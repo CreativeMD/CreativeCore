@@ -1,3 +1,6 @@
+2.14.23
+Fixed consumables turning into empty item stacks (by FreezePhoenix)
+
 2.14.22
 Added client loader to support SOLOnion for fabric (by FreezePhoenix)
 Added common transaction handler (by FreezePhoenix)
