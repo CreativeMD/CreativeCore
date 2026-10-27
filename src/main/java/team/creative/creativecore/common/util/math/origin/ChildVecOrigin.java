@@ -6,13 +6,18 @@ import team.creative.creativecore.common.util.math.vec.Vec3d;
 
 public class ChildVecOrigin extends VecOrigin {
     
-    public IVecOrigin parent;
+    protected IVecOrigin parent;
     private int parentPoseId;
     
     public ChildVecOrigin(IVecOrigin parent, Vec3d center) {
         super(center);
         this.parent = parent;
         updatePose();
+    }
+    
+    public void setParent(IVecOrigin parent) {
+        this.parent = parent;
+        setChanged();
     }
     
     @Override

@@ -98,9 +98,9 @@ public enum Rotation {
     
     public static Rotation getRotation(net.minecraft.world.level.block.Rotation rotationIn) {
         return switch (rotationIn) {
-            case CLOCKWISE_90 -> Rotation.Y_CLOCKWISE;
-            case CLOCKWISE_180 -> Rotation.Y_CLOCKWISE;
-            case COUNTERCLOCKWISE_90 -> Rotation.Y_COUNTER_CLOCKWISE;
+            case CLOCKWISE_90 -> Rotation.Y_COUNTER_CLOCKWISE;
+            case CLOCKWISE_180 -> Rotation.Y_COUNTER_CLOCKWISE;
+            case COUNTERCLOCKWISE_90 -> Rotation.Y_CLOCKWISE;
             default -> null;
         };
     }

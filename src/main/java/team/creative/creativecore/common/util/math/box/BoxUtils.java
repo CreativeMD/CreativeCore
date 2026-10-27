@@ -52,7 +52,7 @@ public class BoxUtils {
             translation.invert();
         } else
             translation = null;
-        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationCenter(), coordinator.getRotationMatrixInv(axis), translation);
+        includeMaxRotationInBox(box, vec, axis, rotation, coordinator.getRotationCenterInverse(), coordinator.getRotationMatrixInv(axis), translation);
     }
     
     private static void includeMaxRotationInBox(ABB box, Vec3d vec, Axis axis, double rotation, Vec3d rotationCenter, Matrix3 matrix, Vec3d translation) {
