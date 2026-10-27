@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.6+'
+    id 'fabric-loom' version '1.12+'
     id 'com.modrinth.minotaur' version '2.+'
 }
 
@@ -52,8 +52,4 @@ modDependencies = []
 
 loom {
     accessWidenerPath = file("src/fabric/resources/creativecore.accesswidener")
-}
-
-loom.mixin {
-    defaultRefmapName = "creativecore.mixins.refmap.json"
 }
