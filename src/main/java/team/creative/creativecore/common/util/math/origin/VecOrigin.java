@@ -80,6 +80,8 @@ public class VecOrigin implements IVecOrigin {
         this.rotXLast = rotX;
         this.rotYLast = rotY;
         this.rotZLast = rotZ;
+        renderPose = null;
+        renderPoseTick = -1;
     }
     
     @Override
@@ -90,6 +92,7 @@ public class VecOrigin implements IVecOrigin {
         this.rotX = rotX;
         this.rotY = rotY;
         this.rotZ = rotZ;
+        updatePose();
     }
     
     protected void updatePose() {
