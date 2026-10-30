@@ -1,3 +1,6 @@
+2.13.52
+Fixed origin pose not getting updated during collision
+
 2.13.51
 Fixed not supporting rotation collision on sable origins
 
