@@ -22,8 +22,11 @@ import team.creative.creativecore.common.gui.sync.GuiSyncHolder;
 
 public class CreativeCoreGuiRegistry {
     
-    public static final GuiSyncGlobal<GuiLayer, CompoundTag> HAND = GuiSyncHolder.GLOBAL.register("hand", (c, t) -> c.itemManager().setHand(ItemStack.parseOptional(c.provider(),
-        t)));
+    public static final GuiSyncGlobal<GuiLayer, CompoundTag> HAND = GuiSyncHolder.GLOBAL.register("hand", (c, t) -> {
+        if (!c.isClient())
+            return;
+        c.itemManager().setHand(ItemStack.parseOptional(c.provider(), t));
+    });
     
     public static final GuiSyncGlobal<GuiSlot, ByteTag> DROP = GuiSyncHolder.GLOBAL.register("drop", (c, t) -> {
         boolean ctrl = t.getAsByte() == 1;
