@@ -1,5 +1,7 @@
 package team.creative.creativecore.common.util.math.box;
 
+import org.joml.Vector3d;
+
 import net.minecraft.world.phys.AABB;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
@@ -129,6 +131,12 @@ public enum BoxCorner {
     }
     
     public void set(AABB bb, Vec3d vec) {
+        vec.x = BoxUtils.get(bb, x);
+        vec.y = BoxUtils.get(bb, y);
+        vec.z = BoxUtils.get(bb, z);
+    }
+    
+    public void set(AABB bb, Vector3d vec) {
         vec.x = BoxUtils.get(bb, x);
         vec.y = BoxUtils.get(bb, y);
         vec.z = BoxUtils.get(bb, z);

@@ -8,11 +8,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import team.creative.creativecore.client.render.box.RenderBox;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.collision.CollisionCoordinator;
@@ -109,6 +111,19 @@ public class ABB {
     
     public ABB(ABB bb) {
         this(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
+    }
+    
+    public ABB(BlockPos pos) {
+        this(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+    }
+    
+    public ABB(BlockPos pos, BlockPos pos2) {
+        minX = Math.min(pos.getX(), pos2.getX());
+        minY = Math.min(pos.getY(), pos2.getY());
+        minZ = Math.min(pos.getZ(), pos2.getZ());
+        maxX = Math.max(pos.getX(), pos2.getX()) + 1;
+        maxY = Math.max(pos.getY(), pos2.getY()) + 1;
+        maxZ = Math.max(pos.getZ(), pos2.getZ()) + 1;
     }
     
     public double get(Facing facing) {
@@ -481,6 +496,10 @@ public class ABB {
     @OnlyIn(Dist.CLIENT)
     public void renderLines(PoseStack pose, VertexConsumer consumer, float red, float green, float blue, float alpha) {
         LevelRenderer.renderLineBox(pose, consumer, minX, minY, minZ, maxX, maxY, maxZ, red, green, blue, alpha);
+    }
+    
+    public RenderBox toRenderBox() {
+        return new RenderBox((float) minX, (float) minY, (float) minZ, (float) maxX, (float) maxY, (float) maxZ, (BlockState) null);
     }
     
 }
