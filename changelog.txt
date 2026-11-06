@@ -1,3 +1,7 @@
+2.13.53
+Added some more helpers to BoxCorner and ABB
+Fixed potential cheating items by setting the hand in gui
+
 2.13.52
 Fixed origin pose not getting updated during collision
 
