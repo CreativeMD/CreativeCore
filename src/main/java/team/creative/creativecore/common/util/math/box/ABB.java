@@ -105,6 +105,19 @@ public class ABB {
         this(bb.minX, bb.minY, bb.minZ, bb.maxX, bb.maxY, bb.maxZ);
     }
     
+    public ABB(BlockPos pos) {
+        this(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+    }
+    
+    public ABB(BlockPos pos, BlockPos pos2) {
+        minX = Math.min(pos.getX(), pos2.getX());
+        minY = Math.min(pos.getY(), pos2.getY());
+        minZ = Math.min(pos.getZ(), pos2.getZ());
+        maxX = Math.max(pos.getX(), pos2.getX()) + 1;
+        maxY = Math.max(pos.getY(), pos2.getY()) + 1;
+        maxZ = Math.max(pos.getZ(), pos2.getZ()) + 1;
+    }
+    
     public double get(Facing facing) {
         return switch (facing) {
             case EAST -> maxX;
