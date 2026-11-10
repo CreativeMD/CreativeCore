@@ -1,3 +1,11 @@
+2.12.42
+Fixed any player being able to modify configuration of client fields
+Fixed being able to open block inventories far away
+Forbid to open guis of items and blocks from client side
+Added to check if a gui was opened legitimately
+Small improvement to named type registry
+Fixed potential cheating items by setting the hand in gui
+
 2.12.41
 Updated EventBus from 6.0.3 to 6.2.23
 
