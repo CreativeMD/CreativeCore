@@ -19,8 +19,8 @@ public abstract class GuiCreator {
     
     public static final NamedHandlerRegistry<GuiCreator> REGISTRY = new NamedHandlerRegistry<>(null);
     
-    public static final GuiCreatorItem ITEM_OPENER = GuiCreator.register("item", new GuiCreatorItem());
-    public static final GuiCreatorBlock BLOCK_OPENER = GuiCreator.register("block", new GuiCreatorBlock());
+    public static final GuiCreatorItem ITEM_OPENER = (GuiCreatorItem) GuiCreator.register("item", new GuiCreatorItem()).disableClient();
+    public static final GuiCreatorBlock BLOCK_OPENER = (GuiCreatorBlock) GuiCreator.register("block", new GuiCreatorBlock()).disableClient();
     
     public static <T extends GuiCreator> T register(String name, T creator) {
         creator.name = name;
@@ -30,6 +30,7 @@ public abstract class GuiCreator {
     
     String name;
     public final BiFunction<CompoundTag, Player, GuiLayer> function;
+    private boolean supportsClient = true;
     
     public GuiCreator(BiFunction<CompoundTag, Player, GuiLayer> function) {
         this.function = function;
@@ -39,10 +40,16 @@ public abstract class GuiCreator {
         return name;
     }
     
+    public GuiCreator disableClient() {
+        this.supportsClient = true;
+        return this;
+    }
+    
     protected void openGui(CompoundTag nbt, Player player) {
-        if (player.level().isClientSide())
-            CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
-        else
+        if (player.level().isClientSide()) {
+            if (supportsClient)
+                CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
+        } else
             OpenGuiPacket.openGuiOnServer(this, nbt, (ServerPlayer) player);
     }
     
@@ -90,9 +97,11 @@ public abstract class GuiCreator {
             super((nbt, player) -> {
                 BlockPos pos = nbt.read("pos", BlockPos.CODEC).get();
                 Level level = player.level();
-                BlockState state = level.getBlockState(pos);
-                if (state.getBlock() instanceof BlockGuiCreator block)
-                    return block.create(nbt, level, pos, state, player);
+                if (level.isLoaded(pos) && player.isWithinBlockInteractionRange(pos, 1)) {
+                    BlockState state = level.getBlockState(pos);
+                    if (state.getBlock() instanceof BlockGuiCreator block)
+                        return block.create(nbt, level, pos, state, player);
+                }
                 return null;
             });
         }
