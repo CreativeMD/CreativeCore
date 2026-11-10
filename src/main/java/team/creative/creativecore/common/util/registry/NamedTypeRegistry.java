@@ -68,7 +68,7 @@ public class NamedTypeRegistry<T> {
         throw new IllegalArgumentException("Invalid class " + clazz + ". Missing constructor " + printConstructors());
     }
     
-    protected void checkConstructor(Object... objects) throws RegistryException {
+    protected Class[] checkConstructor(Object... objects) throws RegistryException {
         for (Class[] classes : possibleConstructors) {
             if (objects.length != classes.length)
                 continue;
@@ -78,7 +78,7 @@ public class NamedTypeRegistry<T> {
                     break;
             }
             
-            return;
+            return classes;
         }
         throw new ConstructorNotFoundException(objects);
     }
@@ -111,11 +111,7 @@ public class NamedTypeRegistry<T> {
         if (clazz == null)
             throw new IdNotFoundException(id);
         
-        checkConstructor(objects);
-        
-        Class[] classes = new Class[objects.length];
-        for (int i = 0; i < classes.length; i++)
-            classes[i] = objects[i].getClass();
+        Class[] classes = checkConstructor(objects);
         
         try {
             return clazz.getConstructor(classes).newInstance(objects);
