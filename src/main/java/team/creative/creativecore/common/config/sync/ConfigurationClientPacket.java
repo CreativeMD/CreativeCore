@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.Side;
@@ -66,9 +67,12 @@ public class ConfigurationClientPacket extends CreativePacket {
     
     @Override
     public void executeServer(ServerPlayer player) {
-        CreativeCore.NETWORK.sendToClientAll(player.level().getServer(), new ConfigurationClientPacket(run()));
-        CreativeCore.CONFIG_HANDLER.saveClientFields();
-        CreativeCore.CONFIG_HANDLER.save(player.registryAccess(), Side.SERVER);
+        if (player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
+            CreativeCore.NETWORK.sendToClientAll(player.level().getServer(), new ConfigurationClientPacket(run()));
+            CreativeCore.CONFIG_HANDLER.saveClientFields();
+            CreativeCore.CONFIG_HANDLER.save(player.registryAccess(), Side.SERVER);
+        } else
+            CreativeCore.CONFIG_HANDLER.syncAll(player);
     }
     
 }
