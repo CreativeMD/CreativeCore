@@ -13,20 +13,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.CreativeCore;
 import team.creative.creativecore.common.gui.GuiLayer;
 import team.creative.creativecore.common.gui.integration.GuiScreenIntegration;
 import team.creative.creativecore.common.gui.packet.OpenGuiPacket;
+import team.creative.creativecore.common.util.mc.PlayerUtils;
 import team.creative.creativecore.common.util.registry.NamedHandlerRegistry;
 
 public abstract class GuiCreator {
     
     public static final NamedHandlerRegistry<GuiCreator> REGISTRY = new NamedHandlerRegistry<>(null);
     
-    public static final GuiCreatorItem ITEM_OPENER = GuiCreator.register("item", new GuiCreatorItem());
-    public static final GuiCreatorBlock BLOCK_OPENER = GuiCreator.register("block", new GuiCreatorBlock());
+    public static final GuiCreatorItem ITEM_OPENER = (GuiCreatorItem) GuiCreator.register("item", new GuiCreatorItem()).disableClient();
+    public static final GuiCreatorBlock BLOCK_OPENER = (GuiCreatorBlock) GuiCreator.register("block", new GuiCreatorBlock()).disableClient();
     
     public static <T extends GuiCreator> T register(String name, T creator) {
         creator.name = name;
@@ -36,6 +38,7 @@ public abstract class GuiCreator {
     
     String name;
     public final BiFunction<CompoundTag, Player, GuiLayer> function;
+    private boolean supportsClient = true;
     
     public GuiCreator(BiFunction<CompoundTag, Player, GuiLayer> function) {
         this.function = function;
@@ -45,10 +48,16 @@ public abstract class GuiCreator {
         return name;
     }
     
+    public GuiCreator disableClient() {
+        this.supportsClient = true;
+        return this;
+    }
+    
     protected void openGui(CompoundTag nbt, Player player) {
-        if (player.level().isClientSide)
-            CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
-        else
+        if (player.level().isClientSide) {
+            if (supportsClient)
+                CreativeCore.NETWORK.sendToServer(new OpenGuiPacket(name, nbt));
+        } else
             OpenGuiPacket.openGuiOnServer(this, nbt, (ServerPlayer) player);
     }
     
@@ -102,11 +111,18 @@ public abstract class GuiCreator {
             super((nbt, player) -> {
                 BlockPos pos = new BlockPos(nbt.getInt("x"), nbt.getInt("y"), nbt.getInt("z"));
                 Level level = player.level();
-                BlockState state = level.getBlockState(pos);
-                if (state.getBlock() instanceof BlockGuiCreator block)
-                    return block.create(nbt, level, pos, state, player);
+                if (level.isLoaded(pos) && canInteractWithBlock(player, pos, 1)) {
+                    BlockState state = level.getBlockState(pos);
+                    if (state.getBlock() instanceof BlockGuiCreator block)
+                        return block.create(nbt, level, pos, state, player);
+                }
                 return null;
             });
+        }
+        
+        public static boolean canInteractWithBlock(Player player, BlockPos pos, double extraRange) {
+            double d0 = PlayerUtils.getReach(player) + extraRange;
+            return new AABB(pos).distanceToSqr(player.getEyePosition()) < d0 * d0;
         }
         
         public void open(Player player, BlockPos pos) {
