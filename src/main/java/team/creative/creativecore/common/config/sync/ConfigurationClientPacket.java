@@ -66,9 +66,12 @@ public class ConfigurationClientPacket extends CreativePacket {
     
     @Override
     public void executeServer(ServerPlayer player) {
-        CreativeCore.NETWORK.sendToClientAll(player.getServer(), new ConfigurationClientPacket(run()));
-        CreativeCore.CONFIG_HANDLER.saveClientFields();
-        CreativeCore.CONFIG_HANDLER.save(player.registryAccess(), Side.SERVER);
+        if (player.hasPermissions(2)) {
+            CreativeCore.NETWORK.sendToClientAll(player.getServer(), new ConfigurationClientPacket(run()));
+            CreativeCore.CONFIG_HANDLER.saveClientFields();
+            CreativeCore.CONFIG_HANDLER.save(player.registryAccess(), Side.SERVER);
+        } else
+            CreativeCore.CONFIG_HANDLER.syncAll(player);
     }
     
 }
