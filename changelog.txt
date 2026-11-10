@@ -1,8 +1,16 @@
+2.14.25
+Fixed any player being able to modify configuration of client fields
+Fixed being able to open block inventories far away
+Forbid to open guis of items and blocks from client side
+Added to check if a gui was opened legitimately
+Small improvement to named type registry
+Added some more helpers to BoxCorner and ABB
+Fixed potential cheating items by setting the hand in gui
+
 2.14.24
 Fixed could not load default gui style error during startup
 Fixed not clearing loaded gui styles if default style fails to load
 Fixed not having a reload listener for gui styles on fabric
-
 
 2.14.23
 Fixed consumables turning into empty item stacks (by FreezePhoenix)
