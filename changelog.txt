@@ -1,3 +1,10 @@
+2.13.54
+Fixed any player being able to modify configuration of client fields
+Fixed being able to open block inventories far away
+Forbid to open guis of items and blocks from client side
+Added to check if a gui was opened legitimately
+Small improvement to named type registry
+
 2.13.53
 Added some more helpers to BoxCorner and ABB
 Fixed potential cheating items by setting the hand in gui
