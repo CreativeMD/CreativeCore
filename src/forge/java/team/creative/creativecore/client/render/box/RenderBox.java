@@ -26,6 +26,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import team.creative.creativecore.client.render.VertexFormatUtils;
 import team.creative.creativecore.client.render.face.RenderBoxFace;
 import team.creative.creativecore.client.render.model.CreativeBakedQuad;
+import team.creative.creativecore.client.render.model.ModelQuadSource;
 import team.creative.creativecore.common.util.math.base.Axis;
 import team.creative.creativecore.common.util.math.base.Facing;
 import team.creative.creativecore.common.util.math.box.AlignedBox;
@@ -165,6 +166,8 @@ public class RenderBox extends AlignedBox {
     }
     
     public void setFace(Facing facing, RenderBoxFace face) {
+        if (getFace(facing) != face)
+            deleteQuadCache();
         switch (facing) {
             case DOWN:
                 renderDown = face;
@@ -417,9 +420,9 @@ public class RenderBox extends AlignedBox {
             var set = blockModel.getRenderTypes(state, rand, modelData);
             blockQuads = new ArrayList<>();
             for (RenderType type : set)
-                blockQuads.addAll(blockModel.getQuads(state, facing.toVanilla(), rand, modelData, type));
+                blockQuads.addAll(ModelQuadSource.collect(blockModel, level, pos, state, facing.toVanilla(), rand, modelData, type));
         } else
-            blockQuads = blockModel.getQuads(state, facing.toVanilla(), rand, modelData, layer);
+            blockQuads = ModelQuadSource.collect(blockModel, level, pos, state, facing.toVanilla(), rand, modelData, layer);
         
         if (blockQuads.isEmpty())
             return Collections.emptyList();
