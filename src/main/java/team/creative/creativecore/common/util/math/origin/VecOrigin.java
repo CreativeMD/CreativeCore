@@ -194,6 +194,8 @@ public class VecOrigin implements IVecOrigin {
         offXLast = offX;
         offYLast = offY;
         offZLast = offZ;
+        renderPose = null;
+        renderPoseTick = -1;
     }
     
     protected VecOrigin createInternalCopy() {
