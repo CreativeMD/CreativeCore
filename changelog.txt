@@ -1,3 +1,7 @@
+2.13.55
+Added BoxEdge
+Reorganized rendering methods in RenderBox
+
 2.13.54
 Fixed any player being able to modify configuration of client fields
 Fixed being able to open block inventories far away
