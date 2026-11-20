@@ -16,6 +16,7 @@ import org.joml.Vector3f;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -70,7 +71,7 @@ public class NetworkFieldTypes {
         PARSERS.put(classType, parser);
     }
     
-    public static <T> void register(StreamCodec<? extends FriendlyByteBuf, T> codec, Class<T> classType) {
+    public static <T> void register(StreamCodec<? extends ByteBuf, T> codec, Class<T> classType) {
         PARSERS.put(classType, new NetworkFieldTypeCodec(codec));
     }
     

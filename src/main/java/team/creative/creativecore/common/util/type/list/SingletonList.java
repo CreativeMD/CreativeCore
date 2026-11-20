@@ -19,6 +19,10 @@ public class SingletonList<E> extends AbstractList<E> implements RandomAccess, S
     @Serial
     private static final long serialVersionUID = 3093736618740652951L;
     
+    public static <T> SingletonList<T> of(T element) {
+        return new SingletonList<T>(element);
+    }
+    
     private E element;
     
     public SingletonList(E obj) {
