@@ -51,6 +51,10 @@ public class LevelAccessorFake implements LevelAccessor {
         this.pos = pos;
         this.state = state;
     }
+
+    public Level getParentLevel() { return level; }
+    public BlockPos getMaterialPos() { return pos; }
+    public BlockState getMaterialState() { return state; }
     
     @Override
     public RegistryAccess registryAccess() {
